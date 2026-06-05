@@ -1,30 +1,527 @@
-/vendor/
-node_modules/
-npm-debug.log
-yarn-error.log
+# ==============================================================================
+# Servana by Citrus - .gitignore
+# Service-operations SaaS by Citrus Labs Limited
+#
+# Stack assumption:
+# - Laravel / PHP backend
+# - Vue.js or React.js frontend
+# - JavaScript / TypeScript
+# - Vite
+# - Tailwind CSS or Bootstrap 5
+# - MySQL or PostgreSQL
+#
+# Security position:
+# Never commit secrets, tenant data, payment records, exports, logs, generated
+# invoices/receipts, database dumps, or local environment files.
+# ==============================================================================
 
-# Laravel 4 specific
-bootstrap/compiled.php
-app/storage/
 
-# Laravel 5 & Lumen specific
-public/storage
-public/hot
+# ==============================================================================
+# 1. Environment files and secrets
+# ==============================================================================
 
-# Laravel 5 & Lumen specific with changed public path
-public_html/storage
-public_html/hot
-
-storage/*.key
 .env
+.env.*
+!.env.example
+
+# Laravel / application secrets
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Local secret/config files
+secrets/
+secret/
+private/
+credentials/
+certs/
+keys/
+
+# Cloud/service credentials
+google-credentials.json
+firebase-credentials.json
+firebase-service-account*.json
+service-account*.json
+aws-credentials.json
+gcp-credentials.json
+azure-credentials.json
+
+# Payment gateway credentials/config dumps
+mpesa-credentials.json
+mpesa-secrets.json
+daraja-credentials.json
+stripe-credentials.json
+paystack-credentials.json
+flutterwave-credentials.json
+pesapal-credentials.json
+payment-gateway-credentials.json
+
+# OAuth / API local credentials
+oauth-credentials.json
+oauth-client-secret.json
+client_secret*.json
+
+# Local encrypted values or decrypted config snapshots
+*.secret
+*.secrets
+*.vault
+*.enc.local
+*.decrypted
+
+
+# ==============================================================================
+# 2. PHP / Composer dependencies
+# ==============================================================================
+
+/vendor/
+
+# Keep composer.lock committed for app repositories.
+# Do NOT ignore composer.lock unless this repository becomes a reusable package.
+# composer.lock
+
+
+# ==============================================================================
+# 3. Laravel framework generated files
+# ==============================================================================
+
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+/storage/*.key
+
+/storage/app/*
+!/storage/app/.gitignore
+
+/storage/app/public/*
+!/storage/app/public/.gitignore
+
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+
+/storage/framework/cache/data/*
+!/storage/framework/cache/data/.gitignore
+
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Laravel public storage symlink
+/public/storage
+
+# Laravel Horizon / Telescope / queue local artifacts
+.horizon/
+.telescope/
+supervisor*.log
+worker*.log
+queue*.log
+scheduler*.log
+
+
+# ==============================================================================
+# 4. Frontend dependencies and package manager files
+# ==============================================================================
+
+/node_modules/
+
+# Keep package lockfiles committed for reproducible builds.
+# Do NOT ignore these unless you intentionally standardize on only one manager.
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+# bun.lockb
+
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+.npm/
+.yarn-error.log
+npm-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+
+# ==============================================================================
+# 5. Vite / Laravel Mix / frontend build artifacts
+# ==============================================================================
+
+/public/build/
+/public/hot
+/public/mix-manifest.json
+/public/js/
+/public/css/
+
+# Only ignore public JS/CSS above if they are generated.
+# Keep source files inside resources/js, resources/css, resources/views.
+
+.vite/
+vite.config.*.timestamp-*
+vite.config.*.local.*
+
+dist/
+build/
+out/
+
+*.tsbuildinfo
+
+
+# ==============================================================================
+# 6. TypeScript / JavaScript caches
+# ==============================================================================
+
+.eslintcache
+.stylelintcache
+.cache/
+.parcel-cache/
+.turbo/
+.next/
+.nuxt/
+.output/
+.svelte-kit/
+
+coverage/
+.nyc_output/
+
+
+# ==============================================================================
+# 7. Tests, coverage, debugging, profiling
+# ==============================================================================
+
+.phpunit.result.cache
+.phpunit.cache/
+.pest.cache/
+
+coverage-html/
+htmlcov/
+
+*.coverage
+coverage.xml
+clover.xml
+junit.xml
+test-results/
+playwright-report/
+cypress/videos/
+cypress/screenshots/
+
+# Debug/profiling output
+*.prof
+*.profile
+*.trace
+*.dump
+debug.log
+debug-*.log
+
+
+# ==============================================================================
+# 8. Database files, dumps, backups, and local snapshots
+# ==============================================================================
+
+*.sqlite
+*.sqlite3
+database/*.sqlite
+database/*.sqlite3
+
+*.sql
+*.sql.gz
+*.sql.zip
+*.dump
+*.backup
+*.bak
+
+db-dumps/
+database-dumps/
+backups/
+backup/
+snapshots/
+local-db/
+pgdata/
+mysql-data/
+postgres-data/
+
+# Migration files should be committed.
+# Do NOT ignore:
+# database/migrations/
+# database/seeders/
+# database/factories/
+
+
+# ==============================================================================
+# 9. Servana business data that must never enter Git
+# ==============================================================================
+
+# Tenant / merchant operational exports
+exports/
+storage/exports/
+storage/app/exports/
+storage/app/private/exports/
+storage/app/public/exports/
+
+# Client contact downloads
+contact-exports/
+client-exports/
+client-contact-exports/
+personnel-contact-downloads/
+storage/app/contact-exports/
+storage/app/client-exports/
+storage/app/personnel-contact-downloads/
+
+# Generated invoices and receipts
+invoices/
+receipts/
+generated-invoices/
+generated-receipts/
+storage/app/invoices/
+storage/app/receipts/
+storage/app/generated-invoices/
+storage/app/generated-receipts/
+
+# Platform billing and settlement files
+settlements/
+platform-fees/
+platform-payments/
+merchant-payments/
+billing-exports/
+reconciliation/
+storage/app/settlements/
+storage/app/platform-fees/
+storage/app/platform-payments/
+storage/app/merchant-payments/
+storage/app/reconciliation/
+
+# Commission records and staff payout exports
+commission-exports/
+personnel-commissions/
+staff-payouts/
+storage/app/commission-exports/
+storage/app/personnel-commissions/
+storage/app/staff-payouts/
+
+# Audit logs and compliance exports
+audit-exports/
+audit-logs/
+compliance-exports/
+storage/app/audit-exports/
+storage/app/audit-logs/
+storage/app/compliance-exports/
+
+# Merchant import templates filled with real data
+merchant-imports/
+client-imports/
+personnel-imports/
+storage/app/imports/
+storage/app/merchant-imports/
+storage/app/client-imports/
+storage/app/personnel-imports/
+
+# Uploaded client/merchant files
+uploads/
+storage/uploads/
+storage/app/uploads/
+storage/app/public/uploads/
+
+
+# ==============================================================================
+# 10. Logs
+# ==============================================================================
+
+logs/
+*.log
+*.log.*
+laravel.log
+error.log
+access.log
+
+# Keep placeholder .gitignore files where needed
+!**/.gitignore
+
+
+# ==============================================================================
+# 11. Local development tools
+# ==============================================================================
+
+# Docker local overrides and volumes
+docker-compose.override.yml
+docker-compose.local.yml
+.docker/
+docker-data/
+docker-volumes/
+
+# Laravel Sail local files
+/.sail/
+sail-*.log
+
+# Homestead / Valet
 Homestead.yaml
 Homestead.json
-/.vagrant
-.phpunit.result.cache
+/.vagrant/
+valet.sock
 
-/public/build
-/storage/pail
-.env.backup
+# Local server/runtime files
+.pid
+*.pid
+*.seed
+*.pid.lock
+
+
+# ==============================================================================
+# 12. IDE and editor files
+# ==============================================================================
+
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.example.json
+!.vscode/launch.example.json
+
+*.sublime-project
+*.sublime-workspace
+
+.project
+.classpath
+.settings/
+
+*.swp
+*.swo
+*~
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+
+# ==============================================================================
+# 13. OS temporary files
+# ==============================================================================
+
+.tmp/
+tmp/
+temp/
+*.tmp
+*.temp
+
+$RECYCLE.BIN/
+.Trashes
+.fseventsd
+.Spotlight-V100
+
+
+# ==============================================================================
+# 14. Production deployment artifacts
+# ==============================================================================
+
+release/
+releases/
+deploy/
+deployment/
+artifact/
+artifacts/
+
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.rar
+*.7z
+
 .env.production
-.phpactor.json
-auth.json
+.env.staging
+.env.testing
+.env.local
+.env.backup
+
+
+# ==============================================================================
+# 15. Generated documentation and reports
+# ==============================================================================
+
+docs/generated/
+docs/api/
+api-docs/
+openapi-generated/
+swagger-generated/
+
+reports/
+storage/reports/
+
+# Keep manually written docs committed.
+# Do NOT ignore:
+# README.md
+# LICENSE
+# CHANGELOG.md
+# docs/
+
+
+# ==============================================================================
+# 16. Security scan output
+# ==============================================================================
+
+security-reports/
+vulnerability-reports/
+dependency-check-report.*
+composer-audit.json
+npm-audit.json
+snyk-report.*
+semgrep-report.*
+trivy-report.*
+
+
+# ==============================================================================
+# 17. AI/editor generated scratch files
+# ==============================================================================
+
+.ai/
+.ai-cache/
+.chatgpt/
+.cursor/
+.windsurf/
+.copilot/
+scratch/
+drafts/
+
+*.prompt.local
+*.notes.local
+*.scratch
+
+
+# ==============================================================================
+# 18. Files that should usually remain tracked
+# ==============================================================================
+
+# Keep these committed:
+# - composer.json
+# - composer.lock
+# - package.json
+# - package-lock.json / pnpm-lock.yaml / yarn.lock / bun.lockb
+# - vite.config.js / vite.config.ts
+# - tailwind.config.js / tailwind.config.ts
+# - postcss.config.js
+# - tsconfig.json
+# - phpunit.xml or phpunit.xml.dist, provided it contains no secrets
+# - .env.example
+# - database/migrations/
+# - database/seeders/
+# - database/factories/
+# - routes/
+# - app/
+# - resources/
+# - config/, provided secrets are referenced through env()
+# - tests/
+# - README.md
+# - LICENSE
