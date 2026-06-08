@@ -1,197 +1,164 @@
-# Servana by Citrus — Production-Grade Software Development Plan
+Below is the **production-grade software development plan for Servana by Citrus**, written for an IDE-based AI coding agent to execute step by step.
 
-This plan is based on the uploaded implementation manifesto, which requires a real production SaaS plan, not vague advice or a prototype plan, and requires the IDE coding agent to implement step by step with security, testing, and verification evidence.  It also uses Servana’s product scope: a multi-tenant SaaS for service-based SMEs such as barbershops, salons, spas, massage parlours, grooming studios, and beauty parlours. 
-
----
-
-## 1. Executive Architecture Summary
-
-Servana by Citrus shall be built as a secure, scalable, multi-tenant SaaS web application operated by Citrus Labs Limited for service-based SMEs. Its core function is not merely booking, POS, invoicing, staff management, or CRM. It is a service-operations control system that manages merchants, branches, staff, clients, walk-ins, appointments, queues, service sessions, invoices, offline payment records, receipts, commissions, platform fees, client-contact permissions, reports, notifications, and audit logs.
-
-The platform must support:
-
-1. **Citrus Labs Super Administrator**
-
-   * Owns platform-level governance.
-   * Creates, activates, suspends, and deactivates merchants.
-   * Configures platform fees, billing cycles, contact-download fees, preferred-personnel fees, feature flags, and internal platform roles.
-
-2. **Merchant Administrator**
-
-   * Owns the merchant tenant.
-   * Manages merchant profile, branches, users, roles, services, pricing, commission rules, revenue reports, and platform fee visibility.
-
-3. **Merchant Branch**
-
-   * Represents physical or operational locations.
-   * Used as both a data entity and an access scope.
-
-4. **Merchant HR**
-
-   * Manages staff identity, employment records, branch assignment, role history, activation, suspension, and deactivation.
-
-5. **Merchant Finance**
-
-   * Validates offline payments, issues or controls receipts, manages payment disputes, views financial reports, and audits payment truth.
-
-6. **Merchant Front Office**
-
-   * Handles daily client-facing workflows: client registration, walk-ins, appointments, service selection, queue assignment, invoice creation, offline payment capture, and receipt submission where allowed.
-
-7. **Merchant Personnel**
-
-   * Service providers such as barbers, stylists, therapists, beauticians, nail technicians, and grooming specialists.
-   * Can view own queue, assigned clients, service history, commissions, and limited contact export access.
-
-8. **Merchant Audit**
-
-   * Read-only oversight account.
-   * Views immutable logs, role changes, queue changes, invoice history, payment validations, receipts, exports, and suspicious activity.
-
-9. **Client Records**
-
-   * Initially not full login accounts.
-   * Store profiles, contact details, visit history, services consumed, assigned personnel, invoices, receipts, appointments, queue participation, consent records, and communication preferences.
-
-Servana must enforce tenant isolation so one merchant can never access, infer, edit, enumerate, export, or delete another merchant’s data. This is a hard architectural rule, not a UI preference. 
+This plan uses the uploaded Servana scope and brand system as the product source of truth. Servana is defined as a multi-tenant service-operations SaaS platform for African service-based SMEs, covering merchants, branches, staff, clients, queues, services, invoices, offline client-to-merchant payment records, receipts, commissions, platform fees, audit logs, and role-based operations.  The uploaded instruction also explicitly requires a launch-ready product, not an MVP, with Laravel, PHP 8.2+, Laravel Sanctum, Vue/React, TypeScript preference, PostgreSQL, Redis, S3-compatible storage, queues, monitoring, CI/CD, tenant isolation, and full security/testing discipline. 
 
 ---
 
-## 2. Assumptions and Constraints
+# 1. Executive Architecture Summary
 
-### 2.1 Confirmed Source-of-Truth Requirements
+Servana by Citrus shall be built as a **production-ready, multi-tenant Laravel SaaS platform** with a modern SPA frontend.
 
-The build must follow the uploaded manifesto:
+## Recommended stack
 
-* The agent must not guess.
-* Every technical decision must identify the evidence, requirement, failure risk, and verification method.
-* Fixes must address proven root causes, not symptoms.
-* Testing must include unit, feature, API, authorization, tenant isolation, validation, frontend, browser/E2E, and security regression tests.
-* Every completed phase must demonstrate working proof through test results, API examples, database verification, authorization denial examples, tenant isolation proof, edge-case checks, and completion criteria. 
+| Layer       | Decision                                                                  |
+| ----------- | ------------------------------------------------------------------------- |
+| Backend     | Laravel, PHP 8.2+                                                         |
+| API Auth    | Laravel Sanctum                                                           |
+| Login model | Magic Link authentication for merchant users                              |
+| Frontend    | Vue 3 + TypeScript + Vite                                                 |
+| Styling     | Tailwind CSS                                                              |
+| Database    | PostgreSQL                                                                |
+| Cache       | Redis                                                                     |
+| Queue       | Redis-backed Laravel queues                                               |
+| Storage     | S3-compatible private object storage                                      |
+| Search      | Meilisearch for launch; Elasticsearch only when scale demands it          |
+| Payments    | M-Pesa Daraja integration for Merchant-to-Servana platform payments       |
+| Deployment  | Dockerized Laravel + Nginx + PHP-FPM + Node build + PostgreSQL + Redis    |
+| CI/CD       | GitHub Actions                                                            |
+| Monitoring  | Laravel logs, Sentry/Bugsnag, uptime checks, queue monitoring, DB backups |
 
-### 2.2 Technical Assumptions
+## Core architectural rule
 
-Use this fixed implementation stack:
+Servana’s most important architecture principle is this:
 
-| Layer            | Decision                                                                   |
-| ---------------- | -------------------------------------------------------------------------- |
-| Backend          | Laravel                                                                    |
-| Backend Language | PHP 8.2+                                                                   |
-| Frontend         | Vue.js + TypeScript                                                        |
-| Styling          | Tailwind CSS                                                               |
-| Database         | PostgreSQL                                                                 |
-| Auth             | Laravel Sanctum + Magic Link flow                                          |
-| API              | REST, `/api/v1`                                                            |
-| Build Tool       | Vite                                                                       |
-| Cache            | Redis                                                                      |
-| Queues           | Redis-backed Laravel queues                                                |
-| Storage          | S3-compatible object storage                                               |
-| Search           | Meilisearch for MVP, upgradeable later                                     |
-| Deployment       | Dockerized deployment with CI/CD                                           |
-| Testing          | PHPUnit/Pest, Laravel feature tests, API tests, Playwright/Cypress, Vitest |
+> **Every merchant is a tenant. Every tenant-owned record must carry `merchant_id`. Every request must resolve the authenticated user, active merchant membership, branch scope where applicable, role, permission, and resource ownership before returning or mutating data.**
 
-This aligns with the Servana technical architecture, which requires Laravel, PHP 8.2+, Vue or React, TypeScript preferred, PostgreSQL/MySQL, Laravel Sanctum, Redis queues/cache, S3-compatible storage, search, and Dockerized CI/CD deployment. 
-
-### 2.3 Product Constraints
-
-Servana payments are **offline/off-platform**. The platform records payment method, amount, reference, status, and validation details, but it must not process client-to-merchant payments inside the platform. Supported offline methods include cash, M-Pesa, bank transfer, card terminal, voucher, split payment, and merchant-defined offline methods. 
-
-This means:
-
-* No embedded card processing in MVP.
-* No direct M-Pesa STK Push in MVP.
-* No payment gateway settlement logic in MVP.
-* Payment truth is validated by Finance or merchant-configured approval rules.
-* Receipts are generated only after payment is valid.
-
-### 2.4 Realistic Delivery Projection
-
-For a solo founder/developer using an IDE-based AI coding agent:
-
-| Build Level                                                                                                   | Likely Timeline | Probability |
-| ------------------------------------------------------------------------------------------------------------- | --------------: | ----------: |
-| Secure technical foundation only                                                                              |       3–5 weeks |         70% |
-| MVP operational core                                                                                          |     10–16 weeks |         60% |
-| Production-ready launch with tests, CI/CD, monitoring, and hardened security                                  |     20–32 weeks |         55% |
-| Full scope with all dashboards, reports, exports, billing, commissions, audit, notifications, and polished UX |     32–52 weeks |         50% |
-
-Biggest delay risks:
-
-* Underestimating tenant and branch isolation.
-* Overbuilding client portal features too early.
-* Weak payment-validation workflow.
-* Insufficient authorization tests.
-* Complex commission and platform fee edge cases.
-* Poorly planned audit logging.
+This is non-negotiable because the source scope requires one merchant’s data to be impossible to access, infer, modify, export, enumerate, or delete by another merchant. 
 
 ---
 
-## 3. Non-Negotiable Security Rules
+# 2. Assumptions and Constraints
 
-1. **Every merchant-owned table must include `merchant_id`.**
-2. **Every branch-owned table must include `branch_id` where branch scoping applies.**
-3. **Every protected API route must use authentication middleware.**
-4. **Every tenant-owned resource must be authorized server-side.**
-5. **Frontend permission checks are UX only, never security.**
-6. **Sequential database IDs must not be exposed in public APIs. Use UUIDs or ULIDs.**
-7. **Magic Links must be one-time-use, hashed in storage, expire quickly, and be rate-limited.**
-8. **A user cannot log in merely because their email exists. Login must verify merchant membership, active status, active role, no suspension, branch assignment where applicable, and valid unused token.** 
-9. **Super Admin must not perform normal merchant operations except through controlled governance workflows.**
-10. **Receipt generation must be blocked until payment is received or validated according to merchant configuration.** 
-11. **Merchant Audit role must remain read-only.**
-12. **Personnel must never export the merchant-wide client database.**
-13. **Payment records, receipt records, platform fee records, commission records, exports, and role changes must be audit logged.**
-14. **Sensitive data must never be logged: passwords, tokens, API keys, payment references where sensitive, signed URLs, session tokens, or secrets.**
-15. **All file downloads containing private merchant data must use signed URLs.**
+## Product assumptions
+
+1. Servana is owned and operated by **Citrus Labs Limited**.
+2. Servana serves service-based SMEs: barbershops, salons, spas, grooming studios, beauty parlours, massage parlours, and similar businesses.
+3. Client-to-merchant payments are **offline/off-platform**.
+4. Merchant-to-Servana platform payments are made **inside the platform through M-Pesa**.
+5. Platform billing invoices are generated by Servana for merchants.
+6. M-Pesa platform payment options:
+
+   * STK Push.
+   * Manual M-Pesa payment followed by transaction reference verification.
+7. A manual M-Pesa reference number search must be tied to **one platform invoice only**.
+8. Merchant users log in through Magic Link only after their email is active under the merchant account.
+9. General end users are **client records at launch**, not full login users.
+10. A future client portal can be added later without compromising the launch architecture.
+
+## Technical constraints
+
+1. Do not use jQuery.
+2. Do not expose sequential internal database IDs in APIs.
+3. Use ULIDs/UUIDs for public identifiers.
+4. Use PostgreSQL unless there is a documented hosting constraint.
+5. All schema changes must use Laravel migrations.
+6. All tenant-owned tables must include `merchant_id`.
+7. All branch-scoped tables must include `branch_id`.
+8. All financial mutations must use database transactions.
+9. All payment callbacks must be idempotent.
+10. All payment, receipt, commission, and billing actions must be audit-logged.
 
 ---
 
-## 4. System Architecture
+# 3. Non-Negotiable Security Rules
 
-### 4.1 High-Level Architecture
+The IDE agent must enforce these rules throughout development:
+
+1. **No frontend-only authorization.** Frontend permission checks are UX only.
+2. **No unscoped tenant queries.** Every merchant-owned query must include `merchant_id`.
+3. **No unscoped branch queries.** Branch users must only access assigned branches.
+4. **No direct receipt generation before payment validation.**
+5. **No commission calculation before invoice payment confirmation.**
+6. **No platform invoice marked paid without verified M-Pesa payment evidence.**
+7. **No reusing M-Pesa reference numbers across platform invoices.**
+8. **No magic link reuse.**
+9. **No magic link login for inactive, suspended, deleted, or unassigned users.**
+10. **No secrets in frontend code.**
+11. **No credentials, tokens, phone numbers, M-Pesa receipt numbers, or sensitive payment payloads in plain logs.**
+12. **No public file storage for private merchant documents, exports, receipts, or reports.**
+13. **No JavaScript-based device detection for responsive layout.**
+14. **No disabling browser zoom.**
+15. **No silent failures.**
+16. **No broad rewrites without root-cause proof.**
+17. **No production deployment without passing tests, migrations, health checks, and rollback readiness.**
+
+---
+
+# 4. System Architecture
+
+## 4.1 High-level architecture
 
 ```text
-Browser / Client UI
+Browser
   ↓
-Vue.js + TypeScript SPA
+Vue 3 + TypeScript SPA
   ↓
-Laravel API Layer
+Laravel API / Web Layer
   ↓
-Sanctum Session/Auth Guard
+Sanctum Session/Auth Middleware
   ↓
-Magic Link Authentication
+Magic Link Auth + Active Merchant Membership Validation
   ↓
-Tenant Resolver Middleware
+Tenant Context Middleware
   ↓
-Branch Scope Middleware
+Branch Context Middleware
   ↓
-RBAC + Permission Policies
+Policy / Permission Authorization
   ↓
 Domain Services
+  - Merchant Onboarding
+  - Branch Management
+  - Staff / HR
+  - Service Catalogue
+  - Client Records
+  - Appointments
+  - Walk-ins
+  - Queue
+  - Service Sessions
+  - Invoices
+  - Offline Payments
+  - Receipts
+  - Citrus Billing Engine
+  - M-Pesa Merchant-to-Platform Payments
+  - Commissions
+  - Contact Exports
+  - Reports
+  - Audit Logs
+  - Notifications
   ↓
 PostgreSQL
   ↓
 Redis Cache / Redis Queues
   ↓
-S3-Compatible Storage
+S3-Compatible Object Storage
   ↓
-Email Provider / Monitoring / Logs / Backups
+Email Provider / M-Pesa Daraja / Monitoring / Logs
 ```
 
-This matches Servana’s recommended architecture: browser client, Vue/React SPA, Laravel API, Magic Link authentication, RBAC + permission + tenant + branch authorization, domain services, database, Redis queues/cache, email, storage, monitoring, and error tracking. 
+## 4.2 Application boundaries
 
-### 4.2 Core Backend Domains
+Use a **modular monolith** first, not microservices. This gives the project production reliability without premature distributed complexity.
 
-Create these Laravel bounded domains under `app/Domain`:
+Recommended Laravel structure:
 
 ```text
 app/
+  Actions/
+  Console/
   Domain/
-    Platform/
+    Auth/
     Merchants/
     Branches/
-    Auth/
-    AccessControl/
     Staff/
     Services/
     Clients/
@@ -200,172 +167,107 @@ app/
     ServiceSessions/
     Invoices/
     Payments/
+    PlatformBilling/
+    Mpesa/
     Receipts/
-    Billing/
     Commissions/
     ContactExports/
     Reports/
-    Notifications/
     Audit/
-    Files/
-```
-
-Each domain must contain:
-
-```text
-Models/
-Actions/
-Services/
-Policies/
-Data/
-Enums/
-Events/
-Listeners/
-Jobs/
-Queries/
-```
-
-Example:
-
-```text
-app/Domain/Invoices/
-  Models/Invoice.php
-  Models/InvoiceItem.php
-  Actions/CreateInvoiceAction.php
-  Actions/VoidInvoiceAction.php
-  Services/InvoiceNumberService.php
-  Services/InvoiceTotalService.php
-  Policies/InvoicePolicy.php
-  Data/CreateInvoiceData.php
-  Enums/InvoiceStatus.php
-  Events/InvoiceCreated.php
-  Jobs/GenerateInvoicePdfJob.php
-  Queries/InvoiceQuery.php
-```
-
-### 4.3 Tenant Strategy
-
-Use **single database, shared schema, tenant-scoped rows**.
-
-Reason: Servana targets many SMEs. Separate databases per merchant would increase operational complexity too early. Shared schema with strict `merchant_id` scoping is realistic, cheaper, and maintainable for MVP and early scale.
-
-Mitigation: strict middleware, global query scopes where safe, policies, service-layer tenant assertions, database indexes, and tenant isolation tests.
-
----
-
-## 5. Backend Architecture
-
-### 5.1 Laravel Structure
-
-Recommended backend structure:
-
-```text
-app/
+    Notifications/
   Http/
     Controllers/Api/V1/
     Middleware/
     Requests/
     Resources/
-  Domain/
-  Support/
-    Tenant/
-    Branch/
-    Money/
-    Audit/
-    Security/
-  Providers/
-  Console/
   Jobs/
-  Events/
-  Listeners/
+  Mail/
+  Models/
   Policies/
-routes/
-  api.php
-  auth.php
+  Providers/
+  Rules/
+  Services/
 database/
   migrations/
   seeders/
-  factories/
+routes/
+  api.php
+  web.php
 tests/
   Feature/
   Unit/
-  Api/
-  Authorization/
-  TenantIsolation/
+  Browser/
 ```
-
-### 5.2 Core Backend Patterns
-
-Use these implementation patterns:
-
-| Pattern              | Use                                                  |
-| -------------------- | ---------------------------------------------------- |
-| Form Request classes | Validate all mutating input                          |
-| Policies             | Enforce model-level authorization                    |
-| Actions              | Execute one business use case                        |
-| Services             | Shared business rules                                |
-| Query classes        | Filter, sort, and paginate collections               |
-| API Resources        | Shape consistent JSON                                |
-| Events/Listens       | Audit logs, notifications, background side effects   |
-| Jobs                 | Emails, reports, exports, receipt PDFs, invoice PDFs |
-| Enums                | Status fields, role codes, payment methods           |
-| DTO/Data classes     | Move validated payloads safely                       |
-| Transactions         | Multi-write financial workflows                      |
-
-### 5.3 Required Backend Packages
-
-Minimum package set:
-
-```bash
-composer require laravel/sanctum
-composer require spatie/laravel-permission
-composer require spatie/laravel-activitylog
-composer require laravel/horizon
-composer require league/flysystem-aws-s3-v3
-composer require meilisearch/meilisearch-php
-composer require barryvdh/laravel-dompdf
-composer require pestphp/pest --dev
-composer require pestphp/pest-plugin-laravel --dev
-```
-
-Use Spatie Permission carefully with tenant/team support. Roles must be scoped per merchant, not globally granted across all merchants.
-
-### 5.4 Domain Service Rules
-
-Every write action must follow this sequence:
-
-```text
-1. Resolve authenticated user.
-2. Resolve active merchant context.
-3. Resolve branch context where required.
-4. Authorize user through policy.
-5. Validate payload through Form Request.
-6. Start database transaction for multi-table writes.
-7. Create/update records with explicit merchant_id and branch_id.
-8. Create audit log.
-9. Dispatch events/jobs after commit.
-10. Return API Resource.
-```
-
-Never allow controllers to contain large business logic.
 
 ---
 
-## 6. Frontend Architecture
+# 5. Backend Architecture
 
-### 6.1 Frontend Decision
+## 5.1 Domain service pattern
+
+Controllers must stay thin. Business rules belong in domain services/actions.
+
+Example:
+
+```text
+InvoiceController@store
+  → CreateInvoiceRequest
+  → CreateInvoiceAction
+  → InvoicePolicy
+  → InvoiceNumberGenerator
+  → PlatformFeeCalculator
+  → AuditLogger
+  → InvoiceResource
+```
+
+## 5.2 Required backend layers
+
+| Layer            | Responsibility                                |
+| ---------------- | --------------------------------------------- |
+| Form Requests    | Validation and input authorization pre-checks |
+| Controllers      | HTTP orchestration only                       |
+| Actions          | One business use case per class               |
+| Services         | Reusable domain logic                         |
+| Models           | Relationships, casts, scopes                  |
+| Policies         | Authorization                                 |
+| Resources        | API response shaping                          |
+| Jobs             | Async work                                    |
+| Events/Listeners | Audit logs, notifications, ledger generation  |
+| DTOs             | Stable internal data transfer                 |
+| Enums            | Statuses, roles, payment states               |
+
+## 5.3 Critical enums
+
+Create enum classes:
+
+```text
+app/Enums/
+  MerchantStatus.php
+  BranchStatus.php
+  MerchantUserStatus.php
+  UserRole.php
+  PermissionKey.php
+  AppointmentStatus.php
+  QueueStatus.php
+  ServiceSessionStatus.php
+  InvoiceStatus.php
+  PaymentMethod.php
+  PaymentStatus.php
+  PaymentValidationStatus.php
+  ReceiptStatus.php
+  PlatformInvoiceStatus.php
+  MpesaTransactionStatus.php
+  CommissionStatus.php
+  ContactExportStatus.php
+```
+
+---
+
+# 6. Frontend Architecture
 
 Use **Vue 3 + TypeScript + Vite + Tailwind CSS**.
 
-Reason:
-
-* Laravel-friendly.
-* Strong component architecture.
-* TypeScript improves maintainability.
-* Tailwind supports fast implementation of responsive SaaS layouts.
-* Works cleanly with Laravel Sanctum SPA authentication.
-
-### 6.2 Frontend Folder Structure
+## 6.1 Frontend structure
 
 ```text
 resources/js/
@@ -392,7 +294,7 @@ resources/js/
     clients/
     appointments/
     queue/
-    service-sessions/
+    sessions/
     invoices/
     payments/
     receipts/
@@ -408,138 +310,81 @@ resources/js/
     tables/
     modals/
     dashboards/
-    queue/
-    invoices/
-    receipts/
-    reports/
-  stores/
-    authStore.ts
-    tenantStore.ts
-    branchStore.ts
-    permissionStore.ts
-    themeStore.ts
+    navigation/
+    profile/
+    status/
   services/
     apiClient.ts
     authService.ts
     tenantService.ts
     permissionService.ts
+    billingService.ts
+    mpesaService.ts
+  stores/
+    authStore.ts
+    merchantStore.ts
+    branchStore.ts
+    permissionStore.ts
+    themeStore.ts
+    notificationStore.ts
   types/
   utils/
 ```
 
-This follows the recommended Servana frontend structure containing role-specific layouts, pages, components, API client, auth service, tenant context, permission service, and stores. 
+## 6.2 Frontend rules
 
-### 6.3 Frontend Security Rules
-
-The frontend must never contain:
-
-* Secret keys.
-* Payment secrets.
-* Authorization truth.
-* Platform fee calculation authority.
-* Commission calculation authority.
-* Receipt issuance authority.
-* Tenant access decisions.
-* Branch access decisions.
-
-The frontend can hide UI actions based on permissions, but the backend must still deny unauthorized requests.
-
-### 6.4 Global UI States
-
-Every list, dashboard, and form must handle:
-
-```text
-loading
-empty
-success
-error
-unauthorized
-merchant_suspended
-inactive_user
-no_branch_access
-no_permission
-pending_payment_validation
-network_error
-validation_error
-```
+1. Store no API secrets.
+2. Never decide authorization in the frontend.
+3. Render menu items based on permissions for UX, but backend remains final authority.
+4. Use centralized API error handling.
+5. Use typed API responses.
+6. Escape or sanitize user-generated HTML.
+7. Use accessible components.
+8. Include loading, empty, success, error, unauthorized, suspended, and no-branch states.
 
 ---
 
-## 7. Database Architecture
+# 7. Database Architecture
 
-### 7.1 Identifier Strategy
+Use PostgreSQL with ULIDs for public identifiers.
 
-Use internal `id` as big integer primary key for database joins and `ulid` as public identifier.
+## 7.1 Identifier strategy
 
-Pattern:
-
-```php
-$table->id();
-$table->ulid('public_id')->unique();
-```
-
-Public APIs must use `public_id`, not sequential `id`.
-
-### 7.2 Minimum Core Tables
-
-Servana’s source scope lists required entities including users, merchants, branches, merchant users, roles, permissions, magic login tokens, services, clients, appointments, queue entries, service sessions, invoices, payment records, receipts, platform fee ledger, commission records, contact export requests, notifications, and audit logs. 
-
-Implement at minimum:
+Every major table should include:
 
 ```text
-users
-merchants
-merchant_branches
-merchant_users
-roles
-permissions
-role_permission
-magic_login_tokens
-services
-service_categories
-personnel_service_eligibilities
-clients
-appointments
-queue_entries
-service_sessions
-preferred_personnel_fee_rules
-invoices
-invoice_items
-payment_records
-receipts
-platform_fee_ledger
-commission_rules
-commission_ledger
-contact_export_requests
-notification_logs
-audit_logs
-uploaded_files
-merchant_settings
-branch_settings
-failed_jobs
-job_batches
-personal_access_tokens
+id BIGINT primary key internal
+ulid CHAR(26) unique public identifier
+created_at
+updated_at
+deleted_at nullable where soft deletes are needed
 ```
 
-### 7.3 Key Table Designs
+APIs expose `ulid`, never `id`.
 
-#### `users`
+## 7.2 Core database tables
+
+### 7.2.1 `users`
 
 Purpose: global identity record.
 
 Columns:
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-name VARCHAR(160)
-email VARCHAR(255) UNIQUE
-phone VARCHAR(32) NULL
-profile_photo_path VARCHAR(500) NULL
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+name VARCHAR(160) NOT NULL
+email CITEXT UNIQUE NOT NULL
+phone VARCHAR(30) NULL
+avatar_file_id BIGINT NULL FK uploaded_files.id
 email_verified_at TIMESTAMP NULL
 last_login_at TIMESTAMP NULL
-status ENUM(active, inactive, suspended)
-theme_preference ENUM(light, dark, system) DEFAULT light
+last_login_ip INET NULL
+timezone VARCHAR(64) DEFAULT 'Africa/Nairobi'
+locale VARCHAR(12) DEFAULT 'en'
+theme_preference VARCHAR(20) DEFAULT 'light'
+status VARCHAR(30) DEFAULT 'active'
+remember_token VARCHAR(100) NULL
 created_at TIMESTAMP
 updated_at TIMESTAMP
 deleted_at TIMESTAMP NULL
@@ -548,34 +393,41 @@ deleted_at TIMESTAMP NULL
 Indexes:
 
 ```text
-UNIQUE(email)
-INDEX(status)
-INDEX(last_login_at)
+users_email_unique
+users_ulid_unique
+users_status_index
 ```
 
 Security:
 
-* No tenant data stored directly here.
-* User access to merchant data only through `merchant_users`.
+* No password required for magic-link-only launch.
+* Keep password nullable only when future email/password login is intentionally added.
+* Use `CITEXT` for case-insensitive email uniqueness.
 
-#### `merchants`
+---
+
+### 7.2.2 `merchants`
 
 Purpose: tenant root.
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-name VARCHAR(180)
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+name VARCHAR(180) NOT NULL
 legal_name VARCHAR(220) NULL
-business_category VARCHAR(120)
-registration_number VARCHAR(100) NULL
-kra_pin VARCHAR(50) NULL
-primary_email VARCHAR(255)
-primary_phone VARCHAR(32)
-status ENUM(pending, active, suspended, deactivated)
-onboarding_status ENUM(draft, submitted, approved, rejected, active)
-account_opening_fee_status ENUM(not_required, pending, paid, waived)
-created_by BIGINT FK users.id
+business_category VARCHAR(80) NOT NULL
+registration_number VARCHAR(80) NULL
+kra_pin VARCHAR(40) NULL
+primary_email CITEXT NULL
+primary_phone VARCHAR(30) NULL
+status VARCHAR(30) NOT NULL DEFAULT 'pending'
+billing_status VARCHAR(30) DEFAULT 'current'
+default_currency CHAR(3) DEFAULT 'KES'
+service_fee_model VARCHAR(30) DEFAULT 'percentage'
+service_fee_value NUMERIC(12,4) DEFAULT 0
+front_office_receipt_permission VARCHAR(40) DEFAULT 'finance_validated_only'
+metadata JSONB DEFAULT '{}'
+created_by BIGINT NULL FK users.id
 activated_at TIMESTAMP NULL
 suspended_at TIMESTAMP NULL
 deactivated_at TIMESTAMP NULL
@@ -587,29 +439,36 @@ deleted_at TIMESTAMP NULL
 Indexes:
 
 ```text
-INDEX(status)
-INDEX(business_category)
-INDEX(onboarding_status)
-UNIQUE(public_id)
+merchants_ulid_unique
+merchants_status_index
+merchants_business_category_index
 ```
 
-#### `merchant_branches`
+Security:
 
-Purpose: physical or operational branch.
+* Tenant boundary starts here.
+* Super Admin can list merchants.
+* Merchant users can only access their own merchant.
+
+---
+
+### 7.2.3 `merchant_branches`
+
+Purpose: physical/operational branch under merchant.
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-name VARCHAR(180)
-code VARCHAR(50)
-phone VARCHAR(32) NULL
-email VARCHAR(255) NULL
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+name VARCHAR(160) NOT NULL
+code VARCHAR(40) NOT NULL
+phone VARCHAR(30) NULL
+email CITEXT NULL
 address TEXT NULL
 city VARCHAR(100) NULL
-status ENUM(active, inactive, suspended, closed)
-timezone VARCHAR(100) DEFAULT Africa/Nairobi
-operating_hours JSONB NULL
+status VARCHAR(30) DEFAULT 'active'
+opening_hours JSONB DEFAULT '{}'
+metadata JSONB DEFAULT '{}'
 created_by BIGINT FK users.id
 created_at TIMESTAMP
 updated_at TIMESTAMP
@@ -620,26 +479,35 @@ Constraints:
 
 ```text
 UNIQUE(merchant_id, code)
-INDEX(merchant_id, status)
+UNIQUE(merchant_id, name)
 ```
 
-#### `merchant_users`
-
-Purpose: user membership under a merchant and optional branch scope.
+Indexes:
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-user_id BIGINT FK users.id
-role_id BIGINT FK roles.id
-primary_branch_id BIGINT NULL FK merchant_branches.id
-employment_status ENUM(active, inactive, suspended, terminated)
-access_status ENUM(pending_activation, active, suspended, revoked)
-activated_by BIGINT NULL FK users.id
-activated_at TIMESTAMP NULL
+merchant_branches_merchant_status_index
+```
+
+---
+
+### 7.2.4 `merchant_users`
+
+Purpose: user membership under merchant.
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+user_id BIGINT NOT NULL FK users.id
+primary_role_id BIGINT NOT NULL FK roles.id
+status VARCHAR(30) DEFAULT 'pending_activation'
+is_owner BOOLEAN DEFAULT false
+active_email_verified_by BIGINT NULL FK users.id
+active_email_verified_at TIMESTAMP NULL
 suspended_at TIMESTAMP NULL
-last_role_changed_at TIMESTAMP NULL
+deactivated_at TIMESTAMP NULL
+last_branch_id BIGINT NULL FK merchant_branches.id
+created_by BIGINT NULL FK users.id
 created_at TIMESTAMP
 updated_at TIMESTAMP
 deleted_at TIMESTAMP NULL
@@ -649,50 +517,77 @@ Constraints:
 
 ```text
 UNIQUE(merchant_id, user_id)
-INDEX(merchant_id, role_id)
-INDEX(merchant_id, access_status)
-INDEX(user_id)
 ```
 
-#### `merchant_user_branches`
-
-Purpose: many-to-many branch assignment.
+Indexes:
 
 ```text
-id BIGINT PK
-merchant_user_id BIGINT FK merchant_users.id
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
+merchant_users_merchant_user_index
+merchant_users_status_index
+merchant_users_role_index
+```
+
+Security:
+
+* Magic Link login requires `status='active'`.
+* User email existing globally is not enough.
+* Must validate active membership.
+
+---
+
+### 7.2.5 `branch_user_assignments`
+
+Purpose: branch access scope.
+
+```text
+id BIGSERIAL PK
+merchant_id BIGINT NOT NULL FK merchants.id
+branch_id BIGINT NOT NULL FK merchant_branches.id
+merchant_user_id BIGINT NOT NULL FK merchant_users.id
+status VARCHAR(30) DEFAULT 'active'
 assigned_by BIGINT FK users.id
+assigned_at TIMESTAMP
+revoked_at TIMESTAMP NULL
 created_at TIMESTAMP
+updated_at TIMESTAMP
 ```
 
 Constraints:
 
 ```text
-UNIQUE(merchant_user_id, branch_id)
-INDEX(merchant_id, branch_id)
+UNIQUE(branch_id, merchant_user_id)
 ```
 
-#### `roles`
+Indexes:
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT NULL FK merchants.id
-name VARCHAR(80)
-code VARCHAR(80)
-scope ENUM(platform, merchant)
+branch_user_assignments_merchant_branch_index
+branch_user_assignments_user_status_index
+```
+
+---
+
+### 7.2.6 `roles`
+
+Purpose: platform and merchant role definitions.
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+scope VARCHAR(30) NOT NULL -- platform, merchant
+name VARCHAR(80) NOT NULL
+slug VARCHAR(80) NOT NULL
+description TEXT NULL
 is_system BOOLEAN DEFAULT false
 is_active BOOLEAN DEFAULT true
-created_at
-updated_at
+created_at TIMESTAMP
+updated_at TIMESTAMP
 ```
 
 Default roles:
 
 ```text
-super_admin
+platform_super_admin
 merchant_owner
 merchant_admin
 merchant_hr
@@ -700,837 +595,1165 @@ merchant_finance
 merchant_front_office
 merchant_personnel
 merchant_audit
+merchant_viewer
 ```
 
-#### `permissions`
+---
+
+### 7.2.7 `permissions`
+
+Purpose: granular permission keys.
 
 ```text
-id BIGINT PK
-code VARCHAR(120) UNIQUE
-name VARCHAR(160)
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+key VARCHAR(120) UNIQUE NOT NULL
+name VARCHAR(120) NOT NULL
 description TEXT NULL
-scope ENUM(platform, merchant, branch)
-created_at
-updated_at
+scope VARCHAR(30) NOT NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
 ```
 
-#### `role_permission`
+Examples:
+
+```text
+merchants.create
+merchants.activate
+branches.create
+staff.activate
+services.manage
+clients.view
+clients.create
+queue.manage
+queue.override_preferred_personnel
+invoices.create
+payments.record
+payments.validate
+receipts.issue
+billing.view
+billing.pay
+commissions.view
+contact_exports.request
+contact_exports.approve
+audit.view
+reports.export
+```
+
+---
+
+### 7.2.8 `role_permission`
 
 ```text
 role_id BIGINT FK roles.id
 permission_id BIGINT FK permissions.id
-created_at
+created_at TIMESTAMP
 PRIMARY KEY(role_id, permission_id)
 ```
 
-#### `magic_login_tokens`
+---
 
-Purpose: one-time Magic Link authentication.
+### 7.2.9 `merchant_user_permission_overrides`
+
+Purpose: explicit per-user grants/denials.
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-user_id BIGINT FK users.id
-merchant_id BIGINT NULL FK merchants.id
-email VARCHAR(255)
-token_hash CHAR(64)
-purpose ENUM(login, email_verification, invitation_acceptance)
-expires_at TIMESTAMP
-used_at TIMESTAMP NULL
-ip_address INET NULL
-user_agent TEXT NULL
+id BIGSERIAL PK
+merchant_id BIGINT NOT NULL FK merchants.id
+merchant_user_id BIGINT NOT NULL FK merchant_users.id
+permission_id BIGINT NOT NULL FK permissions.id
+effect VARCHAR(10) NOT NULL -- allow, deny
+reason TEXT NULL
+created_by BIGINT FK users.id
 created_at TIMESTAMP
+updated_at TIMESTAMP
 ```
 
-Constraints:
+Constraint:
 
 ```text
-UNIQUE(token_hash)
-INDEX(email, purpose)
-INDEX(user_id, expires_at)
-INDEX(merchant_id, email)
+UNIQUE(merchant_user_id, permission_id)
+```
+
+---
+
+### 7.2.10 `magic_login_tokens`
+
+Purpose: one-time login token.
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+user_id BIGINT NOT NULL FK users.id
+merchant_id BIGINT NULL FK merchants.id
+merchant_user_id BIGINT NULL FK merchant_users.id
+token_hash CHAR(64) NOT NULL UNIQUE
+purpose VARCHAR(40) DEFAULT 'login'
+ip_address INET NULL
+user_agent TEXT NULL
+expires_at TIMESTAMP NOT NULL
+used_at TIMESTAMP NULL
+revoked_at TIMESTAMP NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
+```
+
+Indexes:
+
+```text
+magic_login_tokens_hash_index
+magic_login_tokens_user_expires_index
 ```
 
 Security:
 
-* Store hash only.
-* Never store raw token.
-* Token must expire.
-* Token must be single-use.
-* Rate-limit requests.
+* Store token hash only.
+* Token expires after 10–15 minutes.
+* Token becomes invalid after first use.
+* Rate-limit token requests.
 
-#### `service_categories`
+---
+
+### 7.2.11 `service_categories`
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT NULL FK merchant_branches.id
-name VARCHAR(140)
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+name VARCHAR(120) NOT NULL
 description TEXT NULL
-status ENUM(active, inactive, archived)
+status VARCHAR(30) DEFAULT 'active'
 created_by BIGINT FK users.id
-created_at
-updated_at
-deleted_at NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
+UNIQUE(merchant_id, name)
 ```
 
-#### `services`
+---
+
+### 7.2.12 `services`
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-service_category_id BIGINT FK service_categories.id
-name VARCHAR(160)
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+service_category_id BIGINT NULL FK service_categories.id
+name VARCHAR(160) NOT NULL
 description TEXT NULL
-base_price DECIMAL(12,2)
-estimated_duration_minutes INTEGER
-is_discountable BOOLEAN DEFAULT true
-preferred_personnel_fee_eligible BOOLEAN DEFAULT true
-status ENUM(active, inactive, archived)
+base_price NUMERIC(12,2) NOT NULL
+estimated_duration_minutes INTEGER NOT NULL
+is_preferred_personnel_fee_eligible BOOLEAN DEFAULT true
+status VARCHAR(30) DEFAULT 'active'
 created_by BIGINT FK users.id
-created_at
-updated_at
-deleted_at NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
+UNIQUE(merchant_id, name)
 ```
 
 Indexes:
 
 ```text
-INDEX(merchant_id, status)
-INDEX(merchant_id, service_category_id)
+services_merchant_status_index
+services_category_index
 ```
 
-#### `branch_services`
+---
+
+### 7.2.13 `branch_services`
+
+Purpose: which services are available at each branch.
 
 ```text
-id BIGINT PK
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
-service_id BIGINT FK services.id
-is_available BOOLEAN DEFAULT true
-created_at
-updated_at
+id BIGSERIAL PK
+merchant_id BIGINT NOT NULL
+branch_id BIGINT NOT NULL FK merchant_branches.id
+service_id BIGINT NOT NULL FK services.id
+price_override NUMERIC(12,2) NULL
+status VARCHAR(30) DEFAULT 'active'
+created_at TIMESTAMP
+updated_at TIMESTAMP
 UNIQUE(branch_id, service_id)
 ```
 
-#### `personnel_service_eligibilities`
+---
+
+### 7.2.14 `personnel_profiles`
+
+Purpose: service personnel profile.
 
 ```text
-id BIGINT PK
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
-personnel_merchant_user_id BIGINT FK merchant_users.id
-service_id BIGINT FK services.id
-is_active BOOLEAN DEFAULT true
-created_by BIGINT FK users.id
-created_at
-updated_at
-UNIQUE(branch_id, personnel_merchant_user_id, service_id)
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+merchant_user_id BIGINT NOT NULL FK merchant_users.id
+display_name VARCHAR(160) NOT NULL
+bio TEXT NULL
+skill_level VARCHAR(40) NULL
+commission_enabled BOOLEAN DEFAULT true
+availability_status VARCHAR(30) DEFAULT 'available'
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
+UNIQUE(merchant_id, merchant_user_id)
 ```
 
-#### `clients`
+---
+
+### 7.2.15 `personnel_service_eligibilities`
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
+id BIGSERIAL PK
+merchant_id BIGINT NOT NULL
+personnel_profile_id BIGINT NOT NULL FK personnel_profiles.id
+service_id BIGINT NOT NULL FK services.id
 branch_id BIGINT NULL FK merchant_branches.id
-full_name VARCHAR(180)
-phone VARCHAR(32)
-email VARCHAR(255) NULL
-gender VARCHAR(40) NULL
+status VARCHAR(30) DEFAULT 'active'
+created_by BIGINT FK users.id
+created_at TIMESTAMP
+updated_at TIMESTAMP
+UNIQUE(personnel_profile_id, service_id, branch_id)
+```
+
+---
+
+### 7.2.16 `clients`
+
+Purpose: general end-user records.
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+branch_id BIGINT NULL FK merchant_branches.id
+first_name VARCHAR(100) NOT NULL
+last_name VARCHAR(100) NULL
+phone VARCHAR(30) NULL
+email CITEXT NULL
+gender VARCHAR(30) NULL
 notes TEXT NULL
-consent_status ENUM(unknown, granted, denied, withdrawn)
-communication_preferences JSONB NULL
+communication_preferences JSONB DEFAULT '{}'
 created_by BIGINT FK users.id
-created_at
-updated_at
-deleted_at NULL
-```
-
-Constraints:
-
-```text
-UNIQUE(merchant_id, phone)
-INDEX(merchant_id, full_name)
-INDEX(merchant_id, branch_id)
-```
-
-#### `appointments`
-
-```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
-client_id BIGINT FK clients.id
-service_id BIGINT FK services.id
-preferred_personnel_user_id BIGINT NULL FK merchant_users.id
-assigned_personnel_user_id BIGINT NULL FK merchant_users.id
-scheduled_start_at TIMESTAMP
-scheduled_end_at TIMESTAMP NULL
-status ENUM(scheduled, checked_in, rescheduled, cancelled, no_show, completed)
-cancellation_reason TEXT NULL
-created_by BIGINT FK users.id
-created_at
-updated_at
-deleted_at NULL
-```
-
-#### `queue_entries`
-
-Purpose: walk-in and queue board.
-
-```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
-client_id BIGINT FK clients.id
-appointment_id BIGINT NULL FK appointments.id
-service_id BIGINT FK services.id
-assignment_type ENUM(next_available, preferred_personnel)
-preferred_personnel_user_id BIGINT NULL FK merchant_users.id
-assigned_personnel_user_id BIGINT NULL FK merchant_users.id
-estimated_wait_minutes INTEGER NULL
-status ENUM(waiting, assigned, in_service, completed, cancelled, no_show)
-position INTEGER
-override_reason TEXT NULL
-created_by BIGINT FK users.id
-created_at
-updated_at
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
 ```
 
 Indexes:
 
 ```text
-INDEX(merchant_id, branch_id, status)
-INDEX(merchant_id, assigned_personnel_user_id, status)
+clients_merchant_phone_index
+clients_merchant_email_index
+clients_merchant_name_index
 ```
 
-#### `service_sessions`
+Constraint:
+
+* Do not globally unique client phone/email because same client can exist across different merchants.
+
+---
+
+### 7.2.17 `client_consents`
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+client_id BIGINT NOT NULL FK clients.id
+consent_type VARCHAR(80) NOT NULL
+status VARCHAR(30) NOT NULL
+source VARCHAR(40) NOT NULL
+recorded_by BIGINT FK users.id
+recorded_at TIMESTAMP NOT NULL
+expires_at TIMESTAMP NULL
+metadata JSONB DEFAULT '{}'
+created_at TIMESTAMP
+updated_at TIMESTAMP
+```
+
+---
+
+### 7.2.18 `appointments`
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+branch_id BIGINT NOT NULL FK merchant_branches.id
+client_id BIGINT NOT NULL FK clients.id
+service_id BIGINT NOT NULL FK services.id
+preferred_personnel_profile_id BIGINT NULL FK personnel_profiles.id
+assigned_personnel_profile_id BIGINT NULL FK personnel_profiles.id
+status VARCHAR(30) NOT NULL DEFAULT 'scheduled'
+scheduled_start_at TIMESTAMP NOT NULL
+scheduled_end_at TIMESTAMP NULL
+checked_in_at TIMESTAMP NULL
+cancelled_at TIMESTAMP NULL
+no_show_at TIMESTAMP NULL
+created_by BIGINT FK users.id
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
+```
+
+Indexes:
+
+```text
+appointments_merchant_branch_date_index
+appointments_client_index
+appointments_personnel_date_index
+appointments_status_index
+```
+
+---
+
+### 7.2.19 `queue_entries`
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+branch_id BIGINT NOT NULL FK merchant_branches.id
+client_id BIGINT NOT NULL FK clients.id
+appointment_id BIGINT NULL FK appointments.id
+service_id BIGINT NOT NULL FK services.id
+assignment_type VARCHAR(30) NOT NULL -- next_available, preferred_personnel
+preferred_personnel_profile_id BIGINT NULL FK personnel_profiles.id
+assigned_personnel_profile_id BIGINT NULL FK personnel_profiles.id
+preferred_fee_amount NUMERIC(12,2) DEFAULT 0
+estimated_wait_minutes INTEGER NULL
+status VARCHAR(30) DEFAULT 'waiting'
+position INTEGER NULL
+override_reason TEXT NULL
+created_by BIGINT FK users.id
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
+```
+
+Indexes:
+
+```text
+queue_entries_branch_status_position_index
+queue_entries_personnel_status_index
+queue_entries_client_index
+```
+
+Business rule:
+
+* Preferred personnel queue entry must lock to `preferred_personnel_profile_id`.
+* Override requires permission and audit log.
+
+---
+
+### 7.2.20 `service_sessions`
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+branch_id BIGINT NOT NULL FK merchant_branches.id
+client_id BIGINT NOT NULL FK clients.id
 queue_entry_id BIGINT NULL FK queue_entries.id
 appointment_id BIGINT NULL FK appointments.id
-client_id BIGINT FK clients.id
-service_id BIGINT FK services.id
-assigned_personnel_user_id BIGINT FK merchant_users.id
-status ENUM(draft, waiting, assigned, in_progress, completed, cancelled, invoiced, paid)
+service_id BIGINT NOT NULL FK services.id
+personnel_profile_id BIGINT NOT NULL FK personnel_profiles.id
+status VARCHAR(30) DEFAULT 'draft'
 started_at TIMESTAMP NULL
 ended_at TIMESTAMP NULL
 service_notes TEXT NULL
+cancelled_at TIMESTAMP NULL
 cancellation_reason TEXT NULL
 created_by BIGINT FK users.id
-created_at
-updated_at
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
 ```
 
-#### `preferred_personnel_fee_rules`
+Indexes:
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-scope ENUM(platform, merchant, branch, service_category, personnel_tier)
-merchant_id BIGINT NULL FK merchants.id
-branch_id BIGINT NULL FK merchant_branches.id
-service_category_id BIGINT NULL FK service_categories.id
-fee_type ENUM(fixed, percentage)
-fixed_amount DECIMAL(12,2) NULL
-percentage DECIMAL(5,2) NULL
-applies_to_platform_fee BOOLEAN DEFAULT true
-applies_to_commission BOOLEAN DEFAULT false
-status ENUM(active, inactive)
-created_by BIGINT FK users.id
-created_at
-updated_at
+service_sessions_merchant_branch_status_index
+service_sessions_personnel_date_index
+service_sessions_client_index
 ```
 
-Launch should support fixed and percentage fee models only, while keeping the schema flexible for later category and personnel-tier rules, as specified in the scope. 
+---
 
-#### `invoices`
+### 7.2.21 `invoices`
+
+Purpose: merchant invoice to client.
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
-client_id BIGINT FK clients.id
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+branch_id BIGINT NOT NULL FK merchant_branches.id
+client_id BIGINT NOT NULL FK clients.id
 service_session_id BIGINT NULL FK service_sessions.id
-invoice_number VARCHAR(80)
-subtotal DECIMAL(12,2)
-discount_total DECIMAL(12,2) DEFAULT 0
-preferred_personnel_fee_total DECIMAL(12,2) DEFAULT 0
-tax_total DECIMAL(12,2) DEFAULT 0
-grand_total DECIMAL(12,2)
-amount_paid DECIMAL(12,2) DEFAULT 0
-balance_due DECIMAL(12,2)
-payment_status ENUM(unpaid, partially_paid, paid, pending_validation, rejected, voided, refunded_externally, disputed)
-status ENUM(draft, issued, voided)
+invoice_number VARCHAR(60) NOT NULL
+subtotal NUMERIC(12,2) NOT NULL DEFAULT 0
+discount_total NUMERIC(12,2) NOT NULL DEFAULT 0
+preferred_personnel_fee_total NUMERIC(12,2) NOT NULL DEFAULT 0
+tax_total NUMERIC(12,2) DEFAULT 0
+grand_total NUMERIC(12,2) NOT NULL DEFAULT 0
+amount_paid NUMERIC(12,2) NOT NULL DEFAULT 0
+balance_due NUMERIC(12,2) NOT NULL DEFAULT 0
+status VARCHAR(30) DEFAULT 'unpaid'
+voided_at TIMESTAMP NULL
 void_reason TEXT NULL
 created_by BIGINT FK users.id
-voided_by BIGINT NULL FK users.id
-voided_at TIMESTAMP NULL
-created_at
-updated_at
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
 ```
 
 Constraints:
 
 ```text
 UNIQUE(merchant_id, invoice_number)
-INDEX(merchant_id, branch_id, payment_status)
 ```
 
-#### `invoice_items`
+Indexes:
 
 ```text
-id BIGINT PK
-invoice_id BIGINT FK invoices.id
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
-item_type ENUM(service, preferred_personnel_fee, discount, adjustment)
-description VARCHAR(255)
-quantity INTEGER DEFAULT 1
-unit_price DECIMAL(12,2)
-line_total DECIMAL(12,2)
+invoices_merchant_branch_status_index
+invoices_client_index
+invoices_created_at_index
+```
+
+---
+
+### 7.2.22 `invoice_items`
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+invoice_id BIGINT NOT NULL FK invoices.id
 service_id BIGINT NULL FK services.id
-personnel_user_id BIGINT NULL FK merchant_users.id
-created_at
-updated_at
+item_type VARCHAR(40) NOT NULL -- service, preferred_personnel_fee, discount, adjustment
+description VARCHAR(255) NOT NULL
+quantity NUMERIC(10,2) DEFAULT 1
+unit_price NUMERIC(12,2) NOT NULL
+line_total NUMERIC(12,2) NOT NULL
+metadata JSONB DEFAULT '{}'
+created_at TIMESTAMP
+updated_at TIMESTAMP
 ```
 
-#### `payment_records`
+---
+
+### 7.2.23 `payment_records`
+
+Purpose: offline client-to-merchant payment records.
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
-invoice_id BIGINT FK invoices.id
-method ENUM(cash, mpesa, bank_transfer, card_terminal, voucher, split_payment, other)
-amount DECIMAL(12,2)
-reference VARCHAR(160) NULL
-payment_datetime TIMESTAMP
-note TEXT NULL
-validation_status ENUM(pending_validation, approved, rejected, disputed)
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+branch_id BIGINT NOT NULL FK merchant_branches.id
+invoice_id BIGINT NOT NULL FK invoices.id
+method VARCHAR(40) NOT NULL -- cash, mpesa, bank_transfer, card_terminal, voucher, split, other
+amount NUMERIC(12,2) NOT NULL
+reference VARCHAR(120) NULL
+payment_datetime TIMESTAMP NULL
 recorded_by BIGINT FK users.id
 validated_by BIGINT NULL FK users.id
+validation_status VARCHAR(30) DEFAULT 'pending'
 validated_at TIMESTAMP NULL
+rejected_at TIMESTAMP NULL
 rejection_reason TEXT NULL
-created_at
-updated_at
+dispute_status VARCHAR(30) DEFAULT 'none'
+notes TEXT NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
 ```
 
-#### `receipts`
+Indexes:
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
-invoice_id BIGINT FK invoices.id
-payment_record_id BIGINT FK payment_records.id
-receipt_number VARCHAR(80)
-paid_amount DECIMAL(12,2)
+payment_records_invoice_index
+payment_records_merchant_reference_index
+payment_records_validation_status_index
+```
+
+---
+
+### 7.2.24 `receipts`
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+branch_id BIGINT NOT NULL FK merchant_branches.id
+invoice_id BIGINT NOT NULL FK invoices.id
+payment_record_id BIGINT NOT NULL FK payment_records.id
+receipt_number VARCHAR(60) NOT NULL
+amount NUMERIC(12,2) NOT NULL
+status VARCHAR(30) DEFAULT 'issued'
 issued_by BIGINT FK users.id
-issued_at TIMESTAMP
-pdf_path VARCHAR(500) NULL
-created_at
-updated_at
+issued_at TIMESTAMP NOT NULL
+file_id BIGINT NULL FK uploaded_files.id
+created_at TIMESTAMP
+updated_at TIMESTAMP
 ```
 
 Constraints:
 
 ```text
 UNIQUE(merchant_id, receipt_number)
-UNIQUE(payment_record_id)
 ```
 
-#### `platform_fee_ledger`
+Security:
+
+* Generate only after payment is validated or accepted by merchant configuration.
+
+---
+
+### 7.2.25 `platform_invoices`
+
+Purpose: Servana invoice to merchant.
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT NULL FK merchant_branches.id
-invoice_id BIGINT NULL FK invoices.id
-fee_type ENUM(account_opening, platform_service_fee, contact_download_fee, preferred_personnel_fee_share, adjustment)
-basis_amount DECIMAL(12,2)
-fee_amount DECIMAL(12,2)
-status ENUM(accrued, invoiced, paid, waived, disputed, overdue)
-settlement_cycle_start DATE
-settlement_cycle_end DATE
-created_by BIGINT NULL FK users.id
-created_at
-updated_at
-```
-
-#### `commission_rules`
-
-```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT NULL FK merchant_branches.id
-personnel_user_id BIGINT NULL FK merchant_users.id
-service_id BIGINT NULL FK services.id
-commission_type ENUM(fixed, percentage)
-fixed_amount DECIMAL(12,2) NULL
-percentage DECIMAL(5,2) NULL
-applies_to_preferred_fee BOOLEAN DEFAULT false
-status ENUM(active, inactive)
-created_by BIGINT FK users.id
-created_at
-updated_at
-```
-
-#### `commission_ledger`
-
-```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
-branch_id BIGINT FK merchant_branches.id
-invoice_id BIGINT FK invoices.id
-invoice_item_id BIGINT NULL FK invoice_items.id
-personnel_user_id BIGINT FK merchant_users.id
-commission_amount DECIMAL(12,2)
-status ENUM(pending, earned, reversed, paid)
-earned_at TIMESTAMP NULL
-reversed_at TIMESTAMP NULL
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+invoice_number VARCHAR(60) NOT NULL
+billing_cycle_start DATE NOT NULL
+billing_cycle_end DATE NOT NULL
+subtotal NUMERIC(12,2) NOT NULL
+tax_total NUMERIC(12,2) DEFAULT 0
+grand_total NUMERIC(12,2) NOT NULL
+amount_paid NUMERIC(12,2) DEFAULT 0
+balance_due NUMERIC(12,2) NOT NULL
+status VARCHAR(30) DEFAULT 'unpaid'
+due_date DATE NOT NULL
 paid_at TIMESTAMP NULL
-created_at
-updated_at
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
+UNIQUE(invoice_number)
 ```
 
-Commission must be calculated only after invoice payment is confirmed, per Servana’s launch module requirements. 
-
-#### `contact_export_requests`
+Statuses:
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT FK merchants.id
+draft
+issued
+unpaid
+partially_paid
+paid
+overdue
+voided
+disputed
+```
+
+---
+
+### 7.2.26 `platform_invoice_items`
+
+```text
+id BIGSERIAL PK
+platform_invoice_id BIGINT NOT NULL FK platform_invoices.id
+merchant_id BIGINT NOT NULL FK merchants.id
+item_type VARCHAR(60) NOT NULL
+description VARCHAR(255) NOT NULL
+source_type VARCHAR(80) NULL
+source_id BIGINT NULL
+quantity NUMERIC(10,2) DEFAULT 1
+unit_price NUMERIC(12,2) NOT NULL
+line_total NUMERIC(12,2) NOT NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
+```
+
+Item types:
+
+```text
+account_opening_fee
+platform_service_fee
+preferred_personnel_fee_share
+contact_download_fee
+late_fee
+adjustment
+exemption
+```
+
+---
+
+### 7.2.27 `mpesa_transactions`
+
+Purpose: verified M-Pesa records for merchant-to-Servana payments.
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+platform_invoice_id BIGINT NOT NULL FK platform_invoices.id
+payment_intent_id BIGINT NULL FK platform_payment_intents.id
+checkout_request_id VARCHAR(120) NULL
+merchant_request_id VARCHAR(120) NULL
+mpesa_receipt_number VARCHAR(80) NULL
+phone_number VARCHAR(30) NULL
+amount NUMERIC(12,2) NOT NULL
+transaction_date TIMESTAMP NULL
+status VARCHAR(30) DEFAULT 'pending'
+result_code VARCHAR(20) NULL
+result_description TEXT NULL
+raw_callback JSONB NULL
+verified_at TIMESTAMP NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
+```
+
+Constraints:
+
+```text
+UNIQUE(mpesa_receipt_number)
+UNIQUE(checkout_request_id)
+```
+
+Security:
+
+* Raw callback must be stored with sensitive fields minimized or encrypted.
+* Do not log callback payloads outside secure structured logs.
+
+---
+
+### 7.2.28 `platform_payment_intents`
+
+Purpose: STK Push and manual payment attempts.
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+platform_invoice_id BIGINT NOT NULL FK platform_invoices.id
+method VARCHAR(30) NOT NULL -- stk_push, manual_mpesa
+phone_number VARCHAR(30) NULL
+amount NUMERIC(12,2) NOT NULL
+status VARCHAR(30) DEFAULT 'pending'
+idempotency_key VARCHAR(120) UNIQUE NOT NULL
+expires_at TIMESTAMP NULL
+created_by BIGINT FK users.id
+created_at TIMESTAMP
+updated_at TIMESTAMP
+```
+
+Statuses:
+
+```text
+pending
+processing
+successful
+failed
+expired
+cancelled
+manual_verification_required
+```
+
+---
+
+### 7.2.29 `manual_mpesa_verification_attempts`
+
+Purpose: reference search tied to one platform invoice.
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+platform_invoice_id BIGINT NOT NULL FK platform_invoices.id
+reference_number VARCHAR(80) NOT NULL
+attempted_by BIGINT FK users.id
+status VARCHAR(30) DEFAULT 'pending'
+result_message TEXT NULL
+matched_mpesa_transaction_id BIGINT NULL FK mpesa_transactions.id
+attempted_at TIMESTAMP NOT NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
+```
+
+Constraints:
+
+```text
+UNIQUE(platform_invoice_id, reference_number)
+```
+
+Business rule:
+
+* One reference search is evaluated against one platform invoice.
+* A reference number already matched to a successful platform invoice cannot be reused.
+
+---
+
+### 7.2.30 `commission_rules`
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
 branch_id BIGINT NULL FK merchant_branches.id
-personnel_user_id BIGINT FK merchant_users.id
-requested_by BIGINT FK users.id
-status ENUM(requested, pending_payment, approved, rejected, expired, downloaded)
-fee_amount DECIMAL(12,2)
+personnel_profile_id BIGINT NULL FK personnel_profiles.id
+service_id BIGINT NULL FK services.id
+rule_type VARCHAR(30) NOT NULL -- percentage, fixed
+value NUMERIC(12,4) NOT NULL
+include_preferred_fee BOOLEAN DEFAULT false
+status VARCHAR(30) DEFAULT 'active'
+created_by BIGINT FK users.id
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
+```
+
+---
+
+### 7.2.31 `commission_ledger`
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+branch_id BIGINT NOT NULL FK merchant_branches.id
+personnel_profile_id BIGINT NOT NULL FK personnel_profiles.id
+invoice_id BIGINT NOT NULL FK invoices.id
+service_session_id BIGINT NOT NULL FK service_sessions.id
+basis_amount NUMERIC(12,2) NOT NULL
+commission_amount NUMERIC(12,2) NOT NULL
+status VARCHAR(30) DEFAULT 'pending'
+earned_at TIMESTAMP NULL
+paid_at TIMESTAMP NULL
+reversed_at TIMESTAMP NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
+```
+
+Rule:
+
+* Create only when invoice payment is confirmed.
+* Reverse when invoice is voided/refunded externally.
+
+---
+
+### 7.2.32 `contact_export_requests`
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+merchant_id BIGINT NOT NULL FK merchants.id
+requested_by_merchant_user_id BIGINT NOT NULL FK merchant_users.id
+personnel_profile_id BIGINT NOT NULL FK personnel_profiles.id
+status VARCHAR(30) DEFAULT 'pending'
+fee_amount NUMERIC(12,2) DEFAULT 0
+platform_invoice_id BIGINT NULL FK platform_invoices.id
 approved_by BIGINT NULL FK users.id
 approved_at TIMESTAMP NULL
+rejected_at TIMESTAMP NULL
+rejection_reason TEXT NULL
+file_id BIGINT NULL FK uploaded_files.id
 expires_at TIMESTAMP NULL
 downloaded_at TIMESTAMP NULL
-file_path VARCHAR(500) NULL
-created_at
-updated_at
+created_at TIMESTAMP
+updated_at TIMESTAMP
 ```
 
-#### `audit_logs`
+Security:
+
+* Export only personally served clients.
+* Exclude merchant-wide client database, other personnel clients, revenue, payment data, and internal notes.
+
+---
+
+### 7.2.33 `uploaded_files`
 
 ```text
-id BIGINT PK
-public_id ULID UNIQUE
-actor_user_id BIGINT NULL FK users.id
-actor_merchant_user_id BIGINT NULL FK merchant_users.id
-actor_role VARCHAR(100) NULL
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
 merchant_id BIGINT NULL FK merchants.id
 branch_id BIGINT NULL FK merchant_branches.id
-action VARCHAR(160)
-target_entity_type VARCHAR(160)
-target_entity_id VARCHAR(80)
+uploaded_by BIGINT FK users.id
+disk VARCHAR(40) NOT NULL
+path TEXT NOT NULL
+original_name VARCHAR(255) NOT NULL
+mime_type VARCHAR(120) NOT NULL
+extension VARCHAR(20) NOT NULL
+size_bytes BIGINT NOT NULL
+visibility VARCHAR(20) DEFAULT 'private'
+file_hash CHAR(64) NULL
+scan_status VARCHAR(30) DEFAULT 'pending'
+scan_result TEXT NULL
+created_at TIMESTAMP
+updated_at TIMESTAMP
+deleted_at TIMESTAMP NULL
+```
+
+---
+
+### 7.2.34 `audit_logs`
+
+```text
+id BIGSERIAL PK
+ulid CHAR(26) UNIQUE NOT NULL
+actor_user_id BIGINT NULL FK users.id
+actor_merchant_user_id BIGINT NULL FK merchant_users.id
+actor_role VARCHAR(80) NULL
+merchant_id BIGINT NULL FK merchants.id
+branch_id BIGINT NULL FK merchant_branches.id
+action VARCHAR(120) NOT NULL
+target_type VARCHAR(120) NOT NULL
+target_id BIGINT NULL
+target_ulid CHAR(26) NULL
 old_values JSONB NULL
 new_values JSONB NULL
-metadata JSONB NULL
 ip_address INET NULL
 user_agent TEXT NULL
-created_at TIMESTAMP
+metadata JSONB DEFAULT '{}'
+created_at TIMESTAMP NOT NULL
 ```
 
-Make audit logs append-only. No update/delete routes.
+Indexes:
+
+```text
+audit_logs_merchant_action_created_index
+audit_logs_actor_created_index
+audit_logs_target_index
+```
+
+Retention:
+
+* Minimum 7 years for financial/security audit logs.
+* Immutable by application policy: no update/delete routes.
 
 ---
 
-## 8. Multi-Tenancy and Data Isolation Model
+# 8. Multi-Tenancy and Data Isolation Model
 
-### 8.1 Tenant Resolution
+## 8.1 Tenant resolution
 
-Tenant context is resolved in this order:
+Create middleware:
 
 ```text
-1. Authenticated user session/token.
-2. Selected merchant context stored server-side or in signed session state.
-3. Merchant membership verification in merchant_users.
-4. Branch context verification where branch-specific screens are used.
-5. Policy authorization for requested model/action.
+ResolveTenantContext
+ResolveBranchContext
+EnsureMerchantMembershipIsActive
+EnsureMerchantIsOperational
 ```
 
-### 8.2 Middleware Stack
-
-Protected tenant routes:
+Request context:
 
 ```php
-Route::middleware([
-    'auth:sanctum',
-    'verified',
-    'resolve.active.merchant',
-    'ensure.merchant.user.active',
-    'ensure.branch.access',
-])->group(function () {
-    // tenant routes
-});
-```
-
-### 8.3 Tenant Context Object
-
-Create:
-
-```php
-app/Support/Tenant/TenantContext.php
-```
-
-Properties:
-
-```php
-class TenantContext
-{
-    public function __construct(
-        public readonly User $user,
-        public readonly Merchant $merchant,
-        public readonly MerchantUser $membership,
-        public readonly ?MerchantBranch $branch = null,
-    ) {}
+TenantContext {
+    user_id
+    merchant_id
+    merchant_user_id
+    branch_ids[]
+    active_branch_id?
+    role_ids[]
+    permissions[]
+    is_platform_super_admin
 }
 ```
 
-Bind it into Laravel container per request.
+## 8.2 Tenant resolution sources
 
-### 8.4 Tenant-Aware Queries
+Use this order:
 
-Every query touching tenant data must include:
+1. Authenticated Sanctum user.
+2. Selected merchant from route, header, or session.
+3. Verify `merchant_users.user_id`.
+4. Verify merchant membership is active.
+5. Verify merchant status is active.
+6. Verify role is active.
+7. Resolve branch access.
+8. Store context in request container.
+
+## 8.3 Tenant query scope
+
+Every tenant-owned model gets:
 
 ```php
-->where('merchant_id', $tenantContext->merchant->id)
+scopeForMerchant($query, int $merchantId)
+scopeForBranch($query, int $branchId)
 ```
 
-Branch-scoped queries must also include:
+Controllers must never call:
 
 ```php
-->where('branch_id', $tenantContext->branch->id)
+Invoice::find($id)
+Client::where(...)
 ```
 
-### 8.5 Denied Cases to Test
+Use:
 
-Build tests for:
-
-1. Account A user attempts to view Account B invoice.
-
-   * Expected: `403`.
-
-2. Valid public ID belongs to another merchant.
-
-   * Expected: `404` or `403`, preferably `404` to avoid enumeration.
-
-3. Branch user accesses another branch queue.
-
-   * Expected: `403`.
-
-4. Merchant Personnel exports merchant-wide clients.
-
-   * Expected: `403`.
-
-5. Background job runs without tenant context.
-
-   * Expected: job fails safely and logs security error.
-
-6. Export endpoint requests all clients without merchant filter.
-
-   * Expected: test failure; implementation rejected.
-
-### 8.6 Background Job Tenant Context
-
-All tenant jobs must carry:
-
-```text
-merchant_id
-branch_id nullable
-actor_user_id nullable
-target_public_id
+```php
+Invoice::forMerchant($tenant->merchantId)->whereUlid($ulid)->firstOrFail()
 ```
 
-Never pass raw Eloquent models into long-running jobs. Re-query inside the job with tenant scope.
+## 8.4 Denied cases to test
+
+| Case                                               | Expected result                                |
+| -------------------------------------------------- | ---------------------------------------------- |
+| Account A user requests Account B invoice ULID     | 404 or 403; prefer 404 to avoid existence leak |
+| Active user lacks `payments.validate`              | 403                                            |
+| Branch user accesses unassigned branch queue       | 403                                            |
+| Personnel exports merchant-wide clients            | 403                                            |
+| Background job runs without merchant context       | fail safely, log security event                |
+| API collection omits tenant scope                  | test fails                                     |
+| Valid platform invoice belongs to another merchant | 404/403                                        |
+| M-Pesa reference already matched elsewhere         | rejected                                       |
 
 ---
 
-## 9. Authentication Model
+# 9. Authentication Model
 
-### 9.1 Authentication Type
-
-Merchant users log in by Magic Link sent to email after the system verifies the email is active under the correct Merchant Administrator Account. This is explicit in Servana’s scope. 
-
-### 9.2 Magic Link Flow
+## 9.1 Magic Link workflow
 
 ```text
-1. User enters email.
-2. User optionally selects merchant if email belongs to multiple merchants.
-3. Backend checks:
-   - user exists
-   - merchant exists
-   - merchant status active
-   - merchant_user exists
-   - merchant_user access_status active
-   - role is active
-   - user not suspended
-   - branch access exists where required
-4. Backend generates random token.
-5. Backend hashes token and stores only hash.
-6. Backend sends email with signed login URL.
-7. User clicks link.
-8. Backend hashes incoming token.
-9. Backend finds unused, unexpired token.
-10. Backend marks token used.
-11. Backend creates Sanctum-authenticated session.
-12. Backend logs login audit event.
-13. Frontend loads `/api/v1/me`.
+User enters email + merchant/account context
+  ↓
+System checks user exists
+  ↓
+System checks active merchant membership
+  ↓
+System checks merchant active
+  ↓
+System checks role active
+  ↓
+System checks branch assignment where required
+  ↓
+Create hashed one-time token
+  ↓
+Email Magic Link
+  ↓
+User clicks link
+  ↓
+Validate token hash, expiry, not used, membership still active
+  ↓
+Mark token used
+  ↓
+Create Sanctum session
+  ↓
+Audit login
+  ↓
+Return profile, merchant context, branch access, permissions
 ```
 
-### 9.3 Token Rules
+## 9.2 Token security
+
+| Control            | Rule                                        |
+| ------------------ | ------------------------------------------- |
+| Token length       | Minimum 32 random bytes                     |
+| Storage            | SHA-256 hash only                           |
+| Expiry             | 10–15 minutes                               |
+| Reuse              | impossible                                  |
+| Rate limit         | 5 requests per email/IP per hour            |
+| Session duration   | configurable; default 8 hours               |
+| High privilege MFA | Super Admin, Merchant Admin, Finance, Audit |
+
+## 9.3 Authentication test files
 
 ```text
-Expiry: 10 minutes
-Reuse: blocked
-Hashing: SHA-256 or Laravel Hash
-Rate limit by email + IP
-Max requests: 5 per 15 minutes
-Max failed token attempts: 10 per hour/IP
-```
-
-### 9.4 Super Admin Authentication
-
-Super Admin may use:
-
-```text
-email + password + MFA
-or Magic Link + MFA
-```
-
-Recommendation: password + MFA for platform owner accounts because Super Admin has platform-wide privileges.
-
-### 9.5 Session Rules
-
-```text
-Session timeout: configurable, default 8 hours
-High-privilege re-authentication: required before fee settings, suspensions, exports, role changes
-Secure cookies: production only HTTPS
-SameSite: Lax or Strict depending deployment
-CSRF: enabled for browser routes
+tests/Feature/Auth/MagicLinkRequestTest.php
+tests/Feature/Auth/MagicLinkConsumeTest.php
+tests/Feature/Auth/InactiveMerchantLoginTest.php
+tests/Feature/Auth/SuspendedUserLoginTest.php
+tests/Feature/Auth/ExpiredTokenTest.php
+tests/Feature/Auth/ReusedTokenTest.php
+tests/Feature/Auth/LoginRateLimitTest.php
 ```
 
 ---
 
-## 10. Authorization, Roles, and Permissions Model
+# 10. Authorization, Roles, and Permissions Model
 
-### 10.1 Role Hierarchy
+## 10.1 Role hierarchy
 
-Platform-level:
+| Role                   | Scope           | Core authority                          |
+| ---------------------- | --------------- | --------------------------------------- |
+| Super Administrator    | Platform        | Platform governance only                |
+| Merchant Owner         | Merchant        | Full merchant control                   |
+| Merchant Administrator | Merchant        | Operational/admin control               |
+| Merchant HR            | Merchant/Branch | Staff and role management               |
+| Merchant Finance       | Merchant/Branch | Payments, receipts, reports             |
+| Merchant Front Office  | Branch          | Clients, sessions, queues, invoices     |
+| Merchant Personnel     | Branch/Self     | Own queue, own clients, own commissions |
+| Merchant Audit         | Merchant/Branch | Read-only audit/reports                 |
+| Merchant Viewer        | Merchant/Branch | Limited read-only access                |
+
+## 10.2 Permission matrix
+
+| Permission                         |  Super Admin |  Owner/Admin |      HR | Finance |        Front Office | Personnel | Audit |
+| ---------------------------------- | -----------: | -----------: | ------: | ------: | ------------------: | --------: | ----: |
+| merchants.create                   |          Yes |           No |      No |      No |                  No |        No |    No |
+| merchants.activate                 |          Yes |           No |      No |      No |                  No |        No |    No |
+| platform.settings.manage           |          Yes |           No |      No |      No |                  No |        No |    No |
+| branches.manage                    |           No |          Yes | Limited |      No |                  No |        No |  Read |
+| staff.manage                       |           No |          Yes |     Yes |      No |                  No |        No |  Read |
+| services.manage                    |           No |          Yes |      No |      No |                  No |        No |  Read |
+| clients.create                     |           No |          Yes |      No |      No |                 Yes |        No |  Read |
+| clients.view                       |           No |          Yes |      No |     Yes |                 Yes |  Own only |  Read |
+| queue.manage                       |           No |          Yes |      No |      No |                 Yes |  Own only |  Read |
+| queue.override_preferred_personnel |           No |          Yes |      No |      No | Permission required |        No |  Read |
+| invoices.create                    |           No |          Yes |      No |      No |                 Yes |        No |  Read |
+| payments.record                    |           No |          Yes |      No |     Yes |        Configurable |        No |  Read |
+| payments.validate                  |           No |          Yes |      No |     Yes |                  No |        No |  Read |
+| receipts.issue                     |           No |          Yes |      No |     Yes |        Configurable |        No |  Read |
+| commissions.manage                 |           No |          Yes |      No |      No |                  No |        No |  Read |
+| commissions.view_own               |           No |           No |      No |      No |                  No |       Yes |    No |
+| billing.view                       | Yes platform | Yes merchant |      No |     Yes |                  No |        No |  Read |
+| billing.pay                        |           No |          Yes |      No |     Yes |                  No |        No |    No |
+| contact_exports.request            |           No |           No |      No |      No |                  No |       Yes |  Read |
+| audit.view                         |          Yes |          Yes |      No | Limited |                  No |        No |   Yes |
+| reports.export                     |          Yes |          Yes |      No |     Yes |                  No |        No |   Yes |
+
+## 10.3 Backend enforcement
+
+Implement policies:
 
 ```text
-Super Administrator
-Platform Support Admin
-Platform Auditor
+MerchantPolicy
+BranchPolicy
+MerchantUserPolicy
+ServicePolicy
+ClientPolicy
+AppointmentPolicy
+QueueEntryPolicy
+ServiceSessionPolicy
+InvoicePolicy
+PaymentRecordPolicy
+ReceiptPolicy
+PlatformInvoicePolicy
+CommissionPolicy
+ContactExportPolicy
+AuditLogPolicy
+ReportPolicy
+UploadedFilePolicy
 ```
 
-Merchant-level:
+Every policy checks:
 
 ```text
-Merchant Owner
-Merchant Administrator
-Merchant HR
-Merchant Finance
-Merchant Front Office
-Merchant Personnel
-Merchant Audit
+1. Authenticated user exists.
+2. Tenant context exists.
+3. Resource merchant_id matches context merchant_id.
+4. Branch scope matches where required.
+5. Required permission exists.
+6. Role restrictions apply.
+7. Self-only restrictions apply for personnel.
 ```
-
-### 10.2 Role Rules
-
-| Role                   | Scope           | Can Mutate? | Notes                                             |
-| ---------------------- | --------------- | ----------: | ------------------------------------------------- |
-| Super Administrator    | Platform        |         Yes | Cannot perform normal merchant service operations |
-| Merchant Owner         | Merchant        |         Yes | Highest merchant role                             |
-| Merchant Administrator | Merchant        |         Yes | Manages users, branches, services, rules          |
-| Merchant HR            | Merchant/Branch |         Yes | Staff lifecycle only                              |
-| Merchant Finance       | Merchant/Branch |         Yes | Payment validation, receipts, financial reports   |
-| Merchant Front Office  | Branch          |     Limited | Client/session/invoice/payment capture            |
-| Merchant Personnel     | Own records     |     Limited | Own queue, service sessions, commissions          |
-| Merchant Audit         | Merchant/Branch |          No | Read-only                                         |
-
-### 10.3 Permission Matrix
-
-Use explicit permissions:
-
-```text
-platform.merchants.view
-platform.merchants.create
-platform.merchants.activate
-platform.merchants.suspend
-platform.settings.manage
-platform.fees.manage
-platform.audit.view
-
-merchant.profile.view
-merchant.profile.update
-merchant.branches.create
-merchant.branches.update
-merchant.branches.suspend
-
-merchant.users.view
-merchant.users.create
-merchant.users.activate
-merchant.users.suspend
-merchant.users.assign_roles
-
-services.view
-services.create
-services.update
-services.archive
-
-clients.view
-clients.create
-clients.update
-clients.export
-
-appointments.view
-appointments.create
-appointments.reschedule
-appointments.cancel
-
-queue.view
-queue.create
-queue.assign
-queue.override_preferred_personnel
-queue.cancel
-
-service_sessions.view
-service_sessions.create
-service_sessions.start
-service_sessions.complete
-service_sessions.cancel
-
-invoices.view
-invoices.create
-invoices.void
-
-payments.view
-payments.record
-payments.validate
-payments.reject
-payments.dispute
-
-receipts.view
-receipts.issue
-receipts.download
-
-billing.view
-billing.manage
-
-commissions.view
-commissions.manage
-commissions.mark_paid
-
-contact_exports.request
-contact_exports.approve
-contact_exports.download
-
-reports.view
-reports.export
-
-audit.view
-```
-
-### 10.4 Policy Pattern
-
-Example `InvoicePolicy`:
-
-```php
-public function view(User $user, Invoice $invoice): bool
-{
-    $context = app(TenantContext::class);
-
-    return $invoice->merchant_id === $context->merchant->id
-        && $this->membershipCan($context->membership, 'invoices.view')
-        && $this->branchAllowed($context, $invoice->branch_id);
-}
-```
-
-### 10.5 Frontend Permission UX
-
-Frontend uses permissions to:
-
-* Hide unavailable buttons.
-* Disable unauthorized actions.
-* Show “No permission” states.
-* Route users to their role dashboards.
-
-Backend remains final authority.
 
 ---
 
-## 11. API Design
+# 11. API Design
 
-### 11.1 API Versioning
+All API routes use `/api/v1`.
 
-All API routes use:
+## 11.1 Route groups
 
 ```text
-/api/v1
+POST   /api/v1/auth/magic-link/request
+POST   /api/v1/auth/magic-link/consume
+POST   /api/v1/auth/logout
+
+GET    /api/v1/me
+PATCH  /api/v1/me/profile
+PATCH  /api/v1/me/theme
+GET    /api/v1/me/merchants
+POST   /api/v1/me/switch-merchant
+POST   /api/v1/me/switch-branch
+
+GET    /api/v1/platform/dashboard
+GET    /api/v1/platform/merchants
+POST   /api/v1/platform/merchants
+PATCH  /api/v1/platform/merchants/{merchant}
+POST   /api/v1/platform/merchants/{merchant}/activate
+POST   /api/v1/platform/merchants/{merchant}/suspend
+GET    /api/v1/platform/settings
+PATCH  /api/v1/platform/settings
+
+GET    /api/v1/branches
+POST   /api/v1/branches
+GET    /api/v1/branches/{branch}
+PATCH  /api/v1/branches/{branch}
+
+GET    /api/v1/merchant-users
+POST   /api/v1/merchant-users
+PATCH  /api/v1/merchant-users/{merchantUser}
+POST   /api/v1/merchant-users/{merchantUser}/activate
+POST   /api/v1/merchant-users/{merchantUser}/suspend
+
+GET    /api/v1/services
+POST   /api/v1/services
+GET    /api/v1/services/{service}
+PATCH  /api/v1/services/{service}
+DELETE /api/v1/services/{service}
+
+GET    /api/v1/clients
+POST   /api/v1/clients
+GET    /api/v1/clients/{client}
+PATCH  /api/v1/clients/{client}
+
+GET    /api/v1/appointments
+POST   /api/v1/appointments
+PATCH  /api/v1/appointments/{appointment}
+POST   /api/v1/appointments/{appointment}/check-in
+POST   /api/v1/appointments/{appointment}/cancel
+POST   /api/v1/appointments/{appointment}/no-show
+
+GET    /api/v1/queue
+POST   /api/v1/queue
+PATCH  /api/v1/queue/{queueEntry}
+POST   /api/v1/queue/{queueEntry}/assign
+POST   /api/v1/queue/{queueEntry}/override-preferred-personnel
+POST   /api/v1/queue/{queueEntry}/complete
+POST   /api/v1/queue/{queueEntry}/cancel
+
+POST   /api/v1/service-sessions
+GET    /api/v1/service-sessions/{session}
+POST   /api/v1/service-sessions/{session}/start
+POST   /api/v1/service-sessions/{session}/complete
+POST   /api/v1/service-sessions/{session}/cancel
+
+GET    /api/v1/invoices
+POST   /api/v1/invoices
+GET    /api/v1/invoices/{invoice}
+POST   /api/v1/invoices/{invoice}/void
+
+POST   /api/v1/payments/offline
+POST   /api/v1/payments/{payment}/validate
+POST   /api/v1/payments/{payment}/reject
+
+GET    /api/v1/receipts
+POST   /api/v1/receipts
+GET    /api/v1/receipts/{receipt}/download
+
+GET    /api/v1/billing/platform-invoices
+GET    /api/v1/billing/platform-invoices/{platformInvoice}
+POST   /api/v1/billing/platform-invoices/{platformInvoice}/stk-push
+POST   /api/v1/billing/platform-invoices/{platformInvoice}/manual-mpesa/verify
+
+POST   /api/v1/mpesa/stk/callback
+POST   /api/v1/mpesa/c2b/validation
+POST   /api/v1/mpesa/c2b/confirmation
+
+GET    /api/v1/commissions
+GET    /api/v1/contact-exports
+POST   /api/v1/contact-exports
+GET    /api/v1/contact-exports/{export}/download
+
+GET    /api/v1/reports/dashboard
+GET    /api/v1/reports/finance
+GET    /api/v1/reports/personnel
+POST   /api/v1/reports/export
+
+GET    /api/v1/audit-logs
+GET    /api/v1/notifications
+POST   /api/v1/notifications/{notification}/read
 ```
 
-The Servana source explicitly recommends `/api/v1` route groups for auth, platform, merchants, branches, staff, services, clients, appointments, queue, sessions, invoices, payments, receipts, billing, commissions, exports, reports, audit logs, and notifications. 
-
-### 11.2 Route Groups
-
-```php
-Route::prefix('v1')->group(function () {
-    Route::prefix('auth')->group(...);
-    Route::middleware(['auth:sanctum'])->group(function () {
-        Route::get('/me', MeController::class);
-
-        Route::prefix('platform')->middleware('platform.admin')->group(...);
-
-        Route::middleware([
-            'resolve.active.merchant',
-            'ensure.merchant.user.active',
-        ])->group(function () {
-            Route::apiResource('merchants', MerchantController::class);
-            Route::apiResource('branches', BranchController::class);
-            Route::apiResource('merchant-users', MerchantUserController::class);
-            Route::apiResource('services', ServiceController::class);
-            Route::apiResource('clients', ClientController::class);
-            Route::apiResource('appointments', AppointmentController::class);
-            Route::apiResource('queue', QueueEntryController::class);
-            Route::apiResource('service-sessions', ServiceSessionController::class);
-            Route::apiResource('invoices', InvoiceController::class);
-            Route::apiResource('payments', PaymentRecordController::class);
-            Route::apiResource('receipts', ReceiptController::class);
-            Route::apiResource('billing', BillingController::class);
-            Route::apiResource('commissions', CommissionController::class);
-            Route::apiResource('contact-exports', ContactExportController::class);
-            Route::apiResource('reports', ReportController::class);
-            Route::apiResource('audit-logs', AuditLogController::class)->only(['index', 'show']);
-            Route::apiResource('notifications', NotificationController::class);
-        });
-    });
-});
-```
-
-### 11.3 Response Format
+## 11.2 API response format
 
 Success:
 
@@ -1538,8 +1761,8 @@ Success:
 {
   "data": {},
   "meta": {
-    "request_id": "01HX...",
-    "timestamp": "2026-06-08T13:00:00+03:00"
+    "request_id": "req_...",
+    "timestamp": "2026-06-08T18:00:00+03:00"
   }
 }
 ```
@@ -1550,10 +1773,7 @@ Validation error:
 {
   "message": "The given data was invalid.",
   "errors": {
-    "amount": ["Amount must be greater than zero."]
-  },
-  "meta": {
-    "request_id": "01HX..."
+    "amount": ["The amount must be greater than zero."]
   }
 }
 ```
@@ -1562,966 +1782,842 @@ Authorization error:
 
 ```json
 {
-  "message": "You do not have permission to perform this action.",
-  "code": "FORBIDDEN"
+  "message": "You are not allowed to perform this action."
 }
 ```
 
-### 11.4 Pagination
-
-All collection endpoints must paginate:
-
-```text
-?page=1&per_page=25&sort=-created_at&filter[status]=active
-```
-
-Maximum `per_page`: 100.
-
-### 11.5 Critical API Workflows
-
-#### Create Walk-In
-
-```text
-POST /api/v1/queue
-```
-
-Payload:
+Collection:
 
 ```json
 {
-  "branch_id": "01HX...",
-  "client_id": "01HX...",
-  "service_id": "01HX...",
-  "assignment_type": "preferred_personnel",
-  "preferred_personnel_user_id": "01HX..."
+  "data": [],
+  "links": {},
+  "meta": {
+    "current_page": 1,
+    "per_page": 25,
+    "total": 100
+  }
 }
 ```
 
-Backend must:
-
-1. Verify client belongs to merchant.
-2. Verify service belongs to merchant.
-3. Verify service available at branch.
-4. Verify personnel belongs to merchant.
-5. Verify personnel assigned to branch.
-6. Verify personnel eligible for service.
-7. Calculate preferred personnel fee if selected.
-8. Create queue entry.
-9. Audit log event.
-
-#### Create Invoice
-
-```text
-POST /api/v1/invoices
-```
-
-Backend must:
-
-1. Verify session completed or billable.
-2. Pull service price from server.
-3. Add preferred personnel fee line if applicable.
-4. Apply discount only if user has permission.
-5. Calculate totals server-side.
-6. Create invoice and invoice items transactionally.
-7. Update session status to `invoiced`.
-8. Create platform fee ledger entry if applicable.
-9. Audit log.
-
-#### Record Offline Payment
-
-```text
-POST /api/v1/payments
-```
-
-Backend must:
-
-1. Verify invoice belongs to tenant and branch.
-2. Validate method, amount, reference, date.
-3. Prevent overpayment unless merchant setting allows credit.
-4. Set `pending_validation` or `approved` based on role/config.
-5. Update invoice payment status.
-6. Audit log.
-7. Notify Finance if validation required.
-
-#### Issue Receipt
-
-```text
-POST /api/v1/receipts
-```
-
-Backend must:
-
-1. Verify payment approved or merchant allows immediate receipt.
-2. Prevent duplicate receipt for same payment.
-3. Generate receipt number.
-4. Create receipt.
-5. Queue PDF generation.
-6. Audit log.
-
 ---
 
-## 12. UI/UX Design System
+# 12. UI/UX Design System
 
-### 12.1 Brand Direction
+Use the Servana brand identity carefully: warm on marketing pages, restrained inside the app. The brand system defines Servana as warm, organized, trustworthy, African-rooted, practical, and modern, with the tagline “Serve Better. Run Smarter. Grow Steadily.” 
 
-Servana should feel warm, human, professional, organized, trustworthy, African-rooted, practical, and modern. The uploaded brand identity positions Servana as “service operations made clear, trusted, and manageable for African SMEs,” and the primary tagline is “Serve Better. Run Smarter. Grow Steadily.” 
-
-### 12.2 UI Personality
-
-The app should not feel like a cold admin system. It should feel like a dependable operating partner for African service businesses. 
-
-### 12.3 Design Tokens
-
-Use CSS variables:
+## 12.1 Color tokens
 
 ```css
-:root {
-  --color-primary: #C86B2A;
-  --color-primary-hover: #A95722;
-  --color-accent: #D9A441;
-  --color-success: #2F855A;
-  --color-warning: #D69E2E;
-  --color-danger: #C53030;
-  --color-info: #2B6CB0;
-
-  --color-bg: #FFFDF7;
-  --color-surface: #FFFFFF;
-  --color-surface-muted: #F7F4ED;
-  --color-border: #E2DED4;
-  --color-text: #1F2933;
-  --color-text-muted: #667085;
-
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-
-  --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.08);
-}
+--color-savannah-orange: #F97316;
+--color-golden-sun: #FBBF24;
+--color-acacia-green: #3F7D20;
+--color-deep-earth-brown: #4A2208;
+--color-service-teal: #007C78;
+--color-warm-sand: #FFF3C4;
+--color-savannah-cream: #FFF8E7;
+--color-charcoal: #1F2933;
+--color-soft-gray: #F3F4F6;
+--color-success: #2E7D32;
+--color-warning: #F59E0B;
+--color-error: #DC2626;
+--color-info: #0284C7;
+--color-border: #E5E7EB;
+--color-app-background: #F9FAFB;
 ```
 
-### 12.4 Core Components
+## 12.2 Typography
 
-Implement:
+| Use                | Font                   |
+| ------------------ | ---------------------- |
+| App UI             | Inter                  |
+| Marketing headings | Nunito Sans or Manrope |
+| Tables/forms       | Inter                  |
+| Buttons            | Inter 600              |
+
+## 12.3 Components
+
+Create reusable UI components:
 
 ```text
-Button
-IconButton
-Input
-Textarea
-Select
-DatePicker
-TimePicker
-MoneyInput
-PhoneInput
-Checkbox
-Radio
-Switch
-Badge
-StatusPill
-Card
-MetricCard
-Table
-MobileCardList
-Modal
-Drawer
-Dropdown
-Toast
-Alert
-Tabs
-Breadcrumbs
-Pagination
-EmptyState
-SkeletonLoader
+BaseButton
+BaseInput
+BaseSelect
+BaseTextarea
+BaseCheckbox
+BaseRadioGroup
+BaseModal
+BaseDrawer
+BaseToast
+BaseTable
+ResponsiveDataList
+StatusBadge
+MoneyAmount
+DateTimeDisplay
 PermissionGate
+TenantSwitcher
+BranchSwitcher
+ProfileMenu
+EmptyState
+ErrorState
+LoadingSpinner
 ConfirmDialog
+AuditTimeline
 ```
-
-### 12.5 Dashboard Layouts
-
-Each role gets a focused dashboard:
-
-* **Super Admin:** merchants, fees, suspicious activity, platform revenue, overdue merchants.
-* **Merchant Admin:** sales, branch performance, staff performance, platform fees, commissions.
-* **Finance:** pending validations, paid/unpaid invoices, disputes, receipts, balances.
-* **Front Office:** today’s appointments, walk-ins, active queue, unpaid invoices.
-* **Personnel:** assigned clients, own queue, own commissions, preferred requests.
-* **Audit:** immutable activity feed, filters, suspicious flags.
 
 ---
 
-## 13. Responsive Layout Strategy
+# 13. Responsive Layout Strategy
 
-Required breakpoints:
+Breakpoints:
 
-```text
-Desktop: >= 1025px
-Tablet: 768px–1024px
-Mobile: <= 767px
+```css
+mobile: <= 767px
+tablet: 768px - 1024px
+desktop: >= 1025px
 ```
 
-Implementation rules:
+## Rules
 
 1. Use CSS media queries only.
-2. No JavaScript device detection.
-3. No horizontal scrolling for normal content.
-4. Tables collapse into mobile cards.
-5. Queue screens must work well on tablets.
-6. Front Office flows must work on mobile.
+2. Do not detect devices with JavaScript.
+3. No horizontal scroll on normal content.
+4. Tables become cards on mobile.
+5. Sidebar collapses to drawer on tablet/mobile.
+6. Header remains sticky.
 7. Touch targets minimum 44px.
+8. Modals become bottom sheets on mobile.
+9. Queue board becomes vertical cards on mobile.
+10. Dashboard cards use:
 
-### Desktop
-
-```text
-Fixed sidebar + top header + content area.
-Data tables visible.
-Dashboard cards in 3–4 columns.
-Queue board in multi-column layout.
-```
-
-### Tablet
-
-```text
-Collapsible sidebar.
-Dashboard cards in 2 columns.
-Queue board scrolls vertically by lane.
-Tables use condensed columns.
-```
-
-### Mobile
-
-```text
-Bottom navigation or drawer navigation.
-Single-column forms.
-Tables become cards.
-Invoice creation becomes stepper flow.
-Queue board becomes grouped list.
-```
+* Desktop: 4-column grid.
+* Tablet: 2-column grid.
+* Mobile: 1-column stack.
 
 ---
 
-## 14. Dark Mode Strategy
+# 14. Dark Mode Strategy
 
-### 14.1 Requirements
+## 14.1 Persistence
 
-* Light mode default.
-* Dark mode toggle in user profile/settings.
-* Preference stored per user.
-* No hidden borders, validation errors, focus states, or low-contrast text.
-
-### 14.2 Implementation
-
-Frontend:
-
-```ts
-themeStore.setTheme('light' | 'dark' | 'system')
-```
-
-Backend:
+Store preference in:
 
 ```text
 users.theme_preference
 ```
 
-CSS:
+Allowed values:
 
-```css
-[data-theme="dark"] {
-  --color-bg: #111827;
-  --color-surface: #1F2937;
-  --color-border: #374151;
-  --color-text: #F9FAFB;
-  --color-text-muted: #D1D5DB;
-}
+```text
+light
+dark
+system
 ```
 
-### 14.3 Flash Prevention
+## 14.2 Frontend initialization
 
-Inline a small script in the base layout before app mount:
+Before Vue mounts, run a small inline script:
 
-```html
-<script>
-  const theme = localStorage.getItem('theme') || 'light';
-  document.documentElement.dataset.theme = theme;
-</script>
+```text
+Read saved theme from server-rendered bootstrap payload or localStorage.
+Apply `class="dark"` to html before CSS loads.
+Prevent theme flash.
 ```
 
-Then sync with backend after authentication.
+## 14.3 Test requirements
+
+Create tests for:
+
+```text
+Light mode dashboard readability
+Dark mode dashboard readability
+Form validation visibility in dark mode
+Focus state visibility in dark mode
+Modal borders visible in dark mode
+Status badges legible in both themes
+```
 
 ---
 
-## 15. Accessibility Strategy
+# 15. Accessibility Strategy
 
-Minimum practical WCAG-aligned requirements:
+Minimum practical WCAG AA alignment:
 
-1. All inputs have visible labels.
-2. Placeholder text never replaces labels.
-3. Error messages are programmatically associated with fields.
+1. All inputs have labels.
+2. Placeholder never replaces label.
+3. Error text is associated with input via `aria-describedby`.
 4. Buttons have accessible names.
-5. Modals trap focus.
-6. Dropdowns close on Escape.
-7. Keyboard navigation works across all menus.
-8. Focus states are visible in both light and dark mode.
-9. Color is not the only status indicator.
-10. Touch targets are at least 44px.
-11. Reduced motion is respected.
-12. Browser zoom must not break layouts.
-
-Verification:
-
-```text
-- Keyboard-only walkthrough.
-- Screen reader smoke test.
-- Contrast check.
-- Browser zoom 200%.
-- Mobile viewport test.
-- Reduced motion test.
-```
+5. Modal traps focus.
+6. Escape closes modal.
+7. Toasts use appropriate live regions.
+8. Sidebar navigation works by keyboard.
+9. Profile dropdown works by keyboard.
+10. Browser zoom must not break layout.
+11. Reduced motion respected.
+12. Color is not the only indicator of status.
+13. Tables have headings.
+14. Mobile touch targets are at least 44px.
 
 ---
 
-## 16. Forms and Input Behavior Strategy
+# 16. Forms and Input Behavior Strategy
 
-### 16.1 Form Rules
-
-Every form must include:
+Every form must implement:
 
 ```text
-label
-helper text where useful
-required marker
-validation error area
-loading/submitting state
-success state
-server error state
-duplicate-submit protection
+Default state
+Focused state
+Dirty state
+Submitting state
+Success state
+Error state
+Disabled state
+Server validation mapping
+Duplicate-submit prevention
+Unsaved changes warning for long forms
 ```
 
-### 16.2 Server Validation Mapping
-
-Backend returns:
-
-```json
-{
-  "errors": {
-    "phone": ["This phone number already exists for this merchant."]
-  }
-}
-```
-
-Frontend maps it directly to the field.
-
-### 16.3 Sensitive Workflows
-
-Require confirmation modals for:
+## Required form architecture
 
 ```text
-merchant suspension
-branch suspension
-user suspension
-role changes
-invoice voiding
-payment rejection
-receipt issuance
-preferred personnel override
-contact export approval
-commission reversal
-platform fee waiver
+Form component
+  ↓
+Client-side basic validation
+  ↓
+API request
+  ↓
+Server FormRequest validation
+  ↓
+422 errors mapped to fields
+  ↓
+Toast summary
+  ↓
+Field-level error display
 ```
 
-### 16.4 Money Inputs
-
-Use integer cents internally where possible or decimal with strict precision.
-
-For PostgreSQL:
-
-```text
-DECIMAL(12,2)
-```
-
-Frontend must:
-
-* Display KES formatting.
-* Submit numeric value.
-* Prevent negative values unless adjustment workflow allows it.
+Do not depend on CSS to control real form behavior. CSS only styles states.
 
 ---
 
-## 17. User Profile and Account UI Strategy
+# 17. User Profile and Account UI Strategy
 
-### 17.1 Profile Unit
-
-The top-right profile area must show:
+Profile identity unit must include:
 
 ```text
-profile photo
-user name
-current merchant
-current branch where applicable
-role badge
-dropdown trigger
+Profile image
+User name
+Active merchant
+Active branch
+Role badge
+Dropdown trigger
 ```
 
-### 17.2 Profile Dropdown
-
-Dropdown options:
+Dropdown contents:
 
 ```text
-My Profile
-Switch Merchant
-Switch Branch
-Notification Preferences
-Theme: Light/Dark
-Security
+Profile
+Theme
+Switch merchant
+Switch branch
+Account settings
+Notification settings
 Logout
 ```
 
-### 17.3 Account Switcher
+Rules:
 
-User can switch only to merchants where:
-
-```text
-merchant_users.user_id = authenticated_user.id
-merchant_users.access_status = active
-merchant.status = active
-role.is_active = true
-```
-
-Branch switcher shows only assigned branches.
+1. Profile dropdown anchored to trigger.
+2. No clipping behind sidebar/header.
+3. Keyboard accessible.
+4. Focus states visible.
+5. Branch switcher only lists assigned active branches.
+6. Merchant switcher only lists active memberships.
+7. Backend validates all switches.
 
 ---
 
-## 18. Billing and Plan Enforcement Strategy
+# 18. Billing and Plan Enforcement Strategy
 
-### 18.1 Billing Scope
+Servana has two payment categories:
 
-The Citrus Billing Engine calculates and tracks what merchants owe Citrus Labs Limited, including account-opening fees, platform service fees, preferred-personnel fee treatment, contact-download fee rules, settlement cycles, platform fee ledger, merchant balance, overdue balances, suspension triggers, exemptions, and billing audit logs. 
+## 18.1 Client-to-merchant payments
 
-### 18.2 Fee Types
+These are offline/off-platform and recorded by Servana.
 
-```text
-account_opening_fee
-platform_service_fee
-preferred_personnel_fee_share
-contact_download_fee
-adjustment
-waiver
-```
-
-### 18.3 Fee Calculation Triggers
-
-| Trigger                            | Ledger Entry                      |
-| ---------------------------------- | --------------------------------- |
-| Merchant activation                | Account-opening fee if applicable |
-| Invoice paid                       | Platform service fee              |
-| Preferred personnel fee charged    | Platform fee if configured        |
-| Contact export approved/downloaded | Contact-download fee              |
-| Manual waiver                      | Waiver ledger entry               |
-| Overdue cycle                      | Overdue status update             |
-
-### 18.4 Plan Enforcement
-
-Create tables:
+Supported methods:
 
 ```text
-plans
-plan_features
-merchant_subscriptions
-feature_usage
+cash
+mpesa
+bank_transfer
+card_terminal
+voucher
+split_payment
+other
 ```
 
-Feature examples:
+Servana records:
 
 ```text
-max_branches
-max_users
-max_monthly_invoices
-contact_exports_enabled
-advanced_reports_enabled
-audit_export_enabled
+amount
+method
+reference
+date/time
+recorded_by
+validated_by
+status
+notes
+audit trail
 ```
 
-MVP can launch with one default plan, but the schema must support plan enforcement later.
+## 18.2 Merchant-to-Servana payments
+
+These happen through the platform via M-Pesa.
+
+Supported methods:
+
+```text
+STK Push
+Manual M-Pesa reference verification
+```
+
+Use Safaricom Daraja APIs for M-Pesa integration. Safaricom’s Daraja developer portal provides access to M-Pesa APIs, and its API listing includes Customer-to-Business APIs with validation/confirmation URL registration and STK-related payment flows. ([Safaricom Developer Portal][1]) ([Safaricom Developer Portal][2])
+
+## 18.3 STK Push flow
+
+```text
+Merchant opens platform invoice
+  ↓
+Clicks Pay with M-Pesa
+  ↓
+Enters phone number
+  ↓
+Backend creates platform_payment_intent
+  ↓
+Backend calls Daraja STK Push
+  ↓
+Intent status = processing
+  ↓
+Daraja callback received
+  ↓
+Validate callback authenticity and idempotency
+  ↓
+Create mpesa_transaction
+  ↓
+Mark payment intent successful/failed
+  ↓
+Apply payment to platform invoice
+  ↓
+If full amount paid, invoice status = paid
+  ↓
+Audit log + notification
+```
+
+## 18.4 Manual M-Pesa verification flow
+
+```text
+Merchant opens platform invoice
+  ↓
+Selects "I already paid manually"
+  ↓
+Enters M-Pesa reference number
+  ↓
+Backend creates manual_mpesa_verification_attempt
+  ↓
+Backend checks whether reference belongs to an existing callback/confirmed transaction or queries transaction status where supported
+  ↓
+Reference must match:
+      same amount or accepted tolerance
+      same merchant invoice
+      not previously used
+      valid M-Pesa receipt
+  ↓
+If matched, platform invoice is marked paid/partially paid
+  ↓
+If not matched, status remains unpaid and reason is shown
+```
+
+## 18.5 Platform enforcement rules
+
+| Event                       | System behavior                                                          |
+| --------------------------- | ------------------------------------------------------------------------ |
+| Platform invoice overdue    | Warning notification                                                     |
+| Serious overdue balance     | Merchant marked billing restricted                                       |
+| Billing restricted merchant | Can view records, but certain new operations can be restricted by policy |
+| Payment successful          | Restore billing status automatically                                     |
+| Payment disputed            | Lock invoice from automatic paid state until reviewed                    |
 
 ---
 
-## 19. File Upload and Storage Strategy
+# 19. File Upload and Storage Strategy
 
-### 19.1 Upload Types
+Use S3-compatible private storage.
 
-Allowed files:
+## Accepted file types
 
-```text
-merchant documents: PDF, JPG, PNG
-profile photos: JPG, PNG, WEBP
-receipts/invoice PDFs: generated by system
-exports: CSV/XLSX generated by system
-```
+| Type               | Allowed        |
+| ------------------ | -------------- |
+| Merchant documents | PDF, JPG, PNG  |
+| Profile images     | JPG, PNG, WEBP |
+| Receipts           | PDF            |
+| Reports/exports    | CSV, XLSX, PDF |
+| Contact exports    | CSV, XLSX      |
 
-### 19.2 Storage Rules
+## Limits
 
-* Store private files outside public web root.
-* Use S3-compatible storage.
-* Store metadata in `uploaded_files`.
-* Downloads use signed temporary URLs.
-* Every file row includes `merchant_id`.
-* Branch files include `branch_id` where relevant.
-* Contact exports expire.
+| File type         | Max size |
+| ----------------- | -------: |
+| Profile image     |     2 MB |
+| Merchant document |    10 MB |
+| Receipt PDF       |     5 MB |
+| Report export     |    50 MB |
+| Contact export    |    10 MB |
 
-### 19.3 `uploaded_files` Table
+## Controls
 
-```text
-id BIGINT PK
-public_id ULID UNIQUE
-merchant_id BIGINT NULL
-branch_id BIGINT NULL
-uploaded_by BIGINT FK users.id
-disk VARCHAR(80)
-path VARCHAR(500)
-original_name VARCHAR(255)
-mime_type VARCHAR(120)
-extension VARCHAR(20)
-size_bytes BIGINT
-visibility ENUM(private, public)
-purpose ENUM(merchant_document, profile_photo, invoice_pdf, receipt_pdf, contact_export, report_export)
-checksum VARCHAR(128) NULL
-expires_at TIMESTAMP NULL
-created_at
-updated_at
-deleted_at NULL
-```
-
-### 19.4 File Security Tests
-
-Test:
-
-```text
-wrong MIME rejected
-oversized file rejected
-private file direct URL blocked
-cross-tenant file download blocked
-expired export blocked
-malicious extension rejected
-```
+1. Validate MIME and extension.
+2. Store privately.
+3. Use signed temporary download URLs.
+4. Scan files where infrastructure allows.
+5. Associate every file with `merchant_id` where tenant-owned.
+6. Authorize before upload.
+7. Authorize before download.
+8. Delete orphaned files through scheduled cleanup.
+9. Audit sensitive uploads/downloads.
 
 ---
 
-## 20. Queue, Jobs, Notifications, and Scheduled Task Strategy
+# 20. Queue, Jobs, Notifications, and Scheduled Task Strategy
 
-### 20.1 Queue Driver
-
-Use Redis queues and Laravel Horizon.
-
-Queues:
-
-```text
-default
-emails
-reports
-exports
-billing
-receipts
-audit
-notifications
-```
-
-### 20.2 Jobs
+## 20.1 Jobs
 
 ```text
 SendMagicLoginLinkJob
 SendStaffActivationEmailJob
 SendAppointmentConfirmationJob
-SendAppointmentCancellationJob
 SendQueueUpdateNotificationJob
-SendPreferredPersonnelConfirmationJob
-SendPaymentValidationNoticeJob
 GenerateReceiptPdfJob
-GenerateInvoicePdfJob
+GenerateFinanceReportJob
 GenerateContactExportJob
-GenerateMerchantReportJob
 CalculatePlatformFeesJob
+GeneratePlatformInvoiceJob
+ProcessMpesaCallbackJob
+VerifyManualMpesaReferenceJob
 CalculateCommissionLedgerJob
-SendOverdueMerchantWarningJob
+SendPlatformFeeOverdueWarningJob
+CleanupExpiredMagicLinksJob
+CleanupExpiredExportsJob
 ```
 
-### 20.3 Notifications
-
-Required notification types include Magic Link login email, staff activation email, appointment confirmation/cancellation, queue update, preferred-personnel wait confirmation, payment validation notice, receipt availability, merchant suspension warning, and platform fee overdue warning. 
-
-Launch channels:
+## 20.2 Scheduled tasks
 
 ```text
-Email: required
-SMS/WhatsApp: phase 2
+Every 5 minutes:
+  process failed payment verification retries
+
+Hourly:
+  expire magic links
+  expire payment intents
+  expire contact export links
+
+Daily:
+  generate overdue billing warnings
+  backup verification
+  stale queue cleanup
+
+Monthly:
+  generate merchant platform invoices
+  generate settlement summaries
 ```
 
-### 20.4 Scheduled Tasks
+## 20.3 Notification channels
 
-Laravel Scheduler:
+Launch:
 
 ```text
-every 5 minutes: expire unused magic login tokens
-hourly: expire contact export links
-daily: calculate overdue platform fee balances
-daily: send merchant suspension warnings
-daily: backup verification check
-weekly: merchant summary reports
-monthly: settlement cycle closure
+Email required
+Database notifications required
+SMS/WhatsApp optional phased addition
 ```
 
 ---
 
-## 21. Search Strategy
+# 21. Search Strategy
 
-### 21.1 MVP Search Engine
+Use Meilisearch at launch.
 
-Use PostgreSQL indexed search for MVP where possible. Add Meilisearch for higher-scale search.
-
-Searchable entities:
+Indexed resources:
 
 ```text
-merchants
-branches
-staff
 clients
 services
-appointments
-queue_entries
 invoices
 payment_records
 receipts
+merchant_users
 audit_logs
+platform_invoices
 ```
 
-### 21.2 Search Rules
-
-* Search results must be tenant-scoped.
-* Branch users see only assigned branch data.
-* Personnel search is limited to personally served clients.
-* Audit search is read-only.
-* Platform search is Super Admin only.
-
-### 21.3 Indexing
-
-Indexes:
+Tenant filtering:
 
 ```text
-clients: merchant_id + phone
-clients: merchant_id + full_name
-invoices: merchant_id + invoice_number
-receipts: merchant_id + receipt_number
-payment_records: merchant_id + reference
-queue_entries: merchant_id + branch_id + status
-appointments: merchant_id + branch_id + scheduled_start_at
-audit_logs: merchant_id + action + created_at
+All indexed documents include merchant_id.
+Search queries must apply merchant_id filter.
+Branch-scoped users also apply branch_id filter.
+```
+
+Never expose global search across tenants.
+
+---
+
+# 22. Observability and Audit Logging Strategy
+
+## 22.1 Logs
+
+Use structured JSON logs.
+
+Do log:
+
+```text
+request_id
+user_id
+merchant_id
+branch_id
+route
+status_code
+duration_ms
+job_id
+payment_intent_id
+platform_invoice_id
+```
+
+Do not log:
+
+```text
+magic link raw token
+M-Pesa credentials
+full callback payload with sensitive fields
+session cookies
+API tokens
+private file URLs
+```
+
+## 22.2 Audit events
+
+Audit these actions:
+
+```text
+merchant.created
+merchant.activated
+merchant.suspended
+branch.created
+merchant_user.created
+merchant_user.activated
+merchant_user.role_changed
+magic_link.requested
+magic_link.consumed
+service.created
+client.created
+queue.created
+queue.preferred_personnel_selected
+queue.preferred_personnel_overridden
+invoice.created
+invoice.voided
+payment.recorded
+payment.validated
+payment.rejected
+receipt.generated
+commission_rule.changed
+commission.earned
+platform_invoice.generated
+platform_invoice.payment_started
+platform_invoice.payment_verified
+mpesa.callback_received
+contact_export.requested
+contact_export.downloaded
+settings.changed
 ```
 
 ---
 
-## 22. Observability and Audit Logging Strategy
+# 23. Performance and Scalability Plan
 
-### 22.1 Observability
+## Likely bottlenecks
 
-Implement:
+| Bottleneck                                |                            Likelihood |   Impact | Mitigation                                   |
+| ----------------------------------------- | ------------------------------------: | -------: | -------------------------------------------- |
+| Dashboard aggregate queries become slow   |                                   65% |     High | Materialized summary tables, cache, indexes  |
+| Invoice/payment reports grow large        |                                   70% |     High | Pagination, async exports, date filters      |
+| Queue screens need near real-time updates |                                   50% |   Medium | Polling first, WebSockets later              |
+| Audit logs grow rapidly                   |                                   85% |   Medium | Partition by month, indexed queries          |
+| Contact exports become abuse target       |                                   35% |     High | Rate limits, approval, audit logs            |
+| M-Pesa callback duplication               |                                   70% |     High | Idempotency keys, unique receipt constraints |
+| Cross-tenant bug from developer mistake   | 8–15% poorly built; <2% with controls | Critical | Global scopes, policies, tests, code review  |
 
-```text
-request IDs
-structured JSON logs
-centralized logs
-error tracking
-queue failure monitoring
-health checks
-slow query monitoring
-API latency tracking
-failed login tracking
-export tracking
-receipt generation tracking
-```
+## Required indexes
 
-### 22.2 Health Checks
-
-Endpoints:
+Every high-traffic table must index:
 
 ```text
-GET /health
-GET /health/database
-GET /health/redis
-GET /health/storage
-GET /health/queue
+merchant_id
+branch_id where applicable
+status
+created_at
+foreign keys
+public ulid
 ```
 
-### 22.3 Audit Events
+## Caching
 
-Audit logs must capture merchant creation, activation, suspension, branch creation, user creation, role changes, Magic Link login, service changes, client changes, queue changes, preferred personnel selection/override, invoice creation, payment recording/validation, receipt generation, commission changes, contact export request/download, and platform fee setting changes. 
+Cache:
 
-Audit log payload:
+```text
+permission matrix
+merchant settings
+platform settings
+dashboard summaries
+service catalogue
+branch list
+```
 
-```json
-{
-  "actor_user_id": 1,
-  "actor_role": "merchant_finance",
-  "merchant_id": 7,
-  "branch_id": 3,
-  "action": "payment.approved",
-  "target_entity_type": "payment_record",
-  "target_entity_id": "01HX...",
-  "old_values": {},
-  "new_values": {},
-  "ip_address": "x.x.x.x",
-  "user_agent": "..."
-}
+Invalidate cache on:
+
+```text
+settings update
+role/permission change
+service update
+branch update
+payment validation
+invoice creation/void
 ```
 
 ---
 
-## 23. Performance and Scalability Plan
+# 24. Security Threat Model
 
-### 23.1 Expected Bottlenecks
-
-| Bottleneck                          | Likelihood | Mitigation                                |
-| ----------------------------------- | ---------: | ----------------------------------------- |
-| Large invoice/payment tables        |        70% | indexes, pagination, date filters         |
-| Audit logs growing fast             |        80% | partitioning later, retention policy      |
-| Queue board refresh load            |        50% | polling interval, cache, later WebSockets |
-| Report generation slow              |        65% | queued reports, cached aggregates         |
-| Contact exports abused              |        35% | approval, fees, throttling, signed URLs   |
-| Search slow across clients/invoices |        55% | indexes, Meilisearch                      |
-
-### 23.2 Required Controls
-
-```text
-pagination everywhere
-database indexes
-lazy frontend modules
-queued report generation
-queued PDF generation
-cache dashboard metrics
-cache invalidation after writes
-rate limits for login and exports
-CDN for static assets
-object storage for PDFs/exports
-```
-
-### 23.3 Dashboard Caching
-
-Cache keys:
-
-```text
-merchant:{merchant_id}:dashboard:{date}
-branch:{branch_id}:dashboard:{date}
-finance:{merchant_id}:pending-validations
-personnel:{merchant_user_id}:today
-```
-
-Invalidate after:
-
-```text
-invoice created
-payment approved/rejected
-receipt issued
-service session completed
-queue status changed
-commission created/reversed
-```
+| Threat                                      | Risk     | Mitigation                                                                   |
+| ------------------------------------------- | -------- | ---------------------------------------------------------------------------- |
+| Cross-tenant data leak                      | Critical | Tenant middleware, policies, scoped queries, tests                           |
+| IDOR through ULID                           | High     | Resource lookup by ULID + merchant scope                                     |
+| Magic link theft                            | High     | Short expiry, one-time use, rate limit, audit, optional MFA                  |
+| Brute-force login                           | Medium   | IP/email throttling, cooldowns                                               |
+| M-Pesa callback spoofing                    | High     | Validate source, callback structure, idempotency, server-side reconciliation |
+| Duplicate payment callback                  | High     | Unique checkout/request/receipt constraints                                  |
+| Manual reference reuse                      | High     | Unique reference match and invoice-level lock                                |
+| Front Office payment manipulation           | High     | Finance validation, receipt restrictions, audit logs                         |
+| Personnel stealing contacts                 | High     | Personally served clients only, export fee, approval, signed URL expiry      |
+| File upload malware                         | Medium   | MIME validation, extension validation, private storage, scanning             |
+| XSS                                         | High     | Escape output, sanitize rich text, CSP                                       |
+| CSRF                                        | Medium   | Sanctum CSRF, same-site cookies                                              |
+| SQL injection                               | Medium   | Eloquent/query bindings, validation                                          |
+| Mass assignment                             | Medium   | fillable/guarded, DTOs                                                       |
+| Sensitive logs                              | Medium   | log redaction                                                                |
+| Broken mobile UI causing operational errors | Medium   | responsive tests, no fixed layouts                                           |
 
 ---
 
-## 24. Security Threat Model
+# 25. Testing Strategy
 
-| Threat                             | Risk     | Mitigation                                       | Test                                      |
-| ---------------------------------- | -------- | ------------------------------------------------ | ----------------------------------------- |
-| Cross-tenant data leakage          | Critical | tenant scopes, policies, UUID/ULID, tests        | Account A cannot access Account B invoice |
-| Broken branch isolation            | High     | branch middleware, branch assignment table       | Branch user denied other branch queue     |
-| Magic Link theft/reuse             | High     | short expiry, hashed token, one-time use         | reused token rejected                     |
-| Front Office payment manipulation  | High     | Finance validation, receipt permission, audit    | receipt blocked before approval           |
-| Personnel exports full client list | High     | personally served filter, export approval, audit | personnel export excludes other clients   |
-| ID enumeration                     | High     | public ULIDs, 404 on foreign IDs                 | sequential ID inaccessible                |
-| SQL injection                      | High     | Eloquent bindings, validation                    | malicious filter rejected                 |
-| XSS                                | High     | escape content, sanitize notes where needed      | script content rendered safely            |
-| CSRF                               | Medium   | Sanctum CSRF protection                          | forged request rejected                   |
-| File upload abuse                  | High     | MIME validation, private storage, size limits    | malicious file rejected                   |
-| Role escalation                    | Critical | policies, audited role changes                   | user cannot self-upgrade                  |
-| Sensitive log leakage              | High     | redaction middleware                             | token not present in logs                 |
-
-The uploaded risk assessment already identifies cross-tenant data leakage as critical and reducible to under 2% with strong controls, while Front Office payment manipulation and staff misuse of contact exports remain high-risk without proper controls. 
-
----
-
-## 25. Testing Strategy
-
-### 25.1 Backend Tests
-
-Required:
+## 25.1 Backend tests
 
 ```text
-tests/Feature/Auth/MagicLinkTest.php
-tests/Feature/TenantIsolation/InvoiceIsolationTest.php
-tests/Feature/TenantIsolation/ClientIsolationTest.php
-tests/Feature/BranchIsolation/QueueBranchIsolationTest.php
-tests/Feature/Authorization/RolePermissionTest.php
-tests/Feature/Payments/OfflinePaymentValidationTest.php
-tests/Feature/Receipts/ReceiptGenerationTest.php
-tests/Feature/Invoices/InvoiceCalculationTest.php
-tests/Feature/Commissions/CommissionLedgerTest.php
-tests/Feature/Billing/PlatformFeeLedgerTest.php
-tests/Feature/ContactExports/PersonnelContactExportTest.php
-tests/Feature/Audit/AuditLogTest.php
+tests/Feature/Auth/
+tests/Feature/Tenancy/
+tests/Feature/Authorization/
+tests/Feature/Merchants/
+tests/Feature/Branches/
+tests/Feature/Staff/
+tests/Feature/Services/
+tests/Feature/Clients/
+tests/Feature/Appointments/
+tests/Feature/Queue/
+tests/Feature/ServiceSessions/
+tests/Feature/Invoices/
+tests/Feature/Payments/
+tests/Feature/Receipts/
+tests/Feature/PlatformBilling/
+tests/Feature/Mpesa/
+tests/Feature/Commissions/
+tests/Feature/ContactExports/
+tests/Feature/Reports/
+tests/Feature/AuditLogs/
+tests/Feature/Files/
+tests/Feature/Api/
 ```
 
-The uploaded scope requires automated coverage for authentication, merchant activation, authorization, tenant isolation, branch isolation, staff activation, queue, preferred personnel fee, invoices, payments, receipts, commissions, contact exports, audit logs, API validation, and frontend workflows. 
+## 25.2 Required critical tests
 
-### 25.2 Example Tenant Isolation Test
+| Module           | Positive tests                 | Negative tests                     |
+| ---------------- | ------------------------------ | ---------------------------------- |
+| Magic Link       | active merchant user logs in   | expired/reused token rejected      |
+| Tenant isolation | own invoice visible            | other merchant invoice hidden      |
+| Branch isolation | assigned branch queue visible  | unassigned branch queue forbidden  |
+| Services         | admin creates service          | personnel cannot create service    |
+| Queue            | preferred personnel fee added  | override without permission denied |
+| Invoice          | invoice totals correct         | void requires permission           |
+| Offline payment  | finance validates              | receipt blocked before validation  |
+| Platform billing | STK payment marks invoice paid | duplicate callback ignored         |
+| Manual M-Pesa    | valid reference pays invoice   | reused reference rejected          |
+| Commissions      | created after payment          | not created before payment         |
+| Contact exports  | own served clients exported    | merchant-wide export denied        |
+| Audit logs       | sensitive actions logged       | audit logs cannot be edited        |
+| File uploads     | valid PDF accepted             | executable rejected                |
 
-```php
-it('prevents a merchant user from viewing another merchant invoice', function () {
-    $merchantA = Merchant::factory()->create();
-    $merchantB = Merchant::factory()->create();
+## 25.3 Frontend tests
 
-    $userA = User::factory()->create();
-    MerchantUser::factory()->for($merchantA)->for($userA)->active()->create();
+Use Vitest + Vue Testing Library + Playwright.
 
-    $invoiceB = Invoice::factory()->for($merchantB)->create();
-
-    actingAs($userA)
-        ->getJson("/api/v1/invoices/{$invoiceB->public_id}")
-        ->assertForbidden();
-});
-```
-
-### 25.3 Frontend Tests
-
-Use Vitest + Vue Testing Library for components:
+Critical workflows:
 
 ```text
-PermissionGate
-InvoiceForm
-PaymentRecordForm
-ReceiptIssueButton
-QueueBoard
-ClientSearch
-MerchantSwitcher
-BranchSwitcher
-ProfileDropdown
-```
-
-Use Playwright/Cypress for:
-
-```text
-Magic Link login
-Merchant onboarding
-Branch creation
-Staff activation
-Create walk-in
+Magic Link request
+Dashboard load
+Branch switching
+Client creation
+Walk-in creation
 Preferred personnel selection
-Invoice creation
-Payment validation
-Receipt generation
-Personnel contact export denial
-Audit read-only workflow
+Invoice generation
+Offline payment recording
+Finance validation
+Receipt download
+Platform invoice STK Push
+Manual M-Pesa reference verification
+Personnel contact export request
+Dark mode toggle
+Mobile sidebar
+Profile dropdown keyboard navigation
 ```
 
 ---
 
-## 26. Deployment and CI/CD Strategy
+# 26. Deployment and CI/CD Strategy
 
-### 26.1 Environments
-
-```text
-local
-testing
-staging
-production
-```
-
-### 26.2 Docker Services
+## 26.1 Docker services
 
 ```text
-app
-nginx
-postgres
-redis
-queue-worker
-scheduler
+app        Laravel PHP-FPM
+web        Nginx
+worker     Laravel queue worker
+scheduler  Laravel scheduler
+db         PostgreSQL
+redis      Redis
 meilisearch
-mailpit for local
+mailpit    local only
 ```
 
-### 26.3 CI Pipeline
+## 26.2 CI pipeline
 
-On pull request:
+GitHub Actions:
 
 ```text
 composer install
 npm ci
+php artisan pint --test
 php artisan test
 npm run typecheck
 npm run test
 npm run build
-phpstan/larastan
-pint
-eslint
-dependency vulnerability scan
+dependency audit
+docker build
 ```
 
-On production deploy:
+## 26.3 Production deployment steps
 
 ```text
-backup database
-pull image
-run migrations
-cache config/routes/views
-restart queue workers
-run smoke tests
-verify health checks
-monitor logs
-rollback on failure
+Pull image
+Put app in maintenance mode
+Backup database
+Run migrations with --force
+Clear and cache config/routes/views
+Restart PHP-FPM
+Restart queue workers
+Run health check
+Disable maintenance mode
+Monitor logs and queues
 ```
 
-### 26.4 Production Requirements
+## 26.4 Rollback
 
-The source requires Dockerized deployment, CI/CD, automated tests before deployment, HTTPS, queue workers, Laravel Scheduler, Redis, backups, rollback procedure, centralized logging, monitoring, health checks, vulnerability scanning, secure object storage, production mail provider, and staging environment. 
-
----
-
-## 27. Step-by-Step Development Roadmap
-
-## Phase 1 — Repository and Foundation
-
-Build:
+Rollback must include:
 
 ```text
-Laravel app
-Vue + TypeScript + Vite
-Tailwind CSS
-PostgreSQL
-Redis
-Docker Compose
-Sanctum
-Base API structure
-Testing framework
-CI workflow
-```
-
-Why:
-
-* Required for all later implementation.
-
-Failure if omitted:
-
-* The agent will build features on unstable foundations.
-
-Verification:
-
-```text
-php artisan test passes
-npm run build passes
-Docker stack boots
-/health returns OK
-CI passes
+previous Docker image
+database backup restore plan
+migration rollback assessment
+queue drain/stop procedure
+M-Pesa callback replay safety
 ```
 
 ---
 
-## Phase 2 — Core Identity, Tenant, and Access Model
+# 27. Step-by-Step Development Roadmap
+
+## Phase 1 — Project initialization
+
+Objective: create Laravel + Vue production foundation.
+
+Files/directories:
+
+```text
+app/Domain
+app/Actions
+app/Enums
+resources/js
+tests/Feature
+docker/
+.github/workflows
+```
+
+Commands:
+
+```bash
+composer create-project laravel/laravel servana
+cd servana
+composer require laravel/sanctum
+npm create vite@latest
+npm install vue@latest typescript @vitejs/plugin-vue
+npm install -D tailwindcss postcss autoprefixer vitest playwright
+php artisan vendor:publish --provider="Laravel\\Sanctum\\SanctumServiceProvider"
+php artisan migrate
+```
+
+Acceptance:
+
+* Laravel boots.
+* Vue app boots.
+* Sanctum installed.
+* Tests run.
+
+---
+
+## Phase 2 — Docker and environment setup
+
+Backend tasks:
+
+* Add Dockerfile.
+* Add Nginx config.
+* Add queue worker service.
+* Add scheduler service.
+* Configure `.env.example`.
+
+Security tasks:
+
+* No secrets committed.
+* Production cookies secure.
+* CORS restricted.
+
+Acceptance:
+
+```bash
+docker compose up -d
+php artisan test
+npm run build
+```
+
+---
+
+## Phase 3 — Core database and tenant model
 
 Build:
 
@@ -2530,836 +2626,719 @@ users
 merchants
 merchant_branches
 merchant_users
+branch_user_assignments
 roles
 permissions
 role_permission
-merchant_user_branches
-TenantContext
-tenant resolver middleware
-branch access middleware
-base policies
+audit_logs
 ```
 
-Why:
+Backend tasks:
 
-* Servana is multi-tenant and branch-scoped.
+* Models.
+* Migrations.
+* Factories.
+* Seeders for roles/permissions.
+* TenantContext object.
+* Tenant middleware.
 
-Failure if omitted:
-
-* Cross-tenant and cross-branch leakage becomes likely.
-
-Verification:
+Tests:
 
 ```text
-tenant isolation tests
-branch isolation tests
-role permission tests
-403 examples
-database rows confirm merchant_id and branch_id
+TenantContextResolutionTest
+MerchantMembershipTest
+BranchScopeTest
 ```
+
+Acceptance:
+
+* Active user resolves tenant.
+* Suspended user blocked.
+* Cross-tenant access denied.
 
 ---
 
-## Phase 3 — Magic Link Authentication
+## Phase 4 — Magic Link authentication
 
 Build:
 
 ```text
 magic_login_tokens
-request Magic Link endpoint
-consume Magic Link endpoint
-email notification
-token hashing
-expiry
-reuse prevention
-rate limiting
-login audit log
+MagicLinkRequestController
+MagicLinkConsumeController
+SendMagicLoginLinkJob
 ```
 
-Why:
-
-* Merchant users must log in through Magic Link only after activation.
-
-Failure if omitted:
-
-* Inactive or unauthorized users could access merchant data.
-
-Verification:
+Tests:
 
 ```text
-valid token logs in
-expired token rejected
-used token rejected
-inactive user blocked
-inactive merchant blocked
-wrong merchant membership blocked
+MagicLinkRequestTest
+MagicLinkConsumeTest
+ExpiredMagicLinkTest
+ReusedMagicLinkTest
+InactiveMerchantUserCannotLoginTest
 ```
+
+Acceptance:
+
+* Token works once.
+* Expired token rejected.
+* Inactive user rejected.
+* Login audited.
 
 ---
 
-## Phase 4 — Merchant and Branch Management
+## Phase 5 — Authorization system
 
 Build:
 
 ```text
-merchant onboarding
-merchant activation/suspension/deactivation
-branch CRUD
-operating hours
-branch status
-branch user assignment
-audit logs
+Policies
+Permission middleware
+Role seeders
+PermissionGate frontend component
 ```
 
-Why:
-
-* Merchant and branch setup are launch-critical.
-
-Failure if omitted:
-
-* No tenant can operate safely.
-
-Verification:
+Tests:
 
 ```text
-merchant created
-branch created
-suspended merchant blocked
-branch-scoped user sees only assigned branch
-audit logs created
+RolePermissionMatrixTest
+PolicyTenantOwnershipTest
+PermissionDeniedTest
 ```
+
+Acceptance:
+
+* Every protected API requires policy authorization.
+* Frontend hidden menu does not bypass backend.
 
 ---
 
-## Phase 5 — Staff, Roles, and Personnel Eligibility
+## Phase 6 — Merchant and branch management
 
 Build:
 
 ```text
-staff creation
-activation
-suspension
-deactivation
-role assignment
-branch assignment
-personnel profiles
-service eligibility
-employment status
-permission history
+Merchant onboarding
+Activation/suspension
+Branch CRUD
+Branch operating hours
 ```
 
-Why:
-
-* Servana depends on controlled staff and personnel operations.
-
-Failure if omitted:
-
-* Users may act without correct authority.
-
-Verification:
+Tests:
 
 ```text
-HR can create staff
-Front Office cannot assign roles
-Personnel cannot view HR screens
-role changes audited
+MerchantActivationTest
+MerchantSuspensionTest
+BranchCrudTest
+BranchTenantIsolationTest
 ```
+
+Acceptance:
+
+* Super Admin controls merchant lifecycle.
+* Merchant Admin controls own branches only.
 
 ---
 
-## Phase 6 — Service Catalogue
+## Phase 7 — Staff and personnel management
 
 Build:
 
 ```text
-service categories
+Merchant user creation
+Activation
+Suspension
+Role assignment
+Branch assignment
+Personnel profile
+Service eligibility
+```
+
+Tests:
+
+```text
+StaffActivationTest
+RoleChangeAuditTest
+PersonnelEligibilityTest
+BranchAssignmentAuthorizationTest
+```
+
+Acceptance:
+
+* HR/Admin can manage staff.
+* Personnel cannot manage users.
+* Role changes audited.
+
+---
+
+## Phase 8 — Service catalogue
+
+Build:
+
+```text
+service_categories
 services
-branch service availability
-service pricing
-duration
-discount eligibility
-preferred personnel fee eligibility
-personnel-service eligibility
+branch_services
+personnel_service_eligibilities
 ```
 
-Why:
-
-* Queue, appointments, sessions, invoices, and commissions depend on services.
-
-Failure if omitted:
-
-* The system cannot price or assign work accurately.
-
-Verification:
+Tests:
 
 ```text
-service created
-service available only in selected branch
-ineligible personnel cannot be assigned
-archived service cannot be selected
+ServiceCrudTest
+ServiceBranchAvailabilityTest
+ServiceEligibilityTest
 ```
+
+Acceptance:
+
+* Services are tenant-scoped.
+* Branch-specific pricing works.
+* Eligible personnel list is accurate.
 
 ---
 
-## Phase 7 — Client Records
+## Phase 9 — Client records and consent
 
 Build:
 
 ```text
-client creation
-client search
-client profile
-contact details
-visit history
-service history
-consent records
-communication preferences
-notes
+clients
+client_consents
+client visit history
 ```
 
-Why:
-
-* Front Office and Personnel workflows depend on client records.
-
-Failure if omitted:
-
-* No reliable client history or audit trail.
-
-Verification:
+Tests:
 
 ```text
-client unique per merchant phone
-same phone allowed across different merchants
-Personnel cannot export merchant-wide clients
+ClientCrudTest
+ClientTenantIsolationTest
+ClientConsentTest
+PersonnelClientAccessTest
 ```
+
+Acceptance:
+
+* Front Office creates clients.
+* Personnel sees only personally served clients.
 
 ---
 
-## Phase 8 — Appointments, Walk-Ins, and Queue
+## Phase 10 — Appointments, walk-ins, and queue
 
 Build:
 
 ```text
 appointments
-walk-ins
-queue entries
-branch queue board
-personnel queue
+queue_entries
 next available assignment
 preferred personnel assignment
-estimated wait time
-queue status transitions
-override reason
-queue audit logs
+preferred fee calculation
+queue override
 ```
 
-Why:
-
-* This is the operational heart of Servana.
-
-Failure if omitted:
-
-* Servana becomes only a database, not an operations system.
-
-Verification:
+Tests:
 
 ```text
-walk-in created
-appointment rescheduled
-preferred personnel fee displayed
-override requires permission and reason
-queue status transitions audited
+AppointmentCrudTest
+WalkInQueueTest
+PreferredPersonnelFeeTest
+QueueOverridePermissionTest
+QueueBranchIsolationTest
 ```
+
+Acceptance:
+
+* Preferred fee visible before confirmation.
+* Fee appears as invoice item later.
+* Override requires reason and permission.
 
 ---
 
-## Phase 9 — Service Sessions
+## Phase 11 — Service sessions
 
 Build:
 
 ```text
-service session creation
-session start/end
-status transitions
-cancellation
-notes
-invoice trigger
-audit trail
+service_sessions
+start/complete/cancel transitions
 ```
 
-Why:
-
-* Sessions connect queue/appointments to invoices and commissions.
-
-Failure if omitted:
-
-* Invoices and commissions lose operational proof.
-
-Verification:
+Tests:
 
 ```text
-session starts from queue entry
-completed session becomes billable
-cancelled session requires reason
-session cannot cross tenant/branch
+ServiceSessionLifecycleTest
+ServiceSessionAuthorizationTest
 ```
+
+Acceptance:
+
+* Session status transitions are valid.
+* Completed session can trigger invoice.
 
 ---
 
-## Phase 10 — Invoices and Invoice Items
+## Phase 12 — Invoices
 
 Build:
 
 ```text
-invoice numbering
-invoice totals
-invoice items
-service price line
-preferred personnel fee line
-discount line
+invoices
+invoice_items
+invoice number generator
 void workflow
-payment status
-PDF generation job
-audit logs
 ```
 
-Why:
-
-* Invoice records are central to revenue, platform fees, commissions, receipts, and auditability.
-
-Failure if omitted:
-
-* Financial workflows become unreliable.
-
-Verification:
+Tests:
 
 ```text
-invoice totals correct
-preferred fee appears as separate line
-void requires permission and reason
-invoice cannot be edited after payment except controlled adjustment
+InvoiceCreationTest
+InvoiceTotalsTest
+PreferredFeeInvoiceItemTest
+InvoiceVoidTest
+InvoiceTenantIsolationTest
 ```
+
+Acceptance:
+
+* Unique invoice per merchant.
+* Totals correct.
+* Preferred personnel fee separate.
+* Void audited.
 
 ---
 
-## Phase 11 — Offline Payments and Finance Validation
+## Phase 13 — Offline client-to-merchant payments and receipts
 
 Build:
 
 ```text
-payment records
-payment methods
-partial payment
-split payment
-reference capture
-pending validation
-approve/reject/dispute
-invoice payment status updates
-Finance dashboard
-audit logs
-```
-
-Why:
-
-* Payments are offline but must be recorded and validated.
-
-Failure if omitted:
-
-* Front Office can manipulate revenue truth.
-
-Verification:
-
-```text
-Front Office records payment
-Finance approves payment
-rejected payment does not create receipt
-partial payment updates balance
-overpayment blocked or handled by rule
-```
-
----
-
-## Phase 12 — Receipts
-
-Build:
-
-```text
-receipt numbering
-receipt issuance rules
+payment_records
+payment validation
+receipt generation
 receipt PDF
-download signed URL
-receipt audit log
-duplicate receipt prevention
 ```
 
-Why:
-
-* Receipts prove validated payment.
-
-Failure if omitted:
-
-* Merchants lose trustworthy client payment records.
-
-Verification:
+Tests:
 
 ```text
-receipt blocked before validation
-receipt generated after approval
-duplicate receipt rejected
-receipt PDF downloadable through signed URL only
+OfflinePaymentRecordTest
+FinanceValidationTest
+ReceiptBlockedBeforeValidationTest
+ReceiptGenerationTest
+SplitPaymentTest
+PartialPaymentTest
 ```
+
+Acceptance:
+
+* Finance validates payment.
+* Receipt only issued after valid payment state.
+* Partial/split payments update invoice correctly.
 
 ---
 
-## Phase 13 — Citrus Billing Engine
+## Phase 14 — Citrus Billing Engine
 
 Build:
 
 ```text
-platform fee settings
-account-opening fee tracking
-service fee calculation
-preferred personnel fee treatment
-contact download fee rules
-platform fee ledger
-merchant balance
-overdue tracking
-suspension triggers
-waivers
-billing audit logs
+platform_invoices
+platform_invoice_items
+platform fee calculation
+billing cycles
+overdue status
+merchant billing restrictions
 ```
 
-Why:
-
-* Citrus Labs needs traceable platform revenue.
-
-Failure if omitted:
-
-* Servana cannot monetize reliably.
-
-Verification:
+Tests:
 
 ```text
-invoice payment creates platform fee
-waiver audited
-overdue merchant appears on Super Admin dashboard
-suspension trigger tested
+PlatformFeeCalculationTest
+PlatformInvoiceGenerationTest
+OverdueMerchantBillingTest
+BillingRestrictionTest
 ```
+
+Acceptance:
+
+* Merchant platform fees generated.
+* Overdue merchants flagged.
+* Payment can restore billing status.
 
 ---
 
-## Phase 14 — Commission Tracking
+## Phase 15 — M-Pesa platform payments
 
 Build:
 
 ```text
-commission rules
-commission ledger
-commission calculation after confirmed payment
-pending/earned/paid statuses
-reversal on voided invoice
-preferred fee commission setting
+platform_payment_intents
+mpesa_transactions
+manual_mpesa_verification_attempts
+STK Push service
+callback endpoint
+manual verification action
 ```
 
-Why:
-
-* Personnel visibility and merchant accountability depend on commissions.
-
-Failure if omitted:
-
-* Staff payment disputes increase.
-
-Verification:
+Tests:
 
 ```text
-unpaid invoice creates no earned commission
-paid invoice creates earned commission
-voided invoice reverses commission
+StkPushInitiationTest
+MpesaCallbackSuccessTest
+MpesaCallbackFailureTest
+DuplicateMpesaCallbackTest
+ManualReferenceVerificationTest
+ReusedReferenceRejectedTest
+WrongInvoiceReferenceRejectedTest
 ```
+
+Acceptance:
+
+* STK Push creates intent.
+* Callback is idempotent.
+* Platform invoice paid after verified payment.
+* Manual reference tied to one invoice only.
 
 ---
 
-## Phase 15 — Contact Export Controls
+## Phase 16 — Commissions
 
 Build:
 
 ```text
-personnel export request
-personally served client filter
-contact download fee
+commission_rules
+commission_ledger
+commission reversal
+```
+
+Tests:
+
+```text
+CommissionRuleTest
+CommissionCreatedAfterPaymentTest
+CommissionNotCreatedBeforePaymentTest
+CommissionReversalOnVoidTest
+```
+
+Acceptance:
+
+* Personnel commission calculated after payment only.
+* Preferred personnel surcharge excluded by default unless enabled.
+
+---
+
+## Phase 17 — Contact exports
+
+Build:
+
+```text
+contact_export_requests
+export fee
 approval/payment requirement
-export generation job
-signed expiring download
-audit logs
+signed download
+expiry
 ```
 
-Why:
-
-* Personnel access to client contacts is sensitive and high-risk.
-
-Failure if omitted:
-
-* Staff can misuse merchant client data.
-
-Verification:
+Tests:
 
 ```text
-personnel sees only personally served clients
-export excludes payment details and internal notes
-download expires
-all export activity audited
+ContactExportRequestTest
+PersonnelOwnClientsOnlyExportTest
+MerchantWideExportDeniedTest
+ExpiredExportDownloadDeniedTest
+ContactExportAuditTest
 ```
+
+Acceptance:
+
+* Export contains allowed fields only.
+* Personnel cannot export full client database.
+* Download audited.
 
 ---
 
-## Phase 16 — Dashboards and Reports
+## Phase 18 — Reports and dashboards
+
+Build dashboards for:
+
+```text
+Super Admin
+Merchant Admin
+Finance
+Front Office
+Personnel
+Audit
+```
+
+Tests:
+
+```text
+DashboardAuthorizationTest
+DashboardTenantScopeTest
+FinanceReportTest
+PersonnelOwnReportTest
+```
+
+Acceptance:
+
+* Dashboard data is tenant scoped.
+* Personnel sees own data only.
+
+---
+
+## Phase 19 — Audit logging and observability
 
 Build:
 
 ```text
-Super Admin dashboard
-Merchant Admin dashboard
-Finance dashboard
-Front Office dashboard
-Personnel dashboard
-Audit dashboard
-report filters
-queued exports
-CSV/PDF reports
+AuditLogger service
+Security event logs
+Request IDs
+Sentry/Bugsnag integration
+Queue monitoring
+Health endpoint
 ```
 
-Why:
-
-* Stakeholders need role-specific visibility.
-
-Failure if omitted:
-
-* Platform value becomes harder to prove.
-
-Verification:
+Tests:
 
 ```text
-dashboard metrics match database records
-branch filters work
-reports are tenant-scoped
-large report runs in queue
+AuditLogCreatedTest
+AuditLogImmutableTest
+SecurityEventLogTest
+HealthCheckTest
 ```
+
+Acceptance:
+
+* Sensitive actions audited.
+* Audit logs immutable.
+* Health checks pass.
 
 ---
 
-## Phase 17 — Notifications
+## Phase 20 — Responsive UI, dark mode, accessibility
 
 Build:
 
 ```text
-Magic Link emails
-staff activation emails
-appointment confirmation/cancellation
-queue update
-preferred personnel confirmation
-payment validation notice
-receipt availability
-suspension warning
-overdue warning
-notification logs
+Layouts
+Navigation
+Sidebar
+Header
+Profile menu
+Tables-to-cards
+Dark mode
+Accessible forms/modals
 ```
 
-Why:
-
-* Operational workflows need timely communication.
-
-Failure if omitted:
-
-* Users miss status changes and validation tasks.
-
-Verification:
+Tests:
 
 ```text
-notifications dispatched
-logs stored
-failed jobs retried
-inactive merchant notifications blocked where appropriate
+Playwright mobile/tablet/desktop tests
+Dark mode visual checks
+Keyboard navigation checks
+```
+
+Acceptance:
+
+* No broken mobile layouts.
+* No horizontal scroll.
+* Keyboard navigation works.
+* Dark mode readable.
+
+---
+
+## Phase 21 — Security hardening
+
+Tasks:
+
+```text
+Rate limits
+CSP headers
+Secure cookies
+CORS restrictions
+Validation review
+Mass assignment review
+File upload abuse tests
+Authorization coverage scan
+Dependency scan
+```
+
+Acceptance:
+
+* No unprotected mutating endpoints.
+* No unscoped tenant queries in controllers.
+* Security regression tests pass.
+
+---
+
+## Phase 22 — Production readiness
+
+Tasks:
+
+```text
+CI/CD
+Backups
+Monitoring
+Rollback
+Queue workers
+Scheduler
+Production env validation
+M-Pesa sandbox/live separation
+```
+
+Acceptance:
+
+* Staging deployment works.
+* Production checklist passes.
+* Rollback plan tested.
+
+---
+
+# 28. IDE Agent Execution Instructions
+
+For every implementation task, the IDE agent must use this checklist:
+
+```text
+1. Identify the exact requirement.
+2. Inspect existing files before editing.
+3. Prove the gap.
+4. List affected files.
+5. Make the smallest correct change.
+6. Avoid unrelated rewrites.
+7. Add/update tests.
+8. Run targeted tests.
+9. Run broader regression tests where relevant.
+10. Show test output.
+11. Demonstrate API/UI behavior.
+12. Document remaining risks.
+```
+
+## Bug Fix Protocol
+
+The IDE agent must document every bug fix in this format:
+
+```text
+Observed problem:
+Evidence:
+Affected files:
+Root cause:
+Why this is the root cause:
+Correct fix:
+Files changed:
+Tests added or updated:
+Test command:
+Test result:
+Proof of resolution:
+Remaining risk:
 ```
 
 ---
 
-## Phase 18 — Audit, Security Hardening, Observability
+# 29. Acceptance Criteria
 
-Build:
+Servana is acceptable for launch only when:
 
-```text
-immutable audit logs
-security event logs
-request IDs
-health checks
-centralized logs
-error tracking
-slow query logs
-backup verification
-security regression tests
-```
-
-Why:
-
-* Production readiness requires proof, traceability, and recovery.
-
-Failure if omitted:
-
-* Incidents become hard to diagnose or prove.
-
-Verification:
-
-```text
-audit logs immutable
-sensitive data redacted
-health checks pass
-queue failures visible
-backup restore tested
-```
-
----
-
-## Phase 19 — Production Deployment
-
-Build:
-
-```text
-Docker production image
-Nginx config
-queue workers
-scheduler
-CI/CD deployment
-staging environment
-database backups
-rollback procedure
-monitoring
-production mail
-object storage
-```
-
-Why:
-
-* A SaaS app must be repeatably deployable.
-
-Failure if omitted:
-
-* Manual deployment becomes fragile and risky.
-
-Verification:
-
-```text
-staging deploy succeeds
-production smoke tests pass
-rollback tested
-health checks pass
-monitoring alerts configured
-```
+1. Multiple merchants exist safely.
+2. Multiple branches per merchant work.
+3. Multiple users per merchant work.
+4. Magic Link login works securely.
+5. Inactive/suspended users cannot log in.
+6. Tenant isolation is proven by tests.
+7. Branch isolation is proven by tests.
+8. Role and permission enforcement works backend-side.
+9. Front Office can manage clients, walk-ins, appointments, queue, sessions, invoices, and allowed payments.
+10. Finance can validate payments and issue receipts.
+11. Receipts cannot be issued before payment validation.
+12. Preferred personnel waiting fee works and appears as separate invoice item.
+13. Commissions are calculated only after payment confirmation.
+14. Merchant-to-Servana platform billing works.
+15. M-Pesa STK Push works in sandbox and production configuration.
+16. Manual M-Pesa reference verification is tied to one platform invoice.
+17. Contact exports are restricted to personally served clients.
+18. Audit logs capture sensitive actions.
+19. Dashboard reports are tenant-scoped.
+20. File uploads are private and authorized.
+21. API routes are authenticated, validated, authorized, rate-limited, and paginated.
+22. UI works on desktop, tablet, and mobile.
+23. Light and dark mode work.
+24. Accessibility requirements are met.
+25. Queue workers and scheduler are configured.
+26. CI/CD runs tests before deployment.
+27. Monitoring, logs, backups, and rollback procedures exist.
+28. The app is deployable repeatedly without manual guesswork.
 
 ---
 
-## 28. IDE Agent Execution Instructions
+# 30. Risk Register with Mitigation Steps
 
-The IDE coding agent must follow this execution protocol for every task.
-
-### 28.1 Before Implementation
-
-For each task, document:
-
-```text
-Requirement:
-Source:
-Files to inspect:
-Existing behavior:
-Expected behavior:
-Security concern:
-Tenant concern:
-Branch concern:
-Tests to add:
-```
-
-### 28.2 During Implementation
-
-Rules:
-
-1. Inspect existing code before changing behavior.
-2. Add or update migrations first for data changes.
-3. Add models, enums, factories, seeders.
-4. Add Form Requests.
-5. Add Policies.
-6. Add Actions/Services.
-7. Add Controllers.
-8. Add API Resources.
-9. Add routes.
-10. Add tests.
-11. Add frontend only after backend contract is stable.
-12. Run tests before moving to next task.
-
-### 28.3 Bug Fix Protocol
-
-For any defect:
-
-```text
-1. Reproduce the bug.
-2. Identify root cause.
-3. Identify affected files/functions/routes/database rows.
-4. Write failing test.
-5. Implement precise fix.
-6. Run targeted tests.
-7. Run related regression tests.
-8. Document verification.
-```
-
-### 28.4 Completion Proof Required
-
-Each phase must show:
-
-```text
-test command run
-test result
-API sample
-database proof where relevant
-authorization denial proof
-tenant isolation proof
-edge-case proof
-remaining risks
-```
+| Risk                                    |                                         Likelihood |      Impact | Mitigation                                                                  |
+| --------------------------------------- | -------------------------------------------------: | ----------: | --------------------------------------------------------------------------- |
+| Cross-tenant data leakage               | 8–15% poorly implemented; <2% with strict controls |    Critical | Tenant middleware, policies, scoped queries, automated denial tests         |
+| Merchants under-record invoices         |                                             60–75% |        High | Make invoices required for receipts, commissions, queue completion, reports |
+| Front Office manipulates payment status |                                             30–45% |        High | Finance validation, restricted receipts, immutable audit logs               |
+| M-Pesa duplicate callbacks              |                                             60–75% |        High | Idempotency, unique receipt constraints, transaction locks                  |
+| Manual M-Pesa reference reuse           |         35–50% without controls; <5% with controls |        High | Unique matched reference, one invoice verification rule                     |
+| Staff misuse client exports             |      35–50% without controls; 15–25% with controls |        High | Own clients only, approval/payment, signed URLs, audit logs                 |
+| Preferred personnel disputes            |                                             25–40% |      Medium | Show fee/wait time before confirmation, audit overrides                     |
+| Merchant login abuse                    |                                             25–40% |      Medium | Magic Link expiry, rate limits, MFA for high privilege                      |
+| Product complexity overwhelms SMEs      |                                             35–50% |        High | Role-specific dashboards, simple guided workflows                           |
+| Launch delay from overbuilding          |                                             40–60% |        High | Build launch-required modules first; defer client portal, loyalty, AI       |
+| Slow dashboards after growth            |                                                65% | Medium/High | Caching, summary tables, async reports                                      |
+| Broken mobile workflows                 |                                             30–45% |      Medium | Playwright responsive tests, mobile-first forms                             |
 
 ---
 
-## 29. Acceptance Criteria
+# 31. Final Verification Checklist
 
-Servana is acceptable for production launch only when:
+Before launch, verify:
 
-1. Magic Link login works securely.
-2. Inactive users cannot log in.
-3. Suspended merchants cannot operate.
-4. Tenant isolation tests pass.
-5. Branch isolation tests pass.
-6. Backend authorization is enforced for all protected actions.
-7. Frontend permission checks are not treated as security.
-8. Merchant onboarding works.
-9. Branch management works.
-10. Staff activation and suspension work.
-11. Service catalogue works.
-12. Client records work.
-13. Walk-ins work.
-14. Appointments work.
-15. Queue management works.
-16. Preferred personnel fee is calculated and shown before confirmation.
-17. Service sessions work.
-18. Invoices generate correct totals.
-19. Offline payment recording works.
-20. Finance validation works.
-21. Receipts are blocked until payment is valid.
-22. Commission ledger works after payment confirmation.
-23. Platform fee ledger works.
-24. Contact exports are restricted and audited.
-25. Dashboards show accurate tenant-scoped metrics.
-26. Audit logs capture sensitive actions.
-27. Notifications are logged and queued.
-28. File downloads use signed URLs.
-29. CI/CD runs tests before deployment.
-30. Dockerized staging deployment works.
-31. Production monitoring, backups, and rollback are configured.
+```text
+[ ] All migrations run on clean database.
+[ ] Seeders create roles and permissions.
+[ ] Super Admin can create merchant.
+[ ] Merchant can be activated/suspended.
+[ ] Merchant Admin can activate staff.
+[ ] Magic Link works once only.
+[ ] Inactive user login fails.
+[ ] Suspended merchant login fails.
+[ ] Tenant A cannot access Tenant B data.
+[ ] Branch user cannot access another branch.
+[ ] Front Office can create walk-in.
+[ ] Preferred personnel fee is calculated.
+[ ] Preferred fee appears on invoice.
+[ ] Offline payment can be recorded.
+[ ] Finance can validate payment.
+[ ] Receipt generation is blocked before validation.
+[ ] Receipt PDF downloads through signed URL.
+[ ] Platform invoice can be generated.
+[ ] M-Pesa STK Push can be initiated.
+[ ] M-Pesa callback marks invoice paid.
+[ ] Duplicate callback does not duplicate payment.
+[ ] Manual M-Pesa reference verification works.
+[ ] Reused reference is rejected.
+[ ] Commission is created after payment.
+[ ] Contact export contains only allowed clients.
+[ ] Audit logs are written for sensitive actions.
+[ ] Reports are tenant-scoped.
+[ ] File uploads reject unsafe files.
+[ ] API collections paginate.
+[ ] Rate limits work.
+[ ] Dark mode works.
+[ ] Mobile layout has no horizontal scrolling.
+[ ] Keyboard navigation works.
+[ ] CI/CD pipeline passes.
+[ ] Queue worker runs.
+[ ] Scheduler runs.
+[ ] Logs are structured.
+[ ] Backups are configured.
+[ ] Rollback is tested.
+[ ] Production environment contains no development defaults.
+```
 
----
+This plan is suitable for a real launch build. It deliberately treats Servana as a full SaaS operating system for service SMEs, not as a booking prototype, POS clone, or lightweight demo.
 
-## 30. Risk Register with Mitigation Steps
-
-| Risk                                    |                                            Likelihood |   Impact | Mitigation                                                                                        |
-| --------------------------------------- | ----------------------------------------------------: | -------: | ------------------------------------------------------------------------------------------------- |
-| Merchants under-record invoices         |                                               60%–75% |     High | Make invoices required for commissions, receipts, queue history, and owner reports.               |
-| Staff misuse contact exports            |       35%–50% without controls; 15%–25% with controls |     High | Restrict to personally served clients, require payment/approval, audit every export.              |
-| Cross-tenant data leakage               | 8%–15% if poorly built; under 2% with strong controls | Critical | Tenant scopes, policies, UUID/ULID public IDs, isolation tests, code review.                      |
-| Front Office manipulates payment status |                                               30%–45% |     High | Finance validation, immutable logs, restricted receipt permissions.                               |
-| Preferred personnel disputes            |                                               25%–40% |   Medium | Show wait time, show fee, require confirmation, audit overrides.                                  |
-| Merchant user login abuse               |                                               25%–40% |   Medium | Magic Link expiry, active-email verification, rate limits, session logs.                          |
-| Product complexity overwhelms SMEs      |                                               35%–50% |     High | Keep role dashboards workflow-driven and hide advanced features by permission.                    |
-| Launch delay from overbuilding          |                                               40%–60% |     High | Prioritize operational core before client portal, loyalty, inventory, AI, and advanced analytics. |
-| Weak audit log discipline               |                                                   35% |     High | Centralized `AuditLogger` service and tests for sensitive workflows.                              |
-| Commission disputes                     |                                               30%–45% |   Medium | Calculate only after payment confirmation; expose commission ledger to personnel/admin.           |
-| Platform fee disputes                   |                                               25%–40% |     High | Transparent platform fee ledger, billing cycles, waivers, and audit logs.                         |
-| Slow reports                            |                                               45%–65% |   Medium | Queue reports and cache dashboard aggregates.                                                     |
-| Poor mobile usability for Front Office  |                                               40%–55% |     High | Mobile-first workflow tests for client registration, queue, invoice, and payment recording.       |
-
----
-
-## 31. Final Verification Checklist
-
-### Architecture
-
-* [ ] Laravel backend implemented.
-* [ ] Vue + TypeScript frontend implemented.
-* [ ] PostgreSQL schema migrated.
-* [ ] Redis cache and queues configured.
-* [ ] S3-compatible storage configured.
-* [ ] Docker stack works.
-* [ ] CI/CD pipeline works.
-
-### Security
-
-* [ ] Magic Links hashed.
-* [ ] Magic Links expire.
-* [ ] Magic Links are one-time-use.
-* [ ] Login rate limiting implemented.
-* [ ] Tenant middleware implemented.
-* [ ] Branch middleware implemented.
-* [ ] Policies implemented.
-* [ ] No frontend-only authorization.
-* [ ] No sequential IDs exposed.
-* [ ] Sensitive logs redacted.
-* [ ] Private files use signed URLs.
-
-### Product Core
-
-* [ ] Merchant onboarding.
-* [ ] Merchant activation/suspension.
-* [ ] Branch management.
-* [ ] Staff management.
-* [ ] Role and permission assignment.
-* [ ] Service catalogue.
-* [ ] Personnel eligibility.
-* [ ] Client records.
-* [ ] Walk-ins.
-* [ ] Appointments.
-* [ ] Queue board.
-* [ ] Preferred personnel selection.
-* [ ] Service sessions.
-* [ ] Invoices.
-* [ ] Offline payment recording.
-* [ ] Finance validation.
-* [ ] Receipts.
-* [ ] Platform fee ledger.
-* [ ] Commission ledger.
-* [ ] Contact exports.
-* [ ] Reports.
-* [ ] Dashboards.
-* [ ] Notifications.
-* [ ] Audit logs.
-
-### Testing
-
-* [ ] Unit tests pass.
-* [ ] Feature tests pass.
-* [ ] API tests pass.
-* [ ] Authorization tests pass.
-* [ ] Tenant isolation tests pass.
-* [ ] Branch isolation tests pass.
-* [ ] Validation tests pass.
-* [ ] Frontend component tests pass.
-* [ ] Browser/E2E tests pass.
-* [ ] Security regression tests pass.
-
-### Production
-
-* [ ] Staging environment deployed.
-* [ ] HTTPS configured.
-* [ ] Queue workers running.
-* [ ] Scheduler running.
-* [ ] Backups configured.
-* [ ] Restore tested.
-* [ ] Monitoring configured.
-* [ ] Error tracking configured.
-* [ ] Health checks pass.
-* [ ] Rollback procedure tested.
-* [ ] Production smoke tests pass.
+[1]: https://developer.safaricom.co.ke/?utm_source=chatgpt.com "Daraja Developer Portal | Safaricom"
+[2]: https://developer.safaricom.co.ke/apis?utm_source=chatgpt.com "Daraja APIs"
