@@ -386,6 +386,7 @@ Purpose:
 Statuses:
 
 - Draft
+- In waiting
 - In progress
 - Completed
 - Cancelled
@@ -580,6 +581,8 @@ Merchant starts recording services and invoices
 Client arrives
 Front Office creates or selects client
 Front Office selects service
+Client may request a specific Merchant Personnel at an extra fee set by the Super Admin, in which case the client shall be placed next in line for that specific Merchant Personnel
+Alternatively, the client may be normally queued to the next available Merchant Personnel
 Front Office assigns Merchant Personnel
 Service is completed
 Invoice is generated
