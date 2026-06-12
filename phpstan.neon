@@ -1,0 +1,24 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+
+    # Analyse our own source. Framework boilerplate in config/ and bootstrap/ is
+    # declarative and not level-8 clean as shipped (env() returns bool|string);
+    # linting it adds noise without protecting our logic.
+    paths:
+        - app
+        - routes
+        - database
+
+    # Keep analysis deterministic; treat PHPDoc as authoritative.
+    treatPhpDocTypesAsCertain: true
+
+    # Phase 1 has no baseline; the codebase is expected to stay level-8 clean.
+    # As later phases land, prefer fixing over baselining.
+
+rules:
+    # Servana custom guardrails (Plan Phase 1 deliverable; logic matures Phase 9).
+    - App\Support\Phpstan\Rules\NoWithoutTenancyOutsidePlatformRule
+    - App\Support\Phpstan\Rules\NoRawSqlConcatRule

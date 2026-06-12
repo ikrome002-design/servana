@@ -909,17 +909,37 @@ Security is a core product requirement because Servana handles merchant operatio
 
 ### Prerequisites
 
-Recommended local tools:
+Pinned stack (Plan AS-1):
 
-- PHP 8.2+
-- Composer
-- Node.js 20+
-- npm, pnpm, yarn, or bun
-- MySQL 8+ or PostgreSQL 14+
+- PHP 8.3 (local dev may run a newer 8.x; CI and Docker enforce 8.3)
+- Composer 2.x
+- Node.js 20+ and npm
 - Git
-- Laravel CLI
-- Mail testing tool such as Mailpit, Mailhog, or a sandbox email provider
-- Payment gateway sandbox account
+- [gitleaks](https://github.com/gitleaks/gitleaks) 8.x (for the pre-commit secret-scan hook)
+- PostgreSQL 16 and Redis 7 — **provisioned via Docker in Phase 2**; not
+  required to run the Phase 1 smoke test (which is database-less).
+
+> Mailpit, MinIO, Meilisearch and the full service stack arrive with Docker in
+> Phase 2. The database/migration/seed steps further down this section become
+> active from Phase 2 onward.
+
+### Phase 1 quick start (reproducible in < 15 minutes)
+
+```bash
+git clone <repo-url> servana && cd servana
+composer install                 # backend deps (lockfile committed)
+npm ci                           # frontend deps (lockfile committed)
+cp .env.example .env             # minimal Phase 1 env
+php artisan key:generate
+git config core.hooksPath .githooks   # activate the gitleaks pre-commit hook
+
+# Verify the full quality gate (all should be green):
+composer pint                    # code style (check)
+composer stan                    # Larastan level 8
+php artisan test                 # Pest — boots app, /health 200
+npm run lint && npm run typecheck && npm run test
+npm run build                    # builds the SPA to public/spa
+```
 
 ### Clone Repository
 
@@ -1109,16 +1129,20 @@ npm run lint
 npm run typecheck
 ```
 
-### Tests
+### Tests & quality gates
 
 ```bash
-php artisan test
-```
+# Backend
+composer pint            # code style (use `vendor/bin/pint` to auto-fix)
+composer stan            # Larastan level 8
+php artisan test         # Pest (PostgreSQL in CI; never SQLite)
+vendor/bin/pest --filter SmokeTest   # targeted
 
-or:
-
-```bash
-vendor/bin/phpunit
+# Frontend
+npm run lint
+npm run typecheck
+npm run test             # Vitest
+npm run build
 ```
 
 ---

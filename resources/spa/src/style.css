@@ -1,0 +1,54 @@
+/* Self-hosted fonts (Plan §12.2: no third-party font CDN, for privacy + CSP).
+   Inter for product UI (400/500/600), Manrope for page titles (700/800). */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/manrope/700.css';
+@import '@fontsource/manrope/800.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Brand design tokens (Plan §12.1). Single source for both themes; .dark
+   overrides only the values that change (Plan §14). */
+:root {
+  --color-primary: #f97316; /* Savannah Orange — CTAs, active states */
+  --color-sun: #fbbf24; /* badges, soft highlights */
+  --color-success: #2e7d32;
+  --color-growth: #3f7d20;
+  --color-brand-deep: #4a2208; /* headings, footer, admin anchor */
+  --color-accent: #007c78; /* Service Teal — module accents, trust */
+  --color-warning: #f59e0b;
+  --color-error: #dc2626;
+  --color-info: #0284c7;
+  --color-text: #1f2933;
+  --color-text-muted: #6b7280;
+  --color-border: #e5e7eb;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f3f4f6;
+  --color-bg: #f9fafb;
+  --color-cream: #fff8e7;
+  --radius-card: 12px;
+  --radius-control: 8px;
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.08);
+}
+
+.dark {
+  --color-bg: #111827;
+  --color-surface: #1f2933;
+  --color-surface-alt: #273340;
+  --color-text: #f3f4f6;
+  --color-text-muted: #9ca3af;
+  --color-border: #374151; /* borders stay visible in dark — never removed */
+  --color-primary: #f97316; /* AA on dark */
+  --color-accent: #14b8a6; /* lightened teal */
+  --color-error: #f87171;
+  --color-success: #4ade80;
+}
+
+body {
+  font-family: theme('fontFamily.sans');
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}

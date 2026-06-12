@@ -1,0 +1,80 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "citrus-labs/servana",
+    "type": "project",
+    "description": "Servana by Citrus - multi-tenant service-operations SaaS for African service-based SMEs.",
+    "keywords": ["servana", "citrus", "saas", "laravel"],
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3",
+        "laravel/framework": "^11.31",
+        "laravel/tinker": "^2.9"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.0",
+        "laravel/pail": "^1.1",
+        "laravel/pint": "^1.13",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.1",
+        "pestphp/pest": "^3.5",
+        "pestphp/pest-plugin-laravel": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ],
+        "pint": "pint --test",
+        "stan": "phpstan analyse --memory-limit=512M",
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        },
+        "audit": {
+            "ignore": {
+                "CVE-2026-48019": "CRLF injection in Laravel's default email validation rule (PKSA-mdq4-51ck-6kdq). Affects all Laravel 11.x; patched only in 12.60+/13.10+, so no fix exists on the pinned Laravel 11 stack (Plan AS-1). Not rated high/critical. Mitigation: Servana uses Magic Link auth (Plan A3) and validates every email through FormRequests; no validated email is written into raw mail headers. Re-evaluate at the Laravel 12 upgrade and during Phase 5 (auth). Tracked in docs/proof/phase-1.md."
+            }
+        },
+        "platform": {
+            "php": "8.3.31"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

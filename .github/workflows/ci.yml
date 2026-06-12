@@ -1,0 +1,136 @@
+name: CI
+
+# Phase 1 scope: PR-stage pipeline skeleton (Plan §26.2 "on PR" line).
+# The "on main" build/push/deploy stages are added in Phase 25.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend — Pint, Larastan, Pest
+    runs-on: ubuntu-latest
+    services:
+      # Tests run against PostgreSQL, never SQLite (CLAUDE.md §6.13).
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: servana_test
+          POSTGRES_USER: servana
+          POSTGRES_PASSWORD: servana
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U servana"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          # Pinned stack (Plan AS-1). Local dev may run a newer 8.x; CI is the
+          # source of truth for the pinned runtime.
+          php-version: '8.3'
+          extensions: pdo_pgsql, redis, intl, gd, bcmath, mbstring
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Prepare application environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Lint — Pint (check only)
+        run: composer pint
+
+      - name: Static analysis — Larastan level 8
+        run: composer stan
+
+      - name: Tests — Pest on PostgreSQL
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: servana_test
+          DB_USERNAME: servana
+          DB_PASSWORD: servana
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: php artisan test
+
+      - name: Dependency audit (Composer)
+        run: composer audit --no-interaction
+
+  frontend:
+    name: Frontend — ESLint, vue-tsc, Vitest, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Lint — ESLint (no jQuery, no device detection)
+        run: npm run lint
+
+      - name: Type-check — vue-tsc
+        run: npm run typecheck
+
+      - name: Unit tests — Vitest
+        run: npm run test
+
+      - name: Build SPA — Vite
+        run: npm run build
+
+      - name: Dependency audit (npm)
+        run: npm audit --audit-level=high
+
+  security:
+    name: Security — gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan for secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

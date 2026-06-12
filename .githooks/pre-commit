@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+# Servana pre-commit hook — block secrets from entering history (CLAUDE.md §6.4).
+# Activate once per clone with:  git config core.hooksPath .githooks
+set -e
+
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --redact --no-banner --config .gitleaks.toml
+else
+  echo "[pre-commit] gitleaks not found on PATH — local secret scan skipped."
+  echo "[pre-commit] Install it (see README §Local Development Setup); CI enforces the gate regardless."
+fi
