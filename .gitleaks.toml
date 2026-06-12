@@ -1,0 +1,19 @@
+# Servana secret-scanning config (CLAUDE.md §6.4, Plan §3 rule 5).
+# Extends gitleaks' built-in rule set.
+title = "Servana gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Paths excluded from secret scanning (generated or vendored)."
+paths = [
+  '''(^|/)vendor/''',
+  '''(^|/)node_modules/''',
+  '''(^|/)public/spa/''',
+  '''composer\.lock$''',
+  '''package-lock\.json$''',
+  # Local-only backup of the developer's pre-existing .env (gitignored, never
+  # committed). Listed defensively in case of an accidental filesystem scan.
+  '''\.env\.local-notes\.bak$''',
+]
