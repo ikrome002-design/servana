@@ -1,0 +1,818 @@
+**SERVANA TERMS OF SERVICE**
+
+**Effective Date:** **01st January 2026**
+**Last Updated:** **01st August 2026**
+**Contracting Entity:** **Citrus Labs Limited**
+**Address:** **P.O. Box 23983 - 00100, Nairobi, Kenya**
+**Support Email:** **[support@citruslabs.co.ke](mailto:support@citruslabs.co.ke)**
+
+## 1. INTRODUCTION, BINDING EFFECT, AND ACCEPTANCE OF TERMS
+
+1.1. These Servana Terms of Service constitute a legally binding agreement between Citrus Labs Limited, whose address is P.O. Box 23983 - 00100, Nairobi, Kenya, and each Merchant Personnel user who accesses, logs into, activates, receives an invitation to, uses, attempts to use, views, interacts with, or is otherwise assigned any account, dashboard, role, branch, record, service session, queue, appointment, Client record, commission view, preferred-personnel request, notification, or other feature within Servana.
+
+1.2. These Terms govern access to and use of Servana by Merchant Personnel only. For purposes of these Terms, Merchant Personnel are merchant-side service providers, including without limitation barbers, hairdressers, stylists, massage therapists, nail technicians, beauticians, facial therapists, grooming specialists, cosmetologists, therapists, attendants, service staff, and similar personnel who are assigned by a Merchant or Branch to deliver services to Clients through Servana.
+
+1.3. By accessing Servana, logging into Servana, accepting an invitation to Servana, activating a Magic Link, using a Merchant Personnel dashboard, viewing an assignment, viewing a Client record, viewing an appointment, viewing a queue, viewing a preferred-personnel request, viewing commission information, changing an availability state, updating a service-session status, entering service notes, continuing to use Servana after these Terms are published or updated, or otherwise using any part of Servana, the Merchant Personnel user accepts these Terms and agrees to be legally bound by them.
+
+1.4. These Terms bind the Merchant Personnel user whether access occurs directly, indirectly, through an employer, through a Merchant, through a Branch, through a Merchant Administrator, through a Merchant Human Resource user, through a Merchant Branch user, through a Merchant Front Office user, through a Merchant Finance user, through a Merchant Audit user, through a web browser, through a mobile browser, through a tablet, through a device, through an email invitation, through a Magic Link, through a Platform notification, through an integration, through a shared workplace network, or through any other authorized or unauthorized technical method.
+
+1.5. The Merchant Personnel user acknowledges that Servana is a multi-tenant SaaS web platform operated by Citrus Labs Limited for service-based SMEs, including barbershops, salons, massage parlours, spas, grooming studios, beauty parlours, and similar appointment-based or walk-in service businesses, and that the Platform supports merchant operations relating to Clients, branches, staff access, appointments, walk-ins, queues, service sessions, invoices, offline payment recording, receipts, commissions, preferred-personnel requests, dashboards, reports, audit logs, and related operational records. 
+
+1.6. Where the Merchant Personnel user accesses Servana on behalf of, for the benefit of, under the direction of, or in connection with a Merchant, Branch, employer, principal, company, partnership, sole proprietor, business owner, organization, contractor counterparty, service establishment, or represented entity, the Merchant Personnel user represents and warrants that the user has full authority, permission, appointment, mandate, employment authority, agency authority, contractor authority, delegated operational authority, or other lawful basis to access and use Servana in that capacity.
+
+1.7. If a Merchant Personnel user does not agree to these Terms, lacks authority to use Servana, is not properly assigned to a Merchant and Branch, is suspended, is deactivated, is not legally permitted to perform the relevant services, or is otherwise prohibited from accessing Servana, the user must not access Servana, must not activate any Magic Link, must not view or use any Client data, must not view or process any appointment, queue, assignment, service session, commission, preferred-personnel request, or operational record, and must immediately cease use of the Platform.
+
+1.8. These Terms are intended to be enforceable as website terms, platform terms, account terms, SaaS terms, staff-access terms, Merchant Personnel account terms, clickwrap terms, browsewrap-supporting terms where legally recognized, electronic contracting terms, and binding contractual terms applicable to the use of Servana.
+
+## 2. IDENTITY OF CONTRACTING ENTITY
+
+2.1. Servana is owned, operated, controlled, licensed, maintained, developed, administered, and commercially provided by Citrus Labs Limited, unless Citrus Labs Limited expressly identifies a different contracting entity in a separate written agreement signed by Citrus Labs Limited.
+
+2.2. Citrus Labs Limited may provide Servana directly or through its directors, officers, employees, contractors, affiliates, hosting providers, infrastructure providers, telecommunications providers, email providers, SMS providers, WhatsApp or messaging providers, analytics providers, monitoring providers, support providers, payment-recording infrastructure providers, security providers, database providers, storage providers, legal advisers, professional advisers, auditors, and other service providers.
+
+2.3. No Merchant, Branch, Merchant Administrator, Merchant Human Resource user, Merchant Branch user, Merchant Front Office user, Merchant Finance user, Merchant Audit user, Merchant Personnel user, Client, third-party provider, employer, contractor, agent, consultant, reseller, or representative has authority to amend, waive, vary, contradict, or bind Citrus Labs Limited in respect of these Terms unless Citrus Labs Limited expressly authorizes such amendment in a written instrument signed by Citrus Labs Limited.
+
+## 3. DEFINITIONS AND RULES OF INTERPRETATION
+
+3.1. “Account” means any Servana account, profile, access identity, login identity, staff profile, Merchant Personnel profile, invited-user record, Magic Link login entitlement, dashboard access, role assignment, Branch assignment, tenant assignment, session, credential, authentication state, permission set, or other access mechanism associated with a Servana user.
+
+3.2. “Applicable Law” means all laws, statutes, regulations, rules, directives, orders, by-laws, policies, sector standards, codes, licensing obligations, professional requirements, administrative rules, court orders, governmental requirements, regulatory requirements, consumer-protection obligations, tax rules, data-protection obligations, privacy rules, cybersecurity obligations, e-commerce requirements, electronic-communications rules, employment and labour obligations, anti-bribery rules, anti-corruption rules, anti-money laundering obligations where applicable, sanctions, export controls, telecommunications rules, marketing-communications rules, health and safety rules, sanitation rules, personal-care service rules, wellness service rules, professional-service requirements, and any other legal obligation applicable to a Merchant Personnel user, Merchant, Branch, Client, service, territory, country, county, province, municipality, industry, or transaction.
+
+3.3. “Authorized User” means a person who has been validly invited, activated, assigned, and permitted to use Servana under the applicable tenant, Branch, role, account status, service eligibility, and permission controls.
+
+3.4. “Branch” means a physical, operational, commercial, administrative, or service-delivery location of a Merchant within Servana, including without limitation a salon branch, barbershop branch, spa branch, massage parlour branch, grooming studio branch, beauty parlour branch, hotel-based service branch, or other merchant service location.
+
+3.5. “Branch Scope” means the access boundary under which a user may access only records, Clients, appointments, queues, service sessions, personnel records, dashboards, notifications, and operational information associated with an assigned Branch.
+
+3.6. “Citrus”, “Citrus Labs”, “Company”, “we”, “us”, and “our” mean Citrus Labs Limited.
+
+3.7. “Client” means a service recipient, walk-in customer, appointment customer, general end-user record, person receiving services from a Merchant, or other individual whose details, contact information, visit history, service history, queue participation, appointment history, personnel preference, invoice history, receipt history, consent record, communication preference, or related information is recorded in Servana.
+
+3.8. “Client Data” means all personal data, operational data, contact data, service history, appointment history, queue history, visit history, invoice history, receipt history, consent information, communication preferences, service notes, preferences, preferred-personnel history, assigned-personnel history, and related information concerning Clients.
+
+3.9. “Confidential Information” means all non-public information relating to Servana, Citrus Labs Limited, Merchants, Branches, Clients, staff, Platform architecture, dashboards, data models, workflows, permissions, audit logs, pricing, invoices, receipts, commissions, Client information, business processes, security measures, authentication flows, product plans, documentation, software, databases, commercial arrangements, or operational records.
+
+3.10. “Content” means all text, data, information, entries, notes, images, files, documents, communications, records, feedback, comments, logs, updates, statuses, service notes, support requests, and other materials submitted to, displayed in, processed by, or generated through Servana.
+
+3.11. “Magic Link” means a one-time or time-limited electronic login link sent to an email address for authentication, account access, invitation acceptance, activation, or session creation.
+
+3.12. “Merchant” means the business, sole proprietor, company, partnership, establishment, organization, service-based SME, branch owner, operator, or other commercial entity that uses Servana to manage service operations.
+
+3.13. “Merchant Administrator” means the merchant owner, registering business owner, manager, or authorized operator who self-registers a Merchant business account, creates or manages merchant-level information, creates Branches, and has merchant-level administrative rights subject to Servana permissions.
+
+3.14. “Merchant Audit” means the read-only merchant-side account type intended to view audit logs, high-risk events, role changes, payment validation logs, receipt logs, queue reassignment logs, preferred-personnel fee logs, contact-access events, suspicious activity, and related audit information where permitted.
+
+3.15. “Merchant Branch” means the branch-level merchant account type responsible for managing a specific Branch profile, operating hours, service configuration, branch queue, branch appointments, branch reports, day opening, day closing, cash-up submission, and related Branch operations where permitted.
+
+3.16. “Merchant Finance” means the merchant-side account type responsible for offline payment validation, financial controls, receipts, payment disputes, external refund records, cash-up review, commission liability visibility where permitted, platform-fee visibility where permitted, and finance audit activity.
+
+3.17. “Merchant Front Office” means the merchant-side account type responsible for Client-facing operations, Client registration, walk-ins, appointments, queue handling, service-session creation, invoice generation, offline payment-record submission, and related front-office workflows.
+
+3.18. “Merchant Human Resource” means the merchant-side account type responsible for staff identity, staff invitation, staff activation lifecycle visibility, employment records, role assignment, Branch-scoped assignment, Merchant Personnel service eligibility, availability, shifts, working days, unavailable dates, and related HR-controlled functions within the assigned Branch.
+
+3.19. “Merchant Personnel” means the user type governed by these Terms, being service providers assigned to provide services to Clients under a Merchant and Branch, including without limitation barbers, hairdressers, stylists, massage therapists, nail technicians, beauticians, facial therapists, grooming specialists, cosmetologists, and similar service personnel.
+
+3.20. “Platform” or “Servana” means the Servana SaaS web application, including without limitation websites, dashboards, modules, workflows, databases, APIs, interfaces, authentication systems, Magic Link systems, tenant systems, Branch-scoping systems, role-based access controls, permission systems, queue systems, appointment systems, service-session systems, Client record systems, invoice systems, offline payment-recording systems, receipt systems, commission displays, preferred-personnel request systems, reports, notifications, audit logs, security systems, and related services.
+
+3.21. “Preferred Personnel” means a Merchant Personnel user specifically requested or selected by a Client for a service, appointment, queue position, or service session, where such functionality is enabled and subject to Platform, Merchant, Branch, availability, eligibility, fee, and audit controls.
+
+3.22. “Terms” means these Servana Terms of Service, as amended, updated, replaced, or supplemented from time to time.
+
+3.23. “User Data” means all data, records, content, information, identifiers, files, notes, service-session records, assignment records, appointment records, queue records, Client records, operational records, account records, availability records, commission records, preferred-personnel records, audit events, log data, metadata, diagnostic data, support communications, security records, usage data, analytics data, and other information submitted to, generated through, processed by, or associated with Servana.
+
+3.24. References to the singular include the plural and vice versa. References to a person include natural persons, companies, partnerships, associations, governmental bodies, and other legal or commercial entities. References to “including” mean “including without limitation”. References to “may” confer discretion. References to “shall” and “must” impose mandatory obligations. References to “law” include Applicable Law. Section headings are for convenience and do not limit interpretation.
+
+## 4. DESCRIPTION OF SERVANA
+
+4.1. Servana is a multi-tenant SaaS web platform intended to assist service-based SMEs across Africa in digitizing, controlling, and auditing day-to-day service operations.
+
+4.2. Servana supports, or may support, merchant onboarding, merchant tenant creation, Merchant Administrator self-registration, Branch creation, Branch profiles, staff invitations, staff roles, Merchant Personnel assignments, availability, service eligibility, operating calendars, appointments, walk-ins, queues, Client records, service sessions, preferred-personnel selections, invoice generation, offline payment recording, Finance validation of payment records, receipt generation after validation, commission visibility, platform-fee tracking, dashboards, reports, notifications, audit logs, and related operational workflows.
+
+4.3. Servana is not solely a booking application, not solely a point-of-sale system, not solely an invoicing tool, not a payroll system, not an accounting system, not a banking system, not an escrow service, not a payment processor, not a money-remittance service, not a recruitment platform, not an employment agency, not a professional licensing authority, not a compliance certification service, and not a substitute for independent merchant-side operational, financial, employment, tax, professional, regulatory, or legal responsibility.
+
+4.4. Servana records offline payment information entered by authorized merchant users, including payment method, amount, reference, status, validation details, and related information, but Servana does not itself process Client-to-Merchant payments inside the Platform. Supported offline payment-recording methods may include cash, M-Pesa, bank transfer, card terminal, voucher, split payment, and other merchant-defined offline methods, subject to Merchant configuration and Platform controls.
+
+4.5. Servana may display information to Merchant Personnel concerning their own dashboard, own assignments, own queues, own appointments, own service history, own commission information, allowed personally served Clients, preferred-personnel requests, Clients who specifically requested them, estimated wait order, service requested, and request states, including active, cancelled, reassigned, or completed states, subject always to permissions, Branch Scope, tenant isolation, role restrictions, availability, service eligibility, suspension status, and Platform enforcement.
+
+4.6. Servana may support a preferred-personnel waiting feature under which a Client may choose either the next available Merchant Personnel user or a specific Merchant Personnel user at an additional fee configured by Citrus Labs Limited at Platform level or reflected in merchant workflows. Such preferred-personnel selection is an operational Platform feature only and does not create any employment right, compensation right, booking guarantee, exclusivity right, Client ownership right, or direct payment obligation from Citrus Labs Limited to the Merchant Personnel user.
+
+## 5. SCOPE OF THE TERMS AS APPLIED TO MERCHANT PERSONNEL
+
+5.1. These Terms are expressly tailored to Merchant Personnel and govern the Merchant Personnel user’s permitted access, restrictions, account responsibilities, Client-data obligations, confidentiality obligations, service-session responsibilities, queue responsibilities, appointment responsibilities, preferred-personnel obligations, commission-display limitations, data-handling restrictions, acceptable-use duties, and risk allocation.
+
+5.2. Merchant Personnel access is intentionally limited. Unless the Platform expressly grants permission, Merchant Personnel shall not access, view, export, edit, delete, approve, reject, validate, adjust, void, archive, configure, or administer merchant-level data, Branch-level data outside their Branch Scope, other personnel records, Merchant Finance records, Merchant Audit records, Merchant Administrator settings, Merchant Human Resource settings, Merchant Branch settings, service catalogue configuration, service pricing, payment validations, receipts, platform-fee ledgers, staff rosters, staff employment records, role assignments, Branch access assignments, commission rules, or system audit records.
+
+5.3. Merchant Personnel acknowledge that the Platform is designed to enforce access restrictions server-side and not merely through user-interface hiding. A visible screen, cached object, delayed interface update, notification preview, browser artifact, misrouted link, interface defect, API response, or other accidental exposure does not grant legal authorization to access, copy, use, disclose, rely on, or exploit the exposed data.
+
+5.4. Merchant Personnel must immediately cease access and notify the relevant Merchant and Citrus Labs Limited where they discover or suspect that they can access records outside their own permitted Merchant, Branch, assignment, Client, queue, appointment, service-session, commission, or role scope.
+
+## 6. ELIGIBILITY, CAPACITY, AUTHORITY, AND LEGAL RIGHT TO USE THE PLATFORM
+
+6.1. Merchant Personnel may use Servana only if they are legally capable of entering into binding obligations, legally permitted to use digital services, authorized by the relevant Merchant or Branch, validly invited or activated under the Merchant’s staff lifecycle, assigned to the relevant Branch where Branch Scope applies, assigned to the relevant service eligibility where service eligibility applies, and not suspended, deactivated, restricted, blocked, or otherwise prohibited from access.
+
+6.2. Merchant Personnel represent and warrant that they are not prohibited from using Servana by Applicable Law, court order, sanctions rules, export-control rules, employment restrictions, professional restrictions, regulatory restrictions, merchant policy, workplace policy, contractual obligations, or any Platform enforcement decision.
+
+6.3. Merchant Personnel are solely responsible for ensuring that their access to Servana and their performance of services are lawful in the country, territory, county, province, municipality, sector, and workplace in which they operate.
+
+6.4. Where professional licensing, health clearance, beauty-service licensing, massage-service licensing, salon-service licensing, sanitation certification, insurance, work authorization, employment authorization, contractor authorization, tax registration, industry permission, customer-consent requirements, or other sector-specific requirements apply, the Merchant Personnel user and the relevant Merchant are solely responsible for satisfying them.
+
+6.5. Citrus Labs Limited does not verify and does not warrant the age, identity, qualifications, training, competence, work authorization, employment status, contractor status, licensing, professional registration, insurance, health clearance, sanitation compliance, criminal background, regulatory status, or legal eligibility of any Merchant Personnel user.
+
+## 7. ACCOUNT REGISTRATION, ACCOUNT CREDENTIALS, AND ACCOUNT SECURITY
+
+7.1. Merchant Personnel accounts are generally created, invited, assigned, activated, suspended, deactivated, or managed through Merchant-controlled workflows, including Merchant Human Resource workflows, Merchant Administrator controls, and Branch-scoped access rules.
+
+7.2. A Merchant Personnel user may be invited by email, assigned to an account type, assigned a role such as Barber, Massage Therapist, Hairdresser, Stylist, Beautician, Cosmetologist, Grooming Specialist, Nail Technician, Facial Therapist, or similar role, assigned service eligibility, assigned a Branch, and activated through the applicable staff lifecycle.
+
+7.3. Merchant Personnel log in by Magic Link sent to the email address associated with the account. Login is conditional upon verification that the user email exists, belongs to the correct Merchant tenant, is associated with an active account, is associated with an active role, is not suspended, is assigned to the correct Branch where Branch Scope applies, and is using a Magic Link that is valid, unused, and unexpired.
+
+7.4. Merchant Personnel shall maintain exclusive control over their email accounts, devices, browsers, sessions, Magic Links, workplace devices, mobile devices, tablets, password managers, and any authentication factor or external account used to access Servana.
+
+7.5. Merchant Personnel must not share, forward, sell, transfer, lend, disclose, publish, screenshot, store insecurely, or permit another person to use any Magic Link, account session, login email, dashboard session, device session, or other authentication mechanism.
+
+7.6. Merchant Personnel must not use another user’s account, allow another person to use their account, create shared accountability gaps, impersonate another staff member, use a shared email address where individual accountability is required, bypass authentication, manipulate login flows, or attempt to revive expired, unused, revoked, or invalid Magic Links.
+
+7.7. Merchant Personnel are responsible for all activity occurring through their account, including unauthorized activity resulting from failure to secure their email account, device, browser, Magic Link, workplace terminal, or session.
+
+7.8. Merchant Personnel shall promptly notify the relevant Merchant and Citrus Labs Limited at [support@citruslabs.co.ke](mailto:support@citruslabs.co.ke) of any suspected unauthorized access, compromised email, exposed Magic Link, lost device, unauthorized Client-data access, suspicious login, mistaken Branch access, inaccurate account assignment, security incident, or suspected Platform misuse.
+
+7.9. Citrus Labs Limited may invalidate sessions, invalidate Magic Links, require re-authentication, block devices, restrict accounts, impose rate limits, suspend access, log out users, require account review, or take other security measures where it determines that account integrity, Platform integrity, Client privacy, tenant isolation, Branch isolation, or user accountability may be at risk.
+
+## 8. USER ROLES, PERMISSIONS, ADMINISTRATORS, STAFF, AGENTS, DELEGATES, AND AUTHORIZED USERS
+
+8.1. Servana uses role-based, permission-based, tenant-based, status-based, service-eligibility-based, and Branch-based access controls. Merchant Personnel access is materially narrower than access granted to Merchant Administrator, Merchant Branch, Merchant Human Resource, Merchant Front Office, Merchant Finance, Merchant Audit, and Citrus Labs Limited Super Administrator roles.
+
+8.2. Merchant Personnel may only access own assignments, own queue, own appointments, own service history, own commission visibility, allowed personally served Clients, preferred-personnel requests involving them, Clients specifically requesting them, estimated wait order, requested service, request status, and records for assigned Branches only, subject to the Platform’s server-side authorization.
+
+8.3. Merchant Personnel must not self-escalate permissions, request excessive permissions for improper purposes, exploit role defects, misuse cached data, access unauthorized endpoints, test permission boundaries without authorization, use another user’s account, induce another user to perform unauthorized actions, or rely on manual Front Office judgment to bypass HR-controlled service eligibility.
+
+8.4. Merchant Personnel acknowledge that Merchant Human Resource users may control service eligibility, availability schedules, working days, working hours, breaks, unavailable dates, emergency unavailable status, employment data, status history, and role assignments within their Branch Scope, and that Citrus Labs Limited is not responsible for disputes arising from such merchant-side management.
+
+8.5. Merchant Personnel acknowledge that Merchant Administrator or Merchant Human Resource users may suspend, deactivate, restrict, remove, or modify staff access within the relevant Merchant’s permission model and that Citrus Labs Limited may enforce such changes technically through session invalidation, Magic Link invalidation, account blocking, dashboard restriction, and historical-record preservation.
+
+## 9. BUSINESS, ORGANIZATION, OR INDIVIDUAL ACCOUNT RESPONSIBILITIES
+
+9.1. Merchant Personnel shall use Servana only for legitimate, authorized, Merchant-approved, Branch-scoped service operations.
+
+9.2. Merchant Personnel shall ensure that all status updates, service notes, service-session actions, availability toggles, assignment acknowledgements, queue actions, appointment-related actions, preferred-personnel actions, Client-service interactions, and other Platform entries made through their account are accurate, timely, truthful, lawful, appropriate, non-misleading, and consistent with actual service operations.
+
+9.3. Merchant Personnel must not falsify service completion, falsely mark Clients as served, falsely mark services as completed, manipulate queues, manipulate service duration, misrepresent availability, create duplicate service sessions, encourage duplicate Client records, obstruct reassignment, misreport preferred-personnel requests, misuse commission visibility, or enter inaccurate information for personal advantage, retaliation, concealment, misconduct, fraud, or operational manipulation.
+
+9.4. Merchant Personnel are responsible for complying with Merchant policies, Branch policies, workplace rules, professional standards, hygiene standards, Client safety rules, data-handling rules, consent requirements, and Applicable Law.
+
+9.5. Merchant Personnel acknowledge that operational acts performed in Servana may affect Client experience, queue order, appointment handling, service completion records, invoice triggers, commission calculations, audit logs, Merchant reports, Branch cash-up, payment validation dependencies, and dispute records.
+
+9.6. Merchant Personnel must exercise care when entering notes or changing statuses because Platform records may be used by Merchants, Finance users, Audit users, Administrators, Clients, regulators, courts, insurers, tax authorities, employment bodies, professional bodies, or other competent persons as evidence of operational activity.
+
+## 10. PLATFORM ACCESS RIGHTS AND LIMITED LICENCE
+
+10.1. Subject to these Terms and ongoing compliance, Citrus Labs Limited grants the Merchant Personnel user a limited, revocable, non-exclusive, non-transferable, non-sublicensable, non-assignable right to access and use Servana solely for authorized Merchant service operations within the assigned tenant, Branch Scope, role, permission set, account status, service eligibility, and availability state.
+
+10.2. The access right granted to Merchant Personnel is for use only through approved user interfaces, approved authentication flows, and authorized Platform functionality. No API access, database access, back-end access, administrative access, export access, bulk access, scraping access, source-code access, or infrastructure access is granted unless Citrus Labs Limited expressly grants such access in writing.
+
+10.3. This access right is not a sale, assignment, lease, transfer, conveyance, licence of intellectual property beyond limited use, employment benefit, employment entitlement, payroll entitlement, commercial agency, partnership interest, database right, or proprietary right.
+
+10.4. Citrus Labs Limited may revoke, limit, suspend, condition, terminate, modify, or replace any access right at any time where permitted by these Terms, required by Merchant configuration, required by Platform policy, required by Applicable Law, required for security, required for operational continuity, required for data protection, or required for Platform integrity.
+
+## 11. RESTRICTIONS ON USE OF SERVANA
+
+11.1. Merchant Personnel must not reverse engineer, decompile, disassemble, copy, reproduce, modify, translate, adapt, scrape, crawl, harvest, mine, index, mirror, frame, benchmark for competitive misuse, resell, sublicense, rent, lease, distribute, commercialize, interfere with, overload, probe, scan, disrupt, damage, impair, bypass, or exploit Servana.
+
+11.2. Merchant Personnel must not access or attempt to access any Merchant tenant other than the Merchant tenant to which they are validly assigned.
+
+11.3. Merchant Personnel must not access or attempt to access any Branch, queue, appointment, Client record, service session, commission record, preferred-personnel request, staff record, payment record, invoice, receipt, finance record, audit log, export, report, platform-fee ledger, configuration, or administrative record outside their permitted scope.
+
+11.4. Merchant Personnel must not attempt to access Client contact export functionality, bulk Client contact downloads, Client contact lists, hidden export endpoints, signed export URLs, non-personnel export features, contact-access logs, or any Client information beyond the information required to perform allowed service operations for Clients personally served by or assigned to the Merchant Personnel user.
+
+11.5. Merchant Personnel must not use Servana for fraud, misrepresentation, harassment, intimidation, discrimination, unlawful surveillance, Client poaching, unauthorized marketing, unauthorized solicitation, payment manipulation, queue manipulation, commission manipulation, service-record falsification, employment sabotage, commercial interference, data theft, or any unlawful or harmful purpose.
+
+11.6. Merchant Personnel must not upload, transmit, introduce, execute, or attempt to introduce viruses, worms, malware, spyware, ransomware, logic bombs, credential harvesters, exploit code, automated scripts, bots, denial-of-service tools, unauthorized scraping tools, vulnerability scanners, or malicious code.
+
+11.7. Merchant Personnel must not interfere with audit logs, tamper-detection mechanisms, timestamps, status histories, old-value and new-value records, login logs, access logs, queue histories, appointment histories, service-session histories, receipt histories, payment-record histories, preferred-personnel histories, commission histories, or unauthorized-access logs.
+
+## 12. ACCEPTABLE USE POLICY
+
+12.1. Merchant Personnel shall use Servana lawfully, professionally, securely, accurately, proportionately, and only for legitimate Merchant service operations.
+
+12.2. Merchant Personnel shall use Client information only where necessary to perform assigned services, understand service context, identify the correct Client, manage the immediate appointment or queue interaction, view permitted service history, complete authorized service operations, and record lawful service-session information.
+
+12.3. Merchant Personnel shall treat all Client data as confidential and shall comply with Client consent records, communication preferences, Merchant policies, Branch policies, Platform access limits, and Applicable Law.
+
+12.4. Merchant Personnel shall not use Client data obtained through Servana to create personal contact lists, solicit Clients privately, divert Clients away from the Merchant, advertise personal services, contact Clients outside authorized Merchant channels, harass Clients, discriminate against Clients, publish Client information, or build an external database.
+
+12.5. Merchant Personnel shall not use Servana in a manner that imposes unreasonable load, disrupts Platform operation, circumvents role design, undermines tenant isolation, undermines Branch isolation, weakens Client privacy, compromises auditability, or creates operational confusion.
+
+## 13. PROHIBITED CONDUCT
+
+13.1. Prohibited conduct includes without limitation unauthorized access, credential sharing, Magic Link forwarding, impersonation, Client-data misuse, Client contact copying, Client contact export attempts, bulk data access, screen scraping, photographing Client lists, screenshotting confidential records without authorization, downloading records without permission, queue manipulation, false availability updates, false service completion, false no-show records, false cancellation records, improper reassignment interference, commission manipulation, preferred-personnel manipulation, unauthorized Client solicitation, unauthorized marketing, harassment, discrimination, intimidation, retaliation, abuse of support channels, malware introduction, denial-of-service activity, vulnerability testing without authorization, and attempts to bypass Platform controls.
+
+13.2. Merchant Personnel must not knowingly create, submit, approve, trigger, or preserve inaccurate records, including inaccurate service notes, false completion records, false start or end times, false service durations, false assignment acknowledgements, false availability states, false Client interactions, false preferred-personnel records, or false commission-related records.
+
+13.3. Merchant Personnel must not use Servana to facilitate illegal, unsafe, unlicensed, deceptive, exploitative, abusive, discriminatory, sexually exploitative, violent, harassing, privacy-invasive, or professionally improper services or conduct.
+
+13.4. Merchant Personnel must not attempt to manipulate Merchant reports, Branch reports, daily activity summaries, service counts, Clients served, commission earned, commission pending, preferred-personnel demand, or performance metrics.
+
+## 14. PROHIBITED CONTENT
+
+14.1. Merchant Personnel must not upload, enter, transmit, store, generate, or cause the Platform to process Content that is unlawful, false, misleading, defamatory, abusive, obscene, harassing, discriminatory, threatening, hateful, exploitative, pornographic, violent, fraudulent, infringing, malicious, privacy-invasive, commercially deceptive, professionally improper, or unrelated to legitimate Merchant service operations.
+
+14.2. Merchant Personnel must not enter excessive, unnecessary, irrelevant, intrusive, or unlawful personal data into service notes, Client records, appointment records, queue records, or service-session records.
+
+14.3. Merchant Personnel must not enter sensitive personal data, health information, medical details, biometric information, identity-document information, children’s data, financial account information, intimate details, protected-class information, or other high-risk information unless expressly authorized by the Merchant, required for lawful service operations, supported by appropriate consent or lawful basis, permitted by the relevant Platform field, and compliant with Applicable Law.
+
+14.4. Merchant Personnel must not use service notes or Platform communications to insult, shame, profile, discriminate against, threaten, ridicule, or harass Clients, staff, managers, Merchants, or any other person.
+
+## 15. USER DATA, BUSINESS DATA, CUSTOMER DATA, OPERATIONAL DATA, UPLOADED DATA, AND ACCOUNT DATA
+
+15.1. Servana may process User Data, business data, Merchant data, Branch data, staff data, Merchant Personnel data, Client Data, account data, operational data, assignment data, queue data, appointment data, service-session data, availability data, commission data, preferred-personnel request data, audit data, usage data, analytics data, diagnostic data, security records, support communications, metadata, log data, device information, IP addresses, browser information, timestamps, notification logs, consent records, and related records.
+
+15.2. Merchant Personnel are responsible for the accuracy, lawfulness, relevance, completeness, and appropriateness of all User Data that they enter, submit, confirm, update, access, view, generate, or cause to be generated in Servana.
+
+15.3. Merchant Personnel acknowledge that inaccurate service records, improper status changes, false availability entries, misleading service-session notes, unauthorized Client-data access, or improper preferred-personnel handling may cause operational, commercial, financial, employment, regulatory, audit, tax, consumer-protection, Client, or dispute consequences.
+
+15.4. Citrus Labs Limited may process User Data to provide, authenticate, authorize, operate, host, maintain, secure, monitor, troubleshoot, support, improve, analyse, test, develop, bill, enforce, audit, protect, and preserve Servana.
+
+15.5. Citrus Labs Limited may generate operational metadata, audit events, access logs, security logs, diagnostic records, analytics data, system records, account records, and other derived records from Merchant Personnel activity, and such records may be retained and used for Platform operation, security, enforcement, evidence, compliance, and dispute resolution.
+
+## 16. USER CONTENT LICENCE GRANTED TO CITRUS LABS LIMITED
+
+16.1. Merchant Personnel grant Citrus Labs Limited a worldwide, non-exclusive, royalty-free, sublicensable, transferable, irrevocable to the extent necessary for audit integrity and legal retention, and otherwise revocable only to the extent required by Applicable Law, licence to host, store, copy, process, transmit, display, format, index, analyse, monitor, back up, secure, audit, preserve, and use User Data and Content submitted by or associated with the Merchant Personnel user for purposes connected with operating, providing, securing, maintaining, improving, supporting, billing, enforcing, auditing, and protecting Servana.
+
+16.2. The licence includes the right to process service-session records, queue interactions, appointment interactions, preferred-personnel request interactions, availability states, Client-service interactions, service notes, assignment records, commission-related operational data, logs, metadata, support communications, and audit events.
+
+16.3. Merchant Personnel represent and warrant that they have all rights, permissions, consents, authority, and lawful basis necessary to submit, access, view, process, and use User Data and Content through Servana.
+
+16.4. Nothing in these Terms requires Citrus Labs Limited to publish, display, preserve, restore, delete, return, export, correct, or continue hosting any Content except to the extent expressly required by Applicable Law or Citrus Labs Limited’s applicable policies.
+
+## 17. OWNERSHIP OF SERVANA, SOFTWARE, PLATFORM TECHNOLOGY, TRADEMARKS, DESIGNS, DATABASES, WORKFLOWS, INTERFACES, DOCUMENTATION, AND INTELLECTUAL PROPERTY
+
+17.1. Citrus Labs Limited exclusively owns or controls Servana and all associated software, source code, object code, scripts, databases, schemas, tables, data structures, APIs, interfaces, workflows, screens, layouts, designs, product architecture, tenant-separation systems, Branch-scoping systems, role structures, permission systems, authentication systems, Magic Link systems, service-session systems, queue systems, appointment systems, invoice systems, receipt systems, commission-display logic, preferred-personnel workflows, audit systems, reporting structures, notifications, dashboards, documentation, business logic, methods, processes, algorithms, configurations, trade names, trademarks, service marks, logos, know-how, trade secrets, inventions, improvements, and other intellectual property.
+
+17.2. Merchant Personnel acquire no ownership interest in Servana, the Platform, the software, the database structure, any workflow, any report design, any interface, any data model, any permission model, any Citrus Labs Limited mark, any product design, or any other Citrus Labs Limited intellectual property by accessing Servana, using Servana, being invited to Servana, submitting operational records, or suggesting improvements.
+
+17.3. Merchant Personnel must not copy, imitate, reproduce, modify, adapt, translate, create derivative works from, register, challenge, impair, use confusingly similar marks to, reverse engineer, extract, commercialize, or exploit any Citrus Labs Limited intellectual property.
+
+17.4. Merchant Personnel must not use the name “Servana”, “Citrus”, “Citrus Labs”, “Citrus Labs Limited”, or any related logo, mark, design, domain, trade name, or branding except as expressly permitted by Citrus Labs Limited in writing.
+
+## 18. RESERVATION OF RIGHTS
+
+18.1. Citrus Labs Limited reserves all rights not expressly granted in these Terms.
+
+18.2. No implied licence, implied waiver, estoppel-based right, exhaustion-based right, ownership right, employment right, payroll right, compensation right, Client ownership right, data-export right, database right, administrative right, audit-log right, integration right, API right, or source-code right is granted to Merchant Personnel.
+
+18.3. Citrus Labs Limited may introduce, modify, remove, charge for, restrict, suspend, or discontinue any feature, module, interface, access level, dashboard, workflow, role, permission, notification, record type, or report at any time, subject to these Terms and Applicable Law.
+
+## 19. FEEDBACK, SUGGESTIONS, IMPROVEMENTS, AND PRODUCT IDEAS
+
+19.1. Where Merchant Personnel provide feedback, suggestions, recommendations, ideas, feature requests, bug reports, usability comments, service-workflow proposals, interface suggestions, operational observations, or other input relating to Servana, Citrus Labs Limited may use, reproduce, modify, implement, commercialize, disclose, publish, protect, assign, transfer, license, or disregard such feedback without restriction, attribution, approval, compensation, duty, or obligation.
+
+19.2. To the maximum extent permitted by Applicable Law, Merchant Personnel assign to Citrus Labs Limited all rights, title, and interest in such feedback and waive all moral rights, approval rights, remuneration rights, and restriction rights in relation to such feedback.
+
+19.3. Merchant Personnel shall not submit feedback that contains confidential information of third parties, infringing material, trade secrets of another platform, or information that the Merchant Personnel user has no right to disclose.
+
+## 20. SUBSCRIPTION TERMS, PLANS, TRIALS, RENEWALS, UPGRADES, DOWNGRADES, AND BILLING
+
+20.1. Servana may be provided to Merchants under subscription plans, billing cycles, platform service fees, account-opening fees, merchant service-fee tiers, usage-based charges, preferred-personnel fee rules, invoices, statements, overdue ledgers, suspension triggers, and other commercial arrangements.
+
+20.2. Merchant Personnel acknowledge that subscription creation, plan selection, trial eligibility, renewals, upgrades, downgrades, billing cycles, platform-fee invoices, Merchant balances, Branch-level platform-fee debts, platform-fee statements, overdue balances, suspension for non-payment, and platform-fee disputes are generally Merchant-level, Branch-level, Finance-level, or Administrator-level matters.
+
+20.3. Merchant Personnel do not acquire any right to continued access merely because they are employed, contracted, rostered, assigned, or invited by a Merchant. Access may be affected by Merchant subscription status, Branch suspension, platform-fee debt, Merchant suspension, abuse enforcement, security concerns, user suspension, deactivation, or operational restrictions.
+
+20.4. Merchant service-fee tiers, including Customer Centric, Split Tier, and Business Centric pricing behavior, may affect Merchant-to-Client invoice amounts but do not reduce the Merchant’s liability to Citrus Labs Limited for platform service fees, and do not create any direct entitlement of Merchant Personnel to receive amounts from Citrus Labs Limited.
+
+20.5. Where a Merchant Personnel user separately purchases, subscribes to, orders, activates, or uses any paid feature directly from Citrus Labs Limited, the user shall be responsible for all applicable fees, taxes, payment-processor charges, renewals, failed-payment charges, chargebacks, reversals, collection costs, and related obligations.
+
+20.6. Citrus Labs Limited may change pricing, billing cycles, plan structures, features, limits, fees, renewal rules, trial rules, or subscription requirements from time to time, subject to Applicable Law and any separate written agreement binding Citrus Labs Limited.
+
+## 21. FEES, CHARGES, TAXES, PAYMENT PROCESSING, FAILED PAYMENTS, COLLECTIONS, AND CURRENCY ISSUES
+
+21.1. Merchant Personnel must not assume that any Client invoice line item, preferred-personnel fee, service price, platform service fee, Merchant service-fee tier amount, receipt amount, commission display, revenue display, payment record, or dashboard amount represents money owed by Citrus Labs Limited to the Merchant Personnel user.
+
+21.2. Merchants, and not Citrus Labs Limited, are responsible for wages, salaries, commissions, incentives, bonuses, allowances, tips, gratuities, reimbursements, payroll, employment benefits, statutory deductions, withholding, tax remittance, social security, pension, insurance contributions, contractor fees, service-provider fees, or other compensation owed to Merchant Personnel.
+
+21.3. Citrus Labs Limited is not responsible for Merchant payroll, Merchant employment taxes, Merchant withholding obligations, VAT, turnover tax, excise duty, income tax, professional dues, union dues, staff benefits, employment-law obligations, contractor obligations, or any Merchant-side statutory, contractual, payroll, commission, or compensation duty.
+
+21.4. All disputes concerning Merchant Personnel pay, commission rates, commission eligibility, commission reversals, commission timing, commission approvals, payroll, wages, employment classification, employment status, contractor status, deductions, reimbursements, benefits, gratuities, Client tips, or Merchant policies must be resolved between the Merchant Personnel user and the relevant Merchant, employer, contractor counterparty, or competent authority.
+
+21.5. Currency conversion, foreign-exchange differences, mobile-money charges, card-terminal charges, bank charges, cash shortages, payment-reference disputes, reversals, chargebacks, offline payment discrepancies, Client refund disputes, and Merchant reconciliation disputes are the responsibility of the relevant Merchant, Client, financial intermediary, payment provider, or offline payment handler, not Citrus Labs Limited.
+
+21.6. Merchant Personnel must not represent to Clients that Citrus Labs Limited has received, processed, settled, guaranteed, validated, reversed, refunded, insured, approved, or escrowed any offline payment unless the Platform expressly shows such status and the Merchant Personnel user is authorized to communicate it.
+
+## 22. THIRD-PARTY PAYMENT PROVIDERS AND FINANCIAL INTERMEDIARIES
+
+22.1. Servana may record offline payment information involving third-party payment providers or financial intermediaries, including without limitation mobile-money providers, banks, card-terminal providers, voucher issuers, cash handlers, payment aggregators, and other external systems.
+
+22.2. Citrus Labs Limited does not control, process, settle, reverse, refund, hold, escrow, insure, transmit, guarantee, verify, or intermediate Client-to-Merchant offline payments merely because Servana records payment information.
+
+22.3. Merchant Personnel must not enter, encourage, or communicate false payment information, false payment references, duplicate payment references, fabricated M-Pesa codes, fabricated bank references, fabricated card-terminal references, fabricated voucher codes, or any payment information that the user knows or ought reasonably to know is inaccurate.
+
+22.4. Merchant Personnel must not pressure, mislead, or induce Clients to make payments outside Merchant-approved channels, into personal accounts, to unauthorized numbers, through unauthorized agents, or through channels not approved by the Merchant.
+
+22.5. Merchant Personnel must comply with Merchant payment policies and must not interfere with Merchant Finance validation, receipt-generation rules, payment-dispute workflows, cash-up workflows, or reconciliation workflows.
+
+## 23. NO FIDUCIARY, ESCROW, BANKING, EMPLOYMENT, AGENCY, PARTNERSHIP, OR PROFESSIONAL ADVISORY RELATIONSHIP
+
+23.1. Citrus Labs Limited does not act as fiduciary, trustee, escrow agent, bank, deposit-taking institution, payment processor, money remitter, insurer, payroll provider, employer, recruiter, labour broker, professional licensing authority, employment agency, staff supervisor, collective-bargaining representative, tax adviser, legal adviser, financial adviser, medical adviser, health-and-safety certifier, operational adviser, or business manager for Merchant Personnel.
+
+23.2. No employment, partnership, joint venture, agency, fiduciary, franchise, representative, payroll, labour, contractor, or similar relationship is created between Citrus Labs Limited and Merchant Personnel by these Terms, by use of Servana, by assignment to a Branch, by visibility of commission information, by preferred-personnel requests, by Client assignments, by notifications, by service sessions, or by any Platform workflow.
+
+23.3. Merchant Personnel act under the authority, policies, supervision, employment relationship, contractor relationship, commercial arrangement, or operational instructions of the relevant Merchant, not Citrus Labs Limited.
+
+23.4. Citrus Labs Limited does not supervise the physical performance of Merchant Personnel services, does not set Merchant Personnel work hours, does not control workplace conduct except through Platform terms and technical controls, does not determine Merchant Personnel compensation, and does not guarantee any Merchant Personnel income.
+
+## 24. SERVICE AVAILABILITY, MAINTENANCE, UPDATES, DOWNTIME, BETA FEATURES, MODIFICATIONS, AND DISCONTINUATION
+
+24.1. Citrus Labs Limited may modify, update, enhance, patch, suspend, replace, discontinue, restrict, remove, reconfigure, rename, redesign, migrate, limit, or otherwise change Servana, including without limitation dashboards, roles, permissions, workflows, modules, reports, notifications, authentication flows, Magic Link rules, Branch access rules, service-session states, queue states, appointment states, preferred-personnel features, commission displays, Client visibility rules, audit logs, data fields, and technical infrastructure.
+
+24.2. Citrus Labs Limited does not guarantee that Servana will be uninterrupted, error-free, secure, always available, compatible with every device, compatible with every browser, compatible with every network, free from delays, free from defects, free from inaccurate user-entered data, free from operational discrepancies, free from downtime, or available in every country, city, region, county, or network environment.
+
+24.3. Access may be affected by maintenance, downtime, internet failure, mobile network failure, browser incompatibility, device failure, hosting-provider failure, storage-provider failure, email-provider failure, messaging-provider failure, telecommunications failure, power outages, cyber incidents, malware incidents, denial-of-service attacks, database issues, queue-worker delays, third-party service interruptions, government restrictions, Merchant suspension, Branch suspension, user suspension, non-payment enforcement, security enforcement, or force majeure.
+
+24.4. Citrus Labs Limited may offer beta, pilot, limited-release, experimental, phased, or trial features. Such features may be incomplete, unstable, inaccurate, changed without notice, withdrawn, restricted, or subject to additional conditions.
+
+24.5. Merchant Personnel acknowledge that mobile-first optimization for phones and tablets does not guarantee identical behavior, speed, layout, or availability on every device, operating system, browser, screen size, network, or hardware configuration.
+
+## 25. PLATFORM ACCURACY, RECORDS, ANALYTICS, REPORTS, NOTIFICATIONS, AUTOMATIONS, AND OPERATIONAL OUTPUTS
+
+25.1. Servana may generate, calculate, display, notify, or record assignments, queue positions, appointment statuses, service-session statuses, estimated wait times, Client histories, service histories, preferred-personnel requests, request states, availability states, commission pending amounts, commission earned amounts, dashboards, reports, audit events, notifications, operational summaries, and analytics.
+
+25.2. Merchant Personnel are responsible for validating information relevant to their services, Clients, assignments, availability, Branch, queue, appointment, service session, preferred-personnel request, and operational decisions before relying on or acting upon it.
+
+25.3. Citrus Labs Limited does not guarantee the accuracy, completeness, timeliness, reliability, commercial usefulness, legal sufficiency, payroll correctness, commission correctness, tax correctness, employment relevance, service suitability, Client-safety suitability, or operational appropriateness of any Platform record, dashboard, report, notification, automation, estimate, analytic, or output.
+
+25.4. Estimated wait times are estimates only and may be affected by personnel availability, service duration, queue length, Client delays, service overruns, no-shows, cancellations, emergency closures, reassignment, preferred-personnel selections, Branch operating hours, HR-controlled availability, Front Office actions, technical delays, or inaccurate data entry.
+
+25.5. Commission displays are informational operational records only. Commission amounts may depend on Merchant-defined rules, HR-controlled commission settings, service eligibility, invoice status, Finance validation, voids, external refunds, preferred-personnel surcharge settings, dispute flags, period locks, and Merchant policies. Citrus Labs Limited does not guarantee that any displayed commission will be paid.
+
+25.6. Notifications may be delayed, undelivered, filtered, blocked, misclassified as spam, or affected by email providers, device settings, network issues, messaging channels, or third-party systems. Merchant Personnel remain responsible for checking the Platform and complying with Merchant instructions.
+
+## 26. USER RESPONSIBILITY FOR DECISIONS, COMPLIANCE, RECORDS, COMMUNICATIONS, AND TRANSACTIONS
+
+26.1. Merchant Personnel remain responsible for their own professional judgment, service delivery, Client interactions, service notes, Platform entries, availability states, assignment handling, queue conduct, appointment conduct, preferred-personnel handling, confidentiality, compliance, and adherence to Merchant policies and Applicable Law.
+
+26.2. Merchant Personnel must not rely on Servana as the sole source of truth where independent verification is required for Client identity, Client consent, Client safety, service suitability, appointment details, queue order, payment status, receipt availability, refund status, commission entitlement, employment obligations, regulatory compliance, or professional obligations.
+
+26.3. Merchant Personnel shall verify any unusual, high-risk, inconsistent, delayed, missing, duplicate, or disputed record with the relevant Merchant, Branch, Front Office, Finance, HR, Administrator, or competent personnel before acting.
+
+26.4. Merchant Personnel shall not make unauthorized promises, guarantees, discounts, refunds, payment confirmations, professional representations, service warranties, wait-time guarantees, or commission representations to Clients or staff on behalf of Citrus Labs Limited.
+
+## 27. THIRD-PARTY SERVICES, INTEGRATIONS, APIS, LINKS, PLATFORMS, DEVICES, NETWORKS, HOSTING, TELECOMMUNICATIONS, AND EXTERNAL DEPENDENCIES
+
+27.1. Servana may rely upon third-party hosting, email, object storage, database, monitoring, analytics, telecommunications, SMS, WhatsApp, browser, device, operating-system, internet-service, security, mobile-money, banking, card-terminal, voucher, payment-reference, and infrastructure providers.
+
+27.2. Citrus Labs Limited is not liable for third-party failures, interruptions, delays, provider restrictions, API changes, message-delivery failures, email filtering, spam classification, browser changes, device defects, mobile-network outages, payment-provider downtime, bank-system failures, card-terminal failures, mobile-money failures, data-center outages, DNS failures, domain issues, cloud-provider incidents, or telecommunications interruptions.
+
+27.3. Merchant Personnel must comply with applicable third-party terms when using devices, browsers, networks, email accounts, mobile numbers, communications channels, or external services connected with Servana.
+
+27.4. Links, integrations, or references to third-party services do not constitute endorsement, control, guarantee, or responsibility by Citrus Labs Limited.
+
+## 28. DATA PROTECTION AND PRIVACY ALLOCATION
+
+28.1. Citrus Labs Limited may process personal data in accordance with these Terms, its Privacy Policy, applicable data-protection notices, applicable platform policies, and Applicable Law.
+
+28.2. Depending on context and Applicable Law, the Merchant may act as controller, data controller, data fiduciary, responsible party, data user, business, or equivalent decision-maker in relation to Client Data and staff data, while Citrus Labs Limited may act as processor, operator, service provider, platform provider, independent controller for certain account and operational data, or another legally recognized role.
+
+28.3. Merchant Personnel shall process Client Data only as authorized by the relevant Merchant, supported by Client consent or other lawful basis where required, permitted by Platform controls, necessary for assigned service operations, and compliant with Applicable Law.
+
+28.4. Merchant Personnel must not export, download, photograph, screenshot, copy, transmit, disclose, publish, sell, rent, trade, scrape, reconstruct, misuse, or retain Client Data outside Servana unless expressly authorized by the Merchant, permitted by Platform controls, necessary for lawful service operations, and compliant with Applicable Law.
+
+28.5. Merchant Personnel acknowledge that Merchant Personnel contact export capability is not provided for launch and that Merchant Personnel must not attempt to access, create, infer, scrape, reconstruct, or obtain any Client contact export, bulk contact download, contact list, or unauthorized Client-contact dataset.
+
+28.6. Merchant Personnel may view only the Client information required to complete allowed service operations for Clients they personally serve or are assigned to, subject to tenant controls, Branch Scope, role permissions, Client consent, Merchant policy, Platform controls, sensitive-data masking, and audit logging.
+
+28.7. Merchant Personnel are responsible for ensuring that any Client notes, service notes, comments, preferences, or other entries are accurate, proportionate, relevant, respectful, lawful, non-discriminatory, non-excessive, and appropriate for the service context.
+
+28.8. Citrus Labs Limited may process personal data across borders for hosting, storage, backup, support, security, monitoring, analytics, troubleshooting, maintenance, and operational purposes, subject to applicable policies and Applicable Law.
+
+28.9. Merchant Personnel acknowledge that no transmission, storage, encryption, access-control, authentication, or hosting method is absolutely secure, and Citrus Labs Limited does not guarantee absolute security.
+
+28.10. Merchant Personnel must promptly report suspected data breaches, unauthorized Client access, misdirected Client data, accidental disclosure, unauthorized screenshots, unauthorized exports, compromised devices, or any privacy incident involving Servana.
+
+## 29. CONSENT TO ELECTRONIC COMMUNICATIONS, NOTICES, RECORDS, AND DIGITAL CONTRACTING
+
+29.1. Merchant Personnel consent to receive electronic communications, notices, Magic Link emails, invitation emails, staff welcome emails, activation emails, appointment-related notifications, queue notifications, preferred-personnel notifications, service-session notifications, security notices, support communications, policy notices, suspension notices, and other Platform communications electronically.
+
+29.2. Merchant Personnel agree that electronic records, logs, audit trails, timestamps, account records, clickwrap acceptance records, browsewrap-supporting records where recognized, Magic Link records, email notices, system records, IP addresses, user-agent records, session records, Branch-access records, role records, notification logs, service-session histories, Client-access histories, and Platform records may be used as evidence of user activity, consent, communications, authorization, account access, contractual acceptance, and operational events.
+
+29.3. Merchant Personnel must maintain a valid, secure, accessible email address and are responsible for reviewing Platform communications.
+
+29.4. Failure to read an electronic notice does not invalidate the notice where Citrus Labs Limited sent, posted, or made the notice available through a reasonable electronic method.
+
+## 30. CONFIDENTIALITY
+
+30.1. Merchant Personnel may access Confidential Information belonging to Citrus Labs Limited, Merchants, Branches, Clients, staff, or other users.
+
+30.2. Confidential Information includes without limitation Client records, Client contact information, service histories, appointment histories, queue information, preferred-personnel requests, service notes, Merchant operations, Branch operations, pricing information, commission displays, assignment records, Platform workflows, audit logs, security information, access rules, role rules, and operational dashboards.
+
+30.3. Merchant Personnel shall keep Confidential Information strictly confidential and shall use it only for authorized service operations within Servana.
+
+30.4. Merchant Personnel must not disclose Confidential Information to unauthorized persons, including without limitation other merchants, competitors, former employers, personal contacts, social media audiences, messaging groups, unauthorized staff, Clients outside the relevant context, third-party service providers, or personal business contacts.
+
+30.5. Merchant Personnel must not use Confidential Information for personal gain, Client diversion, competing services, unauthorized marketing, workplace retaliation, public disclosure, gossip, harassment, or any purpose outside authorized Merchant operations.
+
+30.6. Confidentiality obligations survive suspension, deactivation, termination, cessation of employment, cessation of contractor relationship, Branch reassignment, Merchant departure, and cessation of use of Servana.
+
+## 31. SECURITY MEASURES, CYBERSECURITY, UNAUTHORIZED ACCESS, AND INCIDENT HANDLING
+
+31.1. Citrus Labs Limited may implement Magic Link authentication, one-time token rules, token expiry, email verification, active invited-email verification, role-based access control, permission-based access control, tenant-based access control, Branch-based access control, rate limiting, session timeout, login audit logs, optional multi-factor authentication for high-privilege roles, monitoring, alerts, data masking, signed URLs, export restrictions, and other security measures.
+
+31.2. Merchant Personnel must comply with all security measures and must not bypass, weaken, disable, interfere with, test, attack, or circumvent them without written authorization from Citrus Labs Limited.
+
+31.3. Citrus Labs Limited may investigate suspected unauthorized access, suspicious usage, security incidents, Client-data misuse, credential compromise, contact-export attempts, branch-scope violations, tenant-scope violations, role misuse, audit-log anomalies, queue manipulation, commission manipulation, or other risks.
+
+31.4. Citrus Labs Limited may preserve logs, restrict accounts, suspend access, notify Merchants, invalidate sessions, invalidate Magic Links, require re-authentication, block IP addresses, block devices, restrict features, notify affected persons where legally required, cooperate with competent authorities, or take other measures reasonably considered necessary.
+
+31.5. Merchant Personnel must not treat any security vulnerability, access defect, mistaken permission, data exposure, or system weakness as permission to exploit, test, disclose, publish, or use it.
+
+## 32. COMPLIANCE WITH APPLICABLE LAWS ACROSS AFRICA AND USER’S LOCAL JURISDICTION
+
+32.1. Servana is intended for use across Africa, and legal obligations may vary by country, territory, county, municipality, province, sector, and service category.
+
+32.2. Merchant Personnel shall comply with all Applicable Law relevant to their access to and use of Servana, including laws relating to business registration, licensing, professional licensing, taxes, consumer protection, e-commerce, advertising, employment, labour, workplace conduct, service delivery, health and safety, sanitation, privacy, data protection, cybersecurity, anti-bribery, anti-corruption, anti-money laundering where applicable, sanctions, export controls, telecommunications, marketing communications, recordkeeping, customer disclosures, and industry-specific obligations.
+
+32.3. Citrus Labs Limited does not represent that Servana, any Merchant, any Branch, or any Merchant Personnel user is licensed, compliant, registered, approved, regulated, certified, or authorized in every African jurisdiction.
+
+32.4. Merchant Personnel must not use Servana to evade local law, conceal unlawful service activity, misrepresent regulatory status, bypass tax obligations, avoid employment obligations, avoid professional rules, or facilitate services prohibited in the user’s jurisdiction.
+
+## 33. SECTOR-SPECIFIC COMPLIANCE OBLIGATIONS
+
+33.1. Merchant Personnel providing grooming, beauty, wellness, massage, spa, hygiene, cosmetic, personal-care, therapeutic, or similar services shall comply with all professional, health, sanitation, licensing, consent, customer-care, workplace, and service-specific obligations applicable to them.
+
+33.2. Merchant Personnel shall not use Servana to record, offer, perform, confirm, advertise, schedule, or facilitate services that are unlawful, unlicensed, unsafe, deceptive, exploitative, discriminatory, outside the Merchant Personnel user’s competence, outside the user’s authorization, or prohibited by the relevant Merchant, Branch, regulator, or Applicable Law.
+
+33.3. Merchant Personnel are solely responsible for the quality, safety, lawfulness, professionalism, and suitability of services they perform for Clients.
+
+33.4. Servana does not verify Client suitability for any service and does not certify that any Client interaction, appointment, queue entry, service session, or preferred-personnel request is medically, legally, professionally, or commercially appropriate.
+
+## 34. CONSUMER PROTECTION, FAIR USE, MISREPRESENTATION, AND CUSTOMER-FACING RESPONSIBILITIES
+
+34.1. Merchant Personnel shall not mislead Clients regarding service availability, service duration, personnel availability, wait times, preferred-personnel fees, pricing, discounts, invoices, receipts, refunds, payment validation, service outcomes, professional qualifications, warranties, Merchant policies, Citrus Labs Limited’s role, or Platform functionality.
+
+34.2. Merchant Personnel must not represent that Citrus Labs Limited employs, supervises, certifies, guarantees, insures, pays, disciplines, regulates, endorses, validates, or is responsible for Merchant Personnel services.
+
+34.3. Merchant Personnel must communicate respectfully, accurately, lawfully, and professionally with Clients in connection with Platform-supported service operations.
+
+34.4. Merchant Personnel must not use Servana to discriminate unlawfully against Clients, deny services unlawfully, harass Clients, shame Clients, threaten Clients, misuse Client preferences, or expose Client information.
+
+34.5. Client-facing records may have legal, regulatory, employment, tax, consumer-protection, audit, dispute, and evidentiary significance, and Merchant Personnel must treat such records accordingly.
+
+## 35. MARKETPLACE, BOOKING, SERVICE DELIVERY, MERCHANT, VENDOR, STAFF, AND CUSTOMER INTERACTION RULES
+
+35.1. Servana supports appointment records, walk-in records, queue records, service sessions, Client records, preferred-personnel selections, invoices, offline payment-record statuses, receipts, personnel service eligibility, commission visibility, notifications, and audit logs.
+
+35.2. Merchant Personnel must follow valid workflow states and must not intentionally create operational inconsistencies, including duplicate sessions, duplicate Client interactions, false waiting states, false assigned states, false in-service states, false completed states, false cancelled states, false no-show states, improper appointment handling, improper queue handling, or improper reassignment interference.
+
+35.3. Merchant Personnel may serve, view, or interact only with Clients assigned to them, personally served by them, specifically requesting them, or otherwise lawfully visible under Platform permissions.
+
+35.4. Merchant Personnel shall not solicit Clients away from the Merchant using Client information obtained through Servana, except where expressly authorized by the Merchant and lawful under Applicable Law.
+
+35.5. Merchant Personnel must not interfere with Merchant Front Office creation of walk-ins, appointment check-ins, queue records, service selection, invoice generation, or payment-record submission.
+
+35.6. Merchant Personnel must not interfere with Merchant Finance validation of payment records, receipt issuance, dispute handling, cash-up review, refund recording, or financial period locking.
+
+35.7. Merchant Personnel must not interfere with Merchant Human Resource assignment of roles, service eligibility, shifts, availability schedules, working days, unavailable periods, suspension, deactivation, or employment records.
+
+35.8. Merchant Personnel must not interfere with Merchant Audit review of logs, suspicious activity, unauthorized access attempts, preferred-personnel overrides, role changes, payment issues, or other high-risk events.
+
+## 36. MERCHANT PERSONNEL ASSIGNMENTS, QUEUES, APPOINTMENTS, AND SERVICE SESSIONS
+
+36.1. Merchant Personnel may view and manage only assignments, queues, appointments, and service sessions that are assigned to them or otherwise lawfully visible under their account permissions.
+
+36.2. Merchant Personnel shall not start, complete, cancel, alter, delay, reassign, or manipulate a service session except as permitted by Platform workflow, Merchant policy, Branch policy, and Applicable Law.
+
+36.3. Merchant Personnel shall not mark a Client as served unless the service has actually been performed.
+
+36.4. Merchant Personnel shall not create false service notes, omit material service-session issues where records are required, or intentionally enter misleading service-session information.
+
+36.5. Merchant Personnel shall not bypass appointment-to-active-queue conversion rules, double-booking prevention, duplicate-session prevention, personnel eligibility checks, Branch closure protection, no-show controls, or cancellation-reason requirements.
+
+36.6. Merchant Personnel acknowledge that reassignment may occur when they are unavailable, suspended, on break, offline, busy, no-show, unavailable, deactivated, or otherwise unable to serve a Client, and that reassignment does not create any claim against Citrus Labs Limited.
+
+## 37. PERSONNEL AVAILABILITY STATES
+
+37.1. Merchant Personnel availability states may include Available, Busy, On Break, Offline, Unavailable, and Suspended.
+
+37.2. Merchant Human Resource and Merchant Administrator users may control permanent or administrative availability states, while Merchant Personnel may only toggle limited operational states where the Platform and Merchant permit.
+
+37.3. Merchant Personnel must use availability states accurately and must not misrepresent availability, remain marked available while refusing assigned work without proper basis, mark themselves unavailable to manipulate queue assignment, or misuse availability states for retaliation, avoidance, favoritism, or commission manipulation.
+
+37.4. Availability information may affect Client wait estimates, queue assignment, preferred-personnel requests, appointment availability, Branch operations, service-session scheduling, and Merchant reports.
+
+## 38. SERVICE ELIGIBILITY AND PROFESSIONAL COMPETENCE
+
+38.1. Merchant Personnel should receive assignments only for services they are eligible to perform under HR-controlled service eligibility records.
+
+38.2. Merchant Personnel must not accept or perform a service through Servana where they know or reasonably should know that they are not trained, licensed, authorized, qualified, hygienically prepared, professionally competent, medically appropriate where applicable, or legally permitted to perform the service.
+
+38.3. Merchant Personnel must promptly notify the relevant Merchant, Branch, or HR user where their service eligibility is inaccurate, excessive, missing, outdated, unsafe, or inconsistent with their actual ability or legal authority.
+
+38.4. Citrus Labs Limited is not liable for incorrect Merchant-side assignment of service eligibility, Merchant-side role configuration, Merchant-side service catalogue configuration, or Merchant Personnel misrepresentation of competence.
+
+## 39. PREFERRED MERCHANT PERSONNEL REQUESTS AND PREFERRED-PERSONNEL FEES
+
+39.1. Servana may permit Clients to choose between waiting for the next available Merchant Personnel user or waiting for a specific Merchant Personnel user at an extra cost.
+
+39.2. Preferred-personnel selection may be optional, may require the fee to be visible before confirmation, may cause a separate invoice line item, may lock the queue entry to the selected Merchant Personnel user, may permit Front Office override only with permission and reason, and may generate audit logs recording selected personnel, fee, actor, and related workflow events.
+
+39.3. Merchant Personnel acknowledge that preferred-personnel requests do not guarantee that a Client will be served by the selected Merchant Personnel user, do not guarantee wait time, do not guarantee income, do not create exclusivity, do not create Client ownership, do not create employment entitlement, and do not create any direct payment obligation by Citrus Labs Limited.
+
+39.4. Where preferred Merchant Personnel become unavailable, Servana may support waiting longer, reassignment, cancellation, preferred-fee reversal, invoice adjustment, or other handling according to Platform, Merchant, Finance, and Branch controls.
+
+39.5. Preferred-personnel fees may be treated as Merchant revenue, may affect Citrus platform fees unless exempted, may affect commission according to Merchant Human Resource commission settings, and may appear as a separate receipt line item. Merchant Personnel shall not assume any entitlement to preferred-personnel fee amounts unless the relevant Merchant’s commission rules and Applicable Law provide otherwise.
+
+39.6. Merchant Personnel must not solicit preferred-personnel fees outside Servana, pressure Clients to select them as preferred personnel, misstate the fee, misstate estimated wait time, misstate availability, manipulate the queue to obtain preferred-personnel requests, or interfere with authorized reassignment.
+
+## 40. COMMISSION VISIBILITY, COMMISSION DISPUTES, AND NO PAYMENT GUARANTEE BY CITRUS LABS LIMITED
+
+40.1. Servana may display commission earned, commission pending, commission histories, commission liabilities, commission summaries, or commission-related operational data to Merchant Personnel.
+
+40.2. Commission rules may be configured per personnel, role, service, Branch, all-personnel setting, cumulative role setting, individualized setting, fixed amount, percentage amount, preferred-personnel surcharge setting, or other Merchant-controlled rule.
+
+40.3. Commission may be calculated only after invoice payment is confirmed and validated, and may be reversed, adjusted, disputed, delayed, voided, or recalculated following invoice voids, external refunds, payment disputes, payment validation changes, correction requests, partial payments, split payments, Branch policies, Merchant policies, or financial period rules.
+
+40.4. Commission records in Servana are informational and operational only and do not constitute payroll advice, tax advice, employment advice, a binding wage statement by Citrus Labs Limited, a payment undertaking by Citrus Labs Limited, or a guarantee that the Merchant will pay the displayed amount.
+
+40.5. Merchant Personnel must raise commission disputes with the relevant Merchant, Branch, HR user, Finance user, employer, contractor counterparty, or competent authority. Citrus Labs Limited is not responsible for resolving Merchant Personnel compensation disputes except to the limited extent it may provide Platform support relating to technical records.
+
+40.6. Merchant Personnel shall not manipulate service-session records, invoice dependencies, payment statuses, preferred-personnel workflows, or availability states to inflate, accelerate, conceal, or alter commissions.
+
+## 41. CLIENT DATA PROTECTION AND CONTACT ACCESS CONTROL
+
+41.1. Merchant Personnel may view only Client information required to complete allowed service operations for Clients they personally serve, are assigned to, or are otherwise permitted to access under Platform controls.
+
+41.2. Merchant Personnel shall not have a Client-contact export field, Client-contact export function, or bulk Client-contact download function.
+
+41.3. Merchant Personnel shall not attempt to obtain Client contact information in bulk, reconstruct Client contact lists from individual records, use screenshots to create Client lists, copy Client phone numbers into personal devices, export Client emails, scrape Client details, or solicit Clients through unauthorized channels.
+
+41.4. Sensitive Client contact and payment data may be masked where permission does not allow full visibility.
+
+41.5. Unauthorized contact-access attempts may be logged, audited, flagged, investigated, and treated as a material breach of these Terms.
+
+41.6. Merchant Personnel must respect Client consent records and communication preferences and must not contact Clients outside Merchant-approved purposes.
+
+## 42. CLIENT RECORDS, DUPLICATES, CONSENTS, AND SERVICE NOTES
+
+42.1. Servana may maintain Client profiles, phone numbers, optional email addresses, optional gender, visit history, service history, assigned personnel history, payment history, receipt history, Client preferences, preferred-personnel history, notes, consent records, and same-Branch duplicate-client prevention controls.
+
+42.2. Merchant Personnel must not create duplicate Client records, encourage duplicate Client records, bypass duplicate-prevention controls, or intentionally fragment Client history.
+
+42.3. Merchant Personnel must not alter Client records unless expressly permitted by their role and Platform permissions.
+
+42.4. Service notes must be limited to legitimate service-related information and must not include irrelevant personal commentary, harassment, discriminatory remarks, unlawful profiling, excessive sensitive data, or information unrelated to the service provided.
+
+## 43. OFFLINE PAYMENT RECORDS, INVOICES, RECEIPTS, AND MERCHANT FINANCE BOUNDARIES
+
+43.1. Servana may support invoices, offline payment records, Finance validation, duplicate payment-reference detection, split payments, partial payments, external refund records, receipt generation after payment validation, receipt reversal, receipt reissue, and receipt download logs.
+
+43.2. Merchant Personnel must not validate payments, approve payments, reject payments, generate receipts, void invoices, adjust invoices, reopen paid invoices, reverse preferred-personnel fees, record external refunds, approve refunds, lock financial periods, or perform Finance functions unless the Platform expressly grants such permission, which is not expected for Merchant Personnel under the ordinary role design.
+
+43.3. Merchant Personnel must not tell Clients that a payment is validated, a receipt is available, a refund is approved, an invoice is voided, or a payment dispute is resolved unless the Platform accurately displays such status and the user is authorized by the Merchant to communicate it.
+
+43.4. Merchant Personnel must not collect or redirect payments into unauthorized accounts, personal accounts, unapproved tills, unapproved mobile-money numbers, or unofficial channels.
+
+43.5. Citrus Labs Limited is not liable for offline payments, cash leakage, payment disputes, fake references, duplicate references, refunds, chargebacks, reversals, Client payment complaints, Merchant cash-up discrepancies, or Merchant Finance decisions.
+
+## 44. CONTENT MODERATION, MONITORING, INVESTIGATION, ENFORCEMENT, AND PLATFORM INTEGRITY
+
+44.1. Citrus Labs Limited may monitor, log, review, investigate, restrict, preserve, remove, disable, disclose, or otherwise process Platform activity and User Data where necessary to operate Servana, enforce these Terms, protect Clients, protect Merchants, protect staff, protect Platform integrity, secure accounts, prevent abuse, comply with Applicable Law, investigate misuse, address security issues, or preserve evidence.
+
+44.2. Citrus Labs Limited has no obligation to monitor all Content or activity and assumes no liability for failing to detect every inaccurate record, unauthorized action, unlawful act, privacy incident, employment issue, Merchant misconduct, Client issue, or Merchant Personnel misuse.
+
+44.3. Citrus Labs Limited may use audit logs, access logs, severity classifications, flagged event statuses, unauthorized-access attempt logs, before-and-after values, timestamps, hash or digest records, and other system records to investigate Platform activity.
+
+44.4. Citrus Labs Limited may disclose relevant records to Merchants, affected users, service providers, insurers, advisers, regulators, law-enforcement authorities, courts, or other competent bodies where legally permitted or required.
+
+## 45. AUDIT LOGS, EVIDENCE, AND TAMPER-EVIDENT RECORDS
+
+45.1. Servana may generate audit logs for events including Magic Link login events, unauthorized access attempts, Client record changes, queue changes, preferred-personnel selection, preferred-personnel override, appointment creation, appointment rescheduling, appointment cancellation, no-show marking, service-session start, service-session completion, service-session cancellation, invoice creation, payment recording, payment validation, receipt generation, staff suspension, staff deactivation, role changes, Branch access changes, and other high-risk events.
+
+45.2. Merchant Personnel acknowledge that audit logs may be append-only, tamper-evident, hash-based, timestamped, severity-classified, and preserved for accountability, security, dispute resolution, legal compliance, and Platform integrity.
+
+45.3. Merchant Personnel must not attempt to update, delete, conceal, corrupt, bypass, disable, alter, or interfere with audit logs or tamper-detection controls.
+
+45.4. Audit logs and Platform records may be relied upon as evidence against a Merchant Personnel user to the maximum extent permitted by Applicable Law.
+
+## 46. SUSPENSION, RESTRICTION, DEACTIVATION, AND TERMINATION BY CITRUS LABS LIMITED
+
+46.1. Citrus Labs Limited may suspend, restrict, deactivate, terminate, block, throttle, investigate, condition, or otherwise limit Merchant Personnel access immediately and without liability where Citrus Labs Limited determines or suspects breach of these Terms, misuse, unauthorized access, Client-data risk, contact-export attempt, credential compromise, Platform abuse, non-payment by the Merchant, Merchant suspension, Branch suspension, suspected illegality, security concern, regulatory exposure, reputational risk, operational necessity, fraud risk, harassment, discrimination, unlawful conduct, role misuse, Branch-scope violation, tenant-scope violation, commission manipulation, queue manipulation, preferred-personnel misuse, audit-log risk, or any other risk to Servana, Clients, Merchants, staff, Citrus Labs Limited, or third parties.
+
+46.2. Citrus Labs Limited may suspend or restrict Merchant Personnel access upon instruction, configuration, status change, suspension, deactivation, or removal by an authorized Merchant, Merchant Administrator, Merchant Human Resource user, or other permitted Merchant-side role.
+
+46.3. Suspension or termination may invalidate active sessions, unused Magic Links, pending invitations, dashboard access, Branch access, Client visibility, queue visibility, appointment visibility, service-session access, preferred-personnel visibility, commission visibility, and notifications.
+
+46.4. Citrus Labs Limited may preserve historical operational records, Client records, invoices, receipts, audit logs, service histories, commission records, security logs, and other records notwithstanding suspension or termination.
+
+## 47. TERMINATION BY THE USER
+
+47.1. Merchant Personnel may stop using Servana at any time, subject to any employment, contractor, Merchant, Branch, Client-service, confidentiality, data-protection, recordkeeping, or operational obligations owed to the relevant Merchant or under Applicable Law.
+
+47.2. A Merchant Personnel user seeking account deactivation, correction, restriction, data access, data export, or deletion should contact the relevant Merchant where the Merchant controls the account or data, and may contact Citrus Labs Limited at [support@citruslabs.co.ke](mailto:support@citruslabs.co.ke) for Platform-related support.
+
+47.3. Termination by the Merchant Personnel user does not require Citrus Labs Limited to delete operational records, audit logs, invoices, receipts, Client histories, service-session histories, queue histories, appointment histories, commission records, security records, system logs, backups, or records required for legal, tax, audit, dispute, security, compliance, or legitimate business purposes.
+
+## 48. EFFECTS OF SUSPENSION OR TERMINATION
+
+48.1. Upon suspension, deactivation, termination, or cessation of authorized use, Merchant Personnel must immediately cease accessing Servana and must stop using any Platform data outside authorized channels.
+
+48.2. Merchant Personnel must not retain, use, disclose, publish, copy, export, or exploit Client Data, Merchant Data, Branch Data, Confidential Information, screenshots, reports, service-session records, commission records, or any other Platform-derived information after access ends.
+
+48.3. Citrus Labs Limited may retain, archive, preserve, restrict, anonymize, delete, or continue processing records associated with the Merchant Personnel user as required for Platform operation, audit integrity, legal compliance, dispute handling, security, backups, historical records, Merchant records, Client records, invoices, receipts, commissions, or legitimate business purposes.
+
+48.4. Suspension or termination does not affect accrued rights, liabilities, indemnities, confidentiality obligations, data obligations, intellectual-property obligations, payment obligations, dispute provisions, evidentiary provisions, or provisions intended to survive.
+
+## 49. DATA RETENTION, DELETION, EXPORT, BACKUPS, AND POST-TERMINATION ACCESS
+
+49.1. Citrus Labs Limited may retain User Data for as long as reasonably necessary to provide Servana, maintain Merchant records, preserve Client histories, preserve audit logs, support invoices and receipts, preserve service-session records, maintain commission histories, resolve disputes, comply with law, enforce agreements, prevent fraud, improve security, and maintain backups.
+
+49.2. Merchant Personnel do not have an automatic right to export Client Data, Merchant Data, Branch Data, finance data, audit data, contact data, operational data, commission data, or Platform records.
+
+49.3. Data deletion, correction, access, portability, and restriction requests may be subject to identity verification, Merchant control, legal limitations, audit requirements, tax requirements, employment-record requirements, dispute requirements, security requirements, backup limitations, and legitimate business needs.
+
+49.4. Backup deletion may occur according to Citrus Labs Limited’s backup lifecycle and may not occur immediately upon account deletion, account deactivation, Merchant instruction, or user request.
+
+49.5. Citrus Labs Limited may deny, defer, limit, or condition deletion or export where necessary to protect Client rights, Merchant records, audit integrity, legal claims, regulatory obligations, cybersecurity, fraud prevention, or third-party rights.
+
+## 50. DISCLAIMERS OF WARRANTIES
+
+50.1. To the maximum extent permitted by Applicable Law, Servana is provided on an “as is”, “as available”, and “with all faults” basis.
+
+50.2. Citrus Labs Limited disclaims all warranties, conditions, representations, guarantees, and undertakings, whether express, implied, statutory, common law, customary, or otherwise, including without limitation warranties of merchantability, fitness for a particular purpose, title, non-infringement, uninterrupted service, error-free operation, accuracy, completeness, security, availability, compatibility, reliability, performance, data integrity, legal compliance, commercial suitability, employment suitability, payroll accuracy, commission accuracy, professional suitability, operational suitability, and regulatory suitability.
+
+50.3. Citrus Labs Limited does not warrant that Servana will meet the Merchant Personnel user’s expectations, generate assignments, guarantee Clients, increase income, produce commissions, prevent Client complaints, prevent payment issues, prevent employment disputes, prevent Merchant misconduct, prevent regulatory non-compliance, prevent data-entry errors, prevent unauthorized access, or prevent operational disputes.
+
+50.4. Citrus Labs Limited does not warrant that Client records, queue positions, appointment records, service histories, preferred-personnel requests, commission displays, wait estimates, notifications, dashboards, reports, or audit logs will always be accurate, complete, available, timely, or suitable for any specific purpose.
+
+## 51. DISCLAIMER OF PROFESSIONAL, LEGAL, TAX, FINANCIAL, MEDICAL, OPERATIONAL, REGULATORY, OR BUSINESS ADVICE
+
+51.1. Servana does not provide legal, tax, accounting, financial, medical, health, regulatory, employment, labour, payroll, professional, operational, business, insurance, licensing, sanitation, or compliance advice.
+
+51.2. Any records, dashboards, notifications, reports, calculations, commission displays, wait estimates, Client histories, service histories, preferred-personnel records, audit logs, or operational outputs generated by Servana are informational Platform outputs and must be independently verified by the relevant Merchant Personnel user and Merchant.
+
+51.3. Merchant Personnel must obtain instructions from the relevant Merchant or appropriate professionals where required for lawful service delivery, workplace compliance, Client safety, health and sanitation compliance, payment matters, employment matters, regulatory matters, or disputes.
+
+51.4. Citrus Labs Limited is not responsible for Merchant Personnel decisions based on Platform outputs where independent judgment, Merchant instruction, professional judgment, Client consent, regulatory guidance, or legal advice is required.
+
+## 52. LIMITATION OF LIABILITY
+
+52.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited shall not be liable to Merchant Personnel for any claim arising out of or related to Servana, these Terms, Platform access, Platform unavailability, Platform records, Client records, Merchant conduct, Branch conduct, staff conduct, Client conduct, assignments, queues, appointments, service sessions, preferred-personnel requests, commission displays, offline payments, invoices, receipts, employment matters, contractor matters, data-entry errors, or third-party services except to the limited extent expressly required by non-excludable law.
+
+52.2. Citrus Labs Limited shall not be liable for Merchant Personnel misuse, Merchant conduct, Client conduct, staff conduct, third-party conduct, user-provided data, inaccurate data entry, unauthorized account access, credential compromise, Magic Link misuse, external services, offline payment issues, payment-processor issues, internet failures, device failures, network failures, email failures, employment disputes, commission disputes, service disputes, Client complaints, regulatory non-compliance by users, or commercial disputes between users and third parties.
+
+52.3. Citrus Labs Limited shall not be liable for loss caused by Branch suspension, Merchant suspension, non-payment by Merchant, Merchant account deletion, Merchant Administrator inactivity, Branch closure, user suspension, HR-controlled service eligibility, HR-controlled availability, Front Office assignment, Finance validation, Audit review, Merchant policy, or Merchant-side configuration.
+
+## 53. EXCLUSION OF INDIRECT, CONSEQUENTIAL, SPECIAL, PUNITIVE, EXEMPLARY, LOSS-OF-PROFIT, LOSS-OF-REVENUE, LOSS-OF-GOODWILL, LOSS-OF-DATA, BUSINESS-INTERRUPTION, AND LOSS-OF-OPPORTUNITY DAMAGES
+
+53.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited shall not be liable for indirect, incidental, special, consequential, punitive, exemplary, aggravated, remote, speculative, or similar damages.
+
+53.2. Excluded damages include without limitation loss of income, loss of wages, loss of commissions, loss of tips, loss of bonuses, loss of benefits, loss of profits, loss of revenue, loss of goodwill, loss of opportunity, loss of Clients, loss of reputation, loss of data, business interruption, service interruption, employment loss, contract loss, anticipated savings, regulatory penalties, Client claims, Merchant claims, staff claims, tax liabilities, professional sanctions, or third-party claims.
+
+53.3. The exclusions in this section apply whether liability is alleged in contract, tort, negligence, strict liability, breach of statutory duty, misrepresentation, restitution, unjust enrichment, equity, or any other legal theory, even if Citrus Labs Limited was advised of the possibility of such damages.
+
+## 54. LIABILITY CAP
+
+54.1. To the maximum extent permitted by Applicable Law, the aggregate liability of Citrus Labs Limited and its affiliates, directors, officers, employees, contractors, licensors, suppliers, representatives, successors, assigns, and service providers arising out of or related to these Terms or Servana shall not exceed the greater of: (a) the amount actually paid by the Merchant Personnel user directly to Citrus Labs Limited for the specific Servana access giving rise to the claim during the three months preceding the event giving rise to liability; or (b) KES 1,000.
+
+54.2. Where the Merchant Personnel user has paid no amount directly to Citrus Labs Limited, the liability cap shall be KES 1,000 to the maximum extent permitted by Applicable Law.
+
+54.3. Multiple claims, multiple events, multiple users, multiple theories of liability, continuing breaches, or repeated incidents shall not enlarge the liability cap.
+
+54.4. This liability cap is an essential basis of the bargain and applies regardless of whether any limited remedy fails of its essential purpose, subject only to non-excludable Applicable Law.
+
+## 55. USER INDEMNITY IN FAVOUR OF CITRUS LABS LIMITED AND RELATED PARTIES
+
+55.1. Merchant Personnel shall indemnify, defend, and hold harmless Citrus Labs Limited and its affiliates, directors, officers, employees, contractors, licensors, suppliers, representatives, successors, assigns, and service providers from and against all claims, losses, liabilities, damages, penalties, fines, costs, expenses, legal fees, investigation costs, settlement amounts, regulatory demands, and proceedings arising out of or related to: breach of these Terms; misuse of Servana; unauthorized Client-data access; unlawful data processing; inaccurate entries; false service records; false availability records; false service completion; Client complaints; service delivery; professional misconduct; employment disputes; contractor disputes; commission disputes; queue manipulation; preferred-personnel misuse; unauthorized exports; confidentiality breach; intellectual-property infringement; fraud; negligence; wilful misconduct; violation of Applicable Law; violation of Merchant policy; violation of Branch policy; or disputes involving the Merchant Personnel user, Merchant, Branch, Client, staff member, regulator, payment provider, employer, contractor counterparty, or third party.
+
+55.2. Merchant Personnel shall indemnify Citrus Labs Limited for any claim arising from the Merchant Personnel user’s unauthorized collection, use, retention, disclosure, screenshotting, downloading, export, copying, or misuse of Client Data.
+
+55.3. Merchant Personnel shall indemnify Citrus Labs Limited for any claim arising from the Merchant Personnel user’s services to Clients, including allegations of negligence, professional misconduct, injury, unsatisfactory service, harassment, discrimination, fraud, misrepresentation, unsafe service, unlawful service, or breach of Client rights.
+
+55.4. Citrus Labs Limited may control the defence and settlement of any indemnified claim, and Merchant Personnel shall cooperate fully, provide relevant information, preserve evidence, and not settle any indemnified claim in a manner that imposes liability or obligations on Citrus Labs Limited without Citrus Labs Limited’s prior written consent.
+
+## 56. RELEASE OF CITRUS LABS LIMITED FROM USER DISPUTES, THIRD-PARTY DISPUTES, CUSTOMER DISPUTES, MERCHANT DISPUTES, SERVICE DISPUTES, STAFF DISPUTES, AND PLATFORM-RELATED CLAIMS
+
+56.1. Merchant Personnel release Citrus Labs Limited from all claims, demands, disputes, damages, liabilities, losses, costs, expenses, and causes of action arising from disputes between Merchant Personnel and any Merchant, Branch, Client, staff member, employer, contractor counterparty, payment provider, regulator, professional body, or third party.
+
+56.2. Released disputes include without limitation disputes relating to employment, termination, suspension, deactivation, discipline, wages, salaries, commissions, payroll, benefits, tips, gratuities, reimbursements, taxes, statutory deductions, assignments, Clients, service complaints, Client injuries, professional services, wait times, preferred-personnel selections, preferred-personnel fees, offline payments, refunds, receipts, invoices, Branch policies, Merchant policies, HR decisions, Finance decisions, Audit findings, and Client communications.
+
+56.3. Merchant Personnel acknowledge that Citrus Labs Limited is not required to mediate Merchant employment disputes, contractor disputes, wage disputes, commission disputes, service disputes, Client disputes, workplace disputes, or professional disputes.
+
+## 57. FORCE MAJEURE
+
+57.1. Citrus Labs Limited shall not be liable for delay, failure, non-performance, degraded performance, loss, unavailability, or interruption caused by events beyond its reasonable control, including without limitation acts of God, fire, flood, drought, earthquake, storm, epidemic, pandemic, public-health emergency, war, terrorism, civil unrest, riots, labour disputes, strikes, lockouts, governmental actions, regulatory restrictions, sanctions, power failures, internet failures, telecommunications failures, hosting failures, cloud-provider failures, cyberattacks, malware, denial-of-service attacks, supply-chain failures, payment-provider failures, mobile-money provider failures, bank failures, email-provider failures, DNS failures, domain failures, or infrastructure failures.
+
+## 58. CHANGES TO THE TERMS
+
+58.1. Citrus Labs Limited may update, amend, replace, supplement, or modify these Terms at any time.
+
+58.2. Updated Terms may be posted on the Servana website, Platform, account dashboard, registration flow, login flow, invitation flow, subscription flow, or otherwise communicated electronically.
+
+58.3. Continued access to or use of Servana after updated Terms become effective constitutes acceptance of the updated Terms.
+
+58.4. Where a Merchant Personnel user does not accept updated Terms, the user must stop using Servana.
+
+58.5. Citrus Labs Limited may require affirmative acceptance of updated Terms as a condition of continued access.
+
+## 59. ASSIGNMENT, TRANSFER, DELEGATION, SUBCONTRACTING, AND CORPORATE TRANSACTIONS
+
+59.1. Merchant Personnel may not assign, transfer, delegate, sublicense, novate, or otherwise dispose of any rights or obligations under these Terms without prior written consent from Citrus Labs Limited.
+
+59.2. Citrus Labs Limited may assign, transfer, delegate, subcontract, novate, or otherwise dispose of any rights or obligations under these Terms in connection with corporate restructuring, merger, acquisition, financing, sale of assets, change of control, affiliate arrangement, outsourcing, subcontracting, product transfer, business transfer, or similar transaction.
+
+59.3. Citrus Labs Limited may use subcontractors and service providers to operate, host, maintain, support, secure, analyse, improve, or enforce Servana.
+
+## 60. GOVERNING LAW
+
+60.1. These Terms shall be governed by and construed in accordance with the laws of Kenya, without prejudice to mandatory consumer, employment, data-protection, public-law, or other non-excludable rules that may apply in another jurisdiction.
+
+60.2. The use of Servana from outside Kenya does not displace the Kenyan governing-law anchor of these Terms unless expressly required by non-excludable Applicable Law.
+
+60.3. Merchant Personnel remain responsible for compliance with Applicable Law in their own jurisdiction, and no provision of these Terms shall be interpreted as a representation that Servana is approved, licensed, or compliant for every specific use in every African jurisdiction.
+
+## 61. DISPUTE RESOLUTION, ESCALATION, GOOD-FAITH NEGOTIATION, COURTS, INJUNCTIVE RELIEF, AND VENUE
+
+61.1. A Merchant Personnel user shall first submit any dispute relating to Servana in writing to [support@citruslabs.co.ke](mailto:support@citruslabs.co.ke), describing the dispute, relevant account, relevant Merchant, relevant Branch, relevant dates, relevant records, relevant screenshots where lawful to provide, and requested resolution.
+
+61.2. The parties shall attempt in good faith to resolve the dispute informally within thirty days after written notice is received.
+
+61.3. Citrus Labs Limited may seek urgent injunctive, equitable, protective, interim, preservation, disclosure, freezing, or enforcement relief at any time in any competent court where necessary to protect intellectual property, confidential information, Client Data, Merchant Data, Platform security, Platform integrity, accounts, evidence, audit logs, users, or third-party rights.
+
+61.4. Subject to mandatory law, the courts of competent jurisdiction in Nairobi, Kenya shall have jurisdiction over disputes arising out of or relating to these Terms or Servana.
+
+61.5. To the maximum extent permitted by Applicable Law, claims must be brought individually and not as class, collective, representative, consolidated, private attorney general, group, or mass proceedings.
+
+61.6. To the maximum extent permitted by Applicable Law, any claim against Citrus Labs Limited must be commenced within twelve months after the event giving rise to the claim, failing which it shall be permanently barred.
+
+61.7. Confidentiality obligations, data-protection obligations, payment obligations where applicable, use restrictions, preservation obligations, and non-misuse obligations continue during disputes.
+
+## 62. NOTICES
+
+62.1. Citrus Labs Limited may provide notices by email, Platform message, dashboard notice, website posting, login notice, invitation-flow notice, support communication, or other electronic means.
+
+62.2. Notices to Citrus Labs Limited shall be sent to [support@citruslabs.co.ke](mailto:support@citruslabs.co.ke) unless Citrus Labs Limited designates another notice method.
+
+62.3. Merchant Personnel are responsible for keeping their email address current, secure, and accessible through the relevant Merchant account process.
+
+62.4. Notices sent electronically are deemed given when sent, posted, made available, or otherwise transmitted by Citrus Labs Limited, subject to non-excludable Applicable Law.
+
+## 63. SEVERABILITY
+
+63.1. If any provision of these Terms is held invalid, unlawful, void, or unenforceable, that provision shall be modified to the minimum extent necessary to make it valid and enforceable, or severed if modification is not possible, and the remaining provisions shall remain in full force.
+
+63.2. Any invalidity, unlawfulness, voidness, or unenforceability in one jurisdiction shall not affect enforceability in any other jurisdiction.
+
+## 64. WAIVER
+
+64.1. No failure or delay by Citrus Labs Limited in exercising any right, power, remedy, or privilege shall operate as a waiver.
+
+64.2. No single or partial exercise of any right, power, remedy, or privilege shall preclude any other or further exercise.
+
+64.3. Any waiver must be express and in writing to be effective.
+
+## 65. ENTIRE AGREEMENT
+
+65.1. These Terms, together with incorporated policies, notices, Privacy Policy terms, acceptable-use terms, role-specific terms, subscription terms where applicable, invoices where applicable, and Platform-specific terms, constitute the entire agreement between Citrus Labs Limited and Merchant Personnel regarding Merchant Personnel access to and use of Servana.
+
+65.2. These Terms supersede prior or contemporaneous understandings relating to Merchant Personnel access to Servana, except to the extent a separate written agreement signed by Citrus Labs Limited expressly overrides these Terms.
+
+65.3. No oral statement, support communication, marketing material, user-interface label, roadmap statement, help article, informal email, Merchant instruction, or third-party statement shall amend these Terms unless expressly incorporated by Citrus Labs Limited in writing.
+
+## 66. ORDER OF PRECEDENCE BETWEEN THESE TERMS, PRIVACY POLICY, SUBSCRIPTION TERMS, INVOICES, PRODUCT DOCUMENTATION, AND OTHER PLATFORM TERMS
+
+66.1. In the event of conflict, the following order of precedence shall apply unless expressly stated otherwise by Citrus Labs Limited: (a) a written agreement signed by Citrus Labs Limited; (b) these Terms; (c) role-specific Platform terms; (d) subscription or invoice terms applicable to the relevant Merchant; (e) the Privacy Policy; (f) acceptable-use terms; (g) product documentation; and (h) general help materials.
+
+66.2. Product documentation, marketing materials, support articles, examples, roadmap statements, brand materials, UI labels, and informal communications do not amend these Terms unless expressly incorporated by Citrus Labs Limited.
+
+## 67. SURVIVAL
+
+67.1. Provisions concerning ownership, intellectual property, reservation of rights, confidentiality, data protection, Client-data restrictions, account-security obligations, audit records, evidence, restrictions on use, prohibited conduct, disclaimers, limitation of liability, liability cap, indemnity, release, dispute resolution, governing law, notices, severability, waiver, survival, and any accrued obligations shall survive suspension, deactivation, termination, Branch reassignment, Merchant termination, cessation of employment, cessation of contractor relationship, and cessation of use.
+
+## 68. RELATIONSHIP OF THE PARTIES
+
+68.1. Citrus Labs Limited and Merchant Personnel are independent parties.
+
+68.2. Nothing in these Terms creates an employment, partnership, joint venture, agency, fiduciary, franchise, payroll, representative, labour, contractor, or similar relationship between Citrus Labs Limited and Merchant Personnel.
+
+68.3. Merchant Personnel are responsible to the relevant Merchant, employer, principal, contractor counterparty, professional body, regulator, or Client as applicable, and not to Citrus Labs Limited except as expressly provided in these Terms.
+
+68.4. Merchant Personnel shall not hold themselves out as employees, agents, representatives, contractors, partners, or authorized spokespersons of Citrus Labs Limited.
+
+## 69. LANGUAGE
+
+69.1. These Terms are prepared in English.
+
+69.2. Any translation is provided for convenience only, and the English version controls to the maximum extent permitted by Applicable Law.
+
+69.3. Merchant Personnel are responsible for ensuring that they understand these Terms before using Servana.
+
+## 70. CONTACT INFORMATION
+
+70.1. Questions, notices, account-security concerns, support requests, and Platform-related communications to Citrus Labs Limited may be directed to:
+
+Citrus Labs Limited
+P.O. Box 23983 - 00100
+Nairobi, Kenya
+Support Email: [support@citruslabs.co.ke](mailto:support@citruslabs.co.ke)
+
+## 71. FINAL ACCEPTANCE CLAUSE
+
+71.1. By accessing, logging into, activating, receiving, using, or continuing to use Servana as Merchant Personnel, the user confirms that the user has read, understood, accepted, and agreed to be bound by these Terms; has authority to access Servana in the relevant Merchant and Branch context; shall comply with all account, role, Branch, Client-data, confidentiality, acceptable-use, service-delivery, security, and legal obligations stated herein; and acknowledges that Citrus Labs Limited may enforce these Terms through suspension, restriction, deactivation, termination, preservation of records, investigation, legal action, equitable relief, and any other remedy available under contract, law, equity, Platform policy, or Applicable Law.

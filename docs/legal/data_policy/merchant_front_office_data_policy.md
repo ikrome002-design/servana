@@ -1,0 +1,1108 @@
+**SERVANA DATA POLICY**
+
+**Effective Date:** **01st January 2026**
+**Last Updated:** **01st August 2026**
+**Contracting Entity:** **Citrus Labs Limited**
+**Address:** **P.O. Box 23983 - 00100, Nairobi, Kenya**
+**Support Email:** **[support@citruslabs.co.ke](mailto:support@citruslabs.co.ke)**
+**Legal Notices Email:** **[legal@citruslabs.co.ke](mailto:legal@citruslabs.co.ke)**
+
+## 1. DOCUMENT IDENTITY, EFFECTIVE DATE, LEGAL CHARACTER, AND CONTRACTUAL INCORPORATION
+
+1.1. This Servana Data Policy is a binding, enforceable, platform-wide, contractual, operational, technical, administrative, privacy-governance, cybersecurity-governance, Client-record-governance, queue-governance, appointment-governance, service-session-governance, invoice-governance, offline-payment-recording-governance, Finance-submission-governance, receipt-status-governance, notification-governance, audit-governance, monitoring, investigation, evidence-preservation, and data-governance instrument governing the collection, creation, submission, upload, recording, access, viewing, consultation, search, retrieval, correction, operational use, storage, hosting, indexing, preservation, retention, restriction, disclosure, export where permitted, download where permitted, transmission, analysis, aggregation, anonymization, pseudonymization, deletion, destruction, monitoring, logging, auditing, investigation, escalation, evidentiary use, and enforcement of data in or in connection with Servana.
+
+1.2. This Data Policy is specifically drafted for the **Merchant Front Office** category of Servana platform user. The Merchant Front Office account is a Merchant-side, Branch-scoped, Client-facing, operational account type whose purpose is to manage daily front-office activity for a specific Branch, including Client registration, existing Client retrieval, duplicate-prevention within the same Branch, walk-in creation, appointment creation, appointment check-in, appointment conversion into active queue or service flow, service selection, assignment of next available Personnel, preferred-Personnel selection at extra cost, queue status management, service-session creation, invoice generation, offline payment method recording, payment-detail submission for Merchant Finance validation, awaiting-Finance-validation status review, ready-for-receipt status review, daily Branch activity review, current appointment and walk-in review, Client queue or service-status notification, and speed-sensitive operational search.
+
+1.3. This Data Policy is not drafted as a generic policy for all Servana users. Where this Data Policy refers to Super Administrators, Merchant Administrators, Merchant Branch users, Merchant Human Resource users, Merchant Finance users, Merchant Personnel users, Merchant Audit users, Clients, End-Users, vendors, contractors, affiliates, or Third-Party Service Providers, those references are included to distinguish their data roles, access rights, restrictions, responsibilities, and privacy treatment from the **Merchant Front Office** user type.
+
+1.4. The Merchant Front Office user acknowledges that this Data Policy is not a consumer-facing privacy summary, not a marketing description, not a simplified privacy notice, not a short-form checklist, not an unrestricted Client-data access licence, not an authority to export Client contact lists, not a finance-validation mandate, not a receipt-issuance mandate except where the Platform shows a valid receipt state, not a Merchant Administrator mandate, not a Human Resource mandate, not a Personnel-assignment mandate beyond permitted operational assignment workflows, not a substitute for the Servana Terms of Service, and not a waiver of Citrus Labs Limited’s contractual, technical, security, audit, evidentiary, billing, retention, intellectual-property, enforcement, or legal rights.
+
+1.5. This Data Policy is incorporated by reference into, and forms part of, the Servana Terms of Service, Privacy Policy, Acceptable Use Policy, Merchant account terms, Merchant staff-user terms, Front Office user terms, role-specific access terms, Data Processing Agreement where applicable, subscription terms, billing terms, Platform Fee terms, Merchant onboarding materials, dashboard notices, internal governance instruments, support terms, Client-record procedures, appointment procedures, queue procedures, service-session procedures, invoice procedures, offline-payment-recording procedures, Finance-submission procedures, notification procedures, security procedures, audit procedures, and any other written, electronic, clickwrap, dashboard, account, invoice, policy, service, or contractual document that incorporates, displays, references, or depends upon this Data Policy.
+
+1.6. By accessing, logging into, reviewing, viewing, searching, filtering, registering Clients, retrieving Clients, creating walk-ins, creating appointments, checking in appointments, assigning Personnel, recording preferred-Personnel selections, managing queue status, creating service sessions, generating invoices, recording offline payment methods, submitting payment details for Finance validation, viewing awaiting-validation status, viewing ready-for-receipt status, viewing daily Branch activity, notifying Clients, or otherwise using Servana in a Merchant Front Office capacity, the Merchant Front Office user accepts and agrees to be bound by this Data Policy.
+
+1.7. Acceptance applies whether the Merchant Front Office user accesses Servana through a web browser, mobile browser, dashboard, Magic Link, Client registration screen, Client search screen, walk-in workflow, appointment workflow, check-in workflow, queue workflow, service-session workflow, assignment workflow, preferred-Personnel workflow, invoice screen, offline-payment screen, Finance-validation-status screen, receipt-status screen, daily activity screen, notification workflow, support workflow, or any other authorized or unauthorized method.
+
+1.8. This Data Policy is drafted for Servana, a Citrus Labs Limited multi-tenant SaaS web platform for service-based SMEs, using the uploaded Servana product source as the factual foundation for the Platform’s role architecture, offline payment model, authentication model, Branch Scope, Client-record workflows, appointment workflows, queue workflows, invoice workflows, Finance-validation workflow, receipt workflow, and audit model. 
+
+1.9. Citrus Labs Limited reserves all rights not expressly granted to the Merchant Front Office user, including without limitation the right to operate, host, monitor, secure, audit, investigate, preserve, retain, restrict, suspend, deactivate, delete, anonymize, aggregate, disclose where lawful, process, analyse, enforce, and protect Platform Data to the maximum extent permitted by Applicable Law.
+
+1.10. In the event of conflict between this Data Policy and any other Servana document, the following order of precedence shall apply unless Citrus Labs Limited expressly states otherwise in writing: first, mandatory Applicable Law; second, a written agreement signed by Citrus Labs Limited expressly overriding this Data Policy; third, the Servana Terms of Service; fourth, this Data Policy; fifth, any applicable Data Processing Agreement; sixth, the Privacy Policy; seventh, Merchant staff-user terms or role-specific Front Office terms; eighth, subscription, invoice, billing, Platform Fee, and operational workflow terms; ninth, product documentation; and tenth, general support materials, help materials, non-binding examples, user-interface labels, training materials, and informal communications.
+
+## 2. IDENTITY OF CITRUS LABS LIMITED
+
+2.1. Servana is owned, operated, administered, controlled, commercially provided, supported, maintained, secured, monitored, and made available by Citrus Labs Limited.
+
+2.2. Citrus Labs Limited’s address is P.O. Box 23983 - 00100, Nairobi, Kenya.
+
+2.3. General support communications may be sent to [support@citruslabs.co.ke](mailto:support@citruslabs.co.ke).
+
+2.4. Formal legal notices may be sent to [legal@citruslabs.co.ke](mailto:legal@citruslabs.co.ke) unless Citrus Labs Limited designates another legal-notice email, portal, address, workflow, or electronic notice method.
+
+2.5. Citrus Labs Limited may provide Servana directly or through affiliates, directors, officers, employees, contractors, consultants, hosting providers, infrastructure providers, database providers, storage providers, authentication providers, communication providers, email providers, SMS providers, analytics providers, cybersecurity providers, billing-support providers, monitoring providers, professional advisers, auditors, legal advisers, insurers, subcontractors, licensors, suppliers, and other Third-Party Service Providers.
+
+2.6. No Merchant Front Office user, Merchant Administrator, Merchant Branch user, Merchant Human Resource user, Merchant Finance user, Merchant Personnel user, Merchant Audit user, Client, vendor, contractor, employee, support user, or third party may amend, waive, vary, bind, represent, or contradict this Data Policy unless expressly authorized by Citrus Labs Limited in a written instrument.
+
+## 3. DEFINITIONS AND RULES OF INTERPREATION
+
+3.1. “Account” means any Servana login identity, Merchant account, Merchant Administrator account, Merchant Owner account, Merchant Branch account, Merchant Human Resource account, Merchant Finance account, Merchant Front Office account, Merchant Personnel account, Merchant Audit account, Super Administrator account, Client record, invited-user profile, staff profile, role assignment, permission set, authentication state, session, Magic Link entitlement, dashboard entitlement, status, or access mechanism.
+
+3.2. “Administrator” means a user with administrative, configuration, governance, oversight, or management permissions within Servana, including without limitation Super Administrators at Platform level and Merchant Administrators at Merchant tenant level.
+
+3.3. “Affiliate” means any entity that directly or indirectly controls, is controlled by, or is under common control with Citrus Labs Limited.
+
+3.4. “Aggregated Data” means data that is combined, compiled, summarized, grouped, statistically processed, or otherwise aggregated so that it does not reasonably identify a particular natural person, Client, staff member, Merchant, Branch, Account, or Platform user without additional information.
+
+3.5. “Anonymized Data” means data processed so that it no longer identifies, and cannot reasonably be used to identify, a specific natural person or entity, subject to Applicable Law and reasonable technical safeguards.
+
+3.6. “Applicable Law” means all laws, statutes, regulations, rules, directives, orders, by-laws, judgments, codes, regulator guidance, supervisory requirements, licensing requirements, professional requirements, tax rules, accounting rules, audit rules, recordkeeping rules, consumer-protection rules, data-protection laws, privacy laws, cybersecurity laws, electronic-commerce laws, electronic-communications laws, telecommunications laws, employment laws, labour laws, health and safety laws, anti-bribery laws, anti-corruption laws, anti-money laundering obligations where applicable, sanctions, export controls, professional rules, sector rules, and other legal or regulatory obligations applicable to Citrus Labs Limited, Servana, a Merchant, a Merchant Front Office user, a Merchant Administrator, a Branch, staff users, Clients, vendors, contractors, processing activities, operating territories, or transactions.
+
+3.7. “Application” means the Servana SaaS web application, including dashboards, interfaces, workflows, modules, login flows, authentication systems, authorization systems, Client registration screens, Client retrieval screens, duplicate-prevention workflows, walk-in screens, appointment screens, check-in screens, queue screens, assignment screens, preferred-Personnel screens, service-session screens, invoice screens, offline-payment-recording screens, Finance-validation-status screens, receipt-status screens, daily activity screens, notification screens, audit screens, databases, APIs, integrations, and related systems.
+
+3.8. “Appointment Data” means data concerning appointment creation, appointment reference, Client, Branch, service, scheduled time, selected Personnel, preferred Personnel where applicable, status, check-in event, rescheduling, cancellation, no-show, conversion into active queue or service flow, conflict-prevention record, Branch closure protection, and related audit history.
+
+3.9. “Audit Data” means audit logs, audit events, access records, login records, Magic Link records, role-change records, Branch-change records, staff-change records, Client-create records, Client-edit records, duplicate-prevention records, appointment-change records, check-in records, queue-change records, assignment records, preferred-Personnel records, service-session records, invoice records, payment-recording records, Finance-submission records, receipt-status records, notification records, export logs, download logs, suspicious-usage records, before-and-after values, timestamps, actor identifiers, IP addresses, user agents, device records, severity classifications, status values, investigation notes, review notes, hash records, digest records, chained-hash records, and related evidentiary metadata.
+
+3.10. “Authorized User” means a person validly invited, activated, authenticated, authorized, and permitted to access Servana under the applicable Merchant tenant, Account type, Branch Scope, role, permission, status, suspension status, and Platform controls.
+
+3.11. “Billing Data” means data relating to subscriptions, billing cycles, Platform Fees, account-opening fees where applicable, Merchant service-fee tiers, Merchant-to-Client invoice pricing effects, service-fee rules, invoices, receipts, Platform Fee ledgers, Merchant balances, Branch-level Platform Fee debt, overdue records, failed payments, collections, credits, adjustments, refunds, disputes, taxes, statements, and billing audit logs.
+
+3.12. “Branch” means a physical, commercial, operational, or service-delivery location of a Merchant recorded in Servana, including without limitation a salon, barbershop, spa, massage parlour, grooming studio, beauty parlour, hotel-based service location, or similar appointment-based or walk-in service location.
+
+3.13. “Branch Data” means data relating to a Branch, including Branch name, Branch code, physical address, town, city, area, phone number, email, business category, status, operating hours, operating calendar, public-holiday exceptions, special closures, emergency closures, services, pricing, service availability, queue configuration, appointment controls, Branch day opening, Branch day closing, cash-up records, reconciliation records, invoices, receipts, payment records, reports, revenue records, staff activity, staff performance, audit logs, closure records, archival records, and Branch-level operational records.
+
+3.14. “Branch Scope” means the permission boundary that limits a user’s access to one or more specific Branches within a Merchant tenant.
+
+3.15. “Business Data” means data relating to a Merchant’s business, operations, services, staff, Branches, Clients, pricing, revenue, invoices, receipts, payment records, Platform Fees, service-fee tiers, commission liabilities, reports, dashboards, operational performance, and Platform usage.
+
+3.16. “Client” means a service recipient, customer, walk-in customer, appointment customer, general end-user record, or person whose data is entered into or generated through Servana for Merchant service operations.
+
+3.17. “Client Data” means data relating to Clients, including names, phone numbers, optional emails, optional gender, visit history, service history, assigned-Personnel history, preferred-Personnel history, appointment history, queue participation, invoice history, receipt history, payment history, consent records, communication preferences, notes, duplicate-prevention records, and Client contact-access records.
+
+3.18. “Client Notification Data” means data concerning Client queue notifications, service-status notifications, appointment notifications, check-in communications, waiting-status communications, ready-for-service communications, payment-status communications, receipt-availability communications, delivery logs, failure logs, communication preferences, consent status, message channel, message time, sender, and audit record.
+
+3.19. “Company” means Citrus Labs Limited.
+
+3.20. “Confidential Information” means all non-public information relating to Servana, Citrus Labs Limited, Merchants, Branches, Clients, staff users, Platform systems, workflows, dashboards, permissions, audit logs, billing records, Platform Fee records, security controls, product architecture, reports, support communications, legal records, commercial information, and operational records.
+
+3.21. “Consent” means any consent, permission, authorization, approval, opt-in, acknowledgement, confirmation, acceptance, or lawful permission required under Applicable Law or Platform policy.
+
+3.22. “Controller”, “Data Controller”, “Responsible Party”, “Data Fiduciary”, or equivalent means the person or entity that determines the purposes and means of Processing Personal Data under Applicable Law.
+
+3.23. “Cross-Border Transfer” means any transfer, access, hosting, storage, remote support, remote availability, disclosure, replication, backup, or Processing of data across national borders.
+
+3.24. “Customer Data” means data submitted by, generated for, controlled by, or relating to a Merchant, Branch, Client, staff user, invited user, End-User, organization, customer, or user of Servana.
+
+3.25. “Data Breach” means a breach of security leading to accidental, unlawful, unauthorized, or improper destruction, loss, alteration, disclosure of, access to, exfiltration of, corruption of, or compromise of Personal Data, Client Data, Staff Data, Payment Data, Billing Data, Merchant Data, Branch Data, Front Office Data, Confidential Information, Audit Data, or other protected data processed in or through Servana.
+
+3.26. “Data Processor”, “Processor”, “Operator”, “Service Provider”, or equivalent means a person or entity that processes Personal Data on behalf of a Controller or equivalent decision-maker under Applicable Law.
+
+3.27. “Data Subject” means an identified or identifiable natural person to whom Personal Data relates.
+
+3.28. “Deletion” means erasure, destruction, anonymization, de-identification, disabling, logical deletion, physical deletion, archival removal, restriction, or removal from active systems, subject to retention duties, legal holds, audit integrity, security preservation, backup limitations, Platform requirements, and Applicable Law.
+
+3.29. “Derived Data” means data, metrics, indicators, calculations, operational insights, metadata, analytics, risk signals, performance records, aggregated outputs, anonymized outputs, system-generated outputs, or other information derived from Platform activity or Platform Data.
+
+3.30. “Device Data” means information concerning a device, browser, operating system, user agent, IP address, network, screen, session, cookie, local storage, location-derived data, or access environment used to access Servana.
+
+3.31. “End-User” means a Client, service recipient, customer, or other person whose record is created in Servana, whether or not that person has a direct login account.
+
+3.32. “Front Office Account” or “Merchant Front Office Account” means the Merchant-side, Branch-scoped account type that handles Client-facing operations for a specific Branch, including Client registration, existing Client retrieval, duplicate prevention, walk-in creation, appointment creation, appointment check-in, queue management, service-session creation, invoice generation, offline payment method recording, payment submission for Finance validation, queue or service status notification, and daily Branch activity visibility.
+
+3.33. “Front Office Data” means Client Data, Appointment Data, walk-in data, queue data, service-session data, assignment data, preferred-Personnel data, invoice data, offline-payment-recording data, Finance-submission data, receipt-status data, daily activity data, Client Notification Data, search records, and related Audit Data generated by or visible to a Merchant Front Office user.
+
+3.34. “Integration” means any third-party application, API, connector, identity provider, communication service, analytics service, billing tool, payment-reference tool, support tool, notification service, hosting service, plug-in, or external service connected to or used with Servana.
+
+3.35. “Invoice Data” means data concerning invoice number, Merchant, Branch, Client, services, service price, service-fee-tier invoice-pricing effects, preferred-Personnel fees, discount where permitted, subtotal, total, payment status, linked payment records, void status, adjustment history, and audit history.
+
+3.36. “Log Data” means authentication logs, Magic Link logs, access logs, error logs, API logs, integration logs, audit logs, security logs, export logs, download logs, support logs, performance logs, system logs, and diagnostic logs.
+
+3.37. “Magic Link” means a one-time, time-limited electronic login, invitation, activation, authentication, or session-creation link sent to an email address.
+
+3.38. “Merchant” means the business, sole proprietor, company, partnership, establishment, organization, service-based SME, Branch operator, service provider, or other commercial entity that uses Servana to manage service operations.
+
+3.39. “Merchant Administrator” or “Merchant Owner” means the registering business owner, manager, or authorized operator who self-registers the Merchant business account, causes the Merchant tenant to be created by the Platform, completes first-time setup, manages the Merchant profile, selects or updates the Merchant service-fee tier where permitted, creates Merchant Branch accounts, completes Branch profiles, adds initial Merchant Branch and Merchant Human Resource email addresses, views Branches and staff under the Merchant tenant, views Merchant-level reports, views Merchant-level Platform Fee records, receives daily Branch PDF reports, and performs Merchant-level actions permitted by Servana.
+
+3.40. “Merchant Audit User” means the Merchant-side read-only oversight user who may view audit logs, role changes, Branch changes, invoice history, payment validation logs, receipt logs, queue reassignment logs, preferred-Personnel fee logs, contact-access records, contact-export-attempt records, flagged suspicious activity, high-risk events, recent activity, and export audit reports where permitted.
+
+3.41. “Merchant Branch User” means the Branch-level Merchant account user who manages only the specific assigned Branch and its Branch profile, operating hours, operating calendar, service configuration, pricing, service availability, Branch queue, Branch appointments, reports, invoices, receipts, payment records, day-opening, day-closing, cash-up, reconciliation, and Branch audit logs, subject to permissions.
+
+3.42. “Merchant Finance User” means the Branch-scoped user who manages offline payment validation, financial control, invoice payment status, receipts, financial reports, reconciliation, disputes, external refund records, Platform Fee visibility where permitted, commission visibility where permitted, finance exports where permitted, and finance audit activity.
+
+3.43. “Merchant Front Office User” means the Branch-scoped user who manages Client-facing operations, Client registration, Client retrieval, walk-ins, appointments, queues, service sessions, invoice generation, offline payment method recording, payment submission for Finance validation, daily activity visibility, Client notifications, and speed-sensitive operational search.
+
+3.44. “Merchant Human Resource User” means the Branch-scoped user who manages staff identity, employment status, Branch-scoped assignment, account-type selection, role assignment, Personnel service eligibility, availability, staff invitation, staff lifecycle visibility, staff roster export only, and HR-visible audit records within the assigned Branch Scope.
+
+3.45. “Merchant Personnel User” means a service provider user, including a barber, hairdresser, stylist, massage therapist, nail technician, beautician, facial therapist, grooming specialist, cosmetologist, or similar service provider, whose access is limited to own assignments, own queue, own appointments, own service history, own commission, preferred requests, and allowed personally served or assigned Clients within assigned Branches.
+
+3.46. “Metadata” means data describing, identifying, indexing, classifying, securing, contextualizing, measuring, evidencing, or supplementing other data, records, actions, events, devices, sessions, users, transactions, or system outputs.
+
+3.47. “Offline Payment Record” means a Servana record relating to a payment made outside Servana, including payment method, amount, reference, status, validation details, payment date, payment note, recorded-by information, validated-by information, split-payment details, partial-payment balances, refund records, dispute status, invoice reference, receipt reference, Merchant, Branch, and audit history.
+
+3.48. “Payment Data” means data concerning payment methods, payment references, cash records, M-Pesa references, bank references, card-terminal references, voucher codes, split-payment records, partial-payment records, validation status, disputes, refunds, receipt status, Merchant-to-Platform payments, Platform Fees, Merchant balances, and related metadata.
+
+3.49. “Personal Data” means information relating to an identified or identifiable natural person, including any equivalent concept under Applicable Law.
+
+3.50. “Platform” and “Servana” mean the Servana SaaS web application, website, dashboards, modules, workflows, authentication systems, authorization systems, tenant systems, Branch-scoping systems, databases, reports, notifications, billing systems, audit systems, APIs, integrations, and related services.
+
+3.51. “Platform Data” means all data processed in, generated by, submitted to, accessed through, retained within, or associated with Servana, including User Data, Merchant Data, Branch Data, Client Data, Staff Data, Account Data, Billing Data, Payment Data, Front Office Data, Audit Data, Security Data, Log Data, Usage Data, Metadata, Derived Data, Aggregated Data, Anonymized Data, Pseudonymized Data, and System-Generated Data.
+
+3.52. “Platform Fees” means fees, charges, account-opening fees where applicable, service fees, subscription fees, usage fees, billing-cycle charges, overdue amounts, Platform Fee invoices, Branch-level Platform Fee debt, Merchant balances, preferred-Personnel fee treatment amounts, adjustments, taxes, and any other amounts owed or potentially owed by a Merchant to Citrus Labs Limited.
+
+3.53. “Processing” means any operation performed on data, including collection, recording, organization, structuring, storage, adaptation, alteration, retrieval, consultation, access, viewing, use, disclosure, transmission, dissemination, alignment, combination, restriction, deletion, hosting, analysis, monitoring, logging, export, retention, preservation, and destruction.
+
+3.54. “Pseudonymized Data” means data processed so that it cannot be attributed to a specific Data Subject without additional information kept separately and protected.
+
+3.55. “Queue Data” means data concerning walk-in queue entries, appointment-to-queue conversion, queue position, queue status, assigned Personnel, preferred Personnel, estimated wait time, assignment mode, cancellation reason, no-show handling, waiting status, assigned status, in-service status, completed status, invoiced status, paid status, reassignment, and audit history.
+
+3.56. “Receipt Data” means data concerning receipts, receipt numbers, linked invoices, linked payment records, payment method, validated paid amount, issued-by information, issued timestamp, downloadable receipt files, receipt reversals, receipt reissue references, receipt download logs, and receipt audit logs.
+
+3.57. “Regulator” means any governmental, judicial, administrative, supervisory, data-protection, privacy, tax, consumer-protection, cybersecurity, telecommunications, labour, licensing, professional, sector-specific, financial, law-enforcement, or other competent authority.
+
+3.58. “Security Data” means data relating to authentication, authorization, Magic Links, tokens, sessions, access controls, login attempts, failed logins, device checks, IP addresses, rate limits, suspicious usage, unauthorized access attempts, incidents, vulnerabilities, access reviews, monitoring, and cybersecurity.
+
+3.59. “Sensitive Personal Data”, “Special Category Data”, or equivalent means Personal Data subject to heightened protection under Applicable Law, which may include health data, biometric data, financial identifiers, identity-document information, children’s data, protected-class data, precise location data, or other legally sensitive data.
+
+3.60. “Service Session” means a Servana operational record connecting a Client, Branch, selected service, assignment mode, Personnel user, queue entry or appointment, status, start time, completion time, invoice state, payment state, and audit history.
+
+3.61. “Staff Data” means data relating to Merchant staff users, including first name, last name, display name, profile picture where configured, email, phone, role, account type, employment type, employment status, Branch assignment, start date, staff invited by, service eligibility, availability, working hours, break status, suspension status, deactivation status, last login, and role/Branch/status history.
+
+3.62. “Super Administrator” means the Citrus Labs Limited platform-owner account type that governs the Servana SaaS ecosystem across Merchants at Platform level, including platform-wide settings, platform service-fee rules, billing cycles, preferred-Personnel waiting-fee configuration, all-Merchant visibility, platform-wide reports, Platform Fee ledgers, platform-level audit logs, suspicious-usage monitoring, internal Citrus Labs Limited platform roles, feature flags, Merchant suspension, Merchant deactivation, billing enforcement, abuse response, and platform-policy enforcement.
+
+3.63. “System-Generated Data” means data automatically generated by Servana, including identifiers, timestamps, logs, audit events, status changes, notifications, calculations, analytics, metrics, alerts, estimates, reports, dashboard outputs, validation states, risk signals, and operational records.
+
+3.64. “Third-Party Service Provider” means any vendor, contractor, sub-processor, infrastructure provider, hosting provider, storage provider, database provider, communication provider, analytics provider, billing provider, payment-related provider, cybersecurity provider, support provider, identity provider, professional adviser, auditor, legal adviser, insurer, or other third party used in connection with Servana.
+
+3.65. “Usage Data” means data concerning use of Servana, including feature access, page views, clicks, navigation events, dashboard interactions, report views, configuration actions, access duration, login history, device information, module usage, support interactions, and operational activity.
+
+3.66. “User Data” means all data submitted by, generated through, processed for, accessed by, retained for, exported by, or associated with any Merchant Front Office user, Merchant, Branch, staff user, Client, End-User, Super Administrator, contractor, vendor, support user, or stakeholder in Servana.
+
+3.67. References to the singular include the plural and vice versa. References to persons include natural persons, companies, partnerships, sole proprietors, associations, unincorporated bodies, governmental bodies, and other legal or commercial entities. References to “including” mean “including without limitation”. References to “may” confer discretion. References to “shall” and “must” impose mandatory obligations. Headings are for convenience only and do not limit interpretation.
+
+## 4. DESCRIPTION OF SERVANA AND DATA-GOVERNANCE CONTEXT
+
+4.1. Servana is a multi-tenant SaaS web platform owned and operated by Citrus Labs Limited and intended for service-based SMEs, including barbershops, salons, massage parlours, spas, grooming studios, beauty parlours, and similar appointment-based or walk-in businesses.
+
+4.2. Servana enables Merchants to manage Merchant onboarding, Merchant Branches, staff and personnel access, Front Office operations, Client records, walk-ins, appointments, queue management, service delivery tracking, Client choice of next available Personnel or preferred Personnel, invoice generation, offline payment recording, receipt generation, personnel commission visibility, Client data protection and contact access control, Platform Fee calculation, service-fee-tier invoice pricing, Merchant financial visibility, and audit-ready operational and financial records. 
+
+4.3. Servana is not merely a booking application, not merely a point-of-sale system, not merely an invoicing tool, not a payroll system, not an accounting system, not a bank, not an escrow service, not a payment processor for Client-to-Merchant payments, not a money-remittance service, not a tax adviser, not a legal adviser, not an employment adviser, not a professional licensing authority, not a consumer-protection regulator, and not a substitute for Merchant, Branch, Front Office, Client-service, privacy, tax, accounting, employment, or sector-specific compliance.
+
+4.4. Servana records offline payments but does not process Client-to-Merchant payments inside the Platform. Offline payment methods may include cash, M-Pesa, bank transfer, card terminal, voucher, split payment, and other Merchant-defined offline methods. 
+
+4.5. Servana operates on a multi-tenant principle under which each Merchant operates as an isolated tenant, and a Merchant’s data must not be accessible, inferable, editable, exportable, or enumerable by another Merchant. 
+
+4.6. The Merchant Front Office account exists to provide Branch-scoped, daily Client-facing operational control, including registration of Clients, retrieval of existing Clients, same-Branch duplicate prevention, creation of walk-ins, creation of appointment records, conversion of appointment arrivals into active queue or service flow without duplicating appointment, queue, or Service Session records, service selection, next-available Personnel assignment, Client-selected preferred Personnel at extra cost, queue status management, Service Session creation, invoice generation, offline payment method recording, payment-detail submission for Finance validation, status visibility for awaiting Finance validation and ready for receipt, daily Branch activity visibility, current appointment and walk-in visibility, Client notifications, and speed-sensitive operational search.
+
+4.7. The Merchant Front Office user is distinct from the Merchant Administrator. The Merchant Administrator is the registering Merchant owner, manager, or authorized operator who self-registers the Merchant business account, completes first-time setup, manages the Merchant profile, creates Branches, adds initial Branch and HR user emails, views Merchant reports, views Platform Fee records, and performs Merchant-level actions. The Merchant Front Office user does not create the Merchant tenant, does not create Branches, does not create the first Merchant Administrator, does not select Merchant service-fee tiers, and does not perform Merchant Administrator self-registration or Merchant profile ownership functions.
+
+4.8. The Merchant Front Office user is distinct from the Merchant Branch user. The Merchant Branch user manages Branch profile, operating hours, operating calendar, services, pricing, queue configuration, appointment controls, Branch reports, Branch revenue, invoices, receipts, payment records, Branch day opening, Branch day closing, cash-up, reconciliation, and Branch audit logs. The Merchant Front Office user may operate within Branch queue and appointment settings but does not configure Branch operating calendars, Branch service catalogues, Branch pricing, Branch closures, Branch day-close controls, or Branch cash-up controls unless separately authorized.
+
+4.9. The Merchant Front Office user is distinct from the Merchant Human Resource user. The Merchant Human Resource user manages staff identity, employment status, Branch-scoped assignment, account-type selection, role assignment, Personnel service eligibility, availability, staff invitation, staff suspension, staff deactivation, and staff roster export only. The Merchant Front Office user may see Personnel availability or eligibility where needed for assignment but must not create staff, alter staff roles, assign staff to Branches, change Personnel eligibility, or override HR-controlled availability.
+
+4.10. The Merchant Front Office user is distinct from the Merchant Finance user. The Merchant Finance user validates offline payments, manages financial control, invoice payment status, receipts, financial reports, reconciliation, disputes, external refund records, Platform Fee visibility where permitted, commission liability review where permitted, and finance exports where permitted. The Merchant Front Office user may record offline payment method and submit payment details for Finance validation but must not validate payments, reject payments, approve payments, generate receipts without a linked invoice and valid payment state, void finance records, approve refunds, resolve disputes, or manipulate Finance Data.
+
+4.11. The Merchant Front Office user is distinct from the Merchant Personnel user. Merchant Personnel users are service providers who access their own assignments, queues, appointments, service history, commission, preferred requests, and personally served or assigned Clients. The Merchant Front Office user may assign next available Personnel or preferred Personnel in permitted operational workflows but must not alter Personnel service history, commission rules, employment status, HR eligibility, or unauthorized Personnel access to Client contact details.
+
+4.12. The Merchant Front Office user is distinct from the Merchant Audit user. The Merchant Audit user provides read-only oversight and may view audit logs, role changes, Branch changes, invoice history, payment validation logs, receipt logs, queue reassignment logs, preferred-Personnel fee logs, and contact-access logs where permitted. The Merchant Front Office user performs Client-facing operational actions that are auditable and must therefore comply with heightened action logging, accuracy, non-manipulation, and evidence-preservation obligations.
+
+4.13. The Merchant Front Office user is distinct from the Super Administrator. The Super Administrator is the Citrus Labs Limited Platform-owner role with Platform-level governance over settings, Platform service-fee rules, billing cycles, preferred-Personnel waiting fees, all-Merchant visibility, Platform-wide reports, Platform Fee ledgers, platform-level audit logs, suspicious-usage monitoring, internal Citrus Labs Limited platform roles, feature flags, Merchant suspension, Merchant deactivation, billing enforcement, abuse response, and platform-policy enforcement.
+
+## 5. SCOPE AND OBJECTIVES OF THIS DATA POLICY
+
+5.1. This Data Policy applies to all Platform Data submitted by, generated through, processed for, accessed by, viewed by, corrected by, searched by, filtered by, recorded by, submitted by, notified by, exported where permitted by, downloaded where permitted by, retained for, or associated with the Merchant Front Office user.
+
+5.2. This Data Policy governs Merchant Front Office use of Servana, including Client registration, existing Client retrieval, duplicate Client prevention, walk-in creation, appointment creation, appointment check-in, queue assignment, next-available Personnel assignment, preferred-Personnel selection, preferred-Personnel fee visibility, queue status management, Service Session creation, invoice generation, offline payment method recording, Finance-validation submission, awaiting-validation status visibility, ready-for-receipt status visibility, daily Branch activity visibility, appointment and walk-in visibility, Client notification, and speed-sensitive search.
+
+5.3. This Data Policy also governs the Merchant Front Office user’s obligations concerning any data relating to Merchant Administrators, Branch users, HR users, Finance users, Personnel users, Audit users, Clients, End-Users, vendors, contractors, and other persons whose records, appointments, queues, Service Sessions, invoices, payment records, receipts, notifications, assignments, or audit events may be visible through the Merchant Front Office account.
+
+5.4. This Data Policy applies to websites, dashboards, portals, login flows, Magic Link authentication, Merchant Front Office account flows, Client registration screens, Client retrieval screens, duplicate-prevention workflows, walk-in workflows, appointment workflows, appointment check-in workflows, queue workflows, assignment workflows, preferred-Personnel workflows, service-selection workflows, Service Session workflows, invoice workflows, offline-payment-recording workflows, Finance-validation submission workflows, receipt-status views, daily activity screens, Client notification workflows, support systems, analytics tools, hosting systems, backup systems, APIs, integrations, and infrastructure used in connection with Servana.
+
+5.5. The objectives of this Data Policy include lawful Processing, secure Processing, Client-data protection, Client-record accuracy, duplicate-prevention integrity, queue integrity, appointment integrity, Service Session integrity, assignment integrity, preferred-Personnel-fee transparency, invoice integrity, payment-recording integrity, Finance-submission integrity, receipt-status integrity, Branch activity accountability, notification accuracy, fraud prevention, abuse prevention, suspicious-usage monitoring, tenant isolation, Branch Scope enforcement, role-based access, contact-access control, export governance, regulatory cooperation, dispute handling, and protection of Citrus Labs Limited’s legal, commercial, technical, and operational interests.
+
+5.6. The Merchant Front Office user must use Servana’s Front Office capabilities to support lawful Client-facing service operations, not to perform Finance validation, manipulate invoices, suppress Client complaints, conceal queue manipulation, create duplicate Clients, misuse Client contact information, create unauthorized marketing lists, perform HR functions, alter Personnel eligibility, perform Merchant Administrator functions, export excessive data, or bypass Platform controls.
+
+## 6. PLATFORM ROLE ARCHITECTURE AND GOVERNANCE MODEL
+
+6.1. Servana distinguishes between Citrus Labs Limited as owner and operator; Super Administrators as Platform-level Citrus Labs Limited governance users; Merchant Administrators as Merchant-level business owner, manager, or authorized operator users; Merchant Branch users as Branch-level operational users; Merchant Human Resource users as Branch-scoped staff, role, service-eligibility, and availability users; Merchant Finance users as Branch-scoped offline payment validation, receipt, reconciliation, dispute, external-refund, commission-liability, Platform Fee, and financial-control users; Merchant Front Office users as Branch-scoped Client-facing operational users; Merchant Personnel users as service providers; Merchant Audit users as read-only oversight users; and Clients as service recipients.
+
+6.2. The Merchant Front Office account shall be Branch-scoped or otherwise limited to the Merchant-authorized Branch Scope made available through Servana. Where Branch Scope applies, the Merchant Front Office user must not access, infer, register, retrieve, edit, notify, export, or otherwise handle Client, queue, appointment, invoice, payment, or Service Session records outside the assigned Branch Scope.
+
+6.3. The Merchant Front Office user may be permitted to register Clients, retrieve existing Clients, prevent duplicate Client registration within the same Branch, create walk-ins, create appointment records, convert appointment arrivals into active queue or service flow without duplication, select services, assign next available Personnel, allow Client selection of preferred Personnel at extra cost, manage queue status, create Service Sessions, generate invoices, record offline payment method, submit payment details for Finance validation, view awaiting-Finance-validation status, view ready-for-receipt status, view daily Branch activity, view current appointments and walk-ins, notify Clients of queue or service status, and search speed-sensitive operational records.
+
+6.4. The Merchant Front Office user must support actionable queue operations where permitted, including check-in, assignment, start service, invoice, record payment, awaiting Finance validation, and ready-for-receipt status handling.
+
+6.5. The Merchant Front Office workflow shall enforce valid state transitions, including waiting, assigned, in service, completed, invoiced, and paid states, together with controlled cancellation and no-show paths. The Platform must avoid double-booking, duplicate appointment records, duplicate queue records, and duplicate Service Session records.
+
+6.6. Creating a walk-in must atomically create or attach the relevant Client, selected service, Branch, queue entry, assignment mode, and optional preferred-Personnel fee. The Merchant Front Office user shall not manually bypass atomicity controls, duplicate records, or create fragmented records that obscure the Client’s operational path.
+
+6.7. The Merchant Front Office user must not create Merchant tenants, create Merchant Branch accounts, manage other Branches outside Branch Scope, assign Merchant users to Branches, perform HR personnel assignment duties, create staff users, activate staff users, suspend staff users, deactivate staff users, configure Branch services, configure Branch pricing, validate payments, reject payments, approve payments, issue receipts without a linked invoice and valid payment state, approve refunds, resolve Finance disputes, export Client lists, perform Personnel service work, or perform Super Administrator governance.
+
+6.8. The Merchant Front Office user may assign next available Personnel or preferred Personnel only within Platform-permitted assignment logic, Branch Scope, Personnel availability, HR-controlled service eligibility, appointment availability, conflict-prevention controls, and audit logging.
+
+6.9. The Merchant Front Office user must treat “preferred Personnel at extra cost” as an optional, visible, separately identifiable Client choice where configured and must not conceal the fee, misrepresent the fee, force the selection, manipulate waiting time, or assign preferred Personnel outside Platform controls.
+
+6.10. Merchant Front Office actions shall be interpreted to preserve Merchant isolation, Branch Scope, Client confidentiality, staff confidentiality, payment-recording integrity, queue integrity, appointment integrity, service integrity, invoice integrity, audit readiness, and least-privilege access.
+
+## 7. CATEGORIES OF DATA COLLECTED, PROCESSED, STORED, GENERATED, OR GOVERNED
+
+7.1. Servana may collect, receive, generate, host, store, retain, access, process, govern, or preserve Account Data, User Data, Business Data, Merchant Data, Branch Data, Client Data, Staff Data, Operational Data, Appointment Data, Queue Data, Service Session data, Front Office Data, Technical Data, Usage Data, Billing Data, Subscription Data, Payment Data, Tax Data, Audit Data, Log Data, Security Data, Support Data, Device Data, Metadata, Aggregated Data, Anonymized Data, Pseudonymized Data, Derived Data, System-Generated Data, Regulated Data, and Industry-Specific Data.
+
+7.2. Merchant Front Office Account Data may include name, email address, phone number, Merchant tenant, assigned Branch, Branch Scope, role, account type, invitation status, activation status, Magic Link events, login records, session records, device records, IP address, last login, access attempts, Client screen views, Client search records, Client create events, Client edit events, appointment actions, walk-in actions, queue actions, assignment actions, invoice actions, offline-payment recording actions, Finance-submission actions, notification actions, report views, export attempts, download records, suspension status, deactivation status, support communications, and audit events.
+
+7.3. Client Data may include Client name, phone number, optional email, optional gender, visit history, service history, assigned Personnel history, preferred Personnel history, appointment history, queue history, invoice history, receipt history, payment history, consent records, communication preferences, duplicate-prevention records, notes where permitted, and contact-access records.
+
+7.4. Client search data may include phone-number search, name search, appointment-reference search, invoice-number search, receipt-number search, queue-position search, search time, search actor, Branch Scope, results returned, selected result, failed search, duplicate-detection event, and related audit metadata.
+
+7.5. Walk-in data may include Client, Branch, selected service, queue entry, assignment mode, optional preferred-Personnel fee, created-by user, timestamp, status, queue position, waiting-state metadata, cancellation state, no-show state where applicable, invoice state, payment state, and audit history.
+
+7.6. Appointment Data may include Client, Branch, service, scheduled date and time, appointment reference, Personnel selection, preferred Personnel selection, appointment status, check-in status, cancellation reason, no-show record, conversion into active queue or service flow, conflict-prevention record, Branch closure protection, and audit history.
+
+7.7. Queue Data may include queue position, Client waiting state, assignment state, Personnel assigned, preferred Personnel requested, estimated wait time, queue status, check-in record, assignment record, service start, service completion, cancellation reason, no-show status, reassignment, override reason where applicable, and audit log.
+
+7.8. Service Session data may include Client, Branch, selected service, service duration, service status, assigned Personnel, preferred Personnel, start time, completion time, invoice trigger, payment status, Client notes where permitted, service record, and audit history.
+
+7.9. Invoice Data may include invoice number, Client, Branch, service, assigned Personnel, preferred-Personnel fee line, service-fee-tier pricing effect, subtotal, total, status, generated-by user, timestamp, linked appointment or walk-in, linked queue entry, linked Service Session, payment status, and audit history.
+
+7.10. Offline Payment Record data recorded by Merchant Front Office may include payment method, amount, reference, payment note, invoice link, payment status, saved or unsaved state, pending validation state, recorded-by user, submitted-to-Finance timestamp, Branch, Client, and audit log.
+
+7.11. Finance-status visibility data may include awaiting-Finance-validation status, pending validation status, correction requested status, rejected payment status, validated status, ready-for-receipt status, receipt issued status, and related notification or workflow indicators.
+
+7.12. Receipt-status data visible to Merchant Front Office may include receipt availability, linked invoice, linked payment validation state, receipt number where visible, receipt issued status, receipt download status where permitted, and related audit history, subject to the rule that Merchant Front Office must not issue a receipt without a linked invoice and valid payment state.
+
+7.13. Daily Branch activity data may include walk-ins, appointments, completed services, pending services, invoices created, unpaid invoices, payments pending validation, receipts issued, next Client, waiting Clients, in-service Clients, completed-today count, pending commission indicators where visible, preferred requests, today’s appointments, active queue, paid or unpaid invoices, and payments pending validation.
+
+7.14. Client Notification Data may include queue notifications, service-status notifications, appointment reminders or status messages where configured, waiting updates, ready-for-service messages, payment-status messages, receipt-status messages, message content templates, delivery status, channel, timestamp, actor, Client communication preference, consent record, and audit log.
+
+7.15. Staff and Personnel visibility data may include assigned Personnel, next available Personnel, preferred Personnel, Personnel availability state, service eligibility, queue availability, appointment availability, staff identifier, role, Branch assignment, assignment history, and service-history link, subject to HR-controlled limitations.
+
+7.16. Audit, security, and technical data may include Merchant Front Office login records, Magic Link events, failed login attempts, session records, unauthorized-access attempts, Client access attempts, contact-access attempts, export attempts, download attempts, IP addresses, user agents, device identifiers, API logs, error logs, integration logs, performance logs, diagnostic records, incident records, suspicious-usage signals, and system-generated evidence records.
+
+7.17. Citrus Labs Limited may process Aggregated Data, Anonymized Data, Pseudonymized Data, Derived Data, and System-Generated Data for security, analytics, product improvement, performance monitoring, troubleshooting, capacity planning, billing review, support, fraud prevention, Client-flow improvement, queue improvement, appointment improvement, Front Office usability improvement, and operational planning.
+
+## 8. PURPOSES OF DATA PROCESSING
+
+8.1. Citrus Labs Limited may process Platform Data to create and administer Merchant Front Office accounts, authenticate users, authorize access, deliver Magic Links, verify email addresses, verify correct Merchant tenant, verify active account status, verify active role status, verify suspension status, verify Branch Scope where applicable, maintain sessions, rate-limit logins, audit logins, and secure account access.
+
+8.2. Citrus Labs Limited may process Merchant Front Office activity to provide Client registration, existing Client retrieval, duplicate prevention, walk-in creation, appointment creation, appointment check-in, appointment-to-queue conversion, service selection, Personnel assignment, preferred-Personnel selection, queue status management, Service Session creation, invoice generation, offline payment method recording, Finance-validation submission, receipt-status visibility, daily Branch activity visibility, Client notifications, and speed-sensitive operational search.
+
+8.3. Citrus Labs Limited may process Client Data to identify Clients, prevent duplicate Client records within the same Branch, attach Client records to walk-ins or appointments, maintain Client service history, maintain Client invoice and receipt history, support Client notifications, support Client communication preferences, support Client disputes, support Data Subject requests, and preserve audit-ready Client records.
+
+8.4. Citrus Labs Limited may process Appointment Data and Queue Data to prevent double-booking, prevent duplicate Service Sessions, maintain valid state transitions, identify no-shows, record cancellation reasons, manage waiting order, support assignment, support preferred-Personnel requests, estimate wait times, support Client status notifications, and preserve operational evidence.
+
+8.5. Citrus Labs Limited may process Service Session data to connect Client, Branch, selected service, Personnel, assignment mode, start time, completion time, invoice status, payment status, and audit history.
+
+8.6. Citrus Labs Limited may process Invoice Data to create invoices after permitted service workflows, calculate invoice amounts according to Branch pricing and Merchant service-fee-tier rules, include preferred-Personnel fee lines where applicable, maintain invoice numbers, support payment recording, support Finance validation, support receipt generation, support tax or accounting recordkeeping, and preserve audit history.
+
+8.7. Citrus Labs Limited may process Offline Payment Records to allow Front Office users to record payment method, amount, reference, note, and status for payments made outside the Platform, and to submit those records for Merchant Finance validation.
+
+8.8. Citrus Labs Limited may process Finance-status visibility data so Merchant Front Office users can see whether a payment is saved, unsaved, pending validation, awaiting Finance validation, correction requested, rejected, validated, or ready for receipt.
+
+8.9. Citrus Labs Limited may process Client Notification Data to notify Clients of queue or service status, appointment status, waiting status, ready-for-service status, payment status, or receipt status, subject to Merchant instructions, Client communication preferences, Applicable Law, and Platform capabilities.
+
+8.10. Citrus Labs Limited may process Audit Data to support audit-ready operational and financial records, detect unauthorized access, investigate suspicious activity, preserve evidence, enforce Platform rules, defend legal claims, support Merchant disputes, support Client disputes, support payment disputes, support staff disputes, support regulatory inquiries, and maintain Platform integrity.
+
+8.11. Citrus Labs Limited may process Merchant Front Office searches, views, actions, notifications, invoice-generation events, payment-recording events, and status checks to maintain accountability over the Merchant Front Office user’s own activity, detect excessive access, detect inappropriate searches, detect suspicious Client-data access, preserve evidence, and enforce this Data Policy.
+
+8.12. Citrus Labs Limited may process Usage Data, Metadata, Diagnostic Data, Aggregated Data, Anonymized Data, Derived Data, and System-Generated Data for security, analytics, product improvement, performance monitoring, troubleshooting, capacity planning, billing review, support, fraud prevention, and operational planning.
+
+8.13. Citrus Labs Limited may process Platform Data to establish, exercise, investigate, defend, preserve, enforce, or settle legal claims, contractual rights, Platform Fee rights, intellectual-property rights, confidentiality rights, security rights, audit rights, and regulatory obligations.
+
+## 9. LEGAL BASES FOR PROCESSING
+
+9.1. Citrus Labs Limited may process Personal Data where processing is necessary for performance of contract, pre-contractual steps, consent, legal obligation, legitimate interests, vital interests where applicable, public interest where applicable, substantial public interest where applicable, establishment, exercise, or defence of legal claims, cybersecurity, fraud prevention, audit integrity, billing enforcement, tax recordkeeping, accounting recordkeeping, regulatory cooperation, or other lawful grounds recognized under Applicable Law.
+
+9.2. Citrus Labs Limited’s legitimate interests may include operating Servana, securing accounts, maintaining tenant isolation, maintaining Branch Scope, authenticating users, authorizing access, preventing abuse, preserving audit logs, maintaining Client-record integrity, preventing duplicate Client records, maintaining appointment integrity, preventing double-booking, maintaining queue integrity, maintaining invoice integrity, maintaining payment-recording integrity, supporting Finance validation, supporting Client notifications, enforcing Platform rules, managing Platform Fees, supporting Merchants, protecting Clients, protecting staff, improving services, responding to incidents, and defending legal claims.
+
+9.3. Where Citrus Labs Limited processes data on behalf of a Merchant, Citrus Labs Limited may act as a Processor, Operator, Service Provider, or equivalent under Applicable Law, subject to the Merchant’s lawful instructions, Platform functionality, contractual terms, and any applicable data-processing terms.
+
+9.4. Where Citrus Labs Limited determines the purposes and means of processing Account Data, Security Data, Billing Data, Platform Fee data, Audit Data, Usage Data, analytics data, support records, diagnostic data, enforcement records, and product-improvement data, Citrus Labs Limited may act as an independent Controller or equivalent under Applicable Law.
+
+9.5. The Merchant may act as Controller or equivalent decision-maker in relation to Client Data, Staff Data, Branch Data, Merchant operational data, Front Office Data, Payment Data, and Merchant-side instructions, depending on Applicable Law and the factual context.
+
+9.6. The Merchant Front Office user may access Personal Data only where the Merchant has a lawful basis and the Merchant Front Office user has an authorized Client-facing operational purpose, role permission, Branch Scope where applicable, and need-to-know justification.
+
+9.7. Processing of Sensitive Personal Data, Special Category Data, children’s data, regulated data, or industry-specific data shall occur only where supported by Applicable Law, valid authorization, consent where required, legal obligation, substantial public interest where applicable, employment or service necessity where applicable, legal-claims necessity, or another lawful basis recognized under Applicable Law.
+
+9.8. Failure to provide required data may prevent Merchant Front Office account creation, Magic Link login, dashboard access, Client registration, Client retrieval, appointment creation, walk-in creation, queue entry creation, assignment, Service Session creation, invoice generation, payment recording, Finance-validation submission, Client notification, support, investigation, or continued use of Servana.
+
+## 10. COMPANY RIGHTS, OWNERSHIP, AND RESERVED POWERS
+
+10.1. Citrus Labs Limited owns Servana and all associated software, source code, object code, workflows, schemas, databases, system architecture, dashboards, administrative tools, billing engines, algorithms, APIs, templates, documentation, configurations, Platform logic, access-control structures, role structures, permission structures, Magic Link systems, audit systems, feature-flag systems, Platform Fee systems, metadata, logs, analytics, Aggregated Data, Anonymized Data, Derived Data, and operational intelligence, subject to Applicable Law and rights in Customer Data.
+
+10.2. Citrus Labs Limited reserves the right to monitor Platform activity, preserve Platform records, investigate misuse, enforce Platform rules, suspend accounts, deactivate accounts, restrict access, throttle usage, disable features, modify security requirements, require additional verification, reject unlawful instructions, refuse deletion where retention is required or justified, retain evidence, comply with lawful requests, protect Platform integrity, and defend legal claims.
+
+10.3. Citrus Labs Limited may process Platform Data to provide, secure, support, improve, analyse, maintain, bill, enforce, audit, and protect Servana.
+
+10.4. Citrus Labs Limited may retain logs, audit records, security records, Client records, appointment records, queue records, Service Session records, invoice records, receipt records, Offline Payment Records, Billing Data, Platform Fee records, tax records, accounting records, dispute records, notification records, support records, export records, and legal records notwithstanding account suspension, account deactivation, inactivity, deletion requests, account closure, or termination.
+
+10.5. Citrus Labs Limited may refuse, suspend, or restrict processing instructions that are unlawful, insecure, excessive, technically infeasible, contrary to Platform rules, contrary to Merchant isolation, contrary to Branch Scope, contrary to Client privacy, contrary to staff privacy, contrary to financial integrity, contrary to audit integrity, or contrary to Applicable Law.
+
+10.6. Citrus Labs Limited may restrict, mask, redact, aggregate, anonymize, pseudonymize, or suppress certain fields in Merchant Front Office views where required or appropriate for privacy, security, confidentiality, legal privilege, investigation integrity, data minimization, Client protection, financial integrity, or Platform integrity.
+
+10.7. Citrus Labs Limited may prevent, reverse, review, flag, restrict, or require approval for high-risk Merchant Front Office actions, including Client profile edits, duplicate record handling, appointment cancellation, no-show marking, queue reassignment, preferred-Personnel override, invoice generation, offline payment recording, payment-detail submission, notification sending, and export attempts.
+
+## 11. CUSTOMER, MERCHANT, AND USER DATA OWNERSHIP AND RESPONSIBILITIES
+
+11.1. The Merchant retains rights in Merchant Data, Branch Data, Client Data, and Merchant-side Customer Data to the extent recognized under Applicable Law, subject to Citrus Labs Limited’s rights to host, process, secure, audit, retain, aggregate, anonymize, use, disclose where lawful, and enforce rights in relation to such data under applicable contracts, Platform rules, and Applicable Law.
+
+11.2. The Merchant is responsible for ensuring that Merchant Data, Branch Data, Staff Data, Client Data, service data, pricing data, invoice data, payment data, receipt data, consent records, notification records, and operational records submitted to or generated through Servana are accurate, lawful, relevant, complete, timely, non-misleading, and appropriate.
+
+11.3. The Merchant is responsible for providing required privacy notices, obtaining required consents, establishing lawful bases, managing Client communications, managing staff communications, complying with employment obligations, complying with consumer-protection obligations, complying with tax obligations, complying with accounting obligations, complying with sector-specific rules, and ensuring that the Merchant’s use of Servana is lawful in the Merchant’s operating jurisdictions.
+
+11.4. The Merchant is responsible for appointing, supervising, instructing, restricting, and monitoring Merchant Front Office users and for ensuring that Merchant Front Office users access and use Client-facing operational information only for lawful, authorized, proportionate, and legitimate Branch operational purposes.
+
+11.5. The Merchant Front Office user is responsible for complying with Merchant policies, Citrus Labs Limited policies, this Data Policy, the Terms of Service, access controls, confidentiality obligations, data-minimization obligations, Client-record obligations, duplicate-prevention obligations, appointment obligations, queue obligations, invoice obligations, payment-recording obligations, notification restrictions, audit integrity obligations, and Applicable Law.
+
+11.6. The Merchant Front Office user must not upload, submit, create, edit, assign, notify, invoice, record payment information for, export, instruct, or permit Processing of data that the Merchant has no lawful right to collect, use, disclose, retain, process, or rely upon.
+
+11.7. The Merchant Front Office user must not use Servana to evade tax obligations, conceal cash leakage, manipulate invoices, misrepresent receipts, falsify Client records, create duplicate Clients, manipulate queue positions, misstate payment status, conceal Client complaints, bypass licensing obligations, avoid Platform Fees, or violate Applicable Law.
+
+## 12. SUPER ADMINISTRATOR DATA-GOVERNANCE RESPONSIBILITIES
+
+12.1. Super Administrators are Citrus Labs Limited Platform-owner governance users and are distinct from Merchant Front Office users.
+
+12.2. Super Administrators may process Merchant Data, Branch Data, Client Data, Billing Data, Platform Fee data, Audit Data, Usage Data, Security Data, Front Office Data, and other Platform Data where necessary for Platform-level governance, billing enforcement, abuse response, suspicious-usage monitoring, Platform security, support, legal preservation, feature-flag governance, internal role management, Merchant suspension, Merchant deactivation, and platform-policy enforcement.
+
+12.3. Super Administrators must not create Merchant tenants on behalf of Merchants, create the first Merchant Administrator, manually approve Merchant Administrator self-registration before dashboard access as a default workflow, require Merchant KYC submission as part of default self-registration, or perform Merchant operations such as serving Clients, assigning sessions, manipulating Branch queues, configuring Branch services, editing Merchant invoices, validating Merchant payments, or editing Merchant receipts outside controlled governance workflows.
+
+12.4. The Merchant Front Office user acknowledges that Super Administrator access may occur for Platform integrity, billing, security, support, investigation, enforcement, legal, audit, and regulatory purposes.
+
+12.5. Citrus Labs Limited may log, monitor, review, and audit Super Administrator access to Merchant Data, Branch Data, Client Data, Staff Data, Payment Data, Billing Data, Audit Data, Front Office Data, and Merchant Front Office activity.
+
+12.6. The Merchant Front Office user shall not misrepresent Super Administrator activity, obstruct Super Administrator review, conceal Platform-level abuse, or use Merchant Front Office access to interfere with Citrus Labs Limited Platform governance.
+
+## 13. MERCHANT ADMINISTRATOR DATA-GOVERNANCE RESPONSIBILITIES
+
+13.1. The Merchant Administrator is responsible for Merchant self-registration, Merchant profile setup, Merchant service-fee-tier selection where permitted, Branch creation, Branch profile completion, initial Merchant Branch account user email invitation, initial Merchant Human Resource account user email invitation, Branch selection for initial staff invitations, Merchant dashboard use, Merchant-level reporting oversight, Platform Fee visibility, staff-account status actions where permitted, and preservation of historical records.
+
+13.2. The Merchant Administrator must ensure that Merchant profile information, business category information, Branch information, initial staff invitation emails, Branch assignments, service-fee-tier selections, Merchant dashboard actions, and Merchant-level records are accurate, lawful, non-misleading, and authorized.
+
+13.3. The Merchant Front Office user may operate within Merchant Administrator-created Branches and Branch Scope where permitted, but such operation does not confer Merchant Administrator-level authority.
+
+13.4. Merchant Front Office access does not authorize the user to create Branches, approve Merchant registration, change Merchant ownership, create first Merchant Administrator accounts, select Merchant service-fee tiers, manage Merchant profile, view all Merchant Branches unless separately authorized, suspend staff, delete staff, or override Merchant Administrator governance.
+
+13.5. The Merchant Front Office user shall not use Merchant Administrator-related records for retaliation, personal disputes, unauthorized employment action, unlawful disclosure, commercial misuse, or unauthorized reporting.
+
+13.6. The Merchant Front Office user shall promptly escalate suspicious Merchant Administrator-related operational activity where permitted, including unusual Client data access, suspicious appointment manipulation, improper Branch suspension messages, unauthorized export attempts, or apparent attempts to bypass Platform controls.
+
+## 14. MERCHANT BRANCH DATA-GOVERNANCE RESPONSIBILITIES
+
+14.1. Merchant Branch users are responsible for managing only their assigned Branch, including Branch profile, operating hours, operating calendar, services, service pricing, service availability, queue configuration, appointment controls, Branch day opening, Branch day closing, Branch cash-up submission, Branch reports, Branch invoices, Branch receipts, Branch payment records, Branch revenue, and Branch-level audit logs.
+
+14.2. Merchant Branch users must not create Merchant Branches, manage other Branches, assign users to Branches, handle Branch-scoped access permissions, perform HR personnel assignment duties, create staff users, activate staff users, suspend staff users, deactivate staff users, or override HR-controlled service eligibility.
+
+14.3. The Merchant Front Office user may operate within Branch-level settings established by the Merchant Branch user, including Branch queue rules, appointment controls, service availability, Branch closure status, and service pricing visibility, but must not configure those Branch-level controls unless separately authorized.
+
+14.4. The Merchant Front Office user must not configure Branch services, edit Branch pricing, alter Branch operating hours, open or close Branch days, submit Branch cash-up records, submit Branch reconciliation records, alter Branch profile, archive Branches, or close Branches unless separately authorized by Servana.
+
+14.5. The Merchant Front Office user shall treat Branch Data as confidential and shall not disclose Branch performance, Branch revenue, Branch payment activity, Branch discrepancies, Branch staff activity, or Branch operational findings except through lawful, authorized Merchant or Citrus Labs Limited channels.
+
+14.6. The Merchant Front Office user shall comply with Branch closure protection and must not create appointments, walk-ins, queues, or Service Sessions during closure periods, suspended Branch status, or archived/closed Branch status except where the Platform expressly permits controlled historical or corrective action.
+
+## 15. MERCHANT HUMAN RESOURCE DATA-GOVERNANCE RESPONSIBILITIES
+
+15.1. Merchant Human Resource users manage staff identity, employment status, Branch-scoped assignment, account-type selection, role assignment, Personnel service eligibility, availability, staff invitation, staff activation visibility, staff suspension, staff deactivation, staff roster search, staff roster export only, permission preview, and role/Branch/status history within the assigned Branch Scope.
+
+15.2. Merchant Human Resource users must not manage staff in other Branches, assign staff to other Branches, manage Merchant Administrator activation status, export Client Data, export Payment Data, self-escalate permissions, or assign themselves a higher-risk role.
+
+15.3. The Merchant Front Office user may view HR-controlled Personnel availability and service eligibility only where necessary for Client-facing assignment, appointment handling, queue handling, and Service Session operation.
+
+15.4. The Merchant Front Office user must not create staff accounts, invite staff, resend invitations, revoke invitations, edit staff profiles, change employment data, assign roles, assign Branches, assign services, manage availability, suspend staff, deactivate staff, export staff rosters, set commission rules, or self-escalate permissions.
+
+15.5. The Merchant Front Office user shall not use Staff Data, HR audit logs, staff availability, role history, employment status, commission visibility, or service eligibility records for unlawful discrimination, harassment, retaliation, unauthorized employment action, favoritism, or personal purposes.
+
+15.6. The Merchant Front Office user shall not override HR-controlled Personnel eligibility when assigning Clients, walk-ins, appointments, or Service Sessions. Personnel must receive assignments only for services they are eligible to perform.
+
+15.7. The Merchant Front Office user shall escalate staff availability issues, service-eligibility issues, suspension issues, Personnel access issues, and HR record errors to the Merchant Human Resource user, Merchant Branch user, or Merchant Administrator as appropriate.
+
+## 16. MERCHANT FINANCE DATA-GOVERNANCE RESPONSIBILITIES
+
+16.1. Merchant Finance users manage offline payment validation, financial control, invoice payment status, receipts, financial reports, reconciliation, disputes, external refund records, Platform Fee visibility where permitted, commission-liability visibility where permitted, finance exports where permitted, cash-up review, and finance audit activity.
+
+16.2. Merchant Finance users must remain within assigned Merchant and Branch Scope and must not access other Branches externally or within the same Merchant Administrator unless expressly authorized by Servana.
+
+16.3. Merchant Finance users must apply required validation statuses, payment-reference rules, duplicate-reference detection, partial-payment controls, split-payment controls, receipt issuance controls, void approval workflows, refund approval workflows, dispute workflows, cash-up workflows, period-lock workflows, export governance, and finance audit logging.
+
+16.4. The Merchant Front Office user may record offline payment method, amount, reference, and payment details where permitted and submit such payment details to Merchant Finance for validation.
+
+16.5. The Merchant Front Office user must not validate offline payments, approve payment records, reject payment records, edit validated payment references, generate receipts without a linked invoice and valid payment state, reissue receipts, void finance records, approve refunds, reject refunds, reopen paid invoices, change invoice status after Finance validation, lock financial periods, unlock financial periods, resolve disputes, export finance reports unless expressly permitted, or manipulate Finance Data.
+
+16.6. The Merchant Front Office user shall submit accurate payment details to Merchant Finance, including correct invoice link, correct payment method, correct amount, correct reference, correct note where required, and correct Branch Scope.
+
+16.7. The Merchant Front Office user shall not use Finance Data to falsify revenue, conceal cash leakage, manipulate commissions, avoid Platform Fees, misstate taxes, misrepresent receipts, conceal duplicate payment references, suppress discrepancies, or mislead Clients, staff, regulators, auditors, Citrus Labs Limited, or the Merchant.
+
+## 17. MERCHANT FRONT OFFICE DATA-GOVERNANCE RESPONSIBILITIES
+
+17.1. The Merchant Front Office user shall use Servana only for lawful, authorized, proportionate, Branch-scoped, Client-facing operational purposes.
+
+17.2. The Merchant Front Office user shall register Clients accurately, using only necessary, lawful, relevant, and authorized information, and shall not create fake Clients, duplicate Clients, misleading Clients, incomplete Clients intended to obscure identity, or Client records based on personal curiosity or improper purpose.
+
+17.3. The Merchant Front Office user shall retrieve existing Clients before creating new Client records where the Platform provides search or duplicate-prevention functionality.
+
+17.4. The Merchant Front Office user shall use same-Branch duplicate-prevention controls and shall not bypass, ignore, or manipulate duplicate warnings for convenience, favoritism, marketing, concealment, fraud, or reporting manipulation.
+
+17.5. The Merchant Front Office user shall create walk-in sessions accurately and must ensure that each walk-in is linked to the correct Client, selected service, Branch, queue entry, assignment mode, optional preferred-Personnel fee, and audit record.
+
+17.6. The Merchant Front Office user shall create appointment records accurately and must not double-book Personnel, create appointments during Branch closure periods, create appointments for unavailable services, create appointments for ineligible Personnel, conceal cancellation reasons, or create appointment records for non-existent Clients.
+
+17.7. The Merchant Front Office user shall convert appointment arrivals into active queue or service flow without duplicating appointment, queue, or Service Session records.
+
+17.8. The Merchant Front Office user shall enforce valid workflow transitions, including waiting, assigned, in service, completed, invoiced, and paid states, and shall use controlled cancellation and no-show paths where applicable.
+
+17.9. The Merchant Front Office user shall select services accurately and shall not manipulate service selection to undercharge, overcharge, conceal preferred-Personnel fees, misstate service duration, distort Personnel performance, distort commission records, or mislead the Client.
+
+17.10. The Merchant Front Office user shall assign next available Personnel according to Platform assignment logic and shall not manipulate assignment order for favoritism, discrimination, retaliation, Client poaching, hidden payment, or staff manipulation.
+
+17.11. The Merchant Front Office user shall allow Client selection of preferred Personnel at extra cost only where configured, visible, optional, separately identifiable, and permitted by Servana.
+
+17.12. The Merchant Front Office user shall not conceal preferred-Personnel fees, misrepresent waiting times, pressure Clients to select preferred Personnel, override Client choice without lawful reason, or manipulate preferred-Personnel records.
+
+17.13. The Merchant Front Office user shall manage queue status accurately, including check-in, assignment, start service, invoice, record payment, awaiting Finance validation, and ready-for-receipt status.
+
+17.14. The Merchant Front Office user shall not manipulate queue position, queue status, no-show status, cancellation reason, assignment mode, or Service Session status for improper advantage, discrimination, favoritism, retaliation, hidden payment, or unauthorized revenue purpose.
+
+17.15. The Merchant Front Office user shall create Service Sessions only where supported by a valid Client, Branch, service, queue or appointment flow, Personnel assignment, and operational status.
+
+17.16. The Merchant Front Office user shall generate invoices only for valid service workflows and shall not create invoices for fake services, duplicate services, cancelled services without lawful reason, incorrect services, incorrect Clients, incorrect Branches, incorrect Personnel, or manipulated fee structures.
+
+17.17. The Merchant Front Office user shall record offline payment method and payment details accurately and shall not record false payment references, inflated amounts, underreported amounts, unsupported references, duplicate references, fictitious cash payments, fictitious M-Pesa payments, fictitious bank transfers, fictitious card-terminal payments, fictitious voucher payments, or misleading split-payment records.
+
+17.18. The Merchant Front Office user shall submit payment details for Finance validation promptly and shall not represent pending validation as validated payment.
+
+17.19. The Merchant Front Office user shall not issue, release, represent, download, or communicate a receipt as final unless there is a linked invoice and valid payment state.
+
+17.20. The Merchant Front Office user shall view daily Branch activity for operational awareness and shall not manipulate Branch daily activity records, suppress pending services, hide unpaid invoices, conceal payments pending validation, or misstate receipts issued.
+
+17.21. The Merchant Front Office user shall notify Clients only for lawful, necessary, proportionate, Branch-related operational purposes and must respect communication preferences, consent requirements, and Applicable Law.
+
+17.22. The Merchant Front Office user shall use speed-sensitive search only for legitimate Front Office operations, including phone number, name, appointment reference, invoice number, receipt number, or queue position searches.
+
+17.23. The Merchant Front Office user shall not conduct curiosity searches, personal-interest searches, harassment searches, discriminatory searches, retaliatory searches, competitive searches, or searches unrelated to legitimate Branch operations.
+
+17.24. Every Merchant Front Office action may be audit-logged, including Client creation, Client editing, check-in, appointment change, queue change, assignment, preferred-Personnel choice, invoice creation, payment recording, and receipt-related activity.
+
+## 18. MERCHANT PERSONNEL DATA-GOVERNANCE RESPONSIBILITIES
+
+18.1. Merchant Personnel users are service providers and may access only their own assignments, own queue, own appointments, own service history, own commission, preferred-Personnel requests, Clients who specifically requested them, estimated wait order, service requested, and request status within assigned Branches.
+
+18.2. Merchant Personnel access restrictions must be enforced server-side and not merely hidden in the user interface.
+
+18.3. Merchant Personnel must not have Client contact export fields, Client contact download functions, or bulk Client contact export functions at launch.
+
+18.4. Merchant Personnel may view only Client information required to complete allowed service operations for Clients they personally serve or are assigned to, subject to tenant, Branch, role, consent, and audit controls.
+
+18.5. The Merchant Front Office user may assign Clients, walk-ins, appointments, or Service Sessions to Personnel only in permitted workflows and only where the Personnel user is available, eligible, and within Branch Scope.
+
+18.6. The Merchant Front Office user must not act as Personnel, edit Personnel service history, manipulate Personnel commissions, change Personnel availability, alter service eligibility, export Personnel Client lists, or facilitate unauthorized Personnel access to Client contact information.
+
+18.7. The Merchant Front Office user shall flag suspicious Personnel-related operational activity where permitted, including unauthorized Client access, suspicious service-session patterns, repeated no-shows, suspicious preferred-Personnel handling, or apparent Client-contact misuse.
+
+## 19. MERCHANT AUDIT DATA-GOVERNANCE RESPONSIBILITIES
+
+19.1. Merchant Audit users provide read-only operational and financial oversight and may view immutable audit logs, role changes, Branch changes, invoice history, payment validation logs, receipt logs, queue reassignment logs, preferred-Personnel fee logs, contact-access events, contact-export attempt events, suspicious activity, and audit reports where permitted.
+
+19.2. Merchant Audit users must not create, edit, or delete Clients, services, invoices, payments, receipts, users, queues, commissions, Branch settings, HR records, Finance records, Front Office records, or Personnel records.
+
+19.3. The Merchant Front Office user’s actions may be visible to Merchant Audit users and may be reviewed for Client create/edit events, check-ins, appointment changes, queue changes, assignments, preferred-Personnel choices, invoice creation, payment recording, receipt-related status, notifications, and suspicious activity.
+
+19.4. The Merchant Front Office user shall not suppress, edit, delete, conceal, downgrade, corrupt, or manipulate audit records.
+
+19.5. The Merchant Front Office user shall cooperate with Merchant Audit users where lawful and authorized in relation to Client activity, queue activity, appointment activity, Service Sessions, invoices, payment recording, notifications, preferred-Personnel records, and suspicious Front Office events.
+
+19.6. The Merchant Front Office user shall not retaliate against Merchant Audit users, staff users, Clients, or other persons for raising audit concerns, flagging suspicious activity, or participating in lawful review.
+
+## 20. CLIENT AND END-USER DATA RIGHTS AND RESPONSIBILITIES
+
+20.1. Clients and End-Users may have rights under Applicable Law, including rights of access, rectification, erasure, deletion, restriction, objection, portability, withdrawal of consent, and complaint to a Regulator.
+
+20.2. Where the Merchant is the Controller or equivalent decision-maker for Client Data, the Merchant is responsible for ensuring that it has processes to receive, assess, verify, respond to, and document Client rights requests in accordance with Applicable Law.
+
+20.3. Citrus Labs Limited may support or process Client rights requests where required by Applicable Law, contractual terms, Platform functionality, or a lawful Merchant instruction.
+
+20.4. Citrus Labs Limited may verify identity, authority, request scope, Merchant relationship, Branch relationship, and lawful basis before responding to any Client or End-User request.
+
+20.5. Client rights may be limited where requests involve invoices, receipts, Offline Payment Records, tax records, accounting records, audit logs, security logs, dispute records, fraud-prevention records, multi-party operational records, Merchant obligations, Branch records, staff records, legal holds, or Platform-integrity records.
+
+20.6. The Merchant Front Office user shall not respond to Client rights requests, disclose Client Data in response to Client requests, delete Client records, export Client records, or communicate legal positions to Clients unless expressly authorized by the Merchant and permitted by Citrus Labs Limited’s Platform rules and Applicable Law.
+
+20.7. The Merchant Front Office user may correct Client operational records only where the Platform permits, where the correction is accurate, necessary, authorized, auditable, and not inconsistent with legal retention, invoice integrity, payment integrity, or audit integrity.
+
+20.8. The Merchant Front Office user shall not suppress or conceal Client rights requests, Client complaints, correction requests, deletion requests, consent withdrawal requests, communication preference requests, payment disputes, receipt disputes, appointment complaints, queue complaints, or contact-access incidents.
+
+20.9. The Merchant Front Office user shall promptly escalate Client rights requests and privacy complaints to the Merchant Administrator, Merchant Audit user, Citrus Labs Limited, or another designated channel as appropriate.
+
+## 21. AUTHENTICATION, AUTHORIZATION, AND SECURE ACCESS
+
+21.1. Servana may use Magic Link login, one-time-use tokens, token expiry, email verification, active invited-email verification, correct tenant verification, active account verification, active role verification, suspension checks, Branch Scope verification where applicable, login rate limiting, session timeout, login audit logs, optional multi-factor authentication for high-privilege roles, account recovery controls, and other authentication and authorization safeguards.
+
+21.2. The Merchant Front Office user logs in via Magic Link after the user’s email exists as an invited or active user under the relevant Merchant tenant and assigned Branch Scope. Servana’s Merchant access principle requires tenant, account, role, suspension, Branch assignment, and Magic Link checks before login. 
+
+21.3. The Merchant Front Office user must not log in merely because an email exists; valid access depends on account status, Merchant tenant association, active role status, non-suspended status, Branch Scope where applicable, and valid Magic Link status.
+
+21.4. Citrus Labs Limited may disable insecure authentication methods, require re-authentication, invalidate active sessions, invalidate unused Magic Links, block devices, block IP addresses, suspend accounts, or require additional verification where security risk exists.
+
+21.5. The Merchant Front Office user shall not bypass authentication, reuse expired tokens, forward Magic Links, access another user’s account, create shared accounts, impersonate another user, or use unauthorized access methods.
+
+21.6. The Merchant Front Office user shall not attempt to gain Merchant Administrator permissions, HR permissions, Branch configuration permissions, Finance permissions, Personnel permissions, Audit permissions, Super Administrator permissions, or other Branch permissions through unauthorized means.
+
+## 22. MAGIC LINK AUTHENTICATION, EMAIL SECURITY, SESSION SECURITY, AND ACCOUNT RESPONSIBILITY
+
+22.1. Where Magic Link login is used, the Merchant Front Office user’s email account is a critical security dependency.
+
+22.2. The Merchant Front Office user must maintain secure email accounts, secure devices, updated browsers, protected sessions, malware protection, phishing awareness, secure networks, device locks, and exclusive control over authentication channels.
+
+22.3. Magic Links must not be shared, forwarded, published, stored insecurely, copied to unauthorized systems, disclosed in support channels without authorization, or used by any person other than the intended recipient.
+
+22.4. The Merchant Front Office user is responsible for all activity conducted through the Merchant Front Office account, including Client searches, Client creation, Client edits, appointment actions, walk-in actions, queue actions, assignment actions, preferred-Personnel actions, Service Session actions, invoice actions, payment-recording actions, Finance-submission actions, notification actions, status views, report views, export attempts, downloads where permitted, and audit-log access.
+
+22.5. Compromise of the Merchant Front Office user’s email account, device, session, Magic Link, or credential may be treated as a Security Incident and may result in immediate access restriction, investigation, and preservation of records.
+
+22.6. The Merchant Front Office user must promptly notify Citrus Labs Limited or the Merchant through designated channels of suspected unauthorized access, compromised email, compromised Magic Link, lost device, unauthorized dashboard activity, suspicious Client searches, unauthorized exports, incorrect Branch visibility, suspicious queue activity, suspicious appointment activity, suspicious payment recording, or other account-security concerns.
+
+## 23. ROLE-BASED ACCESS CONTROL, BRANCH SCOPE, TENANT ISOLATION, LEAST PRIVILEGE, AND NEED-TO-KNOW ACCESS
+
+23.1. Servana uses role-based access control, permission-based access control, tenant-based access control, Branch-based access control, account-status checks, staff-status checks, suspension checks, service-eligibility controls, Front Office permission controls, and audit logging.
+
+23.2. Merchant tenant isolation is a foundational Platform principle. A Merchant’s data must not be accessible, inferable, editable, exportable, or enumerable by another Merchant.
+
+23.3. Branch Scope is a foundational Merchant-side authorization principle. Merchant Branch users, HR users, Finance users, Front Office users, Personnel users, and Audit users may be limited to specific Branches.
+
+23.4. The Merchant Front Office user may have visibility over Client-facing operational records within the assigned Branch Scope or Merchant-authorized scope where permitted, but such visibility does not eliminate role boundaries, Personnel restrictions, HR controls, Branch controls, Finance controls, Merchant Administrator controls, Super Administrator controls, Client-contact restrictions, data masking, export limits, approval workflows, or audit requirements.
+
+23.5. A visible screen, cached page, API response, mistaken permission, delayed role update, export artifact, support artifact, or technical defect does not constitute lawful authority to access, use, disclose, export, copy, modify, notify, invoice, record payment, assign Personnel, or manipulate data.
+
+23.6. Unauthorized access attempts may be logged, reviewed, flagged, investigated, preserved, and used as evidence.
+
+23.7. The Merchant Front Office user shall access only the Client-facing operational records necessary for the legitimate Front Office purpose and shall not conduct broad, excessive, speculative, personal, curiosity-based, discriminatory, retaliatory, or unsupported searches.
+
+## 24. DATA SECURITY MEASURES
+
+24.1. Citrus Labs Limited may implement technical and organizational measures including encryption in transit, encryption at rest where appropriate, access controls, network security, application security, secure software development, vulnerability management, penetration testing where appropriate, logging, monitoring, incident detection, backup security, disaster recovery, business continuity planning, environment segregation, data minimization, pseudonymization, anonymization, secure credential handling, staff confidentiality obligations, vendor security review, change management, secure deletion, audit controls, administrative access monitoring, and physical security where applicable.
+
+24.2. Citrus Labs Limited may maintain controls for Merchant Front Office accounts, including Magic Link checks, session controls, login logs, rate limits, role checks, tenant checks, Branch Scope checks, suspension checks, Front Office action logs, duplicate-prevention controls, double-booking controls, status-transition controls, contact-access controls, export logs, download logs, suspicious-search detection, invoice controls, payment-recording controls, receipt-state controls, and access restrictions.
+
+24.3. Security measures reduce risk but do not eliminate risk absolutely. No internet-based system, SaaS platform, cloud platform, authentication method, browser, device, network, encryption method, database system, audit log, duplicate-prevention system, queue system, appointment system, invoice system, or workflow is absolutely secure.
+
+24.4. The Merchant Front Office user must not disable, bypass, weaken, evade, test, probe, scan, exploit, or interfere with security measures.
+
+24.5. The Merchant Front Office user must ensure that Client records, screenshots where expressly permitted, downloaded records where permitted, appointment records, queue records, invoices, payment records, receipt-status records, daily activity records, and Branch findings are stored securely and accessed only by authorized persons.
+
+24.6. The Merchant Front Office user shall not store Client Data, Front Office Data, appointment records, queue records, invoices, payment records, or Branch operational records in personal devices, personal cloud storage, unsecured spreadsheets, informal messaging channels, or unauthorized third-party tools.
+
+## 25. DATA STORAGE, HOSTING, BACKUPS, LOGS, AND INFRASTRUCTURE
+
+25.1. Citrus Labs Limited may store and host Platform Data using cloud infrastructure, data centres, databases, object storage, replication systems, backup systems, cache systems, log systems, monitoring systems, disaster-recovery systems, archival storage, development environments, staging environments, production environments, and infrastructure vendors.
+
+25.2. Citrus Labs Limited may select, change, replace, migrate, suspend, add, or remove hosting providers, storage providers, cloud providers, infrastructure vendors, and backup providers, subject to Applicable Law and binding contractual obligations.
+
+25.3. Platform Data may exist in active databases, audit systems, backups, logs, caches, temporary files, export files, signed URLs, support systems, security systems, analytics systems, notification systems, and archival systems.
+
+25.4. Backup data may persist after deletion from active systems until backup lifecycle expiry.
+
+25.5. Logs may be retained for security, audit, billing, legal, compliance, troubleshooting, dispute resolution, fraud prevention, and Platform-integrity purposes.
+
+25.6. Front Office records may be retained for longer periods where required or justified by tax, accounting, legal, regulatory, fraud-prevention, security, Client-service history, appointment history, invoice history, payment history, dispute-resolution, operational-continuity, or Platform-integrity purposes.
+
+25.7. The Merchant Front Office user shall not copy Platform Data into unauthorized personal devices, personal cloud storage, messaging platforms, unapproved spreadsheets, external drives, photographs, screenshots, or informal channels.
+
+## 26. CROSS-BORDER DATA TRANSFERS
+
+26.1. Servana is intended for use in Africa, and Platform Data may be hosted, stored, accessed, supported, transferred, backed up, or processed across borders where necessary to provide, secure, support, maintain, bill, enforce, audit, analyse, or improve Servana.
+
+26.2. Cross-Border Transfers may involve affiliates, contractors, support personnel, cloud providers, infrastructure providers, communication providers, analytics providers, security providers, professional advisers, payment-related providers, and other Third-Party Service Providers.
+
+26.3. Citrus Labs Limited may rely on contractual safeguards, data-processing agreements, transfer agreements, adequacy mechanisms where available, consent where applicable, performance of contract, legal obligation, legitimate interests, establishment or defence of legal claims, or other lawful transfer mechanisms recognized under Applicable Law.
+
+26.4. The Merchant is responsible for ensuring that its use of Servana, instructions to Citrus Labs Limited, Client disclosures, staff disclosures, and data-transfer instructions comply with Applicable Law applicable to the Merchant’s operating jurisdictions.
+
+26.5. Where a jurisdiction requires regulator notification, regulator approval, data localization, special transfer mechanisms, customer consent, Data Subject consent, staff consent, or other conditions for Cross-Border Transfers, the Merchant is responsible for ensuring that it complies with those requirements to the extent applicable to the Merchant.
+
+26.6. The Merchant Front Office user shall not independently transfer Client records, appointment records, queue records, payment records, staff records, invoice records, receipt records, or Merchant records outside the approved Platform or approved Merchant systems unless lawfully authorized, necessary, secure, and compliant with Applicable Law.
+
+26.7. Citrus Labs Limited does not represent that every Cross-Border Transfer is automatically permitted in every African jurisdiction without further assessment.
+
+## 27. THIRD-PARTY VENDORS, SUB-PROCESSORS, SERVICE PROVIDERS, AND INTEGRATIONS
+
+27.1. Citrus Labs Limited may use Third-Party Service Providers for hosting, storage, email, communications, authentication, analytics, monitoring, logging, security, support, billing, payment-related records, professional services, legal services, audit services, product development, testing, backups, and infrastructure.
+
+27.2. Third-Party Service Providers may process Platform Data under confidentiality, data-processing, security, access-control, and use-restriction obligations where required by Applicable Law or contract.
+
+27.3. Citrus Labs Limited may add, remove, replace, or change Third-Party Service Providers, subject to Applicable Law and binding contractual obligations.
+
+27.4. Where Merchants, Merchant Front Office users, staff users, or Clients request, enable, connect, use, or rely on third-party integrations, Citrus Labs Limited is not responsible for the third party’s independent processing, privacy practices, security, availability, accuracy, retention, disclosure, or compliance outside Citrus Labs Limited’s control.
+
+27.5. The Merchant Front Office user shall not grant vendors, contractors, consultants, or third parties access to Client records, Front Office records, appointment records, queue records, payment records, staff records, Branch records, invoices, receipts, or Merchant records unless authorized, necessary, secure, contractual, and compliant with Applicable Law.
+
+27.6. The Merchant Front Office user shall not upload Client records, Front Office reports, appointment records, queue records, invoices, payment records, or exported Front Office data into external tools, artificial intelligence tools, messaging platforms, analytics platforms, spreadsheet tools, cloud storage systems, or professional-adviser systems unless permitted by the Merchant, Citrus Labs Limited terms, and Applicable Law.
+
+## 28. BILLING, SUBSCRIPTION, PLATFORM FEE, OFFLINE PAYMENT, TAX, INVOICE, RECEIPT, AND TRANSACTION DATA
+
+28.1. Servana may process Billing Data, Subscription Data, Platform Fee records, account-opening fee records where applicable, Merchant service-fee-tier records, invoices, receipts, Offline Payment Records, payment-validation records, split-payment records, partial-payment records, refund records, dispute records, cash-up records, reconciliation records, tax records, collection records, statements, and billing audit logs.
+
+28.2. The Citrus Billing Engine calculates and tracks amounts Merchants owe to Citrus Labs Limited, including Platform Fees, Merchant balances, Branch-level Platform Fee debt, overdue balances, fee exemptions, billing audit logs, and Merchant-facing Platform Fee statements.
+
+28.3. The Merchant service-fee tier affects Merchant-to-Client invoice pricing only and does not reduce the Merchant’s Platform Fee liability unless Citrus Labs Limited expressly provides otherwise.
+
+28.4. Because Servana does not process Client-to-Merchant payments inside the Platform, Offline Payment Records are records of externally completed or externally represented payments, not proof that Citrus Labs Limited received, processed, settled, guaranteed, insured, reversed, refunded, or escrowed funds.
+
+28.5. Citrus Labs Limited may retain invoice, receipt, Billing Data, Platform Fee data, tax data, payment-record data, refund data, cash-up data, reconciliation data, and dispute data despite deletion requests where retention is required or justified for tax, accounting, audit, legal, enforcement, fraud-prevention, Platform Fee, dispute, or Platform-integrity purposes.
+
+28.6. The Merchant Front Office user may view or create invoices and record offline payment details only where permitted by role, Branch Scope, data masking, Merchant policy, Platform configuration, and Applicable Law.
+
+28.7. The Merchant Front Office user must not alter billing records, Platform Fee settings, service-fee-tier records, Merchant balances, Branch-level debts, validated payment records, receipts, refunds, credits, discounts, taxes, cash-up records, or reconciliation records except through authorized workflows and only where permitted.
+
+28.8. The Merchant Front Office user shall use invoice and payment-status data only to support lawful Client-facing service operations, payment-recording, Finance submission, operational status review, Client communication, and audit readiness.
+
+28.9. The Merchant Front Office user shall not use invoice, payment, or receipt visibility to falsify revenue, suppress discrepancies, manipulate commissions, avoid Platform Fees, misstate taxes, misrepresent receipts, conceal refunds, misclassify payments, or mislead Clients, staff, regulators, auditors, Citrus Labs Limited, or courts.
+
+## 29. OFFLINE PAYMENT RECORDS AND THIRD-PARTY PAYMENT PROVIDER DATA
+
+29.1. Servana records payment method, amount, reference, status, and validation details for Client-to-Merchant payments made offline or off-Platform.
+
+29.2. Supported offline payment methods may include cash, M-Pesa, bank transfer, card terminal, voucher, split payment, and other Merchant-defined offline payment methods.
+
+29.3. Offline Payment Records may include payment method, payment amount, payment reference, payment date, payment note, recorded-by information, validated-by information, validation status, rejection reason, validation note, split-payment legs, partial-payment status, duplicate-reference warnings, external refund records, dispute status, Branch, Merchant, invoice, receipt, and audit records.
+
+29.4. Citrus Labs Limited does not operate as a bank, deposit-taking institution, mobile-money provider, card acquirer, card issuer, escrow agent, money remitter, payment processor, payment gateway, settlement agent, refund provider, or financial institution merely because Servana records Offline Payment Records.
+
+29.5. Merchant Finance users are responsible for validating offline payment records where permitted, and Merchants are responsible for verifying payment references, resolving payment disputes, managing cash, confirming M-Pesa references, confirming bank references, confirming card-terminal references, confirming voucher codes, recording external refunds, and maintaining tax and accounting records.
+
+29.6. The Merchant Front Office user may record Offline Payment Records for the assigned Branch or Merchant scope where permitted but must not validate, reject, approve, edit after validation, void, refund, reverse, reconcile, or settle Offline Payment Records outside authorized workflows.
+
+29.7. The Merchant Front Office user shall not represent that Citrus Labs Limited has processed, received, held, settled, reversed, refunded, guaranteed, insured, or escrowed Client-to-Merchant payments.
+
+29.8. The Merchant Front Office user shall promptly escalate suspicious Offline Payment Record activity, including duplicate payment references, repeated corrections, unusual payment patterns, rejected payment patterns, external refund anomalies, partial-payment anomalies, split-payment anomalies, and cash-up discrepancies.
+
+## 30. CLIENT RECORDS, CONTACT ACCESS CONTROLS, CONSENT RECORDS, AND COMMUNICATION PREFERENCES
+
+30.1. Servana may process Client profiles, contact details, visit history, service history, assigned Personnel history, preferred Personnel history, invoice history, receipt history, appointment history, queue participation, consent records, communication preferences, and service notes.
+
+30.2. Servana may prevent duplicate Client registration within the same Branch and may support controlled duplicate handling, correction, or merge workflows.
+
+30.3. Client contact access must be limited according to role, Branch Scope, assignment, consent, service need, and Platform permissions.
+
+30.4. Merchant Personnel users must not have Client contact export fields, Client contact download features, or bulk Client contact export functionality at launch.
+
+30.5. Sensitive Client contact and payment details may be masked where permission does not allow full visibility.
+
+30.6. Contact-access attempts, contact-export attempts, legally permitted export events, unauthorized access attempts, and suspicious Client-data activity may be logged and reviewed.
+
+30.7. The Merchant Front Office user may view and use Client contact details only for lawful Branch operations, including Client registration, Client retrieval, appointment handling, queue handling, Client notification, service-status communication, invoice-related communication where permitted, and operational support.
+
+30.8. The Merchant Front Office user shall not export Client contacts, use Client data for unauthorized marketing, permit Personnel to copy Client contact lists, disclose Client records outside lawful Merchant purposes, or use Client Data for personal gain.
+
+30.9. The Merchant Front Office user shall treat Client contact-access events as high-sensitivity records and shall promptly escalate suspicious access patterns where appropriate.
+
+30.10. The Merchant Front Office user shall respect Client communication preferences and shall not send notifications, messages, or status updates where the communication is unauthorized, unnecessary, excessive, deceptive, harassing, discriminatory, or inconsistent with Applicable Law.
+
+## 31. AUDIT LOGS, MONITORING, TAMPER DETECTION, AND EVIDENTIARY RECORDS
+
+31.1. Servana may create audit logs for Merchant self-registration, Merchant profile setup, service-fee-tier selection, Branch creation, Branch profile editing, Branch status changes, Branch operating-hour changes, closures, service changes, Personnel assignment events, Branch access events, Client creation, Client editing, duplicate detection, Client search, appointment creation, appointment change, check-in, queue event, assignment, preferred-Personnel choice, Service Session creation, invoice creation, payment recording, Finance submission, receipt-status event, notification event, export record, login record, Magic Link record, role change, permission change, Platform Fee change, Merchant staff account action, Merchant suspension, Merchant deactivation, suspicious usage, Merchant Front Office action, and other Platform activity.
+
+31.2. Audit logs may include actor, role, date, time, Merchant, Branch, module, action, entity type, old values, new values, severity, event status, reason, approval status, IP address, user agent, device data, hash, digest, chained hash, and related metadata.
+
+31.3. Sensitive changes should include before-and-after values. Audit logs may be append-only or tamper-detected where appropriate.
+
+31.4. Citrus Labs Limited may rely on electronic records, logs, audit trails, timestamps, clickwrap records, Magic Link records, email records, system records, export logs, download logs, access logs, and Platform records as evidence.
+
+31.5. The Merchant Front Office user must not alter, suppress, conceal, delete, corrupt, downgrade, bypass, or interfere with audit logs or tamper-detection controls.
+
+31.6. Merchant Front Office access to audit records, reports, Client records, appointment records, queue records, invoices, payment records, receipt statuses, notifications, and exports may itself be logged, monitored, reviewed, preserved, and used as evidence.
+
+31.7. The Merchant Front Office user shall not treat audit logs as infallible. Audit logs are evidentiary records and operational accountability tools that may require contextual review, technical review, legal review, or reconciliation with other records.
+
+31.8. The Merchant Front Office user shall not export audit logs without authorization, shall not alter exported audit logs, shall not omit relevant records when reporting suspicious events, and shall not present partial audit extracts in a misleading manner.
+
+## 32. COOKIES, TRACKING TECHNOLOGIES, METADATA, ANALYTICS, AND DIAGNOSTIC DATA
+
+32.1. Servana may use cookies, local storage, session storage, authentication cookies, security cookies, session cookies, preference cookies, analytics technologies, tracking technologies, diagnostic tools, device identifiers, browser identifiers, IP addresses, user-agent strings, and similar technologies.
+
+32.2. Essential cookies and security technologies may be necessary for login, Magic Link verification, session management, tenant verification, Branch Scope enforcement, Front Office permission enforcement, security monitoring, fraud prevention, audit logging, and Platform operation.
+
+32.3. Disabling essential cookies or similar technologies may prevent or impair access to Servana.
+
+32.4. Citrus Labs Limited may process analytics, diagnostic, and performance data to improve Platform performance, detect errors, monitor availability, investigate incidents, support users, enhance security, and develop products.
+
+32.5. The Merchant Front Office user must not interfere with cookies, logs, analytics, monitoring, or security technologies where doing so would undermine Platform security, auditability, access control, Front Office permission enforcement, or Platform enforcement.
+
+## 33. ARTIFICIAL INTELLIGENCE, AUTOMATION, ANALYTICS, AGGREGATED DATA, ANONYMIZED DATA, DERIVED DATA, AND SYSTEM-GENERATED DATA
+
+33.1. Servana may use automation, workflow rules, alerts, notifications, status changes, calculations, dashboards, analytics, estimates, risk signals, suspicious-usage indicators, duplicate-Client detection, duplicate-reference detection, wait-time estimates, invoice calculations, Platform Fee calculations, appointment-availability indicators, conflict-prevention indicators, queue status indicators, receipt-status indicators, and other System-Generated Data.
+
+33.2. Citrus Labs Limited may use Aggregated Data, Anonymized Data, Pseudonymized Data, Derived Data, Usage Data, Metadata, Log Data, and operational intelligence for product improvement, Platform security, support, analytics, benchmarking, performance monitoring, troubleshooting, billing review, Client-flow review, queue review, appointment review, and business planning, subject to Applicable Law.
+
+33.3. Automated outputs, reports, dashboard cards, metrics, alerts, risk indicators, suspicious-usage flags, billing calculations, audit-log severity classifications, duplicate-Client indicators, queue estimates, appointment-availability indicators, payment-state indicators, and receipt-state indicators are operational tools and must not be treated as conclusive legal, tax, accounting, audit, regulatory, payment, employment, or professional determinations without appropriate review.
+
+33.4. Where Servana introduces AI-assisted features, Citrus Labs Limited may impose additional terms, disclosures, restrictions, human-review rules, model-improvement controls, security controls, and data-use restrictions.
+
+33.5. The Merchant Front Office user shall not rely solely on automated outputs for staff discipline, Client disputes, regulatory submissions, tax filings, accounting entries, audit conclusions, payment disputes, Platform Fee disputes, employment decisions, refund decisions, appointment decisions, queue decisions, or legal claims without appropriate verification.
+
+33.6. The Merchant Front Office user shall not submit Client records, appointment records, queue records, staff records, payment records, receipts, invoices, or confidential Merchant records to external AI tools unless expressly authorized and lawful.
+
+## 34. DATA SUBJECT RIGHTS
+
+34.1. Data Subjects may have rights under Applicable Law, including rights of access, rectification, erasure, deletion, restriction, objection, portability, withdrawal of consent, and complaint to a Regulator.
+
+34.2. Requests may need to be submitted to Citrus Labs Limited or to the relevant Merchant depending on whether Citrus Labs Limited or the Merchant acts as Controller or equivalent decision-maker for the relevant data.
+
+34.3. Citrus Labs Limited may verify identity, authority, account relationship, Merchant relationship, Branch relationship, Client relationship, request scope, and lawful basis before responding.
+
+34.4. Citrus Labs Limited may refuse, limit, defer, redact, or condition requests where requests are manifestly unfounded, excessive, repetitive, unlawful, technically infeasible, disproportionate, harmful to others, inconsistent with legal retention, inconsistent with audit integrity, inconsistent with tax or accounting duties, inconsistent with fraud prevention, inconsistent with security, or inconsistent with Platform integrity.
+
+34.5. Data Subject rights may be limited where records involve invoices, receipts, Offline Payment Records, tax records, accounting records, audit logs, security logs, confidential records, privileged records, fraud-prevention records, dispute records, multi-party operational records, Merchant obligations, Branch records, staff records, legal holds, or Platform-integrity records.
+
+34.6. The Merchant Front Office user shall not respond to Data Subject requests, disclose Client Data in response to Client requests, delete Client records, export Client records, or communicate legal positions to Clients unless expressly authorized by the Merchant and permitted by Citrus Labs Limited’s Platform rules and Applicable Law.
+
+34.7. The Merchant Front Office user shall not suppress, conceal, misroute, retaliate against, or improperly disclose Data Subject requests.
+
+34.8. The Merchant Front Office user shall preserve Front Office records relevant to Data Subject requests where preservation is necessary for legal compliance, dispute resolution, fraud prevention, Client protection, staff protection, tax, accounting, or Platform integrity.
+
+## 35. CHILDREN, MINORS, AND VULNERABLE PERSONS
+
+35.1. Servana is intended for business and service-operations use and is not primarily directed to children.
+
+35.2. Merchants are responsible for determining whether they collect, submit, or process data relating to children, minors, or vulnerable persons through Servana and for obtaining parental, guardian, statutory, regulatory, or other lawful authority where required.
+
+35.3. Citrus Labs Limited may suspend, restrict, delete, anonymize, or require correction of Processing where authority for Processing children’s data or vulnerable-person data is unclear, unsupported, excessive, unlawful, or risky.
+
+35.4. The Merchant Front Office user must treat children’s data and vulnerable-person data as high-risk data and must ensure that any Front Office handling of such data is limited, necessary, lawful, proportionate, and confidential.
+
+35.5. The Merchant Front Office user shall not use Front Office visibility to access children’s data, vulnerable-person data, health data, or sensitive data beyond what is lawful, necessary, and supported by Applicable Law.
+
+35.6. The Merchant Front Office user shall escalate suspected excessive collection of children’s data, vulnerable-person data, health data, or sensitive data where permitted.
+
+## 36. DATA RETENTION SCHEDULE AND RETENTION FRAMEWORK
+
+36.1. Citrus Labs Limited may retain Account Data, Merchant Data, Branch Data, Client Data, Staff Data, authentication records, Magic Link records, session records, security logs, audit logs, Billing Data, Subscription Data, Platform Fee records, tax records, transaction records, invoice records, receipt records, Offline Payment Records, Client records, appointment records, queue records, Service Session records, notification records, support records, legal records, contract records, regulatory records, backup data, deleted-account data, suspended-account data, Aggregated Data, Anonymized Data, and Platform-integrity records for as long as necessary or permitted.
+
+36.2. Retention may be required or justified for Platform operation, legal compliance, accounting, tax, audit, billing, dispute resolution, fraud prevention, security, enforcement, regulatory cooperation, evidence preservation, support, business continuity, product improvement, and legitimate business purposes.
+
+36.3. Historical records, Client records, financial records, receipts, invoices, payment records, appointment records, queue records, Service Session records, audit logs, and legally necessary accounting records must not be silently destroyed merely because a Merchant Front Office account is suspended, deactivated, inactive, deleted, closed, or terminated.
+
+36.4. Retention periods may vary by data category, jurisdiction, contract, Merchant instruction, legal hold, dispute, backup lifecycle, Platform-integrity requirement, and Applicable Law.
+
+36.5. Citrus Labs Limited may retain audit logs, security logs, billing records, tax records, invoices, receipts, payment records, Platform Fee ledgers, and evidence records even after account closure, deactivation, deletion request, inactivity, or Merchant termination.
+
+36.6. Citrus Labs Limited may maintain legal holds that suspend ordinary deletion or retention expiry where records may be relevant to disputes, investigations, regulatory inquiries, legal claims, security incidents, billing issues, tax obligations, accounting obligations, Platform Fee disputes, Client disputes, staff disputes, appointment disputes, queue disputes, service disputes, payment disputes, refund disputes, or audit requirements.
+
+36.7. The Merchant Front Office user shall not delete, request deletion of, alter, suppress, or interfere with Front Office records required for legal, regulatory, tax, accounting, financial, security, fraud-prevention, or Platform-integrity purposes.
+
+36.8. The Merchant Front Office user is responsible for preserving authorized Front Office exports in accordance with Merchant policy, Citrus Labs Limited terms, retention requirements, confidentiality obligations, and Applicable Law.
+
+## 37. DATA DELETION, ACCOUNT CLOSURE, SUSPENSION, DEACTIVATION, AND TERMINATION
+
+37.1. Data deletion may occur through user request, Merchant request, Citrus Labs Limited decision, retention expiry, account closure, account deletion, Merchant inactivity, Platform-policy enforcement, legal requirement, or technical process.
+
+37.2. Citrus Labs Limited may suspend, restrict, deactivate, terminate, or delete accounts for breach, non-payment, abuse, suspected illegality, security concerns, regulatory exposure, reputational risk, operational necessity, suspicious usage, unauthorized export, data misuse, inactivity, or Platform-policy enforcement.
+
+37.3. Deletion may be delayed, denied, restricted, or replaced by archival, anonymization, retention, or legal hold where required or justified by tax, accounting, audit, security, fraud-prevention, billing, Platform Fee, dispute, legal, regulatory, or Platform-integrity requirements.
+
+37.4. Account closure or user deletion does not automatically delete Client records, appointment records, queue records, Service Session records, invoices, receipts, Offline Payment Records, payment validation records, audit logs, security logs, billing records, tax records, legal records, Platform Fee records, dispute records, or notification records.
+
+37.5. Deletion may be irreversible once completed, subject to backup retention, archival records, legal holds, and technical limitations.
+
+37.6. Citrus Labs Limited shall not be liable for lawful deletion after termination, account closure, retention expiry, enforcement action, inactivity rule application, or Platform-policy application.
+
+37.7. The Merchant Front Office user shall not request deletion of Front Office records merely to conceal misconduct, reduce accountability, frustrate investigations, suppress payment disputes, hide Client complaints, obscure staff actions, alter operational history, or conceal Branch operational irregularities.
+
+## 38. DATA EXPORT, DOWNLOAD CONTROLS, SIGNED URLS, EXPORT LOGS, AND EXPORT GOVERNANCE
+
+38.1. Data exports and downloads may be restricted by role, permission, tenant, Branch Scope, account status, suspension status, billing status, reason, approval workflow, date range, report type, sensitivity, data category, export format, access channel, security status, and Applicable Law.
+
+38.2. Exports may be delivered through signed URLs, time-limited links, download limits, access controls, masking, encryption, watermarking where applicable, and audit logging.
+
+38.3. Export logs may record actor, role, timestamp, IP address, user agent, Merchant, Branch, date range, report type, export reason, download count, signed URL expiry, and related metadata.
+
+38.4. Merchant Front Office exports may be limited to daily activity views, appointment lists, queue summaries, invoice lists, payment-submission summaries, and other reports where expressly permitted, and may exclude or mask Client contact details, payment-sensitive details, confidential notes, privileged records, security-sensitive fields, or other restricted data.
+
+38.5. The Merchant Front Office user must not export or download Platform Data unless the export is authorized, necessary, proportionate, secure, recorded where applicable, and compliant with Applicable Law.
+
+38.6. Data exported from Servana remains subject to confidentiality, security, data-protection, retention, and deletion obligations.
+
+38.7. The Merchant Front Office user is responsible for controlling access to exported Front Office reports, Client records, appointment records, queue records, invoice records, payment records, notification records, and any other exported Merchant records.
+
+38.8. The Merchant Front Office user must not store exported Servana data in insecure devices, personal storage, public links, unapproved messaging channels, unauthorized cloud drives, or systems lacking adequate access controls.
+
+38.9. The Merchant Front Office user shall not edit, manipulate, redact, reformat, omit, or selectively present Front Office exports in a manner that misrepresents Platform records, staff actions, Client events, appointment history, queue history, payment history, Branch activity, Merchant revenue, or operational activity.
+
+## 39. DATA BREACH AND SECURITY INCIDENT RESPONSE
+
+39.1. Citrus Labs Limited may maintain incident response procedures for Data Breaches and Security Incidents, including detection, triage, classification, escalation, containment, investigation, forensic review, remediation, evidence preservation, legal assessment, risk assessment, vendor coordination, Merchant notification, customer notification, Data Subject notification, Regulator notification, public communications, post-incident review, and security improvements.
+
+39.2. Notification timelines shall be determined by Applicable Law, contractual obligations, risk assessment, incident severity, available facts, applicable regulator expectations, and [Insert Mandatory Breach Notification Period] where applicable.
+
+39.3. Citrus Labs Limited may delay, limit, or refrain from notification where permitted by law, including where notification would compromise security, prejudice an investigation, violate law, expose confidential controls, be premature, create additional risk, or be unnecessary because the incident is unlikely to result in legally cognizable harm.
+
+39.4. The Merchant Front Office user must immediately report suspected incidents, including compromised email accounts, compromised Magic Links, unauthorized exports, unauthorized downloads, shared devices, malware, phishing, suspicious login activity, unauthorized Client-data access, unauthorized contact access, unauthorized payment-data access, unauthorized Front Office Data access, unauthorized Branch-data access, audit-log tampering, queue manipulation, appointment manipulation, invoice manipulation, offline-payment-recording manipulation, excessive permissions, suspicious Front Office views, suspicious export attempts, or data exposure.
+
+39.5. The Merchant Front Office user must cooperate with Citrus Labs Limited and the Merchant in incident response, including by preserving evidence, identifying affected Front Office records, identifying affected users, identifying affected Branches, identifying affected Clients, identifying affected staff, providing relevant facts, restricting compromised accounts where authorized, and following remediation instructions.
+
+39.6. A notification, investigation, remediation step, communication, or security improvement shall not constitute an admission of liability by Citrus Labs Limited.
+
+39.7. The Merchant Front Office user must not make unauthorized public statements, regulator statements, Client statements, staff statements, press statements, or social media statements concerning a Security Incident or Data Breach unless legally required and authorized through appropriate channels.
+
+39.8. The Merchant Front Office user must not investigate incidents outside approved channels where doing so could alter evidence, expose confidential information, compromise security, or prejudice legal review.
+
+## 40. CONFIDENTIALITY
+
+40.1. The Merchant Front Office user shall keep Confidential Information strictly confidential and shall use Confidential Information only for lawful, authorized Merchant Front Office purposes within Servana and in accordance with this Data Policy.
+
+40.2. Confidential Information includes Merchant Data, Branch Data, Client Data, Staff Data, Payment Data, Billing Data, Front Office Data, Platform Fee ledgers, Audit Data, Security Data, Log Data, support communications, role structures, service-fee-tier information, queue records, appointment records, invoices, receipts, reports, notification records, Platform workflows, Platform architecture, and Citrus Labs Limited commercial information.
+
+40.3. The Merchant Front Office user must not disclose Confidential Information to unauthorized persons, including unauthorized staff, Clients except for authorized Client-specific operational communications, competitors, vendors, former employees, family members, personal contacts, social media audiences, messaging groups, or external business contacts.
+
+40.4. Confidentiality obligations survive role removal, suspension, deactivation, termination, account closure, Merchant account closure, and cessation of Platform access.
+
+40.5. Citrus Labs Limited may seek injunctive, equitable, protective, interim, preservation, or other relief for breach or threatened breach of confidentiality.
+
+40.6. The Merchant Front Office user shall not use Front Office findings, Client records, staff activity, queue records, appointment records, payment records, or invoice information as leverage, retaliation, coercion, competitive intelligence, employment manipulation, Client solicitation, or public commentary.
+
+## 41. PROHIBITED DATA AND PROHIBITED CONDUCT
+
+41.1. Users must not upload, submit, store, transmit, process, or cause Servana to process unlawful data, unauthorized data, infringing data, defamatory data, deceptive data, discriminatory data, excessive data, irrelevant data, malware, spyware, ransomware, credential harvesters, exploit code, highly regulated data not supported by Servana, or data collected without lawful authority.
+
+41.2. Prohibited conduct includes unauthorized scraping, credential sharing, Magic Link forwarding, impersonation, reverse engineering, access-control circumvention, audit-log interference, unlawful billing-record alteration, unauthorized exports, unauthorized disclosures, excessive data collection, Platform abuse, regulatory evasion, fraud, misrepresentation, harassment, retaliation, discrimination, and unlawful processing.
+
+41.3. The Merchant Front Office user must not misuse Front Office access, access records for curiosity, export data without authorization, attempt to access other Branches outside Branch Scope, attempt to alter records outside authority, delete evidence, suppress logs, self-escalate permissions, create hidden access, bypass controls, manipulate Clients, manipulate appointments, manipulate queues, manipulate assignments, manipulate preferred-Personnel choices, manipulate invoices, manipulate payment records, conceal discrepancies, disclose confidential records, or perform role functions reserved for other account types.
+
+41.4. The Merchant Front Office user must not use Front Office access to stalk, monitor, harass, intimidate, discriminate against, retaliate against, shame, coerce, or otherwise misuse information about Clients, staff users, Merchant users, or other persons.
+
+41.5. Citrus Labs Limited may investigate, suspend, deactivate, terminate, preserve evidence, report, or take legal action in response to prohibited conduct.
+
+## 42. REGULATORY COOPERATION AND LEGAL REQUESTS
+
+42.1. Citrus Labs Limited may receive, assess, comply with, challenge, narrow, preserve records for, or respond to law-enforcement requests, court orders, regulatory notices, governmental requests, preservation requests, subpoenas, warrants, tax requests, consumer-protection requests, data-protection requests, cybersecurity requests, employment requests, or other lawful requests.
+
+42.2. Citrus Labs Limited may disclose Platform Data where legally required, legally permitted, necessary to protect rights, necessary to protect safety, necessary to prevent fraud, necessary to investigate abuse, necessary to enforce agreements, necessary for legal claims, or necessary to protect Platform integrity.
+
+42.3. Citrus Labs Limited may notify affected Merchants, users, or Data Subjects where legally permitted and commercially appropriate, but may withhold notice where prohibited by law, impracticable, unsafe, prejudicial to an investigation, or contrary to legal advice.
+
+42.4. The Merchant Front Office user must promptly escalate legal requests relating to Servana data to the Merchant and Citrus Labs Limited where the request involves Platform systems, Citrus Labs Limited records, Platform Fee records, audit logs, security logs, infrastructure records, Front Office Data, or Citrus Labs Limited rights.
+
+42.5. The Merchant Front Office user shall not independently disclose Client records, appointment records, queue records, payment records, staff records, security logs, Platform logs, Merchant records, or audit records to Regulators, law enforcement, litigants, media, competitors, or third parties unless expressly authorized and legally required.
+
+42.6. Citrus Labs Limited may preserve records in response to anticipated or actual legal, regulatory, tax, accounting, audit, or dispute requirements.
+
+## 43. CONSUMER PROTECTION, FAIR PROCESSING, AND NON-DECEPTIVE DATA PRACTICES
+
+43.1. Citrus Labs Limited does not represent that Servana, Merchants, Branches, staff, Merchant Administrators, or Merchant Front Office users are licensed, regulated, approved, certified, registered, or compliant in every African jurisdiction.
+
+43.2. Merchants are responsible for truthful Client disclosures, lawful Processing notices, lawful consent collection, accurate service disclosures, accurate billing communications, accurate receipt practices, accurate invoice practices, complaint handling, consumer-protection compliance, and fair Processing of Client Data.
+
+43.3. The Merchant Front Office user must not misrepresent Platform status, Merchant compliance, Branch compliance, payment processing, regulatory approval, data security, appointment status, queue status, Personnel availability, preferred-Personnel fee status, invoice status, receipt status, refund status, billing status, Platform Fee status, payment validation status, or Citrus Labs Limited’s role.
+
+43.4. The Merchant Front Office user shall not use Platform Data to conceal consumer complaints, manipulate Client records, distort payment histories, suppress audit evidence, or mislead Merchants, Clients, staff, Regulators, auditors, or courts.
+
+43.5. The Merchant Front Office user is responsible for ensuring that any Front Office action based on Servana records, including Client registration, Client retrieval, appointment status, queue status, Personnel assignment, preferred-Personnel selection, invoice status, payment status, receipt status, and notifications, is not deceptive, unfair, unlawful, incomplete in a misleading way, or unsupported by underlying records.
+
+## 44. ADMINISTRATIVE ACCESS, PRIVILEGED ACCESS, EMERGENCY ACCESS, AND INTERNAL GOVERNANCE
+
+44.1. The Merchant Front Office account is a Client-facing operational account and may be monitored, logged, reviewed, restricted, suspended, deactivated, or revoked by Citrus Labs Limited or the Merchant where permitted by this Data Policy, the Terms of Service, Platform rules, Merchant policy, or Applicable Law.
+
+44.2. Emergency access or emergency intervention may occur where necessary for security, incident response, service restoration, legal preservation, billing enforcement, data protection, Platform integrity, urgent support, Client protection, fraud response, or operational continuity.
+
+44.3. The Merchant Front Office user shall not create shared Merchant Front Office accounts, unmanaged accounts, hidden access, backdoor access, undocumented access, excessive permissions, or unauthorized integrations.
+
+44.4. The Merchant Front Office user shall not request or accept permissions beyond those required for legitimate Front Office functions.
+
+44.5. Citrus Labs Limited may require access reviews, permission reviews, additional authentication, account recertification, segregation of duties, approval workflows, or other governance controls.
+
+44.6. The Merchant Front Office user shall comply with all access-review, permission-review, investigation, Front Office governance, Client-data governance, and operational-governance requirements imposed by Citrus Labs Limited or the Merchant.
+
+## 45. VENDOR MANAGEMENT, SUB-PROCESSOR GOVERNANCE, AND THIRD-PARTY RISK
+
+45.1. Citrus Labs Limited may conduct vendor due diligence, security review, contractual review, data-processing review, confidentiality review, and operational-risk review for Third-Party Service Providers where appropriate.
+
+45.2. Vendor safeguards may include confidentiality obligations, access restrictions, security controls, incident reporting obligations, data-processing terms, audit cooperation, data-return obligations, data-deletion obligations, and subcontracting restrictions.
+
+45.3. Citrus Labs Limited is not liable for third-party systems outside its reasonable control, including user-selected integrations, Merchant-selected tools, payment providers, bank systems, mobile-money systems, card terminals, voucher issuers, browsers, devices, telecommunications providers, internet providers, or networks.
+
+45.4. The Merchant Front Office user shall not grant vendors, contractors, consultants, or third parties access to Platform Data unless authorized, necessary, secure, contractual, and compliant with Applicable Law.
+
+45.5. The Merchant Front Office user remains responsible for third parties selected or instructed by the Merchant Front Office user to handle exported reports, Client records, appointment records, queue records, staff records, invoices, payment records, or other Servana-derived data outside the Platform.
+
+## 46. PLATFORM ENFORCEMENT, INVESTIGATION, MONITORING, SUSPENSION, AND ACCESS REVOCATION
+
+46.1. Citrus Labs Limited may monitor, investigate, restrict, suspend, deactivate, downgrade, revoke, terminate, throttle, or condition access for risk, abuse, non-payment, suspected illegality, security concerns, data-protection concerns, regulatory exposure, reputational risk, Platform-policy breach, suspicious usage, excessive access, unauthorized export, unauthorized disclosure, operational necessity, inactivity, or legal obligation.
+
+46.2. Citrus Labs Limited may preserve access logs, audit logs, security logs, export logs, download logs, support communications, billing records, suspicious-usage records, Merchant records, Branch records, Staff Data, Client Data, Front Office Data, and evidence during investigations.
+
+46.3. Merchant Front Office accounts may be subject to suspension, deactivation, or deletion under Platform rules, abuse rules, Platform-policy rules, security rules, Merchant instructions, or Citrus Labs Limited enforcement decisions, subject to preservation of historical records, financial records, receipts, invoices, audit logs, accounting records, and legally required records.
+
+46.4. Citrus Labs Limited may reverse, review, audit, escalate, or override Merchant Front Office actions where necessary to protect Platform integrity, legal compliance, data protection, Merchant records, Client rights, staff rights, financial integrity, billing integrity, or security.
+
+46.5. The Merchant Front Office user shall cooperate with Platform investigations and shall not obstruct, conceal evidence, delete records, suppress reports, misuse Front Office access, retaliate against users, or mislead Citrus Labs Limited.
+
+## 47. DISCLAIMERS, SECURITY LIMITATIONS, AND NO ABSOLUTE SECURITY GUARANTEE
+
+47.1. Servana is provided on an “as is”, “as available”, and “with all faults” basis to the maximum extent permitted by Applicable Law.
+
+47.2. Citrus Labs Limited does not guarantee uninterrupted, error-free, always-secure, always-available, always-compatible, always-accurate, or always-complete Platform operation.
+
+47.3. Citrus Labs Limited does not guarantee absolute security, absolute prevention of unauthorized access, absolute prevention of credential compromise, absolute prevention of user misuse, absolute prevention of phishing, absolute prevention of malware, absolute prevention of data-entry errors, absolute prevention of duplicate Client records, absolute prevention of payment-reference fraud, absolute prevention of staff misuse, absolute prevention of Merchant misuse, absolute prevention of audit-log misinterpretation, absolute prevention of audit-log incompleteness, or absolute prevention of third-party failure.
+
+47.4. Citrus Labs Limited is not responsible for user-side negligence, compromised email accounts, compromised Magic Links, shared devices, malware, phishing, insecure networks, unauthorized exports, unlawful Merchant instructions, inaccurate user-entered data, unsupported integrations, third-party service failures, or external systems outside Citrus Labs Limited’s reasonable control.
+
+47.5. The Merchant Front Office user must independently verify Platform outputs before relying on them for tax, accounting, audit, regulatory, employment, service, payment, Client, staff, refund, commission, queue, appointment, invoice, or legal decisions.
+
+47.6. Front Office logs, reports, Client records, appointment statuses, queue statuses, payment statuses, receipt statuses, dashboards, audit logs, duplicate-detection indicators, and suspicious-activity indicators are evidence-support and operational tools, not conclusive legal, tax, accounting, regulatory, or employment determinations.
+
+## 48. LIMITATION OF LIABILITY
+
+48.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited shall not be liable for claims arising from Customer Data, Merchant Data, Client Data, Staff Data, user-provided data, inaccurate entries, unauthorized access caused by compromised credentials, user-side failures, third-party systems, unlawful instructions, offline payment disputes, tax disputes, employment disputes, Client disputes, Merchant disputes, staff disputes, service disputes, refund disputes, receipt disputes, invoice disputes, appointment disputes, queue disputes, Platform unavailability, report inaccuracies, audit-log interpretations, Front Office report interpretations, or processing acts outside Citrus Labs Limited’s reasonable control.
+
+48.2. Citrus Labs Limited shall not be liable for losses arising from Merchant Front Office misuse, excessive access, unauthorized export, unauthorized disclosure, credential compromise, improper Client registration, duplicate Client creation, improper appointment handling, improper queue handling, unauthorized Personnel assignment, misleading invoice creation, inaccurate payment recording, unauthorized notification, unauthorized Client-data disclosure, or breach of Merchant authority by a Merchant Front Office user except to the extent non-excludable law provides otherwise.
+
+48.3. Citrus Labs Limited shall not be liable for reliance on dashboards, reports, analytics, suspicious-usage signals, Platform Fee ledgers, Offline Payment Records, Client records, staff records, Branch revenue records, appointment records, queue records, invoice records, receipt records, audit logs, duplicate warnings, or Front Office outputs where independent verification is required.
+
+48.4. Citrus Labs Limited shall not be liable for a Merchant Front Office user’s failure to detect fraud, misconduct, payment issues, staff misconduct, Client-data misuse, Branch irregularities, Finance irregularities, Front Office irregularities, HR irregularities, Personnel irregularities, Merchant irregularities, or operational failures.
+
+## 49. EXCLUSION OF INDIRECT, CONSEQUENTIAL, SPECIAL, PUNITIVE, EXEMPLARY, LOST-PROFIT, LOST-REVENUE, LOST-GOODWILL, LOST-DATA, BUSINESS-INTERRUPTION, REPUTATIONAL, AND OPPORTUNITY DAMAGES
+
+49.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited shall not be liable for indirect, consequential, incidental, special, punitive, exemplary, aggravated, remote, speculative, reputational, loss-of-profit, loss-of-revenue, loss-of-goodwill, loss-of-data, business-interruption, loss-of-opportunity, lost-savings, tax-loss, audit-loss, regulatory-loss, Client-loss, Merchant-loss, staff-loss, commission-loss, payment-loss, cash-loss, refund-loss, Platform Fee loss, Branch-loss, or similar damages.
+
+49.2. The exclusions apply regardless of whether liability is alleged in contract, tort, negligence, strict liability, statutory duty, misrepresentation, restitution, unjust enrichment, equity, or otherwise.
+
+49.3. The exclusions apply even if Citrus Labs Limited was advised of the possibility of such damages and even if any limited remedy fails of its essential purpose, subject only to non-excludable Applicable Law.
+
+## 50. LIABILITY CAP
+
+50.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited’s aggregate liability arising out of or relating to this Data Policy, Servana, Platform Data, Security Incidents, Data Breaches, access controls, exports, reports, audit logs, Offline Payment Records, Billing Data, Merchant Front Office access, Merchant records, Branch records, Client records, Staff Data, Platform Fees, Front Office exports, or Platform outputs shall not exceed the greater of: (a) the amount actually paid by the claimant directly to Citrus Labs Limited for the specific Servana access giving rise to the claim during the three months preceding the event giving rise to liability; or (b) KES 1,000.
+
+50.2. Where no amount was paid directly to Citrus Labs Limited by the claimant, the liability cap shall be KES 1,000 to the maximum extent permitted by Applicable Law.
+
+50.3. Multiple claims, repeated incidents, multiple data categories, continuing breaches, multiple users, multiple legal theories, multiple jurisdictions, or multiple events shall not enlarge the cap.
+
+50.4. The liability cap is an essential allocation of risk under this Data Policy.
+
+## 51. INDEMNITIES IN FAVOUR OF CITRUS LABS LIMITED
+
+51.1. The Merchant, Merchant Front Office user, and each responsible user shall indemnify, defend, and hold harmless Citrus Labs Limited and its affiliates, directors, officers, employees, contractors, licensors, suppliers, service providers, representatives, successors, and assigns from and against all claims, losses, liabilities, damages, fines, penalties, costs, expenses, legal fees, regulatory demands, investigations, and proceedings arising from unlawful data submission, unauthorized processing, inaccurate data, misuse of Servana, unauthorized export, credential compromise, breach of this Data Policy, breach of confidentiality, breach of Applicable Law, infringement, fraud, negligence, wilful misconduct, unlawful instructions, or disputes involving Merchants, Clients, staff, vendors, payment providers, Regulators, or third parties.
+
+51.2. The Merchant and Merchant Front Office user shall indemnify Citrus Labs Limited for claims arising from misuse of Merchant Front Office access, unauthorized disclosure, unauthorized export, unauthorized access, excessive access, curiosity access, tampering with logs, improper Client registration, duplicate Client creation, misleading Client communication, improper appointment handling, improper queue handling, unauthorized Personnel assignment, improper Client-data processing, improper Payment Data recording, improper Staff Data use, improper report use, unauthorized invoice action, unauthorized receipt representation, or breach of Merchant authority.
+
+51.3. Citrus Labs Limited may control the defence and settlement of any indemnified claim, and the indemnifying party shall cooperate fully, preserve evidence, provide information, and not settle any claim in a manner that imposes liability or obligations on Citrus Labs Limited without Citrus Labs Limited’s prior written consent.
+
+51.4. Indemnity obligations survive account closure, suspension, deactivation, termination, role removal, Merchant relationship termination, and cessation of Platform access.
+
+## 52. RELEASE OF CITRUS LABS LIMITED FROM USER, MERCHANT, CLIENT, STAFF, VENDOR, PAYMENT, DATA, AND PLATFORM DISPUTES
+
+52.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited is released from disputes among Merchants, Merchant Front Office users, Merchant Administrators, Clients, staff users, Super Administrators, vendors, payment providers, Branches, contractors, Regulators, or third parties arising from data accuracy, Client records, appointments, queues, services, invoices, Offline Payment Records, receipts, refunds, commissions, Platform Fees, cash-up records, reconciliation records, employment matters, Front Office findings, service disputes, or operational decisions.
+
+52.2. Citrus Labs Limited is not required to mediate Merchant disputes, Client disputes, employment disputes, staff disputes, commission disputes, refund disputes, receipt disputes, invoice disputes, tax disputes, accounting disputes, Front Office disputes, queue disputes, appointment disputes, payment-provider disputes, or regulatory disputes except where required by Applicable Law or a binding written agreement.
+
+52.3. The existence of Platform Data, reports, dashboards, audit logs, payment records, receipts, invoices, staff records, Client records, appointment records, queue records, preferred-Personnel records, notification records, or suspicious-activity indicators does not make Citrus Labs Limited responsible for underlying Merchant operations, Branch operations, Merchant services, Client interactions, payment settlement, refunds, employment relationships, workplace decisions, tax filings, accounting decisions, regulatory compliance, or Front Office conclusions by Merchants.
+
+## 53. DISPUTE RESOLUTION
+
+53.1. Any dispute arising under or relating to this Data Policy shall first be submitted in writing to [legal@citruslabs.co.ke](mailto:legal@citruslabs.co.ke) or another channel designated by Citrus Labs Limited.
+
+53.2. The notice shall describe the dispute, relevant account, relevant Merchant, relevant Branch where applicable, relevant records, dates, requested remedy, factual basis, and supporting evidence.
+
+53.3. The parties shall attempt good-faith negotiation for thirty days unless urgent relief, data-protection action, security action, legal preservation, regulatory response, billing enforcement, or Platform-protection action is required sooner.
+
+53.4. Citrus Labs Limited may seek urgent injunctive, equitable, protective, preservation, disclosure, freezing, interim, or other relief in any competent court to protect Platform Data, Confidential Information, intellectual property, security, audit logs, evidence, Platform Fees, Platform integrity, or legal rights.
+
+53.5. To the maximum extent permitted by Applicable Law, claims shall be brought individually and not as class, representative, consolidated, collective, private attorney general, group, or mass proceedings.
+
+53.6. To the maximum extent permitted by Applicable Law, claims must be commenced within twelve months after the event giving rise to the claim.
+
+53.7. Confidentiality, data-protection, payment, preservation, security, non-misuse, audit, and retention obligations continue during any dispute.
+
+53.8. The Merchant Front Office user shall preserve relevant Front Office records, exported Front Office reports, Client records, appointment records, queue records, invoices, payment records, notification records, audit records, and communications during any dispute and shall not alter, delete, suppress, or selectively disclose such records.
+
+## 54. GOVERNING LAW AND JURISDICTION
+
+54.1. This Data Policy shall be governed by the laws of Kenya, without prejudice to mandatory data-protection, privacy, consumer-protection, employment, tax, cybersecurity, sector-specific, or public-law rules applicable in other jurisdictions.
+
+54.2. Subject to mandatory Applicable Law, the courts of competent jurisdiction in Nairobi, Kenya shall have jurisdiction over disputes arising from or relating to this Data Policy.
+
+54.3. Use of Servana outside Kenya does not create any representation that Citrus Labs Limited is licensed, regulated, approved, certified, registered, or compliant in every jurisdiction from which Servana may be accessed.
+
+54.4. The Merchant and Merchant Front Office user remain responsible for ensuring that their use of Servana complies with Applicable Law in each country, territory, county, province, municipality, industry, sector, and operating environment where the Merchant uses Servana or processes data derived from Servana.
+
+## 55. AMENDMENTS AND UPDATES
+
+55.1. Citrus Labs Limited may amend, update, replace, supplement, or modify this Data Policy at any time.
+
+55.2. Amendments may be made for legal, regulatory, technical, security, commercial, billing, operational, product, data-protection, cybersecurity, support, audit, evidence, monitoring, Front Office control, Client-data protection, queue integrity, appointment integrity, or governance reasons.
+
+55.3. Citrus Labs Limited may provide notice through the Platform, website, dashboard, email, login flow, Merchant account notice, support communication, or other electronic method.
+
+55.4. Continued access to or use of Servana after an updated Data Policy becomes effective constitutes acceptance of the updated Data Policy.
+
+55.5. Citrus Labs Limited may maintain archived versions but is not required to provide public access to every prior version unless required by Applicable Law.
+
+55.6. The Merchant Front Office user is responsible for reviewing updated terms applicable to Front Office access, Client registration, duplicate prevention, appointment controls, queue controls, invoice generation, offline payment recording, Finance submission, Client notifications, security controls, and confidentiality requirements.
+
+## 56. SEVERABILITY
+
+56.1. If any provision of this Data Policy is invalid, unlawful, void, or unenforceable, the provision shall be modified to the minimum extent necessary to make it valid and enforceable, or severed if modification is not possible.
+
+56.2. The remaining provisions shall remain in full force and effect.
+
+56.3. Invalidity, unlawfulness, voidness, or unenforceability in one jurisdiction shall not affect enforceability in another jurisdiction.
+
+## 57. WAIVER
+
+57.1. No failure or delay by Citrus Labs Limited in exercising any right, remedy, power, discretion, or privilege shall operate as a waiver.
+
+57.2. No single or partial exercise of any right, remedy, power, discretion, or privilege shall preclude any other or further exercise.
+
+57.3. Any waiver must be express and in writing.
+
+57.4. Citrus Labs Limited’s decision not to enforce a breach of Front Office access, Client-record obligations, duplicate-prevention obligations, export restrictions, queue obligations, appointment obligations, invoice obligations, payment-recording obligations, notification obligations, or confidentiality obligations in one instance shall not prevent Citrus Labs Limited from enforcing the same or similar breach in any other instance.
+
+## 58. ASSIGNMENT
+
+58.1. Users, Merchants, and Merchant Front Office users may not assign, transfer, delegate, sublicense, novate, or otherwise dispose of any rights or obligations under this Data Policy without Citrus Labs Limited’s prior written consent.
+
+58.2. Citrus Labs Limited may assign, transfer, delegate, subcontract, novate, or otherwise dispose of its rights and obligations in connection with corporate restructuring, merger, acquisition, financing, sale of assets, outsourcing, affiliate arrangement, product transfer, business transfer, or similar transaction.
+
+58.3. Citrus Labs Limited may use subcontractors and Third-Party Service Providers to operate, host, maintain, support, secure, analyse, improve, bill, and enforce Servana.
+
+## 59. SURVIVAL
+
+59.1. Provisions concerning confidentiality, security, data protection, audit logs, legal records, ownership, restrictions, prohibited conduct, indemnities, releases, limitation of liability, liability cap, dispute resolution, governing law, evidence, retention, deletion limitations, export restrictions, Platform Fee records, intellectual property, and accrued rights shall survive account closure, suspension, deactivation, termination, role removal, Merchant account closure, and cessation of Platform access.
+
+59.2. The Merchant Front Office user’s obligations concerning exported Front Office reports, downloaded records, screenshots where permitted, Client records, appointment records, queue records, invoice records, payment records, notification records, confidentiality, data protection, and evidence preservation survive cessation of Merchant Front Office access.
+
+## 60. ENTIRE AGREEMENT AND ORDER OF PRECEDENCE
+
+60.1. This Data Policy, together with incorporated documents, constitutes the applicable data-governance terms for Servana as applied to the Merchant Front Office user type.
+
+60.2. No oral statement, informal support message, marketing material, roadmap statement, help article, user-interface label, undocumented practice, Merchant communication, Client communication, staff communication, or third-party statement shall amend this Data Policy.
+
+60.3. In the event of conflict, the order of precedence stated in Section 1.10 shall apply.
+
+60.4. Any Merchant policy applicable to Merchant Front Office users may impose additional internal restrictions, but it shall not reduce Citrus Labs Limited’s rights, protections, limitations, remedies, or Platform-control powers unless Citrus Labs Limited expressly agrees in writing.
+
+## 61. LANGUAGE
+
+61.1. This Data Policy is prepared in English.
+
+61.2. Any translation is provided for convenience only, and the English version controls to the maximum extent permitted by Applicable Law.
+
+61.3. The Merchant Front Office user is responsible for understanding this Data Policy before accessing or using Servana in a Merchant Front Office capacity.
+
+## 62. CONTACT DETAILS AND LEGAL NOTICES
+
+62.1. Citrus Labs Limited may be contacted as follows:
+
+Citrus Labs Limited
+P.O. Box 23983 - 00100
+Nairobi, Kenya
+Support Email: [support@citruslabs.co.ke](mailto:support@citruslabs.co.ke)
+Legal Notices Email: [legal@citruslabs.co.ke](mailto:legal@citruslabs.co.ke)
+
+62.2. Citrus Labs Limited may require certain requests, notices, incident reports, Data Subject requests, regulatory communications, Front Office escalations, suspicious-activity escalations, Client-data escalations, appointment escalations, queue escalations, payment-recording escalations, notification escalations, or legal communications to be submitted through designated forms, portals, email addresses, support channels, or legal-notice procedures.
+
+62.3. Communications sent to the wrong channel may be delayed, rejected, redirected, or treated as not formally received where Applicable Law permits.
+
+## 63. FINAL ACCEPTANCE AND BINDING EFFECT
+
+63.1. By accessing, logging into, reviewing, viewing, searching, filtering, registering Clients, retrieving Clients, creating walk-ins, creating appointments, checking in appointments, assigning Personnel, recording preferred-Personnel selections, managing queue status, creating Service Sessions, generating invoices, recording offline payment methods, submitting payment details for Finance validation, viewing awaiting-validation status, viewing ready-for-receipt status, viewing daily Branch activity, notifying Clients, or otherwise using Servana in a Merchant Front Office capacity, the Merchant Front Office user confirms that the Merchant Front Office user has read, understood, accepted, and agreed to be bound by this Data Policy.
+
+63.2. The Merchant Front Office user confirms that the Merchant Front Office user has authority to act in the applicable Merchant Front Office capacity and shall comply with all confidentiality, security, data-protection, audit, access-control, Branch Scope, Client-record, duplicate-prevention, appointment, queue, Service Session, invoice, payment-recording, Finance-submission, receipt-status, notification, monitoring, investigation, retention, export, deletion, legal, and Platform-integrity obligations stated in this Data Policy.
+
+63.3. The Merchant Front Office user acknowledges that Merchant Front Office access is Branch-scoped where applicable, purpose-limited, confidentiality-bound, evidence-sensitive, privacy-sensitive, Client-facing, operationally accountable, fraud-sensitive, and subject to monitoring, and that Citrus Labs Limited may enforce this Data Policy through access restriction, suspension, deactivation, termination, investigation, record preservation, Platform Fee enforcement, internal action, legal action, equitable relief, indemnity claims, regulatory cooperation, and any other remedy available under contract, law, equity, Platform policy, or Applicable Law.

@@ -1,0 +1,844 @@
+**SERVANA DATA POLICY**
+
+**Effective Date:** **01st January 2026**
+**Last Updated:** **01st August 2026**
+**Contracting Entity:** **Citrus Labs Limited**
+**Address:** **P.O. Box 23983 - 00100, Nairobi, Kenya**
+**Support Email:** **[support@citruslabs.co.ke](mailto:support@citruslabs.co.ke)**
+**Legal Notices Email:** **[legal@citruslabs.co.ke](mailto:legal@citruslabs.co.ke)**
+
+## 1. DOCUMENT IDENTITY, EFFECTIVE DATE, LEGAL CHARACTER, AND CONTRACTUAL INCORPORATION
+
+1.1. This Servana Data Policy is a binding, enforceable, platform-wide, contractual, operational, technical, administrative, and data-governance instrument governing the collection, creation, submission, access, viewing, configuration, storage, hosting, transmission, retrieval, consultation, recording, analysis, indexing, protection, correction, export, download, disclosure, retention, preservation, deletion, anonymization, pseudonymization, aggregation, monitoring, auditing, investigation, and enforcement of data in or in connection with Servana.
+
+1.2. This Data Policy is specifically drafted for the **Super Administrator** category of Servana platform user. The Super Administrator is treated under this Data Policy as a privileged, high-risk, platform-owner governance role of Citrus Labs Limited, with potential access to platform-level settings, Merchant records, platform-wide reports, platform-fee ledgers, platform-level audit logs, suspicious-usage monitoring, internal Citrus Labs Limited platform roles, feature flags, Merchant suspension, Merchant deactivation, billing enforcement, abuse response, and platform-policy enforcement.
+
+1.3. The Super Administrator acknowledges that this Data Policy is not a general consumer privacy summary, not a simplified privacy notice, not a marketing statement, not a public-facing feature guide, not a substitute for operational training, and not a waiver of Citrus Labs Limited’s contractual, technical, security, audit, investigative, enforcement, evidentiary, retention, intellectual-property, or legal rights.
+
+1.4. This Data Policy is incorporated by reference into, and forms part of, the Servana Terms of Service, Privacy Policy, Acceptable Use Policy, role-specific terms, Super Administrator access terms, internal access-control terms, Merchant terms, subscription terms, billing terms, Data Processing Agreement where applicable, service orders, onboarding flows, dashboard notices, website terms, internal governance instruments, information-security policies, support policies, investigation procedures, regulatory-response procedures, and any other agreement, notice, order form, service document, or policy that incorporates, references, displays, or depends upon this Data Policy.
+
+1.5. By accessing, logging into, configuring, governing, reviewing, monitoring, exporting where permitted, downloading where permitted, preserving, investigating, enforcing, suspending, deactivating, restricting, modifying, or otherwise using Servana in a Super Administrator capacity, the Super Administrator accepts and agrees to be bound by this Data Policy.
+
+1.6. Acceptance is effective whether the Super Administrator accesses Servana directly, through Citrus Labs Limited systems, through an internal account, through an employee account, through a contractor account, through a privileged dashboard, through a browser, through a mobile browser, through a support tool, through an integration, through an administrative interface, through a security workflow, through a billing workflow, through an audit workflow, or through any other authorized or unauthorized method.
+
+1.7. This Data Policy is binding on the Super Administrator regardless of whether the Super Administrator is an employee, officer, director, contractor, consultant, support user, internal platform administrator, security operator, billing operator, technical operator, product operator, compliance-support operator, investigation user, delegated user, agent, representative, or other person acting under, for, or in relation to Citrus Labs Limited.
+
+1.8. This Data Policy has been prepared for the Super Administrator user category specified in the user-provided data-policy generation instructions. 
+
+1.9. Citrus Labs Limited reserves all rights not expressly granted in this Data Policy, including without limitation the right to operate, monitor, secure, audit, investigate, preserve, retain, restrict, suspend, deactivate, terminate, disclose where lawful, process, anonymize, aggregate, correct, delete, restore, modify, migrate, archive, and enforce Platform Data to the maximum extent permitted by Applicable Law.
+
+1.10. In the event of conflict between this Data Policy and any other Servana document, the following order of precedence shall apply unless Citrus Labs Limited expressly states otherwise in writing: first, mandatory Applicable Law; second, a written agreement signed by Citrus Labs Limited expressly overriding this Data Policy; third, the Servana Terms of Service; fourth, this Data Policy; fifth, any applicable Data Processing Agreement; sixth, the Privacy Policy; seventh, role-specific terms; eighth, subscription, invoice, service order, or billing terms; ninth, product documentation; and tenth, general support materials, help materials, non-binding examples, user-interface labels, and informal communications.
+
+## 2. IDENTITY OF CITRUS LABS LIMITED
+
+2.1. Servana is owned, operated, administered, controlled, maintained, supported, secured, commercially exploited, and made available by Citrus Labs Limited.
+
+2.2. Citrus Labs Limited’s address is P.O. Box 23983 - 00100, Nairobi, Kenya.
+
+2.3. General support communications may be sent to [support@citruslabs.co.ke](mailto:support@citruslabs.co.ke).
+
+2.4. Formal legal notices may be sent to [legal@citruslabs.co.ke](mailto:legal@citruslabs.co.ke) unless Citrus Labs Limited designates another legal-notice address, portal, workflow, or electronic method.
+
+2.5. Citrus Labs Limited may provide Servana directly or through affiliates, directors, officers, employees, contractors, consultants, cloud providers, infrastructure providers, hosting providers, data-storage providers, database providers, identity providers, communication providers, email providers, SMS providers, analytics providers, security providers, support providers, billing-service providers, payment-recording support providers, professional advisers, auditors, legal advisers, insurers, subcontractors, licensors, suppliers, and other Third-Party Service Providers.
+
+2.6. No Super Administrator, Merchant, Merchant Administrator, Branch user, HR user, Finance user, Front Office user, Personnel user, Audit user, Client, support user, vendor, contractor, or third party has authority to amend, waive, bind, represent, vary, narrow, expand, or contradict this Data Policy unless expressly authorized in a written instrument issued by Citrus Labs Limited.
+
+## 3. DEFINITIONS AND RULES OF INTERPREATION
+
+3.1. “Account” means any Servana login identity, Super Administrator account, internal administrator account, Merchant account, Merchant Administrator account, Merchant Owner account, Merchant Branch account, Merchant Human Resource account, Merchant Finance account, Merchant Front Office account, Merchant Personnel account, Merchant Audit account, Client record, invited-user profile, staff profile, service-provider profile, support profile, role assignment, permission set, session, access token, Magic Link entitlement, dashboard entitlement, activation status, suspension status, or other access mechanism.
+
+3.2. “Administrator” means any person or account type having administrative, governance, oversight, configuration, role-management, enforcement, or operational-control permissions within Servana, including without limitation Super Administrators, Merchant Administrators, Branch users, HR users, Finance users where applicable, Audit users where applicable, and other users granted administrative controls.
+
+3.3. “Affiliate” means any entity that directly or indirectly controls, is controlled by, or is under common control with Citrus Labs Limited.
+
+3.4. “Aggregated Data” means data combined, compiled, summarized, grouped, statistically processed, or otherwise aggregated so that it does not reasonably identify a particular natural person, Client, staff member, Merchant, Branch, or Account without additional information.
+
+3.5. “Anonymized Data” means data processed in such a manner that it no longer identifies, and cannot reasonably be used to identify, a specific natural person, subject to Applicable Law and reasonable technical safeguards.
+
+3.6. “Applicable Law” means all laws, statutes, regulations, regulatory guidance, directives, orders, rules, codes, court orders, supervisory requirements, public-law obligations, private-law obligations, sector standards, licensing requirements, tax rules, consumer-protection rules, data-protection laws, privacy laws, cybersecurity laws, electronic-commerce laws, electronic-communications laws, telecommunications laws, employment laws, labour laws, health and safety laws, anti-bribery laws, anti-corruption laws, anti-money laundering laws where applicable, sanctions, export controls, professional rules, industry rules, accounting obligations, audit obligations, recordkeeping obligations, and any other legal or regulatory obligation applicable to Citrus Labs Limited, Servana, a Super Administrator, Merchant, Branch, staff user, Client, vendor, contractor, processing activity, territory, sector, or transaction.
+
+3.7. “Application” means the Servana SaaS web application, including dashboards, interfaces, workflows, modules, login flows, authentication flows, authorization flows, administrative screens, Merchant screens, Branch screens, HR screens, Finance screens, Front Office screens, Personnel screens, Audit screens, reports, notifications, billing engines, audit systems, databases, APIs, integrations, and related systems.
+
+3.8. “Audit Data” means all audit logs, audit events, system records, role-change records, permission-change records, Branch-change records, Merchant-change records, invoice logs, payment logs, receipt logs, queue logs, service-session logs, Client-access logs, contact-access logs, export logs, download logs, login logs, Magic Link logs, failed-login logs, suspicious-usage records, investigation records, old-values, new-values, timestamps, actor identifiers, IP addresses, user agents, device data, severity classifications, status values, review notes, evidence records, hash records, digest records, chained-hash records, and related metadata.
+
+3.9. “Authorized User” means any person validly invited, activated, verified, assigned, authenticated, authorized, and permitted to access Servana under the applicable role, permission, tenant, Branch Scope, account status, employment or contractor status where applicable, suspension status, internal authorization, and Platform controls.
+
+3.10. “Billing Data” means data relating to plans, subscriptions, Platform Fees, account-opening fees where applicable, billing cycles, invoice generation periods, Merchant service-fee tiers, service-fee rules, Merchant balances, Branch-level debts, overdue records, fee exemptions, fee adjustments, statements, payments, failed payments, credits, discounts, refunds, reversals, chargebacks, collections, disputes, taxes, receipts, and billing audit logs.
+
+3.11. “Branch” means a physical, commercial, operational, or service-delivery location of a Merchant recorded in Servana, including without limitation a barbershop, salon, spa, massage parlour, grooming studio, beauty parlour, hotel-based service location, or similar service location.
+
+3.12. “Branch Data” means all data relating to a Branch, including Branch name, Branch code, physical address, town, city, area, phone number, email, business category, operating hours, operating calendar, public-holiday exceptions, special closures, emergency closures, Branch status, Branch service configuration, service pricing, service availability, personnel visibility, queue configuration, appointment controls, day-opening records, day-closing records, cash-up records, reconciliation records, invoices, receipts, payment records, reports, Branch dashboard metrics, and Branch audit logs.
+
+3.13. “Business Data” means data relating to a Merchant, Branch, service business, service catalogue, pricing, revenue, staff performance, services completed, Clients served, repeat Clients, invoices, payment methods, Platform Fees, commissions, preferred-personnel demand, reports, dashboards, and operational performance.
+
+3.14. “Client” means any service recipient, customer, walk-in customer, appointment customer, general end-user record, or other person whose details, service history, appointment history, queue history, preferred-personnel history, invoice history, receipt history, consent status, communication preference, or related information is recorded in Servana.
+
+3.15. “Client Data” means all data relating to Clients, including names, phone numbers, optional emails, gender where recorded, visit history, service history, assigned-personnel history, preferred-personnel history, appointment history, walk-in history, queue participation, payment history, invoice history, receipt history, notes, consent records, communication preferences, duplicate-prevention data, and related operational records.
+
+3.16. “Company” means Citrus Labs Limited.
+
+3.17. “Confidential Information” means all non-public data, records, information, knowledge, reports, logs, workflows, processes, configurations, platform settings, internal roles, feature flags, audit records, billing records, Platform Fee ledgers, Merchant records, Branch records, Client records, staff records, security records, support records, legal records, incident records, product plans, software architecture, data models, commercial arrangements, technical information, and other information relating to Servana or Citrus Labs Limited that is not lawfully public.
+
+3.18. “Consent” means any consent, permission, authorization, approval, opt-in, election, acknowledgement, confirmation, or other lawful permission required under Applicable Law or Platform policy.
+
+3.19. “Controller”, “Data Controller”, “Responsible Party”, “Data Fiduciary”, or equivalent means the person or entity that determines the purposes and means of processing Personal Data, according to the terminology of Applicable Law.
+
+3.20. “Cross-Border Transfer” means any transfer, access, hosting, storage, support, viewing, disclosure, transmission, remote availability, backup, replication, or processing of data across national borders.
+
+3.21. “Customer Data” means data submitted by, generated for, controlled by, or relating to a Merchant, Branch, Client, staff user, invited user, end-user, organization, or customer of Servana.
+
+3.22. “Data Breach” means a breach of security leading to accidental, unlawful, unauthorized, or improper destruction, loss, alteration, disclosure of, access to, exfiltration of, corruption of, or compromise of Personal Data, Client Data, Staff Data, Payment Data, Billing Data, Merchant Data, Branch Data, Confidential Information, or other protected data processed in or through Servana.
+
+3.23. “Data Processor”, “Processor”, “Operator”, “Service Provider”, or equivalent means a person or entity that processes Personal Data on behalf of a Controller or equivalent decision-maker, according to Applicable Law.
+
+3.24. “Data Subject” means an identified or identifiable natural person to whom Personal Data relates.
+
+3.25. “Deletion” means erasure, destruction, de-identification, anonymization, disabling, logical deletion, physical deletion, archival removal, restriction, or removal from active systems, subject to retention duties, backup limitations, audit integrity, legal holds, security preservation, and Applicable Law.
+
+3.26. “Derived Data” means data, indicators, analytics, metadata, metrics, calculations, dashboards, reports, risk signals, operational insights, aggregated outputs, anonymized outputs, security insights, performance measures, or other data derived from Platform activity or Platform Data.
+
+3.27. “Device Data” means information concerning a device, browser, user agent, IP address, operating system, screen, network, session, cookie, local storage, location-derived data, or access environment used to access Servana.
+
+3.28. “End-User” means a Client, customer, service recipient, or other person whose data may be entered into Servana, whether or not that person has a login account.
+
+3.29. “Integration” means any third-party application, API, connector, identity provider, communication channel, analytics service, billing tool, payment-reference tool, support tool, notification service, hosting service, plug-in, or external service connected to or used in connection with Servana.
+
+3.30. “Log Data” means system logs, authentication logs, Magic Link logs, session logs, access logs, error logs, API logs, integration logs, security logs, audit logs, download logs, export logs, support logs, performance logs, and diagnostic logs.
+
+3.31. “Magic Link” means a one-time, time-limited electronic login, invitation, activation, authentication, or session-creation link sent to an email address.
+
+3.32. “Merchant” means the business, sole proprietor, company, partnership, establishment, organization, service-based SME, Branch operator, service provider, or other commercial entity that uses Servana to manage operations.
+
+3.33. “Merchant Administrator” or “Merchant Owner” means the registering business owner, manager, or authorized operator who self-registers a Merchant business account, causes the Merchant tenant to be created, completes first-time setup, creates Branch accounts, adds initial Merchant Branch and HR emails, selects a service-fee tier where applicable, and manages Merchant-level functions.
+
+3.34. “Merchant Staff User” means any Merchant-side user other than the Merchant Administrator, including Merchant Branch users, Merchant Human Resource users, Merchant Finance users, Merchant Front Office users, Merchant Personnel users, and Merchant Audit users.
+
+3.35. “Metadata” means data describing, identifying, indexing, classifying, securing, contextualizing, measuring, or evidencing other data, records, actions, events, devices, sessions, users, transactions, or system outputs.
+
+3.36. “Offline Payment Record” means a Servana record relating to a payment made outside Servana, including payment method, amount, reference, status, validation details, recorded-by information, validated-by information, split-payment legs, partial-payment details, dispute status, refund status, Branch, Merchant, invoice, receipt, timestamps, and audit logs.
+
+3.37. “Payment Data” means data concerning payment methods, payment references, cash records, M-Pesa references, bank references, card-terminal references, voucher codes, split-payment records, partial-payment records, validation status, disputes, refunds, receipt status, Platform Fee payments, Merchant balances, and payment-related metadata.
+
+3.38. “Personal Data” means information relating to an identified or identifiable natural person, including any equivalent concept under Applicable Law.
+
+3.39. “Platform” or “Servana” means the Servana SaaS web application, website, dashboards, modules, workflows, authentication systems, authorization systems, tenant systems, Branch-scoping systems, databases, reports, notifications, billing systems, audit systems, APIs, integrations, and related services.
+
+3.40. “Platform Data” means all data processed in, generated by, submitted to, accessed through, retained within, or associated with Servana, including User Data, Merchant Data, Branch Data, Client Data, Staff Data, Account Data, Billing Data, Payment Data, Audit Data, Security Data, Log Data, Usage Data, Metadata, Derived Data, Aggregated Data, Anonymized Data, and System-Generated Data.
+
+3.41. “Platform Fees” means fees, charges, account-opening fees where applicable, service fees, subscription fees, usage fees, billing-cycle charges, overdue balances, platform-fee invoices, Branch-level platform-fee debt, Merchant balances, preferred-personnel fee treatment amounts, adjustments, taxes, and any other amounts owed or potentially owed by a Merchant to Citrus Labs Limited.
+
+3.42. “Processing” means any operation performed on data, including collection, recording, organization, structuring, storage, adaptation, alteration, retrieval, consultation, access, viewing, use, disclosure, transmission, dissemination, alignment, combination, restriction, deletion, hosting, analysis, monitoring, logging, export, retention, preservation, and destruction.
+
+3.43. “Pseudonymized Data” means data processed so that it cannot be attributed to a specific Data Subject without additional information that is kept separately and protected.
+
+3.44. “Regulator” means any governmental, judicial, administrative, supervisory, privacy, data-protection, tax, consumer-protection, cybersecurity, telecommunications, labour, licensing, professional, sector-specific, financial, law-enforcement, or other competent authority.
+
+3.45. “Security Data” means data relating to authentication, authorization, access controls, login events, Magic Links, sessions, rate limits, device checks, IP addresses, failed access attempts, suspicious usage, vulnerability records, incident records, monitoring records, privileged access, and cybersecurity events.
+
+3.46. “Sensitive Personal Data”, “Special Category Data”, or equivalent means Personal Data subject to heightened protection under Applicable Law, which may include health data, biometric data, financial identifiers, identity-document information, children’s data, protected-class data, precise location data, or other legally sensitive information.
+
+3.47. “Staff Data” means data relating to Merchant staff users, including first name, last name, display name, profile picture where configured, email, phone, role, employment type, employment status, Branch assignment, start date, invited-by record, service eligibility, availability, schedules, last login, suspension status, deactivation status, and audit history.
+
+3.48. “Super Administrator” means the Citrus Labs Limited platform-owner account type that governs the Servana SaaS ecosystem across Merchants at platform level, including platform-wide settings, platform service-fee rules, billing cycles, preferred-personnel waiting-fee configuration, all-Merchant visibility, platform-wide reports, platform-fee ledgers, platform-level audit logs, suspicious-usage monitoring, internal Citrus Labs Limited platform roles, feature flags, Merchant suspension, Merchant deactivation, billing enforcement, abuse response, and platform-policy enforcement.
+
+3.49. “System-Generated Data” means data automatically generated by Servana, including identifiers, timestamps, logs, audit events, status changes, notifications, calculations, analytics, metrics, alerts, estimates, reports, dashboard outputs, validation states, risk signals, and operational records.
+
+3.50. “Third-Party Service Provider” means any vendor, contractor, sub-processor, infrastructure provider, hosting provider, storage provider, database provider, communication provider, analytics provider, billing provider, payment-related provider, cybersecurity provider, support provider, identity provider, professional adviser, auditor, legal adviser, insurer, or other third party used in connection with Servana.
+
+3.51. “Usage Data” means data concerning the use of Servana, including feature access, page views, clicks, navigation events, dashboard interactions, report views, configuration actions, access duration, login history, device information, module usage, support interactions, and operational activity.
+
+3.52. “User Data” means all data submitted by, generated through, processed for, accessed by, retained for, exported by, or associated with any Super Administrator, Merchant, Branch, staff user, Client, End-User, contractor, vendor, support user, or stakeholder in Servana.
+
+3.53. Words importing the singular include the plural and vice versa. References to persons include natural persons, companies, partnerships, sole proprietors, associations, unincorporated bodies, governmental entities, and other legal or commercial entities. References to “including” mean “including without limitation”. References to “may” confer discretion. References to “shall” and “must” impose mandatory obligations. Headings do not limit interpretation.
+
+## 4. DESCRIPTION OF SERVANA AND DATA-GOVERNANCE CONTEXT
+
+4.1. Servana is a multi-tenant SaaS web platform owned and operated by Citrus Labs Limited and intended for service-based SMEs, including barbershops, salons, massage parlours, spas, grooming studios, beauty parlours, and similar appointment-based or walk-in service businesses.
+
+4.2. Servana enables Merchants to manage Merchant onboarding, Branches, staff and personnel access, Front Office operations, Client records, walk-ins, appointments, queue management, service delivery tracking, Client choice of next available personnel or preferred personnel, invoice generation, offline payment recording, receipt generation, personnel commission visibility, Client data protection and contact access control, Platform Fee calculation, service-fee-tier invoice pricing, Merchant financial visibility, and audit-ready operational and financial records. 
+
+4.3. Servana is designed as a service-operations SaaS platform and not merely as a booking application, not merely as a point-of-sale system, not merely as an invoicing system, not a bank, not an escrow service, not a payment processor for Client-to-Merchant payments, not a payroll provider, not an accounting firm, not a tax adviser, not a legal adviser, not a professional licensing authority, and not a regulator.
+
+4.4. Servana’s data-governance model is based on multi-tenant isolation, role-based access control, permission-based access control, tenant-based access control, Branch-based access control, Magic Link authentication, account-status checks, suspension checks, audit logging, data masking where appropriate, export governance, signed URLs where applicable, and preservation of audit-ready operational and financial records.
+
+4.5. The Super Administrator role is a Citrus Labs Limited platform-owner governance role, and Super Administrator access to Platform Data is conferred solely for authorized governance, billing, enforcement, support, security, audit, investigation, configuration, and Platform-integrity purposes.
+
+4.6. The Super Administrator must treat all Merchant Data, Branch Data, Client Data, Staff Data, Payment Data, Billing Data, Platform Fee data, Audit Data, Security Data, reports, dashboards, feature flags, internal role records, enforcement records, and suspicious-usage records as confidential, sensitive, access-controlled, and subject to strict need-to-know limitations.
+
+## 5. SCOPE AND OBJECTIVES OF THIS DATA POLICY
+
+5.1. This Data Policy applies to all Platform Data, all Super Administrator access to Platform Data, all Super Administrator processing of Platform Data, and all Super Administrator actions affecting data governance within Servana.
+
+5.2. This Data Policy applies to websites, dashboards, login flows, account-registration flows, subscription checkout flows, Merchant dashboards, Super Administrator dashboards, Branch dashboards, HR dashboards, Finance dashboards, Front Office dashboards, Personnel dashboards, Audit dashboards, administrative consoles, internal support systems, billing engines, audit systems, notification systems, analytics systems, hosting systems, backup systems, APIs, integrations, mobile browser interfaces, web interfaces, and other systems used in connection with Servana.
+
+5.3. The objectives of this Data Policy include lawful data processing, secure data processing, data minimization where appropriate, role-based access, tenant isolation, Branch Scope enforcement, operational continuity, Merchant governance, Client-data protection, staff-data protection, billing enforcement, audit integrity, evidence preservation, fraud prevention, suspicious-usage monitoring, security monitoring, regulatory cooperation, user accountability, contractual enforcement, dispute handling, legal preservation, and protection of Citrus Labs Limited’s legal, commercial, technical, and operational interests.
+
+5.4. This Data Policy is intended to allocate responsibilities among Citrus Labs Limited, Super Administrators, Merchants, Merchant Administrators, Merchant Branch users, Merchant Human Resource users, Merchant Finance users, Merchant Front Office users, Merchant Personnel users, Merchant Audit users, Clients, vendors, Third-Party Service Providers, and other stakeholders.
+
+5.5. Nothing in this Data Policy shall be interpreted as a representation that Servana, Citrus Labs Limited, or any user is licensed, regulated, approved, certified, registered, compliant, or authorized in every African jurisdiction.
+
+## 6. PLATFORM ROLE ARCHITECTURE AND GOVERNANCE MODEL
+
+6.1. Servana distinguishes between Citrus Labs Limited as Platform owner and operator; Super Administrators as Citrus Labs Limited platform-owner governance users; Merchant Administrators as Merchant business-owner or manager users; Merchant Branch users as Branch-level operational users; Merchant Human Resource users as Branch-scoped staff, role, availability, and service-eligibility users; Merchant Finance users as Branch-scoped payment-validation, receipt, reconciliation, dispute, and finance-control users; Merchant Front Office users as Client-facing operational users; Merchant Personnel users as service providers; Merchant Audit users as read-only oversight users; and Clients as service recipients.
+
+6.2. The Super Administrator governs Servana at Platform level and may be permitted to configure platform-wide settings, configure platform service-fee rules, configure billing cycles, configure preferred-personnel waiting fees, view all Merchants, view platform-wide reports, view platform-fee ledgers, view platform-level audit logs, monitor suspicious usage, manage internal Citrus Labs Limited platform roles, control platform-level feature flags, and govern Merchant suspension, Merchant deactivation, billing enforcement, abuse response, and platform-policy enforcement.
+
+6.3. The Super Administrator does not create Merchant tenants on behalf of Merchants, does not create the first Merchant Administrator, does not approve Merchant Administrator self-registration before dashboard access, does not require Merchant KYC or compliance submission as part of the default self-registration flow, does not review Merchant compliance status as a default Super Administrator workflow, and does not perform Merchant operations outside controlled governance workflows.
+
+6.4. Merchant Administrator self-registration creates the Merchant tenant, and the registering user becomes Merchant Owner or Merchant Administrator. The Super Administrator’s role in relation to such Merchant tenant is limited to platform-level governance, suspension, billing, Platform Fees, abuse controls, platform-level oversight, status rules, and enforcement.
+
+6.5. Branch users, HR users, Finance users, Front Office users, Personnel users, and Audit users operate under Merchant-side role and Branch Scope limitations. The Super Administrator must not collapse those distinctions or use privileged visibility to perform their operational duties except where Citrus Labs Limited expressly authorizes a controlled governance, support, security, investigation, or remediation workflow.
+
+6.6. Platform role architecture shall be interpreted to preserve data separation, Merchant isolation, Branch Scope, user accountability, auditability, least privilege, and need-to-know access.
+
+## 7. CATEGORIES OF DATA COLLECTED, PROCESSED, STORED, GENERATED, OR GOVERNED
+
+7.1. Servana may collect, receive, generate, store, host, access, process, preserve, or govern Account Data, User Data, Business Data, Merchant Data, Branch Data, Client Data, Staff Data, Operational Data, Technical Data, Usage Data, Billing Data, Subscription Data, Payment Data, Tax Data, Audit Data, Log Data, Security Data, Support Data, Device Data, Metadata, Aggregated Data, Anonymized Data, Pseudonymized Data, Derived Data, System-Generated Data, Regulated Data, and Industry-Specific Data.
+
+7.2. Account and authentication data may include names, email addresses, phone numbers, roles, account types, account statuses, invitation status, activation status, suspension status, deactivation status, Magic Link events, token status, token expiry, login attempts, session identifiers, device records, last login, rate-limit records, MFA status where applicable, Branch Scope, tenant association, role history, and permission history.
+
+7.3. Merchant and business data may include Merchant profile, Merchant category, Merchant logo, Merchant service-fee tier, Merchant Branches, business contact information, Merchant status history, Platform Fee payment status, Platform Fee records, Merchant-level revenue reports, Branch performance reports, staff performance reports, service revenue, Platform Fees owed, commission liabilities, preferred-personnel demand, and related dashboard records.
+
+7.4. Branch data may include Branch name, Branch code, physical address, town, city, area, phone number, email, category, status, operating hours, public-holiday exceptions, special closures, emergency closures, closure reasons, Branch services, pricing, service availability, personnel visibility, queue configuration, appointment controls, Branch day opening, Branch day closing, cash-up, reconciliation, invoices, receipts, payments, reports, and audit logs.
+
+7.5. Staff data may include first name, last name, display name, profile picture where configured, email, phone, role, employment type, employment status, Branch assignment, start date, staff invited by, service eligibility, availability, shifts, working days, working hours, breaks, off-duty status, unavailable dates, emergency unavailable status, account status, last login, suspension reason, deactivation reason, reassignment checks, and role/Branch/status history.
+
+7.6. Client data may include Client profile, name, phone number, optional email, optional gender, visit history, service history, assigned personnel history, preferred personnel history, invoice history, receipt history, payment history, appointment history, queue participation, service notes, Client preferences, consent records, communication preferences, duplicate-client prevention data, and contact-access history.
+
+7.7. Appointment, walk-in, queue, and service-session data may include appointment references, walk-in records, check-in timestamps, Branch, Client, service selected, Personnel assigned, assignment mode, preferred-personnel selection, estimated wait time, queue status, cancellation reason, no-show status, service-session status, start timestamp, end timestamp, service notes, invoice trigger, double-booking prevention records, conflict records, and audit trail.
+
+7.8. Invoice, payment, receipt, cash-up, reconciliation, refund, and dispute data may include invoice numbers, Branch prefixes, Merchant logo, Client, service, Personnel, line items, service price, discount, preferred-personnel fee, service-fee-tier pricing effect, final amount, payment status, payment method, payment amount, payment reference, payment date, payment note, recorded by, validated by, validation status, split-payment legs, partial-payment balances, duplicate payment-reference warnings, external refund records, dispute records, receipt numbers, receipt download logs, receipt reissue records, void records, adjustment approvals, cash-up summaries, expected vs recorded totals, discrepancy notes, period locks, and finance audit records.
+
+7.9. Super Administrator data may include platform-wide setting changes, service-fee rule changes, billing-cycle changes, preferred-personnel fee configuration, Merchant views, platform-wide report views, platform-fee ledger views, platform-level audit-log views, suspicious-usage monitoring actions, internal role changes, feature-flag actions, Merchant suspension records, Merchant deactivation records, billing enforcement actions, abuse response records, platform-policy enforcement records, support actions, investigation notes, and administrative access logs.
+
+7.10. Security, diagnostic, and technical data may include IP addresses, user agents, device identifiers, browser information, operating system information, location-derived data, cookies, session data, error logs, API logs, integration logs, system health metrics, performance logs, vulnerability records, incident records, failed-login records, unauthorized-access attempts, suspicious-usage signals, rate-limit records, and monitoring alerts.
+
+7.11. Citrus Labs Limited may process Aggregated Data, Anonymized Data, Pseudonymized Data, Derived Data, and System-Generated Data for security, analytics, product improvement, operational planning, reporting, benchmarking, support, billing, enforcement, and business purposes, subject to Applicable Law.
+
+## 8. PURPOSES OF DATA PROCESSING
+
+8.1. Citrus Labs Limited may process Platform Data for account creation, account administration, user authentication, user authorization, Magic Link delivery, access control, role verification, account-status verification, tenant verification, Branch Scope verification, suspension checks, session management, user support, Merchant onboarding, Merchant lifecycle management, Branch management, staff invitation, staff lifecycle management, Client record management, appointment management, walk-in management, queue management, service-session management, invoice generation, offline payment recording, payment validation support, receipt generation, commission tracking, Platform Fee calculation, billing-cycle operation, Platform Fee ledgers, reporting, dashboards, notifications, exports where permitted, audit logging, security monitoring, suspicious-usage monitoring, abuse response, fraud prevention, legal compliance, tax recordkeeping, accounting recordkeeping, regulatory cooperation, dispute handling, and enforcement.
+
+8.2. Super Administrator-specific processing purposes include platform-level governance, platform-wide configuration, service-fee rule administration, billing-cycle administration, preferred-personnel fee administration, platform-wide Merchant visibility, platform-wide reporting, platform-fee ledger monitoring, platform-level audit-log review, suspicious-usage monitoring, internal Citrus Labs Limited role management, feature-flag governance, Merchant suspension, Merchant deactivation, billing enforcement, abuse response, platform-policy enforcement, incident review, and record preservation.
+
+8.3. Citrus Labs Limited may process Platform Data to prevent unauthorized Merchant-to-Merchant data access, prevent unauthorized Branch access, prevent unauthorized Client contact export, enforce no Merchant Personnel bulk contact download capability, detect duplicate payment references, preserve invoice and receipt number uniqueness, preserve voided invoice records, preserve receipt reissue references, detect suspicious access, enforce financial period locks, and support audit-ready records.
+
+8.4. Citrus Labs Limited may process Platform Data to provide daily Branch day-close reports, Branch cash-up reports, Merchant-level revenue reports, Branch performance reports, service revenue reports, staff performance reports, platform-fee statements, finance dashboards, audit dashboards, suspicious-usage alerts, duplicate-reference alerts, pending-validation alerts, overdue Platform Fee warnings, and related notifications.
+
+8.5. Citrus Labs Limited may process Platform Data to establish, exercise, preserve, investigate, settle, defend, or enforce legal rights, contractual rights, intellectual-property rights, confidentiality rights, Platform Fee rights, security rights, audit rights, data-protection rights, and regulatory obligations.
+
+## 9. LEGAL BASES FOR PROCESSING
+
+9.1. Citrus Labs Limited may process Personal Data where processing is necessary for performance of a contract, pre-contractual steps, consent, compliance with legal obligations, legitimate interests, vital interests where applicable, public interest where applicable, substantial public interest where applicable, establishment, exercise, or defence of legal claims, cybersecurity, fraud prevention, billing enforcement, audit integrity, tax recordkeeping, accounting recordkeeping, regulatory cooperation, or other lawful grounds recognized under Applicable Law.
+
+9.2. Citrus Labs Limited’s legitimate interests may include operating Servana, securing Servana, authenticating users, authorizing access, preventing abuse, preserving tenant isolation, preserving Branch Scope, maintaining audit logs, enforcing Platform rules, managing Platform Fees, detecting suspicious usage, responding to incidents, improving services, supporting Merchants, protecting Clients, protecting staff, preserving evidence, and defending Citrus Labs Limited from claims.
+
+9.3. Where Citrus Labs Limited processes data on behalf of Merchants, Citrus Labs Limited may act as a Processor, Operator, Service Provider, or equivalent under Applicable Law, subject to Merchant instructions, Platform functionality, contractual terms, and data-processing arrangements.
+
+9.4. Where Citrus Labs Limited determines processing purposes and means for Account Data, Security Data, Billing Data, Platform Fee data, Audit Data, support records, diagnostic data, Usage Data, analytics data, enforcement records, and product-improvement data, Citrus Labs Limited may act as an independent Controller or equivalent under Applicable Law.
+
+9.5. Processing of Sensitive Personal Data, Special Category Data, children’s data, regulated data, or industry-specific data shall occur only where supported by Applicable Law, valid authorization, consent where required, legal obligation, substantial public interest where applicable, employment or service necessity where applicable, legal-claims necessity, or another lawful basis recognized under Applicable Law.
+
+9.6. Failure to provide required data may prevent account creation, authentication, Branch access, role assignment, payment-record validation, receipt generation, invoice creation, Platform Fee processing, dispute handling, support, compliance, or continued use of Servana.
+
+## 10. COMPANY RIGHTS, OWNERSHIP, AND RESERVED POWERS
+
+10.1. Citrus Labs Limited owns Servana and all associated software, workflows, schemas, databases, system architecture, dashboards, administrative tools, billing engines, algorithms, APIs, templates, documentation, configurations, platform logic, access-control structures, role structures, permission structures, Magic Link authentication systems, audit systems, feature-flag systems, Platform Fee systems, metadata, logs, analytics, Aggregated Data, Anonymized Data, Derived Data, and operational intelligence, subject to Applicable Law and rights in Customer Data.
+
+10.2. Citrus Labs Limited reserves the right to monitor Platform activity, preserve Platform records, investigate misuse, enforce rules, suspend accounts, deactivate accounts, revoke roles, restrict access, throttle usage, disable features, modify security requirements, impose MFA, reject unlawful instructions, refuse deletion where retention is required or justified, retain evidence, comply with lawful requests, protect Platform integrity, protect users, and defend legal claims.
+
+10.3. Citrus Labs Limited may process Platform Data to provide, secure, support, improve, analyse, maintain, bill, enforce, audit, and protect Servana.
+
+10.4. Citrus Labs Limited may retain logs, audit records, security records, invoice records, receipt records, Offline Payment Records, Billing Data, Platform Fee records, tax records, accounting records, dispute records, and legal records notwithstanding suspension, deactivation, deletion requests, account closure, inactivity, or termination, where retention is legally required or commercially justified.
+
+10.5. Citrus Labs Limited may refuse, suspend, or restrict processing instructions that are unlawful, insecure, excessive, technically infeasible, contrary to Platform rules, contrary to Merchant isolation, contrary to Branch Scope, contrary to Client privacy, contrary to staff privacy, contrary to financial integrity, or contrary to audit integrity.
+
+## 11. CUSTOMER, MERCHANT, AND USER DATA OWNERSHIP AND RESPONSIBILITIES
+
+11.1. Merchants retain rights in Merchant Data and Customer Data to the extent recognized under Applicable Law, subject to Citrus Labs Limited’s rights to host, process, secure, audit, retain, aggregate, anonymize, use, disclose where lawful, and enforce rights in relation to such data under applicable contracts, Platform rules, and Applicable Law.
+
+11.2. Merchants are responsible for the lawfulness, accuracy, completeness, relevance, appropriateness, and timeliness of Merchant Data, Branch Data, Staff Data, Client Data, service data, invoice data, payment data, receipt data, consent records, and operational records they submit, generate, or instruct others to submit in Servana.
+
+11.3. Merchants are responsible for providing required notices, obtaining required consents, establishing lawful bases, managing Client communications, managing staff communications, complying with employment obligations, complying with consumer-protection obligations, complying with tax obligations, complying with accounting obligations, complying with sector-specific rules, and ensuring that their use of Servana is lawful in their operating jurisdiction.
+
+11.4. Merchants are responsible for exports, downloads, reports, integrations, external use of data, staff misuse, credential sharing, inaccurate entries, unauthorized edits, fraudulent records, unlawful instructions, and failure to maintain lawful Client-facing disclosures.
+
+11.5. Super Administrators must distinguish between Platform Data controlled by Citrus Labs Limited for Platform purposes and Merchant-controlled operational data, and shall not treat privileged visibility as unrestricted ownership, disclosure authority, or personal-use authority.
+
+## 12. SUPER ADMINISTRATOR DATA-GOVERNANCE RESPONSIBILITIES
+
+12.1. The Super Administrator shall use Platform Data only for authorized Citrus Labs Limited platform-governance purposes, including platform-wide configuration, Merchant lifecycle oversight, Merchant suspension, Merchant deactivation, billing enforcement, Platform Fee governance, abuse control, suspicious-usage monitoring, internal role governance, feature-flag control, security enforcement, audit-log review, escalation, support, legal preservation, and compliance support.
+
+12.2. The Super Administrator shall apply least privilege, need-to-know access, confidentiality, proportionality, accuracy, lawfulness, auditability, and data minimization where appropriate.
+
+12.3. The Super Administrator shall not access Platform Data out of curiosity, for personal reasons, for competitive purposes, for harassment, for retaliation, for discrimination, for personal commercial gain, for Client poaching, for Merchant poaching, for unauthorized marketing, for unauthorized investigation, or for any purpose outside Citrus Labs Limited’s authorization.
+
+12.4. The Super Administrator shall not export, download, screenshot, photograph, copy, disclose, publish, transfer, sell, rent, licence, share, or retain Platform Data outside approved Citrus Labs Limited systems unless expressly authorized, necessary, proportionate, audit-logged where applicable, and lawful.
+
+12.5. The Super Administrator shall not tamper with logs, alter billing records without authority, delete evidence, suppress audit events, bypass controls, self-escalate permissions, assign themselves unauthorized roles, create hidden access, create shared accounts, revive expired access, manipulate feature flags improperly, manipulate Platform Fees improperly, manipulate preferred-personnel fee settings improperly, or interfere with Merchant records outside controlled governance workflows.
+
+12.6. The Super Administrator shall promptly escalate suspected Data Breaches, Security Incidents, unauthorized exports, compromised accounts, suspicious usage, inaccurate billing settings, excessive permissions, unlawful processing, Client-data exposure, payment-data exposure, staff-data exposure, Merchant-data exposure, or audit-log anomalies through approved Citrus Labs Limited channels.
+
+12.7. The Super Administrator’s misuse of privileged access may result in access revocation, suspension, deactivation, disciplinary action, termination of employment or contractor relationship where applicable, indemnity obligations, civil claims, equitable relief, regulatory reporting, criminal reporting where applicable, and preservation of evidence.
+
+## 13. MERCHANT ADMINISTRATOR DATA-GOVERNANCE RESPONSIBILITIES
+
+13.1. The Merchant Administrator is responsible for Merchant self-registration, Merchant profile setup, Merchant service-fee-tier selection where permitted, Branch creation, Branch profile completion, initial Merchant Branch user email invitation, initial Merchant Human Resource user email invitation, Merchant-level oversight, Merchant-level revenue reports, Branch performance review, Platform Fee records, daily Branch day-close reports, daily Branch cash-up reports, and Merchant staff account status actions where permitted.
+
+13.2. The Merchant Administrator must ensure that Merchant information, Branch information, staff invitations, role-related information, service-fee-tier choices, and Merchant operational records are accurate and lawful.
+
+13.3. The Merchant Administrator must not configure Branch services or Branch pricing at Merchant Administrator level, configure Branch personnel assignments, configure Merchant Personnel commissions directly, link Merchant Personnel to accounts, or control whether Front Office users may record payments or issue receipts where such control belongs to other roles or Platform configuration.
+
+13.4. Super Administrators shall not perform Merchant Administrator functions except through authorized governance, support, security, investigation, abuse-control, Platform Fee, or enforcement workflows.
+
+## 14. MERCHANT BRANCH DATA-GOVERNANCE RESPONSIBILITIES
+
+14.1. Merchant Branch users are responsible for managing only the specific Branch assigned to them, including Branch profile, Branch operating hours, Branch calendar, service configuration, service pricing, Branch service availability, Branch queue configuration, Branch appointment controls, Branch day opening, Branch day closing, Branch cash-up submission, Branch reports, Branch revenue visibility, Branch invoices, Branch receipts, Branch payment records, and Branch-level audit logs.
+
+14.2. Merchant Branch users must not create Branches, manage other Branches, assign users to Branches, handle Branch-scoped access permissions, perform HR personnel-assignment duties, create staff users, activate staff users, suspend staff users, deactivate staff users, or override HR-controlled service eligibility.
+
+14.3. Super Administrators may access Branch Data only for legitimate Platform-level governance, security, billing, abuse-control, investigation, support, audit, legal, regulatory, or enforcement purposes.
+
+## 15. MERCHANT HUMAN RESOURCE DATA-GOVERNANCE RESPONSIBILITIES
+
+15.1. Merchant Human Resource users are responsible for staff identity, employment status, Branch-scoped assignment, account-type selection, role assignment, personnel service eligibility, availability, staff invitation, staff activation visibility, staff suspension, staff deactivation, staff roster search, staff roster export only, permission preview, and role/Branch/status history within the HR user’s assigned Branch.
+
+15.2. Merchant Human Resource users must not manage staff in other Branches, assign staff to other Branches, manage Merchant Administrator activation status, export Client Data, export Payment Data, self-escalate permissions, or assign themselves a higher-risk role.
+
+15.3. Super Administrators must treat staff records, role assignments, employment status, availability, service eligibility, and suspension/deactivation records as confidential and access-controlled.
+
+15.4. Super Administrators shall not perform Merchant HR operations except where authorized for governance, support, security, investigation, abuse response, or Platform-policy enforcement.
+
+## 16. MERCHANT FINANCE DATA-GOVERNANCE RESPONSIBILITIES
+
+16.1. Merchant Finance users are responsible for offline payment validation, financial control, invoice payment status, receipt generation after validation, financial reports, reconciliation, disputes, external refund records, platform-fee visibility where permitted, commission-liability visibility where permitted, finance exports where permitted, payment audit activity, cash-up review, and finance task inbox items.
+
+16.2. Merchant Finance users must remain within assigned Merchant and Branch Scope and must not access other Branches externally or within the same Merchant Administrator unless expressly authorized by Platform permissions.
+
+16.3. Merchant Finance users must use required payment validation statuses, method-specific reference rules, duplicate payment-reference controls, split-payment controls, partial-payment controls, receipt issuance controls, void approval workflows, refund workflows, cash-up workflows, period locking workflows, dispute workflows, commission-liability review controls, platform-fee visibility controls, and export governance controls.
+
+16.4. Super Administrators shall not validate Merchant offline payments, edit Merchant payment references, generate Merchant receipts, void Merchant finance records, approve Merchant refunds, or manipulate Merchant cash-up records except through expressly authorized, controlled, auditable governance workflows.
+
+## 17. MERCHANT FRONT OFFICE DATA-GOVERNANCE RESPONSIBILITIES
+
+17.1. Merchant Front Office users are responsible for Client registration, existing Client retrieval, same-Branch duplicate prevention, walk-in creation, appointment creation, appointment-to-active-queue conversion, service selection, personnel assignment workflows, preferred-personnel selection, queue status management, service-session creation, invoice generation, offline payment-method recording, payment submission for Finance validation, daily Branch activity visibility, appointment visibility, walk-in visibility, Client notifications, and speed-sensitive search.
+
+17.2. Merchant Front Office users must not issue receipts without a linked invoice and valid payment state.
+
+17.3. Merchant Front Office actions must be audit-logged, including Client creation, Client editing, check-in, appointment changes, queue changes, assignment, preferred-personnel choice, invoice creation, payment recording, and receipt-related actions.
+
+17.4. Super Administrators shall not perform Front Office actions except through authorized support, security, audit, investigation, or controlled remediation workflows.
+
+## 18. MERCHANT PERSONNEL DATA-GOVERNANCE RESPONSIBILITIES
+
+18.1. Merchant Personnel users are service providers and may access only their own assignments, own queues, own appointments, own service history, own commission, allowed personally served Clients, preferred-personnel requests, Clients who requested them, estimated wait order, service requested, and request state within assigned Branches.
+
+18.2. Merchant Personnel access restrictions must be enforced server-side and not merely hidden in the user interface.
+
+18.3. Merchant Personnel must not receive Client contact export fields, Client contact download functions, or bulk Client contact export functions at launch.
+
+18.4. Merchant Personnel may view only Client information required to complete allowed service operations for Clients they personally serve or are assigned to, subject to tenant, Branch, role, consent, and audit controls.
+
+18.5. Super Administrators shall treat any Personnel attempt to access unauthorized Branch records, Client records, contact-export records, or payment records as a potential Platform-integrity concern.
+
+## 19. MERCHANT AUDIT DATA-GOVERNANCE RESPONSIBILITIES
+
+19.1. Merchant Audit users provide read-only operational and financial oversight and may access immutable audit logs, role changes, Branch changes, invoice history, payment validation logs, receipt logs, queue reassignment logs, preferred-personnel fee logs, contact-access logs, contact-export-attempt logs, audit reports where permitted, flagged suspicious activity, and high-risk event dashboards.
+
+19.2. Merchant Audit users must not create, edit, or delete Clients, services, invoices, payments, receipts, users, queues, commissions, Branch settings, HR records, Finance records, or Front Office records.
+
+19.3. Sensitive changes should contain before-and-after values, severity levels, event statuses, actor details, timestamps, and tamper-detection information.
+
+19.4. Super Administrators may access platform-level audit logs but must not suppress, delete, manipulate, alter, conceal, downgrade, or corrupt audit records.
+
+## 20. CLIENT AND END-USER DATA RIGHTS AND RESPONSIBILITIES
+
+20.1. Clients may have rights under Applicable Law, including access, rectification, erasure, deletion, restriction, objection, portability, withdrawal of consent, and complaint rights.
+
+20.2. Where Client Data is controlled by a Merchant, Client requests may need to be addressed by the relevant Merchant, and Citrus Labs Limited may refer or support such requests in accordance with Applicable Law and applicable contracts.
+
+20.3. Citrus Labs Limited may verify identity, authority, relationship to the Merchant, relationship to the Branch, request scope, and legal basis before responding to any Client or End-User request.
+
+20.4. Client rights may be limited where requests involve invoices, receipts, Offline Payment Records, tax records, accounting records, audit logs, security logs, dispute records, fraud-prevention records, Client histories, service histories, multi-party records, Merchant obligations, legal holds, or Platform-integrity records.
+
+20.5. Super Administrators shall not respond to Client rights requests, disclose Client Data, or modify Client records unless expressly authorized by Citrus Labs Limited or through a controlled Platform workflow.
+
+## 21. AUTHENTICATION, AUTHORIZATION, AND SECURE ACCESS
+
+21.1. Servana may use Magic Link login, one-time-use tokens, token expiry, email verification, active invited-email verification, correct tenant verification, active account verification, active role verification, suspension checks, Branch Scope verification, login rate limiting, session timeout, login audit logs, optional multi-factor authentication for high-privilege roles, account recovery controls, and other authentication and authorization safeguards.
+
+21.2. Super Administrator access may require enhanced access controls, privileged-access monitoring, access approval, device restrictions, IP restrictions, MFA, access reviews, session restrictions, and additional technical or organizational safeguards.
+
+21.3. Citrus Labs Limited may disable insecure authentication methods, require re-authentication, invalidate active sessions, invalidate unused Magic Links, block devices, block IP addresses, suspend accounts, or require additional verification where security risk exists.
+
+21.4. A Super Administrator shall not bypass authentication, reuse expired tokens, forward Magic Links, access another user’s account, create shared accounts, impersonate another user, or use unauthorized access methods.
+
+## 22. MAGIC LINK AUTHENTICATION, EMAIL SECURITY, SESSION SECURITY, AND ACCOUNT RESPONSIBILITY
+
+22.1. Where Magic Link login is used, the user’s email account is a critical security dependency.
+
+22.2. The Super Administrator must maintain secure email accounts, secure passwords where applicable, secure devices, updated browsers, protected sessions, malware protection, phishing awareness, secure networks, device locks, and exclusive control over authentication channels.
+
+22.3. Magic Links must not be shared, forwarded, published, stored insecurely, copied to unauthorized systems, disclosed in support channels without authorization, or used by any person other than the intended recipient.
+
+22.4. The Super Administrator is responsible for all activity conducted through the Super Administrator account, including platform-setting changes, billing-rule changes, service-fee configuration, preferred-personnel fee configuration, feature-flag changes, internal-role changes, Merchant suspension, Merchant deactivation, audit-log access, and data exports where permitted.
+
+22.5. Compromise of a Super Administrator email account, device, session, Magic Link, or credential may be treated as a Security Incident and may result in immediate access restriction, investigation, and preservation of records.
+
+## 23. ROLE-BASED ACCESS CONTROL, BRANCH SCOPE, TENANT ISOLATION, LEAST PRIVILEGE, AND NEED-TO-KNOW ACCESS
+
+23.1. Servana uses role-based access control, permission-based access control, tenant-based access control, Branch-based access control, account-status checks, staff-status checks, suspension checks, service-eligibility controls, and audit logging.
+
+23.2. Merchant tenant isolation is a foundational Platform principle. Merchant Data must not be accessible, inferable, editable, exportable, or enumerable by another Merchant.
+
+23.3. Branch Scope is a foundational Merchant-side authorization principle. Branch users, HR users, Finance users, Front Office users, Personnel users, and Audit users may be limited to specific Branches.
+
+23.4. Super Administrators may have broader visibility for Platform governance but must still comply with least-privilege, need-to-know, proportionality, confidentiality, and purpose-limitation obligations.
+
+23.5. A visible screen, cached page, API response, mistaken permission, delayed role update, export artifact, support artifact, or technical defect does not constitute lawful authority to access, use, disclose, export, copy, or manipulate data.
+
+23.6. Unauthorized access attempts may be logged, reviewed, flagged, investigated, preserved, and used as evidence.
+
+## 24. DATA SECURITY MEASURES
+
+24.1. Citrus Labs Limited may implement technical and organizational measures including encryption in transit, encryption at rest where appropriate, access controls, network security, application security, secure software development, vulnerability management, penetration testing where appropriate, logging, monitoring, incident detection, backup security, disaster recovery, business continuity planning, environment segregation, data minimization, pseudonymization, anonymization, secure credential handling, staff confidentiality obligations, vendor security review, change management, secure deletion, audit controls, administrative access monitoring, and physical security where applicable.
+
+24.2. Citrus Labs Limited may maintain administrative controls for Super Administrator accounts, including privileged-access logging, access reviews, access approvals, segregation of duties, internal authorization checks, role-revocation workflows, emergency-access procedures, device restrictions, session controls, and investigation procedures.
+
+24.3. Security measures are designed to reduce risk, not eliminate it absolutely. No internet-based system, cloud platform, authentication method, encryption method, database system, browser, device, network, or workflow can be guaranteed to be absolutely secure.
+
+24.4. The Super Administrator must not disable, bypass, weaken, evade, test, probe, scan, exploit, or interfere with security measures unless expressly authorized through approved security-testing procedures.
+
+## 25. DATA STORAGE, HOSTING, BACKUPS, LOGS, AND INFRASTRUCTURE
+
+25.1. Citrus Labs Limited may store and host Platform Data using cloud infrastructure, data centres, databases, object storage, replication systems, backup systems, cache systems, log systems, monitoring systems, disaster-recovery systems, archival storage, development environments, staging environments, production environments, and infrastructure vendors.
+
+25.2. Citrus Labs Limited may select, change, replace, migrate, suspend, add, or remove hosting providers, storage providers, cloud providers, infrastructure vendors, and backup providers, subject to Applicable Law and binding contractual obligations.
+
+25.3. Platform Data may exist in active databases, audit systems, backups, logs, caches, temporary files, export files, signed URLs, support systems, security systems, analytics systems, and archival systems.
+
+25.4. Backup data may persist after deletion from active systems until backup lifecycle expiry.
+
+25.5. Logs may be retained for security, audit, billing, legal, compliance, troubleshooting, dispute resolution, and Platform-integrity purposes.
+
+25.6. The Super Administrator shall not copy Platform Data into unauthorized personal devices, personal cloud storage, messaging platforms, unapproved spreadsheets, external drives, screenshots, photographs, or informal channels.
+
+## 26. CROSS-BORDER DATA TRANSFERS
+
+26.1. Servana is intended for use in Africa, and Platform Data may be hosted, stored, accessed, supported, transferred, backed up, or processed across borders where necessary to provide, secure, support, maintain, bill, enforce, audit, analyse, or improve Servana.
+
+26.2. Cross-Border Transfers may involve affiliates, contractors, support personnel, cloud providers, infrastructure providers, communication providers, analytics providers, security providers, professional advisers, payment-related providers, and other Third-Party Service Providers.
+
+26.3. Citrus Labs Limited may rely on contractual safeguards, data-processing agreements, transfer agreements, adequacy mechanisms where available, consent where applicable, performance of contract, legal obligation, legitimate interests, establishment or defence of legal claims, or other lawful transfer mechanisms recognized under Applicable Law.
+
+26.4. Where a jurisdiction requires regulator notification, regulator approval, data localization, special transfer mechanisms, customer consent, Data Subject consent, or other conditions for Cross-Border Transfers, the relevant Merchant, user, or stakeholder remains responsible for complying with obligations applicable to their own use, instructions, jurisdiction, sector, and data.
+
+26.5. Citrus Labs Limited does not represent that every Cross-Border Transfer is automatically permitted in every African jurisdiction without further assessment.
+
+## 27. THIRD-PARTY VENDORS, SUB-PROCESSORS, SERVICE PROVIDERS, AND INTEGRATIONS
+
+27.1. Citrus Labs Limited may use Third-Party Service Providers for hosting, storage, email, communications, authentication, analytics, monitoring, logging, security, support, billing, payment-related records, professional services, legal services, audit services, product development, testing, backups, and infrastructure.
+
+27.2. Third-Party Service Providers may process Platform Data under confidentiality, data-processing, security, access-control, and use-restriction obligations where required by Applicable Law or contract.
+
+27.3. Citrus Labs Limited may add, remove, replace, or change Third-Party Service Providers, subject to Applicable Law and binding contractual obligations.
+
+27.4. Where Merchants, users, or Super Administrators request, enable, connect, use, or rely on third-party integrations, Citrus Labs Limited is not responsible for the third party’s independent processing, privacy practices, security, availability, accuracy, retention, disclosure, or compliance outside Citrus Labs Limited’s control.
+
+27.5. The Super Administrator shall not connect, authorize, approve, or configure integrations that expose Platform Data without proper authorization, security review, purpose limitation, lawful basis, and contractual safeguards.
+
+## 28. BILLING, SUBSCRIPTION, PLATFORM FEE, OFFLINE PAYMENT, TAX, INVOICE, RECEIPT, AND TRANSACTION DATA
+
+28.1. Servana may process Billing Data, Subscription Data, Platform Fee records, account-opening fee records where applicable, Merchant service-fee-tier records, invoices, receipts, Offline Payment Records, payment-validation records, split-payment records, partial-payment records, refund records, dispute records, cash-up records, reconciliation records, tax records, collection records, statements, and billing audit logs.
+
+28.2. The Citrus Billing Engine calculates and tracks amounts Merchants owe to Citrus Labs Limited, including Platform Fees, Merchant balances, Branch-level Platform Fee debt, overdue balances, fee exemptions, billing audit logs, and Merchant-facing Platform Fee statements.
+
+28.3. The Merchant service-fee tier affects Merchant-to-Client invoice pricing only and does not reduce the Merchant’s Platform Fee liability unless Citrus Labs Limited expressly provides otherwise.
+
+28.4. Because Servana does not process Client-to-Merchant payments inside the Platform, Offline Payment Records are records of externally completed or externally represented payments, not proof that Citrus Labs Limited received, processed, settled, guaranteed, insured, reversed, or escrowed funds.
+
+28.5. Citrus Labs Limited may retain invoice, receipt, Billing Data, Platform Fee data, tax data, payment-record data, refund data, cash-up data, reconciliation data, and dispute data despite deletion requests where retention is required or justified for tax, accounting, audit, legal, enforcement, fraud-prevention, Platform Fee, dispute, or Platform-integrity purposes.
+
+28.6. The Super Administrator shall not alter billing records, Platform Fee settings, service-fee rules, Merchant balances, Branch-level debts, invoices, receipts, refunds, credits, discounts, or tax records except through authorized, auditable, approved workflows.
+
+## 29. OFFLINE PAYMENT RECORDS AND THIRD-PARTY PAYMENT PROVIDER DATA
+
+29.1. Servana records payment method, amount, reference, status, and validation details for Client-to-Merchant payments made offline or off-Platform.
+
+29.2. Supported offline payment methods may include cash, M-Pesa, bank transfer, card terminal, voucher, split payment, and other Merchant-defined offline payment methods.
+
+29.3. Offline Payment Records may include payment method, payment amount, payment reference, payment date, payment note, recorded-by information, validated-by information, validation status, rejection reason, validation note, split-payment legs, partial-payment status, duplicate-reference warnings, external refund records, dispute status, Branch, Merchant, invoice, receipt, and audit records.
+
+29.4. Citrus Labs Limited does not operate as a bank, deposit-taking institution, mobile-money provider, card acquirer, card issuer, escrow agent, money remitter, payment processor, payment gateway, settlement agent, refund provider, or financial institution merely because Servana records Offline Payment Records.
+
+29.5. Merchants and Merchant Finance users are responsible for verifying payment references, validating evidence, managing duplicate references, resolving payment disputes, recording external refunds, reconciling payments, maintaining tax and accounting records, and complying with payment laws.
+
+29.6. The Super Administrator shall not represent that Citrus Labs Limited has processed, received, held, settled, reversed, refunded, guaranteed, insured, or escrowed Client-to-Merchant payments unless expressly authorized and factually correct.
+
+## 30. CLIENT RECORDS, CONTACT ACCESS CONTROLS, CONSENT RECORDS, AND COMMUNICATION PREFERENCES
+
+30.1. Servana may process Client profiles, contact details, visit history, service history, assigned-personnel history, preferred-personnel history, invoice history, receipt history, appointment history, queue participation, consent records, communication preferences, and service notes.
+
+30.2. Servana may prevent duplicate Client registration within the same Branch and may support controlled duplicate handling, correction, or merge workflows.
+
+30.3. Client contact access must be limited according to role, Branch Scope, assignment, consent, service need, and Platform permissions.
+
+30.4. Merchant Personnel users must not have Client contact export fields, Client contact download features, or bulk Client contact export functionality at launch.
+
+30.5. Sensitive Client contact and payment details may be masked where permission does not allow full visibility.
+
+30.6. Contact-access attempts, contact-export attempts, legally permitted export events, unauthorized access attempts, and suspicious Client-data activity may be logged and reviewed.
+
+30.7. The Super Administrator shall not access Client contact details, payment-sensitive details, service notes, or Client histories except for authorized Platform-governance, support, security, audit, investigation, legal, or enforcement purposes.
+
+## 31. AUDIT LOGS, MONITORING, TAMPER DETECTION, AND EVIDENTIARY RECORDS
+
+31.1. Servana may create audit logs for Branch creation, Branch profile editing, Branch status changes, operating-hour changes, closures, service changes, personnel assignment events, Branch access events, queue events, appointment events, service-session events, invoice events, payment events, receipt events, day-opening events, day-closing events, cash-up events, financial-period locks, refund records, export records, login records, Magic Link records, role changes, permission changes, Platform Fee changes, feature-flag changes, Merchant suspension, Merchant deactivation, suspicious usage, and Super Administrator actions.
+
+31.2. Audit logs may include actor, role, date, time, Merchant, Branch, module, action, entity type, old values, new values, severity, event status, reason, approval status, IP address, user agent, device data, hash, digest, chained hash, and related metadata.
+
+31.3. Sensitive changes should include before-and-after values. Audit logs may be append-only or tamper-detected where appropriate.
+
+31.4. Citrus Labs Limited may rely on electronic records, logs, audit trails, timestamps, clickwrap records, Magic Link records, email records, system records, export logs, download logs, access logs, and Platform records as evidence.
+
+31.5. The Super Administrator must not alter, suppress, conceal, delete, corrupt, downgrade, bypass, or interfere with audit logs or tamper-detection controls.
+
+31.6. Super Administrator access to audit logs may itself be logged, monitored, reviewed, preserved, and used as evidence.
+
+## 32. COOKIES, TRACKING TECHNOLOGIES, METADATA, ANALYTICS, AND DIAGNOSTIC DATA
+
+32.1. Servana may use cookies, local storage, session storage, authentication cookies, security cookies, session cookies, preference cookies, analytics technologies, tracking technologies, diagnostic tools, device identifiers, browser identifiers, IP addresses, user-agent strings, and similar technologies.
+
+32.2. Essential cookies and security technologies may be necessary for login, Magic Link verification, session management, role verification, Branch Scope enforcement, security monitoring, fraud prevention, audit logging, and Platform operation.
+
+32.3. Disabling essential cookies or similar technologies may prevent or impair access to Servana.
+
+32.4. Citrus Labs Limited may process analytics, diagnostic, and performance data to improve Platform performance, detect errors, monitor availability, investigate incidents, support users, enhance security, and develop products.
+
+32.5. The Super Administrator must not interfere with cookies, logs, analytics, monitoring, or security technologies where doing so would undermine Platform security, auditability, or enforcement.
+
+## 33. ARTIFICIAL INTELLIGENCE, AUTOMATION, ANALYTICS, AGGREGATED DATA, ANONYMIZED DATA, DERIVED DATA, AND SYSTEM-GENERATED DATA
+
+33.1. Servana may use automation, workflow rules, alerts, notifications, status changes, calculations, dashboards, analytics, estimates, risk signals, suspicious-usage indicators, duplicate-reference detection, wait-time estimates, invoice calculations, Platform Fee calculations, and other System-Generated Data.
+
+33.2. Citrus Labs Limited may use Aggregated Data, Anonymized Data, Pseudonymized Data, Derived Data, Usage Data, Metadata, Log Data, and operational intelligence for product improvement, Platform security, support, analytics, benchmarking, performance monitoring, troubleshooting, billing review, and business planning, subject to Applicable Law.
+
+33.3. Automated outputs, reports, dashboard cards, metrics, alerts, risk indicators, suspicious-usage flags, billing calculations, and status indicators are operational tools and must not be treated as conclusive legal, tax, accounting, audit, regulatory, payment, or professional determinations without appropriate review.
+
+33.4. Where Servana introduces AI-assisted features, Citrus Labs Limited may impose additional terms, disclosures, restrictions, human-review rules, model-improvement controls, security controls, and data-use restrictions.
+
+33.5. The Super Administrator shall not use automated outputs to take high-impact enforcement actions without proper authority, context, evidence, and review where such review is required.
+
+## 34. DATA SUBJECT RIGHTS
+
+34.1. Data Subjects may have rights under Applicable Law, including rights of access, rectification, erasure, deletion, restriction, objection, portability, withdrawal of consent, and complaint to a Regulator.
+
+34.2. Requests may need to be submitted to Citrus Labs Limited or to the relevant Merchant depending on whether Citrus Labs Limited or the Merchant acts as Controller or equivalent decision-maker for the relevant data.
+
+34.3. Citrus Labs Limited may verify identity, authority, account relationship, Merchant relationship, Branch relationship, Client relationship, request scope, and lawful basis before responding.
+
+34.4. Citrus Labs Limited may refuse, limit, defer, redact, or condition requests where requests are manifestly unfounded, excessive, repetitive, unlawful, technically infeasible, disproportionate, harmful to others, inconsistent with legal retention, inconsistent with audit integrity, inconsistent with tax or accounting duties, inconsistent with fraud prevention, inconsistent with security, or inconsistent with Platform integrity.
+
+34.5. Data Subject rights may be limited where records involve invoices, receipts, payment records, Offline Payment Records, tax records, accounting records, audit logs, security logs, confidential records, privileged records, fraud-prevention records, dispute records, multi-party operational records, Merchant obligations, or legal holds.
+
+34.6. The Super Administrator shall not respond to Data Subject requests, modify records, delete records, export records, or disclose records unless expressly authorized by Citrus Labs Limited or through an approved workflow.
+
+## 35. CHILDREN, MINORS, AND VULNERABLE PERSONS
+
+35.1. Servana is intended for business and service-operations use and is not primarily directed to children.
+
+35.2. Merchants are responsible for determining whether they collect, submit, or process data relating to children, minors, or vulnerable persons through Servana and for obtaining parental, guardian, statutory, regulatory, or other lawful authority where required.
+
+35.3. Citrus Labs Limited may suspend, restrict, delete, anonymize, or require correction of processing where authority for processing children’s data or vulnerable-person data is unclear, unsupported, excessive, unlawful, or risky.
+
+35.4. Super Administrators must treat children’s data and vulnerable-person data as high-risk data and must escalate concerns through approved Citrus Labs Limited channels.
+
+35.5. No Super Administrator may use privileged access to view, disclose, export, copy, or process children’s data or vulnerable-person data except where strictly necessary for authorized Platform governance, legal compliance, security, investigation, or support.
+
+## 36. DATA RETENTION SCHEDULE AND RETENTION FRAMEWORK
+
+36.1. Citrus Labs Limited may retain Account Data, Merchant Data, Branch Data, Client Data, Staff Data, authentication records, Magic Link records, session records, security logs, audit logs, Billing Data, Subscription Data, Platform Fee records, tax records, transaction records, invoice records, receipt records, Offline Payment Records, cash-up records, reconciliation records, refund records, support records, legal records, contract records, regulatory records, backup data, deleted-account data, suspended-account data, Aggregated Data, Anonymized Data, and Platform-integrity records for as long as necessary or permitted.
+
+36.2. Retention may be required or justified for Platform operation, legal compliance, accounting, tax, audit, billing, dispute resolution, fraud prevention, security, enforcement, regulatory cooperation, evidence preservation, support, business continuity, product improvement, and legitimate business purposes.
+
+36.3. Historical records, financial records, receipts, invoices, audit logs, and legally necessary accounting records must not be silently destroyed merely because an Account is suspended, deactivated, inactive, deleted, closed, or terminated.
+
+36.4. Retention periods may vary by data category, jurisdiction, contract, Merchant instruction, legal hold, dispute, backup lifecycle, Platform-integrity requirement, and Applicable Law.
+
+36.5. Citrus Labs Limited may retain audit logs, security logs, billing records, tax records, invoices, receipts, payment records, Platform Fee ledgers, and evidence records even after account closure, deactivation, deletion request, or inactivity.
+
+36.6. Citrus Labs Limited may maintain legal holds that suspend ordinary deletion or retention expiry where records may be relevant to disputes, investigations, regulatory inquiries, legal claims, security incidents, billing issues, tax obligations, accounting obligations, or audit requirements.
+
+## 37. DATA DELETION, ACCOUNT CLOSURE, SUSPENSION, DEACTIVATION, AND TERMINATION
+
+37.1. Data deletion may occur through user request, Merchant request, Citrus Labs Limited decision, retention expiry, account closure, account deletion, Merchant inactivity, Platform-policy enforcement, legal requirement, or technical process.
+
+37.2. Citrus Labs Limited may suspend, restrict, deactivate, terminate, or delete accounts for breach, non-payment, abuse, suspected illegality, security concerns, regulatory exposure, reputational risk, operational necessity, suspicious usage, unauthorized export, data misuse, or Platform-policy enforcement.
+
+37.3. Deletion may be delayed, denied, restricted, or replaced by archival, anonymization, retention, or legal hold where required or justified by tax, accounting, audit, security, fraud-prevention, billing, Platform Fee, dispute, legal, regulatory, or Platform-integrity requirements.
+
+37.4. Account closure or user deletion does not automatically delete invoices, receipts, Offline Payment Records, payment validation records, cash-up records, reconciliation records, audit logs, security logs, billing records, tax records, or legal records.
+
+37.5. Deletion may be irreversible once completed, subject to backup retention, archival records, legal holds, and technical limitations.
+
+37.6. Citrus Labs Limited shall not be liable for lawful deletion after termination, account closure, retention expiry, enforcement action, or Platform-policy application.
+
+## 38. DATA EXPORT, DOWNLOAD CONTROLS, SIGNED URLS, EXPORT LOGS, AND EXPORT GOVERNANCE
+
+38.1. Data exports and downloads may be restricted by role, permission, tenant, Branch Scope, account status, suspension status, billing status, reason, approval workflow, date range, report type, sensitivity, data category, export format, access channel, security status, and Applicable Law.
+
+38.2. Exports may be delivered through signed URLs, time-limited links, download limits, access controls, masking, encryption, watermarking where applicable, and audit logging.
+
+38.3. Export logs may record actor, role, timestamp, IP address, user agent, Merchant, Branch, date range, report type, export reason, download count, signed URL expiry, and related metadata.
+
+38.4. Merchant Finance exports, finance reports, payment reports, Platform Fee statements, audit reports, Client contact exports where legally permitted, and other sensitive reports may require explicit permission, reason, scope limitation, and audit logging.
+
+38.5. Super Administrators must not export or download Platform Data unless the export is authorized, necessary, proportionate, secure, recorded where applicable, and compliant with Applicable Law.
+
+38.6. Data exported from Servana remains subject to confidentiality, security, data-protection, retention, and deletion obligations.
+
+## 39. DATA BREACH AND SECURITY INCIDENT RESPONSE
+
+39.1. Citrus Labs Limited may maintain incident response procedures for Data Breaches and Security Incidents, including detection, triage, classification, escalation, containment, investigation, forensic review, remediation, evidence preservation, legal assessment, risk assessment, vendor coordination, Merchant notification, customer notification, Data Subject notification, Regulator notification, public communications, post-incident review, and security improvements.
+
+39.2. Notification timelines shall be determined by Applicable Law, contractual obligations, risk assessment, incident severity, available facts, applicable regulator expectations, and [Insert Mandatory Breach Notification Period] where applicable.
+
+39.3. Citrus Labs Limited may delay, limit, or refrain from notification where permitted by law, including where notification would compromise security, prejudice an investigation, violate law, expose confidential controls, be premature, create additional risk, or be unnecessary because the incident is unlikely to result in legally cognizable harm.
+
+39.4. Super Administrators must immediately report suspected incidents, including compromised email accounts, compromised Magic Links, unauthorized exports, unauthorized downloads, shared devices, malware, phishing, suspicious login activity, unauthorized Client-data access, unauthorized payment-data access, unauthorized Merchant-data access, audit-log tampering, billing manipulation, feature-flag misuse, excessive permissions, or data exposure.
+
+39.5. A notification, investigation, remediation step, communication, or security improvement shall not constitute an admission of liability by Citrus Labs Limited.
+
+39.6. The Super Administrator must preserve evidence, avoid unauthorized public statements, avoid deletion, avoid informal investigation outside approved channels, and cooperate with Citrus Labs Limited incident-response procedures.
+
+## 40. CONFIDENTIALITY
+
+40.1. The Super Administrator shall keep Confidential Information strictly confidential and shall use Confidential Information only for authorized Citrus Labs Limited Platform-governance purposes.
+
+40.2. Confidential Information includes Merchant Data, Branch Data, Client Data, Staff Data, Payment Data, Billing Data, Platform Fee ledgers, Audit Data, Security Data, Log Data, support communications, internal roles, feature flags, suspicious-usage records, investigation records, Platform architecture, commercial terms, service-fee rules, billing cycles, preferred-personnel fee settings, and Platform workflows.
+
+40.3. The Super Administrator must not disclose Confidential Information to unauthorized persons, including unauthorized colleagues, Merchants, Clients, competitors, vendors, former employees, family members, personal contacts, social media audiences, messaging groups, or external business contacts.
+
+40.4. Confidentiality obligations survive role removal, suspension, deactivation, termination, employment termination, contractor termination, account closure, and cessation of Platform access.
+
+40.5. Citrus Labs Limited may seek injunctive, equitable, protective, interim, preservation, or other relief for breach or threatened breach of confidentiality.
+
+## 41. PROHIBITED DATA AND PROHIBITED CONDUCT
+
+41.1. Users must not upload, submit, store, transmit, process, or cause Servana to process unlawful data, unauthorized data, infringing data, defamatory data, deceptive data, discriminatory data, excessive data, irrelevant data, malware, spyware, ransomware, credential harvesters, exploit code, highly regulated data not supported by Servana, or data collected without lawful authority.
+
+41.2. Prohibited conduct includes unauthorized scraping, credential sharing, Magic Link forwarding, impersonation, reverse engineering, access-control circumvention, audit-log interference, unlawful billing-record alteration, unauthorized exports, unauthorized disclosures, excessive data collection, Platform abuse, regulatory evasion, fraud, misrepresentation, harassment, retaliation, discrimination, and unlawful processing.
+
+41.3. Super Administrators must not misuse privileged access, access records for curiosity, export data without authorization, alter billing records without authority, delete evidence, suppress logs, self-escalate permissions, create hidden access, bypass controls, manipulate Platform Fees, manipulate feature flags, manipulate Merchant suspension, or perform Merchant operations outside authorized workflows.
+
+41.4. Citrus Labs Limited may investigate, suspend, deactivate, terminate, preserve evidence, report, or take legal action in response to prohibited conduct.
+
+## 42. REGULATORY COOPERATION AND LEGAL REQUESTS
+
+42.1. Citrus Labs Limited may receive, assess, comply with, challenge, narrow, preserve records for, or respond to law-enforcement requests, court orders, regulatory notices, governmental requests, preservation requests, subpoenas, warrants, tax requests, consumer-protection requests, data-protection requests, cybersecurity requests, employment requests, or other lawful requests.
+
+42.2. Citrus Labs Limited may disclose Platform Data where legally required, legally permitted, necessary to protect rights, necessary to protect safety, necessary to prevent fraud, necessary to investigate abuse, necessary to enforce agreements, necessary for legal claims, or necessary to protect Platform integrity.
+
+42.3. Citrus Labs Limited may notify affected Merchants, users, or Data Subjects where legally permitted and commercially appropriate, but may withhold notice where prohibited by law, impracticable, unsafe, prejudicial to an investigation, or contrary to legal advice.
+
+42.4. Super Administrators must escalate legal requests through approved Citrus Labs Limited channels and must not respond independently unless expressly authorized.
+
+42.5. Citrus Labs Limited may preserve records in response to anticipated or actual legal, regulatory, tax, accounting, audit, or dispute requirements.
+
+## 43. CONSUMER PROTECTION, FAIR PROCESSING, AND NON-DECEPTIVE DATA PRACTICES
+
+43.1. Citrus Labs Limited does not represent that Servana, Merchants, Branches, staff, or Super Administrators are licensed, regulated, approved, certified, registered, or compliant in every African jurisdiction.
+
+43.2. Merchants and users are responsible for truthful Client disclosures, lawful processing notices, lawful consent collection, accurate service disclosures, accurate billing communications, accurate receipt practices, accurate invoice practices, complaint handling, consumer-protection compliance, and fair processing of Client Data.
+
+43.3. Super Administrators must not misrepresent Platform status, Merchant compliance, Branch compliance, payment processing, regulatory approval, data security, receipt status, refund status, billing status, Platform Fee status, or Citrus Labs Limited’s role.
+
+43.4. The Super Administrator shall not use Platform Data to conceal consumer complaints, manipulate Client records, distort payment histories, suppress audit evidence, or mislead Merchants, Clients, staff, regulators, or courts.
+
+## 44. ADMINISTRATIVE ACCESS, PRIVILEGED ACCESS, EMERGENCY ACCESS, AND INTERNAL GOVERNANCE
+
+44.1. Super Administrator access is privileged access and may be monitored, logged, reviewed, approved, restricted, suspended, deactivated, or revoked by Citrus Labs Limited.
+
+44.2. Emergency access may be granted only where necessary for security, incident response, service restoration, legal preservation, billing enforcement, data protection, Platform integrity, urgent support, or operational continuity.
+
+44.3. Super Administrators shall not create shared privileged accounts, unmanaged accounts, hidden access, backdoor access, undocumented access, unlogged access, excessive permissions, or unauthorized integrations.
+
+44.4. Citrus Labs Limited may require access reviews, segregation of duties, approval workflows, privileged-access monitoring, periodic recertification, access expiration, device controls, IP controls, and internal audits.
+
+44.5. The Super Administrator shall comply with all internal governance, security, confidentiality, support, legal, and compliance procedures applicable to privileged access.
+
+## 45. VENDOR MANAGEMENT, SUB-PROCESSOR GOVERNANCE, AND THIRD-PARTY RISK
+
+45.1. Citrus Labs Limited may conduct vendor due diligence, security review, contractual review, data-processing review, confidentiality review, and operational-risk review for Third-Party Service Providers where appropriate.
+
+45.2. Vendor safeguards may include confidentiality obligations, access restrictions, security controls, incident reporting obligations, data-processing terms, audit cooperation, data-return obligations, data-deletion obligations, and subcontracting restrictions.
+
+45.3. Citrus Labs Limited is not liable for third-party systems outside its reasonable control, including user-selected integrations, Merchant-selected tools, payment providers, bank systems, mobile-money systems, card terminals, voucher issuers, browsers, devices, telecommunications providers, internet providers, or networks.
+
+45.4. Super Administrators shall not grant vendors, contractors, or third parties access to Platform Data unless authorized, necessary, secure, contractual, and compliant with Applicable Law.
+
+## 46. PLATFORM ENFORCEMENT, INVESTIGATION, MONITORING, SUSPENSION, AND ACCESS REVOCATION
+
+46.1. Citrus Labs Limited may monitor, investigate, restrict, suspend, deactivate, downgrade, revoke, terminate, throttle, or condition access for risk, abuse, non-payment, suspected illegality, security concerns, data-protection concerns, regulatory exposure, reputational risk, Platform-policy breach, suspicious usage, excessive access, unauthorized export, unauthorized disclosure, operational necessity, or legal obligation.
+
+46.2. Citrus Labs Limited may preserve access logs, audit logs, security logs, export logs, download logs, support communications, billing records, suspicious-usage records, feature-flag records, internal-role records, and evidence during investigations.
+
+46.3. Super Administrators may participate in enforcement only where authorized and must document actions, preserve evidence, follow escalation procedures, avoid arbitrary enforcement, avoid discriminatory enforcement, avoid retaliatory enforcement, and avoid unauthorized disclosures.
+
+46.4. Citrus Labs Limited may reverse, review, audit, escalate, or override Super Administrator actions where necessary to protect Platform integrity, legal compliance, data protection, Merchant rights, Client rights, financial integrity, or security.
+
+## 47. DISCLAIMERS, SECURITY LIMITATIONS, AND NO ABSOLUTE SECURITY GUARANTEE
+
+47.1. Servana is provided on an “as is”, “as available”, and “with all faults” basis to the maximum extent permitted by Applicable Law.
+
+47.2. Citrus Labs Limited does not guarantee uninterrupted, error-free, always-secure, always-available, always-compatible, always-accurate, or always-complete Platform operation.
+
+47.3. Citrus Labs Limited does not guarantee absolute security, absolute prevention of unauthorized access, absolute prevention of credential compromise, absolute prevention of user misuse, absolute prevention of phishing, absolute prevention of malware, absolute prevention of data-entry errors, absolute prevention of payment-reference fraud, absolute prevention of duplicate records, absolute prevention of staff misuse, absolute prevention of Merchant misuse, or absolute prevention of third-party failure.
+
+47.4. Citrus Labs Limited is not responsible for user-side negligence, compromised email accounts, compromised Magic Links, shared devices, malware, phishing, insecure networks, unauthorized exports, unlawful Merchant instructions, inaccurate user-entered data, unsupported integrations, third-party service failures, or external systems outside Citrus Labs Limited’s reasonable control.
+
+## 48. LIMITATION OF LIABILITY
+
+48.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited shall not be liable for claims arising from Customer Data, Merchant Data, Client Data, Staff Data, user-provided data, inaccurate entries, unauthorized access caused by compromised credentials, user-side failures, third-party systems, unlawful instructions, offline payment disputes, tax disputes, employment disputes, Client disputes, Merchant disputes, staff disputes, service disputes, refund disputes, receipt disputes, invoice disputes, Platform unavailability, report inaccuracies, audit-log interpretations, or processing acts outside Citrus Labs Limited’s reasonable control.
+
+48.2. Citrus Labs Limited shall not be liable for losses arising from Super Administrator misuse, excessive access, unauthorized export, unauthorized disclosure, credential compromise, improper configuration, unauthorized billing alteration, feature-flag misuse, improper Merchant suspension, improper Merchant deactivation, improper enforcement, or breach of internal authorization by a Super Administrator except to the extent non-excludable law provides otherwise.
+
+48.3. Citrus Labs Limited shall not be liable for indirect reliance on dashboards, reports, analytics, suspicious-usage signals, Platform Fee ledgers, Offline Payment Records, or audit logs where independent verification is required.
+
+## 49. EXCLUSION OF INDIRECT, CONSEQUENTIAL, SPECIAL, PUNITIVE, EXEMPLARY, LOST-PROFIT, LOST-REVENUE, LOST-GOODWILL, LOST-DATA, BUSINESS-INTERRUPTION, REPUTATIONAL, AND OPPORTUNITY DAMAGES
+
+49.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited shall not be liable for indirect, consequential, incidental, special, punitive, exemplary, aggravated, remote, speculative, reputational, loss-of-profit, loss-of-revenue, loss-of-goodwill, loss-of-data, business-interruption, loss-of-opportunity, lost-savings, tax-loss, audit-loss, regulatory-loss, Client-loss, Merchant-loss, staff-loss, commission-loss, or similar damages.
+
+49.2. The exclusions apply regardless of whether liability is alleged in contract, tort, negligence, strict liability, statutory duty, misrepresentation, restitution, unjust enrichment, equity, or otherwise.
+
+49.3. The exclusions apply even if Citrus Labs Limited was advised of the possibility of such damages and even if any limited remedy fails of its essential purpose, subject only to non-excludable Applicable Law.
+
+## 50. LIABILITY CAP
+
+50.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited’s aggregate liability arising out of or relating to this Data Policy, Servana, Platform Data, Security Incidents, Data Breaches, access controls, exports, reports, audit logs, Offline Payment Records, Billing Data, or Super Administrator access shall not exceed the greater of: (a) the amount actually paid by the claimant directly to Citrus Labs Limited for the specific Servana access giving rise to the claim during the three months preceding the event giving rise to liability; or (b) KES 1,000.
+
+50.2. Where no amount was paid directly to Citrus Labs Limited by the claimant, the liability cap shall be KES 1,000 to the maximum extent permitted by Applicable Law.
+
+50.3. Multiple claims, repeated incidents, multiple data categories, continuing breaches, multiple users, multiple legal theories, multiple jurisdictions, or multiple events shall not enlarge the cap.
+
+50.4. The liability cap is an essential allocation of risk under this Data Policy.
+
+## 51. INDEMNITIES IN FAVOUR OF CITRUS LABS LIMITED
+
+51.1. Each user, Merchant, staff user, and Super Administrator shall indemnify, defend, and hold harmless Citrus Labs Limited and its affiliates, directors, officers, employees, contractors, licensors, suppliers, service providers, representatives, successors, and assigns from and against all claims, losses, liabilities, damages, fines, penalties, costs, expenses, legal fees, regulatory demands, investigations, and proceedings arising from unlawful data submission, unauthorized processing, inaccurate data, misuse of Servana, unauthorized export, credential compromise, breach of this Data Policy, breach of confidentiality, breach of Applicable Law, infringement, fraud, negligence, wilful misconduct, unlawful instructions, or disputes involving Merchants, Clients, staff, vendors, payment providers, regulators, or third parties.
+
+51.2. The Super Administrator shall indemnify Citrus Labs Limited for claims arising from misuse of privileged access, unauthorized disclosure, unauthorized export, unauthorized access, excessive access, curiosity access, tampering with logs, improper billing changes, improper service-fee configuration, improper preferred-personnel fee configuration, improper feature-flag control, improper Merchant suspension, improper Merchant deactivation, improper enforcement, improper suspicious-usage handling, improper internal-role assignment, or breach of Citrus Labs Limited internal authorization.
+
+51.3. Citrus Labs Limited may control the defence and settlement of any indemnified claim, and the indemnifying party shall cooperate fully, preserve evidence, provide information, and not settle any claim in a manner that imposes liability or obligations on Citrus Labs Limited without Citrus Labs Limited’s prior written consent.
+
+## 52. RELEASE OF CITRUS LABS LIMITED FROM USER, MERCHANT, CLIENT, STAFF, VENDOR, PAYMENT, DATA, AND PLATFORM DISPUTES
+
+52.1. To the maximum extent permitted by Applicable Law, Citrus Labs Limited is released from disputes among Merchants, Clients, staff users, Super Administrators, vendors, payment providers, Branches, contractors, regulators, or third parties arising from data accuracy, Client records, appointments, queues, services, invoices, Offline Payment Records, receipts, refunds, commissions, Platform Fees, cash-up records, reconciliation records, employment matters, service disputes, or operational decisions.
+
+52.2. Citrus Labs Limited is not required to mediate Merchant disputes, Client disputes, employment disputes, staff disputes, commission disputes, refund disputes, receipt disputes, invoice disputes, tax disputes, accounting disputes, payment-provider disputes, or regulatory disputes except where required by Applicable Law or a binding written agreement.
+
+52.3. The existence of Platform Data, reports, dashboards, audit logs, payment records, receipts, or invoices does not make Citrus Labs Limited responsible for underlying Merchant operations, Merchant services, Client interactions, payment settlement, refunds, employment relationships, or regulatory compliance by Merchants.
+
+## 53. DISPUTE RESOLUTION
+
+53.1. Any dispute arising under or relating to this Data Policy shall first be submitted in writing to [legal@citruslabs.co.ke](mailto:legal@citruslabs.co.ke) or another channel designated by Citrus Labs Limited.
+
+53.2. The notice shall describe the dispute, relevant account, relevant Merchant, relevant Branch where applicable, relevant records, dates, requested remedy, factual basis, and supporting evidence.
+
+53.3. The parties shall attempt good-faith negotiation for thirty days unless urgent relief, data-protection action, security action, legal preservation, regulatory response, billing enforcement, or Platform-protection action is required sooner.
+
+53.4. Citrus Labs Limited may seek urgent injunctive, equitable, protective, preservation, disclosure, freezing, interim, or other relief in any competent court to protect Platform Data, Confidential Information, intellectual property, security, audit logs, evidence, Platform Fees, Platform integrity, or legal rights.
+
+53.5. To the maximum extent permitted by Applicable Law, claims shall be brought individually and not as class, representative, consolidated, collective, private attorney general, group, or mass proceedings.
+
+53.6. To the maximum extent permitted by Applicable Law, claims must be commenced within twelve months after the event giving rise to the claim.
+
+53.7. Confidentiality, data-protection, payment, preservation, security, and non-misuse obligations continue during any dispute.
+
+## 54. GOVERNING LAW AND JURISDICTION
+
+54.1. This Data Policy shall be governed by the laws of Kenya, without prejudice to mandatory data-protection, privacy, consumer-protection, employment, tax, cybersecurity, sector-specific, or public-law rules applicable in other jurisdictions.
+
+54.2. Subject to mandatory Applicable Law, the courts of competent jurisdiction in Nairobi, Kenya shall have jurisdiction over disputes arising from or relating to this Data Policy.
+
+54.3. Use of Servana outside Kenya does not create any representation that Citrus Labs Limited is licensed, regulated, approved, certified, registered, or compliant in every jurisdiction from which Servana may be accessed.
+
+54.4. Each user remains responsible for complying with Applicable Law in the user’s country, territory, county, province, municipality, industry, sector, and operating environment.
+
+## 55. AMENDMENTS AND UPDATES
+
+55.1. Citrus Labs Limited may amend, update, replace, supplement, or modify this Data Policy at any time.
+
+55.2. Amendments may be made for legal, regulatory, technical, security, commercial, billing, operational, product, data-protection, cybersecurity, support, or governance reasons.
+
+55.3. Citrus Labs Limited may provide notice through the Platform, website, dashboard, email, login flow, internal access notice, support communication, or other electronic method.
+
+55.4. Continued access to or use of Servana after an updated Data Policy becomes effective constitutes acceptance of the updated Data Policy.
+
+55.5. Citrus Labs Limited may maintain archived versions but is not required to provide public access to every prior version unless required by Applicable Law.
+
+## 56. SEVERABILITY
+
+56.1. If any provision of this Data Policy is invalid, unlawful, void, or unenforceable, the provision shall be modified to the minimum extent necessary to make it valid and enforceable, or severed if modification is not possible.
+
+56.2. The remaining provisions shall remain in full force and effect.
+
+56.3. Invalidity, unlawfulness, voidness, or unenforceability in one jurisdiction shall not affect enforceability in another jurisdiction.
+
+## 57. WAIVER
+
+57.1. No failure or delay by Citrus Labs Limited in exercising any right, remedy, power, discretion, or privilege shall operate as a waiver.
+
+57.2. No single or partial exercise of any right, remedy, power, discretion, or privilege shall preclude any other or further exercise.
+
+57.3. Any waiver must be express and in writing.
+
+## 58. ASSIGNMENT
+
+58.1. Users and Super Administrators may not assign, transfer, delegate, sublicense, novate, or otherwise dispose of any rights or obligations under this Data Policy without Citrus Labs Limited’s prior written consent.
+
+58.2. Citrus Labs Limited may assign, transfer, delegate, subcontract, novate, or otherwise dispose of its rights and obligations in connection with corporate restructuring, merger, acquisition, financing, sale of assets, outsourcing, affiliate arrangement, product transfer, business transfer, or similar transaction.
+
+58.3. Citrus Labs Limited may use subcontractors and Third-Party Service Providers to operate, host, maintain, support, secure, analyse, improve, bill, and enforce Servana.
+
+## 59. SURVIVAL
+
+59.1. Provisions concerning confidentiality, security, data protection, audit logs, legal records, ownership, restrictions, prohibited conduct, indemnities, releases, limitation of liability, liability cap, dispute resolution, governing law, evidence, retention, deletion limitations, export restrictions, intellectual property, and accrued rights shall survive account closure, suspension, deactivation, termination, role removal, employment termination, contractor termination, and cessation of Platform access.
+
+## 60. ENTIRE AGREEMENT AND ORDER OF PRECEDENCE
+
+60.1. This Data Policy, together with incorporated documents, constitutes the applicable data-governance terms for Servana as applied to the Super Administrator user type.
+
+60.2. No oral statement, informal support message, marketing material, roadmap statement, help article, user-interface label, undocumented practice, Merchant communication, Client communication, or third-party statement shall amend this Data Policy.
+
+60.3. In the event of conflict, the order of precedence stated in Section 1.10 shall apply.
+
+## 61. LANGUAGE
+
+61.1. This Data Policy is prepared in English.
+
+61.2. Any translation is provided for convenience only, and the English version controls to the maximum extent permitted by Applicable Law.
+
+61.3. The Super Administrator is responsible for understanding this Data Policy before accessing or using Servana in a Super Administrator capacity.
+
+## 62. CONTACT DETAILS AND LEGAL NOTICES
+
+62.1. Citrus Labs Limited may be contacted as follows:
+
+Citrus Labs Limited
+P.O. Box 23983 - 00100
+Nairobi, Kenya
+Support Email: [support@citruslabs.co.ke](mailto:support@citruslabs.co.ke)
+Legal Notices Email: [legal@citruslabs.co.ke](mailto:legal@citruslabs.co.ke)
+
+62.2. Citrus Labs Limited may require certain requests, notices, incident reports, Data Subject requests, regulatory communications, or legal communications to be submitted through designated forms, portals, email addresses, support channels, or legal-notice procedures.
+
+62.3. Communications sent to the wrong channel may be delayed, rejected, redirected, or treated as not formally received where Applicable Law permits.
+
+## 63. FINAL ACCEPTANCE AND BINDING EFFECT
+
+63.1. By accessing, logging into, configuring, governing, reviewing, monitoring, exporting where permitted, downloading where permitted, investigating, enforcing, suspending, deactivating, restricting, administering, or otherwise using Servana in a Super Administrator capacity, the Super Administrator confirms that the Super Administrator has read, understood, accepted, and agreed to be bound by this Data Policy.
+
+63.2. The Super Administrator confirms that the Super Administrator has authority to act within the applicable Citrus Labs Limited platform-governance capacity and shall comply with all confidentiality, security, data-protection, audit, access-control, billing, enforcement, investigation, retention, export, deletion, legal, and Platform-integrity obligations stated in this Data Policy.
+
+63.3. The Super Administrator acknowledges that Citrus Labs Limited may enforce this Data Policy through monitoring, access restriction, suspension, deactivation, termination, investigation, record preservation, internal action, legal action, equitable relief, indemnity claims, regulatory cooperation, and any other remedy available under contract, law, equity, internal policy, Platform policy, or Applicable Law.
