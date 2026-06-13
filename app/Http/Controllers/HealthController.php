@@ -47,7 +47,14 @@ final class HealthController extends Controller
                 Cache::put('__deep_health__', '1', 5);
                 Cache::forget('__deep_health__');
             }),
-            'queue' => ['status' => Schema::hasTable('jobs') ? 'ok' : 'error'],
+            'queue' => $this->probe(function (): void {
+                // Guarded: when the DB is unreachable, hasTable() throws — the
+                // probe must report 'error', never let the exception escape and
+                // turn the readiness response into a 500 that leaks config.
+                if (! Schema::hasTable('jobs')) {
+                    throw new \RuntimeException('jobs table is not migrated');
+                }
+            }),
             'meilisearch' => $this->probeMeilisearch(),
             's3' => $this->probeS3(),
         ];
