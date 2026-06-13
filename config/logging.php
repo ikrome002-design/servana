@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Support\Logging\StructuredLogTap;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -65,6 +66,8 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            // Structured JSON + redaction + correlation id (Plan §22.1).
+            'tap' => [StructuredLogTap::class],
         ],
 
         'daily' => [
@@ -105,6 +108,8 @@ return [
                 'stream' => 'php://stderr',
             ],
             'processors' => [PsrLogMessageProcessor::class],
+            // Structured JSON + redaction + correlation id (Plan §22.1).
+            'tap' => [StructuredLogTap::class],
         ],
 
         'syslog' => [

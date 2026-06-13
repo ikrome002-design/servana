@@ -531,3 +531,11 @@ drafts/
 # - tests/
 # - README.md
 # - LICENSE
+
+# ==============================================================================
+# 14. Source-code overrides (MUST stay last to win over the broad runtime
+# business-data folder names above, e.g. receipts/, reports/, exports/).
+# Application domain source under app/Domain is always tracked.
+# ==============================================================================
+!/app/Domain/**/
+!/app/Domain/**
