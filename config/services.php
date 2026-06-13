@@ -37,4 +37,11 @@ return [
         ],
     ],
 
+    // Meilisearch connection (Plan AS-8). Scout wires the full client in
+    // Phase 22; the host is read here now for the /health/deep probe.
+    'meilisearch' => [
+        'host' => env('MEILISEARCH_HOST'),
+        'key' => env('MEILISEARCH_KEY'),
+    ],
+
 ];

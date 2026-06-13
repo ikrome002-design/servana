@@ -5,6 +5,42 @@ All notable changes to Servana by Citrus. Format loosely follows
 
 ## [Unreleased]
 
+### Phase 3 — Laravel backend foundation (`phase-3-laravel-backend-foundation`)
+
+#### Added
+- Domain-oriented skeleton: 20 `app/Domain/*` folders (Plan §5.1).
+- `app/Support/Money.php` — immutable integer-minor-unit money value object with
+  currency-checked arithmetic, comparisons and integer-only formatting;
+  `CurrencyMismatchException`.
+- Enums: `Currency` (KES + USD forward-compat), `Severity`, `ErrorCode`.
+- Structured API error envelope (Plan §11.5) via `app/Exceptions/ApiErrorRenderer`
+  wired in `bootstrap/app.php`; 5xx responses carry a generic message + correlation
+  id only.
+- `CorrelationIdMiddleware` (+ `App\Support\CorrelationId`) — safe/length-bounded
+  inbound `X-Correlation-ID` or generated ULID, echoed on the response and 5xx meta.
+- Structured logging: `Support\Redaction\Redactor` and Monolog
+  `RedactionProcessor` / `CorrelationIdProcessor` / `StructuredLogTap`, tapped onto
+  the `single` and `stderr` channels (JSON + redaction + correlation id).
+- Seven named rate limiters (Plan §9.3) registered in `AppServiceProvider`.
+- `HealthController` with `/health` (liveness) and `/health/deep` (readiness:
+  db/redis/cache required, meilisearch/s3 optional).
+- `sentry/sentry-laravel ^4.10` wired (`Integration::handles`); env placeholders only.
+- `routes/api.php` registering the `/api/v1` group (no business routes yet).
+- Tests: `Unit/MoneyTest`, `Feature/Api/{ErrorEnvelope,CorrelationId,DeepHealth}Test`,
+  `Feature/Security/LogRedactionTest`, `Feature/RateLimitersRegisteredTest`,
+  `Feature/SentryConfigTest`.
+
+#### Changed
+- `bootstrap/app.php` — api routing + `apiPrefix=api/v1`, correlation middleware,
+  `/health` + `/health/deep`, exception→envelope renderer, Sentry integration.
+- `config/logging.php` (structured tap), `config/services.php` (meilisearch host),
+  `app/Providers/AppServiceProvider.php`, `.env.example` (Sentry PII flag).
+- `composer.json`/lock — added `sentry/sentry-laravel`.
+
+#### Notes
+- Framework tables (sessions/cache/jobs/job_batches/failed_jobs) already exist in
+  the default migrations — confirmed, no new migration added.
+
 ### Phase 2 — Docker & environment setup (`phase-2-docker-environment`)
 
 #### Added

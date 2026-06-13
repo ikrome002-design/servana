@@ -5,9 +5,9 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 
 | Phase | Title | Status | Branch / PR | Proof |
 |---|---|---|---|---|
-| 1 | Project initialization | ✅ Complete | `phase-1-initialization` | [phase-1.md](proof/phase-1.md) |
-| 2 | Docker & environment setup | ✅ Complete (awaiting CI + approval) | `phase-2-docker-environment` | [phase-2.md](proof/phase-2.md) |
-| 3 | Laravel backend foundation | ⬜ Not started | — | — |
+| 1 | Project initialization | ✅ Complete — merged PR #1 | `phase-1-initialization` | [phase-1.md](proof/phase-1.md) |
+| 2 | Docker & environment setup | ✅ Complete — merged PR #2 | `phase-2-docker-environment` | [phase-2.md](proof/phase-2.md) |
+| 3 | Laravel backend foundation | ✅ Complete locally — awaiting CI + approval | `phase-3-laravel-backend-foundation` | [phase-3.md](proof/phase-3.md) |
 | 4 | Frontend foundation | ⬜ Not started | — | — |
 | 5 | Authentication (Magic Link + sessions) | ⬜ Not started | — | — |
 | 6 | Account & tenant model | ⬜ Not started | — | — |
@@ -31,11 +31,105 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 24 | Performance optimization | ⬜ Not started | — | — |
 | 25 | Deployment pipeline & final production readiness | ⬜ Not started | — | — |
 
+## Phase 3 — Laravel backend foundation
+
+- **Branch:** `phase-3-laravel-backend-foundation` (based on merged main: PR #1 + PR #2).
+- **Status:** Complete locally; awaiting CI + owner approval.
+- **Proof:** [docs/proof/phase-3.md](proof/phase-3.md).
+
+### Completed
+- 20 `app/Domain/*` folders (Plan §5.1) with `.gitkeep`.
+- `app/Support/Money.php` (integer minor units, currency-checked, integer-only
+  formatting) + `CurrencyMismatchException`; `Currency` (KES + USD forward-compat),
+  `Severity`, `ErrorCode` enums.
+- API error envelope `{ error: { code, message, fields, meta } }` (Plan §11.5)
+  via `ApiErrorRenderer` wired in `bootstrap/app.php`; 5xx generic + correlation id.
+- `CorrelationIdMiddleware` (global) + `CorrelationId` holder; safe inbound id or ULID.
+- Structured logging: `Redaction\Redactor` + Monolog `RedactionProcessor`,
+  `CorrelationIdProcessor`, `StructuredLogTap` (tapped on `single`/`stderr`).
+- All 7 named rate limiters (Plan §9.3) registered in `AppServiceProvider`.
+- `/health` (dependency-free) + `/health/deep` (db/redis/cache required;
+  meilisearch/s3 optional; no leaks) via `HealthController`.
+- `sentry/sentry-laravel ^4.10` wired (`Integration::handles`), env placeholders only.
+- Framework tables (sessions/cache/jobs/job_batches/failed_jobs) confirmed in the
+  3 default migrations — **no new migration needed**.
+- `routes/api.php` registers `/api/v1` group (no business routes — Phase 10).
+
+### Commands that passed (run in the Docker `app` container, PHP 8.3)
+- `make up` → all services healthy; `make fresh` → migrated on PostgreSQL 16.
+- `make test` → Pint PASS (49 files), Larastan level 8 OK,
+  `php artisan test --parallel` **41 passed (124 assertions), 4 processes**.
+- `npm run build` → built with Vite 8 → `public/spa`.
+- `gitleaks detect --no-git` → no leaks; `composer audit` → 1 documented-ignored;
+  `npm audit --audit-level=high` → 0 vulnerabilities.
+
+### Failed checks
+- None outstanding. Two defects found and fixed during verification (Sentry vendor
+  sync; Larastan Monolog type narrowing) — see proof §4.
+
+### Skipped (deferred)
+```
+Skipped:
+- Item: Full Magic Link authentication flow
+- Reason: Phase 3 only registers the rate-limiter names; the flow is auth scope.
+- Correct future phase: Phase 5 (Authentication)
+- Risk if forgotten: no login.
+
+Skipped:
+- Item: Tenant model + ResolveTenantContext/EnsureBranchScope middleware
+- Reason: requires the merchant/branch schema.
+- Correct future phase: Phase 6 (tenant model) / Phase 9 (isolation hardening)
+- Risk if forgotten: no multi-tenancy enforcement.
+
+Skipped:
+- Item: Branches, memberships, invitations
+- Correct future phase: Phase 7
+- Risk if forgotten: no org structure.
+
+Skipped:
+- Item: Role + permission registry / policies
+- Correct future phase: Phase 8
+- Risk if forgotten: no authorization.
+
+Skipped:
+- Item: Full /api/v1 route surface + Idempotency-Key + pagination traits
+- Reason: only the group is registered now.
+- Correct future phase: Phase 10 (API foundation)
+- Risk if forgotten: no API endpoints.
+
+Skipped:
+- Item: Frontend foundation (layouts, stores, design-system core)
+- Correct future phase: Phase 4
+- Risk if forgotten: no SPA app shell.
+
+Skipped:
+- Item: Horizon dashboard; upload scanning; opcache preload; deploy/secrets
+- Correct future phase: Phase 21 / Phase 23 / Phase 24 / Phase 25 respectively
+- Risk if forgotten: covered by their owning phases (carried from Phase 2).
+```
+
+### Known risks
+- CVE-2026-48019 (Laravel 11 email-rule) still ignored-with-rationale; revisit at
+  Laravel 12 / Phase 5.
+- Local PHP 8.5 vs pinned 8.3 (CI/Docker enforce 8.3).
+- `/health/deep` treats Meilisearch + S3 as optional so the probe stays green in
+  CI where those services are absent (intentional, documented in code).
+
+### Context for the next prompt (Phase 4 — Frontend foundation)
+- Branch from merged main (after this PR merges) as `phase-4-frontend-foundation`.
+- Stack: `make up && make fresh && make test`; SPA dev via `npm run dev` (Vite 8).
+- Phase 4 builds: the 8 role layouts, router + stubbed guards, Pinia stores,
+  `apiClient.ts`, `ui/` core components (SvButton, inputs, SvCard, SvModal,
+  SvToast, SvStateBoundary, SvEmptyState), light+dark theme tokens + head theme
+  script (Plan §6, §12). Tests: Vitest (apiClient error mapping, useForm,
+  StateBoundary) + Playwright smoke at 3 breakpoints.
+- Backend foundation now available to the SPA: `/health`, `/health/deep`, the
+  error envelope shape, and `X-Correlation-ID` on every response.
+
 ## Phase 2 — Docker & environment setup
 
-- **Branch:** `phase-2-docker-environment` (stacked on `phase-1-initialization`,
-  which is not yet merged to `main`).
-- **Status:** Complete locally; awaiting CI green + owner approval.
+- **Branch:** `phase-2-docker-environment` → **PR #2 merged into main.**
+- **Status:** Complete. **CI passed: Backend, Frontend, Security, Docker.**
 - **Proof:** [docs/proof/phase-2.md](proof/phase-2.md).
 
 ### Completed
@@ -101,7 +195,6 @@ Skipped:
 ### Known risks
 - Local PHP 8.5 vs pinned 8.3 (CI/Docker enforce 8.3). Unchanged from Phase 1.
 - CVE-2026-48019 (Laravel 11 email-rule advisory) still ignored-with-rationale.
-- CI not yet executed on this branch; "green on first PR" pending push.
 - `make` and `gitleaks` were installed on the dev machine via winget this phase.
 
 ### Context for the next prompt (Phase 3 — Laravel backend foundation)
