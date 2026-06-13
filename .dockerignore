@@ -1,0 +1,39 @@
+# Keep build context small and secret-free (Plan §26.1: exclude .env,
+# node_modules, test artifacts).
+.git
+.github
+.githooks
+
+# Secrets / local env (never copied into images)
+.env
+.env.*
+!.env.example
+
+# Dependencies (installed inside the image)
+vendor
+node_modules
+
+# Build artifacts
+public/spa
+public/build
+public/hot
+
+# Caches & test artifacts
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+.phpunit.result.cache
+.phpunit.cache
+.pest.cache
+coverage
+playwright-report
+
+# Local tooling / docs not needed at runtime
+docs
+*.md
+!README.md
+
+# OS noise
+.DS_Store
+Thumbs.db

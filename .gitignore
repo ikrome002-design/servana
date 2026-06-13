@@ -207,6 +207,11 @@ coverage/
 .phpunit.cache/
 .pest.cache/
 
+# Container-generated tool dotfiles (composer/psysh). Defensive — the app image
+# sets HOME=/home/servana so these should never appear in the project anyway.
+/.composer/
+/.config/
+
 coverage-html/
 htmlcov/
 

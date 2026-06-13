@@ -1,7 +1,7 @@
 name: CI
 
-# Phase 1 scope: PR-stage pipeline skeleton (Plan §26.2 "on PR" line).
-# The "on main" build/push/deploy stages are added in Phase 25.
+# PR-stage pipeline (Plan §26.2 "on PR" line) + a Docker image-build job
+# (Phase 2). The "on main" build/push/deploy stages are added in Phase 25.
 on:
   pull_request:
     branches: [main]
@@ -52,7 +52,7 @@ jobs:
           # Pinned stack (Plan AS-1). Local dev may run a newer 8.x; CI is the
           # source of truth for the pinned runtime.
           php-version: '8.3'
-          extensions: pdo_pgsql, redis, intl, gd, bcmath, mbstring
+          extensions: pdo_pgsql, redis, intl, gd, bcmath, pcntl, mbstring
           coverage: none
           tools: composer:v2
 
@@ -72,12 +72,12 @@ jobs:
           php artisan key:generate
 
       - name: Lint — Pint (check only)
-        run: composer pint
+        run: composer pint -- --test
 
       - name: Static analysis — Larastan level 8
         run: composer stan
 
-      - name: Tests — Pest on PostgreSQL
+      - name: Tests — Pest on PostgreSQL (parallel)
         env:
           DB_CONNECTION: pgsql
           DB_HOST: 127.0.0.1
@@ -87,7 +87,7 @@ jobs:
           DB_PASSWORD: servana
           REDIS_HOST: 127.0.0.1
           REDIS_PORT: 6379
-        run: php artisan test
+        run: php artisan test --parallel
 
       - name: Dependency audit (Composer)
         run: composer audit --no-interaction
@@ -121,6 +121,38 @@ jobs:
 
       - name: Dependency audit (npm)
         run: npm audit --audit-level=high
+
+  docker:
+    name: Docker — build images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Proves both Dockerfiles build. No push, no secrets, no deploy (Phase 25).
+      - name: Build app image (dev target)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/php.Dockerfile
+          target: dev
+          push: false
+          tags: servana-app:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build nginx image (prod target, incl. SPA build)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/nginx.Dockerfile
+          target: prod
+          push: false
+          tags: servana-nginx:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   security:
     name: Security — gitleaks
