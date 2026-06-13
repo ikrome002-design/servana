@@ -5,6 +5,40 @@ All notable changes to Servana by Citrus. Format loosely follows
 
 ## [Unreleased]
 
+### Phase 2 — Docker & environment setup (`phase-2-docker-environment`)
+
+#### Added
+- `docker/php.Dockerfile` — PHP-FPM 8.3 (alpine), extensions `pdo_pgsql`,
+  `redis`, `intl`, `gd`, `bcmath`, `pcntl`, `zip`, `opcache`; Composer;
+  non-root `servana` user; `dev` and `prod` build stages (Plan §26.1).
+- `docker/nginx.Dockerfile` — non-root (nginx-unprivileged) edge image with a
+  Node 20 SPA-build stage; `docker/nginx/default.conf`.
+- `docker/php/php.ini`, `docker/php/opcache.ini`, `docker/php/entrypoint.sh`.
+- `docker-compose.yml` — dev stack: app, nginx, postgres:16, redis:7,
+  meilisearch, minio (+ bucket init), mailpit, clamav (opt-in `clamav`
+  profile), worker + scheduler placeholders, spa-builder (`tools` profile);
+  healthchecks on app/nginx/postgres/redis/meilisearch/minio/clamav.
+- `docker-compose.prod.yml` — app/nginx/worker/scheduler against managed
+  PG/Redis/S3 (Phase 25 completes deployment).
+- `.dockerignore`.
+- CI `docker` job building the app + nginx images (no push/deploy).
+- `docs/proof/phase-2.md`.
+
+#### Changed
+- `.env.example` — full documented variable set with Docker service hostnames
+  (postgres/redis/mailpit/minio/meilisearch); placeholders only.
+- `Makefile` — real targets: `env up down restart logs ps shell composer npm
+  fresh test lint stan build clamav-up`, run against the containers.
+- `composer.json` — added `brianium/paratest` so `php artisan test --parallel`
+  works; `pint` script made a passthrough (so `composer pint -- --test`).
+- `.github/workflows/ci.yml` — `pcntl` extension, parallel tests, Pint check via
+  `-- --test`.
+
+#### Notes
+- Horizon (Phase 21), ClamAV upload scanning (Phase 23), `/health/deep`
+  (Phase 3), opcache preload + prod deploy (Phase 24/25) intentionally deferred
+  — see `docs/PROGRESS.md`.
+
 ### Phase 1 — Project initialization (`phase-1-initialization`)
 
 #### Added

@@ -909,21 +909,40 @@ Security is a core product requirement because Servana handles merchant operatio
 
 ### Prerequisites
 
-Pinned stack (Plan AS-1):
+The Docker stack is the canonical environment (Plan §26.1). For it you only need:
 
-- PHP 8.3 (local dev may run a newer 8.x; CI and Docker enforce 8.3)
-- Composer 2.x
-- Node.js 20+ and npm
-- Git
-- [gitleaks](https://github.com/gitleaks/gitleaks) 8.x (for the pre-commit secret-scan hook)
-- PostgreSQL 16 and Redis 7 — **provisioned via Docker in Phase 2**; not
-  required to run the Phase 1 smoke test (which is database-less).
+- [Docker](https://www.docker.com/) + Docker Compose v2
+- GNU `make`
+- Git, plus [gitleaks](https://github.com/gitleaks/gitleaks) 8.x for the pre-commit hook
 
-> Mailpit, MinIO, Meilisearch and the full service stack arrive with Docker in
-> Phase 2. The database/migration/seed steps further down this section become
-> active from Phase 2 onward.
+For running tooling directly on the host (optional), also: PHP 8.3, Composer 2.x,
+Node.js 20+. CI and the Docker images enforce the pinned PHP 8.3 (Plan AS-1).
 
-### Phase 1 quick start (reproducible in < 15 minutes)
+### Quick start with Docker (one-command onboarding)
+
+```bash
+git clone <repo-url> servana && cd servana
+git config core.hooksPath .githooks   # activate the gitleaks pre-commit hook
+make up         # build images + start app, nginx, postgres16, redis7,
+                # meilisearch, minio, mailpit (+ optional clamav profile)
+make fresh      # migrate:fresh --seed against PostgreSQL 16
+make test       # composer pint --test && composer stan && php artisan test --parallel
+make build      # build the Vue SPA into public/spa
+```
+
+Then browse:
+
+| Service | URL |
+|---|---|
+| App (nginx → Laravel) | http://localhost:8080 |
+| Health probe | http://localhost:8080/health |
+| Mailpit (caught email) | http://localhost:8025 |
+| MinIO console | http://localhost:9101 |
+| Meilisearch | http://localhost:7700 |
+
+Run `make help` for every target. ClamAV is opt-in: `make clamav-up`.
+
+### Host-only quick start (no Docker, reproducible in < 15 minutes)
 
 ```bash
 git clone <repo-url> servana && cd servana
