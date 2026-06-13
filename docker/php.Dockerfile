@@ -1,0 +1,89 @@
+# Servana app image (PHP-FPM 8.3). One image serves app / worker / scheduler with
+# different commands (Plan §26.1). Multi-stage: `dev` (tooling + dev deps) and
+# `prod` (optimized, no dev deps, opcache preload).
+
+# ---------- base: PHP + extensions + composer + non-root user ----------
+FROM php:8.3-fpm-alpine AS base
+
+# System libraries needed to build the PHP extensions below.
+RUN apk add --no-cache \
+        bash \
+        git \
+        icu-dev \
+        libpng-dev \
+        libjpeg-turbo-dev \
+        freetype-dev \
+        libzip-dev \
+        postgresql-dev \
+        oniguruma-dev \
+        $PHPIZE_DEPS \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" \
+        pdo_pgsql \
+        intl \
+        gd \
+        bcmath \
+        pcntl \
+        zip \
+        opcache \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    # Drop build toolchain to keep the image lean; keep runtime libs.
+    && apk del $PHPIZE_DEPS \
+    && rm -rf /tmp/pear
+
+# Composer (pinned major) from the official image.
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# PHP configuration.
+COPY docker/php/php.ini /usr/local/etc/php/conf.d/zz-servana.ini
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
+
+# The bind-mounted repo is owned by the host user, not the container's uid 1000;
+# mark it safe so git-based tooling (Pint/Larastan file discovery) is quiet.
+RUN git config --system --add safe.directory /var/www/html
+
+# Non-root runtime user (CLAUDE.md §6; Plan §26.1). HOME is /home/servana — NOT
+# the project dir — so composer/psysh dotfiles never leak into the bind-mounted
+# repo. uid/gid pinned to 1000.
+RUN addgroup -g 1000 servana \
+    && adduser -G servana -u 1000 -h /home/servana -s /bin/bash -D servana \
+    && mkdir -p /var/www/html /home/servana \
+    && chown -R servana:servana /var/www/html /var/local /home/servana
+
+WORKDIR /var/www/html
+
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint
+RUN chmod +x /usr/local/bin/entrypoint
+
+# ---------- dev: includes dev dependencies; source is bind-mounted ----------
+FROM base AS dev
+
+ENV APP_ENV=local
+# Revalidate opcache on every request so code edits are picked up live.
+ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
+
+# Seed vendor/ into the image so the named volume is populated on first run.
+COPY --chown=servana:servana composer.json composer.lock ./
+USER servana
+RUN composer install --no-interaction --no-scripts --no-progress --prefer-dist
+
+USER root
+ENTRYPOINT ["entrypoint"]
+USER servana
+CMD ["php-fpm", "-F"]
+
+# ---------- prod: optimized, no dev deps, opcache preload on ----------
+FROM base AS prod
+
+ENV APP_ENV=production
+ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
+
+COPY --chown=servana:servana . /var/www/html
+RUN composer install --no-interaction --no-dev --optimize-autoloader --no-progress --prefer-dist \
+    && chown -R servana:servana /var/www/html/storage /var/www/html/bootstrap/cache
+
+USER root
+ENTRYPOINT ["entrypoint"]
+USER servana
+CMD ["php-fpm", "-F"]

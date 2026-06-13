@@ -5,8 +5,8 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 
 | Phase | Title | Status | Branch / PR | Proof |
 |---|---|---|---|---|
-| 1 | Project initialization | ✅ Complete (awaiting CI + approval) | `phase-1-initialization` | [phase-1.md](proof/phase-1.md) |
-| 2 | Docker & environment setup | ⬜ Not started | — | — |
+| 1 | Project initialization | ✅ Complete | `phase-1-initialization` | [phase-1.md](proof/phase-1.md) |
+| 2 | Docker & environment setup | ✅ Complete (awaiting CI + approval) | `phase-2-docker-environment` | [phase-2.md](proof/phase-2.md) |
 | 3 | Laravel backend foundation | ⬜ Not started | — | — |
 | 4 | Frontend foundation | ⬜ Not started | — | — |
 | 5 | Authentication (Magic Link + sessions) | ⬜ Not started | — | — |
@@ -31,6 +31,90 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 24 | Performance optimization | ⬜ Not started | — | — |
 | 25 | Deployment pipeline & final production readiness | ⬜ Not started | — | — |
 
+## Phase 2 — Docker & environment setup
+
+- **Branch:** `phase-2-docker-environment` (stacked on `phase-1-initialization`,
+  which is not yet merged to `main`).
+- **Status:** Complete locally; awaiting CI green + owner approval.
+- **Proof:** [docs/proof/phase-2.md](proof/phase-2.md).
+
+### Completed
+- `docker/php.Dockerfile` — PHP-FPM 8.3 alpine; ext `pdo_pgsql, redis, intl,
+  gd, bcmath, pcntl, zip, opcache`; Composer; non-root `servana` (uid 1000);
+  `dev`/`prod` stages; `git safe.directory` set.
+- `docker/nginx.Dockerfile` (non-root nginx-unprivileged + Node 20 SPA build
+  stage) and `docker/nginx/default.conf`; `docker/php/{php.ini,opcache.ini,
+  entrypoint.sh}`.
+- `docker-compose.yml` (app, nginx, postgres:16, redis:7, meilisearch, minio
+  + bucket-init, mailpit, clamav [profile], worker, scheduler, spa-builder
+  [profile]) with healthchecks; `docker-compose.prod.yml`; `.dockerignore`.
+- `.env.example` rewritten with documented vars + Docker hostnames (placeholders
+  only); `Makefile` with working targets; `brianium/paratest` +
+  `league/flysystem-aws-s3-v3` added; CI `docker` build job + parallel tests.
+- `/health` moved to a session-less route (bootstrap/app.php `then:`) so the
+  liveness probe has no DB dependency.
+- `Logo.svg` confirmed present at `public/assets/brand/Logo.svg` (owner-added) —
+  **Phase 1 residual risk closed.**
+
+### Commands that passed
+- `make up` → all services healthy (app, nginx, postgres, redis, meilisearch,
+  minio, mailpit) + worker/scheduler running + minio-init exited 0.
+- `make fresh` → migrations on PostgreSQL 16.
+- `make test` → Pint PASS, Larastan level 8 OK, `php artisan test --parallel`
+  2 passed (4 processes).
+- Reachability: Redis `PONG`; Meilisearch `{"status":"available"}`; MinIO bucket
+  `servana` created + Laravel `s3` disk round-trip; Mailpit received a test mail;
+  app container `id` → `uid=1000(servana)`.
+- gitleaks staged scan → no leaks.
+
+### Skipped (deferred)
+```
+Skipped:
+- Item: Laravel Horizon dashboard/config
+- Reason: Horizon not installed until the queue phase; a `worker` container
+  running `php artisan queue:work` is the compatible placeholder.
+- Correct future phase: Phase 21 (Queues, notifications, scheduled reports)
+- Risk if forgotten: no queue dashboard/metrics in production.
+
+Skipped:
+- Item: ClamAV upload scanning integration
+- Reason: no upload pipeline exists yet; ClamAV daemon is provided behind an
+  opt-in `clamav` compose profile (memory-heavy, per Plan §27 risk note).
+- Correct future phase: Phase 23 (Security hardening) / Phase 19 (uploads)
+- Risk if forgotten: uploaded files unscanned.
+
+Skipped:
+- Item: /health/deep readiness probe (DB/cache/queue checks)
+- Reason: those subsystems mature in Phase 3; Phase 2 ships a dependency-free
+  liveness probe only.
+- Correct future phase: Phase 3 (Laravel backend foundation)
+- Risk if forgotten: orchestrators can't distinguish live-vs-ready.
+
+Skipped:
+- Item: opcache preload + production deploy/secrets/registry push
+- Reason: preload script generation is a perf optimization; deployment is a
+  later phase. Prod Dockerfile/compose exist but are not deployed.
+- Correct future phase: Phase 24 (performance) / Phase 25 (deployment)
+- Risk if forgotten: suboptimal prod opcache; no live deploy.
+```
+
+### Known risks
+- Local PHP 8.5 vs pinned 8.3 (CI/Docker enforce 8.3). Unchanged from Phase 1.
+- CVE-2026-48019 (Laravel 11 email-rule advisory) still ignored-with-rationale.
+- CI not yet executed on this branch; "green on first PR" pending push.
+- `make` and `gitleaks` were installed on the dev machine via winget this phase.
+
+### Context for the next prompt (Phase 3 — Laravel backend foundation)
+- Work continues on branch `phase-2-docker-environment` until merged; Phase 3
+  should branch from the latest Phase 2 (or merged main).
+- Dev: `make up && make fresh && make test`. App at http://localhost:8080,
+  Mailpit 8025, MinIO console 9101.
+- Phase 3 implements: `app/Domain/*` skeleton, `Support/Money.php`, enums,
+  error-envelope exception renderer (Plan §11.5), correlation-id middleware,
+  structured logging + redaction, named rate limiters (§9.3), Sentry, and the
+  `/health/deep` readiness probe. Tests: `Unit/MoneyTest`,
+  `Feature/Api/ErrorEnvelopeTest`, `Security/LogRedactionTest`.
+
 ## Phase 1 — completed work
 
 - Laravel 11.54 (PHP `^8.3`) scaffold; existing `docs/` and `public/assets/`
@@ -48,7 +132,8 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 
 ## Open items carried forward
 
-- `docs/brand/Logo.svg` does not exist (only `Logo.png`); needed for vector use.
+- ~~`Logo.svg` missing~~ — **resolved in Phase 2**: `public/assets/brand/Logo.svg`
+  is present (owner-added).
 - CI to be confirmed green on the first PR push.
 - CVE-2026-48019 (Laravel 11 email-rule advisory) ignored with documented
   rationale — revisit at Laravel 12 upgrade / Phase 5.
