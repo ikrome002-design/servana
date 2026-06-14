@@ -1,0 +1,55 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Auth\Actions;
+
+use App\Domain\Auth\Enums\AuthEvent;
+use App\Domain\Auth\Notifications\MagicLoginLinkNotification;
+use App\Domain\Auth\Services\LoginEligibilityService;
+use App\Domain\Auth\Services\MagicLinkTokenService;
+use App\Domain\Auth\Support\AuthEventLogger;
+
+/**
+ * Request a Magic Link (Plan §9.1).
+ *
+ * Side-effect-only and uniform: the controller always returns 202 regardless of
+ * outcome, so this method reveals nothing to the caller (no enumeration). An
+ * email is sent ONLY when all enforceable eligibility checks pass. Every denial
+ * is audited with its reason; no raw token is ever logged.
+ */
+final class RequestMagicLink
+{
+    public function __construct(
+        private readonly LoginEligibilityService $eligibility,
+        private readonly MagicLinkTokenService $tokens,
+        private readonly AuthEventLogger $audit,
+    ) {}
+
+    public function handle(string $email, ?string $ipAddress = null, ?string $userAgent = null): void
+    {
+        $result = $this->eligibility->check($email);
+
+        if (! $result->eligible) {
+            // No email, no token row. Audit the denial reason (Plan §9.1).
+            $this->audit->record(AuthEvent::LinkDenied, $email, $result->deniedReason);
+
+            return;
+        }
+
+        $user = $this->eligibility->findUser($email);
+
+        if ($user === null) {
+            // Defensive: eligibility passed but user vanished (race). Treat as denial.
+            $this->audit->record(AuthEvent::LinkDenied, $email, LoginEligibilityService::REASON_USER_NOT_FOUND);
+
+            return;
+        }
+
+        $rawToken = $this->tokens->issue($email, $ipAddress, $userAgent);
+
+        $user->notify(new MagicLoginLinkNotification($rawToken));
+
+        $this->audit->record(AuthEvent::LinkRequested, $email, null, $user->ulid);
+    }
+}

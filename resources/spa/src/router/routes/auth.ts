@@ -1,6 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-// Auth routes use AuthLayout. Full Magic Link flow lands in Phase 5.
+// Magic Link authentication pages (Plan §9.1), all under AuthLayout.
 export const authRoutes: RouteRecordRaw[] = [
   {
     path: '/auth',
@@ -9,12 +9,17 @@ export const authRoutes: RouteRecordRaw[] = [
       {
         path: 'login',
         name: 'auth.login',
-        component: () => import('@/pages/auth/LoginStub.vue'),
+        component: () => import('@/pages/auth/Login.vue'),
+      },
+      {
+        path: 'check-email',
+        name: 'auth.check-email',
+        component: () => import('@/pages/auth/CheckEmail.vue'),
       },
       {
         path: 'verify',
         name: 'auth.verify',
-        component: () => import('@/pages/auth/VerifyStub.vue'),
+        component: () => import('@/pages/auth/Verify.vue'),
       },
     ],
   },

@@ -1,6 +1,14 @@
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import type { ApiError, ApiErrorEnvelope } from '@/types/api';
 
+// The response interceptor attaches a typed, parsed ApiError to rejected
+// AxiosErrors so callers can discriminate outcomes without re-parsing.
+declare module 'axios' {
+  interface AxiosError {
+    apiError?: ApiError;
+  }
+}
+
 // Single axios instance (Plan §6.3). Backend CORS is strict-origin; credentials
 // are required for Sanctum SPA cookie sessions.
 export const apiClient: AxiosInstance = axios.create({
@@ -55,9 +63,8 @@ apiClient.interceptors.response.use(
       axios.isAxiosError(err) &&
       err.response !== undefined
     ) {
-      const apiError = parseApiError(err.response.data);
       // Attach typed error so callers can discriminate without re-parsing.
-      (err as typeof err & { apiError: ApiError }).apiError = apiError;
+      err.apiError = parseApiError(err.response.data);
     }
     return Promise.reject(err);
   },

@@ -5,6 +5,51 @@ All notable changes to Servana by Citrus. Format loosely follows
 
 ## [Unreleased]
 
+### Phase 5 — Authentication (Magic Link + sessions) (`phase-5-authentication`)
+
+#### Added
+- Magic Link authentication (Plan §9.1): `POST /api/v1/auth/magic-link` (uniform
+  202, no enumeration), `POST /api/v1/auth/magic-link/verify` (atomic single-use
+  consume → Sanctum session login with session-id regeneration; uniform 422
+  `invalid_or_expired_token`), `POST /api/v1/auth/logout` (204), `GET /api/v1/me`.
+- `Domain/Auth/*`: `MagicLoginToken` model; `MagicLinkTokenService` (64 random
+  bytes → base64url, SHA-256 at rest, 15-min expiry, atomic conditional-UPDATE
+  single-use); `LoginEligibilityService` (seven-check contract, Scope §2.3);
+  `RequestMagicLink`/`ConsumeMagicLink` actions; `MagicLoginLinkNotification`
+  (branded, `mail` queue); `AuthEventLogger` (interim redacted audit until Phase 8);
+  `InvalidMagicLinkException`; `AuthEvent` enum; `EligibilityResult` VO.
+- `magic_login_tokens` table; auth-owned expand of `users` (`ulid`, `status`,
+  `last_login_at`; `password` made nullable — Plan A3 "no password column").
+- Laravel Sanctum `^4.3` installed; SPA stateful mode (`statefulApi()` + `sanctum`
+  guard); `EnforceIdleTimeout` middleware (60-min sliding, Plan §9.2).
+- SPA auth pages `Login.vue`/`CheckEmail.vue`/`Verify.vue` (replace Phase 4 stubs);
+  `authStore` real `bootstrap/requestMagicLink/verifyMagicLink/logout`; bootstrap
+  on app mount; typed `apiError` on `AxiosError`.
+- `config/servana.php` (frontend URL, idle timeout, tenancy-eligibility flag);
+  `sanctum` guard in `config/auth.php`.
+- Tests: 8 backend auth/security suites (28 tests), Vitest authStore/Login/Verify
+  (11 tests), Playwright `auth-magic-link` (5 tests incl. axe on all auth pages).
+
+#### Fixed
+- Test environment now overrides docker-injected `$_SERVER` vars via
+  `tests/bootstrap.php` (previously the suite ran on the shared redis cache,
+  causing rate-limiter bleed and non-deterministic sessions).
+- Dev `worker` now consumes the `mail` queue (`queue:work --queue=mail,default`)
+  so Magic Link emails are actually delivered.
+
+#### Security
+- Raw tokens never stored (only SHA-256), never logged (masked-email audit only),
+  never returned in API responses. Single-use, 15-min expiry, uniform 202/422 to
+  prevent account enumeration; named Magic Link rate limiters → structured 429.
+
+#### Deferred
+- Eligibility checks 2/4 (membership/role) → Phase 6; check 6 (branch) → Phase 7
+  (seam methods + `AUTH_ENFORCE_TENANCY_ELIGIBILITY` flag in place). Instant
+  suspension revocation of sessions → Phase 7. Real MFA/TOTP → later phase
+  (safe `MfaController` placeholder only). No Phase 6 tenant schema created.
+
+---
+
 ### Phase 4 — Frontend foundation (`phase-4-frontend-foundation`)
 
 #### Added

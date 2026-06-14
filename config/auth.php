@@ -44,6 +44,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // Sanctum SPA guard (Plan §9.2): resolves first-party stateful cookie
+        // sessions to the web guard, falling back to token auth for future
+        // mobile clients. Used by `auth:sanctum` on the API surface.
+        'sanctum' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
     ],
 
     /*
