@@ -3,11 +3,12 @@ import { onMounted } from 'vue';
 import SvToast from '@/components/ui/SvToast.vue';
 import { useAuthStore } from '@/stores/authStore';
 
-// Resolve any existing session on first paint (Plan §6.2). 401 is expected when
-// logged out; the store handles it and marks itself bootstrapped either way.
+// The router's global beforeEach resolves the session before the first route
+// renders (Plan §6.2). This is a defensive fallback for the rare case where no
+// navigation occurs; bootstrap() is idempotent via the `bootstrapped` flag.
 const auth = useAuthStore();
 onMounted(() => {
-  void auth.bootstrap();
+  if (!auth.bootstrapped) void auth.bootstrap();
 });
 </script>
 

@@ -4,17 +4,27 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Auth;
 
+use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Onboarding\Services\FirstTimeSetupProgress;
+use App\Domain\Tenancy\TenantContext;
+use App\Http\Resources\MerchantMembershipResource;
+use App\Http\Resources\MerchantResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Minimal authenticated-user bootstrap payload for the SPA authStore
- * (Plan §6.2). Public identifier is the ULID (A5) — the bigint PK never leaves.
+ * Authenticated bootstrap payload for the SPA authStore (Plan §6.2, §8.1).
  *
- * `memberships` and `permissions` are empty in Phase 5: the merchant tenancy
- * model (Phase 6) and the permission registry (Phase 8) do not exist yet. They
- * are returned as empty arrays so the frontend contract is stable across phases.
+ * Phase 6 fills the merchant tenancy fields from the request-scoped
+ * TenantContext (resolved by ResolveTenantContext middleware): the user's
+ * merchant, their membership (role + status), and first-time setup state so the
+ * SPA can route a pending_setup owner straight to the wizard. The public id is
+ * the ULID (A5).
+ *
+ * `permissions` stays empty until the Phase 8 registry. `memberships` (array) is
+ * retained for router-guard compatibility and derived from the single active
+ * membership (launch rule: one membership per user).
  *
  * @mixin User
  */
@@ -25,16 +35,56 @@ final class AuthenticatedUserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $context = app(TenantContext::class);
+        $merchant = $context->merchant();
+        $membership = $context->merchantUser();
+
+        $merchantPayload = $merchant !== null
+            ? MerchantResource::make($merchant)->resolve($request)
+            : null;
+
+        $membershipPayload = $membership !== null
+            ? MerchantMembershipResource::make($membership)->resolve($request)
+            : null;
+
         return [
-            'id' => $this->ulid,
-            'email' => $this->email,
-            'name' => $this->name,
-            'status' => $this->status,
-            'email_verified_at' => $this->email_verified_at?->toIso8601String(),
-            // Phase 6 / Phase 8 integration points — intentionally empty for now.
-            'memberships' => [],
+            'user' => [
+                'id' => $this->ulid,
+                'email' => $this->email,
+                'name' => $this->name,
+                'status' => $this->status,
+                'email_verified_at' => $this->email_verified_at?->toIso8601String(),
+                'is_platform_staff' => (bool) $this->is_platform_staff,
+            ],
+            'merchant' => $merchantPayload,
+            'membership' => $membershipPayload,
+            // Retained for guard compatibility; mirrors the single active membership.
+            'memberships' => $membershipPayload !== null ? [$membershipPayload] : [],
+            // Phase 8 registry fills this.
             'permissions' => [],
-            'is_platform_staff' => false,
+            'setup' => $this->setupState($merchant),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function setupState(?Merchant $merchant): array
+    {
+        if ($merchant === null) {
+            return [
+                'required' => false,
+                'current_step' => null,
+                'completed_at' => null,
+            ];
+        }
+
+        $progress = app(FirstTimeSetupProgress::class);
+
+        return [
+            'required' => $progress->required($merchant),
+            'current_step' => $progress->currentStep($merchant),
+            'completed_at' => $merchant->setup_completed_at?->toIso8601String(),
         ];
     }
 }

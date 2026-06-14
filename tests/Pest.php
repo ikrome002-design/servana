@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Domain\Merchants\Enums\MerchantUserRole;
+use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Merchants\Models\MerchantUser;
+use App\Models\User;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
@@ -25,4 +29,27 @@ function postStateful(string $uri, array $data = []): TestResponse
     return test()
         ->withHeader('Origin', 'http://localhost')
         ->postJson($uri, $data);
+}
+
+/*
+ | Build a Magic-Link-eligible user (Scope §2.3 checks 2 & 4, enforced from
+ | Phase 6): an active user holding an active merchant_admin membership in an
+ | active merchant. Phase 5 auth tests use this so they exercise the auth flow
+ | against an eligible identity now that tenancy gating is on.
+ |
+ * @param  array<string, mixed>  $merchantAttributes
+ */
+function eligibleOwner(string $email, array $merchantAttributes = []): User
+{
+    $user = User::factory()->create(['email' => $email]);
+
+    $merchant = Merchant::factory()->active()->create($merchantAttributes);
+
+    MerchantUser::factory()->create([
+        'user_id' => $user->id,
+        'merchant_id' => $merchant->id,
+        'role' => MerchantUserRole::MerchantAdmin,
+    ]);
+
+    return $user;
 }

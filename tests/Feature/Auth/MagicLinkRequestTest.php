@@ -12,7 +12,7 @@ uses(RefreshDatabase::class)->group('auth');
 
 it('returns a uniform 202 for an eligible user and sends the link', function (): void {
     Notification::fake();
-    $user = User::factory()->create(['email' => 'owner@salon.co.ke']);
+    $user = eligibleOwner('owner@salon.co.ke');
 
     $this->postJson('/api/v1/auth/magic-link', ['email' => 'owner@salon.co.ke'])
         ->assertStatus(202)
@@ -46,7 +46,7 @@ it('sends nothing for a suspended user but still returns 202', function (): void
 
 it('normalizes the email before lookup and storage', function (): void {
     Notification::fake();
-    $user = User::factory()->create(['email' => 'owner@salon.co.ke']);
+    $user = eligibleOwner('owner@salon.co.ke');
 
     $this->postJson('/api/v1/auth/magic-link', ['email' => '  Owner@Salon.CO.KE '])
         ->assertStatus(202);

@@ -18,21 +18,24 @@ use Illuminate\Support\Str;
  *
  *   1 user exists by email                      ── ENFORCED here
  *   2 active membership in a merchant tenant
- *     (or is platform staff)                    ── DEFERRED → Phase 6
+ *     (or is platform staff)                    ── ENFORCED here (Phase 6)
  *   3 user.status = active                       ── ENFORCED here
- *   4 merchant_users.status = active             ── DEFERRED → Phase 6
+ *   4 merchant_users.status = active             ── ENFORCED here (Phase 6)
  *   5 user not suspended (merchant/platform)     ── ENFORCED here (user level)
  *   6 branch assignment for branch-scoped roles  ── DEFERRED → Phase 7
  *   7 token valid/unused/unexpired               ── enforced at consume time by
  *                                                   MagicLinkTokenService
  *
- * DEFERRAL CONTRACT: checks 2/4/6 depend on the merchant tenancy schema
- * (merchants, merchant_users, merchant_branches, branch_user_assignments) which
- * is owned by Phases 6–7 and does not exist yet. Enforcing them now would make
- * every login impossible, so they are gated behind the
- * `servana.auth.enforce_tenancy_eligibility` flag (default false). Phase 6/7
- * implement the real lookups in the seam methods below and flip the flag — the
- * request/consume flow is untouched. See docs/PROGRESS.md Phase 6/7.
+ * PHASE 6: the merchant tenancy schema (merchants, merchant_users) now exists,
+ * so checks 2 & 4 are real — a single active `merchant_users` row, OR
+ * platform-staff status, is required (User::hasTenantAccess). They are still
+ * gated by `servana.auth.enforce_tenancy_eligibility` (now defaulting true) so
+ * the behaviour can be toggled per environment.
+ *
+ * Check 6 (branch assignment) stays DEFERRED to Phase 7 regardless of the flag —
+ * branch_user_assignments does not exist yet, so enforcing it would lock every
+ * branch-scoped user out. hasRequiredBranchAssignment() therefore always passes
+ * for now; Phase 7 wires the real branch-scope lookup. See docs/PROGRESS.md.
  */
 final class LoginEligibilityService
 {
@@ -81,9 +84,9 @@ final class LoginEligibilityService
     }
 
     /**
-     * CHECKS 2 & 4 (Phase 6). Not enforceable until the merchant_users / platform
-     * staff schema exists; while the feature flag is off this passes. Phase 6
-     * replaces the enforced branch with a real membership lookup for $user.
+     * CHECKS 2 & 4 (Phase 6). Real lookup: an active merchant membership, OR
+     * platform-staff status. While the feature flag is off this passes (so an
+     * environment can disable tenancy gating for diagnostics).
      */
     private function hasActiveMembershipOrIsPlatformStaff(User $user): bool
     {
@@ -91,23 +94,19 @@ final class LoginEligibilityService
             return true;
         }
 
-        // Phase 6: return $user->activeMembership !== null || $user->is_platform_staff;
-        return false;
+        return $user->hasTenantAccess();
     }
 
     /**
-     * CHECK 6 (Phase 7). Not enforceable until branch_user_assignments exists;
-     * while the feature flag is off this passes. Phase 7 replaces the enforced
-     * branch with a real branch-scope lookup for $user.
+     * CHECK 6 (Phase 7). branch_user_assignments does not exist yet, so this
+     * always passes — enforcing it now would lock out every branch-scoped user.
+     * Phase 7 replaces the body with the real branch-scope lookup. Intentionally
+     * NOT gated by the eligibility flag (the flag enables checks 2 & 4 today;
+     * check 6 must remain inert until its schema lands).
      */
     private function hasRequiredBranchAssignment(User $user): bool
     {
-        if (! $this->tenancyEligibilityEnforced()) {
-            return true;
-        }
-
-        // Phase 7: return $user->hasActiveBranchAssignmentForRole();
-        return false;
+        return true;
     }
 
     private function tenancyEligibilityEnforced(): bool

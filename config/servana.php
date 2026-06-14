@@ -20,16 +20,16 @@ return [
     | Authentication
     |--------------------------------------------------------------------------
     |
-    | enforce_tenancy_eligibility — Scope §2.3 checks 2/4/6 (active merchant
-    | membership, active role, branch assignment) depend on the merchant tenancy
-    | schema owned by Phases 6–7. While that schema is absent these checks cannot
-    | be evaluated, so this flag stays false and LoginEligibilityService treats
-    | them as not-yet-enforceable. Phase 6 implements the lookups and flips this
-    | to true; no other auth code changes.
+    | enforce_tenancy_eligibility — Scope §2.3 checks 2 & 4 (active merchant
+    | membership / active role). Phase 6 implemented the merchant tenancy schema
+    | and the real lookups, so this now defaults TRUE: a Magic Link is issued only
+    | to a user with an active membership (or platform staff). Check 6 (branch
+    | assignment) remains deferred to Phase 7 regardless of this flag. The env var
+    | can still force it off for diagnostics.
     |
     */
     'auth' => [
-        'enforce_tenancy_eligibility' => (bool) env('AUTH_ENFORCE_TENANCY_ELIGIBILITY', false),
+        'enforce_tenancy_eligibility' => (bool) env('AUTH_ENFORCE_TENANCY_ELIGIBILITY', true),
 
         // Sliding idle timeout in minutes (Plan §9.2). Authenticated requests
         // reset the clock; exceeding it logs the session out.

@@ -80,5 +80,15 @@ const submit = form.handleSubmit(async ({ email }) => {
         Send sign-in link
       </SvButton>
     </form>
+
+    <p class="mt-4 text-sm text-text-muted">
+      New to Servana?
+      <RouterLink
+        :to="{ name: 'auth.register' }"
+        class="font-semibold text-brand-deep underline"
+      >
+        Create a business account
+      </RouterLink>
+    </p>
   </SvCard>
 </template>

@@ -5,6 +5,51 @@ All notable changes to Servana by Citrus. Format loosely follows
 
 ## [Unreleased]
 
+### Phase 6 — Account & tenant model (`phase-6-account-tenant-model`)
+
+#### Added
+- Merchant Administrator self-registration (Scope §3.1/§3.2): public
+  `POST /api/v1/merchant-registration/self-register` (`registration` limiter,
+  uniform 202 — no enumeration) → `RegisterMerchant` action creates user +
+  merchant (`pending_setup`) + shell profile + `merchant_admin`/`active`
+  membership + status-history row in one transaction, then emails the owner a
+  Magic Link. No Super Admin approval, no KYC — neither route nor UI exists.
+- First-time setup (Scope §3.2 steps 1–7): `GET`/`POST`
+  `/api/v1/merchant-registration/first-time-setup` (gated by
+  `EnsureFirstTimeSetupAccess`: pending_setup + merchant_admin). Transactional
+  `CompleteFirstTimeSetup` action — tier, profile, ≥1 branch, initial
+  Branch+HR invited memberships (auto-selected to the single branch), welcome
+  emails, then flips merchant → `active` + records status history.
+- Tenant context (Plan §8.1): `TenantContext` (request-scoped),
+  `TenantContextResolver`, `ResolveTenantContext` middleware, `EnsureMerchantActive`
+  + `EnsureFirstTimeSetupAccess` gates, `TenantAccessException` (envelope codes
+  `no_tenant_context` / `merchant_suspended` / `pending_setup_only` /
+  `setup_already_completed`). Merchant dashboard shell `GET /api/v1/merchant/dashboard`.
+- Schema (forward-only): `merchants`, `merchant_profiles`, `merchant_users`,
+  `merchant_status_histories`, minimal `merchant_branches` (Phase 6 seam — full
+  branch lifecycle is Phase 7); `is_platform_staff` added to `users`. Enum-backed
+  statuses + DB CHECK constraints (MerchantStatus, MerchantUserStatus,
+  MerchantUserRole, ServiceFeeTier, BranchStatus).
+- `/api/v1/me` bootstrap now returns `{ user, merchant, membership, memberships,
+  permissions, setup }` from the resolved tenant context (Plan §6.2).
+- SPA: `RegisterMerchant.vue`, 4-step `FirstTimeSetup.vue` wizard, merchant
+  `Dashboard.vue` shell; `onboardingStore`; `authStore`/`merchantStore` rewired
+  to the new bootstrap; global `router.beforeEach` awaits session bootstrap
+  before guards; `requiresPendingSetup` guard + pending→wizard routing.
+- `StaffWelcomeNotification` (safe, tokenless welcome for invited Branch/HR;
+  full invitation-accept flow is the Phase 7 seam).
+- Tests: 40 backend onboarding/tenancy/security tests; Vitest +13 (RegisterMerchant,
+  FirstTimeSetup, merchantStore, authStore tenant bootstrap); Playwright +4
+  (`merchant-onboarding` incl. axe on registration + wizard).
+
+#### Changed
+- `LoginEligibilityService`: Scope §2.3 checks 2 & 4 now enforced
+  (`User::hasTenantAccess` — active membership or platform staff);
+  `AUTH_ENFORCE_TENANCY_ELIGIBILITY` now defaults `true`. Check 6 (branch
+  assignment) stays deferred to Phase 7 (always passes for now).
+- `AuthenticatedUserResource` reshaped to the tenant-aware bootstrap; Magic Link
+  verify populates tenant context before responding.
+
 ### Phase 5 — Authentication (Magic Link + sessions) (`phase-5-authentication`)
 
 #### Added
