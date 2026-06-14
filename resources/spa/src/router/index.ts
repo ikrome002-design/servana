@@ -1,16 +1,40 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
-
-// Minimal Phase 1 router. Role route modules + guards land in Phase 4/11
-// (Plan §6.1, §27).
-const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    name: 'home',
-    component: () => import('@/pages/Home.vue'),
-  },
-];
+import { createRouter, createWebHistory } from 'vue-router';
+import { auditRoutes } from './routes/audit';
+import { authRoutes } from './routes/auth';
+import { branchRoutes } from './routes/branch';
+import { financeRoutes } from './routes/finance';
+import { frontOfficeRoutes } from './routes/frontOffice';
+import { hrRoutes } from './routes/hr';
+import { merchantRoutes } from './routes/merchant';
+import { personnelRoutes } from './routes/personnel';
+import { platformRoutes } from './routes/platform';
 
 export const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: () => import('@/pages/Home.vue'),
+    },
+    {
+      path: '/dev/design-system',
+      name: 'dev.design-system',
+      component: () => import('@/pages/dev/DesignSystemDemo.vue'),
+    },
+    ...authRoutes,
+    ...platformRoutes,
+    ...merchantRoutes,
+    ...branchRoutes,
+    ...hrRoutes,
+    ...financeRoutes,
+    ...frontOfficeRoutes,
+    ...personnelRoutes,
+    ...auditRoutes,
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/pages/Home.vue'),
+    },
+  ],
 });

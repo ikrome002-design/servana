@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// Root shell. Role-specific layouts arrive in Phase 4 (Plan §6.1).
+import SvToast from '@/components/ui/SvToast.vue';
 </script>
 
 <template>
   <RouterView />
+  <SvToast />
 </template>

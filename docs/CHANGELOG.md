@@ -5,6 +5,47 @@ All notable changes to Servana by Citrus. Format loosely follows
 
 ## [Unreleased]
 
+### Phase 4 — Frontend foundation (`phase-4-frontend-foundation`)
+
+#### Added
+- 8 role-based layout shells: `AuthLayout`, `PlatformAdminLayout`, `MerchantLayout`,
+  `BranchLayout`, `FrontOfficeLayout`, `PersonnelLayout`, `FinanceLayout`, `AuditLayout`.
+  Each includes skip link, accessible landmarks (`header`, `nav`, `main`), `.dark`-compatible
+  tokens (Plan §6.1, §15.9).
+- Router foundation: `router/index.ts` integrating 9 route modules, `router/guards.ts`
+  with UX-only stubs for `requiresAuth`, `requiresRole`, `requiresPermission`,
+  `requiresActiveMerchant` (Plan §6.2).
+- 6 typed Pinia stores: `authStore`, `merchantStore`, `branchStore`, `permissionStore`,
+  `themeStore` (persists to `localStorage`), `notificationStore`.
+- `services/apiClient.ts`: single axios instance (`baseURL=/api/v1`, `withCredentials`,
+  CSRF priming helper), response interceptor mapping Phase 3 error envelope to typed
+  `ApiError { code, message, fields, meta }` (Plan §6.3, §11.5).
+- `composables/useForm<T>`: typed values, dirty, touched, errors, `submitting`,
+  `reset()`, `setFieldError()`, `mergeServerErrors(ApiError)`, `handleSubmit()` with
+  duplicate-submit prevention (Plan §16).
+- Types: `types/api.ts` (`ApiError`, `Paginated<T>`), `types/models.ts`, `types/enums.ts`.
+- Utils: `utils/money.ts` (minor-unit formatting, Africa/Nairobi), `utils/dates.ts`.
+- 9 core UI components under `components/ui/` (all light+dark, all states, axe-verified):
+  `SvButton` (4 variants, loading, disabled, 44px touch, `text-brand-deep` on orange for
+  WCAG AA 4.78:1), `SvInput`, `SvSelect`, `SvTextarea` (labels, `aria-invalid`,
+  `aria-describedby`, `aria-required`), `SvCard`, `SvModal` (focus trap, Esc, `aria-modal`),
+  `SvToast` (`role="status"`, 5s auto-dismiss, pause on hover), `SvStateBoundary`
+  (loading/empty/error/success), `SvEmptyState`.
+- `pages/dev/DesignSystemDemo.vue` routed at `/dev/design-system` — renders all Phase 4
+  components in both themes with all required states.
+- `playwright.config.ts`; Playwright smoke suite (11 tests) covering 3 breakpoints,
+  no horizontal scroll, component rendering, theme toggle, modal keyboard, axe WCAG AA scan.
+- Vitest tests for `apiClient` error mapping (10), `useForm` (8), `SvStateBoundary` (8).
+- `npm` packages added: `axios`, `@playwright/test`, `@axe-core/playwright`.
+
+#### Fixed
+- Primary button and CTA button contrast: `text-white` on `#f97316` (2.8:1) replaced with
+  `text-brand-deep` (`#4A2208`) on `#f97316` (4.78:1) to meet WCAG AA (Plan §15.3).
+- Loading skeleton: added `role="status"` to permit `aria-label` on the loading div
+  (axe `aria-prohibited-attr` violation resolved).
+
+---
+
 ### Phase 3 — Laravel backend foundation (`phase-3-laravel-backend-foundation`)
 
 #### Added
