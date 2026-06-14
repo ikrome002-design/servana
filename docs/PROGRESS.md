@@ -7,8 +7,8 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 |---|---|---|---|---|
 | 1 | Project initialization | ✅ Complete — merged PR #1 | `phase-1-initialization` | [phase-1.md](proof/phase-1.md) |
 | 2 | Docker & environment setup | ✅ Complete — merged PR #2 | `phase-2-docker-environment` | [phase-2.md](proof/phase-2.md) |
-| 3 | Laravel backend foundation | ✅ Complete locally — awaiting CI + approval | `phase-3-laravel-backend-foundation` | [phase-3.md](proof/phase-3.md) |
-| 4 | Frontend foundation | ⬜ Not started | — | — |
+| 3 | Laravel backend foundation | ✅ Complete — merged PR #3 | `phase-3-laravel-backend-foundation` | [phase-3.md](proof/phase-3.md) |
+| 4 | Frontend foundation | 🔄 In progress — branch ready, awaiting CI + approval | `phase-4-frontend-foundation` | [phase-4.md](proof/phase-4.md) |
 | 5 | Authentication (Magic Link + sessions) | ⬜ Not started | — | — |
 | 6 | Account & tenant model | ⬜ Not started | — | — |
 | 7 | Branches, memberships, invitations | ⬜ Not started | — | — |
@@ -31,10 +31,115 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 24 | Performance optimization | ⬜ Not started | — | — |
 | 25 | Deployment pipeline & final production readiness | ⬜ Not started | — | — |
 
+## Phase 4 — Frontend foundation
+
+- **Branch:** `phase-4-frontend-foundation` (based on merged main: PR #1 + PR #2 + PR #3).
+- **Status:** Complete locally; awaiting CI + owner approval.
+- **Proof:** [docs/proof/phase-4.md](proof/phase-4.md).
+
+### Completed
+- 8 layout shells (accessible landmarks, skip link, dark-mode tokens).
+- Router: `index.ts` + 9 route modules + `guards.ts` (UX-only stubs).
+- 6 Pinia stores: auth, merchant, branch, permission, theme (localStorage), notification.
+- `services/apiClient.ts` — axios + CSRF helper + typed `ApiError` mapping Phase 3 envelope.
+- `composables/useForm<T>` — dirty, touched, errors, server 422 merge, duplicate-submit guard.
+- 9 UI components: SvButton, SvInput, SvSelect, SvTextarea, SvCard, SvModal, SvToast, SvStateBoundary, SvEmptyState.
+- `pages/dev/DesignSystemDemo.vue` at `/dev/design-system`.
+- Playwright suite: 11 tests (3 breakpoints, no horizontal scroll, theme toggle, axe WCAG AA).
+- Vitest: 27 tests (apiClient, useForm, SvStateBoundary).
+- Accessibility violations found and fixed: `aria-prohibited-attr` + `color-contrast`.
+
+### Commands that passed
+- `npm run typecheck` → 0 errors.
+- `npm run test` → 27 passed.
+- `npm run build` → built in 2.21s, no errors.
+- `npm run e2e` → 11 passed (17s).
+- `composer pint --test` → PASS.
+- `composer stan` → PASS (Larastan level 8, 0 errors).
+- `npm audit --audit-level=high` → 0 vulnerabilities.
+- `gitleaks detect --no-git` → no leaks.
+
+### Commands that require Docker
+- `php artisan test --parallel` → 40 passed, 1 failed (`DeepHealthTest` needs PostgreSQL + Redis; same known constraint as Phase 3).
+- `make up / make fresh / make test` → requires Docker Desktop.
+
+### Skipped (deferred)
+```
+Skipped:
+- Item: Full Magic Link authentication flow
+- Reason: Phase 4 stubs auth routes only.
+- Correct future phase: Phase 5 (Authentication)
+- Risk if forgotten: no login.
+
+Skipped:
+- Item: Authenticated /me bootstrap and real auth store data
+- Reason: Requires Phase 5 auth flow.
+- Correct future phase: Phase 5
+- Risk if forgotten: auth store empty; guards remain UX stubs.
+
+Skipped:
+- Item: Account and tenant model
+- Correct future phase: Phase 6
+- Risk if forgotten: no multi-tenancy.
+
+Skipped:
+- Item: Tenant middleware / tenant data hardening
+- Correct future phase: Phase 6 / Phase 9
+- Risk if forgotten: cross-tenant leakage not enforced.
+
+Skipped:
+- Item: Branches, memberships, invitations
+- Correct future phase: Phase 7
+- Risk if forgotten: no org structure.
+
+Skipped:
+- Item: Role and permission registry
+- Correct future phase: Phase 8
+- Risk if forgotten: guards stay as stubs.
+
+Skipped:
+- Item: Full /api/v1 route surface and pagination traits
+- Correct future phase: Phase 10 (API foundation)
+- Risk if forgotten: no API endpoints.
+
+Skipped:
+- Item: Final role navigation lists (verbatim from Scope)
+- Correct future phase: Phase 11
+- Risk if forgotten: nav stubs only.
+
+Skipped:
+- Item: Full responsive sweep across all product workflows
+- Correct future phase: Phase 12
+
+Skipped:
+- Item: Full dark mode across all product workflows
+- Correct future phase: Phase 13
+
+Skipped:
+- Item: Full accessibility release gate across all critical flows
+- Correct future phase: Phase 14
+
+Skipped:
+- Item: Horizon, upload scanning, opcache, deployment
+- Correct future phase: Phase 21 / Phase 23 / Phase 24 / Phase 25
+```
+
+### Known risks
+- Button contrast fix deviates from brand assumption of "white on orange"; brand owner should review.
+- Router guards are UX stubs only; no backend auth enforcement until Phase 5.
+- `DeepHealthTest` requires Docker to pass.
+
+### Context for Phase 5 (Authentication — Magic Link)
+- Branch from merged main as `phase-5-authentication`.
+- `authStore`, `apiClient`, `primeCsrfCookie()`, `useForm`, `AuthLayout`, and `auth.login`/`auth.verify` routes are ready.
+- Phase 5 implements: Magic Link request + "check your email" page, `/auth/verify?token=…` consumption, Sanctum session, `/api/v1/me` bootstrap, all 7 Scope §2.3 checks, session revocation on suspension.
+
+---
+
 ## Phase 3 — Laravel backend foundation
 
 - **Branch:** `phase-3-laravel-backend-foundation` (based on merged main: PR #1 + PR #2).
-- **Status:** Complete locally; awaiting CI + owner approval.
+- **Status:** ✅ Complete — merged PR #3.
 - **Proof:** [docs/proof/phase-3.md](proof/phase-3.md).
 
 ### Completed
