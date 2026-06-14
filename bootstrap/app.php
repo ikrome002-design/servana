@@ -30,6 +30,12 @@ return Application::configure(basePath: dirname(__DIR__))
         // Assign the correlation id first so it is available to logging and the
         // error envelope on every request (Plan §11.5, §22.1).
         $middleware->prepend(CorrelationIdMiddleware::class);
+
+        // Sanctum SPA mode (Plan §9.2): first-party stateful cookie sessions for
+        // the /api/v1 surface. Prepends EnsureFrontendRequestsAreStateful to the
+        // `api` group so requests from SANCTUM_STATEFUL_DOMAINS use the session
+        // guard + CSRF instead of bearer tokens.
+        $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Report to Sentry — a no-op while SENTRY_LARAVEL_DSN is empty.

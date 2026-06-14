@@ -8,8 +8,8 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 1 | Project initialization | ✅ Complete — merged PR #1 | `phase-1-initialization` | [phase-1.md](proof/phase-1.md) |
 | 2 | Docker & environment setup | ✅ Complete — merged PR #2 | `phase-2-docker-environment` | [phase-2.md](proof/phase-2.md) |
 | 3 | Laravel backend foundation | ✅ Complete — merged PR #3 | `phase-3-laravel-backend-foundation` | [phase-3.md](proof/phase-3.md) |
-| 4 | Frontend foundation | 🔄 In progress — branch ready, awaiting CI + approval | `phase-4-frontend-foundation` | [phase-4.md](proof/phase-4.md) |
-| 5 | Authentication (Magic Link + sessions) | ⬜ Not started | — | — |
+| 4 | Frontend foundation | ✅ Complete — merged PR #4 | `phase-4-frontend-foundation` | [phase-4.md](proof/phase-4.md) |
+| 5 | Authentication (Magic Link + sessions) | 🔄 Complete locally — awaiting CI + approval | `phase-5-authentication` | [phase-5.md](proof/phase-5.md) |
 | 6 | Account & tenant model | ⬜ Not started | — | — |
 | 7 | Branches, memberships, invitations | ⬜ Not started | — | — |
 | 8 | Roles & permissions | ⬜ Not started | — | — |
@@ -31,10 +31,68 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 24 | Performance optimization | ⬜ Not started | — | — |
 | 25 | Deployment pipeline & final production readiness | ⬜ Not started | — | — |
 
+## Phase 5 — Authentication (Magic Link + sessions)
+
+- **Branch:** `phase-5-authentication` (based on merged `main`: PR #1–#4).
+- **Status:** Complete locally; awaiting CI + owner approval.
+- **Proof:** [docs/proof/phase-5.md](proof/phase-5.md).
+
+### Completed
+- `magic_login_tokens` table + auth-owned expand of `users` (`ulid`, `status`,
+  `last_login_at`; `password` nullable per Plan A3).
+- `Domain/Auth/*`: token service (random 64B, SHA-256 at rest, 15-min, atomic
+  single-use), `LoginEligibilityService` (seven-check contract), request/consume
+  actions, branded `MagicLoginLinkNotification`, interim `AuthEventLogger`.
+- Endpoints: `POST /auth/magic-link` (uniform 202), `POST /auth/magic-link/verify`
+  (atomic consume → session login + id regeneration; uniform 422
+  `invalid_or_expired_token`), `POST /auth/logout` (204), `GET /me` (`auth:sanctum`).
+- Laravel Sanctum installed + SPA stateful mode (`statefulApi()`, `sanctum` guard).
+- `EnforceIdleTimeout` middleware (60 min, §9.2). All Magic Link limiters wired.
+- SPA: real `Login.vue`/`CheckEmail.vue`/`Verify.vue` (stubs deleted); `authStore`
+  bootstrap/request/verify/logout; `App.vue` bootstrap on mount.
+- MFA: safe `MfaController` placeholder (`mfa_not_enabled`, unrouted) — real TOTP deferred.
+
+### Commands that passed
+- `docker compose exec app php artisan test --group=auth` → **28 passed (104 assertions)**.
+- `docker compose exec app php artisan test` → **69 passed (230 assertions)**.
+- `composer pint -- --test` → PASS · `composer stan` → No errors (level 8).
+- `npm run typecheck` → 0 errors · `npm run test` → 38 passed · `npm run build` → built.
+- `npm run e2e` → 16 passed (auth 5 + foundation 11).
+- `gitleaks --no-git` → no leaks · `npm audit --audit-level=high` → 0 · `composer audit` → 1 documented-ignored.
+- Live: `POST /auth/magic-link` → 202; Mailpit delivered branded mail (86-char token); reuse → 422; missing token → 422 validation.
+
+### Commands that failed / limitations
+- Live HTTP capture of the clean `200` verify, `429` throttle, and `/me`→logout
+  cycle hit nginx 504/timeouts because the Windows Docker host was CPU-bound this
+  session (a queued job took ~3 min). Behaviour is proven by the feature suite on
+  real PostgreSQL (see proof §5). Two defects found & fixed during verification —
+  test-env override (`tests/bootstrap.php`) and worker `mail` queue — see proof §7.
+
+### Skipped (deferred)
+```
+- Merchant self-registration / tenant model → Phase 6
+- Eligibility checks 2 & 4 (membership/role) enforcement → Phase 6 (seam + flag in place; MUST flip)
+- Eligibility check 6 (branch assignment) enforcement → Phase 7
+- Instant session/token revocation on suspension → Phase 7 (invalidated_at column ready)
+- Real MFA (TOTP) → later account-model phase (placeholder only now)
+- Roles/permissions → 8 · full API → 10 · role nav → 11 · responsive → 12 · dark → 13 · a11y gate → 14
+- Horizon → 21 · uploads → 23 · opcache → 24 · deployment → 25
+```
+
+### Known risks
+- `AUTH_ENFORCE_TENANCY_ELIGIBILITY=false` until Phase 6 — any *active* user passes
+  checks 2/4/6 (correct now, no tenants exist; hard Phase 6 gate).
+- Suspension revocation partial (user-level only; session-row deletion is Phase 7).
+- Host performance only (not code) limited some live captures.
+
+### Context for Phase 6
+- Build merchants/merchant_profiles/merchant_users + onboarding; fill the eligibility
+  seam methods and flip the flag; populate `/me` memberships/permissions (6/8).
+
 ## Phase 4 — Frontend foundation
 
-- **Branch:** `phase-4-frontend-foundation` (based on merged main: PR #1 + PR #2 + PR #3).
-- **Status:** Complete locally; awaiting CI + owner approval.
+- **Branch:** `phase-4-frontend-foundation` → **PR #4 merged into main.**
+- **Status:** ✅ Complete. **CI passed: Backend, Frontend, Security, Docker.**
 - **Proof:** [docs/proof/phase-4.md](proof/phase-4.md).
 
 ### Completed
