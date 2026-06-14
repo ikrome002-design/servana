@@ -9,6 +9,8 @@ use App\Domain\Auth\Actions\RequestMagicLink;
 use App\Domain\Auth\Enums\AuthEvent;
 use App\Domain\Auth\Exceptions\InvalidMagicLinkException;
 use App\Domain\Auth\Support\AuthEventLogger;
+use App\Domain\Tenancy\TenantContext;
+use App\Domain\Tenancy\TenantContextResolver;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RequestMagicLinkRequest;
 use App\Http\Requests\Auth\VerifyMagicLinkRequest;
@@ -40,8 +42,12 @@ final class MagicLinkController extends Controller
      * POST /auth/magic-link/verify — atomic consume, then session login with id
      * regeneration (fixation defense). Uniform 422 on any failure.
      */
-    public function verify(VerifyMagicLinkRequest $request, ConsumeMagicLink $action): JsonResponse
-    {
+    public function verify(
+        VerifyMagicLinkRequest $request,
+        ConsumeMagicLink $action,
+        TenantContext $context,
+        TenantContextResolver $resolver,
+    ): JsonResponse {
         $user = $action->handle($request->token());
 
         if ($user === null) {
@@ -53,6 +59,11 @@ final class MagicLinkController extends Controller
         if ($request->hasSession()) {
             $request->session()->regenerate();
         }
+
+        // Verify runs outside the ResolveTenantContext middleware group, so
+        // populate the context here too — the bootstrap payload must carry the
+        // merchant/membership/setup state the SPA routes on (Plan §6.2, §8.1).
+        $resolver->populate($context, $user);
 
         return AuthenticatedUserResource::make($user)
             ->response()

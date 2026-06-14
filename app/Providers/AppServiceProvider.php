@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Tenancy\TenantContext;
 use App\Support\CorrelationId;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -17,6 +18,11 @@ class AppServiceProvider extends ServiceProvider
         // Shared per-request correlation id (middleware sets it; logging and the
         // error renderer read it).
         $this->app->singleton(CorrelationId::class);
+
+        // Per-request tenant context (Plan §8.1). `scoped` so it is a singleton
+        // within one request and reset between requests; ResolveTenantContext
+        // populates it after auth.
+        $this->app->scoped(TenantContext::class);
     }
 
     public function boot(): void

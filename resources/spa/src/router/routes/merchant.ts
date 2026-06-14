@@ -1,7 +1,15 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { requiresActiveMerchant, requiresAuth } from '@/router/guards';
+import { requiresActiveMerchant, requiresAuth, requiresPendingSetup } from '@/router/guards';
 
 export const merchantRoutes: RouteRecordRaw[] = [
+  // First-time setup wizard (Scope §3.2). Standalone page (no merchant nav),
+  // gated to a signed-in owner whose setup is still required.
+  {
+    path: '/onboarding/first-time-setup',
+    name: 'onboarding.first-time-setup',
+    component: () => import('@/pages/onboarding/FirstTimeSetup.vue'),
+    beforeEnter: [requiresAuth, requiresPendingSetup],
+  },
   {
     path: '/merchant',
     component: () => import('@/layouts/MerchantLayout.vue'),
@@ -10,7 +18,7 @@ export const merchantRoutes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'merchant.dashboard',
-        component: () => import('@/pages/merchant/DashboardStub.vue'),
+        component: () => import('@/pages/merchant/Dashboard.vue'),
       },
     ],
   },

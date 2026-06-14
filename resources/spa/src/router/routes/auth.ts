@@ -12,6 +12,11 @@ export const authRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/auth/Login.vue'),
       },
       {
+        path: 'register',
+        name: 'auth.register',
+        component: () => import('@/pages/auth/RegisterMerchant.vue'),
+      },
+      {
         path: 'check-email',
         name: 'auth.check-email',
         component: () => import('@/pages/auth/CheckEmail.vue'),

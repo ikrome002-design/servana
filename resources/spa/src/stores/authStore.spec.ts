@@ -1,6 +1,6 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { AuthenticatedUser } from '@/types/models';
+import type { BootstrapPayload } from '@/types/models';
 
 // Mock the API client + CSRF helper used by the store.
 const get = vi.fn();
@@ -16,16 +16,29 @@ vi.mock('@/services/apiClient', () => ({
 }));
 
 import { useAuthStore } from '@/stores/authStore';
+import { useMerchantStore } from '@/stores/merchantStore';
 
-const user: AuthenticatedUser = {
-  id: '01J0000000000000000000USER',
-  email: 'owner@salon.co.ke',
-  name: 'Owner',
-  status: 'active',
-  email_verified_at: '2026-06-14T00:00:00+00:00',
-  memberships: [],
+const bootstrap: BootstrapPayload = {
+  user: {
+    id: '01J0000000000000000000USER',
+    email: 'owner@salon.co.ke',
+    name: 'Owner',
+    status: 'active',
+    email_verified_at: '2026-06-14T00:00:00+00:00',
+    is_platform_staff: false,
+  },
+  merchant: {
+    id: '01J000000000000000000MERCH',
+    name: 'Glow Salon',
+    slug: 'glow-salon',
+    status: 'active',
+    service_fee_tier: 'split_tier',
+    setup_completed_at: '2026-06-14T00:00:00+00:00',
+  },
+  membership: { id: '01J00000000000000000MEMBER', role: 'merchant_admin', status: 'active' },
+  memberships: [{ id: '01J00000000000000000MEMBER', role: 'merchant_admin', status: 'active' }],
   permissions: [],
-  is_platform_staff: false,
+  setup: { required: false, current_step: 'done', completed_at: '2026-06-14T00:00:00+00:00' },
 };
 
 describe('authStore', () => {
@@ -42,8 +55,8 @@ describe('authStore', () => {
     expect(auth.user).toBeNull();
   });
 
-  it('bootstraps the user from /me', async () => {
-    get.mockResolvedValueOnce({ data: { data: user } });
+  it('bootstraps the user and merchant from /me', async () => {
+    get.mockResolvedValueOnce({ data: { data: bootstrap } });
     const auth = useAuthStore();
 
     await auth.bootstrap();
@@ -51,7 +64,28 @@ describe('authStore', () => {
     expect(get).toHaveBeenCalledWith('/me');
     expect(auth.isAuthenticated()).toBe(true);
     expect(auth.user?.email).toBe('owner@salon.co.ke');
+    expect(auth.membership?.role).toBe('merchant_admin');
+    expect(auth.setupRequired()).toBe(false);
+    expect(useMerchantStore().merchant?.name).toBe('Glow Salon');
     expect(auth.bootstrapped).toBe(true);
+  });
+
+  it('reflects a pending_setup owner needing setup', async () => {
+    get.mockResolvedValueOnce({
+      data: {
+        data: {
+          ...bootstrap,
+          merchant: { ...bootstrap.merchant!, status: 'pending_setup', setup_completed_at: null },
+          setup: { required: true, current_step: 'service_fee_tier', completed_at: null },
+        },
+      },
+    });
+    const auth = useAuthStore();
+
+    await auth.bootstrap();
+
+    expect(auth.setupRequired()).toBe(true);
+    expect(useMerchantStore().isPendingSetup()).toBe(true);
   });
 
   it('treats a failed /me as logged out', async () => {
@@ -75,7 +109,7 @@ describe('authStore', () => {
   });
 
   it('sets the user after verifying a token', async () => {
-    post.mockResolvedValueOnce({ data: { data: user } });
+    post.mockResolvedValueOnce({ data: { data: bootstrap } });
     const auth = useAuthStore();
 
     await auth.verifyMagicLink('raw-token');
@@ -85,8 +119,8 @@ describe('authStore', () => {
     expect(auth.isAuthenticated()).toBe(true);
   });
 
-  it('clears the user on logout even if the request fails', async () => {
-    get.mockResolvedValueOnce({ data: { data: user } });
+  it('clears the user and merchant on logout even if the request fails', async () => {
+    get.mockResolvedValueOnce({ data: { data: bootstrap } });
     const auth = useAuthStore();
     await auth.bootstrap();
     expect(auth.isAuthenticated()).toBe(true);
@@ -95,5 +129,6 @@ describe('authStore', () => {
     await auth.logout();
 
     expect(auth.isAuthenticated()).toBe(false);
+    expect(useMerchantStore().merchant).toBeNull();
   });
 });

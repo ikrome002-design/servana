@@ -24,8 +24,17 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'status' => User::STATUS_ACTIVE,
+            'is_platform_staff' => false,
             // No password column is populated — Servana is Magic Link only (A3).
         ];
+    }
+
+    /** Super Admin / platform staff — eligibility check 2 passes without a merchant. */
+    public function platformStaff(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_platform_staff' => true,
+        ]);
     }
 
     /** Email not yet verified (verified on first Magic Link consume, §9.1). */

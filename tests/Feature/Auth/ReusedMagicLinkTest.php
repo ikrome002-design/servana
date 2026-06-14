@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class)->group('auth');
 
 it('allows a token to be used once and rejects the second use', function (): void {
-    User::factory()->create(['email' => 'owner@salon.co.ke']);
+    eligibleOwner('owner@salon.co.ke');
     $raw = app(MagicLinkTokenService::class)->issue('owner@salon.co.ke');
 
     postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw])->assertStatus(200);

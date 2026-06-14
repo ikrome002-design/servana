@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Domain\Auth\Models\MagicLoginToken;
 use App\Domain\Auth\Notifications\MagicLoginLinkNotification;
 use App\Domain\Auth\Services\MagicLinkTokenService;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\Log;
@@ -46,7 +45,7 @@ it('never writes the raw token to the application log', function (): void {
         $lines->push($event->message.' '.json_encode($event->context));
     });
 
-    $user = User::factory()->create(['email' => 'owner@salon.co.ke']);
+    $user = eligibleOwner('owner@salon.co.ke');
     $this->postJson('/api/v1/auth/magic-link', ['email' => 'owner@salon.co.ke'])->assertStatus(202);
 
     // Recover the raw token from the captured notification (it never persists).

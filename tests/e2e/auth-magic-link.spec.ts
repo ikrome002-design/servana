@@ -9,15 +9,22 @@ import { expect, test, type Page } from '@playwright/test';
  | by the feature suite and the API transcript in docs/proof/phase-5.md.
  */
 
+// Bootstrap payload shape (Phase 6): user + tenant context. No merchant here, so
+// a successful verify lands on the safe home (role-aware routing is Phase 11).
 const AUTH_USER = {
-  id: '01J0000000000000000000USER',
-  email: 'owner@salon.co.ke',
-  name: 'Owner',
-  status: 'active',
-  email_verified_at: '2026-06-14T00:00:00+00:00',
+  user: {
+    id: '01J0000000000000000000USER',
+    email: 'owner@salon.co.ke',
+    name: 'Owner',
+    status: 'active',
+    email_verified_at: '2026-06-14T00:00:00+00:00',
+    is_platform_staff: false,
+  },
+  merchant: null,
+  membership: null,
   memberships: [],
   permissions: [],
-  is_platform_staff: false,
+  setup: { required: false, current_step: null, completed_at: null },
 };
 
 /** Routes the app bootstrap always calls; default to logged-out. */

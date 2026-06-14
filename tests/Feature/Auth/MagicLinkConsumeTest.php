@@ -3,29 +3,40 @@
 declare(strict_types=1);
 
 use App\Domain\Auth\Services\MagicLinkTokenService;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class)->group('auth');
 
 it('consumes a valid token, logs in, and returns the bootstrap payload', function (): void {
-    $user = User::factory()->unverified()->create(['email' => 'owner@salon.co.ke']);
+    $user = eligibleOwner('owner@salon.co.ke');
+    $user->email_verified_at = null; // first login verifies it
+    $user->save();
+
     $raw = app(MagicLinkTokenService::class)->issue('owner@salon.co.ke');
 
     $response = postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw])
         ->assertStatus(200)
-        ->assertJsonPath('data.email', 'owner@salon.co.ke')
-        ->assertJsonStructure(['data' => ['id', 'email', 'name', 'status', 'memberships', 'permissions']]);
+        ->assertJsonPath('data.user.email', 'owner@salon.co.ke')
+        ->assertJsonStructure(['data' => [
+            'user' => ['id', 'email', 'name', 'status'],
+            'merchant' => ['id', 'name', 'status'],
+            'membership' => ['role', 'status'],
+            'setup' => ['required', 'current_step'],
+            'permissions',
+        ]]);
 
     // Public identifier is the ULID, never the bigint PK (A5).
-    expect($response->json('data.id'))->toBe($user->ulid);
+    expect($response->json('data.user.id'))->toBe($user->ulid)
+        ->and($response->json('data.membership.role'))->toBe('merchant_admin');
 
     $this->assertAuthenticatedAs($user->fresh());
 });
 
 it('sets email_verified_at on first login and stamps last_login_at', function (): void {
-    $user = User::factory()->unverified()->create(['email' => 'first@salon.co.ke']);
-    expect($user->email_verified_at)->toBeNull();
+    $user = eligibleOwner('first@salon.co.ke');
+    $user->email_verified_at = null;
+    $user->save();
+    expect($user->fresh()->email_verified_at)->toBeNull();
 
     $raw = app(MagicLinkTokenService::class)->issue('first@salon.co.ke');
     postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw])->assertStatus(200);
@@ -36,14 +47,14 @@ it('sets email_verified_at on first login and stamps last_login_at', function ()
 });
 
 it('does not expose the raw token or bigint id in the response', function (): void {
-    User::factory()->create(['email' => 'safe@salon.co.ke']);
+    eligibleOwner('safe@salon.co.ke');
     $raw = app(MagicLinkTokenService::class)->issue('safe@salon.co.ke');
 
     $response = postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw])->assertStatus(200);
 
     expect($response->getContent())->not->toContain($raw);
     // The numeric PK must not leak.
-    expect($response->json('data.id'))->not->toBeNumeric();
+    expect($response->json('data.user.id'))->not->toBeNumeric();
 });
 
 it('rejects a structurally missing token via validation', function (): void {

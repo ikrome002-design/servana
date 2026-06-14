@@ -1,32 +1,58 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient, primeCsrfCookie } from '@/services/apiClient';
-import type { AuthenticatedUser, Membership } from '@/types/models';
+import { useMerchantStore } from '@/stores/merchantStore';
+import type {
+  AuthenticatedUser,
+  BootstrapPayload,
+  MerchantMembership,
+  SetupState,
+} from '@/types/models';
 
 /**
- * Authentication state + Magic Link flow (Plan §6.2, §9.1).
+ * Authentication state + Magic Link flow (Plan §6.2, §8.1, §9.1).
  *
- * `memberships`/`activeMembership` remain on the store for router-guard
- * compatibility; they stay empty/null until Phase 6 resolves tenant context.
- * The API is the security boundary — these are UX state only.
+ * Phase 6 bootstrap carries the resolved tenant context: the user, their
+ * merchant (held in merchantStore), their membership, and first-time setup
+ * state. The API is the security boundary — this state is UX only.
  */
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<AuthenticatedUser | null>(null);
-  const memberships = ref<Membership[]>([]);
-  const activeMembership = ref<Membership | null>(null);
+  const membership = ref<MerchantMembership | null>(null);
+  const memberships = ref<MerchantMembership[]>([]);
+  const permissions = ref<string[]>([]);
+  const setup = ref<SetupState | null>(null);
   const loading = ref(false);
   const bootstrapped = ref(false);
 
   const isAuthenticated = (): boolean => user.value !== null;
 
-  function setUser(next: AuthenticatedUser | null): void {
-    user.value = next;
-    memberships.value = next?.memberships ?? [];
-    activeMembership.value = next?.memberships[0] ?? null;
+  // Retained alias for router-guard compatibility (Phase 4 guards).
+  const activeMembership = membership;
+
+  /** True when the signed-in owner still needs to complete first-time setup. */
+  const setupRequired = (): boolean => setup.value?.required === true;
+
+  function applyBootstrap(payload: BootstrapPayload): void {
+    user.value = payload.user;
+    membership.value = payload.membership;
+    memberships.value = payload.memberships ?? [];
+    permissions.value = payload.permissions ?? [];
+    setup.value = payload.setup;
+    useMerchantStore().setMerchant(payload.merchant);
+  }
+
+  function clear(): void {
+    user.value = null;
+    membership.value = null;
+    memberships.value = [];
+    permissions.value = [];
+    setup.value = null;
+    useMerchantStore().$reset();
   }
 
   function $reset(): void {
-    setUser(null);
+    clear();
     bootstrapped.value = false;
     loading.value = false;
   }
@@ -35,10 +61,10 @@ export const useAuthStore = defineStore('auth', () => {
   async function bootstrap(): Promise<void> {
     loading.value = true;
     try {
-      const { data } = await apiClient.get<{ data: AuthenticatedUser }>('/me');
-      setUser(data.data);
+      const { data } = await apiClient.get<{ data: BootstrapPayload }>('/me');
+      applyBootstrap(data.data);
     } catch {
-      setUser(null);
+      clear();
     } finally {
       bootstrapped.value = true;
       loading.value = false;
@@ -54,11 +80,11 @@ export const useAuthStore = defineStore('auth', () => {
   /** Consume a token from the verify link; on success the user is logged in. */
   async function verifyMagicLink(token: string): Promise<void> {
     await primeCsrfCookie();
-    const { data } = await apiClient.post<{ data: AuthenticatedUser }>(
+    const { data } = await apiClient.post<{ data: BootstrapPayload }>(
       '/auth/magic-link/verify',
       { token },
     );
-    setUser(data.data);
+    applyBootstrap(data.data);
     bootstrapped.value = true;
   }
 
@@ -68,17 +94,22 @@ export const useAuthStore = defineStore('auth', () => {
     } catch {
       // Always clear client state, even if the network call fails.
     } finally {
-      setUser(null);
+      clear();
     }
   }
 
   return {
     user,
+    membership,
     memberships,
     activeMembership,
+    permissions,
+    setup,
     loading,
     bootstrapped,
     isAuthenticated,
+    setupRequired,
+    applyBootstrap,
     bootstrap,
     requestMagicLink,
     verifyMagicLink,

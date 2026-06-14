@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Domain\Merchants\Models\MerchantUser;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -18,6 +20,7 @@ use Illuminate\Support\Str;
  * @property string $email
  * @property Carbon|null $email_verified_at
  * @property string $status
+ * @property bool $is_platform_staff
  * @property Carbon|null $last_login_at
  */
 class User extends Authenticatable
@@ -75,6 +78,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'is_platform_staff' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -89,5 +93,34 @@ class User extends Authenticatable
     public function getRouteKeyName(): string
     {
         return 'ulid';
+    }
+
+    /**
+     * Merchant memberships (Plan §7.1). Launch rule is one membership per user,
+     * but the relation is hasMany so the single active row is resolved explicitly.
+     *
+     * @return HasMany<MerchantUser, $this>
+     */
+    public function merchantUsers(): HasMany
+    {
+        return $this->hasMany(MerchantUser::class);
+    }
+
+    /**
+     * The single active membership, if any (Plan §8.1). Drives tenant context
+     * resolution and Magic Link eligibility check 4.
+     */
+    public function activeMembership(): ?MerchantUser
+    {
+        return $this->merchantUsers()
+            ->active()
+            ->with('merchant')
+            ->first();
+    }
+
+    /** Eligibility check 2 (Scope §2.3): active merchant membership OR platform staff. */
+    public function hasTenantAccess(): bool
+    {
+        return $this->is_platform_staff || $this->merchantUsers()->active()->exists();
     }
 }

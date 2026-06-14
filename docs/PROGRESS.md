@@ -9,8 +9,8 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 2 | Docker & environment setup | ✅ Complete — merged PR #2 | `phase-2-docker-environment` | [phase-2.md](proof/phase-2.md) |
 | 3 | Laravel backend foundation | ✅ Complete — merged PR #3 | `phase-3-laravel-backend-foundation` | [phase-3.md](proof/phase-3.md) |
 | 4 | Frontend foundation | ✅ Complete — merged PR #4 | `phase-4-frontend-foundation` | [phase-4.md](proof/phase-4.md) |
-| 5 | Authentication (Magic Link + sessions) | 🔄 Complete locally — awaiting CI + approval | `phase-5-authentication` | [phase-5.md](proof/phase-5.md) |
-| 6 | Account & tenant model | ⬜ Not started | — | — |
+| 5 | Authentication (Magic Link + sessions) | ✅ Complete — merged PR #5 | `phase-5-authentication` | [phase-5.md](proof/phase-5.md) |
+| 6 | Account & tenant model | 🔄 Complete locally — awaiting CI + approval | `phase-6-account-tenant-model` | [phase-6.md](proof/phase-6.md) |
 | 7 | Branches, memberships, invitations | ⬜ Not started | — | — |
 | 8 | Roles & permissions | ⬜ Not started | — | — |
 | 9 | Tenant-scoped data access hardening | ⬜ Not started | — | — |
@@ -31,10 +31,143 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 24 | Performance optimization | ⬜ Not started | — | — |
 | 25 | Deployment pipeline & final production readiness | ⬜ Not started | — | — |
 
+## Phase 6 — Account & tenant model
+
+- **Branch:** `phase-6-account-tenant-model` (based on merged `main`: PR #1–#5).
+- **Status:** 🔄 Complete locally — awaiting CI + owner approval.
+- **Proof:** [docs/proof/phase-6.md](proof/phase-6.md).
+
+### Completed
+- Schema (forward-only): `merchants`, `merchant_profiles`, `merchant_users`,
+  `merchant_status_histories`, minimal `merchant_branches` (Phase 6 seam),
+  `is_platform_staff` on `users`. Enum-backed statuses + DB CHECK constraints.
+- Merchant Administrator self-registration → `RegisterMerchant` (transactional:
+  user + merchant `pending_setup` + profile + `merchant_admin`/`active`
+  membership + status history; emails owner a Magic Link). Uniform 202, no
+  enumeration, no duplicate state. No Super Admin/KYC route or UI exists.
+- First-time setup → `CompleteFirstTimeSetup` (transactional: tier, profile,
+  ≥1 branch, initial Branch+HR invited memberships auto-selected to the single
+  branch, welcome emails, merchant → `active`, status history). `GET`/`POST`
+  `/api/v1/merchant-registration/first-time-setup` gated to pending_setup +
+  merchant_admin.
+- Tenant context: `TenantContext` + `TenantContextResolver` +
+  `ResolveTenantContext` middleware; `EnsureMerchantActive` /
+  `EnsureFirstTimeSetupAccess` gates; `TenantAccessException` envelope codes.
+- Phase 5 eligibility checks 2 & 4 now enforced (`User::hasTenantAccess`);
+  `AUTH_ENFORCE_TENANCY_ELIGIBILITY` defaults true. Check 6 stays Phase 7.
+- `/api/v1/me` returns `{ user, merchant, membership, memberships, permissions,
+  setup }`; verify endpoint populates tenant context before responding.
+- SPA: `RegisterMerchant.vue`, 4-step `FirstTimeSetup.vue`, merchant
+  `Dashboard.vue` shell; `onboardingStore`; rewired `authStore`/`merchantStore`;
+  global `router.beforeEach` awaits bootstrap before guards; pending→wizard routing.
+
+### Work skipped (deferred) — owning future phase
+```
+Skipped:
+- Item: Full branch CRUD + branch operational lifecycle (operating hours,
+  calendar, day open/close, cash-ups, closure protection). Only a MINIMAL
+  merchant_branches table/model was created as the Phase 6 setup seam.
+- Reason: Plan assigns the full branch entity to Phase 7; Phase 6 needs only ≥1
+  branch so initial staff have a branch to be assigned to (Scope §3.2 step 3/5).
+- Correct future phase: Phase 7
+- Risk if forgotten: branches cannot be managed/closed; mitigated — Phase 7 owns it.
+
+Skipped:
+- Item: Staff invitation accept/revoke/resend lifecycle + branch_user_assignments.
+  Phase 6 creates invited merchant_users rows + safe welcome emails only.
+- Reason: invitation tokens/accept flow + branch assignment belong to Phase 7.
+- Correct future phase: Phase 7
+- Risk if forgotten: invited Branch/HR users cannot yet sign in (status=invited,
+  eligibility check 4 fails) — intended until Phase 7 activates them.
+
+Skipped:
+- Item: Branch assignment enforcement (Magic Link eligibility check 6).
+- Reason: branch_user_assignments does not exist yet.
+- Correct future phase: Phase 7
+- Risk if forgotten: branch-scoped roles would be under-restricted at login;
+  mitigated — membership status (check 4) still gates them.
+
+Skipped:
+- Item: Instant session/token revocation on staff lifecycle events.
+- Reason: depends on the Phase 7 staff lifecycle service.
+- Correct future phase: Phase 7
+- Risk if forgotten: suspended staff session lingers until idle timeout.
+
+Skipped:
+- Item: Role & permission registry; `permissions` in /me stays []`.
+- Correct future phase: Phase 8
+- Risk if forgotten: no fine-grained authorization (guards are UX-only).
+
+Skipped:
+- Item: BelongsToMerchant/BelongsToBranch traits + scoped route binding across
+  all models; PHPStan tenancy rule activation.
+- Correct future phase: Phase 9
+- Risk if forgotten: cross-tenant data access not yet structurally enforced on
+  future resource models (none exist yet beyond Phase 6-owned endpoints).
+
+Skipped:
+- Item: Merchant logo upload pipeline (only `logo_path` metadata column exists).
+- Correct future phase: Phase 23 (upload scanning)
+- Risk if forgotten: no logo upload; metadata seam is ready.
+
+Skipped:
+- Item: Service-fee-tier pricing maths / Citrus platform fee invoicing.
+- Correct future phase: Phase 17 (invoicing) / Phase 20 (billing)
+- Risk if forgotten: tier is persisted but has no financial effect yet (correct).
+
+Skipped:
+- Item: Full /api/v1 conventions + pagination traits → Phase 10; final role
+  navigation → Phase 11; responsive sweep → Phase 12; dark mode → Phase 13;
+  a11y release gate → Phase 14; Horizon → Phase 21; search → Phase 22; deploy → Phase 25.
+```
+
+### Pending work
+- None blocking. CI confirmation on push + owner approval to merge.
+
+### Known risks
+- Minimal `merchant_branches` table is a Phase 6 seam; Phase 7 must EXPAND it
+  forward-only (operating hours, assignments, day records, cash-ups) — never
+  recreate it.
+- Invited Branch/HR users are `status=invited` and cannot sign in until Phase 7's
+  accept flow activates them (intended; welcome email explains Magic Link login).
+- `/me` shape changed from Phase 5 flat to the nested tenant bootstrap — Phase 5
+  frontend/back tests were updated to the new contract (documented in proof §7).
+- Suspension/deactivation revocation remains user-level (Phase 7 adds session/link
+  row invalidation on staff lifecycle).
+
+### Commands that passed
+- `docker compose exec app php artisan migrate:fresh` → 12 migrations OK (PostgreSQL 16).
+- `docker compose exec app php artisan test` → **109 passed (521 assertions)**.
+- `docker compose exec app php artisan test --parallel` → **109 passed (4 processes)**.
+- `docker compose exec app php artisan test --group=onboarding,tenancy` → 40 passed.
+- `composer pint -- --test` → PASS (126 files) · `composer stan` → No errors (level 8).
+- `npm run typecheck` → 0 errors · `npm run test` → **51 passed** · `npm run build` → built.
+- `npm run e2e` → **20 passed** (auth 5 + foundation 11 + onboarding 4, axe clean).
+- `gitleaks detect --no-git --redact` → no leaks · `npm audit --audit-level=high` → 0.
+- `composer audit` → 1 documented-ignored advisory (CVE-2026-48019, carried since Phase 1).
+- Live: `POST /merchant-registration/self-register` → 202; Mailpit delivered the
+  owner "Your Servana sign-in link"; completing setup delivered both Branch + HR
+  "You've been added to … on Servana" welcome emails (Mailpit total 3).
+- `php artisan route:list` → no platform/super-admin merchant-creation route exists.
+
+### Commands that failed, if any
+- None outstanding. During verification the onboarding E2E initially failed
+  (router guards evaluated before the async `/me` bootstrap on hard navigation);
+  fixed with a global `router.beforeEach` that awaits bootstrap — see proof §7.
+
+### Context for Phase 7 (Branches, memberships, invitations)
+- Expand `merchant_branches` forward-only; add `branch_user_assignments`,
+  `staff_invitations`, `staff_profiles`, `staff_history`. Implement branch CRUD
+  (admin-only create), `EnsureBranchScope`, the invitation accept flow
+  (token → activate invited merchant_users → branch assignment → status active),
+  `StaffLifecycleService` (suspend/deactivate revokes sessions+links). Then wire
+  Magic Link eligibility check 6 (branch assignment) and flip its seam in
+  `LoginEligibilityService::hasRequiredBranchAssignment`.
+
 ## Phase 5 — Authentication (Magic Link + sessions)
 
-- **Branch:** `phase-5-authentication` (based on merged `main`: PR #1–#4).
-- **Status:** Complete locally; awaiting CI + owner approval.
+- **Branch:** `phase-5-authentication` → **PR #5 merged into main.**
+- **Status:** ✅ Complete. **CI passed: Backend, Frontend, Security, Docker.**
 - **Proof:** [docs/proof/phase-5.md](proof/phase-5.md).
 
 ### Completed

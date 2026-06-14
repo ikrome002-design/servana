@@ -17,15 +17,18 @@ it('rejects /me for a guest with a 401 envelope', function (): void {
         ->assertJsonPath('error.code', 'unauthenticated');
 });
 
-it('returns the bootstrap payload for an authenticated user', function (): void {
+it('returns the bootstrap payload for an authenticated user (no merchant)', function (): void {
     $user = User::factory()->create();
 
     $this->actingAs($user, 'sanctum')
         ->getJson('/api/v1/me')
         ->assertStatus(200)
-        ->assertJsonPath('data.id', $user->ulid)
+        ->assertJsonPath('data.user.id', $user->ulid)
+        ->assertJsonPath('data.merchant', null)
+        ->assertJsonPath('data.membership', null)
         ->assertJsonPath('data.memberships', [])
-        ->assertJsonPath('data.permissions', []);
+        ->assertJsonPath('data.permissions', [])
+        ->assertJsonPath('data.setup.required', false);
 });
 
 it('logs out an authenticated user with 204', function (): void {
