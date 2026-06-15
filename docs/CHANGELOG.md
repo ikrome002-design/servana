@@ -5,6 +5,43 @@ All notable changes to Servana by Citrus. Format loosely follows
 
 ## [Unreleased]
 
+### Phase 8 — Roles & permissions (`phase-8-roles-permissions`)
+
+#### Added
+- Permission schema (Plan §10.3): `permissions`, `roles`,
+  `role_permission_assignments`, `merchant_user_permission_overrides`, and the
+  real append-only, hash-chained `audit_logs` (DB trigger blocks UPDATE/DELETE).
+  Forward-only; `merchant_users` untouched (role still lives there).
+- `PermissionRegistry` — the canonical §10.3 matrix (54 keys × 8 roles);
+  `PermissionSeeder` materialises it (82 default grants); `PermissionResolver`
+  resolves role defaults ± per-user overrides (deny beats grant; suspended/
+  deactivated → no permissions; read-only `audit` can never gain a mutating key).
+- `EnsurePermission` middleware (missing key → 403 `permission_denied`) on the
+  mutating Branch routes; policies for Merchant/MerchantBranch/MerchantUser/
+  StaffInvitation/StaffProfile/BranchOperatingHour/BranchDayRecord (Plan §10.4).
+- Audit foundation (Plan §22.2): `AuditRecorder` contract + `DatabaseAuditRecorder`
+  (hash-chained). Permission override created/updated/revoked → high severity;
+  denied self-escalation + denied audit/write attempts → warning.
+- Per-membership overrides API (admin/HR, audited, anti-self-escalation):
+  `POST`/`DELETE /api/v1/staff/{staff}/permissions`. HR permission preview:
+  `GET /api/v1/hr/permission-preview` and `GET /api/v1/staff/{staff}/permissions`.
+- `/api/v1/me` now returns the resolved `permissions[]` (request-cached in
+  `TenantContext`).
+- SPA: real `permissionStore` (sourced from `/me`), `useCan` composable,
+  `PermissionGate` component, HR `PermissionPreview` page; the branch "Add branch"
+  action is gated on `branches.create`.
+- Tests: 8 backend Auth suites (PermissionMatrix [zero mismatches], Authority
+  Boundaries, HrSelfEscalation, AuditReadOnly, PermissionOverrideAudit,
+  PermissionMiddleware, PermissionPreview, MePermissionsBootstrap); Vitest +1
+  (gate visibility). Matrix proof: `docs/proof/phase8-matrix.txt`.
+
+#### Changed
+- Branch/Staff controllers: coarse inline `assert*` role checks replaced by
+  `EnsurePermission` (branch create/archive → `branches.create`; profile/hours →
+  `branch.profile.manage`; day → `day.open_close`) and policies (staff lifecycle
+  + invitations). Branch profile/hours/day editing is now a Branch Manager
+  capability (matrix §10.3), not Merchant Admin — affected branch tests updated.
+
 ### Phase 7 — Branches, memberships, invitations (`phase-7-branches-memberships-invitations`)
 
 #### Added

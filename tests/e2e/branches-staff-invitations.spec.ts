@@ -49,7 +49,15 @@ function adminBootstrap(): string {
       merchant: MERCHANT,
       membership: MEMBERSHIP,
       memberships: [MEMBERSHIP],
-      permissions: [],
+      // Merchant Admin default grants (Plan §10.3) — drives the permission-gated
+      // UI (e.g. the "Add branch" action requires `branches.create`).
+      permissions: [
+        'merchant.profile.manage', 'merchant.tier.update',
+        'branches.create', 'branches.manage_users_lifecycle',
+        'invoices.view', 'invoices.void_paid', 'receipts.view',
+        'periods.lock', 'commissions.view', 'platform_fees.view',
+        'reports.view', 'audit.view_full',
+      ],
       branch_ids: [],
       setup: { required: false, current_step: 'done', completed_at: '2026-06-14T00:00:00+00:00' },
     },

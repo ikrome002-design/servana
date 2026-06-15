@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import PermissionGate from '@/components/auth/PermissionGate.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import { useAuthStore } from '@/stores/authStore';
 import { useBranchStore } from '@/stores/branchStore';
 
-// Branch directory (Scope §3.3). Create is admin-only (the API enforces it; the
-// button is hidden for non-admins as UX only).
+// Branch directory (Scope §3.3). Create requires the `branches.create`
+// permission (Plan §10.3). The API enforces it; the button is hidden for users
+// without the permission as UX only.
 const branches = useBranchStore();
-const auth = useAuthStore();
 
 onMounted(() => {
   void branches.fetchBranches();
@@ -21,14 +21,13 @@ onMounted(() => {
       <h1 class="font-display text-2xl font-bold text-brand-deep">
         Branches
       </h1>
-      <RouterLink
-        v-if="auth.isMerchantAdmin()"
-        :to="{ name: 'branch.create' }"
-      >
-        <SvButton variant="primary">
-          Add branch
-        </SvButton>
-      </RouterLink>
+      <PermissionGate permission="branches.create">
+        <RouterLink :to="{ name: 'branch.create' }">
+          <SvButton variant="primary">
+            Add branch
+          </SvButton>
+        </RouterLink>
+      </PermissionGate>
     </div>
 
     <p

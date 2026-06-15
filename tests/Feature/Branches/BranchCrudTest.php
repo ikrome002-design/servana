@@ -61,14 +61,25 @@ it('lists only the admin own-merchant branches', function (): void {
         ->assertJsonCount(2, 'data');
 });
 
-it('lets the admin update a branch', function (): void {
+it('lets a branch manager update their branch profile', function (): void {
+    [, $merchant] = activeAdmin();
+    $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
+    [$manager] = branchStaff($merchant, $branch, MerchantUserRole::BranchManager);
+
+    $this->actingAs($manager, 'sanctum')
+        ->patchJson("/api/v1/branches/{$branch->ulid}", ['name' => 'Renamed Branch'])
+        ->assertStatus(200)
+        ->assertJsonPath('data.name', 'Renamed Branch');
+});
+
+it('denies a merchant admin editing a branch profile (Branch Manager capability)', function (): void {
     [$admin, $merchant] = activeAdmin();
     $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
 
     $this->actingAs($admin, 'sanctum')
         ->patchJson("/api/v1/branches/{$branch->ulid}", ['name' => 'Renamed Branch'])
-        ->assertStatus(200)
-        ->assertJsonPath('data.name', 'Renamed Branch');
+        ->assertStatus(403)
+        ->assertJsonPath('error.code', 'permission_denied');
 });
 
 it('returns 404 for a branch belonging to another merchant (no leak)', function (): void {

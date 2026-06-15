@@ -51,8 +51,8 @@ export interface SetupState {
 
 /**
  * Bootstrap payload returned by GET /api/v1/me and the Magic Link verify
- * endpoint (Plan §6.2, §8.1). Phase 6 fills merchant/membership/setup from the
- * resolved tenant context. `permissions` is populated by the Phase 8 registry.
+ * endpoint (Plan §6.2, §8.1). `permissions` carries the resolved §10.3
+ * permission keys (Phase 8) — UX only; the API is the authorization boundary.
  */
 export interface BootstrapPayload {
   user: AuthenticatedUser;
@@ -116,4 +116,14 @@ export interface StaffProfile {
   employment_status: string;
   primary_branch_id: string | null;
   is_active: boolean;
+}
+
+/**
+ * Response of GET /api/v1/hr/permission-preview (Plan §10.3): what a target role
+ * would hold by default plus the keys grantable to it via per-user override.
+ */
+export interface PermissionPreview {
+  role: MerchantRole;
+  default_grants: string[];
+  grantable: string[];
 }

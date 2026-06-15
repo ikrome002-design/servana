@@ -31,6 +31,11 @@ export const hrRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/hr/StaffInvitations.vue'),
       },
       {
+        path: 'permission-preview',
+        name: 'hr.permission-preview',
+        component: () => import('@/pages/hr/PermissionPreview.vue'),
+      },
+      {
         path: 'staff/:id',
         name: 'hr.staff-profile',
         component: () => import('@/pages/hr/StaffProfile.vue'),

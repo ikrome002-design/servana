@@ -11,8 +11,8 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 4 | Frontend foundation | ✅ Complete — merged PR #4 | `phase-4-frontend-foundation` | [phase-4.md](proof/phase-4.md) |
 | 5 | Authentication (Magic Link + sessions) | ✅ Complete — merged PR #5 | `phase-5-authentication` | [phase-5.md](proof/phase-5.md) |
 | 6 | Account & tenant model | ✅ Complete — merged PR #6 | `phase-6-account-tenant-model` | [phase-6.md](proof/phase-6.md) |
-| 7 | Branches, memberships, invitations | 🔄 Complete locally — awaiting CI + approval | `phase-7-branches-memberships-invitations` | [phase-7.md](proof/phase-7.md) |
-| 8 | Roles & permissions | ⬜ Not started | — | — |
+| 7 | Branches, memberships, invitations | ✅ Complete — merged PR #7 | `phase-7-branches-memberships-invitations` | [phase-7.md](proof/phase-7.md) |
+| 8 | Roles & permissions | 🔄 In progress | `phase-8-roles-permissions` | [phase-8.md](proof/phase-8.md) |
 | 9 | Tenant-scoped data access hardening | ⬜ Not started | — | — |
 | 10 | API foundation | ⬜ Not started | — | — |
 | 11 | UI layout foundation | ⬜ Not started | — | — |
@@ -31,10 +31,122 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 24 | Performance optimization | ⬜ Not started | — | — |
 | 25 | Deployment pipeline & final production readiness | ⬜ Not started | — | — |
 
+## Phase 8 — Roles & permissions
+
+- **Branch:** `phase-8-roles-permissions` (based on merged `main`: PR #1–#7).
+- **Status:** 🔄 Complete locally — awaiting CI + owner approval.
+- **Proof:** [docs/proof/phase-8.md](proof/phase-8.md) · matrix: [phase8-matrix.txt](proof/phase8-matrix.txt).
+
+### Completed
+- Permission schema (Plan §10.3, forward-only): `permissions`, `roles`,
+  `role_permission_assignments`, `merchant_user_permission_overrides`, and the
+  real `audit_logs` (append-only, hash-chained; DB trigger blocks UPDATE/DELETE).
+  `merchant_users` untouched — role assignment still lives there.
+- `PermissionRegistry` (canonical §10.3 matrix: 54 keys × 8 roles),
+  `PermissionSeeder` (82 default grants), `PermissionResolver` (role defaults ±
+  per-user overrides; deny beats grant; suspended/deactivated → none; read-only
+  `audit` can never gain a mutating key). `TenantContext` caches the set per
+  request; `/api/v1/me` returns `permissions[]`.
+- `EnsurePermission` middleware (missing key → 403 `permission_denied`) on the
+  mutating Branch routes; 7 policies (Plan §10.4). Branch/Staff controller
+  `assert*` role checks replaced by middleware/policies.
+- Audit foundation: `AuditRecorder` + table-backed `DatabaseAuditRecorder`.
+  Override created/updated/revoked (high); denied self-escalation + denied
+  audit/insufficient writes (warning).
+- Per-membership override API + HR permission preview (admin/HR, audited,
+  anti-self-escalation, branch- and merchant-scoped).
+- SPA: real `permissionStore` (from `/me`), `useCan`, `PermissionGate`, HR
+  `PermissionPreview` page; branch "Add branch" gated on `branches.create`.
+
+### Work skipped (deferred) — owning future phase
+```
+Skipped:
+- Item: BelongsToMerchant/BelongsToBranch traits across all models + PHPStan
+  tenancy rule activation; LogUnauthorizedAttempt for all routes.
+- Correct future phase: Phase 9
+- Risk if forgotten: tenant scoping enforced per-controller, not globally; only
+  override-endpoint denials are audited so far (general denial logging is §9).
+
+Skipped:
+- Item: Full /api/v1 conventions, pagination, filters, OpenAPI.
+- Correct future phase: Phase 10
+- Risk if forgotten: resource surface is still partial (Phase 7/8 endpoints only).
+
+Skipped:
+- Item: Final role navigation lists (verbatim Scope); responsive/dark/a11y sweeps.
+- Correct future phase: Phase 11 / 12–14
+
+Skipped:
+- Item: Real HR/catalogue/client/service workflows.
+- Correct future phase: Phase 15
+
+Skipped:
+- Item: Queue/session/appointment + invoice/payment/receipt operational blockers
+  (the many permission keys seeded now — services.manage, payments.*, receipts.*,
+  refunds.*, etc. — are not yet wired to routes; those routes arrive with their
+  owning phases).
+- Correct future phase: Phases 16–18
+
+Skipped:
+- Item: Full §5.18 audit event coverage + hash-chain verification/masking.
+- Correct future phase: Phase 19
+- Risk if forgotten: chain columns + immutability exist now; verifier is §19.
+
+Skipped:
+- Item: Billing/commission permission effects (branch-debt gate on delete, etc.).
+- Correct future phase: Phase 20
+
+Skipped:
+- Item: Horizon / search / uploads / deployment.
+- Correct future phase: Phases 21–25
+```
+
+### Pending work
+- None blocking. CI confirmation on push + owner approval to merge.
+
+### Known risks
+- Branch profile/hours/day editing moved from Merchant Admin (Phase 7 coarse
+  check) to Branch Manager (`branch.profile.manage` / `day.open_close`) per the
+  §10.3 matrix — affected Phase 7 branch tests were updated to act as a Branch
+  Manager. Reviewers should confirm this matches the intended operating model.
+- Most seeded permission keys are not yet attached to routes (their endpoints
+  arrive in Phases 15–20); the registry/seed/resolver are complete now so those
+  phases only add routes + policies, never re-seed.
+- Override resolution reads role defaults from the canonical `PermissionRegistry`
+  (not `role_permission_assignments`) so it works unseeded in feature tests;
+  `PermissionMatrixTest` proves DB == registry, so the two never drift.
+
+### Commands that passed
+- `docker compose exec app php artisan migrate:fresh --seed` → 26 migrations OK
+  (PostgreSQL 16; +5 for Phase 8); PermissionSeeder → 54 permissions, 8 roles, 82 assignments.
+- `php artisan test` → **197 passed (959 assertions)**; `--parallel` → 197 (4 procs).
+- `php artisan test tests/Feature/Auth/` → 72 passed (Phase 8 + auth).
+- `composer pint -- --test` → PASS (236 files) · `composer stan` → No errors (L8).
+- `npm run typecheck` → 0 errors · `npm run test` → **72 passed** · `npm run build` → built.
+- `npm run lint` → 0 errors (28 pre-existing stub warnings) · `npm run e2e` → **27 passed** (axe clean).
+- `gitleaks detect --no-git --redact` → no leaks · `npm audit --audit-level=high` → 0.
+- `composer audit` → 1 documented-ignored advisory (GHSA-5vg9-5847-vvmq, carried since Phase 1).
+
+### Commands that failed, if any
+- During verification, 7 Phase 7 branch tests acted as Merchant Admin on
+  profile/hours/day routes that the §10.3 matrix assigns to Branch Manager — they
+  were updated to act as an assigned Branch Manager (+ added admin-denied cases).
+  One e2e (`auth-magic-link` check-email) flaked once on the first full run and
+  passed on re-run; the branches e2e `/me` mock gained the admin permission set.
+
+### Context for Phase 9 (Tenant-scoped data access hardening)
+- Apply `BelongsToMerchant`/`BelongsToBranch` traits to all tenant/branch-owned
+  models, scoped route binding, `LogUnauthorizedAttempt`, `TenantAwareJob`, and
+  activate the PHPStan tenancy rule (placeholders exist from Phase 1). Demonstrate
+  every §8.4 denied case with recorded transcripts in `docs/proof/phase9.md`.
+- Phase 8 leaves `EnsurePermission` + policies as the authorization boundary and
+  the `audit_logs` immutable seam ready; Phase 9 generalises tenant isolation and
+  should record denied attempts (`LogUnauthorizedAttempt`) via the AuditRecorder.
+
 ## Phase 7 — Branches, memberships, invitations
 
-- **Branch:** `phase-7-branches-memberships-invitations` (based on merged `main`: PR #1–#6).
-- **Status:** 🔄 Complete locally — awaiting CI + owner approval.
+- **Branch:** `phase-7-branches-memberships-invitations` → **PR #7 merged into main.**
+- **Status:** ✅ Complete. **CI passed: Backend, Frontend, Security, Docker.**
 - **Proof:** [docs/proof/phase-7.md](proof/phase-7.md).
 
 ### Completed
@@ -113,12 +225,12 @@ Skipped:
 ```
 
 ### Pending work
-- None blocking. CI confirmation on push + owner approval to merge.
+- None. PR #7 merged into main; CI passed (Backend, Frontend, Security, Docker).
 
 ### Known risks
 - Branch-closure blockers for later-phase operational state are named stubs
   returning false; the owning phase (16–18/20) MUST flip each one on.
-- Authority is coarse (role-based) until the Phase 8 permission registry replaces
+- Authority was coarse (role-based) until the Phase 8 permission registry replaced
   the inline `assert*` checks with `EnsurePermission`.
 - Session revocation deletes DB-backed session rows; under a non-database session
   driver the membership-status re-check in ResolveTenantContext is the backstop.

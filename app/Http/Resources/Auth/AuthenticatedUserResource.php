@@ -23,9 +23,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * SPA can route a pending_setup owner straight to the wizard. The public id is
  * the ULID (A5).
  *
- * `permissions` stays empty until the Phase 8 registry. `memberships` (array) is
- * retained for router-guard compatibility and derived from the single active
- * membership (launch rule: one membership per user).
+ * `permissions` carries the resolved §10.3 permission keys (Phase 8).
+ * `memberships` (array) is retained for router-guard compatibility and derived
+ * from the single active membership (launch rule: one membership per user).
  *
  * @mixin User
  */
@@ -64,8 +64,10 @@ final class AuthenticatedUserResource extends JsonResource
             // Active branch assignments (Plan §8.2). Empty for a merchant_admin —
             // they see all own-merchant branches — and for non-merchant users.
             'branch_ids' => $this->branchUlids($context),
-            // Phase 8 registry fills this.
-            'permissions' => [],
+            // Resolved permission keys (Plan §10.3): role default grants ± per-user
+            // overrides, request-cached by TenantContext. UX only — the backend
+            // (EnsurePermission + policies) is the security boundary.
+            'permissions' => $context->permissions(),
             'setup' => $this->setupState($merchant),
         ];
     }
