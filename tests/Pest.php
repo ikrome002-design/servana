@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Domain\Branches\Models\BranchUserAssignment;
+use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
@@ -52,4 +55,56 @@ function eligibleOwner(string $email, array $merchantAttributes = []): User
     ]);
 
     return $user;
+}
+
+/**
+ * Active merchant + its active merchant_admin owner (Phase 7 branch/HR tests).
+ *
+ * @return array{0: User, 1: Merchant, 2: MerchantUser}
+ */
+function activeAdmin(): array
+{
+    $merchant = Merchant::factory()->active()->create();
+    $user = User::factory()->create();
+    $membership = MerchantUser::factory()->create([
+        'user_id' => $user->id,
+        'merchant_id' => $merchant->id,
+        'role' => MerchantUserRole::MerchantAdmin,
+    ]);
+
+    return [$user, $merchant, $membership];
+}
+
+/**
+ * A branch-scoped staff member (membership + staff profile) in a merchant,
+ * optionally with an active branch assignment.
+ *
+ * @return array{0: User, 1: MerchantUser, 2: StaffProfile}
+ */
+function branchStaff(
+    Merchant $merchant,
+    MerchantBranch $branch,
+    MerchantUserRole $role = MerchantUserRole::FrontOffice,
+    bool $assigned = true,
+): array {
+    $user = User::factory()->create();
+    $membership = MerchantUser::factory()->create([
+        'user_id' => $user->id,
+        'merchant_id' => $merchant->id,
+        'role' => $role,
+    ]);
+    $profile = StaffProfile::factory()->create([
+        'merchant_user_id' => $membership->id,
+        'merchant_id' => $merchant->id,
+        'primary_branch_id' => $branch->id,
+    ]);
+
+    if ($assigned) {
+        BranchUserAssignment::factory()->create([
+            'merchant_user_id' => $membership->id,
+            'branch_id' => $branch->id,
+        ]);
+    }
+
+    return [$user, $membership, $profile];
 }

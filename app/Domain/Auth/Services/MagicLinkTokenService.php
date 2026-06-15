@@ -76,6 +76,24 @@ final class MagicLinkTokenService
         return $email !== null ? (string) $email : null;
     }
 
+    /**
+     * Invalidate every still-usable Magic Link for an email (Plan §9.2, Scope
+     * §3.4 suspension rule). Called by StaffLifecycleService when a user is
+     * suspended/deactivated so any unconsumed link stops working immediately.
+     * Returns the number of links invalidated.
+     */
+    public function invalidateUnconsumedForEmail(string $email): int
+    {
+        return DB::table('magic_login_tokens')
+            ->where('email', $this->normalizeEmail($email))
+            ->whereNull('consumed_at')
+            ->whereNull('invalidated_at')
+            ->update([
+                'invalidated_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+    }
+
     /** SHA-256 hex digest of the raw token (Plan §3 rule 14). */
     public function hash(string $rawToken): string
     {

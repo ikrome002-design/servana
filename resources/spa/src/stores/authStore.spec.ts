@@ -38,6 +38,7 @@ const bootstrap: BootstrapPayload = {
   membership: { id: '01J00000000000000000MEMBER', role: 'merchant_admin', status: 'active' },
   memberships: [{ id: '01J00000000000000000MEMBER', role: 'merchant_admin', status: 'active' }],
   permissions: [],
+  branch_ids: [],
   setup: { required: false, current_step: 'done', completed_at: '2026-06-14T00:00:00+00:00' },
 };
 

@@ -9,8 +9,23 @@ export const branchRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        name: 'branch.dashboard',
-        component: () => import('@/pages/branch/DashboardStub.vue'),
+        name: 'branch.list',
+        component: () => import('@/pages/branch/BranchList.vue'),
+      },
+      {
+        path: 'create',
+        name: 'branch.create',
+        component: () => import('@/pages/branch/BranchCreate.vue'),
+      },
+      {
+        path: ':id',
+        name: 'branch.detail',
+        component: () => import('@/pages/branch/BranchDetail.vue'),
+      },
+      {
+        path: ':id/operating-hours',
+        name: 'branch.operating-hours',
+        component: () => import('@/pages/branch/OperatingHours.vue'),
       },
     ],
   },

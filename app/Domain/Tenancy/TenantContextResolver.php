@@ -18,6 +18,10 @@ final class TenantContextResolver
 {
     public function populate(TenantContext $context, ?User $user): void
     {
+        // Rebuild from scratch so a reused (scoped) instance never carries stale
+        // state from a previous request/resolution.
+        $context->reset();
+
         if ($user === null) {
             return;
         }

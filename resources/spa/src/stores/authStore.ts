@@ -21,6 +21,7 @@ export const useAuthStore = defineStore('auth', () => {
   const membership = ref<MerchantMembership | null>(null);
   const memberships = ref<MerchantMembership[]>([]);
   const permissions = ref<string[]>([]);
+  const branchIds = ref<string[]>([]);
   const setup = ref<SetupState | null>(null);
   const loading = ref(false);
   const bootstrapped = ref(false);
@@ -38,6 +39,7 @@ export const useAuthStore = defineStore('auth', () => {
     membership.value = payload.membership;
     memberships.value = payload.memberships ?? [];
     permissions.value = payload.permissions ?? [];
+    branchIds.value = payload.branch_ids ?? [];
     setup.value = payload.setup;
     useMerchantStore().setMerchant(payload.merchant);
   }
@@ -47,9 +49,13 @@ export const useAuthStore = defineStore('auth', () => {
     membership.value = null;
     memberships.value = [];
     permissions.value = [];
+    branchIds.value = [];
     setup.value = null;
     useMerchantStore().$reset();
   }
+
+  /** Whether the signed-in member is a merchant admin (UX gating only). */
+  const isMerchantAdmin = (): boolean => membership.value?.role === 'merchant_admin';
 
   function $reset(): void {
     clear();
@@ -104,10 +110,12 @@ export const useAuthStore = defineStore('auth', () => {
     memberships,
     activeMembership,
     permissions,
+    branchIds,
     setup,
     loading,
     bootstrapped,
     isAuthenticated,
+    isMerchantAdmin,
     setupRequired,
     applyBootstrap,
     bootstrap,

@@ -48,6 +48,15 @@ final class TenantAccessException extends Exception
         );
     }
 
+    public static function noBranchScope(): self
+    {
+        return new self(
+            'no_branch_scope',
+            'You do not have access to this branch.',
+            403,
+        );
+    }
+
     public static function pendingSetupOnly(): self
     {
         return new self(
