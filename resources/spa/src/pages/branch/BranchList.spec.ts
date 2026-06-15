@@ -46,14 +46,25 @@ describe('BranchList.vue', () => {
     expect(wrapper.find('[data-testid="branch-status"]').text()).toBe('active');
   });
 
-  it('shows the add-branch action for a merchant admin', async () => {
+  it('shows the add-branch action for a user with the branches.create permission', async () => {
     get.mockResolvedValueOnce({ data: { data: [] } });
     const auth = useAuthStore();
-    auth.membership = { id: 'm1', role: 'merchant_admin', status: 'active' };
+    auth.permissions = ['branches.create'];
 
     const wrapper = mountPage();
     await flushPromises();
 
     expect(wrapper.text()).toContain('Add branch');
+  });
+
+  it('hides the add-branch action without the branches.create permission', async () => {
+    get.mockResolvedValueOnce({ data: { data: [] } });
+    const auth = useAuthStore();
+    auth.permissions = [];
+
+    const wrapper = mountPage();
+    await flushPromises();
+
+    expect(wrapper.text()).not.toContain('Add branch');
   });
 });

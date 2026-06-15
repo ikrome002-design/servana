@@ -20,11 +20,14 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 /**
- * Staff invitations (Scope §3.2/§3.4, Plan §10.2). Authority (coarse until the
- * Phase 8 registry):
- *   - Merchant Admin may invite ONLY branch_manager + hr (Scope §3.2).
- *   - HR may invite personnel/front_office/finance/audit within its own branch
- *     scope (Scope §3.4 same-branch).
+ * Staff invitations (Scope §3.2/§3.4, Plan §10.2/§10.3).
+ *
+ * Capability to invite at all is StaffInvitationPolicy (`staff.invite` /
+ * `branches.manage_users_lifecycle`). WHICH target roles/branches each actor may
+ * invite is the §3.2/§3.4 boundary, derived here from the resolved capabilities
+ * (no longer raw roles):
+ *   - `branches.manage_users_lifecycle` (Merchant Admin) → branch_manager + hr only.
+ *   - `staff.invite` (HR) → operational roles within its own branch scope.
  */
 final class StaffInvitationController extends Controller
 {
@@ -45,6 +48,8 @@ final class StaffInvitationController extends Controller
 
     public function store(CreateStaffInvitationRequest $request, CreateStaffInvitation $action): JsonResponse
     {
+        $this->authorize('create', StaffInvitation::class);
+
         $merchant = $this->context->merchant();
         abort_if($merchant === null, 403);
 
@@ -74,25 +79,26 @@ final class StaffInvitationController extends Controller
 
     public function resend(StaffInvitation $invitation, ResendStaffInvitation $action): StaffInvitationResource
     {
-        $this->assertManages($invitation);
+        $this->authorizeManages($invitation);
 
         return StaffInvitationResource::make($action->handle($invitation)->load('branch'));
     }
 
     public function revoke(StaffInvitation $invitation, RevokeStaffInvitation $action): StaffInvitationResource
     {
-        $this->assertManages($invitation);
+        $this->authorizeManages($invitation);
 
         return StaffInvitationResource::make($action->handle($invitation)->load('branch'));
     }
 
-    /** Enforce the §3.2/§3.4 authority boundary for who may invite which role/branch. */
+    /**
+     * Enforce the §3.2/§3.4 authority boundary for who may invite which
+     * role/branch, derived from resolved capabilities (Plan §10.3).
+     */
     private function assertCanInvite(MerchantUserRole $role, MerchantBranch $branch): void
     {
-        $actorRole = $this->context->role();
-
-        if ($actorRole === MerchantUserRole::MerchantAdmin) {
-            // Admin adds ONLY branch_manager + hr.
+        // Merchant Admin (branch-user lifecycle) adds ONLY branch_manager + hr.
+        if ($this->context->can('branches.manage_users_lifecycle')) {
             abort_unless(
                 in_array($role, [MerchantUserRole::BranchManager, MerchantUserRole::Hr], true),
                 403,
@@ -101,8 +107,8 @@ final class StaffInvitationController extends Controller
             return;
         }
 
-        if ($actorRole === MerchantUserRole::Hr) {
-            // HR adds non-admin operational roles, within its own branch scope.
+        // HR (staff.invite) adds non-admin operational roles, within its branch scope.
+        if ($this->context->can('staff.invite')) {
             abort_if(in_array($role, [MerchantUserRole::MerchantAdmin, MerchantUserRole::BranchManager, MerchantUserRole::Hr], true), 403);
             abort_unless($this->context->canAccessBranch($branch->id), 403);
 
@@ -112,16 +118,14 @@ final class StaffInvitationController extends Controller
         abort(403);
     }
 
-    private function assertManages(StaffInvitation $invitation): void
+    /**
+     * 404 a foreign-merchant invitation (no existence leak), then authorize via
+     * StaffInvitationPolicy.
+     */
+    private function authorizeManages(StaffInvitation $invitation): void
     {
-        // Never leak existence of another merchant's invitation.
         abort_if($invitation->merchant_id !== $this->context->merchantId(), 404);
 
-        $actorRole = $this->context->role();
-        abort_unless(in_array($actorRole, [MerchantUserRole::MerchantAdmin, MerchantUserRole::Hr], true), 403);
-
-        if ($actorRole === MerchantUserRole::Hr) {
-            abort_unless($this->context->canAccessBranch($invitation->branch_id), 403);
-        }
+        $this->authorize('manage', $invitation);
     }
 }

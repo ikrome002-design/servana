@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Branches\BranchController;
 use App\Http\Controllers\Api\V1\Branches\BranchDayController;
 use App\Http\Controllers\Api\V1\Branches\BranchOperatingHoursController;
+use App\Http\Controllers\Api\V1\Hr\PermissionOverrideController;
+use App\Http\Controllers\Api\V1\Hr\PermissionPreviewController;
 use App\Http\Controllers\Api\V1\Hr\StaffController;
 use App\Http\Controllers\Api\V1\Hr\StaffInvitationAcceptController;
 use App\Http\Controllers\Api\V1\Hr\StaffInvitationController;
@@ -17,6 +19,7 @@ use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureBranchScope;
 use App\Http\Middleware\EnsureFirstTimeSetupAccess;
 use App\Http\Middleware\EnsureMerchantActive;
+use App\Http\Middleware\EnsurePermission;
 use App\Http\Middleware\ResolveTenantContext;
 use Illuminate\Support\Facades\Route;
 
@@ -97,28 +100,41 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, 'throttle:api', Re
             Route::get('merchant/dashboard', [MerchantDashboardController::class, 'show'])
                 ->name('merchant.dashboard');
 
-            // Branches (Scope §3.3). Index/create are merchant-wide (create is
-            // admin-only, enforced in the controller); per-branch routes carry
-            // EnsureBranchScope so a branch-scoped role needs an active assignment
-            // and foreign branch ULIDs 404.
+            // Branches (Scope §3.3, Plan §10.3). Index/show are scoped reads.
+            // Mutating routes carry EnsurePermission (the backend authorization
+            // boundary): branches.create for create/archive, branch.profile.manage
+            // for profile/hours, day.open_close for day open/close. Per-branch
+            // routes also carry EnsureBranchScope (foreign branch ULID → 404).
             Route::get('branches', [BranchController::class, 'index'])->name('branches.index');
-            Route::post('branches', [BranchController::class, 'store'])->name('branches.store');
+            Route::post('branches', [BranchController::class, 'store'])
+                ->middleware(EnsurePermission::class.':branches.create')
+                ->name('branches.store');
 
             Route::middleware(EnsureBranchScope::class)->group(function (): void {
                 Route::get('branches/{branch}', [BranchController::class, 'show'])->name('branches.show');
-                Route::patch('branches/{branch}', [BranchController::class, 'update'])->name('branches.update');
-                Route::post('branches/{branch}/archive', [BranchController::class, 'archive'])->name('branches.archive');
+                Route::patch('branches/{branch}', [BranchController::class, 'update'])
+                    ->middleware(EnsurePermission::class.':branch.profile.manage')
+                    ->name('branches.update');
+                Route::post('branches/{branch}/archive', [BranchController::class, 'archive'])
+                    ->middleware(EnsurePermission::class.':branches.create')
+                    ->name('branches.archive');
 
                 Route::get('branches/{branch}/operating-hours', [BranchOperatingHoursController::class, 'show'])
                     ->name('branches.operating-hours.show');
                 Route::put('branches/{branch}/operating-hours', [BranchOperatingHoursController::class, 'update'])
+                    ->middleware(EnsurePermission::class.':branch.profile.manage')
                     ->name('branches.operating-hours.update');
 
-                Route::post('branches/{branch}/day/open', [BranchDayController::class, 'open'])->name('branches.day.open');
-                Route::post('branches/{branch}/day/close', [BranchDayController::class, 'close'])->name('branches.day.close');
+                Route::post('branches/{branch}/day/open', [BranchDayController::class, 'open'])
+                    ->middleware(EnsurePermission::class.':day.open_close')
+                    ->name('branches.day.open');
+                Route::post('branches/{branch}/day/close', [BranchDayController::class, 'close'])
+                    ->middleware(EnsurePermission::class.':day.open_close')
+                    ->name('branches.day.close');
             });
 
-            // Staff invitations (Scope §3.2/§3.4). Authority enforced in controller.
+            // Staff invitations (Scope §3.2/§3.4). Authority is StaffInvitationPolicy
+            // (capability) + §3.2/§3.4 target-role boundary in the controller.
             Route::get('staff-invitations', [StaffInvitationController::class, 'index'])->name('staff-invitations.index');
             Route::post('staff-invitations', [StaffInvitationController::class, 'store'])->name('staff-invitations.store');
             Route::post('staff-invitations/{invitation}/resend', [StaffInvitationController::class, 'resend'])
@@ -126,11 +142,26 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, 'throttle:api', Re
             Route::post('staff-invitations/{invitation}/revoke', [StaffInvitationController::class, 'revoke'])
                 ->name('staff-invitations.revoke');
 
-            // Staff roster + lifecycle (Scope §3.4).
+            // Staff roster + lifecycle (Scope §3.4). Authority is StaffProfilePolicy.
             Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
             Route::get('staff/{staff}', [StaffController::class, 'show'])->name('staff.show');
             Route::post('staff/{staff}/suspend', [StaffController::class, 'suspend'])->name('staff.suspend');
             Route::post('staff/{staff}/activate', [StaffController::class, 'activate'])->name('staff.activate');
             Route::post('staff/{staff}/deactivate', [StaffController::class, 'deactivate'])->name('staff.deactivate');
+
+            // Staff permission overrides + HR permission preview (Plan §10.3).
+            // Managed by Merchant Admin (merchant-wide) or HR (own-branch
+            // operational staff); changes are audited; self-escalation is denied.
+            Route::get('staff/{staff}/permissions', [PermissionPreviewController::class, 'show'])
+                ->name('staff.permissions.show');
+            Route::post('staff/{staff}/permissions', [PermissionOverrideController::class, 'store'])
+                ->name('staff.permissions.store');
+            Route::delete('staff/{staff}/permissions/{permission}', [PermissionOverrideController::class, 'destroy'])
+                ->name('staff.permissions.destroy');
+
+            // HR permission preview (Plan §10.3): what a target role/user would
+            // hold. Branch- and merchant-scoped; never enables self-escalation.
+            Route::get('hr/permission-preview', [PermissionPreviewController::class, 'preview'])
+                ->name('hr.permission-preview');
         });
     });

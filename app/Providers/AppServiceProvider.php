@@ -4,15 +4,47 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Services\DatabaseAuditRecorder;
+use App\Domain\Branches\Models\BranchDayRecord;
+use App\Domain\Branches\Models\BranchOperatingHour;
+use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Hr\Models\StaffInvitation;
+use App\Domain\Hr\Models\StaffProfile;
+use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Tenancy\TenantContext;
+use App\Policies\BranchDayRecordPolicy;
+use App\Policies\BranchOperatingHourPolicy;
+use App\Policies\MerchantBranchPolicy;
+use App\Policies\MerchantPolicy;
+use App\Policies\MerchantUserPolicy;
+use App\Policies\StaffInvitationPolicy;
+use App\Policies\StaffProfilePolicy;
 use App\Support\CorrelationId;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Model → policy map (Plan §10.4).
+     *
+     * @var array<class-string, class-string>
+     */
+    private const POLICIES = [
+        Merchant::class => MerchantPolicy::class,
+        MerchantBranch::class => MerchantBranchPolicy::class,
+        MerchantUser::class => MerchantUserPolicy::class,
+        StaffInvitation::class => StaffInvitationPolicy::class,
+        StaffProfile::class => StaffProfilePolicy::class,
+        BranchOperatingHour::class => BranchOperatingHourPolicy::class,
+        BranchDayRecord::class => BranchDayRecordPolicy::class,
+    ];
+
     public function register(): void
     {
         // Shared per-request correlation id (middleware sets it; logging and the
@@ -23,11 +55,24 @@ class AppServiceProvider extends ServiceProvider
         // within one request and reset between requests; ResolveTenantContext
         // populates it after auth.
         $this->app->scoped(TenantContext::class);
+
+        // Audit trail (Plan §22.2). Table-backed minimal recorder introduced in
+        // Phase 8; full §5.18 coverage matures in Phase 19.
+        $this->app->bind(AuditRecorder::class, DatabaseAuditRecorder::class);
     }
 
     public function boot(): void
     {
         $this->registerRateLimiters();
+        $this->registerPolicies();
+    }
+
+    /** Register the §10.4 model policies. */
+    private function registerPolicies(): void
+    {
+        foreach (self::POLICIES as $model => $policy) {
+            Gate::policy($model, $policy);
+        }
     }
 
     /**

@@ -31,6 +31,9 @@ final class TenantContext
     /** @var list<int> Active branch ids for a branch-scoped membership (Plan §8.2). */
     private array $branchIds = [];
 
+    /** @var list<string> Resolved permission keys for this request (Plan §10.3). */
+    private array $permissions = [];
+
     /**
      * Clear all resolved state. ResolveTenantContext calls this before each
      * (re)resolution so a `scoped` instance reused across requests (e.g. the
@@ -42,6 +45,7 @@ final class TenantContext
         $this->merchantUser = null;
         $this->platformStaff = false;
         $this->branchIds = [];
+        $this->permissions = [];
     }
 
     public function setMerchant(Merchant $merchant, MerchantUser $merchantUser): void
@@ -54,6 +58,17 @@ final class TenantContext
     public function markPlatformStaff(): void
     {
         $this->platformStaff = true;
+    }
+
+    /**
+     * Set the request-cached permission set (Plan §10.3). Called once per request
+     * by ResolveTenantContext after the membership/platform-staff is resolved.
+     *
+     * @param  list<string>  $permissions
+     */
+    public function setPermissions(array $permissions): void
+    {
+        $this->permissions = $permissions;
     }
 
     public function hasMerchant(): bool
@@ -127,14 +142,15 @@ final class TenantContext
     }
 
     /**
-     * Resolved permission keys (Plan §10.3). Empty until the Phase 8 registry
-     * exists — present now so policies/guards can call it against a stable seam.
+     * Resolved permission keys for this request (Plan §10.3). Populated by
+     * ResolveTenantContext via PermissionResolver (role default grants ± per-user
+     * overrides; empty for a suspended/deactivated or unresolved membership).
      *
      * @return list<string>
      */
     public function permissions(): array
     {
-        return [];
+        return $this->permissions;
     }
 
     public function can(string $permission): bool

@@ -8,7 +8,6 @@ use App\Domain\Branches\Actions\ArchiveBranch;
 use App\Domain\Branches\Actions\CreateBranch;
 use App\Domain\Branches\Actions\UpdateBranch;
 use App\Domain\Branches\Models\MerchantBranch;
-use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Tenancy\TenantContext;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Branches\CreateBranchRequest;
@@ -21,9 +20,13 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 /**
- * Branch CRUD (Scope §3.3, Plan §10.2). Create/update/archive are Merchant
- * Administrator authority; listing/viewing is branch-scoped. Coarse role checks
- * here are replaced by the permission registry (EnsurePermission) in Phase 8.
+ * Branch CRUD (Scope §3.3, Plan §10.2/§10.3).
+ *
+ * Authority is the permission registry, not raw roles: mutating routes carry
+ * EnsurePermission (`branches.create` for create/archive, `branch.profile.manage`
+ * for update) and per-branch routes carry EnsureBranchScope (foreign branch ULID
+ * → 404). Listing/viewing is branch-scoped. The Phase 7 coarse `assertAdmin`
+ * check is removed — the backend boundary is the middleware/policy.
  */
 final class BranchController extends Controller
 {
@@ -45,8 +48,6 @@ final class BranchController extends Controller
 
     public function store(CreateBranchRequest $request, CreateBranch $action): JsonResponse
     {
-        $this->assertAdmin();
-
         $merchant = $this->context->merchant();
         abort_if($merchant === null, 403);
 
@@ -65,8 +66,6 @@ final class BranchController extends Controller
 
     public function update(UpdateBranchRequest $request, MerchantBranch $branch, UpdateBranch $action): BranchResource
     {
-        $this->assertAdmin();
-
         /** @var User $actor */
         $actor = $request->user();
 
@@ -75,18 +74,10 @@ final class BranchController extends Controller
 
     public function archive(Request $request, MerchantBranch $branch, ArchiveBranch $action): BranchResource
     {
-        $this->assertAdmin();
-
         /** @var User $actor */
         $actor = $request->user();
         $reason = $request->input('reason');
 
         return BranchResource::make($action->handle($branch, $actor, is_string($reason) ? $reason : null));
-    }
-
-    /** Coarse authority gate until the Phase 8 permission registry. */
-    private function assertAdmin(): void
-    {
-        abort_unless($this->context->role() === MerchantUserRole::MerchantAdmin, 403);
     }
 }
