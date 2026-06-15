@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -33,7 +35,11 @@ use Illuminate\Support\Str;
  * @property string|null $email
  * @property string|null $business_category
  * @property BranchStatus $status
+ * @property string|null $status_reason
+ * @property Carbon|null $suspended_at
+ * @property Carbon|null $archived_at
  * @property int|null $created_by
+ * @property int|null $updated_by
  */
 class MerchantBranch extends Model
 {
@@ -41,6 +47,16 @@ class MerchantBranch extends Model
     use HasFactory;
 
     protected $table = 'merchant_branches';
+
+    /**
+     * Mirror the DB default so a freshly created/factoried instance has a status
+     * in memory before refresh (the status cast would otherwise be null).
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'status' => 'active',
+    ];
 
     /** @return Factory<MerchantBranch> */
     protected static function newFactory(): Factory
@@ -60,7 +76,9 @@ class MerchantBranch extends Model
         'phone',
         'email',
         'business_category',
+        'status_reason',
         'created_by',
+        'updated_by',
     ];
 
     protected static function booted(): void
@@ -79,6 +97,8 @@ class MerchantBranch extends Model
     {
         return [
             'status' => BranchStatus::class,
+            'suspended_at' => 'datetime',
+            'archived_at' => 'datetime',
         ];
     }
 
@@ -87,9 +107,49 @@ class MerchantBranch extends Model
         return 'ulid';
     }
 
+    public function isActive(): bool
+    {
+        return $this->status === BranchStatus::Active;
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->status === BranchStatus::Archived;
+    }
+
     /** @return BelongsTo<Merchant, $this> */
     public function merchant(): BelongsTo
     {
         return $this->belongsTo(Merchant::class);
+    }
+
+    /** @return HasMany<BranchUserAssignment, $this> */
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(BranchUserAssignment::class, 'branch_id');
+    }
+
+    /** @return HasMany<BranchOperatingHour, $this> */
+    public function operatingHours(): HasMany
+    {
+        return $this->hasMany(BranchOperatingHour::class, 'branch_id');
+    }
+
+    /** @return HasMany<BranchCalendarException, $this> */
+    public function calendarExceptions(): HasMany
+    {
+        return $this->hasMany(BranchCalendarException::class, 'branch_id');
+    }
+
+    /** @return HasMany<BranchDayRecord, $this> */
+    public function dayRecords(): HasMany
+    {
+        return $this->hasMany(BranchDayRecord::class, 'branch_id');
+    }
+
+    /** @return HasMany<BranchCashUp, $this> */
+    public function cashUps(): HasMany
+    {
+        return $this->hasMany(BranchCashUp::class, 'branch_id');
     }
 }

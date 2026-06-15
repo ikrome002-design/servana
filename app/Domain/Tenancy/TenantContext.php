@@ -28,10 +28,27 @@ final class TenantContext
 
     private bool $platformStaff = false;
 
+    /** @var list<int> Active branch ids for a branch-scoped membership (Plan §8.2). */
+    private array $branchIds = [];
+
+    /**
+     * Clear all resolved state. ResolveTenantContext calls this before each
+     * (re)resolution so a `scoped` instance reused across requests (e.g. the
+     * test client, or any double-resolve) never leaks a stale merchant.
+     */
+    public function reset(): void
+    {
+        $this->merchant = null;
+        $this->merchantUser = null;
+        $this->platformStaff = false;
+        $this->branchIds = [];
+    }
+
     public function setMerchant(Merchant $merchant, MerchantUser $merchantUser): void
     {
         $this->merchant = $merchant;
         $this->merchantUser = $merchantUser;
+        $this->branchIds = $merchantUser->isBranchScoped() ? $merchantUser->activeBranchIds() : [];
     }
 
     public function markPlatformStaff(): void
@@ -77,6 +94,36 @@ final class TenantContext
     public function isPendingSetup(): bool
     {
         return $this->merchant !== null && $this->merchant->status->isPendingSetup();
+    }
+
+    /**
+     * Whether the current membership is branch-scoped (everything except
+     * merchant_admin). A merchant_admin sees all own-merchant branches.
+     */
+    public function isBranchScoped(): bool
+    {
+        return $this->merchantUser !== null && $this->merchantUser->isBranchScoped();
+    }
+
+    /**
+     * Active branch ids for a branch-scoped membership (Plan §8.2). Empty for a
+     * merchant_admin (meaning "all own-merchant branches", not "none").
+     *
+     * @return list<int>
+     */
+    public function branchIds(): array
+    {
+        return $this->branchIds;
+    }
+
+    /** Whether this context may access the given branch id within its merchant. */
+    public function canAccessBranch(int $branchId): bool
+    {
+        if (! $this->isBranchScoped()) {
+            return true; // merchant_admin: all own-merchant branches
+        }
+
+        return in_array($branchId, $this->branchIds, true);
     }
 
     /**

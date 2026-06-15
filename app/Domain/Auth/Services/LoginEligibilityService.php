@@ -22,20 +22,18 @@ use Illuminate\Support\Str;
  *   3 user.status = active                       ── ENFORCED here
  *   4 merchant_users.status = active             ── ENFORCED here (Phase 6)
  *   5 user not suspended (merchant/platform)     ── ENFORCED here (user level)
- *   6 branch assignment for branch-scoped roles  ── DEFERRED → Phase 7
+ *   6 branch assignment for branch-scoped roles  ── ENFORCED here (Phase 7)
  *   7 token valid/unused/unexpired               ── enforced at consume time by
  *                                                   MagicLinkTokenService
  *
- * PHASE 6: the merchant tenancy schema (merchants, merchant_users) now exists,
- * so checks 2 & 4 are real — a single active `merchant_users` row, OR
- * platform-staff status, is required (User::hasTenantAccess). They are still
- * gated by `servana.auth.enforce_tenancy_eligibility` (now defaulting true) so
- * the behaviour can be toggled per environment.
+ * PHASE 6: checks 2 & 4 — a single active `merchant_users` row, OR platform-staff
+ * status, is required (User::hasTenantAccess).
  *
- * Check 6 (branch assignment) stays DEFERRED to Phase 7 regardless of the flag —
- * branch_user_assignments does not exist yet, so enforcing it would lock every
- * branch-scoped user out. hasRequiredBranchAssignment() therefore always passes
- * for now; Phase 7 wires the real branch-scope lookup. See docs/PROGRESS.md.
+ * PHASE 7: check 6 — a branch-scoped role (everything except merchant_admin)
+ * requires at least one active branch_user_assignment. Merchant Admin is exempt
+ * (sees all own-merchant branches by role). All tenancy checks (2/4/6) are gated
+ * by `servana.auth.enforce_tenancy_eligibility` so an environment can disable
+ * gating for diagnostics. See docs/PROGRESS.md.
  */
 final class LoginEligibilityService
 {
@@ -98,15 +96,33 @@ final class LoginEligibilityService
     }
 
     /**
-     * CHECK 6 (Phase 7). branch_user_assignments does not exist yet, so this
-     * always passes — enforcing it now would lock out every branch-scoped user.
-     * Phase 7 replaces the body with the real branch-scope lookup. Intentionally
-     * NOT gated by the eligibility flag (the flag enables checks 2 & 4 today;
-     * check 6 must remain inert until its schema lands).
+     * CHECK 6 (Phase 7). A branch-scoped role requires at least one active
+     * branch_user_assignment; Merchant Admin (and platform staff) are exempt.
+     * Gated by the same flag as checks 2 & 4.
      */
     private function hasRequiredBranchAssignment(User $user): bool
     {
-        return true;
+        if (! $this->tenancyEligibilityEnforced()) {
+            return true;
+        }
+
+        if ($user->is_platform_staff) {
+            return true;
+        }
+
+        $membership = $user->activeMembership();
+
+        // No active membership is already caught by checks 2 & 4; nothing to add.
+        if ($membership === null) {
+            return true;
+        }
+
+        // Merchant Admin sees all own-merchant branches by role — no assignment needed.
+        if (! $membership->isBranchScoped()) {
+            return true;
+        }
+
+        return $membership->hasActiveBranchAssignment();
     }
 
     private function tenancyEligibilityEnforced(): bool

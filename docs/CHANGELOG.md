@@ -5,6 +5,48 @@ All notable changes to Servana by Citrus. Format loosely follows
 
 ## [Unreleased]
 
+### Phase 7 — Branches, memberships, invitations (`phase-7-branches-memberships-invitations`)
+
+#### Added
+- Branch lifecycle (Scope §3.3): admin-only branch CRUD, weekly operating hours,
+  day open/close records, and `BranchClosureGuard` enforcing the §3.3 blockers
+  (unclosed day + cash-up discrepancy now; queue/session/invoice/payment/receipt/
+  appointment as explicit named stubs for Phases 16–18) + `BranchDebtGate` stub.
+- Branch scope (Plan §8.2): `branch_user_assignments` (partial-unique active per
+  member+branch), `EnsureBranchScope` middleware (foreign ULID → 404, missing
+  assignment → 403 `no_branch_scope`), `/api/v1/me` `branch_ids`.
+- Staff invitations (Scope §3.4): `staff_invitations` (SHA-256-hashed 72h token),
+  create/resend/revoke + atomic public accept (`AcceptStaffInvitation` →
+  user + active membership + `staff_profiles` + active branch assignment +
+  append-only `staff_history`). `StaffInvitationNotification` (raw token only in
+  the emailed link). Duplicate-pending invite blocked; duplicate active staff
+  phone/email blocked (partial unique index).
+- `StaffLifecycleService`: transactional activate/suspend/deactivate/assignBranch/
+  revoke; suspend/deactivate revoke DB sessions + unused Magic Links + pending
+  invites; sole-active-admin orphan guard; branch-assignment-required-to-activate.
+- Schema: `staff_profiles`, `staff_history`, `branch_operating_hours`,
+  `branch_calendar_exceptions`, `branch_day_records`, `branch_cash_ups` (seam);
+  `merchant_branches` expanded forward-only. Enum-backed statuses + DB CHECKs.
+- HTTP: branch + staff-invitation + staff controllers, requests, resources;
+  routes under EnsureMerchantActive (+ EnsureBranchScope on `{branch}` routes);
+  public `POST /staff-invitations/accept` (`invitation-accept` limiter).
+- SPA: branch list/create/detail/operating-hours, staff list (status badges)/
+  invitations/public accept/profile; `branchStore` + `staffStore`; routes wired.
+- Tests: 51 backend (branches/hr/isolation/security/auth check-6), Vitest +20
+  (branch/staff stores + pages), Playwright +7 (`branches-staff-invitations`).
+
+#### Changed
+- `LoginEligibilityService` check 6 now enforced — a branch-scoped role requires
+  an active branch assignment to receive a Magic Link (admin/platform exempt).
+- `TenantContext` carries branch scope and `reset()`s on each resolution so a
+  reused (scoped) instance never leaks a stale merchant.
+- `MagicLinkTokenService::invalidateUnconsumedForEmail()` added for lifecycle
+  revocation.
+
+#### Fixed
+- DB-default `status` columns are now mirrored via model `$attributes` so a
+  freshly created branch/invitation has a status in memory before refresh.
+
 ### Phase 6 — Account & tenant model (`phase-6-account-tenant-model`)
 
 #### Added

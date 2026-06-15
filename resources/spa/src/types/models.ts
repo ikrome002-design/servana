@@ -61,11 +61,59 @@ export interface BootstrapPayload {
   memberships: MerchantMembership[];
   permissions: string[];
   setup: SetupState;
+  branch_ids: string[];
 }
 
+export type BranchStatus = 'active' | 'suspended' | 'archived';
+
 export interface Branch {
-  ulid: string;
+  id: string;
   name: string;
   code: string;
-  status: 'active' | 'suspended' | 'archived';
+  address: string | null;
+  town: string | null;
+  phone: string | null;
+  email: string | null;
+  business_category: string | null;
+  status: BranchStatus;
+  status_reason: string | null;
+  archived_at: string | null;
+}
+
+export interface BranchOperatingHour {
+  weekday: number;
+  opens_at: string | null;
+  closes_at: string | null;
+  is_closed: boolean;
+  break_start: string | null;
+  break_end: string | null;
+}
+
+export type StaffInvitationStatus = 'pending' | 'accepted' | 'revoked' | 'expired';
+
+export interface StaffInvitation {
+  id: string;
+  email: string;
+  role: MerchantRole;
+  role_title: string | null;
+  branch_id: string | null;
+  status: StaffInvitationStatus;
+  resend_count: number;
+  expires_at: string;
+  last_sent_at: string | null;
+}
+
+export interface StaffProfile {
+  id: string;
+  first_name: string;
+  last_name: string;
+  display_name: string;
+  phone: string;
+  role: MerchantRole | null;
+  role_title: string | null;
+  status: MembershipStatus | null;
+  employment_type: string;
+  employment_status: string;
+  primary_branch_id: string | null;
+  is_active: boolean;
 }

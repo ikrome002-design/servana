@@ -10,8 +10,8 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 3 | Laravel backend foundation | ✅ Complete — merged PR #3 | `phase-3-laravel-backend-foundation` | [phase-3.md](proof/phase-3.md) |
 | 4 | Frontend foundation | ✅ Complete — merged PR #4 | `phase-4-frontend-foundation` | [phase-4.md](proof/phase-4.md) |
 | 5 | Authentication (Magic Link + sessions) | ✅ Complete — merged PR #5 | `phase-5-authentication` | [phase-5.md](proof/phase-5.md) |
-| 6 | Account & tenant model | 🔄 Complete locally — awaiting CI + approval | `phase-6-account-tenant-model` | [phase-6.md](proof/phase-6.md) |
-| 7 | Branches, memberships, invitations | ⬜ Not started | — | — |
+| 6 | Account & tenant model | ✅ Complete — merged PR #6 | `phase-6-account-tenant-model` | [phase-6.md](proof/phase-6.md) |
+| 7 | Branches, memberships, invitations | 🔄 Complete locally — awaiting CI + approval | `phase-7-branches-memberships-invitations` | [phase-7.md](proof/phase-7.md) |
 | 8 | Roles & permissions | ⬜ Not started | — | — |
 | 9 | Tenant-scoped data access hardening | ⬜ Not started | — | — |
 | 10 | API foundation | ⬜ Not started | — | — |
@@ -31,10 +31,131 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 24 | Performance optimization | ⬜ Not started | — | — |
 | 25 | Deployment pipeline & final production readiness | ⬜ Not started | — | — |
 
+## Phase 7 — Branches, memberships, invitations
+
+- **Branch:** `phase-7-branches-memberships-invitations` (based on merged `main`: PR #1–#6).
+- **Status:** 🔄 Complete locally — awaiting CI + owner approval.
+- **Proof:** [docs/proof/phase-7.md](proof/phase-7.md).
+
+### Completed
+- Expanded `merchant_branches` forward-only (`status_reason`, `suspended_at`,
+  `archived_at`, `updated_by`); new tables `branch_user_assignments`,
+  `staff_invitations`, `staff_profiles`, `staff_history`,
+  `branch_operating_hours`, `branch_calendar_exceptions`, `branch_day_records`,
+  `branch_cash_ups` (seam). Enum-backed statuses + DB CHECKs + partial unique
+  indexes (one active assignment per member+branch; one pending invite per
+  merchant+email+role+branch; active staff phone unique platform-wide).
+- Branch CRUD (admin-only create/update/archive, merchant-scoped list/show),
+  operating-hours upsert, day open/close, `BranchClosureGuard` (8 Scope §3.3
+  blockers — unclosed-day + cash-up-discrepancy enforced now; queue/session/
+  invoice/payment/receipt/appointment are explicit named stubs for Phases 16–18),
+  `BranchDebtGate` stub (returns 0 until Phase 20).
+- Staff invitations: `CreateStaffInvitation` (hashed 72h token, raw token only in
+  email), `AcceptStaffInvitation` (atomic: user + active membership + staff_profile
+  + active branch assignment + initial history), resend (rotates token, increments
+  count), revoke. Authority: admin invites branch_manager/hr only; HR invites
+  operational roles within its own branch (Scope §3.2/§3.4).
+- `StaffLifecycleService`: activate/suspend/deactivate/assignBranch/revoke —
+  transactional, records `staff_history`; suspend/deactivate revokes DB sessions +
+  unused Magic Links + pending invitations; sole-active-admin orphan guard;
+  branch-assignment-required-to-activate guard.
+- `EnsureBranchScope` middleware (foreign branch ULID → 404 no leak; missing
+  assignment → 403 `no_branch_scope`; admin sees all own-merchant branches).
+- Magic Link eligibility **check 6** wired (`LoginEligibilityService`): a
+  branch-scoped role needs an active branch assignment; admin/platform exempt.
+- `/api/v1/me` bootstrap gains `branch_ids`; `TenantContext` carries branch scope
+  and now `reset()`s per resolution (fixes a stale-context defect — see proof §7).
+- SPA: branch list/create/detail/operating-hours, staff list (status badges) /
+  invitations (create/resend/revoke) / public invitation-accept / staff profile;
+  `branchStore` + `staffStore`; routes + `requiresPendingSetup` reuse.
+
+### Work skipped (deferred) — owning future phase
+```
+Skipped:
+- Item: Role & permission registry + policies + matrix enforcement. Phase 7 uses
+  coarse role checks (merchant_admin / hr) inline in controllers.
+- Reason: the §10.3 registry is Phase 8.
+- Correct future phase: Phase 8
+- Risk if forgotten: fine-grained permissions not enforced; mitigated — coarse
+  authority + branch scope are enforced now.
+
+Skipped:
+- Item: Real branch-closure blockers for queue/session/invoice/payment/receipt/
+  appointment, and real branch-fee debt.
+- Reason: those operational/finance tables are Phases 16–18/20. Each is an
+  explicit named guard method returning false now (never a silent skip).
+- Correct future phase: Phase 16 (queue/sessions/appointments), 17/18 (invoices/
+  payments/receipts), 20 (billing debt)
+- Risk if forgotten: a branch could be archived with live records — mitigated by
+  the named stubs that the owning phase flips on.
+
+Skipped:
+- Item: Full cash-up / reconciliation / payment-validation workflow.
+- Reason: `branch_cash_ups` is a Phase 7 lifecycle seam only.
+- Correct future phase: Phase 18
+- Risk if forgotten: none now; table + model exist for the closure-guard check.
+
+Skipped:
+- Item: BelongsToMerchant/BelongsToBranch traits across all models + PHPStan
+  tenancy rule activation.
+- Correct future phase: Phase 9
+- Risk if forgotten: tenant scoping is enforced per-controller now, not globally.
+
+Skipped:
+- Item: Profile photo upload (`profile_photo_path` is a nullable seam).
+- Correct future phase: Phase 23
+- Risk if forgotten: none; metadata column ready.
+
+Skipped:
+- Item: API pagination/filter traits → Phase 10; final role navigation → Phase 11;
+  responsive/dark/a11y sweeps → 12/13/14; scheduling/queue → 16; audit chain
+  completion → 19; Horizon → 21; search → 22; deploy → 25.
+```
+
+### Pending work
+- None blocking. CI confirmation on push + owner approval to merge.
+
+### Known risks
+- Branch-closure blockers for later-phase operational state are named stubs
+  returning false; the owning phase (16–18/20) MUST flip each one on.
+- Authority is coarse (role-based) until the Phase 8 permission registry replaces
+  the inline `assert*` checks with `EnsurePermission`.
+- Session revocation deletes DB-backed session rows; under a non-database session
+  driver the membership-status re-check in ResolveTenantContext is the backstop.
+
+### Commands that passed
+- `docker compose exec app php artisan migrate:fresh` → 28 migrations OK (PostgreSQL 16).
+- `docker compose exec app php artisan test` → **160 passed (817 assertions)**.
+- `docker compose exec app php artisan test --parallel` → green (see proof).
+- `docker compose exec app php artisan test --group=branches,hr,isolation` → **51 passed**.
+- `composer pint -- --test` → PASS (199 files) · `composer stan` → No errors (level 8).
+- `npm run typecheck` → 0 errors · `npm run test` → **71 passed** · `npm run build` → built.
+- `npm run e2e` → **27 passed** (auth 5 + branches/staff 7 + foundation 11 + onboarding 4, axe clean).
+- `gitleaks detect --no-git --redact` → no leaks · `npm audit --audit-level=high` → 0.
+- `composer audit` → 1 documented-ignored advisory (CVE-2026-48019, carried since Phase 1).
+- Live: created branch + `CreateStaffInvitation` → Mailpit delivered "You're invited
+  to join … on Servana" to the invitee with a `staff/accept?token=` link; the DB row
+  stored only a 64-char `token_hash` (no raw token).
+- `php artisan route:list` → branch + staff routes present; no platform branch-creation route.
+
+### Commands that failed, if any
+- None outstanding. Three defects found + fixed during verification (DB-default
+  status not hydrated on create; stale `TenantContext` across reused scoped
+  instance; Phase 6 eligibility test contradicting newly-enforced check 6) —
+  see proof §7.
+
+### Context for Phase 8 (Roles & permissions)
+- Build the §10.3 permission registry (`roles`, `permissions`,
+  `role_permission_assignments`, `merchant_user_permission_overrides`),
+  `PermissionSeeder`, TenantContext permission resolution (cached per request),
+  `EnsurePermission` middleware, and policies — then replace the coarse inline
+  `assert*` role checks in the Branch/Staff controllers with permission gates and
+  populate `permissions` in `/api/v1/me`.
+
 ## Phase 6 — Account & tenant model
 
-- **Branch:** `phase-6-account-tenant-model` (based on merged `main`: PR #1–#5).
-- **Status:** 🔄 Complete locally — awaiting CI + owner approval.
+- **Branch:** `phase-6-account-tenant-model` → **PR #6 merged into main.**
+- **Status:** ✅ Complete. **CI passed: Backend, Frontend, Security, Docker.**
 - **Proof:** [docs/proof/phase-6.md](proof/phase-6.md).
 
 ### Completed
@@ -122,7 +243,7 @@ Skipped:
 ```
 
 ### Pending work
-- None blocking. CI confirmation on push + owner approval to merge.
+- None. PR #6 merged into main; CI passed (Backend, Frontend, Security, Docker).
 
 ### Known risks
 - Minimal `merchant_branches` table is a Phase 6 seam; Phase 7 must EXPAND it

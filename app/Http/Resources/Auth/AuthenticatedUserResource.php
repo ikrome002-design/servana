@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Auth;
 
+use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Onboarding\Services\FirstTimeSetupProgress;
 use App\Domain\Tenancy\TenantContext;
@@ -60,10 +61,33 @@ final class AuthenticatedUserResource extends JsonResource
             'membership' => $membershipPayload,
             // Retained for guard compatibility; mirrors the single active membership.
             'memberships' => $membershipPayload !== null ? [$membershipPayload] : [],
+            // Active branch assignments (Plan §8.2). Empty for a merchant_admin —
+            // they see all own-merchant branches — and for non-merchant users.
+            'branch_ids' => $this->branchUlids($context),
             // Phase 8 registry fills this.
             'permissions' => [],
             'setup' => $this->setupState($merchant),
         ];
+    }
+
+    /**
+     * Public ULIDs of the membership's active branch assignments (Plan §8.2).
+     *
+     * @return list<string>
+     */
+    private function branchUlids(TenantContext $context): array
+    {
+        $branchIds = $context->branchIds();
+
+        if ($branchIds === []) {
+            return [];
+        }
+
+        return array_values(MerchantBranch::query()
+            ->whereIn('id', $branchIds)
+            ->pluck('ulid')
+            ->map(static fn (string $ulid): string => $ulid)
+            ->all());
     }
 
     /**

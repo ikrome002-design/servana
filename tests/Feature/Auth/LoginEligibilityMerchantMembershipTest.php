@@ -114,7 +114,10 @@ it('denies consume when the membership is suspended after the link was issued', 
     $this->assertGuest();
 });
 
-it('still sends a link to a branch_manager without a branch assignment (check 6 deferred)', function (): void {
+it('sends no link to a branch_manager without a branch assignment (check 6, Phase 7)', function (): void {
+    // Phase 7 enforces eligibility check 6: a branch-scoped role with no active
+    // branch_user_assignment is not eligible. Detailed coverage lives in
+    // BranchAssignmentEligibilityTest; this guards the Phase 6→7 contract change.
     Notification::fake();
     $user = User::factory()->create(['email' => 'bm@salon.co.ke']);
     $merchant = Merchant::factory()->active()->create();
@@ -126,5 +129,5 @@ it('still sends a link to a branch_manager without a branch assignment (check 6 
 
     $this->postJson('/api/v1/auth/magic-link', ['email' => 'bm@salon.co.ke'])->assertStatus(202);
 
-    Notification::assertSentTo($user, MagicLoginLinkNotification::class);
+    Notification::assertNothingSent();
 });
