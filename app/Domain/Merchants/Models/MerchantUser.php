@@ -9,6 +9,7 @@ use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Enums\MerchantUserStatus;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
 use Database\Factories\MerchantUserFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -40,6 +41,8 @@ use Illuminate\Support\Str;
  */
 class MerchantUser extends Model
 {
+    use BelongsToMerchant;
+
     /** @use HasFactory<MerchantUserFactory> */
     use HasFactory;
 

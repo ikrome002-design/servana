@@ -5,11 +5,24 @@ declare(strict_types=1);
 use App\Exceptions\ApiErrorRenderer;
 use App\Http\Controllers\HealthController;
 use App\Http\Middleware\CorrelationIdMiddleware;
+use App\Http\Middleware\ResolveTenantContext;
+use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
+use Illuminate\Contracts\Session\Middleware\AuthenticatesSessions;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Sentry\Laravel\Integration;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -36,6 +49,26 @@ return Application::configure(basePath: dirname(__DIR__))
         // `api` group so requests from SANCTUM_STATEFUL_DOMAINS use the session
         // guard + CSRF instead of bearer tokens.
         $middleware->statefulApi();
+
+        // Tenant context must be resolved BEFORE route-model binding so bindings
+        // resolve inside merchant scope (Plan §8.2): a foreign-tenant ULID then
+        // 404s (and audits) at binding time. This pins ResolveTenantContext just
+        // ahead of SubstituteBindings in the framework's default priority order.
+        $middleware->priority([
+            HandlePrecognitiveRequests::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            ShareErrorsFromSession::class,
+            ValidateCsrfToken::class,
+            ThrottleRequests::class,
+            ThrottleRequestsWithRedis::class,
+            AuthenticatesRequests::class,
+            ResolveTenantContext::class,
+            SubstituteBindings::class,
+            AuthenticatesSessions::class,
+            Authorize::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Report to Sentry — a no-op while SENTRY_LARAVEL_DSN is empty.

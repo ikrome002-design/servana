@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Tenancy\Exceptions\TenantAccessException;
+use App\Domain\Tenancy\Services\LogUnauthorizedAttempt;
 use App\Domain\Tenancy\TenantContext;
 use Closure;
 use Illuminate\Http\Request;
@@ -36,13 +37,16 @@ final class EnsureBranchScope
         }
 
         // Resolve independently of binding-middleware ordering: the param may be
-        // a model (bindings already ran) or the raw ULID string.
+        // a model (scoped binding already ran) or the raw ULID string. The query
+        // is merchant-scoped (MerchantScope), so a foreign branch resolves to null.
         $branch = $param instanceof MerchantBranch
             ? $param
             : MerchantBranch::query()->where('ulid', (string) $param)->first();
 
-        // Foreign or unknown branch never leaks existence — 404, not 403.
+        // Foreign or unknown branch never leaks existence — 404, not 403. Audit
+        // the attempt iff the ULID belongs to another tenant (Plan §8.2/§8.4).
         if ($branch === null || $branch->merchant_id !== $this->context->merchantId()) {
+            app(LogUnauthorizedAttempt::class)->record(MerchantBranch::class, 'ulid', (string) $param);
             abort(404);
         }
 

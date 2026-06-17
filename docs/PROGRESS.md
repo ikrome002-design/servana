@@ -12,8 +12,8 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 5 | Authentication (Magic Link + sessions) | ✅ Complete — merged PR #5 | `phase-5-authentication` | [phase-5.md](proof/phase-5.md) |
 | 6 | Account & tenant model | ✅ Complete — merged PR #6 | `phase-6-account-tenant-model` | [phase-6.md](proof/phase-6.md) |
 | 7 | Branches, memberships, invitations | ✅ Complete — merged PR #7 | `phase-7-branches-memberships-invitations` | [phase-7.md](proof/phase-7.md) |
-| 8 | Roles & permissions | 🔄 In progress | `phase-8-roles-permissions` | [phase-8.md](proof/phase-8.md) |
-| 9 | Tenant-scoped data access hardening | ⬜ Not started | — | — |
+| 8 | Roles & permissions | ✅ Complete — merged PR #8 | `phase-8-roles-permissions` | [phase-8.md](proof/phase-8.md) |
+| 9 | Tenant-scoped data access hardening | 🔄 In progress | `phase-9-tenant-scoped-data-access-hardening` | [phase-9.md](proof/phase-9.md) |
 | 10 | API foundation | ⬜ Not started | — | — |
 | 11 | UI layout foundation | ⬜ Not started | — | — |
 | 12 | Responsive design pass | ⬜ Not started | — | — |
@@ -31,10 +31,89 @@ Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
 | 24 | Performance optimization | ⬜ Not started | — | — |
 | 25 | Deployment pipeline & final production readiness | ⬜ Not started | — | — |
 
+## Phase 9 — Tenant-scoped data access hardening
+
+- **Branch:** `phase-9-tenant-scoped-data-access-hardening` (based on merged `main`: PR #1–#8).
+- **Status:** 🔄 Complete locally — awaiting CI + owner approval.
+- **Proof:** [docs/proof/phase-9.md](proof/phase-9.md).
+
+### Completed
+- Tenancy traits + global scopes (Plan §8.2): `BelongsToMerchant` (MerchantScope +
+  `merchant_id` auto-fill on create, `MissingTenantContext` when unscoped, scoped
+  `resolveRouteBinding`), `BelongsToBranch` (BranchScope; merchant-wide roles
+  restricted to own-merchant branches via subquery; overridable `branchColumn()`).
+  Applied to MerchantProfile/MerchantUser/MerchantStatusHistory/MerchantBranch and
+  StaffInvitation/StaffProfile (+branch) and the four branch-owned models.
+- Scoped route binding inside merchant scope; `ResolveTenantContext` pinned before
+  `SubstituteBindings`; `terminate()` resets context per request.
+- `LogUnauthorizedAttempt` writes a high-severity `unauthorized_access` audit row
+  for a foreign-tenant ULID (no existence leak, no body/secret). `EnsureBranchScope`
+  audits its foreign-branch 404 path.
+- `TenantAwareJob` + `MissingTenantContext`; `TenantContext::bindForJob()`.
+- PHPStan rules activated (`NoWithoutTenancyOutsidePlatformRule`, `NoRawSqlConcatRule`)
+  + `TenancyStaticAnalysisTest` source scan. Deliberate violation shown failing then
+  removed (proof §4) — not committed.
+
+### Work skipped (deferred) — owning future phase
+```
+Skipped:
+- Item: Invoice/payment/receipt/finance cross-tenant isolation rows (§8.4).
+- Reason: those tables do not exist yet. Permanent skipped tests in
+  Isolation/FutureResourceIsolationTest name the owner.
+- Correct future phase: 17 (invoices) / 18 (payments, exports)
+
+Skipped:
+- Item: Queue/session/personnel own-scope isolation rows (§8.4 PersonnelOwnScope).
+- Correct future phase: 16
+
+Skipped:
+- Item: Export-service scope assertion (ExportScopeTest).
+- Correct future phase: 18/19/23
+
+Skipped:
+- Item: Full API conventions, pagination, OpenAPI → 10; role nav → 11;
+  responsive/dark/a11y → 12–14; HR/catalogue/client workflows → 15; full audit
+  event coverage + hash-chain verification → 19; billing/commissions → 20;
+  Horizon/search/uploads/deploy → 21–25.
+```
+
+### Pending work
+- None blocking. CI confirmation on push + owner approval to merge.
+
+### Known risks
+- Branch-owned models without `merchant_id` rely on the branch→merchant subquery for
+  merchant isolation; a future directly-route-bound branch-owned table must add
+  `BelongsToMerchant` (or a `merchant_id`) so its binding audits.
+- Cross-branch staff/invitation access is a policy 403 (not 404) by design (proof §5).
+- Only `unauthorized_access` is audited; full §5.18 coverage is Phase 19.
+
+### Commands that passed
+- `docker compose exec app php artisan migrate:fresh --seed` → 26 migrations OK (PostgreSQL 16).
+- `php artisan test` → **230 passed, 4 skipped (1020 assertions)**; `--parallel` → 230 passed (4 procs).
+- `composer pint --test` → PASS · `composer stan` → No errors (Larastan level 8).
+- Deliberate stan violation → `servana.tenancy.withoutTenancy` error; reverted → No errors.
+- `npm run typecheck` → 0 · `npm run test` → **72 passed** · `npm run build` → built · `npm run e2e` → **27 passed**.
+- `gitleaks detect --no-git --redact` → no leaks · `npm audit --audit-level=high` → 0.
+- `composer audit` → 1 documented-ignored advisory (GHSA-5vg9-5847-vvmq, since Phase 1).
+
+### Commands that failed, if any
+- None outstanding. During verification Docker Desktop had to be restarted (host
+  daemon wedged) and PostgreSQL needed a few seconds to accept connections — no code
+  change. No test regressions from the global scopes.
+
+### Context for Phase 10 (API foundation)
+- §11 conventions across the board: pagination/filter/sort traits, `Idempotency-Key`
+  middleware, resources with `can` maps, `RouteCoverageTest`, OpenAPI generation.
+- Tenant isolation is now structural (global scopes + scoped binding + audited
+  foreign-ULID access), so Phase 10 resources inherit scoping automatically; new
+  tenant models only need the `BelongsToMerchant`/`BelongsToBranch` traits.
+
 ## Phase 8 — Roles & permissions
 
-- **Branch:** `phase-8-roles-permissions` (based on merged `main`: PR #1–#7).
-- **Status:** 🔄 Complete locally — awaiting CI + owner approval.
+- **Branch:** `phase-8-roles-permissions` → **PR #8 merged into main.**
+- **Status:** ✅ Complete. **CI passed: Backend, Frontend, Security, Docker.**
+  Docker build initially failed on the GitHub Actions cache export, then passed on
+  rerun; no code change required.
 - **Proof:** [docs/proof/phase-8.md](proof/phase-8.md) · matrix: [phase8-matrix.txt](proof/phase8-matrix.txt).
 
 ### Completed
@@ -102,7 +181,7 @@ Skipped:
 ```
 
 ### Pending work
-- None blocking. CI confirmation on push + owner approval to merge.
+- None. PR #8 merged into main; CI passed (Backend, Frontend, Security, Docker).
 
 ### Known risks
 - Branch profile/hours/day editing moved from Merchant Admin (Phase 7 coarse

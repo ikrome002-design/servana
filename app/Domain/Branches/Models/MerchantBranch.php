@@ -6,6 +6,7 @@ namespace App\Domain\Branches\Models;
 
 use App\Domain\Branches\Enums\BranchStatus;
 use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Database\Factories\MerchantBranchFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,6 +44,8 @@ use Illuminate\Support\Str;
  */
 class MerchantBranch extends Model
 {
+    use BelongsToMerchant;
+
     /** @use HasFactory<MerchantBranchFactory> */
     use HasFactory;
 

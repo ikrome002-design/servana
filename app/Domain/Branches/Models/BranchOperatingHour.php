@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Branches\Models;
 
+use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -21,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class BranchOperatingHour extends Model
 {
+    use BelongsToBranch;
+
     /**
      * @var list<string>
      */

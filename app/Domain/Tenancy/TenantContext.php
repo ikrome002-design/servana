@@ -34,6 +34,9 @@ final class TenantContext
     /** @var list<string> Resolved permission keys for this request (Plan §10.3). */
     private array $permissions = [];
 
+    /** True when a tenant-aware job bound a branch-scoped context (no membership). */
+    private bool $jobBranchScoped = false;
+
     /**
      * Clear all resolved state. ResolveTenantContext calls this before each
      * (re)resolution so a `scoped` instance reused across requests (e.g. the
@@ -46,6 +49,7 @@ final class TenantContext
         $this->platformStaff = false;
         $this->branchIds = [];
         $this->permissions = [];
+        $this->jobBranchScoped = false;
     }
 
     public function setMerchant(Merchant $merchant, MerchantUser $merchantUser): void
@@ -53,6 +57,22 @@ final class TenantContext
         $this->merchant = $merchant;
         $this->merchantUser = $merchantUser;
         $this->branchIds = $merchantUser->isBranchScoped() ? $merchantUser->activeBranchIds() : [];
+    }
+
+    /**
+     * Bind a merchant context for a tenant-aware background job (Plan §8.3).
+     * There is no membership inside a job; an optional branch id narrows the
+     * branch scope. Permissions stay empty — jobs never run permission checks.
+     */
+    public function bindForJob(Merchant $merchant, ?int $branchId = null): void
+    {
+        $this->reset();
+        $this->merchant = $merchant;
+
+        if ($branchId !== null) {
+            $this->branchIds = [$branchId];
+            $this->jobBranchScoped = true;
+        }
     }
 
     public function markPlatformStaff(): void
@@ -117,6 +137,10 @@ final class TenantContext
      */
     public function isBranchScoped(): bool
     {
+        if ($this->jobBranchScoped) {
+            return true;
+        }
+
         return $this->merchantUser !== null && $this->merchantUser->isBranchScoped();
     }
 

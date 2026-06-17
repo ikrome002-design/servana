@@ -9,6 +9,8 @@ use App\Domain\Hr\Enums\StaffEmploymentStatus;
 use App\Domain\Hr\Enums\StaffEmploymentType;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Tenancy\Concerns\BelongsToBranch;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Database\Factories\StaffProfileFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -44,6 +46,9 @@ use Illuminate\Support\Str;
  */
 class StaffProfile extends Model
 {
+    use BelongsToBranch;
+    use BelongsToMerchant;
+
     /** @use HasFactory<StaffProfileFactory> */
     use HasFactory;
 
@@ -51,6 +56,12 @@ class StaffProfile extends Model
     protected static function newFactory(): Factory
     {
         return StaffProfileFactory::new();
+    }
+
+    /** StaffProfile is branch-scoped on its primary branch (Plan §8.2). */
+    public function branchColumn(): string
+    {
+        return 'primary_branch_id';
     }
 
     /**

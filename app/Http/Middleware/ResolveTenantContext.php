@@ -40,4 +40,16 @@ final class ResolveTenantContext
 
         return $next($request);
     }
+
+    /**
+     * Clear the resolved context once the response has been sent (Plan §8.2).
+     * The TenantContext is a container-`scoped` singleton; resetting it here
+     * guarantees no merchant scope leaks past the request boundary — important
+     * both for long-lived workers and so back-to-back test requests never bleed
+     * a previous merchant into an out-of-request Eloquent query.
+     */
+    public function terminate(Request $request, Response $response): void
+    {
+        $this->context->reset();
+    }
 }
