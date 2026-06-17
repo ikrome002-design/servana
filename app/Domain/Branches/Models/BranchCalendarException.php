@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Branches\Models;
 
 use App\Domain\Branches\Enums\CalendarExceptionType;
+use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -23,6 +24,8 @@ use Illuminate\Support\Carbon;
  */
 class BranchCalendarException extends Model
 {
+    use BelongsToBranch;
+
     /**
      * @var list<string>
      */

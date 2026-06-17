@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Merchants\Models;
 
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,6 +25,8 @@ use Illuminate\Support\Str;
  */
 class MerchantStatusHistory extends Model
 {
+    use BelongsToMerchant;
+
     public const UPDATED_AT = null;
 
     /**

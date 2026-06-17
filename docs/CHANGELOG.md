@@ -5,6 +5,41 @@ All notable changes to Servana by Citrus. Format loosely follows
 
 ## [Unreleased]
 
+### Phase 9 — Tenant-scoped data access hardening (`phase-9-tenant-scoped-data-access-hardening`)
+
+#### Added
+- Tenancy traits + global scopes (Plan §8.2): `BelongsToMerchant` (MerchantScope +
+  `merchant_id` auto-fill on create, throwing `MissingTenantContext` when unscoped),
+  `BelongsToBranch` (BranchScope; merchant-wide roles restricted to own-merchant
+  branches via subquery). `withoutTenancy()` is the only sanctioned escape.
+- Scoped route-model binding: `resolveRouteBinding()` resolves within merchant scope
+  → foreign-tenant ULID 404s (no existence leak) and writes an `unauthorized_access`
+  audit row. `bootstrap/app.php` pins `ResolveTenantContext` before
+  `SubstituteBindings`; `ResolveTenantContext::terminate()` resets context per request.
+- `LogUnauthorizedAttempt` (UnauthorizedAccessRecorder): unscoped existence check →
+  high-severity `unauthorized_access` audit (actor, merchant, model, attempted ULID,
+  route, correlation id); never leaks the foreign row or request body. `EnsureBranchScope`
+  audits its foreign-branch 404 path too.
+- `TenantAwareJob` + `MissingTenantContext` (Plan §8.3): captures merchant/branch ids,
+  rehydrates + re-validates context in `handle()`, fails safely when absent or the
+  merchant is not active. `TenantContext::bindForJob()`.
+- PHPStan tenancy rules activated: `NoWithoutTenancyOutsidePlatformRule`,
+  `NoRawSqlConcatRule` (no-ops since Phase 1). Plus `TenancyStaticAnalysisTest` source
+  scan (escape hatches outside Tenancy/Platform; `::find()` in controllers; raw-SQL concat).
+- Tests: `TenantAwareJobTest`, `Isolation/{RouteBinding,CrossTenantAccess,
+  CrossBranchAccess,UnauthorizedAccessAudit,PermissionDeniedStillWorks,
+  FutureResourceIsolation}Test`, `Security/{SuspendedMerchant,TenancyStaticAnalysis}Test`.
+  Future-resource §8.4 rows (invoices/payments/exports/personnel) are permanent skipped
+  tests naming Phases 16–19.
+
+#### Changed
+- Tenant-owned models (`MerchantProfile`, `MerchantUser`, `MerchantStatusHistory`,
+  `MerchantBranch`, `StaffInvitation`, `StaffProfile`) and branch-owned models
+  (`BranchOperatingHour`, `BranchCalendarException`, `BranchDayRecord`, `BranchCashUp`)
+  now apply the tenancy traits. Excluded (documented in proof): `Merchant`,
+  `BranchUserAssignment`, `StaffHistory`, `MagicLoginToken`, permission registry models,
+  `MerchantUserPermissionOverride`, `AuditLog`, `User`.
+
 ### Phase 8 — Roles & permissions (`phase-8-roles-permissions`)
 
 #### Added

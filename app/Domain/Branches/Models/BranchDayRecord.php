@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Branches\Models;
 
 use App\Domain\Branches\Enums\BranchDayStatus;
+use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use Database\Factories\BranchDayRecordFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,6 +31,8 @@ use Illuminate\Support\Str;
  */
 class BranchDayRecord extends Model
 {
+    use BelongsToBranch;
+
     /** @use HasFactory<BranchDayRecordFactory> */
     use HasFactory;
 

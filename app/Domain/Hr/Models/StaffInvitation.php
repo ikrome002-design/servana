@@ -8,6 +8,8 @@ use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Hr\Enums\StaffInvitationStatus;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Tenancy\Concerns\BelongsToBranch;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
 use Database\Factories\StaffInvitationFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -41,6 +43,9 @@ use Illuminate\Support\Str;
  */
 class StaffInvitation extends Model
 {
+    use BelongsToBranch;
+    use BelongsToMerchant;
+
     /** @use HasFactory<StaffInvitationFactory> */
     use HasFactory;
 

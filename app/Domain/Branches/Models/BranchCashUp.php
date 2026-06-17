@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Branches\Models;
 
 use App\Domain\Branches\Enums\CashUpStatus;
+use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use Database\Factories\BranchCashUpFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,6 +31,8 @@ use Illuminate\Support\Str;
  */
 class BranchCashUp extends Model
 {
+    use BelongsToBranch;
+
     /** @use HasFactory<BranchCashUpFactory> */
     use HasFactory;
 

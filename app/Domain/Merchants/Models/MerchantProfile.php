@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Merchants\Models;
 
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Database\Factories\MerchantProfileFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,6 +32,8 @@ use Illuminate\Support\Str;
  */
 class MerchantProfile extends Model
 {
+    use BelongsToMerchant;
+
     /** @use HasFactory<MerchantProfileFactory> */
     use HasFactory;
 
