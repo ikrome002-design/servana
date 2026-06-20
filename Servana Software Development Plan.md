@@ -1,1146 +1,1923 @@
-# Servana by Citrus — Production SaaS Development Plan
+# Servana by Citrus — Production Software Development Plan (v3, As-Built + Remediation + Feature Delivery)
 
-**Product:** Servana by Citrus (service-operations SaaS for African service-based SMEs)
-**Operator:** Citrus Labs Limited
-**Document type:** Implementation-ready software development plan for an IDE-based AI coding agent
-**Source of truth:** `SERVANA_COMBINED.txt` (Project Scope, Brand Identity, Product Technical Details v.2)
-**Plan version:** 1.0 — 2026-06-12
-
-> **How to use this document:** Execute the phases in §27 in order. Every phase references the design sections (§1–§26) it implements. Follow the IDE Agent Execution Rules in §28 for every change. Do not skip verification steps. Do not mark a phase complete until its acceptance criteria pass.
-
----
-
-## 1. Executive Architecture Summary
-
-Servana is a **single-application, single-database, row-level multi-tenant SaaS** built on Laravel 11 (PHP 8.3) with a Vue 3 + TypeScript SPA, PostgreSQL 16, Redis 7, Meilisearch, S3-compatible object storage, and Dockerized deployment with CI/CD.
-
-**Core architectural decisions (each is justified, evidenced against the scope, and binding):**
-
-| # | Decision | Rationale (evidence in scope) | Failure if omitted |
-|---|----------|-------------------------------|--------------------|
-| A1 | Row-level multi-tenancy: every tenant-owned table carries `merchant_id`; branch-owned tables also carry `branch_id`. Enforced via Eloquent global scopes + policies + DB constraints. | Scope §2.1, §7: "A merchant's data must never be accessible… by another merchant"; required tenant-scoped columns listed. Single-DB row tenancy fits thousands of SME tenants with low per-tenant data volume far better than DB-per-tenant (operational cost, migrations, backups). | Cross-tenant leakage (scope risk register: Critical, 8–15% likelihood if poorly built). |
-| A2 | **Branch is both an entity and an access scope** (`merchant_branches` + `branch_user_assignments`). | Scope §3.3 Implementation Note mandates exactly this. | Cross-branch leakage (Critical, 15–25%). |
-| A3 | **Magic Link is the only login method for all users**, layered on Laravel Sanctum SPA cookie sessions. No passwords are stored for any user. | Scope §2.3, §5.2 Universal Login Rule: "All users log in… via Magic Link." This is the documented exception to the generic "email/password" default in Product Technical Details §4.1 ("Specific login method depends on the project scope"). | Violates the product's access model; password handling adds attack surface the product explicitly avoids. |
-| A4 | Authorization = **role × permission × merchant scope × branch scope**, enforced server-side via Laravel Policies + a permission registry (custom tables per scope §7, modeled after Spatie semantics). | Scope §5.2, §8 API rules, §11 security. | Broken access control / IDOR. |
-| A5 | **ULIDs as public identifiers** on every externally exposed resource; internal `bigint` PKs never leave the API. | Scope §7 required columns (`uuid_or_ulid`), §8 "Use UUIDs or ULIDs externally." | Cross-account enumeration. |
-| A6 | Financial integrity is **database-enforced**: unique invoice/receipt numbers, sequence tables with row locks, append-only hash-chained audit logs, state machines for queue/session/payment/receipt transitions, period locks. | Scope §3.3 numbering rules, §3.8 append-only audit, §5.10–5.12, risk register. | Finance/audit confusion (45–60%), invoice tampering (50–70%), cash leakage (65–85%). |
-| A7 | All slow work (PDF reports, emails, exports, billing generation, search indexing, day-close reports) runs on **Redis-backed queues** with tenant context serialized into every job. | Scope §6 stack, Product Technical Details §17. | Request latency, lost tenant context in jobs. |
-| A8 | **Vue 3 + TypeScript + Pinia + Vue Router + Tailwind CSS**, role-based layouts per scope §9 frontend structure. | Scope §6 stack table; TypeScript preferred; component architecture mandated. | Unmaintainable frontend; violates non-negotiables. |
-| A9 | Citrus Billing Engine is a **ledger-first domain module**: every validated service invoice accrues a platform-fee ledger entry; a scheduled cycle job rolls entries into a Citrus platform-fee invoice per merchant. Service-fee tier affects merchant-client invoice pricing only, never the platform-fee liability. | Scope §3.2 tier table, §5.13. | Merchant fee disputes (55–75%). |
-| A10 | Observability: structured JSON logs, Sentry error tracking, Laravel Horizon for queues, health endpoints, uptime checks, dependency scanning (composer audit / npm audit / Dependabot), nightly encrypted DB backups with tested restores. | Product Technical Details §18, §20. | Undetected production failures. |
-
-**System shape:**
-
-```text
-Browser (Vue 3 SPA, Tailwind, light/dark themes)
-   │  HTTPS, Sanctum session cookie, CSRF
-   ▼
-Nginx ──► Laravel 11 API (/api/v1)
-            │  middleware: auth → tenant → branch-scope → throttle → policy
-            ▼
-   Domain Services (Onboarding, Branch Ops, HR, Catalogue, Queue,
-   Appointments, Sessions, Invoicing, Payments, Receipts, Billing Engine,
-   Commissions, Client Protection, Reports, Audit)
-            ▼
-   PostgreSQL 16 (row-level tenancy, constraints, sequences)
-   Redis 7 (cache, queues, rate limits)   Meilisearch (scoped indexes)
-   S3 (private files, signed URLs)        SMTP provider (SES/Mailgun)
-            ▼
-   Horizon workers + Laravel Scheduler (billing cycles, day-close PDFs,
-   inactivity sweeps, backups, index sync)
-```
+> This document is the single executable plan of record for building and completing Servana by Citrus.
+> It is written to be executed by an IDE-based AI coding agent without guessing. Every phase is bounded,
+> reviewable, testable, and traceable to authoritative product scope. Where this plan names a mandatory,
+> version-controlled specification file (for example a per-table data-dictionary entry or a per-screen
+> specification), that file is a required deliverable of the owning phase and must exist and pass review
+> **before** the corresponding migration, route, or screen is implemented. "Details in the owning phase"
+> is never used as a placeholder: the owning phase either contains the detail inline here, or is bound to
+> create the named specification file to the exact format defined in this plan.
 
 ---
 
-## 2. Assumptions and Constraints
+## 0. How the Implementation Agent Must Use This Plan
 
-Each assumption is documented so the IDE agent never silently guesses. If an assumption is invalidated by the product owner, raise it before implementing the affected phase.
-
-| ID | Assumption / Constraint | Evidence / Justification |
-|----|--------------------------|--------------------------|
-| AS-1 | **Stack pinned:** Laravel 11.x, PHP 8.3, PostgreSQL 16, Redis 7, Vue 3.4+, TypeScript 5.x, Tailwind CSS 3.4+, Vite 5, Meilisearch 1.x, Docker Compose for dev, GitHub Actions for CI/CD. | Scope §6 mandates the layers; exact versions chosen as current LTS-grade releases satisfying "PHP 8.2+", "PostgreSQL preferred". |
-| AS-2 | **Auth exception is documented:** Magic Link replaces email/password for all users (scope §2.3). Password reset flows are therefore N/A; email verification is intrinsic to Magic Link possession plus an explicit `email_verified_at` set on first successful login. MFA (TOTP) is an optional add-on for Super Admin, Merchant Admin, Finance, Audit roles (scope §11). | Required by §8 of the prompt ("unless a different login method is specified") and scope Universal Login Rule. |
-| AS-3 | Currency is **KES**, stored as `bigint` minor units (cents) with a `currency` char(3) column for forward compatibility. Timezone: `Africa/Nairobi` for merchant-facing day boundaries; all timestamps stored UTC (`timestamptz`). | Scope examples use KES; Kenyan market focus. Money as integers prevents float drift in invoices/commissions/fees. |
-| AS-4 | Clients are **records, not login accounts** at launch (scope §3.9). The schema must not block a future client portal (clients table keeps optional `user_id` nullable FK). | Scope §3.9 "optional later conversion". |
-| AS-5 | Payments are **offline**; Servana records and validates them but never moves money. No PSP integration at launch. | Scope §2.2. |
-| AS-6 | Launch notification channel is **email only**; SMS/WhatsApp are phased (notification abstraction must allow adding channels without schema change). | Scope §5.17. |
-| AS-7 | Preferred-personnel fee launches with **fixed and percentage models only**; schema supports category/tier models via a `rules jsonb` column. | Scope §4.2 recommended launch model. |
-| AS-8 | Search launches with **Meilisearch** (clients, staff, invoices, receipts, appointments) — adequate for SME-scale data, simplest ops. Elasticsearch only if a documented scale trigger occurs (>50M searchable docs). | Scope §6 allows Meilisearch "depending on scale". |
-| AS-9 | Merchant Personnel **contact export does not exist anywhere**: no DB export flags, no API endpoints, no UI. Any attempt to call a non-existent export path under personnel scope is logged as an unauthorized-access attempt. | Scope §5.15 Removed Launch Capability. |
-| AS-10 | Inactivity lifecycle (suspend at 3 months, delete at 6 months of no platform-fee payment) performs **anonymizing soft-deletion of identity data while archiving financial/audit records** to satisfy "must not be silently destroyed" (scope §3.2 Inactivity Rule) and Kenya Data Protection Act retention duties. | Scope §3.2. |
-| AS-11 | One staging environment mirrors production topology. Production hosting is any Docker-capable host (e.g., AWS ECS/EC2 or DigitalOcean); the plan is host-agnostic but requires the §26 pipeline. | Product Technical Details §20. |
-| AS-12 | "Super Administrator" is a **platform-scope role outside any merchant tenant**; platform staff records live in the same `users` table flagged via `platform_roles`. Super Admin never holds merchant roles. | Scope §3.1 exclusions; §7 of prompt (super-admin separation). |
+1. Read the entire owning phase in Section 79 (remediation) or Section 80 (features) before changing any code.
+2. Open every authoritative scope reference the phase cites in `SERVANA COMBINED.txt`.
+3. Inspect the actual repository state (migrations, `route:list`, policies, services, components, tests, lock files, CI).
+4. Prove the current state with commands and evidence; never trust `PROGRESS.md` or `CHANGELOG.md` as proof of behavior.
+5. For any defect, perform root-cause analysis (Section 6) before editing.
+6. Produce a file-level implementation checklist for the phase.
+7. Implement only the scoped phase. Do not touch unrelated bounded contexts.
+8. Write or update tests **before** declaring completion. Never weaken, skip, or delete a test to pass.
+9. Run the full relevant quality suite (Section 75) and produce the proof artifacts the phase requires.
+10. Update `PROGRESS.md`, `CHANGELOG.md`, the traceability matrix (Section 85), and any new ADRs.
+11. Stop and record a blocking ambiguity if an authoritative rule is missing. Never invent business rules.
 
 ---
 
-## 3. Non-Negotiable Security Rules
+## 1. Document Control
 
-These restate and operationalize scope §11 + Technical Details §22. CI enforces several mechanically (noted). **Any pull request violating these rules must be rejected.**
+| Field | Value |
+|---|---|
+| Document | `SERVANA_DEVELOPMENT_PLAN.md` |
+| Version | v3 (full rewrite incorporating all corrections in `SERVANA_DEVELOPMENT_PLAN_CORRECTIONS.md`) |
+| Status | Active plan of record |
+| Product authority | `SERVANA COMBINED.txt` (Upgraded Platform Project Scope + PART B Contradiction-Resolution Amendment + Brand Identity) |
+| Engineering-correction authority | `SERVANA_DEVELOPMENT_PLAN_CORRECTIONS.md` (Corrections 1–25, Sections 0 and 26–27) |
+| As-built evidence | repository, migrations, `route:list`, policies, tests, lock files, CI, `PROGRESS.md`, `CHANGELOG.md` (claims, not proof) |
+| Currency | KES default; integer minor units only; `char(3)` ISO currency with uppercase check |
+| Primary timezone | `Africa/Nairobi` for business-date boundaries; `timestamptz` for events |
+| Database | PostgreSQL 16 (partial indexes, exclusion constraints, JSONB, advisory locks, triggers are required and PostgreSQL-specific) |
+| Cache/queue/locks | Redis 7 (persistence/failover sized per Section 77) |
+| Object storage | Private S3-compatible (MinIO in dev; managed S3-compatible in production) with versioning + lifecycle |
+| Backend | Laravel (target Laravel 12.60+; see ADR-001 and Phase R1) on PHP 8.3 pinned across all images |
+| Frontend | Vue 3 + TypeScript + Vite SPA, Pinia, Tailwind, Sanctum stateful session auth |
 
-1. **No jQuery.** CI greps `package.json` and the bundle for `jquery` and fails the build.
-2. **Frontend checks are UX only.** Every mutating route has a Form Request + Policy. CI test `tests/Feature/Security/RouteCoverageTest.php` asserts every `/api/v1` route (except auth + health) carries `auth:sanctum` and a policy/permission middleware.
-3. **No cross-tenant or cross-branch leakage.** Every tenant-owned model uses the `BelongsToMerchant` global scope; branch-owned models add `BelongsToBranch`. Isolation tests (§25) are mandatory per module.
-4. **No skipped authorization.** Controllers may not contain raw `Model::find()` on tenant data; route-model binding resolves by ULID **within tenant scope** so foreign ULIDs 404, never 403-with-existence-leak.
-5. **No hardcoded secrets.** `.env` only; CI runs `gitleaks` on every push.
-6. **No sensitive data in logs.** A log processor redacts `token`, `magic_link`, `payment_reference` partials, emails/phones in non-audit channels. Never log Magic Link tokens.
-7. **Responsive behavior via CSS media queries only** (breakpoints §13). No JS device detection. No `user-agent` branching for layout.
-8. **Never disable browser zoom.** `viewport` meta must remain `width=device-width, initial-scale=1` — no `maximum-scale`, no `user-scalable=no`. CI greps for violations.
-9. **No fixed layouts that break mobile.** Every screen tested at 360px, 768px, 1280px in Playwright.
-10. **No shipping without validation + rate limiting + secure auth.** Throttle map in §11.6 is mandatory.
-11. **Accessibility is a release gate** (§15 checks run in CI via axe-core on critical pages).
-12. **CSS is presentation only.** State changes (disabled, error, open/closed) are driven by ARIA attributes / data attributes set by JS or server state; CSS merely styles them.
-13. **JS never substitutes for backend authorization.**
-14. **Magic Links:** single-use, 15-minute expiry, 64-byte random tokens stored **hashed (SHA-256)**, bound to email + intended tenant context, invalidated on suspension/deactivation, throttled (§9).
-15. **Audit logs are append-only and hash-chained.** No `UPDATE`/`DELETE` grants on `audit_logs` for the app DB role; a DB trigger raises an exception on update/delete attempts.
-16. **Receipts only after validation.** DB-level guard: `receipts.payment_record_id` FK plus a trigger/constraint check that the referenced payment record status is `validated` at insert time, in addition to service-layer enforcement.
-17. **Personnel contact export endpoints do not exist.** Tests assert 404 on any historic/guessed export path and that an `unauthorized_access` audit row is written for export-shaped requests under personnel scope.
-18. **Exports use expiring signed URLs**, are permission-gated, reason-required for sensitive reports, download-counted, and audited (scope Finance Export Governance).
-19. **HTTPS enforced in production** (HSTS, secure cookies, `SESSION_SECURE_COOKIE=true`, redirect 80→443 at Nginx).
-20. **Strict CORS:** only the SPA origin(s); credentials allowed only for those origins.
+### 1.1 Change Control
 
----
-
-## 4. System Architecture
-
-### 4.1 Components
-
-| Component | Technology | Responsibility |
-|-----------|-----------|----------------|
-| Edge | Nginx (container) | TLS termination, HTTP→HTTPS, gzip/brotli, static asset serving, proxy to PHP-FPM, security headers (CSP, HSTS, X-Content-Type-Options, Referrer-Policy, frame-ancestors 'none'). |
-| App | Laravel 11 on PHP-FPM 8.3 | API (`/api/v1`), Sanctum SPA auth, domain services, policies. |
-| SPA | Vue 3 + TS, built by Vite, served by Nginx | All role dashboards and workflows. |
-| DB | PostgreSQL 16 | Source of truth; constraints enforce financial invariants. |
-| Cache/Queue | Redis 7 (separate logical DBs: cache=0, queue=1, horizon=2, throttle=3) | Cache, queues, rate limiting, session locks. |
-| Workers | Laravel Horizon (supervised container) | All queued jobs; per-queue concurrency (mail, pdf, billing, search, default). |
-| Scheduler | `php artisan schedule:work` container | Billing cycles, day-close report dispatch, inactivity sweeps, backup trigger, Meilisearch health, ledger reconciliation. |
-| Search | Meilisearch 1.x | Tenant-filtered indexes (every document carries `merchant_id`, `branch_id`; every query injects mandatory filters). |
-| Object storage | S3-compatible (AWS S3 prod, MinIO dev) | Merchant logos, dispute evidence, generated PDFs, exports — all private; access via temporary signed URLs only. |
-| Mail | SES/Mailgun via Laravel Mail | Magic Links, invitations, notifications, daily PDF reports. |
-| Error tracking | Sentry (backend + frontend SDKs) | Exceptions, performance traces. |
-| CI/CD | GitHub Actions | Lint, static analysis, tests, build, scan, deploy. |
-
-### 4.2 Environments
-
-| Env | Purpose | Data |
-|-----|---------|------|
-| local | Docker Compose dev | Seeded fixtures (2 merchants × 2 branches × all roles) |
-| ci | Ephemeral per pipeline | Migrated + factory data |
-| staging | Production mirror | Anonymized fixtures; real mail to sandbox inbox (Mailpit/SES sandbox) |
-| production | Live | Real data; backups; monitoring |
-
-### 4.3 Request lifecycle (authenticated API call)
-
-```text
-1. Nginx: TLS, headers, proxy
-2. Laravel kernel: EnsureFrontendRequestsAreStateful (Sanctum), CSRF (web origin)
-3. auth:sanctum → resolves User
-4. ResolveTenantContext middleware → loads active MerchantUser membership
-   (or platform context for Super Admin); aborts 403 'no_tenant_context'
-   if user has none; sets app(TenantContext::class)
-5. EnsureBranchScope middleware (branch-scoped route groups) → validates the
-   {branch} route param ULID belongs to merchant AND user has an active
-   branch_user_assignment (or is Merchant Admin); aborts 404 otherwise and
-   writes an unauthorized_access audit row when the branch exists under
-   another merchant
-6. throttle:<named-limiter>
-7. FormRequest validation (authorize() delegates to Policy)
-8. Controller → Domain Service (DB transaction) → API Resource
-9. AuditRecorder (within the same transaction for financial writes)
-10. JSON response: { data, meta, links } or { error: { code, message, fields } }
-```
+- This plan changes only through a reviewed PR that updates the affected section, the traceability matrix, and any ADR.
+- Enum values, status names, route names, permission keys, audit-event names, and lifecycle rules are defined once in this plan and referenced everywhere. Divergence in any layer is a defect.
+- No phase may introduce a business table, route, screen, or financial workflow that is not represented in this plan and the traceability matrix.
 
 ---
 
-## 5. Backend Architecture
+## 2. Source-of-Truth Hierarchy
 
-### 5.1 Directory layout (Laravel 11, domain-oriented)
+Apply this precedence when any two sources appear to conflict. Do not silently choose between conflicting requirements: record the conflict, name the controlling source, state the decision, and update every affected section.
 
-```text
-app/
-  Console/Commands/            # billing:run-cycle, merchants:inactivity-sweep, audit:verify-chain
-  Domain/
-    Auth/        {Actions, Services, Models: MagicLoginToken, Notifications}
-    Tenancy/     {TenantContext.php, Concerns/BelongsToMerchant.php, Concerns/BelongsToBranch.php}
-    Onboarding/  {Actions: RegisterMerchant, CompleteFirstTimeSetup}
-    Merchants/   {Models: Merchant, MerchantProfile, MerchantUser; Services}
-    Branches/    {Models: MerchantBranch, BranchOperatingHour, BranchCalendarException,
-                  BranchDayRecord, BranchCashUp; Services: BranchDayService, CashUpService,
-                  BranchClosureGuard}
-    Hr/          {Models: StaffProfile, StaffInvitation, PersonnelServiceEligibility,
-                  PersonnelAvailabilitySchedule; Services: StaffLifecycleService}
-    Catalogue/   {Models: Service, ServiceCategory}
-    Clients/     {Models: Client, ClientConsent; Services: DuplicateClientGuard, ClientMergeService}
-    Scheduling/  {Models: Appointment; Services: AppointmentService, AvailabilityCalculator,
-                  ConflictGuard}
-    Queueing/    {Models: QueueEntry; Services: QueueService, WaitTimeEstimator,
-                  ReassignmentService; States/}
-    Sessions/    {Models: ServiceSession; Services: SessionService; States/}
-    Invoicing/   {Models: Invoice, InvoiceItem, InvoiceNumberSequence;
-                  Services: InvoiceService, NumberGenerator, VoidApprovalService,
-                  TierPricingCalculator}
-    Payments/    {Models: PaymentRecord, PaymentValidationEvent, PaymentReferenceCheck,
-                  ExternalRefund, FinanceDispute; Services: PaymentRecordingService,
-                  ValidationService, DuplicateReferenceDetector, RefundService}
-    Receipts/    {Models: Receipt, ReceiptNumberSequence, ReceiptReissue;
-                  Services: ReceiptService}
-    Billing/     {Models: PlatformFeeLedgerEntry, PlatformFeeInvoice, PlatformFeeDispute,
-                  ServiceFeeTier enum; Services: BillingEngine, FeeAccrualService,
-                  CycleInvoiceService, SuspensionTriggerService}
-    Commissions/ {Models: CommissionRule, CommissionLedgerEntry;
-                  Services: CommissionCalculator, CommissionReversalService}
-    FinanceOps/  {Models: FinancialPeriodLock, FinanceExport; Services: PeriodLockService,
-                  ExportService}
-    Audit/       {Models: AuditLog, FlaggedAuditEvent; Services: AuditRecorder, ChainVerifier}
-    Notifications/ {Models: NotificationLog; Channels, Notifications/*}
-    Reports/     {Services: BranchReportService, MerchantReportService, PlatformReportService,
-                  Pdf/DayCloseReportPdf, Pdf/CashUpReportPdf}
-  Http/
-    Controllers/Api/V1/{Auth, Platform, Merchant, Branch, Hr, Catalogue, Clients,
-                        Scheduling, Queueing, Sessions, Invoicing, Payments, Receipts,
-                        Billing, Commissions, Finance, Audit, Reports, Notifications}/
-    Middleware/{ResolveTenantContext, EnsureBranchScope, EnsureRole, EnsurePermission,
-                EnsureMerchantActive, LogUnauthorizedAttempt}
-    Requests/...      # one FormRequest per mutating endpoint
-    Resources/...     # one JsonResource per exposed model
-  Policies/           # one per tenant-owned model
-  Jobs/               # SendMagicLink, SendStaffInvitation, GenerateDayClosePdf,
-                      # GenerateCashUpPdf, AccruePlatformFee, RunBillingCycle,
-                      # CalculateCommission, ReverseCommission, BuildFinanceExport,
-                      # SyncSearchIndex, SweepInactiveMerchants, NotifyFinanceInbox
-  Enums/              # backed string enums for every status machine
-  Support/Money.php   # integer money value object
-database/{migrations, seeders, factories}
-routes/{api_v1.php, web.php, console.php}
-tests/{Unit, Feature, Feature/Security, Feature/Isolation, Browser}
-```
+1. **`SERVANA COMBINED.txt`** governs **product behavior**: roles, role boundaries, permissions intent, billing behavior, account lifecycles, workflows, UX, M-Pesa behavior, compensation rules, audit behavior, and acceptance requirements. PART B (Contradiction-Resolution Amendment) has higher precedence than the body of the scope and must reference the requirement it supersedes.
+2. **`SERVANA_DEVELOPMENT_PLAN_CORRECTIONS.md`** governs **implementation planning**: architecture, data model, API contracts, security controls, sequencing, decomposition, testing, migration strategy, and production readiness. Where the previous development plan conflicted with the corrections, the corrections win and are folded into this v3.
+3. **This plan (`SERVANA_DEVELOPMENT_PLAN.md` v3)** translates 1 and 2 into sequenced, executable engineering work. It reuses prior plan content only where that content is correct and compatible with 1 and 2.
+4. **The repository** (migrations, routes, policies, services, components, tests, deployment files) is the authoritative evidence of what is actually built — but only after Phase V verifies it. `PROGRESS.md` and `CHANGELOG.md` are useful context, never proof.
 
-### 5.2 Backend conventions (binding)
+### 2.1 Settled Cross-Cutting Rules (binding everywhere)
 
-- **Status fields are PHP backed enums** mirrored by Postgres `CHECK` constraints; transitions validated by tiny state-machine classes (`Domain/*/States`) that throw `InvalidTransition` (422 `invalid_state_transition`).
-- **All multi-step writes are transactional.** Walk-in creation, invoice+items, payment validation→receipt→commission→fee accrual chains each run in `DB::transaction()` with `lockForUpdate()` on sequence and balance rows.
-- **Money** never floats: `Money` value object wrapping `int` minor units; Eloquent casts.
-- **Eloquent mass-assignment:** every model declares explicit `$fillable`; `Model::preventSilentlyDiscardingAttributes()` and `preventLazyLoading()` enabled in non-production to surface mistakes during development.
-- **No business logic in controllers.** Controllers: validate → authorize → call service → return Resource.
-- **Events** (`PaymentValidated`, `InvoiceVoided`, `RefundApproved`, `StaffSuspended`, …) decouple side effects: commission calc, fee accrual, notifications, search sync, session invalidation — each side effect is a queued listener carrying tenant context.
+These are non-negotiable and apply to every phase, table, route, screen, job, and test:
+
+1. Financial values are stored as `bigint` minor units plus a `char(3)` uppercase-checked currency. Floating-point money is forbidden. KES is the default currency.
+2. Every tenant-owned record is tenant-scoped (`merchant_id`). Every branch-owned record is tenant- and branch-scoped (`merchant_id` + `branch_id`). Personnel-facing own-scope resources additionally derive `staff_profile_id` from the authenticated membership and never accept another personnel identifier.
+3. Merchant **operational status** and merchant **billing status** are separate state machines. A billing payment never reactivates a merchant suspended for fraud, security, legal, compliance, manual platform action, or deactivation.
+4. Merchant-client payments are **off-platform records** at launch (Servana records, does not move, client funds). Merchant-to-Servana subscription/platform billing payments use **M-Pesa**. Servana does not move personnel payout money at launch.
+5. The **Super Administrator** cannot create merchant tenants, create the first Merchant Administrator, impersonate merchant users, or conduct merchant operations. Those routes/screens must not exist. The only merchant-creation path is merchant self-registration.
+6. **Personnel contact export is permanently prohibited** in every channel: API, UI, search, download, SMS, logs, and exports. No endpoint returns bulk full phone numbers.
+7. **Maker/checker** separation is enforced server-side for financial workflows. Settled financial history is never updated destructively; corrections use reversal/adjustment ledger rows.
+8. All mutation routes carry an explicit route classification (Section 24). All stateful aggregates transition only through documented transition actions (Section 25). No controller assigns a status string directly.
+9. The canonical platform billing modes are exactly:
+   `fixed_amount`, `percentage_on_merchant_client_invoice`, `fixed_amount_plus_percentage_on_merchant_client_invoice`.
+   At launch Servana is **subscription-first**: the subscription plan/price path is launch-active; the percentage platform-fee engine is built and launch-capable (Phase 20E) but is activated only when a percentage component is configured.
+10. Authorization is enforced on the backend. Frontend permission checks are UX only and never a security control.
 
 ---
 
-## 6. Frontend Architecture
+## 3. Scope and Product Summary
 
-### 6.1 Stack and structure
+Servana by Citrus is a multi-tenant SaaS operating platform for service-based SMEs (barbershops, salons, spas, grooming and beauty studios) in African markets, sold subscription-first and integrated with M-Pesa for merchant billing.
 
-Vue 3 (Composition API, `<script setup lang="ts">`), Pinia, Vue Router 4, Tailwind CSS, Vite, axios-based API client, Headless UI + custom components, vue-i18n-ready copy files (English at launch). Structure follows scope §9 exactly:
+### 3.1 Account Types (8) and Their Boundaries
 
-```text
-resources/spa/src/
-  layouts/    AuthLayout.vue  PlatformAdminLayout.vue  MerchantLayout.vue
-              BranchLayout.vue FrontOfficeLayout.vue PersonnelLayout.vue
-              FinanceLayout.vue AuditLayout.vue
-  pages/      auth/ platform/ merchant/ branch/ hr/ finance/ front-office/
-              personnel/ audit/
-  components/ forms/ tables/ modals/ dashboards/ queue/ appointments/
-              invoices/ receipts/ reports/ cash-up/ audit/ ui/ (design system)
-  services/   apiClient.ts authService.ts tenantContext.ts permissionService.ts
-  stores/     authStore.ts merchantStore.ts branchStore.ts permissionStore.ts
-              themeStore.ts notificationStore.ts
-  router/     index.ts guards.ts routes/{auth,platform,merchant,branch,hr,
-              finance,frontOffice,personnel,audit}.ts
-  types/      api.ts models.ts enums.ts
-  utils/      money.ts dates.ts status.ts
-```
+The platform has one platform-side role and seven merchant-side roles. Role boundaries are authoritative (`SERVANA COMBINED.txt` §4, §13) and enforced through the permission matrix (Section 19):
 
-### 6.2 Authentication & tenant state
+- **Super Administrator (platform):** platform governance only — billing settings, plans/prices, entitlements, promotions, free-period offers, preferred-personnel-fee rules, M-Pesa configuration and reconciliation exceptions, merchant suspension/reactivation/deactivation, registration monitoring, platform audit. **Cannot** create merchants, mint the first Merchant Administrator, impersonate, or perform merchant operations.
+- **Merchant Administrator / Owner:** account owner — merchant profile, branches, staff overview, subscription/plan/billing/payment, recovery, all-branch reports, compensation summary, high-value payout approval, exceptional period-reopen approval. **Not** an operational superuser: no service-catalogue mutation, no staff compensation editing, no invoice creation, no payment validation, no queue transfer by default.
+- **Branch Manager:** owns the **service catalogue**, branch profile/calendar, branch day open/pause/close (and reopen with reason), cash-up submission, branch reports, branch-context subscription payment. **Must not** receive invoice creation, queue/appointment transfer, payment validation, cash-up approval, refund management, or period-lock management.
+- **HR:** owns staff, invitations, lifecycle, role/branch assignment, personnel eligibility/availability, **compensation setup** (plans, commission rules), and payout-run draft preparation/submission. Branch-scoped. Cannot self-escalate, manage other branches, mark payouts paid, approve payout runs, or export client/payment data.
+- **Front Office:** owns ordinary client creation, appointments, walk-ins, queue assignment/transfer, service sessions, preferred-personnel selection, invoice creation, and **default customer-payment recording** (maker). Branch-scoped. Recording a payment does not grant validation.
+- **Finance:** owns payment **validation**/rejection/correction, receipts/reissue, refunds/disputes, cash-up approval, **financial period locks**, finance exports, subscription payment-attempt visibility, compensation liability, compensation adjustments, payout verification/standard approval/mark-paid, and earnings-query responses (checker). Sensitive actions require MFA step-up.
+- **Personnel:** strict **own-scope** — own queue/appointments/sessions, own served clients (masked contact), own compensation/earnings/statements/payouts, own earnings queries, and **in-platform bulk SMS to personally served clients only**. No contact export ever.
+- **Audit:** branch-scoped, read-only with field-masking; may update only flagged-event **review metadata**. Cannot modify any source operational, financial, compensation, billing, user, or audit-log record.
 
-- `authStore`: `user`, `memberships[]` (merchant + role + branch assignments), `activeMembership`, `permissions[]` from `GET /api/v1/me`. Bootstrap on app start; show full-page loading state until resolved.
-- Login flow: request Magic Link → "check your email" screen → `/auth/verify?token=…` page POSTs token → Sanctum session established → bootstrap `/me` → route to role home (`permissionService.homeRouteFor(role)`).
-- **Branch switching:** users with multiple branch assignments pick the active branch (persisted server-side in `merchant_users.last_branch_id`); the API still authorizes every request independently — the selector is convenience only.
-- Router guards: `requiresAuth`, `requiresRole`, `requiresPermission`, `requiresActiveMerchant`. Guards are UX; the API is the security boundary (§3 rule 2).
+### 3.2 Core Product Pillars
 
-### 6.3 API client (`services/apiClient.ts`)
+- **Subscription-first billing** with configurable billing modes; flat plan pricing from a single price source; trial → grace → suspension lifecycle; no mid-cycle proration; shared overdue escalation.
+- **M-Pesa merchant billing** (STK Push first; PayBill/Till callback reconciliation fallback; transaction-status reconciliation; automatic billing-only reactivation) with no manual Super-Administrator payment-recording path.
+- **Branch-scoped operations:** services/catalogue, clients, appointments, walk-ins, queues, service sessions, preferred-personnel fee.
+- **Financially auditable money flow:** merchant-client invoices → offline payment recording → Finance validation → auto receipts → cash-up → period locks → refunds/disputes, with immutable ledgers and maker/checker.
+- **Compensation:** commission-only, salary-only, salary-plus-commission; effective-dated plans; commission earned only after validated payment; salary accrual; payout runs with HR→Finance→(Merchant Admin for high value) ownership; personnel own-scope earnings.
+- **Personnel bulk SMS** to served clients as a controlled messaging workflow that can never become a contact-export surrogate.
+- **Audit, observability, responsiveness, dark mode, and accessibility** as first-class, tested concerns.
 
-- Single axios instance: `baseURL=/api/v1`, `withCredentials=true`, `X-Requested-With`, automatic CSRF cookie priming (`GET /sanctum/csrf-cookie`) before first mutating call.
-- Response interceptor maps the structured error envelope (§11.5) to typed `ApiError { code, message, fields }`. 401 → logout + redirect; 403 `merchant_suspended` → suspended-merchant screen; 423 `period_locked` → locked-period banner; 409 `duplicate_reference` / `duplicate_client` → dedicated modals; 429 → toast with retry-after.
-- All list calls share `Paginated<T>` typing: `{ data: T[], meta: { current_page, per_page, total, last_page }, links }`.
+### 3.3 Out of Scope at Launch (explicit exclusions)
 
-### 6.4 Required UI states (scope §9) — implementation contract
-
-Every page/component must explicitly render: Loading (skeletons, no spinners-only), Empty (illustrated, with primary action), Success, Error (retry affordance), plus the domain states: Unauthorized, Suspended merchant, Inactive user, Pending payment validation, Pending staff activation, Suspended branch, Branch closed, Pending cash-up review, Financial period locked, Duplicate payment reference, Duplicate client warning, No branch access, No permission. These are encoded as a `<StateBoundary>` wrapper component taking a typed `viewState` discriminated union; CI Playwright tests snapshot each state for the critical pages.
-
-### 6.5 Safe rendering & secrets
-
-- Never `v-html` user content; the rare rich fields (notes) render as plain text with line breaks via CSS `white-space: pre-line`.
-- No secrets, no privileged logic in the bundle. CI greps `dist/` for `APP_KEY`, `SECRET`, AWS key patterns.
+- Super-Administrator merchant creation, first-admin creation, impersonation, and merchant operations.
+- Movement of merchant-client funds and personnel payout funds by Servana (records only).
+- Client self-service portal (inactive; branch records only).
+- Mid-cycle proration; automatic plan grandfathering.
+- Any contact-export capability for Personnel.
+- Percentage platform-fee billing **activation** unless a percentage component is configured (engine is built in 20E and remains launch-inactive until configured).
 
 ---
 
-## 7. Database Architecture
+## 4. Current As-Built Verification (Reported vs. To-Be-Verified)
 
-PostgreSQL 16. Conventions for **every** table unless noted: `id bigint generated always as identity primary key`; `ulid char(26) not null unique` (public identifier; indexed); `created_at/updated_at timestamptz`; tenant-owned tables add `merchant_id bigint not null references merchants(id)` (indexed); branch-owned tables add `branch_id bigint not null references merchant_branches(id)` (indexed, composite index `(merchant_id, branch_id)`); mutable business tables add `created_by/updated_by bigint references users(id)`; soft deletes (`deleted_at timestamptz`) only where recovery is a business need (marked SD below). Financial and audit tables are **never** soft- or hard-deleted by application code (retention policy §7.4).
+`PROGRESS.md` and `CHANGELOG.md` report Phases 1–8 merged (PRs #1–#8) and Phase 9 (tenant-scoped data-access hardening) complete locally and awaiting CI/owner approval. **These are claims, not verified facts.** Phase V (Section 79) regenerates this section from repository evidence and produces `docs/verification/as-built-discrepancies.md`. Until Phase V completes, no remediation or feature phase may rely on any row below being correct.
 
-### 7.1 Identity, tenancy, access
+Verification statuses used: `Claimed` (reported, not yet independently verified), `Verified`, `Partially verified`, `Not found`, `Contradicted`, `Requires remediation`.
 
-**users** — global identities (platform staff + merchant staff). No password column.
-| Column | Type | Notes |
-|---|---|---|
-| id, ulid | — | PK / public id |
-| email | citext not null unique (partial: `where deleted_at is null`) | login identity |
-| phone | varchar(32) null, partial unique where active staff (see staff_profiles) | |
-| first_name, last_name, display_name | varchar(120) | |
-| email_verified_at, last_login_at | timestamptz null | set on first/each magic-link success |
-| status | enum: active, suspended, deactivated | check constraint |
-| is_platform_staff | boolean default false | Super Admin scope flag |
-| mfa_secret (encrypted), mfa_enabled_at | text/timestamptz null | optional TOTP |
-| deleted_at | SD | anonymization on lifecycle delete |
-Indexes: email, status. **Security:** email is the only credential anchor; uniqueness enforced for active rows.
-
-**merchants** — tenant root. `ulid`, `name varchar(160)`, `slug citext unique`, `status enum(active,suspended,deactivated,pending_setup)`, `service_fee_tier enum(customer_centric,split_tier,business_centric)`, `setup_completed_at timestamptz null`, `suspended_at`, `suspension_reason text`, `last_fee_payment_at timestamptz null` (drives inactivity rule), timestamps. Index: status, last_fee_payment_at.
-
-**merchant_profiles** — 1:1 merchant. `merchant_id unique`, `business_category varchar(80)`, `logo_path varchar(255) null` (S3 key, private), `contact_email`, `contact_phone`, `address`, `town`, `country char(2) default 'KE'`, `timezone varchar(64) default 'Africa/Nairobi'`.
-
-**merchant_users** — membership: which user holds which account-type role in which merchant.
-| Column | Type | Notes |
-|---|---|---|
-| merchant_id, user_id | FK | unique together (one membership per user per merchant) |
-| role | enum: merchant_admin, branch_manager, hr, finance, front_office, personnel, audit | the seven merchant account types |
-| status | enum: invited, active, suspended, deactivated | |
-| invited_by | FK users | |
-| activated_at, suspended_at, deactivated_at | timestamptz | |
-| last_branch_id | FK null | UX branch selector persistence |
-Indexes: (merchant_id, role, status), user_id. **Security:** all authorization derives from an `active` row here.
-
-**branch_user_assignments** — branch scope per membership. `merchant_user_id FK`, `branch_id FK`, `status enum(active,revoked)`, `assigned_by FK users`, `assigned_at`, `revoked_at`. Unique `(merchant_user_id, branch_id) where status='active'`. **Every branch-scoped role (branch_manager, hr, finance, front_office, personnel, audit) requires an active row to touch branch data.** Merchant Admin sees all branches of own merchant by role.
-
-**roles / permissions / role_permission_assignments** — permission registry (seeded, not merchant-editable at launch): `permissions(key citext unique, group varchar(60), description)`; `roles(key citext unique, scope enum(platform,merchant))`; pivot with unique pair. The full matrix is §10.3. Granular finance permissions can be toggled per merchant_user via **merchant_user_permission_overrides** (`merchant_user_id`, `permission_id`, `granted boolean`, `set_by`, unique pair) to satisfy "Merchant Finance must not launch as one broad permission".
-
-**magic_login_tokens** — `user_id FK`, `token_hash char(64) unique` (SHA-256 of 64-byte random), `intended_merchant_id FK null`, `ip_requested inet`, `expires_at timestamptz not null`, `consumed_at timestamptz null`, `invalidated_at timestamptz null`, `created_at`. Index: (user_id, consumed_at). Retention: purge rows >30 days nightly. **Security:** raw token never stored; single use enforced by atomic `UPDATE … SET consumed_at=now() WHERE token_hash=? AND consumed_at IS NULL AND invalidated_at IS NULL AND expires_at>now()` returning row count 1.
-
-**staff_profiles** — 1:1 with merchant_users for staff. `merchant_user_id unique`, `merchant_id`, `primary_branch_id FK`, `first_name,last_name,display_name`, `phone varchar(32) not null`, `profile_photo_path null`, `role_title varchar(80)` (Barber, Stylist…), `employment_type enum(full_time,part_time,contract,commission_only)`, `employment_status enum(employed,on_leave,terminated)`, `start_date date`, `invited_by FK`. Partial uniques: `phone` and user email unique among **active** staff platform-wide (scope Duplicate Staff Prevention) — implemented as partial unique indexes joined through a denormalized `is_active boolean` maintained by the lifecycle service. SD.
-
-**staff_invitations** — `merchant_id, branch_id, email citext, role enum(merchant account types), role_title`, `service_eligibility_ids jsonb null`, `token_hash char(64) unique`, `status enum(pending,accepted,revoked,expired)`, `invited_by`, `expires_at (72h)`, `accepted_at, revoked_at`, `resend_count smallint default 0`, `last_sent_at`. Index: (merchant_id,status), email. Audit every transition.
-
-**staff_history** — append-only role/branch/status history (scope HR table): `staff_profile_id`, `field enum(role,branch,status,employment_status,service_eligibility,availability)`, `old_value jsonb`, `new_value jsonb`, `changed_by`, `reason text null`, `approval_status enum(n/a,pending,approved,rejected)`, `created_at`.
-
-### 7.2 Branch operations
-
-**merchant_branches** — `merchant_id`, `name`, `code varchar(20)` unique per merchant (`unique(merchant_id, code)`), `address text not null`, `town varchar(80) not null`, `phone varchar(32) not null`, `email null`, `business_category` (nullable override), `status enum(active,suspended,archived)`, `status_reason`, timestamps. **Closure protection** enforced in `BranchClosureGuard` service (checks the 8 blocking conditions of scope §3.3) — and a deferred constraint trigger refuses `status='archived'` when open operational rows exist.
-
-**branch_operating_hours** — `branch_id`, `weekday smallint 0-6`, `opens_at time`, `closes_at time`, `is_closed boolean`, `break_start/break_end time null`. Unique (branch_id, weekday).
-
-**branch_calendar_exceptions** — `branch_id`, `date date`, `type enum(public_holiday,special_closure,emergency_closure,modified_hours)`, `opens_at/closes_at null`, `reason text not null when closure`, `created_by`. Unique (branch_id, date, type). Emergency closure immediately blocks queue/appointments (service checks today's exceptions).
-
-**branch_day_records** — `branch_id`, `business_date date`, `status enum(not_opened,open,paused,closed,reopened)`, `opened_by/opened_at`, `closed_by/closed_at`, `reopened_reason`, `summary jsonb` (day-close totals snapshot), unique (branch_id, business_date). Day-close PDF job reads `summary`.
-
-**branch_cash_ups** — `branch_id`, `branch_day_record_id FK`, `expected_total bigint`, `recorded_totals jsonb` (per method), `cash_counted bigint`, `discrepancy_amount bigint`, `discrepancy_note text null (required when ≠0, validated)`, `status enum(draft,submitted,approved,rejected)`, `submitted_by/at`, `reviewed_by/at`, `review_note`. Approval triggers daily period lock + Merchant Admin PDF email.
-
-### 7.3 Catalogue, clients, scheduling, queue, sessions
-
-**service_categories** — `merchant_id, branch_id, name`, unique (branch_id, name). SD.
-**services** — `merchant_id, branch_id, category_id FK null, name, description, price bigint, currency char(3) default 'KES', duration_minutes smallint, status enum(active,inactive,archived), discount_type enum(none,fixed,percent), discount_value int, preferred_fee_eligible boolean default true`. Index (branch_id, status). SD. Configured by Branch role only (policy).
-
-**personnel_service_eligibilities** — `merchant_id, branch_id, staff_profile_id, service_id, assigned_by, status enum(active,revoked)`. Unique active pair (staff_profile_id, service_id). Assignment authority: HR within own branch only.
-
-**personnel_availability_schedules** — `staff_profile_id, branch_id, weekday/opens/closes/break fields` + **personnel_unavailabilities** (`staff_profile_id, starts_at, ends_at, type enum(sick,emergency,leave,break,no_show,other), note, created_by`). Operational state lives on staff_profiles.`availability_state enum(available,busy,on_break,offline,unavailable,suspended)`.
-
-**clients** — branch-scoped records. `merchant_id, branch_id, first_name, last_name, phone varchar(32) not null, email null, gender null, notes text, preferences jsonb, marketing_consent boolean default false, consent_recorded_at`. **Duplicate prevention:** partial unique `(branch_id, phone) where deleted_at is null and merged_into_id is null`; `merged_into_id FK clients null` supports controlled merge. SD. Index (branch_id, phone), trigram index on name for search fallback.
-
-**client_consents** — append-only: `client_id, type enum(contact,marketing,data_processing), granted boolean, recorded_by, source, created_at`.
-
-**appointments** — `merchant_id, branch_id, client_id, service_id, personnel_staff_profile_id null (preferred/assigned), starts_at, ends_at, status enum(booked,checked_in,converted,completed,cancelled,no_show,rescheduled), is_preferred_personnel boolean, cancellation_reason, checked_in_at, queue_entry_id FK null (set on conversion — guarantees no duplicate queue/session records), created_by`. Exclusion constraint `EXCLUDE USING gist (personnel_staff_profile_id WITH =, tstzrange(starts_at, ends_at) WITH &&) WHERE (status IN ('booked','checked_in'))` prevents double-booking at DB level. Index (branch_id, starts_at).
-
-**queue_entries** — `merchant_id, branch_id, client_id, service_id, appointment_id FK null, assignment_mode enum(next_available,manual,preferred)`, `personnel_staff_profile_id null`, `is_preferred boolean`, `preferred_fee_amount bigint null`, `position int`, `status enum(waiting,assigned,in_service,completed,cancelled,no_show)`, `cancellation_reason (required on cancel)`, `estimated_wait_minutes`, `reassigned_from_staff_id null`, `reassignment_reason`, timestamps per transition (`assigned_at, started_at, completed_at`). Index (branch_id, status, position). Partial unique `(appointment_id) where appointment_id is not null` (one queue entry per appointment).
-
-**queue_configurations** — per branch: `queue_open boolean, capacity_total int null, capacity_per_personnel int null, default_assignment_mode`.
-
-**service_sessions** — `merchant_id, branch_id, client_id, service_id, personnel_staff_profile_id, queue_entry_id FK unique null, appointment_id FK null, status enum(draft,waiting,assigned,in_progress,completed,cancelled,invoiced,paid), started_at, ended_at, notes, cancellation_reason, invoice_id FK null`. Partial unique on queue_entry_id prevents duplicate sessions; eligibility check (FK pair must exist in personnel_service_eligibilities) enforced in service layer + insert trigger.
-
-**preferred_personnel_fee_rules** — platform-scoped (no merchant_id): `model enum(fixed,percentage), value int (minor units or basis points), applies_to enum(all,service_category,branch_category,personnel_tier) default 'all', rules jsonb null, active boolean, effective_from, set_by`. Only Super Admin writes.
-
-### 7.4 Financial tables (no deletes, ever; retention ≥ 7 years per Kenyan accounting practice)
-
-**invoice_number_sequences / receipt_number_sequences** — `merchant_id unique, next_number bigint default 1`. Number generation: `SELECT … FOR UPDATE` within the issuing transaction; formatted as `{BRANCHCODE-}INV-{000000}`; uniqueness backstopped by `unique(merchant_id, number)` on invoices/receipts. Voided invoices keep numbers.
-
-**invoices** — `merchant_id, branch_id, client_id, service_session_id FK null, number varchar(30), type enum(merchant_client,platform_fee), subtotal bigint, discount_total bigint, preferred_fee_total bigint, tier_surcharge_total bigint, total bigint, currency, status enum(draft,issued,partially_paid,paid,voided,adjusted), service_fee_tier_applied enum null, issued_at, voided_at, void_reason, void_approved_by, created_by`. Unique (merchant_id, number). Indexes: (branch_id,status,issued_at), client_id. Tier math (per scope §3.2): customer_centric → surcharge 0; split_tier → +50% of platform fee per qualifying line; business_centric → +100%. Platform-fee liability is **never** reduced by tier.
-
-**invoice_items** — `invoice_id, kind enum(service,preferred_personnel_fee,tier_surcharge,discount,adjustment), service_id null, description, quantity smallint, unit_amount bigint, line_total bigint, personnel_staff_profile_id null`.
-
-**payment_records** — `merchant_id, branch_id, invoice_id, method enum(cash,mpesa,bank_transfer,card_terminal,voucher,split_leg,other), amount bigint, reference varchar(120) null (required per method rules), reference_normalized varchar(120) (upper/trimmed, for dup detection), parent_payment_id FK null (split legs), paid_at, note, status enum(pending_validation,validated,partially_validated,rejected,disputed,correction_requested,voided,refunded_externally), recorded_by, validated_by null, validated_at, rejection_reason`. Indexes: (invoice_id), (merchant_id, reference_normalized), (branch_id,status). Method-specific reference requirements validated in FormRequest + service (scope table). Duplicate detection: same-merchant match on `reference_normalized` for non-cash methods → block/warn; overrides recorded in **payment_reference_checks** (`payment_record_id, matched_payment_id, scope enum(same_branch,same_merchant), action enum(blocked,warned,overridden), override_reason, overridden_by`).
-
-**payment_validation_events** — append-only history: `payment_record_id, from_status, to_status, actor_id, note, rejection_reason, created_at`.
-
-**receipts** — `merchant_id, branch_id, invoice_id, number varchar(30), validated_amount bigint, methods jsonb, issued_by, issued_at, status enum(issued,reversed), reversal_reason, reversed_by/at, pdf_path`. Unique (merchant_id, number). **Constraint trigger:** on insert, every linked payment record (via **receipt_payment_records** pivot: receipt_id, payment_record_id unique) must have status `validated`, else raise. **receipt_reissues**: `original_receipt_id, new_receipt_id, reason, reissued_by`. **receipt_download_logs**: `receipt_id, downloaded_by, ip, user_agent, created_at`.
-
-**external_refunds** — `merchant_id, branch_id, invoice_id, payment_record_id, type enum(full,partial), amount bigint (≤ validated amount, checked), method, reference, status enum(requested,approved,rejected,finalized), requested_by, approved_by, approval_note, finalized_at`.
-
-**finance_disputes** — fields per scope: `merchant_id, branch_id, dispute_type, invoice_id null, payment_record_id null, raised_by, assigned_to, amount_in_dispute, reason, evidence_path null (S3, private), status enum(open,under_review,evidence_requested,resolved,rejected,escalated,closed), resolution_note, resolved_by, resolved_at`.
-
-**financial_period_locks** — `merchant_id, branch_id null (null = merchant-month lock), period_type enum(day,month), period_start date, period_end date, status enum(locked,reopened), locked_by/at, reopened_by/at, reopen_reason, reopen_approved_by`. Unique (branch_id, period_type, period_start). `PeriodLockService::assertWritable(branch, date)` is called by every financial mutation; locked → 423 `period_locked`.
-
-**platform_fee_ledger** — Citrus billing ledger (append-only): `merchant_id, branch_id, entry_type enum(fee_accrual,fee_payment,adjustment,exemption,dispute_credit), source_invoice_id null, billing_cycle_id null, amount bigint (signed), balance_after bigint, description, calculation jsonb (explanation: base fee, tier, rule version), created_by null (system)`. Index (merchant_id, created_at), (branch_id). Branch-level debt = sum per branch (drives the "clear branch debts before branch-user deletion" rule and suspension triggers).
-
-**platform_fee_invoices** — Citrus→merchant invoices per cycle: `merchant_id, cycle_start, cycle_end, number, total bigint, status enum(issued,paid,partially_paid,overdue,disputed), due_at, paid_at`. **platform_billing_settings** (platform-scoped): `base_fee_amount bigint, billing_cycle enum(weekly,monthly), invoice_day smallint, grace_days smallint, suspension_after_days smallint, preferred_fee_platform_treatment enum(included,exempt), version int, set_by`. **platform_fee_disputes**: ledger/invoice reference, reason, status workflow, resolution.
-
-**commission_rules** — HR-configured: `merchant_id, branch_id, scope enum(all_personnel,role,individual,service), staff_profile_id null, role_title null, service_id null, type enum(fixed,percentage), value int, applies_to_preferred_fee boolean, status, effective_from, set_by`. Precedence: individual > service > role > all_personnel (documented in CommissionCalculator).
-**commission_ledger** — `merchant_id, branch_id, staff_profile_id, invoice_id, invoice_item_id, rule_id, base_amount bigint, commission_amount bigint, status enum(pending,earned,reversed,paid), earned_at (on payment validation), reversed_reason, period date`. Index (staff_profile_id, period), (branch_id, status).
-
-**finance_exports** — `merchant_id, branch_id null, requested_by, report_type, scope jsonb (date range/filters), reason text (required for sensitive types), status enum(queued,ready,expired,failed), file_path, signed_url_expires_at, download_count int default 0, masked boolean`. **export_download_logs** child table.
-
-### 7.5 Audit, notifications, framework
-
-**audit_logs** — append-only, hash-chained. Exact field set from scope §5.18: `id, ulid, actor_user_id null, actor_role varchar, merchant_id null (null = platform event), branch_id null, action varchar(120), target_entity_type varchar(120), target_entity_id varchar(40) (ULID), old_values jsonb null, new_values jsonb null, severity enum(info,low,medium,high,critical), event_status enum(normal,flagged), ip_address inet, user_agent text, record_hash char(64), previous_record_hash char(64), created_at`. `record_hash = sha256(previous_record_hash || canonical_json(payload))`, chained **per merchant** (platform chain for merchant_id null), with the previous hash read under advisory lock `pg_advisory_xact_lock(hashtext('audit:'||merchant_id))` to serialize the chain. DB trigger blocks UPDATE/DELETE. `audit:verify-chain` command re-walks chains nightly and alerts on breaks. Partition by month (`created_at`) from day one (high volume). Sensitive values in old/new are masked at **read** time per viewer permission, never at write time.
-
-**flagged_audit_events** — `audit_log_id, status enum(open,under_review,resolved,dismissed), severity, reason, created_by, reviewed_by, resolution_note, created_at/updated_at`.
-
-**notification_logs** — `merchant_id null, branch_id null, user_id null, client_id null, channel enum(email,sms,whatsapp), type varchar(80) (the 20 scope types), payload jsonb (no secrets), status enum(queued,sent,failed), provider_message_id, sent_at, failed_reason`. Retention 12 months.
-
-**Framework tables:** `sessions` (database driver for revocability — suspending a user deletes their session rows immediately), `jobs`, `failed_jobs`, `job_batches`, `cache`, `personal_access_tokens` (Sanctum; unused for SPA but kept for future mobile tokens), `media/uploaded_files` (`merchant_id, branch_id null, owner_type/owner_id, disk, path, original_name, mime, size_bytes, sha256, visibility enum(private), uploaded_by`).
-
-### 7.6 Migration rules
-
-- One migration per table; FKs and check constraints in the same migration; partial/exclusion indexes via raw statements with `DB::statement`.
-- Never edit a shipped migration; forward-only changes.
-- Every migration must be reversible **or** explicitly documented as irreversible (audit partitions).
-- Seeders: `PermissionSeeder` (full matrix), `PlatformSettingsSeeder`, `DemoTenantSeeder` (local/staging only, guarded by `app()->environment()`).
-
----
-
-## 8. Multi-Tenancy and Data Isolation Model
-
-### 8.1 Tenant resolution
-
-`ResolveTenantContext` middleware (after `auth:sanctum`):
-1. Super Admin requests under `/api/v1/platform/*` get a **PlatformContext** (no merchant). Super Admin is rejected (403) on merchant routes — exclusions in scope §3.1 are enforced structurally: there are no platform endpoints to create merchants, create first admins, or run merchant operations; governance endpoints (suspend merchant, billing settings, fee rules) exist only under `/platform`.
-2. For merchant users: load the single active `merchant_users` row (one membership per user at launch). If none → 403 `no_tenant_context`. If `merchant.status != active` → 403 `merchant_suspended` (read-only historical endpoints allowlisted for suspended merchants per scope branch rules).
-3. Bind `TenantContext { merchant, merchantUser, role, permissions, branchIds[] }` into the container.
-
-### 8.2 Query scoping
-
-- `BelongsToMerchant` trait: global scope `where merchant_id = TenantContext::merchantId()` + creating hook that sets `merchant_id` (throws if context missing). Applied to **every** tenant-owned model.
-- `BelongsToBranch` trait: for branch-scoped roles adds `whereIn branch_id (TenantContext::branchIds())`; Merchant Admin and merchant-wide reads skip the branch filter but keep the merchant filter.
-- Escaping the scope requires `Model::withoutTenancy()` which (a) is only callable from `Platform*` services and audited jobs, and (b) triggers a static-analysis ban elsewhere (PHPStan rule `NoWithoutTenancyOutsidePlatform`).
-- **Route-model binding:** `resolveRouteBinding` looks up by `ulid` **within the scoped query** → foreign-tenant ULIDs yield 404 and write an `unauthorized_access` audit row when the ULID exists in another tenant (detected via an unscoped existence check inside `LogUnauthorizedAttempt`).
-
-### 8.3 Tenant context in background jobs
-
-Every job that touches tenant data extends `TenantAwareJob`: constructor captures `merchantId` (+ `branchId` where relevant); `handle()` first rehydrates `TenantContext` from IDs (re-validating merchant status), or fails the job with `MissingTenantContext`. A Horizon middleware asserts context is set before any Eloquent call on tenant models (the global scope throws otherwise — this is the proof mechanism). Exports, notifications, webhooks (future), and search-index jobs all inherit this.
-
-### 8.4 Denied-case examples (each becomes a permanent test)
-
-| Case | Expected behavior | Test |
-|------|-------------------|------|
-| User of Merchant A GETs `/api/v1/invoices/{ulid-of-B}` | 404 + audit `unauthorized_access` (severity high) | `Isolation/InvoiceCrossTenantTest` |
-| Finance user of Branch X lists payments of Branch Y (same merchant) | 404/empty per scope; attempt audited | `Isolation/CrossBranchPaymentTest` |
-| Member with role but without `payments.validate` POSTs validation | 403 `permission_denied` | `Security/FinancePermissionTest` |
-| Queued `GenerateDayClosePdf` dispatched without merchant id | Job fails `MissingTenantContext`; alert | `Unit/TenantAwareJobTest` |
-| Export job given an unscoped query | Export service refuses (asserts scope applied) | `Feature/Finance/ExportScopeTest` |
-| Valid public ULID of another tenant passed to any binding | 404, never 403 (no existence leak), audit row | `Isolation/RouteBindingTest` (parameterized over all bound models) |
-| Personnel requests another personnel's queue | 404 | `Isolation/PersonnelOwnScopeTest` |
-| Suspended merchant user calls any mutating endpoint | 403 `merchant_suspended` | `Security/SuspendedMerchantTest` |
-
-### 8.5 Super Admin safety
-
-Super Admin operates only via `/platform/*` read/governance endpoints; reads of merchant data are aggregate (reports, ledgers, audit logs) and individually audited (`platform_read`, severity medium). There is **no** impersonation feature at launch.
-
----
-
-## 9. Authentication Model
-
-### 9.1 Magic Link flow (all users)
-
-```text
-POST /api/v1/auth/magic-link            { email }
-  → throttle: 3/min per email, 10/hour per IP
-  → ALWAYS return 202 {message:"If the email exists and is active, a link was sent."}
-    (no account enumeration)
-  → server-side checks BEFORE sending (scope §2.3, all seven):
-      1 user exists by email
-      2 user has an active membership in a merchant tenant (or is platform staff)
-      3 user.status = active
-      4 merchant_users.status = active (role active)
-      5 user not suspended (merchant or platform level)
-      6 branch assignment exists where the role is branch-scoped
-      7 (link validity checks happen at verify time)
-    If any check fails → no email; write audit login_link_denied (low/medium).
-  → create magic_login_tokens row (hash only), queue SendMagicLink mail
-    Link: https://app.servana.africa/auth/verify?token=<raw>
-
-POST /api/v1/auth/magic-link/verify     { token }
-  → throttle: 10/min per IP
-  → atomic consume (see §7.1) → on success:
-      - re-run checks 1–6 at consume time (status may have changed)
-      - login via Sanctum session guard (regenerate session id — fixation defense)
-      - set email_verified_at if null, last_login_at
-      - audit login_success (info) with ip/user_agent
-  → failures: 422 invalid_or_expired_token (uniform message); audit login_link_failed
-```
-
-### 9.2 Session security
-
-- Sanctum SPA mode: stateful first-party cookies; `SESSION_DRIVER=database`; `SESSION_LIFETIME=480` (8h, absolute), idle timeout 60 min enforced by `last_activity` middleware; `SESSION_SECURE_COOKIE=true`, `http_only`, `same_site=lax`.
-- CSRF: `/sanctum/csrf-cookie` priming; all mutating routes verified.
-- **Immediate revocation:** suspending/deactivating a user deletes their `sessions` rows and invalidates unconsumed magic tokens in the same transaction (`StaffLifecycleService`), satisfying scope §3.4 Suspension Rule. Test proves a live session 401s on the next request.
-- Optional MFA (TOTP): when enabled for Super Admin/Merchant Admin/Finance/Audit, verify step returns `mfa_required`; `POST /auth/mfa/verify {code}` completes login. Secrets encrypted at rest; 5 attempts/5 min throttle.
-
-### 9.3 Rate limiting (named limiters, Redis-backed)
-
-| Limiter | Applied to | Limit |
-|---|---|---|
-| magic-link-request | /auth/magic-link | 3/min/email + 10/hr/IP |
-| magic-link-verify | /auth/magic-link/verify | 10/min/IP |
-| registration | /merchant-registration/self-register | 3/hr/IP |
-| invitation-accept | invitation acceptance | 10/hr/IP |
-| api | all authenticated API | 120/min/user |
-| finance-sensitive | validation, voids, refunds, exports, period locks | 30/min/user |
-| search | search endpoints | 60/min/user |
-Credential-stuffing defense: per-email + per-IP counters, exponential backoff after repeated denials, audit `login_abuse_suspected` (high) at threshold.
-
----
-
-## 10. Authorization, Roles, and Permissions
-
-### 10.1 Roles
-
-Platform scope: `super_admin` (+ internal platform roles later). Merchant scope (the seven account types — these supersede the generic Owner/Admin/Manager/Member/Viewer minimum, mapping: Owner/Admin→merchant_admin, Manager→branch_manager, Member→front_office/personnel/finance/hr, Viewer→audit):
-`merchant_admin` (Owner — single account type per scope §3.2), `branch_manager`, `hr`, `finance`, `front_office`, `personnel`, `audit`.
-
-### 10.2 Authority boundaries (hard rules from scope — enforced in policies AND absent from UI)
-
-- Merchant Admin: creates branches; adds **only** branch_manager + hr emails; cannot configure services/pricing, personnel assignment, commissions, or Front Office payment permissions; deleting a branch user requires that branch's platform-fee debt = 0 (`BillingEngine::branchDebt()` check).
-- Branch Manager: own branch only; configures services/pricing, queue, appointments, day open/close, cash-up submission; read-only on HR-controlled personnel data; may **transfer** queue/appointments from unavailable personnel (operational continuity), never assign personnel.
-- HR: staff lifecycle within own branch only; sets commissions and service eligibility; cannot export client/payment data; cannot self-escalate (policy denies role changes where target = self or target role outranks actor).
-- Finance: granular permissions (next table); branch-scoped.
-- Front Office: operational flows; records payments but **cannot validate** or issue receipts (Finance validates; receipts auto-issue post-validation).
-- Personnel: own-scope reads only (own queue/appointments/sessions/commissions/served clients); no export anything.
-- Audit: read-only everywhere; server-side write denial on all merchant resources.
-
-### 10.3 Permission matrix (registry keys; ✓ = default grant; ◐ = grantable override)
-
-| Permission key | merchant_admin | branch_manager | hr | finance | front_office | personnel | audit |
-|---|---|---|---|---|---|---|---|
-| merchant.profile.manage / merchant.tier.update | ✓ | | | | | | |
-| branches.create / branches.manage_users_lifecycle | ✓ | | | | | | |
-| branch.profile.manage, branch.calendar.manage | | ✓ | | | | | |
-| services.manage | | ✓ | | | | | |
-| queue.configure / queue.operate | | ✓ / ✓ | | | ✓ (operate) | | |
-| queue.transfer_entries | | ✓ | | | | | |
-| appointments.manage | | ✓ | | | ✓ | | |
-| day.open_close / cashup.submit | | ✓ | | | | | |
-| staff.invite/edit/suspend, eligibility.manage, availability.manage, commissions.manage | | | ✓ | | | | |
-| clients.create/edit/view | | view | | view | ✓ | view-own-served | view-masked |
-| sessions.manage / invoices.create | | ✓ | | | ✓ | | |
-| invoices.view | ✓ | ✓ | | ✓ | ✓ | own | ✓ |
-| invoices.void_unpaid | | | | ✓ | | | |
-| invoices.void_paid / invoices.adjust_paid | ✓ (approve) | | | ◐ request | | | |
-| payments.record | | | | ✓ | ✓ | | |
-| payments.validate / payments.reject | | | | ✓ | | | |
-| payments.edit_reference | | | | ◐ | | | |
-| payments.override_duplicate | | | | ◐ | | | |
-| receipts.view / receipts.reissue | ✓ | ✓ | | ✓ / ◐ | view | own | view |
-| refunds.request / refunds.approve | | | | ✓ / ◐ | | | |
-| disputes.manage | | | | ✓ | | | |
-| cashup.review_approve | | | | ✓ | | | |
-| periods.lock / periods.reopen | ✓ | | | ◐ delegated | | | |
-| commissions.view | ✓ | branch | ✓ | ◐ | | own | ✓ |
-| platform_fees.view / platform_fees.dispute | ✓ | branch | | ◐ / ✓ | | | ✓ |
-| reports.view (scoped) | ✓ | branch | staff | finance | day | own | ✓ |
-| exports.finance / exports.staff_roster | ◐ admin/finance | | ✓ roster only | ◐ | | **never** | ◐ audit reports |
-| audit.view_full / audit.flag | masked | branch | staff events | finance events | | | ✓ / ✓ |
-| platform.* (settings, merchants.govern, billing.configure, fee_rules.manage, audit.view) | — super_admin only | | | | | | |
-
-`EnsurePermission:{key}` middleware + `Gate::before` denies anything not in the resolved set (role grants + per-user overrides). Permission changes are audited (high severity) and visible in HR "Permission Preview".
-
-### 10.4 Policies (one per model — examples)
-
-```php
-// app/Policies/PaymentRecordPolicy.php
-public function validate(User $u, PaymentRecord $p): bool {
-    $ctx = app(TenantContext::class);
-    return $ctx->merchantId() === $p->merchant_id
-        && $ctx->hasBranch($p->branch_id)
-        && $ctx->can('payments.validate')
-        && ! app(PeriodLockService::class)->isLocked($p->branch_id, $p->paid_at);
-}
-// InvoicePolicy::voidPaid → requires invoices.void_paid AND an approval record
-// QueueEntryPolicy::transfer → branch_manager + same branch + reason present
-// ClientPolicy::view for personnel → exists service_session linking personnel↔client
-```
-
-Ownership transfer (merchant admin → another user) and merchant deactivation are Merchant Admin actions with confirmation + audit (critical severity); branch-user deletion gated by branch fee-debt zero check.
-
----
-
-## 11. API Design
-
-### 11.1 Conventions
-
-- Base `/api/v1`; nouns, kebab-case; ULIDs in URLs; JSON only.
-- Verbs: GET list/show, POST create + state-transition sub-resources (e.g. `POST /payments/{ulid}/validate`), PATCH partial update, DELETE only where business-deletable (almost nowhere — financial records never).
-- Every collection paginated (`per_page` ≤ 100, default 25), filterable via whitelisted `filter[...]` params, sortable via whitelisted `sort` (validated; unknown → 422).
-- Idempotency: mutating financial endpoints accept `Idempotency-Key` header (Redis-stored response replay, 24h) — protects double-submits from flaky SME networks.
-
-### 11.2 Route groups (full launch surface; middleware shown once per group)
-
-```text
-// public
-POST   /auth/magic-link                     throttle:magic-link-request
-POST   /auth/magic-link/verify              throttle:magic-link-verify
-POST   /auth/mfa/verify
-POST   /merchant-registration/self-register throttle:registration
-POST   /staff-invitations/{token}/accept    throttle:invitation-accept
-GET    /health  /health/deep                (deep: db+redis+search+storage probes)
-
-// authenticated
-GET    /me        POST /auth/logout
-group auth:sanctum + tenant + EnsureMerchantActive:
-  // onboarding (pending_setup merchants allowed here only)
-  POST /merchant-registration/first-time-setup        (tier, profile, branch, invites)
-  // merchant admin
-  GET|PATCH /merchants/profile     PATCH /merchants/service-fee-tier
-  GET|POST  /branches              GET /branches/{branch}
-  GET  /merchant-users             POST /merchant-users/initial-invites
-  POST /merchant-users/{u}/suspend|activate|deactivate   DELETE /merchant-users/{u}
-  GET  /reports/merchant/...       GET /billing/platform-fees  /billing/statement
-  POST /billing/platform-fee-disputes
-group + EnsureBranchScope (prefix /branches/{branch}):
-  PATCH /profile      GET|PUT /operating-hours    GET|POST|DELETE /calendar-exceptions
-  POST  /day/open|pause|close|reopen              GET /day/current
-  GET|POST /cash-ups  POST /cash-ups/{c}/submit|approve|reject
-  GET|POST|PATCH /services   POST /services/{s}/archive
-  GET|POST|PATCH /clients    POST /clients/{c}/merge        GET /clients/{c}/history
-  GET|POST /appointments     POST /appointments/{a}/check-in|reschedule|cancel|no-show
-  GET /queue  POST /queue/walk-ins   POST /queue/{q}/assign|start|complete|cancel|no-show
-  POST /queue/{q}/transfer   PATCH /queue/configuration   POST /queue/open|close
-  GET|POST /service-sessions POST /service-sessions/{s}/complete|cancel
-  GET|POST /invoices         POST /invoices/{i}/void  /invoices/{i}/adjustments
-  GET|POST /payments         POST /payments/{p}/validate|reject|dispute
-  POST /payments/{p}/duplicate-override
-  GET /receipts   GET /receipts/{r}/download   POST /receipts/{r}/reissue|reverse
-  GET|POST /refunds          POST /refunds/{r}/approve|reject
-  GET|POST /disputes         PATCH /disputes/{d}
-  GET /reports/branch/...    GET /personnel (read-only HR state)
-group HR (prefix /hr, branch-scoped):
-  GET /dashboard   GET|POST|PATCH /staff   POST /staff/{s}/suspend|activate|deactivate
-  GET|POST /staff-invitations   POST /staff-invitations/{i}/resend|revoke
-  GET|PUT /staff/{s}/service-eligibility    GET|PUT /staff/{s}/availability
-  GET|POST|PATCH /commission-rules          GET /staff/{s}/history
-  GET /staff/{s}/permission-preview         POST /exports/staff-roster
-group Finance (prefix /finance, branch-scoped):
-  GET /overview /task-inbox /audit-activity
-  GET /commission-liabilities    GET /financial-periods  POST /financial-periods/lock|reopen
-  GET|POST /exports              GET /exports/{e}/download (signed)
-group Personnel (prefix /personnel — own scope enforced in every query):
-  GET /dashboard /queue /appointments /sessions /commissions /clients (served-only)
-group Audit (prefix /audit, read-only):
-  GET /dashboard /logs (search+filters)  GET|POST|PATCH /flagged-events
-  POST /exports/audit-report (permission-gated)
-group Platform (prefix /platform, super_admin only):
-  GET|PATCH /settings   GET /merchants  POST /merchants/{m}/suspend|reactivate
-  GET|PATCH /billing/settings   GET|PATCH /fee-rules/preferred-personnel
-  GET /billing/ledger /reports/...  GET /audit-logs
-GET|PATCH /notifications (per-user inbox, mark-read)
-GET /search?q=&types=  (tenant+branch-filtered Meilisearch proxy)
-```
-
-There is deliberately **no** route shaped like `/personnel/clients/export` or any contact export under personnel scope (§3 rule 17).
-
-### 11.3 Validation
-
-One Form Request per mutating endpoint; `authorize()` delegates to policy. Method-specific payment reference rules expressed as conditional rules, e.g.:
-
-```php
-'reference' => [Rule::requiredIf(fn() => in_array($this->method,
-    ['mpesa','bank_transfer','card_terminal','voucher'])), 'string','max:120'],
-'legs'      => ['required_if:method,split_leg.parent','array','min:2'],
-'legs.*.method' => ['required', new EnumRule(PaymentMethod::class)],
-```
-
-### 11.4 Resources
-
-JsonResources expose ULIDs as `id`, ISO-8601 timestamps, money as `{ amount: int, currency: 'KES', formatted: 'KES 535.00' }`, and embed `can: { validate: bool, void: bool, … }` ability maps for UX-only rendering. Sensitive fields (client phone for masked viewers) pass through `MaskedField::for($viewer)`.
-
-### 11.5 Errors
-
-```json
-{ "error": { "code": "duplicate_reference", "message": "This M-Pesa code was already recorded on invoice KIL-INV-000119.",
-             "fields": { "reference": ["Duplicate within this merchant."] },
-             "meta": { "matched_payment_id": "01J…", "scope": "same_branch" } } }
-```
-HTTP mapping: 401 unauthenticated · 403 permission_denied / merchant_suspended / no_tenant_context · 404 not_found (incl. cross-tenant) · 409 duplicate_reference, duplicate_client, branch_closure_blocked, double_booking · 422 validation_failed, invalid_state_transition · 423 period_locked · 429 rate_limited. 5xx return generic `internal_error` + correlation id; details only to Sentry/logs.
-
-### 11.6 API logging
-
-Request log (structured): correlation id, route, user ulid, merchant ulid, status, duration. Never bodies for auth/payment endpoints. Unauthorized attempts additionally produce audit rows (§22).
-
----
-
-## 12. UI/UX Design System
-
-Implements the Brand Identity document directly as Tailwind theme tokens.
-
-### 12.1 Tokens (`tailwind.config.ts` + CSS variables for theming)
-
-```css
-:root {
-  --color-primary: #F97316;        /* Savannah Orange — CTAs, active states */
-  --color-sun: #FBBF24;            /* badges, soft highlights */
-  --color-success: #2E7D32; --color-growth: #3F7D20;
-  --color-brand-deep: #4A2208;     /* headings, footer, admin anchor */
-  --color-accent: #007C78;         /* Service Teal — module accents, trust */
-  --color-warning: #F59E0B; --color-error: #DC2626; --color-info: #0284C7;
-  --color-text: #1F2933; --color-text-muted: #6B7280;
-  --color-border: #E5E7EB; --color-surface: #FFFFFF;
-  --color-surface-alt: #F3F4F6; --color-bg: #F9FAFB; --color-cream: #FFF8E7;
-  --radius-card: 12px; --radius-control: 8px;
-  --shadow-card: 0 1px 3px rgb(0 0 0 / .08);
-}
-```
-Usage ratio guard (brand §11): neutrals dominate; orange reserved for primary actions; teal for active module accents; never multiple vivid colors inside data tables.
-
-### 12.2 Typography
-Inter for all product UI (body 400/500, buttons 600, sentence case — "Create invoice", never "CREATE INVOICE"); Manrope 700–800 for H1/H2 page titles. Scale: H1 24/32 (mobile 20/28), H2 18/28, H3 16/24, body 14/22, caption 12/16. Loaded via self-hosted `@fontsource` (no third-party font CDN → privacy + CSP).
-
-### 12.3 Component inventory (in `components/ui/`, each with light+dark, all states, a11y baked in)
-`SvButton` (primary orange / secondary outline / ghost / destructive; loading + disabled states; min 44px touch), `SvInput/SvSelect/SvTextarea/SvPhoneInput/SvMoneyInput` (label always rendered; placeholder never replaces label; error text `aria-describedby`-linked; required marker `*` + `aria-required`), `SvCard`, `SvTable` (desktop table → mobile stacked cards ≤767px), `SvBadge` (Paid, Pending validation, Partially paid, Validated, Rejected, Disputed, Voided, Flagged, Locked, Suspended… — color + icon + text, never color alone), `SvModal` (focus trap, `aria-modal`, Esc, restore focus), `SvDrawer`, `SvToast` (`role="status"`, auto-dismiss ≥5s, pause on hover), `SvTabs`, `SvSidebarNav`, `SvHeader`, `SvProfileMenu`, `SvBranchSwitcher`, `SvEmptyState` (warm illustration, primary action), `SvStateBoundary`, `SvConfirmDialog` (typed-confirmation for critical actions: void paid invoice, reopen period, deactivate user), `SvStat` dashboard card, `SvQueueBoard`, `SvTimeline` (audit/history).
-
-Navigation per role follows the scope's "Final Production-Launch Navigation" lists verbatim (Branch: Overview→Settings 18 items; Finance: Overview→Settings 17 items; etc.) — the IDE agent must not rename or drop items.
-
----
-
-## 13. Responsive Layout Strategy
-
-Breakpoints (CSS only — Tailwind screens overridden to match scope exactly):
-```js
-screens: { md: '768px', lg: '1025px' }   // mobile <768, tablet 768–1024, desktop ≥1025
-```
-Rules: fluid layouts (flex/grid + minmax), no fixed pixel page widths, no horizontal scroll (CI Playwright asserts `document.scrollingElement.scrollWidth <= innerWidth` at 360/768/1280 on every critical page), no JS layout decisions, real-time adaptation on resize, ≥44px touch targets, typography scales via the §12 scale.
-
-Per-area strategy:
-| Area | Desktop ≥1025 | Tablet 768–1024 | Mobile ≤767 |
+| # | Reported as-built claim (source) | Status before Phase V | Phase V action / expected remediation linkage |
 |---|---|---|---|
-| Dashboard stat cards | 4-col grid | 2-col | 1-col stack |
-| Sidebar | fixed 260px, collapsible to icon rail | overlay drawer, hamburger | overlay drawer |
-| Header | full: search, branch switcher, profile | condensed; search collapses to icon | minimal; profile + menu |
-| Data tables | full table, sticky header | priority columns + row expand | stacked cards (label/value pairs); actions in row kebab menu |
-| Forms | 2-col field grid | 1–2 col | single column; sticky submit bar |
-| Queue board | kanban columns (waiting/assigned/in-service) | horizontal scroll-snap columns (the one sanctioned horizontal scroller, with visible affordance) | single-column with status filter tabs — Front Office mobile-critical |
-| Modals | centered, max-w-lg | centered | full-screen sheet |
-| Settings/billing/team pages | side tab nav + content | top tabs | accordion sections |
-| Personnel app | n/a focus | optimized | **mobile-first** (scope §3.7): big touch rows, bottom nav |
+| 1 | Laravel 11.54 on PHP 8.3; advisory CVE-2026-48019 / GHSA-5vg9-5847-vvmq ignored-with-rationale since Phase 1 (`PROGRESS`/`CHANGELOG`) | Claimed → **Requires remediation** | Confirm exact framework/PHP versions from lock files and running containers. The unsupported/vulnerable Laravel 11 line with a suppressed advisory is a **C0** item → **Phase R1** (upgrade to Laravel 12.60+, remove the ignore). |
+| 2 | Magic Link auth: 64-byte random token, SHA-256 at rest, 15-min expiry, atomic single-use; seven-check eligibility contract; idle timeout 60 min (`PROGRESS` Phase 5) | Claimed → **Verify** | Verify token hashing/expiry/single-use, eligibility checks 1–7, and idle-timeout middleware via tests in clean containers. |
+| 3 | Real MFA is a safe placeholder only (`mfa_not_enabled`) (`PROGRESS` Phase 5) | Claimed → **Requires remediation** | Confirm no privileged MFA enforcement exists. Privileged MFA + step-up is a **C0** gap → **Phase R3**. |
+| 4 | Tenant model: `merchants`, `merchant_profiles`, `merchant_users`, `merchant_status_histories`, minimal `merchant_branches`; self-registration only; no Super-Admin/KYC route (`PROGRESS`/`CHANGELOG` Phase 6) | Claimed → **Verify** | Confirm forbidden Super-Admin merchant-creation routes do **not** exist (`route:list`); confirm self-registration path and `pending_setup` lifecycle. |
+| 5 | Branch/staff: `branch_user_assignments`, `staff_invitations`, `staff_profiles`, `staff_history`, `branch_operating_hours`, `branch_calendar_exceptions`, `branch_day_records`, `branch_cash_ups`; hashed 72h invite token; staff lifecycle revokes sessions/links (`PROGRESS`/`CHANGELOG` Phase 7) | Claimed → **Verify / Partially verify** | Verify branch-closure guards (several are named stubs for Phases 16–18/20), invitation token hashing, and lifecycle revocation. Stubbed closure blockers are tracked and flipped by their owning phases. |
+| 6 | Roles & permissions: `permissions`, `roles`, `role_permission_assignments`, `merchant_user_permission_overrides`; registry of **54 keys × 8 roles**, 82 grants; deny-beats-grant; audit role can never gain mutating key (`PROGRESS`/`CHANGELOG` Phase 8) | Claimed → **Partially verified / Requires extension** | Verify resolver semantics. The 54-key registry is a **baseline**; the authoritative canonical matrix (Section 19, Correction 16) is larger. Reconcile registry to the canonical `docs/auth/permission-matrix.yaml` in the owning feature phases; add the parity test (Correction 16.5). |
+| 7 | `audit_logs` append-only, hash-chained, DB trigger blocks UPDATE/DELETE; `AuditRecorder`/`DatabaseAuditRecorder` (`PROGRESS`/`CHANGELOG` Phase 8) | Claimed → **Verify; complete in R2/19** | Verify immutability trigger and hash columns. Event **coverage** and the chain **verifier** are incomplete → **Phase R2** (core) and **Phase 19** (full coverage + flagged-event workflow). |
+| 8 | Tenant isolation: `BelongsToMerchant`/`BelongsToBranch` global scopes, scoped route binding, `LogUnauthorizedAttempt`, `TenantAwareJob`, PHPStan tenancy rules; cross-tenant 404 / cross-branch 403 posture (`PROGRESS`/`CHANGELOG` Phase 9) | Claimed (Phase 9 not merged) → **Verify; harden in R5/R6** | Verify global scopes, scoped binding, foreign-ULID audit, and job tenancy. Add `merchant_id` to any branch-owned table lacking it and complete revocation → **Phase R5/R6**. |
+| 9 | `idempotency_keys` defined in prior plan **without** `key_hash` but with a unique constraint on `(merchant_id, key_hash)` (prior plan; Correction 3) | Claimed → **Contradicted** | The prior definition is invalid. Replace with the corrected schema (Section 13, Correction 3) → **Phase R4**. |
+| 10 | Money value object (integer minor units; KES + USD); structured logging + redaction; correlation IDs; named rate limiters; `/health` + `/health/deep` (`PROGRESS`/`CHANGELOG` Phases 3–4) | Claimed → **Verify** | Verify redaction list (Section 24.5), rate limiters, and that readiness requires production dependencies (liveness vs readiness split is completed in **Phase R7**). |
+| 11 | Frontend foundation: 8 layouts, router + UX-only guard stubs, Pinia stores, `apiClient`, `useForm`, 9 UI components, breakpoints `md:768`/`lg:1025`, dark-mode tokens (`PROGRESS`/`CHANGELOG` Phase 4) | Claimed → **Verify** | Verify the design-system core and breakpoints. Full responsive/dark/a11y are per-feature gates (Sections 28–30, Correction 9) plus a release-wide audit (Phase 23). |
+| 12 | Reported test counts (e.g., ~230 backend, 72 frontend, 27 e2e); `composer audit` shows 1 ignored advisory (`PROGRESS`) | Claimed → **Re-run, do not trust counts** | Re-run all suites in clean containers against PostgreSQL/Redis, repeatedly/parallel; record actual counts and skipped tests with reasons (Correction 25.3). |
+| 13 | `PROGRESS.md` Phase 20 still titled "Citrus Billing Engine & commissions" tracking the **pre-correction** roadmap (`PROGRESS`) | Claimed → **Contradicted / superseded** | The pre-correction §27 roadmap is replaced by the corrected roadmap (Section 79–80). Phase 20 is decomposed into 20A–20H (subscription-first). Rewrite `PROGRESS.md` phase list during Phase V/Section 25 progress correction. |
+
+**Rule:** Any row that Phase V finds `Contradicted` or materially `Partially verified` becomes a C0/C1 item in the remediation register (Section 5) before dependent feature work.
 
 ---
 
-## 14. Dark Mode Strategy
+## 5. Confirmed Remediation Register (Classification and Gate)
 
-- Class strategy (`html.dark`), light default. Toggle in profile menu (sun/moon, `aria-pressed`).
-- Persistence: authenticated users → `PATCH /me/preferences {theme}` stored in `users.preferences jsonb`; mirrored to `localStorage` for instant boot.
-- **Flash prevention:** inline `<head>` script (before CSS) reads localStorage → sets `dark` class pre-paint.
-- Dark tokens (same CSS variables, `.dark` overrides): bg `#111827`, surface `#1F2933`, surface-alt `#273340`, text `#F3F4F6`, muted `#9CA3AF`, border `#374151` (borders stay visible — never removed), primary stays `#F97316` (AA on dark), accent lightened to `#14B8A6`, error `#F87171`, success `#4ADE80`, focus ring `#FDBA74` 2px (visible in both themes). Validation errors keep icon+text, not color alone.
-- Testing: Playwright runs the critical-flow suite in both themes; axe contrast checks both; visual snapshots per theme.
+### 5.1 Classification (replaces any B/S/V scheme)
 
----
-
-## 15. Accessibility Strategy
-
-WCAG 2.1 AA-aligned. Implementation requirements (binding):
-1. Full keyboard support: logical tab order, skip-to-content link, roving tabindex in menus/queue board, Esc closes overlays.
-2. Visible focus: 2px ring tokens both themes; never `outline: none` without replacement.
-3. Contrast AA: tokens pre-verified; axe-core CI gate on auth, dashboards, walk-in flow, payment validation, receipts, settings.
-4. Every input has a `<label for>`; placeholders are hints only; errors linked via `aria-describedby` + `aria-invalid`; error summary with anchor links on long forms.
-5. Buttons/links have accessible names (icon buttons get `aria-label`).
-6. Touch targets ≥44×44.
-7. Zoom respected (§3 rule 8); layout works at 200% zoom.
-8. `prefers-reduced-motion: reduce` disables non-essential transitions (queue card movement falls back to instant reposition).
-9. Screen readers: modals `role="dialog" aria-modal`, focus trap + restore; toasts `role="status"`; nav landmarks (`header/nav/main/aside`); live queue updates announced via polite `aria-live` region; tables with `<caption>` + `scope` headers; badge meaning conveyed in text.
-10. Verification steps per release: keyboard-only walkthrough of the five critical flows; NVDA + VoiceOver smoke on walk-in→receipt; axe CI; manual zoom check.
-
----
-
-## 16. Forms and Input Behavior Strategy
-
-- State model: each form uses a composable `useForm<T>` (typed values, touched, errors, submitting, dirty). Server 422 `fields` map merges into client errors keyed by input name — exact mapping contract with §11.5.
-- Duplicate-submit prevention: submit disabled + spinner while in-flight; Idempotency-Key on financial posts; navigation-away guard on dirty forms.
-- States styled via attributes only (`:disabled`, `[aria-invalid="true"]`, `[data-state]`) — CSS never toggles behavior (§3 rule 12).
-- Long forms (merchant first-time setup, staff creation) are sectioned steppers with per-step validation and review step.
-- Sensitive fields (payment reference, phone) styled normally — not overemphasized; masked display where viewer lacks permission, with "permission required" badge instead of the value.
-- Required indicators: asterisk + "Required" in helper text on first error.
-- Success: inline toast + optimistic-free re-fetch (no optimistic writes on financial data).
-
----
-
-## 17. User Profile and Account UI Strategy
-
-- Header right cluster: `SvProfileMenu` = avatar (or initials) + display name + role chip as **one** button (single focus target, cursor pointer, hover surface tint, visible focus ring).
-- Click/Enter opens an anchored preview card (popper positioning, `flip+shift` so it never clips viewport or covers the primary action bar): photo, name, role, merchant name, active branch, links → My profile, Preferences (theme), Notifications, Sign out. Esc/outside-click closes; focus restored.
-- `SvBranchSwitcher` adjacent for multi-branch users (listbox semantics, persists via `/me/active-branch`).
-- Profile page: photo upload (S3 private, signed display URL), display name, phone (uniqueness validated), theme, notification preferences. Email immutable (it is the credential — change = HR/admin re-invite workflow, audited).
-- CSS provides styling only; open/close handled by component state; implementation steps: build menu → keyboard tests → anchored card → branch switcher → profile page → Playwright coverage of hover/focus/clip behavior at all breakpoints.
-
----
-
-## 18. Billing and Plan Enforcement Strategy (Citrus Billing Engine)
-
-### 18.1 Fee accrual
-On `PaymentValidated` (merchant-client invoice fully validated → status paid), queued `AccruePlatformFee` writes a `platform_fee_ledger` `fee_accrual` row: amount = platform base fee (from versioned `platform_billing_settings`), `calculation` jsonb = `{base_fee, settings_version, invoice_ulid, tier, preferred_fee_treatment}`. **Tier never changes this amount** — tiers only changed the merchant-client invoice via `TierPricingCalculator` at invoice issue time (customer_centric +0; split_tier +50% of base fee as `tier_surcharge` line; business_centric +100%). Preferred-personnel fee inclusion in platform fee follows the platform setting (`included|exempt`).
-
-### 18.2 Cycle invoicing & enforcement
-Scheduler (`billing:run-cycle`, daily, idempotent): on each merchant's cycle boundary, roll un-invoiced accruals into a `platform_fee_invoices` row (type platform_fee, numbered `CIT-INV-…`), email statement PDF, set `due_at = cycle_end + grace_days`. Super Admin records merchant payments (`fee_payment` ledger entries; updates `merchants.last_fee_payment_at`). Overdue past `suspension_after_days` → `SuspensionTriggerService` flags, notifies (Platform fee overdue — Critical), and suspends merchant per platform policy (automated governance, scope §3.1). Branch-level debt view backs the branch-user deletion gate. Merchant-facing: fee ledger, calculation explanation, current cycle, due date, overdue status, downloadable statement, dispute workflow (`platform_fee_disputes`). Inactivity sweep (`merchants:inactivity-sweep`, daily): no fee payment 3 months → suspend + warning emails at 60/75/90 days; 6 months → anonymize-and-archive deletion per AS-10, fully audited.
-
-### 18.3 Tests (minimum)
-Tier pricing per scope's KES 500/70 table (assert 500/535/570 client totals and constant 70 liability), accrual idempotency, cycle rollup, overdue→suspension, branch debt gate, dispute flow, statement PDF contents.
-
----
-
-## 19. File Upload and Storage Strategy
-
-| Upload | Types | Max | Notes |
-|---|---|---|---|
-| Merchant logo | png, jpg, webp, svg→rasterized | 2 MB | re-encoded via Intervention Image (strips metadata/active content), stored private, rendered into invoice/receipt PDFs |
-| Staff/client photo | png, jpg, webp | 2 MB | same pipeline |
-| Dispute evidence | pdf, png, jpg | 10 MB | private, finance-permission download |
-| Generated PDFs/exports | system-produced | — | private, signed URLs (15-min expiry), download-logged |
-
-Controls: server-side MIME sniffing (`finfo`) + extension whitelist (both must agree), size limits, image re-encode, **ClamAV container scan** for user uploads (quarantine on hit, audit critical), randomized storage keys `merchants/{ulid}/...` (never user-supplied names), no public disk for tenant files, authorization before issuing upload and before signing any download, orphan cleanup job (weekly: media rows without owners > 48h old → delete object + row), audit log for sensitive file downloads (receipts, exports, evidence). Abuse tests: oversized, spoofed MIME (php-as-png), traversal names, cross-tenant download attempts, expired signed URL reuse.
-
----
-
-## 20. Queue, Jobs, Notifications, and Scheduled Task Strategy
-
-- Horizon queues: `mail` (Magic Links priority), `pdf`, `billing`, `search`, `notifications`, `default`; per-queue workers, `tries=3`, exponential backoff, `failed_jobs` monitored + Sentry alert; all jobs `TenantAwareJob` (§8.3); financial jobs idempotent via natural keys (e.g., one accrual per invoice — unique index `(source_invoice_id, entry_type)`).
-- Notifications: Laravel notifications with `mail` channel + `NotificationLogChannel` (writes notification_logs) + database channel for the in-app inbox and the **Finance task inbox** (priority field per scope's table — Critical items pinned). All 20 scope notification types implemented as classes under `Domain/Notifications`; channel abstraction ready for SMS/WhatsApp.
-- Scheduler: `billing:run-cycle` daily 01:00 EAT; `reports:day-close` + `reports:cash-up` per-branch on day close event (job) with 23:55 EAT fallback sweep; `merchants:inactivity-sweep` daily; `audit:verify-chain` nightly; `tokens:purge`, `exports:expire`, `media:orphan-cleanup`, `backup:run` nightly; `search:health` every 5 min. Every command idempotent + `withoutOverlapping` + `onOneServer`.
-
----
-
-## 21. Search Strategy
-
-Meilisearch via Laravel Scout. Indexes: `clients` (name, phone, email), `staff` (name, email, phone, role, status, eligibility), `invoices` (number, client name), `receipts` (number), `appointments` (reference, client). Every document includes `merchant_id`, `branch_id`; **every** query is executed server-side (`GET /api/v1/search`) with mandatory `filter: merchant_id = X AND branch_id IN [...]` injected from TenantContext — the SPA never holds a search API key. Front Office speed search (phone, name, invoice no, receipt no, queue position) targets <100ms: phone/number lookups hit Postgres indexes directly; fuzzy name goes to Meilisearch. Index sync via queued Scout jobs (tenant-aware); nightly drift check (`scout:verify-counts`). Isolation test: merchant A's query can never return B's documents even with crafted filter input (filters are server-built, user input is the query string only, escaped).
-
----
-
-## 22. Observability and Audit Logging Strategy
-
-### 22.1 Operational observability
-- Logs: Monolog JSON to stdout (Docker) → centralized (e.g., Grafana Loki or CloudWatch). Fields: ts, level, env, correlation_id, user_ulid, merchant_ulid, route, message, context. Redaction processor (§3 rule 6).
-- Errors: Sentry (Laravel + Vue SDKs), release tagging, PII scrubbing on.
-- Performance: Sentry traces + `pg_stat_statements`; slow query log >200ms reviewed weekly; endpoint p95 dashboards; alert thresholds: error rate >1%/5min, queue wait >60s, failed jobs >0 on billing/pdf queues, health check fail ×3, audit chain break (page immediately), disk >80%.
-- Queue monitoring: Horizon dashboard (platform-staff-gated route), metrics exported.
-- Health: `/health` (liveness) and `/health/deep` (db, redis, meilisearch, S3, mail transport ping) for uptime monitors (e.g., Better Uptime/Pingdom).
-
-### 22.2 Audited events (complete list = scope §5.18; mechanism = `AuditRecorder`)
-Every event in scope §5.18 is implemented as a constant in `Enums/AuditAction.php` (merchant self-registration → platform fee setting changes — ~50 actions). Recorder API:
-```php
-AuditRecorder::record(action: AuditAction::PaymentValidated, target: $payment,
-    old: $before, new: $after, severity: Severity::High);
-```
-Captured fields exactly per scope (§7.5 table) incl. ip/user_agent from request context (or `system` for jobs), hash chain per §7.5. High/critical by default: role changes, payment validation changes, receipt generation, voids, contact-access attempts, branch access changes, period locks/reopens, fee setting changes, login abuse. Login + security events (link denied/failed/success, unauthorized access, abuse suspected) flow into the same store. Merchant Audit UI reads with masking; Super Admin platform audit reads the platform chain + governance events. Flagging workflow per `flagged_audit_events`. Before/after values recorded only for sensitive state changes and never include tokens/secrets.
-
----
-
-## 23. Performance and Scalability Plan
-
-Likely bottlenecks → mitigations (each with a measurable target):
-
-| Bottleneck (evidence) | Mitigation | Target |
-|---|---|---|
-| Queue board polling (busiest screen) | `GET /branches/{b}/queue` cached 5s in Redis, keyed per branch, invalidated on queue mutation events; ETag/304; SPA polls 10s (WebSockets deferred post-launch) | p95 <120ms |
-| Dashboard aggregates (today's revenue, counts) | Redis cache 60s per branch/day; invalidate on invoice/payment events; heavy ranges (last 3 months) precomputed nightly into `report_snapshots` | p95 <200ms |
-| Invoice/receipt number contention | single-row `FOR UPDATE` on sequence inside the issuing txn (short); per-merchant so no cross-tenant contention | <5ms lock hold |
-| Audit volume | monthly partitions, BRIN on created_at, async write via queued recorder for non-financial events (financial audit stays in-txn) | inserts <3ms |
-| N+1 queries | `preventLazyLoading` in dev/CI; resource classes use explicit `with()` | CI fails on lazy load |
-| PDF generation (day-close, statements, receipts) | dedicated `pdf` queue, Browsershot/Chromium container, throttled concurrency | never on request thread |
-| Search indexing bursts | queued, batched | n/a |
-| Frontend bundle | route-level code splitting per layout, lazy charts, image optimization, immutable hashed assets behind CDN, gzip/brotli | initial JS <250KB gz |
-| Hot rows: platform_fee_ledger balance | balance_after computed in txn with merchant advisory lock; reconciliation job re-verifies sums nightly | drift = 0 |
-
-Capacity assumptions: 5k merchants × 2 branches × 50 invoices/day ≈ 500k invoices/day worst case — comfortably single-Postgres with the above indexes; scale path: read replica for reports → table partitioning of payments/invoices by month if >100M rows.
-
----
-
-## 24. Security Threat Model
-
-STRIDE-organized; every row has an implemented control and a verifying test.
-
-| Threat | Vector | Control | Verifying test |
-|---|---|---|---|
-| SQL injection | filters/search params | Eloquent bindings only; whitelisted sort/filter; no raw concat (PHPStan rule) | `Security/SqlInjectionProbeTest` (sqlmap-style payloads → 422/safe) |
-| XSS | client names, notes rendered in SPA & PDFs | Vue auto-escaping, no v-html, PDF templates escape, CSP `default-src 'self'` | `Security/XssRenderTest`, CSP header assert |
-| CSRF | browser session calls | Sanctum CSRF on all mutating routes, SameSite=Lax | `Security/CsrfTest` |
-| Broken access control / IDOR | ULID swapping, role abuse | tenant-scoped bindings (404), policies on every route, route-coverage test, unauthorized-attempt audit | the entire `Feature/Isolation` + `Feature/Security` suites |
-| Mass assignment | extra JSON keys | explicit $fillable + FormRequest `validated()` only ever passed to services | `Security/MassAssignmentTest` (inject `merchant_id`, `status`, `validated_by`) |
-| Magic link theft/replay | email compromise, link forwarding | 15-min expiry, single-use atomic consume, hashed at rest, bound checks re-run at consume, session regeneration, audit | `Auth/MagicLinkSecurityTest` |
-| Session fixation/hijack | — | regenerate on login, secure/httponly/SameSite cookies, idle+absolute timeout, instant revocation on suspension | `Auth/SessionLifecycleTest` |
-| Brute force / credential stuffing | link request floods | §9.3 limiters, backoff, abuse audit | `Auth/RateLimitTest` |
-| File upload abuse | malware, polyglots | §19 pipeline (sniff+whitelist+re-encode+ClamAV+private) | `Security/UploadAbuseTest` |
-| Payment fraud (internal) | fake/duplicate refs, premature receipts, tampered invoices | reference rules, duplicate detection + override audit, receipt-after-validation DB guard, void/adjust approvals, period locks, append-only audit | finance suite (§25) |
-| Sensitive data exposure | logs, exports, personnel scope | redaction, masking, export governance, personnel contact-export nonexistence | `Security/LogRedactionTest`, `Finance/ExportGovernanceTest`, `Isolation/PersonnelOwnScopeTest` |
-| API abuse / scraping | enumeration | ULIDs, pagination caps, throttles, uniform 404s | `Security/EnumerationTest` |
-| Unsafe redirects | verify-page `redirect` param | no user-controlled redirects; SPA routes only from whitelist | `Auth/RedirectTest` |
-| Dependency vulns | supply chain | Dependabot + `composer audit` + `npm audit --audit-level=high` in CI (fail on high/critical), lockfiles committed | CI gate |
-| Audit tampering | insider | append-only trigger, hash chain, nightly verify, DB role without UPDATE/DELETE on audit_logs | `Audit/ChainTamperTest` |
-| SSRF/headers | — | no user-supplied URL fetching at launch; strict security headers at Nginx | header assert test |
-
----
-
-## 25. Testing Strategy
-
-Stack: Pest (unit/feature/API) on PostgreSQL service container (never SQLite — constraints/partitions must match prod), Vitest + Vue Testing Library (components), Playwright (browser E2E + a11y via axe), Larastan level 8, Pint, ESLint+vue-tsc. Coverage gate: 85% lines on `app/Domain`, 100% of the isolation/security suites green.
-
-Conventions: every module ships positive, negative, **cross-tenant denial**, **permission denial**, and **validation failure** cases (prompt §22). Factory states for every status enum. The scope §13 test table is the canonical checklist; mapping (file names are binding):
-
-| Area | Test file | Key cases (P=positive, N=negative, X=cross-tenant, D=permission denial, V=validation) |
-|---|---|---|
-| Magic link auth | `Feature/Auth/MagicLinkRequestTest`, `MagicLinkVerifyTest`, `MagicLinkSecurityTest`, `Auth/RateLimitTest` | P issue+consume; N expired/reused/invalidated token; N suspended user link denied; V bad email; throttle 429; no-enumeration (202 always) |
-| Self-registration & setup | `Feature/Onboarding/SelfRegistrationTest`, `FirstTimeSetupTest`, `NoPlatformMerchantCreationTest` | P register→tenant→owner; P setup steps incl. auto-branch-select & welcome mails queued; N dashboard APIs blocked while pending_setup; **assert no platform route can create merchants/first admins or demand KYC** |
-| Tenant/branch isolation | `Feature/Isolation/*` (one per module: Invoice, Payment, Receipt, Client, Queue, Appointment, Session, Staff, Commission, Report, Export, RouteBindingTest, PersonnelOwnScopeTest, CrossBranchPaymentTest) | X every binding 404s; X list endpoints return only scoped rows; audit row written |
-| Roles & permissions | `Feature/Security/PermissionMatrixTest` (data-provider over §10.3), `FinancePermissionTest`, `HrSelfEscalationTest`, `AuditReadOnlyTest`, `AuthorityBoundariesTest` | D every ✗ cell denied; D merchant_admin cannot configure services/commissions/assign personnel; D HR cannot touch other branch / self-escalate; D audit role 403 on every write; D front office cannot validate/issue receipts |
-| Staff lifecycle | `Feature/Hr/StaffInvitationTest`, `StaffDuplicateTest`, `StaffSuspensionTest`, `StaffHistoryTest` | P invite/resend/revoke/accept; N duplicate active email & phone blocked; **P suspension kills sessions + magic links immediately and triggers reassignment checks**; history rows complete |
-| Branch ops | `Feature/Branch/ProfileTest`, `CalendarTest`, `DayLifecycleTest`, `CashUpTest`, `ClosureProtectionTest`, `NumberingTest` | V required profile fields; P emergency closure blocks queue+appointments; P day statuses + reopen reason; P cash-up expected-vs-recorded + discrepancy note required + approve→lock + PDF queued; N closure blocked on each of the 8 conditions; P invoice/receipt numbers unique under 50-thread concurrency (`NumberingConcurrencyTest`), voided keeps number |
-| Catalogue | `Feature/Catalogue/ServiceAuthorityTest`, `ServiceCrudTest` | D merchant_admin 403 on service create; P branch user CRUD |
-| Clients | `Feature/Clients/DuplicateClientTest`, `MergeTest`, `ConsentTest` | N same-branch duplicate phone 409; P other-branch allowed; P controlled merge preserves history |
-| Queue & sessions | `Feature/Queue/WalkInAtomicityTest`, `TransitionTest`, `PreferredPersonnelTest`, `ReassignmentTest`, `Sessions/DoubleBookingTest` | P walk-in creates client+entry+optional fee atomically (rollback on any failure); N invalid transitions 422; P next-available vs preferred (fee line, lock to personnel, override needs reason+perm, audit); P transfer on unavailability; N eligibility violation blocked; N DB exclusion blocks overlap |
-| Appointments | `Feature/Scheduling/CheckInConversionTest`, `ConflictTest`, `ClosureProtectionTest` | P check-in converts to queue without duplicate records (asserts row counts); N double-book 409; N booking into closure 422 |
-| Invoices | `Feature/Invoicing/TotalsTest`, `TierPricingTest`, `VoidApprovalTest`, `LogoTest` | P totals/discount/preferred fee lines; P 500/535/570 tier table & constant 70 liability; D/P void unpaid (perm+reason) vs paid (approval); P logo embedded in PDF |
-| Payments | `Feature/Payments/RecordingTest`, `ValidationWorkflowTest`, `ReferenceRulesTest`, `DuplicateReferenceTest`, `PartialSplitTest` | V method-specific reference required; P all validation statuses + event history; N duplicate mpesa ref 409, override needs perm+reason+audit; P legs validate independently, invoice paid only when validated total == invoice total |
-| Receipts | `Feature/Receipts/GenerationGuardTest`, `AutoIssueTest`, `ReissueReversalTest`, `DownloadLogTest` | N receipt before validation blocked at service **and** DB trigger; P auto-issue on validation; P reissue references original, reversal preserves record; P downloads logged |
-| Refunds & disputes | `Feature/Payments/ExternalRefundTest`, `FinanceDisputeTest` | N amount > validated rejected; P approval flow + invoice impact; P dispute statuses/evidence |
-| Periods | `Feature/FinanceOps/PeriodLockTest` | P lock on cash-up approval; N writes into locked period 423; P reopen needs reason+approval+audit |
-| Commissions | `Feature/Commissions/RuleAuthorityTest`, `CalculationTest`, `ReversalTest` | D only HR sets rules; P precedence; P earned only on validation; P reversal on void/refund |
-| Billing engine | `Feature/Billing/AccrualTest`, `CycleTest`, `SuspensionTriggerTest`, `BranchDebtGateTest`, `FeeDisputeTest`, `InactivitySweepTest` | per §18.3 |
-| Exports | `Feature/Finance/ExportGovernanceTest`, `Hr/RosterExportTest`, `Audit/AuditExportTest` | D permission, V reason required, P signed URL expiry + download count + masking + audit; N roster export contains no client/payment columns |
-| Audit | `Feature/Audit/AppendOnlyTest`, `ChainTamperTest`, `SeverityTest`, `FlaggedEventTest`, `UnauthorizedAttemptLoggingTest`, `MaskingTest` | N UPDATE/DELETE raises; P chain verifies, tamper detected; P all §5.18 actions write rows (data-provider) |
-| Personnel scope | `Feature/Isolation/PersonnelOwnScopeTest`, `Security/ContactExportAbsenceTest` | X own-only on all five surfaces; **404 on every export-shaped path + audit row** |
-| API contract | `Feature/Api/PaginationTest`, `ErrorEnvelopeTest`, `Security/RouteCoverageTest` | every collection paginates; envelope shape; every route authenticated+authorized |
-| Frontend units | `spa/tests/**` Vitest | money/date utils, useForm, permissionService, StateBoundary states, SvTable card collapse |
-| E2E (Playwright) | `tests/Browser/` | journeys: register→setup→dashboard; invite→accept→magic login; walk-in→assign→serve→invoice→record payment→finance validate→receipt download; preferred-personnel with fee; day open→close→cash-up→PDF; both themes; 360/768/1280; axe on each |
-
----
-
-## 26. Deployment and CI/CD Strategy
-
-### 26.1 Docker
-`docker/` contains: `php.Dockerfile` (php:8.3-fpm-alpine + extensions pdo_pgsql, redis, intl, gd, opcache (preload on), non-root user), `nginx.Dockerfile` (config + built SPA assets), `docker-compose.yml` (dev: app, nginx, postgres:16, redis:7, meilisearch, minio, mailpit, clamav, horizon, scheduler), `docker-compose.prod.yml` (app, nginx, horizon, scheduler; managed Postgres/Redis/S3 recommended). One image serves app/horizon/scheduler with different commands. `.dockerignore` excludes .env, node_modules, tests artifacts.
-
-### 26.2 Pipeline (GitHub Actions)
 ```text
-on PR:    pint --test → larastan → eslint+vue-tsc → gitleaks
-          → pest (Postgres+Redis services, parallel) → vitest
-          → composer audit + npm audit (fail high) → build SPA → playwright (critical tag)
-on main:  all above → build+push images (sha tag) → deploy staging
-          → staging smoke (health/deep, login E2E) → manual approval
-          → deploy production
-deploy:   pull images → php artisan down --render=maintenance (only if breaking)
-          → migrate --force (expand/contract pattern: additive first; destructive
-            changes ship one release after code stops using them)
-          → config:cache route:cache view:cache event:cache
-          → horizon:terminate (graceful drain) → restart containers → health gate
-rollback: redeploy previous image tag; migrations are backward-compatible by the
-          expand/contract rule, so prior code runs on the new schema; if a migration
-          itself must be reverted, restore from the pre-deploy snapshot + replay plan
+C0 — Security or data-integrity blocker. Must be fixed, merged, and demonstrated before any new feature phase.
+C1 — Required correction to completed/claimed work. Must be completed before the affected subsystem progresses.
+C2 — Verified optimization/enhancement that does not correct a defect. Scheduled later only after evidence proves omission
+     does not violate scope, security, data integrity, operability, or production readiness.
+N  — Investigated and proven non-issue. Requires a written decision record and a passing guard test where regression is possible.
 ```
-Secrets: GitHub Environments + host secret store (SSM/Doppler); never in images or repo. Backups: nightly `pg_dump` (custom format) + WAL archiving where managed-PG offers PITR; encrypted to a separate bucket; **monthly restore drill into staging is a scheduled task with a checklist**. HTTPS: Let's Encrypt/ACM at the edge, HSTS preload. Caching in prod: opcache + config/route/view caches; `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`, `SESSION_DRIVER=database`, `APP_DEBUG=false` verified by a boot-time assertion that aborts if debug is on in production.
 
----
+Every register item additionally carries a **gating category** that determines *when* it must complete, so that a feature-owned obligation is never required to finish before its owning feature phase is allowed to start:
 
-## 27. Step-by-Step Development Roadmap
-
-Phases are sequential; later phases assume earlier acceptance criteria hold. **Common to every phase:** follow §28 execution rules; run `composer pint && composer stan && php artisan test --parallel` plus the phase's named tests; commit only green; update `docs/CHANGELOG.md`. **Common rollback:** every phase lands as one reviewed PR; rollback = revert the PR; migrations within unreleased phases may be rolled back with `migrate:rollback` (never after release — use expand/contract).
-
-### Phase 1 — Project initialization
-**Objective:** Repo skeleton, tooling, quality gates. **Files:** `composer.json`, `package.json`, `pint.json`, `phpstan.neon` (level 8 + custom rules NoWithoutTenancyOutsidePlatform, NoRawSqlConcat), `.editorconfig`, `eslint.config.js`, `tsconfig.json`, `.github/workflows/ci.yml` (lint+stan+test skeleton), `docs/`. **Tasks:** `laravel new servana` (11.x); scaffold Vue 3+TS+Vite in `resources/spa`; Tailwind with §12 tokens and §13 screens; install Pest, Larastan, Pint, gitleaks hook. **Tests:** `tests/Feature/SmokeTest` (app boots, /health 200). **Commands:** `composer install && npm ci && npm run build && php artisan test`. **Verification:** CI green on first PR; gitleaks passes. **Acceptance:** clean install reproducible from README in <15 min. **Risks:** version drift → lockfiles committed.
-
-### Phase 2 — Docker & environment setup
-**Objective:** Dev parity with prod per §26.1. **Files:** `docker/*`, `docker-compose.yml`, `.env.example` (every var documented; no real secrets), `Makefile` (`make up/test/fresh`). **Tasks:** all dev services incl. mailpit, minio, clamav; healthchecks; non-root containers. **Security:** verify `.env` ignored; secrets only via env. **Tests:** CI switches to compose-equivalent service containers (Postgres 16, Redis). **Verification:** `make up && make fresh && make test` green; Mailpit receives a test mail; MinIO bucket reachable. **Acceptance:** new dev onboards with one command. **Risk:** ClamAV memory in dev → optional profile flag.
-
-### Phase 3 — Laravel backend foundation
-**Objective:** §5 skeleton + cross-cutting infrastructure. **Files:** Domain folders, `Support/Money.php`, `Enums/*`, error envelope handler (`bootstrap/app.php` exception renderer per §11.5), correlation-id middleware, structured logging config + redaction processor, named rate limiters (§9.3), Sentry. **DB:** framework tables (sessions, jobs, failed_jobs, job_batches, cache). **Tests:** `Unit/MoneyTest`, `Feature/Api/ErrorEnvelopeTest`, `Security/LogRedactionTest`. **Verification:** forced exception returns envelope + appears in Sentry (staging DSN); redaction proven on a synthetic token. **Acceptance:** all green; stan level 8 passes.
-
-### Phase 4 — Frontend foundation
-**Objective:** §6 skeleton + §12 design system core. **Files:** layouts (8), router with guards (stubbed), stores, `apiClient.ts`, `ui/` core components (SvButton, inputs, SvCard, SvModal, SvToast, SvStateBoundary, SvEmptyState), theme tokens light+dark, head theme script. **Tests:** Vitest for apiClient error mapping, useForm, StateBoundary; Playwright smoke (app shell at 3 breakpoints, no horizontal scroll). **Acceptance:** Storybook-style demo page renders all components in both themes; axe clean.
-
-### Phase 5 — Authentication (Magic Link + sessions)
-**Objective:** §9 fully. **Files:** `Domain/Auth/*`, `magic_login_tokens` migration, `MagicLinkController`, `MfaController`, mail templates (brand voice), SPA pages `auth/Login.vue`, `auth/CheckEmail.vue`, `auth/Verify.vue`, `/me` endpoint + authStore bootstrap. **Security:** all seven §2.3 checks; hashing; atomic consume; session regeneration; limiters; uniform 202. **Tests:** the four auth files in §25 + `Auth/SessionLifecycleTest`. **Commands:** `php artisan test --group=auth`. **Verification:** manual: request link in Mailpit, login, idle-timeout logout; API examples captured in `docs/proof/phase5.md` (202, 422 expired, 429). **Acceptance:** denial matrix (each failed check → no email + audit row) proven by tests. **Risk:** mail deliverability → SPF/DKIM checklist in docs.
-
-### Phase 6 — Account & tenant model (merchants, self-registration, first-time setup)
-**Objective:** Scope §3.2/§5.1. **DB:** users, merchants, merchant_profiles, merchant_users + seeders. **Backend:** `RegisterMerchant` action (creates user+merchant pending_setup+owner membership, transactional), `CompleteFirstTimeSetup` action (tier, profile, ≥1 branch, initial branch_manager+hr invites with auto-branch-select, welcome mails, flips status→active, redirect signal), `ResolveTenantContext`, `EnsureMerchantActive` (pending_setup → only setup endpoints). **Frontend:** registration page, 4-step setup wizard (§16 stepper), merchant dashboard shell. **Tests:** `Onboarding/*` incl. `NoPlatformMerchantCreationTest`. **Verification:** DB rows shown (merchant, membership role=merchant_admin), mails in Mailpit, pending_setup API block proven. **Acceptance:** scope first-time-setup steps 1–7 all enforced server-side; Super Admin cannot create merchants (no route exists — route list diff attached as proof).
-
-### Phase 7 — Branches, memberships, invitations
-**Objective:** Branch entity+scope (A2), staff invitations, lifecycle. **DB:** merchant_branches, branch_user_assignments, staff_invitations, staff_profiles, staff_history. **Backend:** branch CRUD (admin-only create), `EnsureBranchScope`, invitation accept flow (token → user+membership+assignment+staff_profile, pending→active), `StaffLifecycleService` (suspend/deactivate = sessions+tokens revoked + reassignment-check event), resend/revoke. **Frontend:** branch list/create (admin), invitation accept page, staff status badges. **Security:** branch-debt gate stub (returns 0 until Phase 16, interface fixed now). **Tests:** `Hr/StaffInvitationTest`, `StaffSuspensionTest`, `Isolation/RouteBindingTest` first models. **Verification:** suspend a logged-in test user → their next request 401s (browser test proof). **Acceptance:** duplicate active email/phone blocked (DB partial uniques demonstrated with attempted insert).
-
-### Phase 8 — Roles & permissions
-**Objective:** §10 registry, policies, middleware. **DB:** roles, permissions, role_permission_assignments, merchant_user_permission_overrides; `PermissionSeeder` = §10.3 matrix. **Backend:** TenantContext permission resolution (cached per request), `EnsurePermission`, policies for existing models, HR permission-preview endpoint. **Tests:** `PermissionMatrixTest` (data provider iterates every cell), `HrSelfEscalationTest`, `AuditReadOnlyTest` (skeleton), `AuthorityBoundariesTest`. **Verification:** matrix test output table committed to `docs/proof/phase8-matrix.txt`. **Acceptance:** zero matrix mismatches; permission changes audited (depends on Phase 19 stub — `AuditRecorder` interface introduced here with a temporary table-backed minimal implementation to avoid retrofitting).
-*(Note: implement the real `audit_logs` schema here, full event coverage matures in Phase 19 — auditing must exist before financial phases.)*
-
-### Phase 9 — Tenant-scoped data access hardening
-**Objective:** §8 complete. **Backend:** BelongsToMerchant/BelongsToBranch traits applied to all models, scoped route binding, `LogUnauthorizedAttempt`, `TenantAwareJob`, PHPStan tenancy rule active. **Tests:** entire `Feature/Isolation` suite for existing models incl. `Unit/TenantAwareJobTest`, parameterized `RouteBindingTest`. **Verification:** demonstrate denied cases of §8.4 with recorded API transcripts in `docs/proof/phase9.md`. **Acceptance:** every §8.4 row green; stan rule blocks a deliberate violation (shown then removed).
-
-### Phase 10 — API foundation
-**Objective:** §11 conventions across the board. **Backend:** pagination/filter/sort traits, Idempotency-Key middleware, resources with `can` maps, `RouteCoverageTest`, OpenAPI generation (`scribe` or `l5-swagger`) published to `docs/api`. **Tests:** `Api/PaginationTest`, `ErrorEnvelopeTest`, `Security/RouteCoverageTest`. **Acceptance:** route coverage test enumerates all routes and passes; OpenAPI doc builds in CI.
-
-### Phase 11 — UI layout foundation
-**Objective:** Role layouts + navigation per scope nav lists; profile menu (§17); branch switcher. **Frontend:** all 8 layouts wired to router guards; SvSidebarNav with role nav configs (verbatim scope lists); SvProfileMenu + preview card; suspended/no-access state pages. **Tests:** Playwright nav per role (seeded users), keyboard menu tests, clip/overflow checks. **Acceptance:** each role lands on correct home; nav items match scope lists exactly (snapshot test of nav config vs fixture).
-
-### Phase 12 — Responsive design pass
-**Objective:** §13 strategies on all existing screens; SvTable card-collapse; queue board scaffolding responsive. **Tests:** Playwright matrix 360/768/1280 + scrollWidth assertions + touch-target audit (bounding boxes ≥44). **Acceptance:** zero horizontal scroll, zero overlap on matrix run.
-
-### Phase 13 — Dark mode
-**Objective:** §14 complete. **Tasks:** dark token sheet, toggle, `/me/preferences`, head script, both-theme Playwright + axe. **Acceptance:** contrast AA both themes on critical pages; no flash (Playwright asserts class present before first paint via init script check).
-
-### Phase 14 — Accessibility foundation
-**Objective:** §15 items 1–9 retrofitted and gated. **Tasks:** skip link, focus management audit, aria-live regions, error-summary pattern, reduced-motion CSS. **Tests:** axe CI gate turned blocking; keyboard E2E for login + setup wizard. **Acceptance:** axe: 0 serious/critical on gated pages.
-
-### Phase 15 — HR, catalogue, clients (operational data layer)
-**Objective:** Scope §3.4/§5.4/§5.5/§5.6. **DB:** service_categories, services, personnel_service_eligibilities, personnel_availability_schedules, personnel_unavailabilities, clients, client_consents. **Backend:** HR module endpoints (roster, search, eligibility, availability, history, permission preview, roster export — roster only), service catalogue (branch authority), DuplicateClientGuard + merge workflow. **Frontend:** HR dashboard/roster/staff editor, services pages, client pages with duplicate-warning modal. **Tests:** `Catalogue/ServiceAuthorityTest`, `Clients/DuplicateClientTest`, `MergeTest`, `Hr/RosterExportTest` (no client/payment columns), availability tests. **Acceptance:** merchant_admin 403 on service config; HR other-branch 404; duplicate phone same branch 409 + allowed cross-branch (proof transcripts).
-
-### Phase 16 — Scheduling, queue, sessions, preferred personnel (operational core)
-**Objective:** Scope §4, §5.7–5.9. **DB:** appointments (+exclusion constraint), queue_entries, queue_configurations, service_sessions, preferred_personnel_fee_rules. **Backend:** QueueService (atomic walk-in txn; capacity; modes; estimator using active personnel × service duration × queue length), AppointmentService (availability calc honoring branch calendar + personnel availability; check-in conversion linking — no duplicates), SessionService (state machine, eligibility check), ReassignmentService (branch-manager transfer with reason), preferred-personnel flow (fee preview endpoint → confirmation → fee on queue entry → invoice line in Phase 17; override perm+reason; unavailability options: wait/reassign/cancel+fee-reversal hook). **Frontend:** Front Office dashboard + actionable queue board (check in/assign/start/invoice/record payment/awaiting validation/ready for receipt), walk-in wizard with next-available vs preferred chooser (fee + estimated wait shown pre-confirmation), appointments calendar, Personnel mobile-first pages. **Tests:** the full Queue/Scheduling/Sessions block of §25. **Verification:** demo script: two concurrent walk-ins to same preferred personnel → second queues behind; DB exclusion blocks overlapping appointment (SQLSTATE shown). **Acceptance:** valid-transition table enforced (every invalid pair 422, data-provider test); atomicity proven by induced mid-txn failure leaving zero rows. **Risks:** wait estimation accuracy → label as estimate, tune post-launch.
-
-### Phase 17 — Invoicing
-**Objective:** Scope §5.10 + tier pricing. **DB:** invoices, invoice_items, invoice_number_sequences. **Backend:** InvoiceService (build from session: service price, discount, preferred fee line, tier surcharge line via TierPricingCalculator; FOR UPDATE numbering; merchant logo into PDF via pdf queue), Void/Adjustment approval workflows. **Frontend:** invoice create-from-session, list/detail, void/adjust modals with typed confirmation, PDF download (signed). **Tests:** Invoicing block of §25 + `NumberingConcurrencyTest` (50 parallel issuances, zero gaps/dupes assertion). **Acceptance:** tier table reproduced exactly (500/535/570 vs constant 70); voided invoice retains number and is excluded from revenue but present in history.
-
-### Phase 18 — Payments, receipts, refunds, disputes, cash-up, period locks (finance core)
-**Objective:** Scope §3.5, §5.11–5.12. **DB:** payment_records, payment_validation_events, payment_reference_checks, receipts (+pivot, trigger), receipt_number_sequences, receipt_reissues, receipt_download_logs, external_refunds, finance_disputes, financial_period_locks, branch_day_records, branch_cash_ups. **Backend:** recording (Front Office) → validation (Finance) workflow with all statuses; method reference rules; DuplicateReferenceDetector (+override); partial/split legs with invoice-paid invariant; ReceiptService auto-issue on full validation (DB-guarded); refunds with caps+approval; disputes; BranchDayService (open/pause/close/reopen+reason, summary snapshot); CashUpService (expected vs recorded, discrepancy note rule, finance review → daily lock); PeriodLockService wired into every financial mutation; Finance task inbox notifications (priority table). **Frontend:** Finance navigation (all 17 scope items), pending-validations queue, validation modal with method-specific fields, duplicate-reference modal, partial/split UI, receipts with reissue/reverse, refunds, disputes with evidence upload, cash-up wizard, periods screen, day open/close on Branch layout, payment UI states Saved/Unsaved/Pending validation. **Tests:** the entire Payments/Receipts/Refunds/Periods/CashUp blocks of §25. **Verification:** end-to-end transcript walk-in→receipt committed as proof; trigger test shows DB refusing premature receipt even when service layer bypassed. **Acceptance:** invoice paid only when validated total equals invoice total (split-leg test); locked day rejects edits 423; cash-up approval emails queued. **Risks:** workflow complexity for SMEs → inbox priorities + empty-state guidance.
-
-### Phase 19 — Audit logging completion
-**Objective:** §22.2 full coverage; chain integrity. **DB:** finalize audit_logs partitioning, flagged_audit_events, append-only trigger, restricted DB role. **Backend:** AuditRecorder coverage for every §5.18 action (data-provider test asserts each action writes a row with required fields), masking-at-read, ChainVerifier + `audit:verify-chain`, unauthorized-attempt pipeline complete. **Frontend:** Merchant Audit dashboard (high-risk, recent, flagged, payment issues, role changes, contact-access attempts, preferred overrides), searchable/filterable log (date/actor/role/branch/module/action/entity/severity/status), flag workflow, audit export (permission-gated). **Tests:** Audit block of §25. **Verification:** manual UPDATE attempt on audit_logs as app role → SQL error transcript; tamper a row in test → verifier flags. **Acceptance:** §5.18 action checklist 100% covered.
-
-### Phase 20 — Citrus Billing Engine & commissions
-**Objective:** §18 + scope §5.13–5.14. **DB:** platform_fee_ledger, platform_fee_invoices, platform_billing_settings, platform_fee_disputes, commission_rules, commission_ledger. **Backend:** FeeAccrualService (event-driven, idempotent), CycleInvoiceService + `billing:run-cycle`, SuspensionTriggerService, branch-debt gate now real (Phase 7 stub replaced), merchant statements (PDF), fee disputes; CommissionCalculator (precedence, preferred-fee setting, earned-on-validation) + ReversalService (void/refund events); Super Admin platform screens (settings, fee rules, merchants governance, ledger, reports); inactivity sweep. **Frontend:** merchant platform-fee pages (ledger, explanation, cycle, statement, dispute), HR commission rules, Finance commission liabilities, Personnel commission view. **Tests:** Billing + Commissions blocks. **Verification:** simulated 2-cycle run on seeded data; suspension fires on overdue fixture; reconciliation job reports zero drift. **Acceptance:** tier never alters liability (regression-pinned); commission earned only post-validation and reverses on void.
-
-### Phase 21 — Queues, notifications, scheduled reports
-**Objective:** §20 complete. **Backend:** Horizon config, all 20 notification types, Finance/branch inboxes, day-close + cash-up PDF jobs emailing Merchant Admin daily (Browsershot templates with logo, EAT date handling), scheduler entries, failed-job alerting. **Tests:** notification fakes per trigger; PDF snapshot tests (structure assertions); `Unit/TenantAwareJobTest` extended to all jobs; scheduler smoke (`schedule:test`). **Acceptance:** day close in E2E produces both PDFs in Mailpit addressed to Merchant Admin.
-
-### Phase 22 — Search
-**Objective:** §21. **Tasks:** Scout+Meilisearch, five indexes with tenant filters, `/search` endpoint, Front Office speed-search bar (phone/invoice/receipt fast-paths), HR roster search, audit log filters. **Tests:** isolation search test, latency assertion on seeded volume (10k clients), drift check command. **Acceptance:** cross-tenant search isolation proven; speed search <100ms p95 locally on fixture volume.
-
-### Phase 23 — Security hardening & threat-model verification
-**Objective:** Close §24 table. **Tasks:** CSP/security headers final, CORS lock, upload pipeline + ClamAV wiring, gitleaks/audit gates blocking, `ContactExportAbsenceTest`, EnumerationTest, dependency update sweep, internal pen-test checklist run (OWASP ASVS L2 spot-check) with findings fixed via Bug Fix Protocol (§28). **Acceptance:** every §24 row's verifying test exists and passes; pen-test checklist signed off in `docs/security/asvs-checklist.md`.
-
-### Phase 24 — Performance optimization
-**Objective:** Hit §23 targets. **Tasks:** add caches (queue board, dashboards, report snapshots) + invalidation events; k6 load scripts (`load/` folder: queue polling 200 VUs, invoice issuance 50 VUs, validation 50 VUs) against staging; fix regressions; bundle analysis ≤250KB gz initial; index review with `EXPLAIN ANALYZE` on top 20 queries committed to `docs/perf/`. **Acceptance:** all §23 targets met on staging hardware; zero N+1 in CI.
-
-### Phase 25 — Deployment pipeline & final production readiness
-**Objective:** §26 live + §31 checklist. **Tasks:** production infra provisioning, DNS/TLS, secrets, backup + restore drill executed and documented, uptime monitors, Sentry prod, Horizon auth, on-call alert routing; staging full-regression (all suites + E2E both themes); production smoke after first deploy; runbooks (`docs/runbooks/`: deploy, rollback, restore, incident, merchant-suspension, period-reopen). **Acceptance:** §31 Final Verification Checklist 100% checked, evidence linked per item; restore drill proof (timestamped log) attached. **Rollback:** previous-tag redeploy rehearsed on staging before go-live.
-
----
-
-## 28. IDE Agent Execution Instructions
-
-For **every** implementation step:
-1. **Inspect first:** read the files you will touch (`view`/open), the relevant plan section, and the scope passage it cites. Never edit unseen code.
-2. **Identify the requirement:** quote the plan section ID (e.g., "§18.1 fee accrual") in the PR description.
-3. **Prove the gap:** show the failing test, missing route, or absent constraint that demonstrates the need (red test, route:list diff, schema dump).
-4. **Smallest correct change:** implement only what the requirement needs; no drive-by refactors; no unrelated formatting churn.
-5. **Preserve behavior:** run the full affected test directory before and after; existing green tests must stay green.
-6. **Add/update tests** named per §25 before or with the change (TDD where practical).
-7. **Run tests** (`php artisan test --parallel` + targeted `--filter`, `npm run test`, Playwright tag when UI changes).
-8. **Show results:** paste the test summary into the PR/`docs/proof/` artifact.
-9. **Demonstrate behavior:** API transcript, screenshot, or DB query output for the happy path **and** one denial path.
-10. **Document remaining risks** in the PR under "Residual risk".
-11. **Never:** weaken a constraint to make a test pass, broaden a `$fillable`, add `withoutTenancy`, skip a policy, log a secret, or touch audit rows.
-
-**Bug Fix Protocol (mandatory format for any defect):**
+```text
+PRE_FEATURE_REMEDIATION   — Phase V, R1–R7, and every C0/C1 defect discovered in ALREADY-IMPLEMENTED work
+                            that must be corrected before any dependent feature delivery. Gated by Section 5.4.
+FEATURE_DELIVERY_OBLIGATION — New-feature DB completeness, feature-owned schema additions, permission additions,
+                            feature state machines, payment/M-Pesa/compensation/SMS/reporting implementation, and
+                            production-deployment work. These do NOT correct existing implemented code; each is
+                            gated by its OWN owning phase (Section 5.4a), not by the pre-feature gate.
 ```
-- Observed problem:
-- Evidence: (failing test / log excerpt / reproduction steps)
-- Affected files:
-- Root cause:
-- Why this is the root cause: (not a symptom — show the causal chain)
-- Correct fix:
-- Files changed:
-- Tests added or updated:
-- Test command:
-- Test result:
-- Proof of resolution:
-- Remaining risk:
+
+Replacement gate rule (supersedes any "all C0/C1 before features" wording):
+
+```text
+No feature-delivery phase may begin until Phase V, R1–R7, and every C0/C1 defect affecting
+ALREADY-IMPLEMENTED work are verified complete.
+A FEATURE_DELIVERY_OBLIGATION must be completed before its OWNING phase may exit and before any
+DEPENDENT phase may begin — it is never required to complete before its owning phase starts.
 ```
-Frontend-only fixes for backend authorization findings are rejected; styling-only fixes for logic defects are rejected; silent catch blocks are rejected.
+
+A C0/C1 classification expresses severity; the gating category expresses sequencing. A C0 obligation may legitimately be a `FEATURE_DELIVERY_OBLIGATION` (for example M-Pesa settlement in Phase 20D): it must still be fully built, tested, and demonstrated before its phase exits and before dependents begin, but it cannot block the start of its own phase.
+
+Rules: a finding is never downgraded merely to preserve schedule; the requirement to fix existing production defects before new dependent work begins is never weakened; N items require an ADR and a guard test.
+
+### 5.2 Remediation Register Location and Fields
+
+Create `docs/remediation/register.yaml`. Each item carries:
+
+```text
+id | classification | scope_requirement | repository_evidence | root_cause |
+affected_files_tables_routes | security_data_business_impact | precise_correction |
+migration_impact | test_plan | proof_artifact | owner | completion_commit | reviewer | status
+```
+
+### 5.3 Confirmed Remediation Items (seeded from the corrections; Phase V may add more)
+
+| ID | Class | Gating | Title | Owning phase | Source correction |
+|---|---|---|---|---|---|
+| REM-V-001 | C0 | PRE_FEATURE | As-built verification baseline + discrepancy register | Phase V | 25 |
+| REM-DEP-001 | C0 | PRE_FEATURE | Upgrade Laravel to 12.60+, pin PHP 8.3 across all images, remove advisory ignore, CR/LF email regression tests | R1 | 5 |
+| REM-AUD-001 | C0 | PRE_FEATURE | Core audit-event completeness + hash-chain verifier + masked read API/policies | R2 | 6 (gate), 22 (combined) |
+| REM-MFA-001 | C0 | PRE_FEATURE | TOTP enrollment, encrypted secrets, hashed recovery codes, mandatory MFA (Super Admin/Merchant Admin/Finance), step-up freshness | R3 | 7 (workstream) |
+| REM-IDEMP-001 | C0 | PRE_FEATURE | Corrected `idempotency_keys` schema + middleware + financial-route coverage test + provider-callback dedupe seams | R4 | 3 |
+| REM-TEN-001 | C0 | PRE_FEATURE | Add `merchant_id` to branch-owned tables where missing; backfill; indexes/constraints; static-analysis/source-scan; route-binding tenant safety | R5 | 7 (workstream) |
+| REM-SESS-001 | C0 | PRE_FEATURE | Session/token/Magic-Link/invitation/cache revocation; active-membership+role check on every authenticated request; mid-session suspension tests; 404/403 posture | R6 | 7 (workstream) |
+| REM-OPS-001 | C1 | PRE_FEATURE | Split liveness/readiness; production deps required in readiness; isolate Redis/cache/rate-limit prefixes in tests; align PHP/Node/Composer; brand contrast ADR | R7 | 7 (workstream) |
+| REM-DDL-001 | C1 | FEATURE_DELIVERY | Per-table data-dictionary completeness (the false "full DDL exists" claim is already removed in §13); `DataDictionaryCoverageTest`; `TenantColumnCoverageTest`; PostgreSQL migration tests | Phase 13 substrate + each owning phase | 1, 2 |
+| REM-ENT-001 | C1 | FEATURE_DELIVERY | Add missing entities: `commission_rules`, `commission_ledger`, `salary_ledger`, `finance_exports`, `free_period_offers`, file + SMS records, reconciliation records, plus the Correction-3 scope entities | owning feature phases | 2 |
+| REM-ENUM-001 | C1 | FEATURE_DELIVERY | Canonical billing-mode enum across PHP/DB/API/TS/seed/audit/tests; expand-and-contract data migration | 20A/20E | 4 |
+| REM-ROUTE-001 | C1 | FEATURE_DELIVERY | Route classifications + `RouteSecurityContractTest`; class-specific acceptance matrix | Phase 10 | 10, 11 |
+| REM-MIG-001 | C1 | FEATURE_DELIVERY | Expand-and-contract migration strategy + migration manifest; remove reliance on destructive `down()` | Phase 10 + all phases | 12 |
+| REM-FILE-001 | C1 | FEATURE_DELIVERY | File/media foundation (schema, pipeline, scanning, signed downloads, authorization, jobs, tests) | Phase 10F | 13 |
+| REM-MPESA-001 | C0 | FEATURE_DELIVERY | Complete M-Pesa stateful domain + provider-supported callback security; no manual Super-Admin payment recording | 20D | 14, 15 |
+| REM-PERM-001 | C1 | FEATURE_DELIVERY | Complete canonical permission matrix + parity tests + role-boundary tests | Phase 19 + owning phases | 16 |
+| REM-SM-001 | C1 | FEATURE_DELIVERY | Complete state-machine catalogue with transition actions; no direct status assignment | each owning phase | 17 |
+| REM-PAY-001 | C1 | FEATURE_DELIVERY | Full merchant-client payment domain (methods, allocation, maker/checker, receipts, refunds) | 18A/18B | 18 |
+| REM-COMP-001 | C1 | FEATURE_DELIVERY | Full compensation domain (models, effective dating, ledgers, payouts, earnings) | 20F/20G/20H | 19 |
+| REM-SMS-001 | C1 | FEATURE_DELIVERY | Personnel served-client SMS with contact-protection controls | 21S | 20 |
+| REM-REP-001 | C1 | FEATURE_DELIVERY | Report catalogue with formulas, scope, masking, scheduled PDFs | 21N + owning phases | 21 |
+| REM-SCR-001 | C1 | FEATURE_DELIVERY | Complete screen inventory + per-screen specifications | Phase 11 + owning phases | 22 |
+| REM-TRACE-001 | C1 | FEATURE_DELIVERY | Requirement traceability matrix + CI enforcement | continuous; gated at Phase 23 | 23 |
+| REM-PRODOPS-001 | C1 | FEATURE_DELIVERY | Measurable SLOs, topology, backup/DR, alerts, runbooks | Phase 25 | 24 |
+
+### 5.4 Pre-Feature Remediation Gate (PRE_FEATURE_REMEDIATION only)
+
+The **pre-feature** gate covers only `PRE_FEATURE_REMEDIATION` items (Phase V, R1–R7, and any C0/C1 defect Phase V finds in already-implemented work). No feature-delivery phase may begin until it is satisfied:
+
+1. Every `PRE_FEATURE_REMEDIATION` row is `verified_complete`. (Feature-delivery obligations are **not** part of this gate — see §5.4a.)
+2. Every required migration in those items has been applied and tested against a production-like PostgreSQL backup copy using the expand-and-contract strategy.
+3. Full backend, frontend, browser, isolation, security, and dependency checks pass in clean containers.
+4. The required ADRs are merged.
+5. CI evidence is attached to each pre-feature item.
+6. A reviewer signs a pre-feature remediation completion report.
+7. `PROGRESS.md` and `CHANGELOG.md` are regenerated with actual commit references rather than narrative assertions.
+
+### 5.4a Feature-Delivery Obligation Gate (per owning phase)
+
+Each `FEATURE_DELIVERY_OBLIGATION` (including C0 obligations such as REM-MPESA-001) is gated by its own owning phase, not by §5.4: it must be `verified_complete` with all required tests and proof **before its owning phase may exit and before any dependent phase may begin**, and it is never required to complete before its owning phase starts. A feature phase's exit criteria (Section 82) include every feature-delivery obligation mapped to that phase.
+
+### 5.5 Automated Enforcement
+
+Add a CI script that fails when: a `PRE_FEATURE_REMEDIATION` item is not complete while a feature-delivery PR is open (pre-feature gate closed); a `FEATURE_DELIVERY_OBLIGATION` mapped to the PR's owning phase is incomplete at that phase's exit; or a required evidence path is missing. Every feature-phase PR declares `depends_on_pre_feature_gate: true` (verifying the §5.4 gate file) and lists the `FEATURE_DELIVERY_OBLIGATION` IDs it must satisfy to exit (verified against §5.4a). The enforcement never blocks a feature phase from *starting* on account of one of its own feature-delivery obligations.
 
 ---
 
-## 29. Acceptance Criteria (release gate)
+## 6. Operating Manifesto (applies to every phase)
 
-Servana is acceptable for production only when **all** hold, each evidenced by named tests/artifacts:
-1. Multiple merchants, branches, and users operate concurrently with zero cross-tenant/cross-branch access (Isolation suite + §8.4 transcripts).
-2. Magic Link auth enforces all seven §2.3 checks; sessions revoke instantly on suspension (auth suite).
-3. Authorization matches the §10.3 matrix exactly; authority boundaries of scope §3 enforced server-side (PermissionMatrixTest, AuthorityBoundariesTest).
-4. Operational core works end-to-end: walk-in/appointment → queue → session → invoice → offline payment → Finance validation → automatic receipt, with preferred-personnel fee, atomicity, and valid-transition enforcement (E2E journey green).
-5. Financial integrity: unique numbering under concurrency, paid-only-when-validated-total-equals-invoice, receipt-after-validation DB guard, void/adjust approvals, duplicate-reference detection, partial/split correctness, period locks, cash-up reconciliation, daily PDFs delivered.
-6. Citrus Billing Engine: tier table behavior exact, accrual/cycle/statement/dispute/suspension/branch-debt gate all proven; commissions earned-on-validation with reversals.
-7. Audit: every §5.18 event recorded, append-only, hash-chained, verifiable, flaggable, masked appropriately; unauthorized attempts logged.
-8. Personnel contact export does not exist anywhere (ContactExportAbsenceTest) and personnel own-scope holds server-side.
-9. UI responsive at 360/768/1280 with no horizontal scroll or overlap; light+dark both AA; accessibility gates pass; all §6.4 states implemented.
-10. APIs versioned, validated, authenticated, authorized, paginated, rate-limited, with the structured error envelope (RouteCoverageTest).
-11. Background jobs carry tenant context; Horizon healthy; scheduler tasks idempotent.
-12. Observability live: logs, Sentry, Horizon, health checks, uptime, alerts; backups with a passed restore drill.
-13. CI/CD pipeline deploys staging→production repeatably with rollback rehearsed; no secrets in repo/images; dependency scans clean of high/critical.
-14. §31 checklist 100% complete with linked evidence.
+### 6.1 Prove the Problem
+For every task, the agent records: what must be built/changed/removed/migrated/verified; why; the authoritative requirement satisfied; the evidence the need exists; the affected code/DB/routes/services/components/jobs/infra; the failure/vulnerability/financial/isolation/operational/UX defect avoided; the implementation approach; the tests and proof required. A progress note is not proof. A passing happy-path test is not proof of authorization, isolation, concurrency safety, or failure recovery.
 
----
+### 6.2 Root-Cause Analysis
+Before any fix: inspect code/config; reproduce/prove where feasible; identify the true root cause and distinguish it from symptoms; enumerate every affected file/class/method/record/constraint/route/policy/middleware/job/component/test/service/workflow; check whether the same defect pattern exists elsewhere; document intended behavior from scope; avoid superficial/localized patches.
 
-## 30. Risk Register with Mitigation Steps
+### 6.3 Fix with Precision
+Prohibited: broad rewrites without evidence; unrelated refactoring inside fixes; styling-only fixes for logic defects; frontend-only fixes for backend authorization/isolation; backend checks without DB integrity where DB enforcement is appropriate; temporary hacks; disabled/weakened/skipped tests; suppressed errors without approved justification; duplicated business logic; unverified assumptions; silent failure handling; catch-all exception handling that hides cause; security controls in the frontend only; financial state changes without transactions/locking/idempotency/audit; tenant-owned queries without tenant enforcement; branch-owned queries without branch enforcement; personnel own-scope enforced only by route naming or UI filtering. Each fix defines affected layers, migration strategy, backward compatibility, rollout/rollback, regression tests, and completion evidence.
 
-Inherits all scope §16 risks (each mapped to the controls built in Phases 16–20 as noted there). Additional delivery/engineering risks:
+### 6.4 Test Thoroughly
+Each significant change includes the relevant combination of: unit, domain-service, feature, API, request-validation, authentication, authorization, role/permission, tenant-isolation, branch-scope, personnel-own-scope, plan-entitlement, billing-status, operational-status, period-lock, idempotency, concurrency/locking, duplicate-callback/replay, ledger-integrity, audit-chain, notification, queue-job, scheduler, file-upload-security, frontend component/store/composable, browser/e2e, responsive, dark-mode, accessibility, security-regression, deployment-smoke, and backup-restore tests. Cases must include success, denied, invalid, duplicate, expired, suspended, cross-tenant, cross-branch, unauthorized, concurrent, retry, provider-failure, partial-failure, and recovery.
 
-| # | Risk | L | I | Mitigation | Owner phase |
-|---|------|---|---|------------|-------------|
-| R1 | Finance workflow complexity overwhelms SMEs (scope: 35–50%) | M | H | Workflow-driven dashboards, task inbox priorities, empty-state guidance, staged rollout with pilot merchants | 18, 21 |
-| R2 | Scope creep delays launch (scope: 40–60%) | M | H | Launch checklist (scope §15) is the only backlog; client portal/SMS/inventory explicitly deferred | all |
-| R3 | Magic-link email deliverability failures lock users out | M | H | Reputable provider, SPF/DKIM/DMARC, delivery monitoring, resend flow, support runbook | 5, 25 |
-| R4 | Numbering/locking contention under load | L | M | Per-merchant sequences, short txns, concurrency test, k6 validation | 17, 24 |
-| R5 | Audit volume degrades DB | M | M | Monthly partitions, BRIN, async non-financial writes, retention/archival job | 19, 24 |
-| R6 | Hash-chain serialization becomes a write bottleneck | L | M | Per-merchant chains + advisory locks (parallel across tenants); measured in k6 | 19, 24 |
-| R7 | Inactivity deletion conflicts with legal retention | M | H | AS-10 anonymize-and-archive design; legal sign-off checkpoint before Phase 20 ships sweep | 20 |
-| R8 | Day-boundary/timezone bugs (EAT vs UTC) in day records, locks, reports | M | H | Single `BusinessDate` helper, all day logic tested with EAT fixtures incl. midnight edges | 18, 21 |
-| R9 | Seed/permission drift between matrix doc and seeder | M | M | PermissionMatrixTest generated from one fixture consumed by both seeder and test | 8 |
-| R10 | Restore procedure untested until disaster | L | C | Monthly scheduled restore drill with sign-off artifact | 25 |
-| R11 | Playwright/E2E flakiness erodes CI trust | M | M | Network-idle waits, seeded deterministic data, retries=1 with flake quarantine label | 11+ |
-| R12 | Single membership assumption breaks for multi-merchant staff later | L | M | merchant_users already supports many rows; only context resolution is single-active — documented extension point | 6 |
+### 6.5 Demonstrate Resolution
+Each completed unit/phase produces, where applicable: test commands + results; CI results; API request/response examples; schema/constraint/index verification; transaction/locking verification; authorization-denial and cross-tenant/branch non-disclosure proof; own-scope/entitlement/billing-status/period-lock denial proof; idempotent-replay and duplicate-callback proof; audit-event and chain-verification proof; queue execution proof; browser screenshots; responsive/light+dark/accessibility verification; edge-case verification; deployment smoke and backup-restore evidence; explicit exit criteria. A phase is complete only when acceptance criteria are met and evidence is produced — never on compilation alone.
 
 ---
 
-## 31. Final Verification Checklist
+## 7. Assumptions and Resolved Decisions
 
-Tick only with linked evidence (test run, transcript, screenshot, or doc):
+| ID | Topic | Resolved decision (controlling source) |
+|---|---|---|
+| A-01 | Currency/money | `bigint` minor units + `char(3)` uppercase currency; KES default; no float. (Correction 1.3, §9) |
+| A-02 | Public identifiers | Every externally referenced row exposes an immutable ULID (`char(26)`) or native UUID; never expose sequential internal keys. (Correction 1.3; IDE rule 19) |
+| A-03 | Auth model | Passwordless Magic Link + Sanctum stateful sessions; `users.password` nullable; seven-check eligibility. (Scope §4 auth rules; Phase 5 as-built) |
+| A-04 | Timezone/date boundaries | `Africa/Nairobi` business dates; `timestamptz` events; `date` for pay-period boundaries. (Correction 19.5, 21.2) |
+| A-05 | Billing posture | Subscription-first launch; percentage platform-fee engine built but inactive unless configured. (Scope §2.3, §6; Correction 8) |
+| A-06 | M-Pesa recovery | Self-service STK + PayBill/Till callback reconciliation; **no** Super-Admin manual payment recording. (Scope §10; Correction 14) |
+| A-07 | Merchant creation | Self-registration only; Super Admin governs post-creation; forbidden creation routes must 404/not exist. (Scope §11; Section 2.1) |
+| A-08 | Migrations | Expand-and-contract; forward-repair for irreversible production changes; no destructive `down()` as production rollback. (Correction 12) |
+| A-09 | Framework | Target Laravel 12.60+; verify exact patched version from lock files; do not call any Laravel version "LTS". (Correction 5; ADR-001) |
+| A-10 | Overpayment semantics | Merchant→Servana billing overpayment creates account credit; merchant-client service overpayment is **rejected by default** at launch. (Correction 14.4, 18.4) |
+| A-11 | Salary-on-suspension | **Settled default `suspension_salary_policy = continue`.** Merchants may set a **prospective** override to `pause` (effective from a timestamp; never rewrites already-accrued salary); resumption and termination behaviors are defined in §60. Where `SERVANA COMBINED.txt` specifies a different settled value, the scope value controls and is documented as such. (Correction 8 / scope §19.5) |
+| A-12 | Receipt policy | One receipt per validation event containing component methods/amounts; receipts only after validation; reissue creates a new tracking record. (Correction 17.3, 18.7) |
+| A-13 | Brand contrast | Primary action uses `text-brand-deep` on brand orange (WCAG AA); recorded in ADR-009 (Phase R7). (CHANGELOG Phase 4) |
 
-**Tenancy & access**
-- [ ] All Isolation tests green (CI link)
-- [ ] §8.4 denied-case transcripts captured
-- [ ] Route coverage test enumerates 100% of /api/v1 with auth+authz
-- [ ] PermissionMatrixTest output matches §10.3
-- [ ] ContactExportAbsenceTest green; unauthorized attempts visible in audit UI
-**Auth**
-- [ ] Seven-check magic-link denial matrix green; throttles return 429
-- [ ] Suspension revokes live session (browser proof)
-- [ ] MFA enroll/verify for privileged roles
-**Operations**
-- [ ] E2E: register→setup→invite→walk-in→preferred fee→invoice→payment→validation→receipt→day close→cash-up→PDFs (video/trace)
-- [ ] Invalid-transition data-provider green; atomic walk-in rollback proof
-- [ ] Appointment exclusion constraint demo
-**Finance**
-- [ ] NumberingConcurrencyTest green; voided number retained
-- [ ] Tier table 500/535/570 + constant 70 regression green
-- [ ] Receipt-before-validation blocked at DB layer (SQL transcript)
-- [ ] Duplicate-reference block/override + audit proof
-- [ ] Period lock 423 + reopen approval audit
-- [ ] Billing cycle run on staging fixtures; statement PDF reviewed; overdue→suspension fired; branch-debt gate blocks deletion
-- [ ] Commission earned-on-validation + reversal proofs
-**Audit**
-- [ ] §5.18 action coverage test green; chain verify clean; tamper test detects
-- [ ] Append-only trigger transcript
-**UI/UX**
-- [ ] Responsive matrix (360/768/1280) zero horizontal scroll/overlap
-- [ ] Light+dark axe AA on gated pages; no theme flash
-- [ ] Keyboard + screen-reader walkthrough notes for critical flows
-- [ ] All §6.4 states snapshot-tested
-**Platform & ops**
-- [ ] CI pipeline green end-to-end; gitleaks/composer/npm audits clean (no high/critical)
-- [ ] Staging deploy → smoke → production deploy → smoke logs
-- [ ] Rollback rehearsal log; restore drill log
-- [ ] Health/deep endpoints monitored; alert test fired and received
-- [ ] APP_DEBUG=false assertion; HTTPS+HSTS verified; security headers scan
-- [ ] Backups encrypted, off-site, retention configured
-- [ ] Runbooks complete (deploy, rollback, restore, incident, suspension, period-reopen)
-- [ ] docs/proof/ artifacts complete for Phases 5–25
+Any assumption that the product owner has not settled is implemented only after the configuration value is adopted; otherwise the agent records a blocking ambiguity. (A-11 is now settled with a concrete default and no longer requires a pre-implementation decision.)
 
 ---
 
-*End of plan. Execute Phase 1.*
+## 8. Architecture Decision Records (ADRs)
+
+ADRs live in `docs/architecture/adr/NNNN-title.md`. The following must exist and be merged before or within the phase noted.
+
+| ADR | Title | Decision summary | Required by |
+|---|---|---|---|
+| ADR-001 | Framework upgrade target | Upgrade to Laravel 12.60+ on PHP 8.3 pinned everywhere; remove suppressed advisory; verify exact version from lock files. | R1 |
+| ADR-002 | Tenancy enforcement model | Global scopes + scoped route binding + `merchant_id`/`branch_id` ownership + job tenant context; `withoutTenancy()` is the only sanctioned escape, banned outside Tenancy/Platform by static analysis. | R5 |
+| ADR-003 | Idempotency + replay protection | Corrected `idempotency_keys` schema; deterministic scope; SHA-256 key hash; encrypted replay-safe responses; provider dedupe via unique provider IDs/receipts. | R4 |
+| ADR-004 | Migration strategy | Expand-and-contract; migration manifest; forward-repair; image rollback only within schema compatibility; restoration only via tested PITR. | Phase 10 |
+| ADR-005 | Money + rounding | Integer minor units. **Single deterministic rule: round half up** to the nearest integer minor unit, applied everywhere (percentage platform fees, commission, preferred-personnel percentage fees, promotions, discounts, future tax, allocation residuals, negative reversals, adjustments, reports, frontend previews). Proportional-allocation **residual minor units are assigned by the largest-remainder method, ties broken by ascending source-line ULID.** A reversal stores the **exact negative of the original stored amount** (never a recomputed percentage). | Phase 13 / 20E / 20G |
+| ADR-006 | M-Pesa callback security | Defense-in-depth using only provider-supported controls; no invented HMAC; correlation + uniqueness + reconciliation + replay protection always required. | 20D |
+| ADR-007 | Maker/checker + period locks | Front Office maker, Finance checker; Finance owns period locks; Merchant Admin only approves exceptional reopen; same user cannot maker+checker where separation applies. | 18A/18B |
+| ADR-008 | Audit immutability + chain | Append-only `audit_logs` with DB trigger and hash chain; verifier command; masked read API; branch/platform policies. | R2 / 19 |
+| ADR-009 | Brand contrast tokens | Primary/CTA contrast meets WCAG AA; documents the contrast decision and token values. | R7 |
+| ADR-010 | Personnel contact protection | No export channel for personnel contacts; bulk endpoints never return full phone lists; guessed export routes 404 + high-severity audit. | 21S |
+| ADR-011 | Plan-price source of truth | `subscription_plan_prices` is the sole price source; invoices capture the price at issuance; no automatic grandfathering; scheduled prices via effective dates. (PART B §6B) | 20A/20B |
+
+---
+
+## 9. Non-Negotiable Security Rules
+
+These rules are enforced server-side and tested. Frontend never substitutes for any of them.
+
+1. **Tenant isolation:** every tenant-owned query is `merchant_id`-scoped via global scope; foreign-tenant resource access returns 404 with no existence leak and writes a high-severity `unauthorized_access` audit row.
+2. **Branch isolation:** branch-owned resources additionally require an active branch assignment; same-tenant out-of-branch access returns the documented 403 posture.
+3. **Personnel own-scope:** own-scope resources derive `staff_profile_id` from the authenticated membership; no route accepts another personnel identifier; guessed cross-personnel routes 404 + audit.
+4. **Authorization order (every protected action):** authenticated+active session → MFA where role requires → tenant/platform context → active membership+role → branch assignment (if branch-owned) → permission resolution → resource tenant/branch ownership → personnel own-scope → billing-status mutation gate → plan entitlement → financial-period lock → maker/checker incompatibility → step-up freshness → request validation → idempotency+transactional execution → audit event. (Correction 16.4)
+5. **MFA + step-up:** TOTP mandatory for Super Administrator, Merchant Administrator, and Finance; fresh step-up required for billing configuration, refund finalization, period reopen, payout approval, payout mark-paid, reconciliation resolution, and sensitive compensation changes.
+6. **Magic Links:** hashed at rest (SHA-256), single-use, short expiry; invalidated on logout, suspension/deactivation, and replacement.
+7. **Session/token revocation:** suspension/deactivation invalidates sessions, tokens, unconsumed Magic Links, and pending invitations; the next authenticated request after suspension is denied.
+8. **Rate limiting + enumeration resistance:** purpose-specific limiters; uniform accepted responses for enumeration-sensitive public flows; structured 429 with retry info.
+9. **CSRF/XSS/SQLi/mass-assignment/SSRF:** Sanctum CSRF for browser session mutations; output escaping; parameterized queries only (raw-SQL concatenation banned by static analysis); Form Request allowlists; outbound request allowlisting where servers fetch URLs.
+10. **File uploads:** authorize purpose before bytes; per-purpose size/extension allowlists; private quarantine; magic-byte MIME detection (never trust browser MIME/filename); reject executables/scripts/active-SVG/macro-office/polyglot unless an approved sanitizer exists; ClamAV scan; signed short-lived downloads through an authorized endpoint; never expose storage paths.
+11. **Secrets:** stored in a secrets manager/encrypted store; never in source, `.env.example`, frontend assets, CI logs, or audit values; rotation runbooks; provider credentials restricted to the integration service identity.
+12. **Encryption + masking:** TLS in transit; encryption at rest for sensitive payloads (raw callbacks, original filenames, phone/reference display fields, TOTP secrets, stored idempotent responses); PII masked at read time per permission.
+13. **Log redaction:** never log passwords, Magic-Link tokens, MFA secrets, recovery codes, session IDs, M-Pesa credentials/OAuth tokens, raw callbacks, phone numbers, payment references, signed URL tokens, or email headers.
+14. **Audit immutability + chain:** append-only with DB trigger; hash chain; verifier; immutable financial/compensation/audit history.
+15. **Idempotency + replay:** every financial mutation requires `Idempotency-Key`; webhooks add provider-unique IDs and receipt uniqueness; duplicate/concurrent requests produce exactly one effect.
+16. **Maker/checker + financial integrity:** transactions, row locks, immutable ledgers, reversal/adjustment-only corrections, period-lock checks (Sections 9 and 25).
+17. **Export controls:** finance/audit exports are async, reason-gated, permission-masked, signed, expiring, download-counted, and audited; **no** personnel contact-export channel exists.
+18. **Dependency/secret/container scanning:** clean `composer audit`/`npm audit`, `gitleaks`, and image scans are required; suppressions require an approved, time-bound rationale and a guard test.
+19. **Incident response:** severities, escalation, runbooks; never repair financial/audit data through ad hoc SQL without a reviewed script and before/after evidence (Section 78).
+
+### 9.1 Per-Workflow Attacker Model (applied in owning phases)
+For each sensitive workflow the owning phase documents what a malicious tenant user, over-privileged staff member, suspended user, compromised email account, replayed request, duplicated callback, or concurrent request would attempt and how the design prevents it. Representative cases: a suspended Finance user retaining a session (denied at request-time membership check); a duplicated M-Pesa callback (deduped by checkout/merchant request ID + receipt uniqueness + idempotency); two Front Office users recording against the same invoice balance concurrently (row lock + validated-amount check); a Personnel user enumerating served-client phones via crafted routes (own-scope derivation + masked display + 404+audit on export-shaped routes); a malicious tenant requesting a foreign file by ULID (tenant/branch/purpose checks + 404).
+
+---
+
+## 10. System Architecture
+
+Servana is a single deployable monolith (modular by bounded context) exposing a versioned JSON API consumed by a Vue SPA, backed by PostgreSQL, Redis, private object storage, and external providers (M-Pesa/Daraja, SMS, email). Asynchronous work runs on class-separated queues; scheduled work runs on a singleton scheduler.
+
+```text
+[Vue SPA] --HTTPS/JSON /api/v1--> [Load Balancer] --> [Web/App replicas (Laravel, Sanctum)]
+                                                         |  |  |
+              +------------------------------------------+  |  +------------------------------+
+              |                                             |                                 |
+        [PostgreSQL 16 HA]                          [Redis 7 (sessions,                 [Private S3-compatible
+        (tenant + financial                          cache, queues, locks,               object storage,
+         + audit data)                               rate limits)]                        versioned, lifecycle)]
+              |                                             |
+        [Queue workers by class:                     [Scheduler (singleton/leader):
+         critical-billing, notifications,             trial/grace/suspension, salary accrual,
+         reports-exports, file-scanning, default]     reconciliation retries, day-close reports]
+                                                            |
+                                         [External providers: M-Pesa/Daraja, SMS, SMTP/email; ClamAV scanner]
+```
+
+### 10.1 Bounded Contexts (`app/Domain/*`)
+`Auth`, `Identity` (users/membership), `Tenancy`, `Platform` (governance), `Branches`, `Staff`/`HR`, `Catalogue` (services/eligibility), `Clients`, `Scheduling` (appointments/walk-ins/queues/sessions), `Invoicing`, `Payments` (merchant-client), `Receipts`, `Refunds`, `CashUp`, `PeriodLocks`, `Billing` (plans/entitlements/subscriptions/invoices/promotions), `PlatformFee` (percentage engine), `Mpesa`, `Compensation` (plans/commission/salary/payouts/earnings), `Sms`, `Files`, `Notifications`, `Reporting`, `Audit`, `Support` (money, correlation, redaction). Each context owns its models, actions, policies, events, jobs, and tests. Cross-context calls go through actions/services, never by reaching into another context's Eloquent models.
+
+### 10.2 Request Lifecycle
+Correlation-ID middleware → rate limiter (per route) → Sanctum auth (except public/webhook/health) → MFA/step-up gate (privileged) → `ResolveTenantContext` (pinned before `SubstituteBindings`) → `EnsureMerchantActive`/billing gates → `EnsureBranchScope` (branch routes) → permission middleware/policy → Form Request validation → idempotency middleware (financial) → controller → domain action (transactional, locked) → resource response. `terminate()` resets tenant context per request.
+
+### 10.3 Error Envelope
+All API errors use `{ error: { code, message, fields, meta } }`. 5xx responses carry a generic message + correlation ID only; never stack traces, SQL, provider secrets, or raw callbacks. Standard codes: 401 `unauthenticated`; 403 `permission_denied`/`no_branch_scope`/`merchant_suspended`/`pending_setup_only`; 404 foreign-tenant; 409 `idempotency_key_reused_with_different_request`/`request_in_progress`; 422 validation; 423 `financial_period_locked`; 429 rate limited.
+
+---
+
+## 11. Backend Architecture
+
+- **Framework:** Laravel 12.60+ (ADR-001), PHP 8.3 pinned across local/CI/worker/scheduler/production images.
+- **Layering:** Controller (thin: authorize, validate, delegate) → Action/Service (transactional domain logic) → Model (Eloquent, tenant-scoped) → Event/Listener/Job (side effects). Controllers never assign status strings or contain settlement logic.
+- **Transition actions:** every stateful aggregate has named Action classes (e.g., `ValidatePayment`, `SubmitCashUp`, `ApprovePayoutRun`, `RecoverBillingSuspendedMerchant`) that lock the row `FOR UPDATE`, assert current state in the `WHERE`/locked model, write, emit post-commit events, and record transition history for high-value aggregates.
+- **Money:** `App\Support\Money` integer-minor-unit value object with currency-checked arithmetic; round-half-up with largest-remainder residual allocation (ADR-005).
+- **Enums:** PHP backed enums for every status/mode, mirrored by DB `CHECK` constraints and by generated TypeScript unions. Unknown status strings are forbidden.
+- **Idempotency:** middleware (Section 13/24) on every `financial_mutation` route; coverage test prevents a financial route from existing without it.
+- **Tenancy:** `BelongsToMerchant`/`BelongsToBranch` traits + global scopes; `withoutTenancy()` banned outside `Tenancy`/`Platform` by PHPStan rule; `TenantAwareJob` rehydrates and re-validates context.
+- **Audit:** `AuditRecorder` contract + `DatabaseAuditRecorder` (append-only, hash-chained); every transition action emits a typed audit event with severity.
+- **Validation:** Form Requests with allowlists; JSON columns validated by Form Requests and value objects (never replacing normalized relational data for permissions, pricing, targets, or line items).
+- **Static analysis:** Larastan level 8 with custom rules (`NoWithoutTenancyOutsidePlatformRule`, `NoRawSqlConcatRule`, `NoDirectStatusAssignmentRule`) + a source-scan test for escape hatches, `::find()` in controllers, raw-SQL concatenation, and direct status assignment outside transition actions.
+
+---
+
+## 12. Frontend Architecture
+
+- **Stack:** Vue 3 + TypeScript + Vite SPA; Pinia stores; Vue Router with guards that are **UX-only** (backend always enforces). Tailwind with brand tokens; breakpoints `md: 768px`, `lg: 1025px`; class-based dark mode with pre-paint flash-prevention.
+- **API client:** single axios instance (`baseURL=/api/v1`, `withCredentials`, CSRF priming) mapping the error envelope to a typed `ApiError { code, message, fields, meta }`.
+- **Forms:** `useForm<T>` composable with dirty/touched/errors/submitting, server-422 merge, and duplicate-submit prevention.
+- **Permissions:** `permissionStore` sourced from `/api/v1/me`; `useCan` composable and `PermissionGate` component drive visibility only.
+- **State boundaries:** every data surface renders explicit loading/empty/error/success/permission-denied/read-only states via shared components.
+- **Types:** `ApiError`, `Paginated<T>`, models, and enums generated from or parity-checked against the backend contract (no manually divergent enum lists).
+- **Money/dates:** integer-minor-unit formatting and `Africa/Nairobi` date helpers; never compute money in floating point client-side.
+- **Generated contract:** TypeScript billing-mode, billing-interval (`weekly`|`bi_weekly`|`monthly`|`quarterly`|`annual`), status, and permission types are produced from the OpenAPI/contract and verified by a parity test (Corrections 4.4, 16.5).
+
+---
+
+## 13. Database Architecture and Complete Data Dictionary
+
+### 13.1 Canonical Schema Rules (apply to every table)
+- Internal PK: `bigint generated by default as identity` (unless the project standardized otherwise).
+- Public identifier: `ulid char(26)` unique, immutable, used in all external references.
+- Merchant-owned: non-null `merchant_id` FK + an index beginning with `merchant_id`.
+- Branch-owned: non-null `merchant_id` and `branch_id`; branch-belongs-to-merchant enforced in application validation and, where practical, a composite FK.
+- Actor columns: `created_by`/`updated_by`/`approved_by`/`rejected_by` nullable FKs per lifecycle.
+- Money: `bigint` minor units + `char(3)` currency with uppercase check.
+- Time: `timestamptz` for events; `date` for business dates (pay-period boundaries, effective dates).
+- JSON: `jsonb`, validated in Form Requests/value objects; never replaces normalized data for permissions, pricing, targets, or financial line items.
+- Statuses: application enums backed by DB `CHECK`; unknown strings forbidden.
+- Financial/audit rows: no destructive cascade — use `RESTRICT` or nullable actor links; append-only ledgers and audit events are never soft-deleted.
+- Every FK used for filtering/joining is indexed.
+
+### 13.2 Data-Dictionary Specification Files (mandatory, version-controlled)
+Create `/docs/architecture/data-dictionary/` with: `README.md`, `core-identity-and-tenancy.md`, `branches-and-staff.md`, `services-clients-scheduling.md`, `invoicing-and-payments.md`, `billing-and-mpesa.md`, `compensation.md`, `audit-files-notifications.md`. The **version-controlled data dictionary is the single canonical DDL authority**; the inline schema blocks in §13.5–§13.16 are a concise navigational *inventory and summary only* and are explicitly **not** the full DDL — no statement in this plan should be read as claiming an inline summary is a complete table specification. **Each table** gets a data-dictionary entry that defines, completely: table name; domain owner; purpose + scope refs; primary key; public identifier; every column with PostgreSQL type, length/precision, nullability, default, and semantic meaning; enum values; foreign keys with `ON DELETE` and `ON UPDATE`; unique, partial-unique, check, and exclusion constraints; indexes and composite indexes with query patterns; tenant ownership, branch ownership, and own-scope derivation; entitlement/billing-status/period-lock rules; effective-date, settlement, lock, and expiry fields; soft-delete policy; immutability; encryption, hashing, masking, and log-redaction; retention and archival; migration order, backfill, expand-and-contract sequence, and forward-repair strategy; locking and concurrency; audit events; Eloquent relationships; factories; seeders; and unit/feature/isolation/migration tests. **The IDE agent must stop and create (and have reviewed) the complete data-dictionary entry before writing the migration for any business table; no migration may be authored while its entry is missing or incomplete.** The inline blocks below give each table a binding canonical data-dictionary path and enough structure to navigate; they satisfy "no table is referenced without a specification path," while the dictionary entry carries the implementable DDL.
+
+### 13.3 Coverage Guards (CI)
+- `DataDictionaryCoverageTest` fails when a migration creates a non-framework business table absent from the data dictionary.
+- `TenantColumnCoverageTest` fails when a tenant-owned table lacks `merchant_id` or a branch-owned table lacks `merchant_id`+`branch_id`.
+- Migration tests run on **PostgreSQL** (not SQLite) because partial indexes, exclusion constraints, JSONB, advisory locks, and triggers are PostgreSQL-specific.
+- `php artisan schema:dump` output is stored as CI evidence, never as the source of truth.
+
+### 13.4 Launch Table Inventory (by domain)
+The complete launch set. Tables marked **(as-built)** are reported implemented (verify in Phase V); **(R)** are remediation-owned; **(feature)** are owned by the feature phase noted.
+
+```text
+Core/identity/tenancy: users(as-built), magic_login_tokens(as-built), merchants(as-built),
+  merchant_profiles(as-built), merchant_users(as-built), merchant_status_histories(as-built),
+  permissions(as-built), roles(as-built), role_permission_assignments(as-built),
+  merchant_user_permission_overrides(as-built), mfa_credentials(R3), mfa_recovery_codes(R3),
+  idempotency_keys(R4), audit_logs(as-built), audit_flagged_events(19)
+Branches/staff: merchant_branches(as-built), branch_user_assignments(as-built),
+  branch_operating_hours(as-built), branch_calendar_exceptions(as-built),
+  branch_day_records(as-built), staff_invitations(as-built), staff_profiles(as-built),
+  staff_history(as-built), branch_cash_ups(seam→18B)
+Catalogue/clients/scheduling: service_categories(15A), services(15A), service_personnel_eligibility(15A),
+  personnel_availability(16A), clients(15A), client_consents(15A/21S), appointments(16A),
+  walk_ins(16B), queue_entries(16B), service_sessions(16C)
+Invoicing/payments: invoices(17), invoice_items(17), invoice_number_sequences(17), receipt_number_sequences(18B),
+  payment_recording_groups(18A), payment_records(18A), payment_allocations(18A), payment_reference_checks(18A),
+  payment_validation_events(18B), receipts(18B), refunds(18B), finance_disputes(18B),
+  cash_up_lines(18B), financial_period_locks(18B), finance_exports(18B/23)
+Billing/subscription/promotions: platform_billing_settings(20A), subscription_plans(20A),
+  subscription_plan_prices(20A), plan_entitlements(20A), merchant_subscriptions(20B),
+  scheduled_plan_changes(20B), subscription_invoices(20B), subscription_invoice_items(20B), billing_escalation_events(20B),
+  promotional_discounts(20C), promotional_discount_targets(20C), free_period_offers(20C),
+  free_period_offer_targets(20C)
+Percentage platform-fee engine: platform_fee_configurations(20E), platform_fee_ledger_entries(20E),
+  platform_fee_adjustments(20E), platform_fee_disputes(20E), preferred_personnel_fee_rules(20A)
+M-Pesa: subscription_payment_attempts(20D), subscription_payments(20D), mpesa_callback_inbox(20D),
+  mpesa_reconciliation_events(20D), subscription_invoice_payment_locks(20D), merchant_billing_credits(20D)
+Compensation: personnel_compensation_plans(20F), compensation_plan_history(20F), commission_rules(20F),
+  commission_ledger(20G), salary_ledger(20G), compensation_adjustments(20G/20H),
+  personnel_payout_runs(20H), personnel_payout_items(20H), earnings_queries(20H)
+Files/SMS/notifications: uploaded_files(10F), file_scan_events(10F), personnel_sms_campaigns(21S),
+  personnel_sms_recipients(21S), sms_delivery_attempts(21S), sms_billing_entries(21S),
+  notifications(21N), scheduled_report_runs(21N)
+```
+
+### 13.5 Schema Summary (canonical DDL: data dictionary) — Core, Identity, Tenancy
+
+```text
+users (as-built; verify)
+- id bigint identity PK; ulid char(26) unique not null
+- name varchar; email citext/varchar unique not null; password varchar nullable (passwordless, Plan A-03)
+- status varchar(20) not null CHECK in ('active','suspended','deactivated')
+- is_platform_staff boolean not null default false
+- last_login_at timestamptz nullable; created_at/updated_at timestamptz
+- Notes: not tenant-scoped; membership lives in merchant_users. Suspension/deactivation revokes sessions/links.
+
+magic_login_tokens (as-built; verify)
+- id; ulid; user_id bigint FK users RESTRICT
+- token_hash char(64) not null (SHA-256 of 64-byte random); expires_at timestamptz not null
+- consumed_at timestamptz nullable; created_at
+- Unique active token per user via partial index; single-use via atomic conditional UPDATE. Raw token never stored/logged.
+
+merchants (as-built; verify)
+- id; ulid; name varchar; service_fee_tier varchar (legacy tier seam — superseded by plans)
+- status varchar(20) not null CHECK in ('pending_setup','active','suspended','deactivated')
+    -- operational/governance lifecycle (the operational-status machine, §21/§25, operates on merchants.status).
+    -- As-built column may be named operational_status; Phase V/R5 reconciles the name via expand-and-contract if it differs.
+- billing_status varchar(20) not null default 'trialing' CHECK in ('trialing','read_only_grace','active','overdue','suspended_billing')
+    -- current billing-ACCESS state used by request authorization (§22). Projected/synchronized transactionally from the
+    -- active merchant_subscription by the billing-status projection service; it is the authority for the billing-status gate,
+    -- NOT merchant_subscriptions.status.
+- status_reason text nullable; billing_status_reason text nullable; suspended_at/deactivated_at timestamptz nullable
+- created_at/updated_at; soft-delete forbidden (use deactivated)
+- Index (status), Index (billing_status). Operational status (merchants.status) and billing status (merchants.billing_status)
+  are separate machines; a billing payment changes only merchants.billing_status and never clears a non-billing merchants.status suspension.
+
+merchant_profiles (as-built; verify) — merchant_id FK; logo_path nullable (file seam→10F); contact/address fields; settings jsonb
+merchant_status_histories (as-built; verify) — merchant_id; from_status; to_status; reason; actor user_id; created_at (append-only)
+
+merchant_users (as-built; verify)
+- id; ulid; merchant_id FK merchants RESTRICT; user_id FK users RESTRICT
+- role varchar CHECK in ('merchant_admin','branch_manager','hr','front_office','finance','personnel','audit')
+- status varchar CHECK in ('invited','active','suspended','deactivated'); created_at/updated_at
+- Unique (merchant_id, user_id); index (merchant_id, role, status). Active membership+role re-checked every request (R6).
+
+permissions / roles / role_permission_assignments / merchant_user_permission_overrides (as-built; verify, extend to canonical matrix)
+- permissions: id; key varchar unique; description; scope; flags per Correction 16.3
+- roles: id; key; label
+- role_permission_assignments: role_id; permission_id (unique pair)
+- merchant_user_permission_overrides: merchant_id; merchant_user_id; permission_id; effect CHECK in ('grant','revoke'); created_by; reason
+- Resolver: role defaults ± overrides; deny beats grant; suspended/deactivated → none; audit role can never gain a mutating key; non-overridable rules (Correction 16.3) enforced in code + tests.
+
+mfa_credentials (R3)
+- id; ulid; user_id FK users RESTRICT; type varchar CHECK in ('totp')
+- secret_encrypted text not null; confirmed_at timestamptz nullable; last_used_at timestamptz nullable
+- created_at/updated_at; Unique (user_id, type). Secret encrypted at rest; never logged.
+
+mfa_recovery_codes (R3)
+- id; user_id FK users RESTRICT; code_hash char(64) not null; used_at timestamptz nullable; created_at
+- One-time; stored hashed; Index (user_id, used_at).
+
+idempotency_keys (R4) — corrected schema (Correction 3.2)
+- id; ulid; idempotency_scope varchar(191) not null; key_hash char(64) not null
+- actor_user_id FK users SET NULL nullable; merchant_id FK merchants RESTRICT nullable; branch_id FK merchant_branches RESTRICT nullable
+- route_name varchar(191) not null; http_method varchar(10) not null; request_content_type varchar(100) nullable
+- request_hash char(64) not null; state varchar(20) not null CHECK in ('processing','completed','failed')
+- response_status smallint nullable; response_headers jsonb nullable; response_body_encrypted text nullable
+- locked_at timestamptz not null; lock_expires_at timestamptz not null; completed_at/failed_at timestamptz nullable
+- last_error_code varchar(100) nullable; expires_at timestamptz not null; created_at/updated_at
+- UNIQUE (idempotency_scope, key_hash); indexes on (state, lock_expires_at) and expires_at for cleanup.
+- scope examples: merchant:{ulid}:user:{ulid} | platform:user:{ulid} | webhook:mpesa:{environment}. Store SHA-256(raw key) only.
+
+audit_logs (as-built; verify; complete R2/19)
+- id; ulid; merchant_id nullable; branch_id nullable; actor_user_id nullable
+- event varchar not null; severity varchar CHECK in ('info','warning','high','critical')
+- subject_type/subject_id; context jsonb (masked); correlation_id; previous_hash char(64); row_hash char(64); created_at
+- Append-only; DB trigger blocks UPDATE/DELETE; hash chain (row_hash = H(previous_hash || canonical-row)). Verifier command (R2). Branch-scoped, field-masked reads.
+
+audit_flagged_events (19)
+- id; ulid; merchant_id; branch_id; audit_log_id FK audit_logs RESTRICT; status varchar CHECK in ('open','under_review','resolved','dismissed','reopened')
+- review_notes text; assigned_to nullable; resolved_by nullable; created_at/updated_at
+- Only review metadata is mutable; source audit_logs row stays immutable.
+```
+
+### 13.6 Schema Summary (canonical DDL: data dictionary) — Branches and Staff
+
+```text
+merchant_branches (as-built; verify) — id; ulid; merchant_id FK RESTRICT; name; timezone default 'Africa/Nairobi';
+  status varchar CHECK in ('active','suspended','archived'); status_reason; suspended_at/archived_at; updated_by; created_at/updated_at; index (merchant_id, status)
+branch_user_assignments (as-built) — id; ulid; merchant_id; branch_id FK RESTRICT; merchant_user_id FK RESTRICT;
+  active boolean; partial-unique (one active assignment per member+branch); index (branch_id, active)
+branch_operating_hours (as-built) — id; merchant_id; branch_id; weekday smallint CHECK 0..6; opens_at time; closes_at time; closed boolean; unique (branch_id, weekday)
+branch_calendar_exceptions (as-built) — id; merchant_id; branch_id; date; type CHECK in ('closed','special_hours'); opens_at/closes_at nullable; reason
+branch_day_records (as-built) — id; ulid; merchant_id; branch_id; business_date date;
+  status varchar CHECK in ('not_opened','open','paused','closed','reopened'); opened_by/closed_by/reopened_by; opened_at/closed_at; reopen_reason; unique (branch_id, business_date)
+staff_invitations (as-built) — id; ulid; merchant_id; branch_id; email; role; token_hash char(64) (72h);
+  status varchar CHECK in ('pending','accepted','revoked','expired'); invited_by; accepted_at; resend_count; partial-unique (one pending per merchant+email+role+branch)
+staff_profiles (as-built) — id; ulid; merchant_id; branch_id; user_id FK RESTRICT; display_name; phone_encrypted; phone_last_four;
+  profile_photo_path nullable(→10F); status varchar CHECK in ('invited','active','suspended','deactivated'); created_at/updated_at; partial-unique active phone platform-wide
+staff_history (as-built) — id; merchant_id; staff_profile_id FK RESTRICT; event varchar; from_status/to_status; actor; reason; created_at (append-only)
+```
+
+### 13.7 Schema Summary (canonical DDL: data dictionary) — Catalogue, Clients, Scheduling
+
+```text
+service_categories (15A) — id; ulid; merchant_id; branch_id; name; sort_order; archived_at nullable; unique (branch_id, name) where not archived
+services (15A) — id; ulid; merchant_id; branch_id; category_id FK RESTRICT; name; description;
+  price_minor bigint; currency char(3); duration_minutes int;
+  preferred_personnel_fee_minor bigint nullable (LEGACY fixed default; superseded by `preferred_personnel_fee_rules` per Correction 12; retained read-only during expand-and-contract, then contracted);
+  status varchar CHECK in ('active','archived'); created_by/updated_by; index (branch_id, status). Owned by Branch Manager; effective preferred-personnel fee resolves from the active rule (§13.10) and is snapshotted onto invoices at finalization.
+service_personnel_eligibility (15A) — id; merchant_id; branch_id; service_id FK RESTRICT; staff_profile_id FK RESTRICT; active boolean; unique (service_id, staff_profile_id)
+personnel_availability (16A) — id; merchant_id; branch_id; staff_profile_id; weekday/date; start_time; end_time; type CHECK in ('recurring','exception'); available boolean
+clients (15A) — id; ulid; merchant_id; branch_id; full_name; phone_encrypted; phone_last_four; email_encrypted nullable;
+  notes; created_by; status CHECK in ('active','archived'); index (branch_id); branch-scoped; contact masked at read.
+client_consents (15A/21S) — id; merchant_id; branch_id; client_id FK RESTRICT; channel CHECK in ('sms'); state CHECK in ('opted_in','opted_out'); source; changed_at; unique (client_id, channel)
+appointments (16A) — id; ulid; merchant_id; branch_id; client_id FK RESTRICT; service_id; staff_profile_id nullable;
+  scheduled_start/scheduled_end timestamptz; status varchar CHECK in ('scheduled','confirmed','checked_in','queued','in_service','rescheduled','cancelled','no_show');
+  created_by; cancellation_reason; index (branch_id, scheduled_start, status). Eligibility/availability revalidated on assign/transfer.
+walk_ins (16B) — id; ulid; merchant_id; branch_id; client_id nullable; service_id; created_by; created_at; converts to queue_entry
+queue_entries (16B) — id; ulid; merchant_id; branch_id; client_id; service_id; staff_profile_id nullable; appointment_id nullable;
+  status varchar CHECK in ('waiting','assigned','called','in_service','completed','transferred','cancelled','no_show');
+  position int; queued_at; called_at; transferred_to_staff_profile_id nullable; index (branch_id, status, position). Personnel cannot access others' entries.
+service_sessions (16C) — id; ulid; merchant_id; branch_id; queue_entry_id nullable; client_id; staff_profile_id FK RESTRICT;
+  status varchar CHECK in ('pending','in_progress','completed','cancelled'); started_at/completed_at;
+  index (branch_id, status); partial-unique active session per staff (duplicate-active protection). Eligibility+branch-assignment required per service item.
+```
+
+### 13.8 Schema Summary (canonical DDL: data dictionary) — Invoicing and Merchant-Client Payments
+
+```text
+invoices (17) — id; ulid; merchant_id; branch_id; client_id FK RESTRICT; invoice_number varchar unique-per-merchant (allocated at finalization);
+  status varchar CHECK in ('draft','issued','partially_paid','paid','void_pending','voided','adjusted','refund_pending','adjustment_required');
+  subtotal_minor; discount_minor; tax_minor; total_minor; validated_paid_minor default 0; currency char(3);
+  preferred_personnel_fee_snapshot_minor nullable; percentage_fee_config_snapshot jsonb nullable; finalized_at; created_by;
+  index (branch_id, status), (merchant_id, invoice_number). Finalization snapshots prices/fees; void of paid invoice creates adjustments, never deletes ledger rows.
+invoice_items (17) — id; ulid; merchant_id; branch_id; invoice_id FK RESTRICT; service_id FK RESTRICT; staff_profile_id nullable;
+  description; quantity int; unit_price_minor; line_total_minor; preferred_personnel_fee_minor nullable; eligible_for_commission boolean; currency
+payment_records (18A) — id; ulid; merchant_id; branch_id; invoice_id FK RESTRICT; payment_recording_group_id FK payment_recording_groups RESTRICT (every recording belongs to exactly one group, §13.15); recorded_by FK users RESTRICT; payer_client_id nullable;
+  method varchar CHECK in ('cash','mpesa_offline','bank_transfer','card_terminal','voucher','split_payment','other');
+  amount_minor bigint; currency char(3); reference_normalized varchar nullable; reference_display_encrypted text nullable;
+  paid_at timestamptz; status varchar CHECK in ('pending_validation','validated','rejected','correction_required','reversed','adjusted');
+  maker_user_id FK users RESTRICT; validated_amount_minor bigint nullable; created_at/updated_at;
+  index (invoice_id, status), (merchant_id, method, reference_normalized), (payment_recording_group_id). Method-specific reference rules (Section 41). A split_payment workflow creates one `payment_recording_groups` row with multiple component payment_records; a single-method payment is a group of one.
+payment_allocations (18A) — id; merchant_id; branch_id; payment_record_id FK RESTRICT; invoice_id FK RESTRICT; invoice_item_id nullable; amount_minor; sum-constrained ≤ balance
+payment_validation_events (18B) — id; ulid; merchant_id; branch_id; payment_record_id FK RESTRICT; invoice_id FK RESTRICT;
+  checker_user_id FK users RESTRICT; decision varchar CHECK in ('validated','rejected','correction_required'); validated_amount_minor; reason; created_at (immutable). Commission earned at 'validated'.
+receipts (18B) — id; ulid; merchant_id; branch_id; invoice_id FK RESTRICT; payment_validation_event_id FK RESTRICT nullable; receipt_number unique-per-merchant;
+  amount_minor; currency; components jsonb (methods/amounts); reissue_of_receipt_id nullable; file_id nullable(→10F); created_at. Issued only after validation; reissue creates a new tracking row.
+refunds (18B) — id; ulid; merchant_id; branch_id; invoice_id FK RESTRICT; payment_record_id nullable; amount_minor; currency; method; external_reference_encrypted nullable;
+  reason; status varchar CHECK in ('requested','approved','finalized','rejected'); requested_by; approved_by; finalized_by; created_at/updated_at. External refund record; reduces recognized paid balance only via adjustment/reversal entries; commission reversal proportional.
+finance_disputes (18B) — id; ulid; merchant_id; branch_id; invoice_id nullable; payment_record_id nullable; status CHECK in ('open','under_review','resolved','rejected'); reason; resolution_note; created_by; resolved_by; created_at/updated_at
+cash_up_lines (18B) / branch_cash_ups (as-built seam→18B) — branch_cash_ups: id; ulid; merchant_id; branch_id; branch_day_record_id FK RESTRICT; business_date;
+  status varchar CHECK in ('draft','submitted','approved','rejected','correction_requested','locked'); expected_minor; counted_minor; variance_minor; submitted_by; approved_by; submitted_at/approved_at; notes.
+  cash_up_lines: id; cash_up_id FK RESTRICT; method; expected_minor; counted_minor; variance_minor. Branch Manager submits; Finance approves; maker≠checker.
+financial_period_locks (18B) — id; ulid; merchant_id; branch_id nullable; period_start date; period_end date;
+  status varchar CHECK in ('open','locked','reopened'); locked_by; reopened_by; reopen_reason; locked_at; index (merchant_id, branch_id, period_end). Finance-owned; mutations in a locked period return 423.
+finance_exports (18B/23) — Correction 2.4 exact DDL:
+  id; ulid; merchant_id; branch_id nullable; requested_by FK users RESTRICT;
+  export_type CHECK in ('invoices','payments','receipts','cash_up','refunds','disputes','compensation','payouts','billing');
+  scope_json jsonb; reason text not null; status CHECK in ('queued','processing','ready','failed','expired','revoked');
+  file_id FK uploaded_files RESTRICT nullable; row_count int nullable; expires_at; first_downloaded_at/last_downloaded_at; download_count int default 0;
+  failure_code; failure_message_redacted; created_at/updated_at. Async, scoped, masked, signed, audited on request/generate/download/expiry/revoke.
+```
+
+### 13.9 Schema Summary (canonical DDL: data dictionary) — Billing, Subscriptions, Promotions
+
+```text
+platform_billing_settings (20A) — id; ulid; billing_mode varchar CHECK in
+  ('fixed_amount','percentage_on_merchant_client_invoice','fixed_amount_plus_percentage_on_merchant_client_invoice');
+  default_trial_days int; grace_days int; currency char(3); updated_by; effective_from; settings jsonb; (platform-scoped; single active row via effective dates)
+subscription_plans (20A) — id; ulid; key varchar unique; name; description; tier metadata (non-price); status CHECK in ('active','retired'); sort_order
+subscription_plan_prices (20A) — id; ulid; plan_id FK RESTRICT; amount_minor bigint; currency char(3); billing_interval CHECK in ('weekly','bi_weekly','monthly','quarterly','annual');
+  effective_from date; effective_to date nullable; created_by. SOLE price source (ADR-011); exclusion constraint prevents overlapping effective ranges per (plan, interval). Interval date math per §49 (month-end clamp; leap-year safe).
+plan_entitlements (20A) — id; plan_id FK RESTRICT; entitlement_key varchar; limit_int nullable; enabled boolean; unique (plan_id, entitlement_key)
+merchant_subscriptions (20B) — id; ulid; merchant_id FK RESTRICT; plan_id FK RESTRICT; price_id FK RESTRICT (captured at issuance);
+  status varchar CHECK in ('trialing','active','read_only_grace','overdue','suspended_billing','cancelled','expired');
+    -- lifecycle of THIS subscription record. The merchant-level billing-ACCESS authority is merchants.billing_status,
+    -- which the billing-status projection service synchronizes transactionally from the active subscription's status
+    -- (cancelled/expired records project to the appropriate merchants.billing_status). Request authorization reads
+    -- merchants.billing_status only; merchant_subscriptions.status is never the sole access authority.
+  billing_interval CHECK in ('weekly','bi_weekly','monthly','quarterly','annual');
+  trial_days_snapshot int; trial_started_at; trial_ends_at; current_period_start/current_period_end date; high_value_payout_threshold_minor bigint nullable; created_at/updated_at; index (merchant_id), (status). Trial starts at Merchant Admin creation.
+scheduled_plan_changes (20B) — id; ulid; merchant_id; merchant_subscription_id FK RESTRICT; target_plan_id; target_price_id; effective_at date;
+  status CHECK in ('scheduled','applied','cancelled'); created_by. No proration; applied at next cycle.
+subscription_invoices (20B) — id; ulid; merchant_id FK RESTRICT; plan_id; price_id; invoice_number unique-per-merchant;
+  period_start/period_end date; subtotal_minor; discount_minor; total_minor; currency; balance_minor;
+  status varchar CHECK in ('draft','issued','pending_payment','partially_paid','paid','overdue','payment_failed','reconciliation_required','void');
+  account_reference varchar (exact M-Pesa reference); issued_at; due_at; index (merchant_id, status). Issued invoices are immutable; discounts/free periods snapshot at issuance. Cancellation terminology: subscription invoices use `void` only (never `cancelled`; §25.4).
+subscription_invoice_items (20B) — id; subscription_invoice_id FK RESTRICT; description; amount_minor; type CHECK in ('plan_fee','platform_fee_rollup','sms_rollup','adjustment')
+promotional_discounts (20C) — id; ulid; name; type CHECK in ('percentage','fixed_amount'); value (bp or minor); currency nullable;
+  target_scope CHECK in ('all_new_merchants','selected_merchants','selected_plans','billing_mode'); starts_at; ends_at nullable;
+  status CHECK in ('draft','scheduled','active','paused','expired','cancelled'); created_by; approved_by; change_reason
+promotional_discount_targets (20C) — id; promotional_discount_id FK RESTRICT;
+  target_type CHECK in ('merchant','plan','billing_mode'); merchant_id FK merchants RESTRICT nullable;
+  subscription_plan_id FK subscription_plans RESTRICT nullable;
+  billing_mode varchar nullable CHECK (billing_mode is null OR billing_mode in ('fixed_amount','percentage_on_merchant_client_invoice','fixed_amount_plus_percentage_on_merchant_client_invoice'));
+  CHECK (exactly one of merchant_id / subscription_plan_id / billing_mode is non-null AND matches target_type)
+  -- explicit normalized rows (not JSON). Global ('all_new_merchants') is expressed on the parent target_scope.
+free_period_offers (20C) — Correction 2.5 exact DDL:
+  id; ulid; name; free_period_days int CHECK 1..365; target_scope CHECK in ('all_new_merchants','selected_merchants','selected_plans','billing_mode');
+  starts_at; ends_at nullable; status CHECK in ('draft','scheduled','active','paused','expired','cancelled'); created_by; approved_by; approved_at; change_reason; created_at/updated_at.
+  Trial begins at Merchant Admin creation; applied days snapshotted onto the subscription so later edits never rewrite an existing trial.
+free_period_offer_targets (20C) — id; free_period_offer_id FK RESTRICT;
+  target_type CHECK in ('merchant','plan','billing_mode'); merchant_id FK merchants RESTRICT nullable;
+  subscription_plan_id FK subscription_plans RESTRICT nullable;
+  billing_mode varchar nullable CHECK (billing_mode is null OR billing_mode in ('fixed_amount','percentage_on_merchant_client_invoice','fixed_amount_plus_percentage_on_merchant_client_invoice'));
+  CHECK (exactly one of merchant_id / subscription_plan_id / billing_mode is non-null AND matches target_type)
+  -- explicit normalized rows (not JSON). Global ('all_new_merchants') is expressed on the parent target_scope.
+```
+
+### 13.10 Schema Summary (canonical DDL: data dictionary) — Percentage Platform-Fee Engine (launch-capable, activated only when configured)
+
+```text
+platform_fee_configurations (20E) — id; ulid; billing_mode; fixed_component_minor nullable; percentage_basis_points nullable;
+  tier_behavior CHECK in ('customer_centric','shared','business_centric') nullable; effective_from; created_by; snapshotted onto invoices at finalization
+platform_fee_ledger_entries (20E) — id; ulid; merchant_id FK RESTRICT; branch_id nullable; source_invoice_id FK RESTRICT; source_invoice_item_id nullable;
+  basis_minor bigint; rate_basis_points int nullable; fixed_component_minor nullable; amount_minor bigint; currency;
+  entry_type CHECK in ('earned','reversal','adjustment'); status CHECK in ('pending','aggregated','invoiced','reversed','adjusted'); subscription_invoice_item_id nullable; created_at (append-only)
+platform_fee_adjustments (20E) — id; ulid; merchant_id; platform_fee_ledger_entry_id FK RESTRICT; amount_minor; reason; approved_by; created_at
+platform_fee_disputes (20E) [Correction 3 entity] — id; ulid; merchant_id FK RESTRICT; platform_fee_ledger_entry_id FK RESTRICT nullable; subscription_invoice_id FK RESTRICT nullable;
+  reason text; status CHECK in ('open','under_review','resolved','rejected'); resolution_note; created_by; resolved_by; created_at/updated_at.
+  Platform-side dispute case over a percentage platform-fee charge; resolution that changes money creates a platform_fee_adjustment (never edits a ledger row). Permission platform.mpesa_exception.* family / platform billing perms; step-up on resolve; audited.
+preferred_personnel_fee_rules (20A) [Correction 12 + Correction 3 entity] — id; ulid;
+  calculation_type CHECK in ('fixed_amount','percentage'); fixed_amount_minor bigint nullable; percentage_basis_points int nullable CHECK (percentage_basis_points between 0 and 10000);
+  currency char(3) nullable; calculation_basis CHECK in ('service_item_net_amount','service_item_gross_amount');
+  scope CHECK in ('platform_default','service'); service_id FK services RESTRICT nullable;
+  effective_from date; effective_to date nullable; status CHECK in ('draft','scheduled','active','superseded','expired','cancelled');
+  created_by; approved_by nullable; approved_at nullable; change_reason text not null; created_at/updated_at.
+  Constraints: fixed_amount requires fixed_amount_minor + currency and null bp; percentage requires percentage_basis_points and null fixed/currency; exactly one calculation value; exclusion constraint prevents overlapping active/scheduled effective ranges per scope (and per service_id when scope='service'); active monetary terms immutable (supersede with a new version). Super-Admin governed (platform.preferred_personnel_fee.manage, MFA + step-up). Invoices snapshot the resolved effective fee at finalization; existing invoices are NEVER recalculated when a rule changes. Percentage uses round-half-up to integer minor units (ADR-005). Migration: expand-and-contract from the legacy fixed `services.preferred_personnel_fee_minor` (seed a `fixed_amount`/`service` rule per service that has a value, then resolve from rules; retain the legacy column read-only until contract).
+- Only the percentage-fee ledger tables are created when a percentage component is active (fixed-only mode creates NO percentage-fee entries — tested). Aggregated into subscription_invoice lines. `preferred_personnel_fee_rules` is launch-active and independent of the platform billing mode.
+```
+
+### 13.11 Schema Summary (canonical DDL: data dictionary) — M-Pesa (Correction 14.3)
+
+```text
+subscription_payment_attempts (20D) — id; ulid; merchant_id FK RESTRICT; subscription_invoice_id FK RESTRICT;
+  initiated_by_user_id FK users RESTRICT; initiated_by_role_snapshot varchar (role at initiation; do NOT rely on current role for historical reconstruction);
+  initiated_from_branch_id FK merchant_branches RESTRICT nullable; initiated_ip_hashed char(64) nullable; initiated_user_agent_redacted varchar nullable;
+  channel CHECK in ('stk_push','c2b'); provider_channel CHECK in ('stk_push','paybill','till'); provider_short_code_or_till_snapshot varchar; provider_environment CHECK in ('sandbox','staging','production');
+  phone_msisdn_encrypted; amount_minor; currency; idempotency_key char(64);
+  merchant_request_id varchar nullable; checkout_request_id varchar nullable;
+  status varchar CHECK in ('initiated','stk_push_sent','callback_received','validated','applied_to_invoice','customer_cancelled','timeout','failed','duplicate','rejected','reconciliation_required','refunded_externally');
+  expires_at; created_at/updated_at; unique checkout_request_id and merchant_request_id where present; index (merchant_id, status), (initiated_from_branch_id). Role and branch are SNAPSHOTTED at initiation. Public-safe attempt ULID returned, never success-from-initiation. `refunded_externally` records an attempt whose confirmed payment was later refunded outside Servana (reconciliation-driven; not a fund movement by Servana).
+subscription_payments (20D) — id; ulid; merchant_id FK RESTRICT; subscription_invoice_id FK RESTRICT; subscription_payment_attempt_id nullable;
+  mpesa_receipt_number varchar unique not null; amount_minor; currency; paid_at; created_at (immutable confirmed transaction)
+mpesa_callback_inbox (20D) — Correction 14.3 fields:
+  id; ulid; environment varchar; callback_type CHECK in ('stk','c2b_validation','c2b_confirmation'); provider_request_id varchar nullable;
+  payload_hash char(64); payload_encrypted text; received_at; processing_status CHECK in ('received','processed','failed','ignored');
+  processed_at; failure_code; attempt_count int default 0; next_retry_at nullable. Unique provider correlation key; raw payload encrypted/masked; fast ack then async.
+mpesa_reconciliation_events (20D) — id; ulid; merchant_id nullable; subscription_invoice_id nullable; subscription_payment_id nullable;
+  type CHECK in ('matched','exception'); exception_reason CHECK in ('missing_reference','ambiguous','duplicate','underpayment','overpayment','suspicious','unknown_account'); resolution_status CHECK in ('open','resolved','dismissed');
+  resolved_by; resolution_note; created_at/updated_at. Super Admin resolves by linking a confirmed provider payment to the correct invoice (reconciliation, not manual recording); reason+MFA+before/after audit.
+subscription_invoice_payment_locks (20D) — id; subscription_invoice_id FK RESTRICT unique; locked_by; locked_at; lock_expires_at. Prevents concurrent STK while unexpired.
+merchant_billing_credits (20D) — id; ulid; merchant_id FK RESTRICT; amount_minor; currency; source CHECK in ('overpayment','adjustment'); source_payment_id nullable; balance_minor; created_at. Overpayment credit for merchant→Servana billing only.
+```
+
+### 13.12 Schema Summary (canonical DDL: data dictionary) — Compensation (Corrections 2.2, 2.3, 19)
+
+```text
+personnel_compensation_plans (20F) — id; ulid; merchant_id FK RESTRICT; branch_id FK RESTRICT; staff_profile_id FK RESTRICT;
+  compensation_model varchar CHECK in ('commission_only','salary_plus_commission','salary_only');
+  salary_amount_minor bigint nullable; salary_currency char(3) nullable; pay_period CHECK in ('monthly','weekly','daily','hourly','per_shift') nullable;
+  commission_rule_id FK commission_rules RESTRICT nullable; high_value_threshold_minor bigint nullable; suspension_salary_policy varchar not null default 'continue' CHECK in ('pause','continue') (Plan A-11; prospective override only);
+  status varchar CHECK in ('draft','pending_approval','scheduled','active','superseded','expired','rejected','cancelled'); effective_from date; effective_to date nullable;
+  created_by; approved_by; approved_at; change_reason; created_at/updated_at. Date-range exclusion constraint for active/scheduled/pending per (staff_profile, branch). Active monetary terms immutable — supersede with a new version. Model rules enforced (no cross-model ledger leakage).
+compensation_plan_history (20F) — id; merchant_id; personnel_compensation_plan_id FK RESTRICT; from_status/to_status; actor; reason; created_at (append-only)
+commission_rules (20F) — Correction 2.2 exact DDL:
+  id; ulid; merchant_id FK merchants RESTRICT; branch_id FK merchant_branches RESTRICT; name;
+  calculation_type CHECK in ('percentage','fixed_amount'); calculation_basis CHECK in ('service_item_net_amount','service_item_gross_amount','validated_paid_allocation');
+  percentage_basis_points int nullable (0..10000); fixed_amount_minor bigint nullable; currency char(3) nullable; applies_to_preferred_personnel_fee boolean default false;
+  effective_from date; effective_to date nullable; status CHECK in ('draft','pending_approval','scheduled','active','expired','superseded','rejected','cancelled');
+  created_by; approved_by; approved_at; rejected_by; rejected_at; rejection_reason; change_reason text not null; created_at/updated_at.
+  Percentage requires bp 0..10000 + null fixed; fixed requires positive minor + currency + null bp; exclusion constraint prevents overlapping active/scheduled ranges per merchant/branch/scope; active rules with monetary effect are superseded, not edited.
+commission_ledger (20G) — Correction 2.3 exact DDL:
+  id; ulid; merchant_id; branch_id; staff_profile_id; compensation_plan_id; commission_rule_id; service_session_id nullable; invoice_id; invoice_item_id;
+  payment_record_id nullable; payment_validation_event_id nullable; source_entry_id nullable (self-FK);
+  entry_type CHECK in ('pending_preview','earned','reversal','adjustment'); reversal_reason CHECK in ('invoice_voided','payment_reversed','refund_finalized','manual_adjustment','correction') nullable;
+  calculation_basis_minor bigint; rate_basis_points int nullable; fixed_rate_minor bigint nullable; amount_minor bigint; currency;
+  earned_at nullable; status CHECK in ('pending','earned','included_in_payout','paid','reversed','adjusted','cancelled'); payout_item_id nullable; created_by; approved_by; created_at.
+  Earned only after Finance validates the payment; salary_only plans never generate rows; reversals are new negative rows referencing the original; idempotency unique (payment_validation_event_id, invoice_item_id, staff_profile_id, entry_type) for earned; sum of allocations ≤ eligible validated allocation.
+salary_ledger (20G) — id; ulid; merchant_id; branch_id; staff_profile_id; compensation_plan_id; pay_period_start date; pay_period_end date;
+  amount_minor; currency; entry_type CHECK in ('accrual','adjustment','reversal'); status CHECK in ('pending','included_in_payout','paid','reversed','adjusted'); payout_item_id nullable; created_at (append-only).
+  Scheduler-created per pay period; idempotency unique (compensation_plan_id, staff_profile_id, pay_period_segment, entry_type); mid-period changes split by effective dates.
+compensation_adjustments (20G/20H) — id; ulid; merchant_id; branch_id; staff_profile_id; amount_minor; currency; reason; approved_by; created_at
+personnel_payout_runs (20H) — id; ulid; merchant_id; branch_id; period_start/period_end date; high_value_threshold_snapshot_minor bigint;
+  status varchar CHECK in ('draft','submitted','finance_verified','pending_merchant_admin_approval','approved','paid','rejected','cancelled');
+  gross_total_minor; created_by(HR); submitted_by; verified_by(Finance); approved_by; paid_by; external_payment_reference_encrypted nullable; paid_at; created_at/updated_at. Frozen on submit; corrections via rejection→new draft or adjustment run.
+personnel_payout_items (20H) — id; ulid; merchant_id; branch_id; payout_run_id FK RESTRICT; staff_profile_id; salary_amount_minor; commission_amount_minor; adjustment_amount_minor; gross_amount_minor; source_ledger_refs jsonb; status mirrors run; created_at
+earnings_queries (20H) — id; ulid; merchant_id; branch_id; staff_profile_id (own); subject_type CHECK in ('commission_ledger','salary_ledger','payout_item'); subject_id; query_type; status CHECK in ('open','assigned','resolved','rejected'); assigned_to; resolution_note; created_at/updated_at. Resolution never mutates ledgers silently — monetary correction creates an adjustment entry.
+```
+
+### 13.13 Schema Summary (canonical DDL: data dictionary) — Files, SMS, Notifications (Corrections 13.3, 20.4)
+
+```text
+uploaded_files (10F) — Correction 13.3 exact DDL: id; ulid; merchant_id nullable; branch_id nullable; owner_user_id nullable;
+  purpose CHECK in ('merchant_logo','profile_photo','dispute_evidence','audit_evidence','finance_export','invoice_pdf','receipt_pdf','billing_invoice_pdf','earnings_statement','day_close_report','cash_up_report');
+  storage_disk; quarantine_path; final_path nullable; original_filename_encrypted; safe_download_filename; declared_mime_type nullable; detected_mime_type nullable; extension nullable;
+  size_bytes bigint; sha256 char(64); scan_status CHECK in ('pending','clean','infected','scan_failed','rejected'); lifecycle_status CHECK in ('quarantined','available','revoked','expired','deleted');
+  retention_until nullable; uploaded_by nullable; available_at nullable; revoked_at nullable; created_at/updated_at. Indexes (merchant_id, purpose, lifecycle_status), (branch_id, purpose), sha256, (scan_status, created_at).
+file_scan_events (10F) — Correction 13.3: id; uploaded_file_id FK RESTRICT; scanner; engine_version nullable; signature_version nullable; result CHECK in ('clean','infected','error'); malware_name nullable; error_code nullable; scanned_at
+personnel_sms_campaigns (21S) — Correction 20.4: id; ulid; merchant_id; branch_id; staff_profile_id; message_body_encrypted; message_template_id nullable;
+  recipient_count int; estimated_cost_minor; final_cost_minor nullable; currency;
+  status CHECK in ('draft','confirmed','queued','sending','completed','partially_failed','failed','cancelled'); consent_snapshot_at; created_by; confirmed_at; created_at/updated_at
+personnel_sms_recipients (21S) — Correction 20.4: id; campaign_id FK RESTRICT; client_id FK RESTRICT; service_session_id nullable; phone_encrypted; phone_last_four;
+  eligibility_snapshot_json jsonb; consent_status_snapshot; delivery_status CHECK in ('pending','sent','delivered','failed','opted_out','suppressed'); provider_message_id nullable; cost_minor nullable; created_at/updated_at; UNIQUE (campaign_id, client_id)
+sms_delivery_attempts (21S) — Correction 20.4: id; recipient_id FK RESTRICT; attempt_number int; provider; status; provider_code; provider_message_redacted; attempted_at; next_retry_at nullable
+sms_billing_entries (21S) — Correction 20.4: id; merchant_id; branch_id; campaign_id; quantity int; unit_cost_minor; amount_minor; currency; status CHECK in ('provisional','billable','invoiced','credited','cancelled'); billing_invoice_line_id nullable; created_at
+notifications (21N) — id; ulid; merchant_id nullable; branch_id nullable; notifiable_user_id; channel CHECK in ('mail','database'); type; data jsonb (no secrets/PII beyond masked); read_at nullable; created_at
+scheduled_report_runs (21N) — id; ulid; merchant_id; branch_id; report_type CHECK in ('day_close','cash_up'); business_date date; status CHECK in ('queued','generated','emailed','failed'); file_id nullable; created_at; UNIQUE (branch_id, business_date, report_type) idempotency key
+```
+
+### 13.14 Eloquent Relationships, Factories, Seeders, Tests (per table)
+Each table's data-dictionary entry lists: example Eloquent relationships (e.g., `Invoice hasMany InvoiceItem`, `Invoice hasMany PaymentRecord`, `PaymentRecord hasMany PaymentValidationEvent`, `CommissionLedger belongsTo CommissionRule`); required factories (tenant-aware, producing valid scoped rows); required seeders (permissions, roles, plans/prices/entitlements, platform billing settings); and required tests (unit/feature/isolation/migration). Factories must never bypass tenant scoping; seeders are idempotent.
+
+### 13.15 Schema Summary (canonical DDL: data dictionary) — Correction-3 Scope Entities and Split-Payment Group (Corrections 3, 7)
+New launch tables that complete scope coverage. Canonical DDL lives in the data dictionary; these are summaries.
+
+```text
+payment_recording_groups (18A) [Correction 7 — durable split/multi-payment group] —
+  id; ulid; merchant_id FK RESTRICT; branch_id FK RESTRICT; invoice_id FK invoices RESTRICT; maker_user_id FK users RESTRICT;
+  total_amount_minor bigint; currency char(3); idempotency_key_id FK idempotency_keys RESTRICT nullable;
+  status varchar CHECK in ('draft','recorded','pending_validation','validated','rejected','correction_required','reversed');
+  recorded_at; submitted_for_validation_at; validated_at; rejected_at; created_at/updated_at; index (invoice_id, status).
+  One group = one recording workflow; >=1 component payment_records reference it (payment_records.payment_recording_group_id);
+  total = sum(components); single currency; sum(components) <= invoice balance; Finance validates the WHOLE group atomically
+  producing ONE validation event and ONE receipt covering all validated components; refund/commission allocate by component (§41/§42/§43/§44).
+invoice_number_sequences (17) [Correction 3] — id; merchant_id FK RESTRICT; scope CHECK in ('merchant_client_invoice'); next_value bigint; prefix varchar nullable;
+  unique (merchant_id, scope). Gap-free per-merchant allocation under row lock at finalization; never reused; audited.
+receipt_number_sequences (18B) [Correction 3] — id; merchant_id FK RESTRICT; scope CHECK in ('receipt'); next_value bigint; prefix varchar nullable;
+  unique (merchant_id, scope). Gap-free per-merchant receipt numbering under row lock at issuance.
+payment_reference_checks (18A) [Correction 3 — durable duplicate-reference detection record] —
+  id; ulid; merchant_id FK RESTRICT; branch_id FK RESTRICT; payment_record_id FK RESTRICT; method varchar; reference_normalized varchar;
+  result CHECK in ('unique','duplicate_suspected','override_approved'); matched_payment_record_id nullable; checked_at; override_by nullable; override_reason nullable.
+  Makes duplicate-reference detection (§41) durable and auditable; unique partial index (merchant_id, method, reference_normalized) where method requires a reference.
+billing_escalation_events (20B) [Correction 3 — durable overdue escalation log] —
+  id; ulid; merchant_id FK RESTRICT; subscription_invoice_id FK RESTRICT nullable; merchant_subscription_id FK RESTRICT;
+  event_type CHECK in ('reminder','grace_entered','overdue','suspended_billing','recovered'); from_billing_status; to_billing_status; reason; created_at (append-only).
+  Drives/records the shared overdue escalation (§54); idempotent per (merchant_subscription_id, event_type, period boundary); feeds Super-Admin overdue-escalation reporting.
+```
+
+### 13.16 Correction-3 Consolidation Mappings (no scope entity silently disappears)
+Scope entities implemented by an existing table rather than a new one. Each mapping is behavior-preserving and tested for equivalence.
+
+```text
+billing_invoice_lines  ->  subscription_invoice_items
+  Reason: identical concept (line items of a subscription/billing invoice). Field map: line description->description; amount->amount_minor;
+  line type->type ('plan_fee'|'platform_fee_rollup'|'sms_rollup'|'adjustment'). Lifecycle: created at issuance, immutable thereafter (parent immutability).
+  Permission: merchant.subscription.invoice.view / platform billing perms. Audit: parent invoice issue/adjust events. Retention: with parent invoice.
+  Migration: none (no legacy table). Tests: rollup composition (plan + platform_fee + sms), immutability after issuance.
+
+billing_reconciliation_records  ->  mpesa_reconciliation_events
+  Reason: same concept (records reconciling confirmed provider funds to invoices). Field map: match/exception state->type+resolution_status;
+  exception reason->exception_reason; linkage->merchant_id/subscription_invoice_id/subscription_payment_id. Lifecycle: open->resolved|dismissed.
+  Permission: platform.mpesa_exception.view/resolve. Audit: reconciliation resolve events (+step-up). Retention: with billing/financial history.
+  Migration: none. Tests: matched auto-apply, each exception_reason path, resolve-by-linking (no manual recording).
+
+receipt_reissues  ->  receipts (self-referencing reissue_of_receipt_id)
+  Reason: a reissue is a new receipt row referencing the original; a separate table would duplicate receipt structure. Field map: original->reissue_of_receipt_id;
+  new number from receipt_number_sequences. Lifecycle: issued (new tracking row); original preserved. Permission: receipt.reissue (Finance).
+  Audit: receipt reissue event. Retention: with receipts. Migration: none. Tests: reissue creates new row referencing original; original immutable; one current receipt resolvable.
+```
+
+---
+
+## 14. Multi-Tenancy Model
+- **Tenant key:** `merchant_id` on every tenant-owned table; enforced by the `BelongsToMerchant` trait + `MerchantScope` global scope, which auto-fills `merchant_id` on create and throws `MissingTenantContext` when unscoped.
+- **Context resolution:** `ResolveTenantContext` middleware resolves the active merchant from the authenticated membership, pinned **before** `SubstituteBindings`; `terminate()` resets context per request.
+- **Scoped route binding:** `resolveRouteBinding()` resolves within merchant scope; a foreign-tenant ULID returns 404 (no existence leak) and writes a high-severity `unauthorized_access` audit row.
+- **Jobs:** `TenantAwareJob` captures merchant/branch IDs, rehydrates and re-validates context in `handle()`, and fails safely when context is absent or the merchant is not active.
+- **Escape hatch:** `withoutTenancy()` is the only sanctioned bypass, permitted only inside `Tenancy`/`Platform`; banned elsewhere by `NoWithoutTenancyOutsidePlatformRule` and a source-scan test.
+- **Posture:** cross-tenant access → 404; the platform context (Super Admin) never inserts merchant membership and never gains merchant operational permissions.
+- **Tests:** `TenantColumnCoverageTest`; cross-tenant denial for every tenant/branch domain; scoped-binding tests; job tenancy tests; suspended-merchant denial.
+
+## 15. Branch-Scope Model
+- **Branch key:** `branch_id` (+ `merchant_id`) on branch-owned tables; `BelongsToBranch` trait + `BranchScope` restricts merchant-wide roles to own-merchant branches via subquery and limits branch-scoped roles to assigned branches.
+- **Assignment:** an active `branch_user_assignments` row is required for branch-scoped roles; `EnsureBranchScope` returns 404 for a foreign-branch ULID (with audit) and 403 `no_branch_scope` when the user has no assignment.
+- **Posture:** same-tenant out-of-branch access returns the documented 403 (distinct from the cross-tenant 404).
+- **Tests:** cross-branch denial for every branch domain; admin sees all own-merchant branches; branch-assignment-required-to-activate.
+
+## 16. Personnel Own-Scope Model
+- **Own key:** own-scope endpoints derive `staff_profile_id` from the authenticated membership; **no** route accepts another personnel identifier for own-scope resources.
+- **Surfaces:** own queue/appointments/sessions, own served clients (masked contact), own compensation/earnings/statements/payouts, own earnings queries, own served-client SMS.
+- **Contact protection:** no export endpoint; no bulk full-phone response; guessed export-shaped or cross-personnel routes return 404 and write a high-severity unauthorized-access audit event.
+- **Tests:** personnel can act only on own resources; cannot view/message another personnel member's served clients; cannot export contacts; guessed routes 404 + audit.
+
+## 17. Authentication Model
+- **Mechanism:** passwordless Magic Link → Sanctum stateful session. `users.password` is nullable (Plan A-03).
+- **Magic Link:** 64-byte random token, SHA-256 at rest, short expiry (15 min), atomic single-use (conditional UPDATE). Raw token only in the emailed link; never stored/logged/returned.
+- **Seven-check eligibility** (`LoginEligibilityService`, scope §2.3): (1) user exists+active; (2) active membership; (3) account not suspended/deactivated; (4) role valid; (5) merchant operational status permits sign-in; (6) branch assignment present for branch-scoped roles; (7) email/rate eligibility. Uniform 202 request response and uniform 422 `invalid_or_expired_token` verify response prevent enumeration.
+- **Sessions:** session-ID regeneration on login; `EnforceIdleTimeout` (60-min sliding); suspension/deactivation revokes sessions, tokens, unconsumed links, and pending invitations (completed in R6); membership+role re-checked every authenticated request.
+- **Rate limiting:** named Magic-Link limiters → structured 429.
+
+## 18. MFA and Step-Up Authentication (Phase R3)
+- **TOTP:** enrollment + confirmation; secret encrypted at rest (`mfa_credentials`); one-time recovery codes stored hashed (`mfa_recovery_codes`).
+- **Mandatory MFA roles:** Super Administrator, Merchant Administrator, Finance — privileged routes deny absent/unconfirmed MFA.
+- **Step-up freshness:** a fresh MFA assertion (configurable freshness window) is required for: platform billing configuration; refund finalization; period reopen; payout approval; payout mark-paid; M-Pesa reconciliation resolution; sensitive/backdated compensation changes. Stale step-up is denied (re-challenge).
+- **Enforcement order:** MFA state is checked immediately after authentication and before tenant context (Section 9.4 step 2); step-up freshness is checked just before validation for designated actions (step 13).
+- **Tests:** privileged route denies absent/stale MFA; recovery-code single-use; step-up required for each designated action; encrypted secret never logged.
+
+---
+
+## 19. Authorization Model and Complete Permission Matrix
+
+### 19.1 Model
+Authorization resolves through: role defaults + per-membership overrides, with **deny beats grant**; suspended/deactivated members resolve to no permissions. The runtime registry remains the in-code source of truth but must be **generated from or mechanically compared with** `docs/auth/permission-matrix.yaml` (the source-controlled security contract). The reported as-built registry (54 keys × 8 roles) is a baseline to be reconciled to the canonical catalogue below in the owning feature phases, with the parity test (Section 19.5) preventing drift.
+
+### 19.2 Canonical Permission Catalogue (`docs/auth/permission-matrix.yaml`)
+Grouped by domain (Correction 16.2). Sensitive platform mutations require mandatory MFA + fresh step-up; no platform permission grants merchant operational access.
+
+```text
+# Platform Governance (Super Administrator only)
+platform.settings.view | platform.settings.update | platform.billing_settings.view | platform.billing_settings.update
+platform.plan.view | platform.plan.manage | platform.plan_price.manage | platform.promotion.manage
+platform.free_period_offer.manage | platform.preferred_personnel_fee.manage | platform.mpesa_configuration.manage
+platform.mpesa_exception.view | platform.mpesa_exception.resolve | platform.merchant.view | platform.merchant.suspend
+platform.merchant.reactivate | platform.merchant.deactivate | platform.registration_monitor.view | platform.audit.view | platform.audit.export
+
+# Merchant Ownership and Billing (Merchant Administrator)
+merchant.profile.view | merchant.profile.update | merchant.subscription.view | merchant.subscription.plan_change
+merchant.subscription.invoice.view | merchant.subscription.invoice.download | merchant.subscription.pay
+merchant.billing_attempts.view_detailed | merchant.branch.create | merchant.branch.view_all | merchant.user.view_all
+merchant.user.suspend | merchant.user.deactivate | merchant.report.view_all_branches | merchant.compensation_summary.view
+merchant.payout.approve_high_value | merchant.period_reopen.approve_exception
+
+# Branch Management (Branch Manager)
+branch.profile.view | branch.profile.update | branch.calendar.manage | branch.day.open | branch.day.pause | branch.day.close
+branch.day.reopen | branch.cash_up.submit | branch.dashboard.view | branch.report.view | service.view | service.create
+service.update | service.archive | preferred_personnel_fee.view_branch_rule | merchant.subscription.pay_from_branch
+
+# HR and Staff (HR)
+staff.view | staff.invite | staff.invitation.resend | staff.invitation.revoke | staff.profile.create | staff.profile.update
+staff.role.assign | staff.branch.assign | staff.suspend | staff.deactivate | staff.history.view | personnel.eligibility.manage
+personnel.availability.manage | compensation.plan.view | compensation.plan.create | compensation.plan.update_draft
+compensation.plan.submit | compensation.plan.approve | compensation.plan.reject | compensation.plan.cancel
+compensation.history.view | payout_run.create | payout_run.update_draft | payout_run.submit | payout_run.cancel_draft
+
+# Front Office Operations (Front Office)
+client.view | client.create | client.update | appointment.view | appointment.create | appointment.reschedule
+appointment.cancel | appointment.check_in | appointment.assign | appointment.transfer | queue.view | queue.create
+queue.assign | queue.transfer | queue.reorder | service_session.view | service_session.start | service_session.complete
+service_session.cancel | preferred_personnel.select | invoice.view | invoice.create | customer_payment.record
+receipt.view | merchant.subscription.pay_simple | front_office.search
+
+# Finance
+invoice.view | invoice.void.request_or_execute_as_policy | invoice.adjustment.manage | customer_payment.view
+customer_payment.validate | customer_payment.reject | customer_payment.reference_correct | customer_payment.duplicate_override
+customer_payment.record_exception | receipt.view | receipt.reissue | refund.create | refund.approve | refund.finalize
+finance_dispute.manage | cash_up.view | cash_up.approve | cash_up.reject | cash_up.request_correction | period_lock.create
+period_lock.reopen | finance_export.create | finance_export.download | subscription.payment_attempts.view
+merchant.subscription.pay | compensation.liability.view | compensation.adjustment.create | payout_run.verify
+payout_run.approve_standard | payout_run.reject | payout_run.mark_paid | earnings_query.respond | finance.audit.view
+
+# Personnel Own-Scope
+personnel.my_queue.view | personnel.my_appointments.view | personnel.my_sessions.view | personnel.my_served_clients.view
+personnel.my_compensation.view | personnel.my_earnings.view | personnel.my_statements.download | personnel.my_payouts.view
+personnel.my_earnings_query.create | personnel.my_sms.send
+
+# Audit
+audit.branch_events.view | audit.compensation.view | audit.finance.view | audit.export | audit.flagged_event.create
+audit.flagged_event.update_status | audit.flagged_event.resolve_metadata
+```
+
+### 19.3 Per-Permission Attributes and Populated Matrix (every key)
+
+**Schema (stored for every key; CI fails if any key is missing any attribute):**
+```text
+key | description | default_roles | override_policy(grantable|revocable_only|non_overridable) |
+scope(platform|merchant|branch|own) | billing_read_only_behavior(allow_read|block) | period_lock_behavior(enforced|n/a) |
+entitlement_key(nullable) | mfa_required(bool) | step_up_required(bool) | audit_event | audit_severity | maker_checker_incompatibilities |
+backend_policy_or_service | frontend_ux_usage | positive_tests | negative_tests
+```
+`docs/auth/permission-matrix.yaml` carries the **complete, schema-validated** machine-readable entry for **every** key with all attributes above; a YAML schema-validation test plus the §19.5 parity test fail the build if any key is absent or any attribute is unset. The human-readable populated matrix below covers every key; columns: **scope** (P/M/B/O), **ent**(itlement key or –), **billRO** (read_only_grace/suspended_billing mutation behavior: A=pure read always allowed, R=mutation blocked by billing gate, – = platform/n/a), **PL** (period-lock enforced), **MFA**, **SU** (step-up), **sev** (audit severity), **MC** (maker/checker-incompatible permission). `backend_policy_or_service` = the policy/action enforcing the key; `frontend_ux_usage` = visibility only. Tests for every key follow the naming convention `PermissionMatrix/{key}_allows` (positive) and `PermissionMatrix/{key}_denies` (negative), enforced by §19.5.
+
+**Group defaults** (each row below inherits these unless its line overrides): Platform group → scope P, MFA Y, billRO –, PL n/a; Merchant Admin group → scope M, MFA Y; Branch Manager/HR/Front Office groups → MFA –; Finance group → MFA Y; Personnel group → scope O, MFA –; Audit group → scope B, MFA –, read-only. Pure-read keys are sev info with no SU/PL/MC.
+
+```text
+# Platform Governance (default_roles: super_admin; non_overridable: never grants merchant-operational access)
+platform.settings.view            P|ent -|billRO -|PL n/a|MFA Y|SU -|sev info|MC -        policy PlatformSettingsPolicy
+platform.settings.update          P|-|-|n/a|Y|SU Y|high|-                                 policy PlatformSettingsPolicy
+platform.billing_settings.view    P|-|-|n/a|Y|-|info|-
+platform.billing_settings.update  P|-|-|n/a|Y|SU Y|high|-                                 svc UpdatePlatformBillingSettings (ADR-011 price rules)
+platform.plan.view                P|-|-|n/a|Y|-|info|-
+platform.plan.manage              P|-|-|n/a|Y|SU Y|high|-
+platform.plan_price.manage        P|-|-|n/a|Y|SU Y|high|-                                 svc ManagePlanPrice (sole price source)
+platform.promotion.manage         P|-|-|n/a|Y|SU Y|high|-
+platform.free_period_offer.manage P|-|-|n/a|Y|SU Y|high|-
+platform.preferred_personnel_fee.manage P|-|-|n/a|Y|SU Y|high|-                          svc ManagePreferredPersonnelFeeRule (fixed+percentage)
+platform.mpesa_configuration.manage P|-|-|n/a|Y|SU Y|crit|-
+platform.mpesa_exception.view     P|-|-|n/a|Y|-|info|-
+platform.mpesa_exception.resolve  P|-|-|n/a|Y|SU Y|high|link-vs-dismiss separation        action ResolveMpesaReconciliationException
+platform.merchant.view            P|-|-|n/a|Y|-|info|-
+platform.merchant.suspend         P|-|-|n/a|Y|SU Y|high|-                                 action SuspendMerchant (merchants.status; never billing recovery)
+platform.merchant.reactivate      P|-|-|n/a|Y|SU Y|high|-
+platform.merchant.deactivate      P|-|-|n/a|Y|SU Y|crit|-
+platform.registration_monitor.view P|-|-|n/a|Y|-|info|-
+platform.audit.view               P|-|-|n/a|Y|-|info|-
+platform.audit.export             P|-|-|n/a|Y|SU Y|high|-                                 export controls (signed/expiring)
+
+# Merchant Ownership and Billing (default_roles: merchant_admin)
+merchant.profile.view             M|-|A|n/a|Y|-|info|-
+merchant.profile.update           M|-|R|n/a|Y|-|high|-
+merchant.subscription.view        M|-|A|n/a|Y|-|info|-
+merchant.subscription.plan_change M|-|R|n/a|Y|-|high|-                                    svc SchedulePlanChange (no proration)
+merchant.subscription.invoice.view M|-|A|n/a|Y|-|info|-
+merchant.subscription.invoice.download M|-|A|n/a|Y|-|info|-
+merchant.subscription.pay         M|-|R(recovery-allowlisted)|n/a|Y|-|high|-             action InitiateSubscriptionStkPush (idempotent)
+merchant.billing_attempts.view_detailed M|-|A|n/a|Y|-|info|-
+merchant.branch.create            M|plan.branch_limit|R|n/a|Y|-|high|-                    entitlement-gated
+merchant.branch.view_all          M|-|A|n/a|Y|-|info|-
+merchant.user.view_all            M|-|A|n/a|Y|-|info|-
+merchant.user.suspend             M|-|R|n/a|Y|-|high|-
+merchant.user.deactivate          M|-|R|n/a|Y|-|crit|-
+merchant.report.view_all_branches M|-|A|n/a|Y|-|info|-
+merchant.compensation_summary.view M|-|A|n/a|Y|-|info|-
+merchant.payout.approve_high_value M|-|R|n/a(payout)|Y|SU Y|crit|payout_run.verify       action ApprovePayoutRun(high-value); threshold snapshot
+merchant.period_reopen.approve_exception M|-|R|enforced|Y|SU Y|high|period_lock.reopen   exceptional reopen approval only
+
+# Branch Management (default_roles: branch_manager)
+branch.profile.view               B|-|A|n/a|-|-|info|-
+branch.profile.update             B|-|R|n/a|-|-|warn|-
+branch.calendar.manage            B|-|R|n/a|-|-|warn|-
+branch.day.open                   B|-|R|n/a|-|-|info|-                                    action OpenBranchDay
+branch.day.pause                  B|-|R|n/a|-|-|info|-
+branch.day.close                  B|-|R|n/a|-|-|info|-                                    BranchClosureGuard
+branch.day.reopen                 B|-|R|n/a|-|-|warn|-
+branch.cash_up.submit             B|-|R|enforced|-|-|warn|cash_up.approve                 maker (Branch Manager)
+branch.dashboard.view             B|-|A|n/a|-|-|info|-
+branch.report.view                B|-|A|n/a|-|-|info|-
+service.view                      B|-|A|n/a|-|-|info|-
+service.create                    B|-|R|n/a|-|-|warn|-
+service.update                    B|-|R|n/a|-|-|warn|-
+service.archive                   B|-|R|n/a|-|-|warn|-
+preferred_personnel_fee.view_branch_rule B|-|A|n/a|-|-|info|-                            view-only (rule managed by Super Admin)
+merchant.subscription.pay_from_branch B|-|R(recovery-allowlisted)|n/a|Y|-|high|-
+
+# HR and Staff (default_roles: hr)
+staff.view                        B|-|A|n/a|-|-|info|-
+staff.invite                      B|-|R|n/a|-|-|warn|-
+staff.invitation.resend           B|-|R|n/a|-|-|info|-
+staff.invitation.revoke           B|-|R|n/a|-|-|warn|-
+staff.profile.create              B|-|R|n/a|-|-|warn|-
+staff.profile.update              B|-|R|n/a|-|-|warn|-
+staff.role.assign                 B|-|R|n/a|-|-|high|-                                    cannot self-escalate
+staff.branch.assign               B|-|R|n/a|-|-|high|-
+staff.suspend                     B|-|R|n/a|-|-|high|-                                    revokes sessions/links
+staff.deactivate                  B|-|R|n/a|-|-|crit|-
+staff.history.view                B|-|A|n/a|-|-|info|-
+personnel.eligibility.manage      B|-|R|n/a|-|-|warn|-
+personnel.availability.manage     B|-|R|n/a|-|-|info|-
+compensation.plan.view            B|-|A|n/a|-|-|info|-
+compensation.plan.create          B|-|R|n/a|-|-|warn|-
+compensation.plan.update_draft    B|-|R|n/a|-|-|info|-
+compensation.plan.submit          B|-|R|n/a|-|-|warn|compensation.plan.approve
+compensation.plan.approve         B|-|R|n/a|-|SU Y|high|compensation.plan.submit         backdated change → crit audit
+compensation.plan.reject          B|-|R|n/a|-|-|warn|-
+compensation.plan.cancel          B|-|R|n/a|-|-|warn|-
+compensation.history.view         B|-|A|n/a|-|-|info|-
+payout_run.create                 B|-|R|n/a(payout)|-|-|warn|-                            HR drafts
+payout_run.update_draft           B|-|R|n/a|-|-|info|-
+payout_run.submit                 B|-|R|n/a|-|-|warn|payout_run.verify                    frozen on submit
+payout_run.cancel_draft           B|-|R|n/a|-|-|info|-
+
+# Front Office Operations (default_roles: front_office)
+client.view                       B|-|A|n/a|-|-|info|-
+client.create                     B|-|R|n/a|-|-|info|-
+client.update                     B|-|R|n/a|-|-|info|-
+appointment.view                  B|-|A|n/a|-|-|info|-
+appointment.create                B|-|R|n/a|-|-|info|-
+appointment.reschedule            B|-|R|n/a|-|-|info|-
+appointment.cancel                B|-|R|n/a|-|-|info|-
+appointment.check_in              B|-|R|n/a|-|-|info|-
+appointment.assign                B|-|R|n/a|-|-|info|-                                    eligibility/availability revalidated
+appointment.transfer              B|-|R|n/a|-|-|info|-                                    Front Office only (not Branch Manager)
+queue.view                        B|-|A|n/a|-|-|info|-
+queue.create                      B|-|R|n/a|-|-|info|-
+queue.assign                      B|-|R|n/a|-|-|info|-
+queue.transfer                    B|-|R|n/a|-|-|info|-
+queue.reorder                     B|-|R|n/a|-|-|info|-
+service_session.view              B|-|A|n/a|-|-|info|-
+service_session.start             B|-|R|n/a|-|-|info|-
+service_session.complete          B|-|R|n/a|-|-|info|-                                    may create non-payable commission preview
+service_session.cancel            B|-|R|n/a|-|-|info|-
+preferred_personnel.select        B|-|R|n/a|-|-|info|-
+invoice.view                      B|-|A|n/a|-|-|info|-                                    (also Finance)
+invoice.create                    B|-|R|enforced|-|-|warn|-                              action FinalizeInvoice (number+snapshots, idempotent)
+customer_payment.record           B|-|R|enforced|-|-|warn|customer_payment.validate       maker; group-based; idempotent
+receipt.view                      B|-|A|n/a|-|-|info|-
+merchant.subscription.pay_simple  B|-|R(recovery-allowlisted)|n/a|Y|-|high|-
+front_office.search               B|-|A|n/a|-|-|info|-
+
+# Finance (default_roles: finance; MFA mandatory)
+invoice.void.request_or_execute_as_policy M/B|-|R|enforced|Y|SU Y|high|-
+invoice.adjustment.manage         M/B|-|R|enforced|Y|-|high|-
+customer_payment.view             B|-|A|n/a|Y|-|info|-
+customer_payment.validate         B|-|R|enforced|Y|-|high|customer_payment.record         checker; validates whole recording group
+customer_payment.reject           B|-|R|enforced|Y|-|warn|-
+customer_payment.reference_correct B|-|R|enforced|Y|-|warn|-                             original reference never silently edited
+customer_payment.duplicate_override B|-|R|enforced|Y|SU Y|high|-                         payment_reference_checks override
+customer_payment.record_exception B|-|R|enforced|Y|-|high|customer_payment.validate      maker exception; needs separate checker
+receipt.reissue                   B|-|R|n/a|Y|-|warn|-                                    new receipts row referencing original
+refund.create                     B|-|R|enforced|Y|-|warn|refund.approve
+refund.approve                    B|-|R|enforced|Y|SU Y|high|refund.create
+refund.finalize                   B|-|R|enforced|Y|SU Y|crit|-                           component-allocated; commission reversal
+finance_dispute.manage            B|-|R|n/a|Y|-|warn|-
+cash_up.view                      B|-|A|n/a|Y|-|info|-
+cash_up.approve                   B|-|R|enforced|Y|-|high|cash_up.submit                   checker
+cash_up.reject                    B|-|R|enforced|Y|-|warn|-
+cash_up.request_correction        B|-|R|enforced|Y|-|info|-
+period_lock.create                M/B|-|R|enforced|Y|SU Y|high|-                          Finance owns
+period_lock.reopen                M/B|-|R|enforced|Y|SU Y|crit|merchant.period_reopen.approve_exception
+finance_export.create             M/B|-|R|n/a|Y|SU Y|high|-                              async/scoped/masked/signed
+finance_export.download           M/B|-|A|n/a|Y|-|high|-                                 download-counted
+subscription.payment_attempts.view M|-|A|n/a|Y|-|info|-
+compensation.liability.view       M/B|-|A|n/a|Y|-|info|-
+compensation.adjustment.create    M/B|-|R|n/a|Y|SU Y|high|-                              adjustment entry only
+payout_run.verify                 M/B|-|R|n/a(payout)|Y|SU Y|high|payout_run.submit
+payout_run.approve_standard       M/B|-|R|n/a|Y|SU Y|high|-                              ordinary-value approval (Finance)
+payout_run.reject                 M/B|-|R|n/a|Y|-|warn|-
+payout_run.mark_paid              M/B|-|R|n/a|Y|SU Y|crit|-                              external ref+date; idempotent; row-lock
+earnings_query.respond            M/B|-|R|n/a|Y|-|info|-                                 resolution via adjustment only
+finance.audit.view                B|-|A|n/a|Y|-|info|-
+
+# Personnel Own-Scope (default_roles: personnel; non_overridable: never contact export)
+personnel.my_queue.view           O|-|A|n/a|-|-|info|-                                    staff_profile_id derived from membership
+personnel.my_appointments.view    O|-|A|n/a|-|-|info|-
+personnel.my_sessions.view        O|-|A|n/a|-|-|info|-
+personnel.my_served_clients.view  O|-|A|n/a|-|-|info|-                                    masked contact; no export
+personnel.my_compensation.view    O|-|A|n/a|-|-|info|-
+personnel.my_earnings.view        O|-|A|n/a|-|-|info|-
+personnel.my_statements.download  O|-|A|n/a|-|-|info|-                                    own statements only
+personnel.my_payouts.view         O|-|A|n/a|-|-|info|-
+personnel.my_earnings_query.create O|-|R|n/a|-|-|info|-
+personnel.my_sms.send             O|sms|R|n/a|-|-|warn|-                                 served-clients only; no contact export (ADR-010)
+
+# Audit (default_roles: audit; non_overridable: never mutating source records)
+audit.branch_events.view          B|-|A|n/a|-|-|info|-                                    field-masked
+audit.compensation.view           B|-|A|n/a|-|-|info|-
+audit.finance.view                B|-|A|n/a|-|-|info|-
+audit.export                      B|-|A|n/a|-|SU Y|high|-                                 signed/expiring; permission-masked
+audit.flagged_event.create        B|-|A|n/a|-|-|info|-                                    review metadata only
+audit.flagged_event.update_status B|-|A|n/a|-|-|info|-                                    metadata only; source immutable
+audit.flagged_event.resolve_metadata B|-|A|n/a|-|-|info|-
+```
+
+### 19.4 Non-Overridable Rules (hard, enforced in code + tests)
+- Audit role can never gain a mutating operational/financial permission.
+- Personnel can never gain contact export.
+- Super Administrator can never gain merchant-creation or merchant-operational permissions through merchant membership.
+- Branch Manager cannot receive invoice creation or queue/appointment transfer through branch route membership without an explicitly approved scope amendment.
+- Maker and checker permissions are not assigned to the same user where the workflow requires separation.
+
+### 19.5 Tests
+- **Matrix completeness:** `docs/auth/permission-matrix.yaml` schema-validation test fails if any key is missing or any required attribute (§19.3 schema) is unset; a completeness test asserts every key in the catalogue (§19.2) has a populated YAML row and a populated §19.3 matrix row.
+- Matrix parity test: YAML ↔ PHP registry ↔ DB projection ↔ TypeScript metadata (zero mismatches).
+- One positive and one denial test per permission key, named `PermissionMatrix/{key}_allows` and `PermissionMatrix/{key}_denies` (a generator asserts both exist for every key).
+- Cross-tenant and cross-branch denial for every branch/merchant domain.
+- Override tests: grant, revoke, deny-beats-grant, non-overridable denial.
+- Named role-boundary tests (Section 3.1): Merchant Admin not operational superuser; Branch Manager excluded keys; Front Office record≠validate; Finance owns validation/period locks; HR cannot mark/approve payouts; Audit read-only.
+- Same-user maker/checker conflict denial for every `MC` pair in §19.3.
+- Personnel contact-export guessed routes → 404 + audit.
+
+## 20. Plan-Entitlement Enforcement
+- **Source:** `plan_entitlements` (per plan; key + optional limit + enabled). Merchant's effective entitlements derive from the active `merchant_subscriptions.plan_id`.
+- **Enforcement:** an entitlement gate runs after permission resolution and before period-lock (Section 9.4 step 10). Permissions that depend on an entitlement carry `entitlement_key`; the gate returns 403 with an upgrade-relevant code when the entitlement is absent or a limit is exceeded.
+- **Examples:** number of branches (`merchant.branch.create` checks the branch-count limit); bulk SMS (`personnel.my_sms.send` requires the SMS entitlement); advanced reports.
+- **Tests:** entitlement-present allows; entitlement-absent denies; limit boundary (at/over) denies; downgrade revokes access to over-limit features without data loss.
+
+## 21. Merchant Operational-Status Enforcement
+- **Authority field:** operational/governance lifecycle is **`merchants.status`** (`pending_setup`, `active`, `suspended`, `deactivated`), distinct from `merchants.billing_status` (Section 22).
+- **States:** `pending_setup → active`; `active → suspended | deactivated`; `suspended → active | deactivated` (Section 25).
+- **Gates:** `EnsureMerchantActive` blocks operational routes when `merchants.status` is not `active`; `pending_setup` permits only first-time-setup routes (`pending_setup_only`). Suspension reasons (fraud/security/legal/compliance/manual) and actor are stored in `merchants.status_reason`.
+- **Critical rule:** `merchants.status` is **independent** of `merchants.billing_status`. A billing payment changes only `merchants.billing_status` and never clears a fraud/security/legal/compliance/manual/deactivation suspension on `merchants.status`. Recovery from those requires platform action, not payment.
+- **Tests:** pending_setup user limited to setup; suspended merchant denied operations; deactivation preserves history; payment does not reactivate a non-billing `merchants.status` suspension.
+
+## 22. Merchant Billing-Status Enforcement
+- **Authority field:** the request-authorization billing-access state is **`merchants.billing_status`** (values `trialing`, `read_only_grace`, `active`, `overdue`, `suspended_billing`). It is the sole field the billing-status gate reads; `merchant_subscriptions.status` (the subscription record lifecycle) is **never** consulted directly for access. A transactional **billing-status projection service** synchronizes `merchants.billing_status` from the active subscription whenever the subscription transitions (issue, pay, escalate, suspend, recover, cancel, expire), writing both rows in one transaction with a row lock and emitting a `merchant.billing_status_changed` audit event. `merchants.billing_status` is indexed for gate lookups.
+- **States:** `trialing → active`; `trialing → read_only_grace`; `read_only_grace → active | suspended_billing`; `active → overdue`; `active/overdue → suspended_billing`; `suspended_billing → active` (Section 25). Trial starts at Merchant Admin creation; days are snapshotted.
+- **Read-only grace:** during `read_only_grace` and `suspended_billing`, mutation routes are blocked by the **billing-status mutation gate** (Section 9.4 step 9) reading `merchants.billing_status`, while read access continues; **new** exports/reports/PDFs cannot be generated, though existing authorized files remain downloadable.
+- **Recovery:** only a fully validated subscription payment moves `merchants.billing_status` `suspended_billing → active`, and only when the suspension reason is billing-only (the recovery allowlist middleware enforces which routes a suspended-billing merchant may reach). Recovery never alters `merchants.status` (operational), preventing a payment from reactivating a non-billing suspension.
+- **Escalation:** shared overdue escalation events drive `active → overdue → suspended_billing` per configured grace, applied to `merchants.billing_status` via the projection service.
+- **Tests:** projection synchronizes merchants.billing_status from subscription transitions transactionally; gate reads merchants.billing_status (subscription status alone never grants access); read-only blocks mutations but allows reads; new-export blocked in read-only while existing download allowed; only validated payment reactivates; recovery allowlist limits reachable routes; billing payment does not change merchants.status.
+
+---
+
+## 23. API Standards and Endpoint Inventory
+- **Base:** `/api/v1`; JSON only; resources expose ULIDs, never sequential IDs; error envelope per Section 10.3.
+- **Pagination:** unbounded collections use cursor/length-aware pagination; default page size 25, max 100 (or a lower domain cap); single-resource endpoints are not paginated; lookups document a bounded max; sort fields are allowlisted; filters are validated and indexed; exports are async (never "page size unlimited").
+- **Correlation:** every request carries/echoes `X-Correlation-ID`.
+- **Contract:** OpenAPI is generated and is the **complete authoritative endpoint inventory**; the TypeScript client types are generated from it; `RouteSecurityContractTest` (Section 24) and the OpenAPI/TS parity test prevent drift. The endpoint groups are: auth; me/bootstrap; merchant-registration; merchant/profile/branches/users; staff/HR/invitations/compensation; catalogue/services/eligibility; clients/consents; scheduling (appointments/walk-ins/queues/sessions); invoices; payments/validation/receipts/refunds/disputes; cash-up/period-locks; finance-exports; platform (settings/plans/prices/entitlements/promotions/free-periods/preferred-fee/merchant-governance/mpesa-exceptions/audit); subscriptions/billing-invoices/billing-payment; mpesa-callbacks; compensation/payouts/earnings; personnel own-scope; sms; files; reports; audit; health.
+
+### 23.1 Naming
+Routes use `domain.resource.action` names matching transition actions and permission keys (e.g., `payments.validate`, `cash_up.approve`, `subscription.pay`, `mpesa.callback.stk`). Forbidden routes (Super-Admin merchant creation, personnel contact export) must not exist; tests assert their absence.
+
+## 24. Route-Classification and Middleware Matrix
+Every non-GET route declares exactly one classification in route metadata/registry. `RouteSecurityContractTest` loads the route collection and fails when: a non-GET route has no classification; a route misses middleware required by its class; a public route has tenant middleware; a financial route lacks idempotency; a webhook route uses Sanctum/browser CSRF instead of the provider contract; or a platform route is reachable by merchant middleware.
+
+### 24.1 Route Classes and Required Controls (Correction 10.2)
+```text
+public_mutation (request/verify magic link, self-register, accept invitation):
+  validation; purpose-specific rate limit; enumeration-resistant response; CSRF for same-origin session OR signed one-time token; abuse detection + correlation; security audit without account-existence leak; NO tenant middleware before tenant exists.
+authenticated_global_mutation (theme/profile preference, MFA enrollment):
+  Sanctum auth; active user/session; CSRF; validation; self-service policy/permission; audit for security-sensitive changes.
+tenant_mutation (merchant profile, staff lifecycle):
+  auth; tenant resolution; active membership/role; permission + policy; billing-status gate; validation; audit.
+branch_mutation (service update, client create, queue transfer):
+  all tenant controls; branch resolution + assignment; branch status; own-scope where relevant.
+financial_mutation (payment record/validate, refund, payout, subscription payment initiation, invoice finalization, reconciliation resolution, billing credit):
+  relevant tenant/branch controls; fine-grained financial permission; maker/checker rule; period-lock check; step-up MFA for designated actions; idempotency; DB transaction + row lock; immutable ledger/audit event.
+platform_mutation (billing settings, plan prices, promotion approval, merchant suspension):
+  platform staff auth; platform role/permission; mandatory MFA; step-up for sensitive actions; reason field; audit; NO merchant tenant context or membership insertion.
+provider_webhook_mutation (M-Pesa callbacks):
+  no Sanctum; provider-specific authenticity/correlation; strict schema + content-type; request-size limit; replay protection + unique provider IDs; fast ack; async processing; raw payload encryption/masking; security audit + metrics.
+liveness/readiness:
+  no user auth; network/platform access; no user input; infrastructure rate control.
+```
+
+### 24.2 Class-Specific Acceptance Matrix (Correction 11.2)
+| Route class | Auth | Authorization | Validation | Pagination | Rate limit | Idempotency |
+|---|---|---|---|---|---|---|
+| Public mutation | No session | Token/flow rules | Required | No | Required | Flow-specific |
+| Public read | No session | Public-data policy | Query validation | When collection unbounded | Required | No |
+| Authenticated self-service | Required | Self policy | On mutations | Collection only | Required | When effect-sensitive |
+| Tenant/branch read | Required | Tenant/branch/policy | Query validation | Unbounded collections | Required | No |
+| Tenant/branch mutation | Required | Permission + policy | Required | No | Required | When duplicate effect matters |
+| Financial mutation | Required | Financial policy | Required | No | Strict | Required |
+| Platform mutation | Required | Platform permission | Required | No | Strict | Where effect-sensitive |
+| Provider webhook | Provider contract | Provider/correlation | Strict schema | No | Network/provider | Provider replay protection |
+| Liveness/readiness | No user auth | Network/platform | No user input | No | Infra control | No |
+
+### 24.3 Response/Error Rules
+Enumeration-resistant public flows return a uniform accepted response; foreign-tenant IDs → 404; same-tenant out-of-branch → documented 403; validation → 422 with field maps; idempotency conflict → 409; financial-period lock → 423 (`financial_period_locked`); rate limit → 429 with retry info; internal exceptions never expose stack traces/SQL/provider secrets/raw callbacks.
+
+### 24.4 Idempotency Middleware Algorithm (financial routes)
+1. Require `Idempotency-Key` (length 16–255). 2. Compute canonical request hash (method, route, normalized path params, content type, canonicalized body; exclude volatile headers). 3. Begin transaction; attempt to insert a `processing` row with lock expiry. 4. On existing key: same hash + `completed` → replay stored status/approved headers/encrypted body; different hash → 409 `idempotency_key_reused_with_different_request`; same hash + active `processing` lock → 409 `request_in_progress` + retry-after; same hash + expired lock → `SELECT ... FOR UPDATE`, replace lock, retry; `failed` → retry only if explicitly retryable else replay stable failure. 5. Execute the domain action in the same transaction where practical; for provider calls, persist the attempt first and use a state machine + outbox/job. 6. On success, encrypt and store replay-safe response, mark completed, commit. 7. On domain validation failure, store a stable replayable 4xx where the effect must remain deterministic. 8. On server failure, mark failed with a redacted code; never store stack traces/secrets. `FinancialRouteIdempotencyCoverageTest` fails when any `financial_mutation` route lacks the middleware. Retention: standard ≥72h; support-retriable financial ≥30d; provider dedupe retained with the financial record; prune job never deletes an active lock.
+
+### 24.5 Log Redaction List (binding)
+Never log: passwords, Magic-Link tokens, MFA secrets, recovery codes, session IDs, M-Pesa credentials/OAuth tokens, raw callback payloads, consumer phone numbers, payment references, signed-URL tokens, email headers.
+
+---
+
+## 25. State-Machine Catalogue
+
+### 25.1 Standard and Per-Transition Contract
+Every stateful aggregate has a PHP enum plus a transition **Action** class. **Status is never assigned directly anywhere** — not in controllers, jobs, listeners, console commands, observers, ad hoc scripts, factories, or migrations; every transition is executed only through its named domain action / state-machine service (a `NoDirectStatusAssignmentRule` static-analysis check plus a source-scan test enforce this).
+
+The arrow catalogue in §25.2–§25.5 is the authoritative **transition inventory**. For **every legal transition listed there**, a complete **transition record** is materialized in the mandatory, version-controlled state-machine specification at `docs/architecture/state-machines/{aggregate}.md` (one record per transition), and the owning phase must author and have that record reviewed **before** implementing the transition. Each transition record contains, completely:
+
+```text
+aggregate | current_state | next_state | actor | required_permission |
+tenant_conditions | branch_conditions | own_scope_conditions | entitlement_conditions |
+billing_status_conditions | operational_status_conditions | period_lock_conditions |
+input_validation | preconditions | transaction_boundary | rows_locked | advisory_lock |
+idempotency_requirement | writes | generated_records | ledger_effects | compensation_effects |
+notifications | queue_jobs | audit_event | failure_codes | retry_behavior | reversal_or_correction | tests
+```
+
+A transition is **not** considered specified while it is represented only by an arrow; the arrow plus its reviewed transition record in `docs/architecture/state-machines/{aggregate}.md` together constitute the specification (the same named-mandatory-spec mechanism used for the data dictionary §13.2 and screen specs §27.1). Financial transitions lock the aggregate row `FOR UPDATE` and assert current state in the `WHERE`/locked model. Every transition has positive, invalid-transition, authorization, concurrency, and audit tests; high-value aggregates also record transition history.
+
+**Worked transition records (binding format instances — the spec files follow this exact shape for every transition):**
+
+```text
+# Payment Recording Group: pending_validation -> validated  (§25.3)
+aggregate: payment_recording_group | current_state: pending_validation | next_state: validated
+actor: Finance (checker) | required_permission: customer_payment.validate
+tenant_conditions: group.merchant_id == ctx.merchant | branch_conditions: group.branch_id in active assignments
+own_scope_conditions: n/a | entitlement_conditions: none
+billing_status_conditions: merchants.billing_status allows financial mutation | operational_status_conditions: merchants.status = active
+period_lock_conditions: invoice period not locked (else 423)
+input_validation: each component reference/amount/method valid; sum(components) == group.total; <= invoice balance
+preconditions: maker != checker (customer_payment.record incompatibility); group currency single
+transaction_boundary: single DB transaction | rows_locked: invoice + all component payment_records FOR UPDATE | advisory_lock: none
+idempotency_requirement: Idempotency-Key keyed on group (one validation effect)
+writes: group.status=validated; components.status=validated; invoice.validated_paid += sum; invoice.status recomputed
+generated_records: one payment_validation_event(group); one receipt(receipt_number_sequences) covering all components; earned commission_ledger entries per component
+ledger_effects: validated_paid increase; commission earned | compensation_effects: per-component earned commission
+notifications: Front Office + relevant parties (payment validated) | queue_jobs: receipt PDF generation (10F); commission projection
+audit_event: customer_payment.validated (high) | failure_codes: 422 invalid_group, 409 idempotency, 423 period_locked, 403 maker_is_checker
+retry_behavior: safe replay returns stored result | reversal_or_correction: reversal/adjustment workflow only (never destructive)
+tests: happy-path; sum!=total reject; over-balance reject; maker==checker deny; locked-period 423; duplicate idempotent; concurrent double-validate one effect; cross-branch deny
+
+# Personnel Payout Run: approved -> paid  (§25.5)
+aggregate: personnel_payout_run | current_state: approved | next_state: paid
+actor: Finance | required_permission: payout_run.mark_paid
+tenant_conditions: run.merchant_id == ctx.merchant | branch_conditions: run.branch_id in assignments
+own_scope_conditions: n/a | entitlement_conditions: none
+billing_status_conditions: financial mutation allowed | operational_status_conditions: merchants.status = active
+period_lock_conditions: n/a (payout runs not period-locked)
+input_validation: external_payment_reference present; paid_date present
+preconditions: run.status = approved (high-value runs require prior Merchant-Admin approval); fresh step-up MFA
+transaction_boundary: single transaction | rows_locked: payout_run + payout_items FOR UPDATE | advisory_lock: none
+idempotency_requirement: Idempotency-Key REQUIRED (one mark-paid effect)
+writes: run.status=paid; items.status=paid; linked salary_ledger/commission_ledger entries -> paid; store external_payment_reference_encrypted, paid_at
+generated_records: none new (status transitions on existing ledgers) | ledger_effects: ledger entries marked paid
+compensation_effects: personnel earnings reflect paid | notifications: affected personnel (statement available)
+queue_jobs: statement PDF (10F) | audit_event: payout_run.marked_paid (critical) | failure_codes: 409 idempotency, 403 stale_step_up, 422 missing_reference
+retry_behavior: idempotent replay | reversal_or_correction: adjustment run only (never status rewind)
+tests: mark-paid happy-path; stale step-up deny; missing reference 422; idempotent replay; ledger status propagation; high-value requires prior MA approval
+```
+
+### 25.2 Operational and Org Machines
+```text
+Merchant Operational Status (merchants.status) — actor Merchant Admin/Platform
+  pending_setup → active        (Merchant Admin completes first-time setup)
+  active → suspended            (platform: fraud/security/legal/compliance/manual; reason+actor stored)
+  active → deactivated; suspended → active | deactivated
+  Rule: billing payment never changes operational status; non-billing suspensions cleared only by platform action.
+
+Merchant Billing Status (merchants.billing_status) — actor Billing engine/Finance/Merchant Admin
+  trialing → active | read_only_grace
+  read_only_grace → active | suspended_billing
+  active → overdue ; active/overdue → suspended_billing
+  suspended_billing → active (ONLY via fully validated payment + billing-only reason)
+  Side effects: billing-status gate toggles mutation/export capability; escalation events; recovery allowlist.
+  merchants.billing_status is the access authority, projected transactionally from merchant_subscriptions.status (§22).
+
+Merchant Setup — pending_setup setup-incomplete → setup-complete (flips operational to active); first-time-setup routes only while pending.
+
+Branch Lifecycle — active → suspended | archived ; suspended → active | archived (admin; BranchClosureGuard blockers must pass to archive).
+
+Branch Day — actor Branch Manager (reopen may require Finance/Manager policy)
+  not_opened → open → paused → open → closed
+  closed → reopened (reason + permission) → open → closed
+  Close requires all mandatory day-close checks (unclosed-day, cash-up discrepancy, plus queue/session/invoice/payment/receipt/appointment guards flipped on by Phases 16–18).
+
+Staff Invitation — pending → accepted | revoked | expired ; expired → pending only via new token (no reuse). Token hashed, single-use, invalidated on revoke/deactivation/replacement.
+
+Staff Lifecycle — invited → active → suspended → active ; active/suspended → deactivated.
+  Suspend/deactivate revokes sessions + unused Magic Links + pending invitations; sole-active-admin orphan guard; branch-assignment-required-to-activate.
+
+Appointment — actor Front Office
+  scheduled → confirmed | cancelled ; confirmed → checked_in | rescheduled | cancelled | no_show
+  checked_in → queued | in_service | cancelled_with_reason ; rescheduled → confirmed/scheduled
+  Eligibility + availability + branch-open revalidated on assign/transfer.
+
+Queue Entry — actor Front Office (transfer); Personnel cannot access others'
+  waiting → assigned → called → in_service → completed
+  waiting/assigned/called → transferred | cancelled | no_show ; transferred → assigned/waiting at destination
+
+Service Session — pending → in_progress → completed ; pending/in_progress → cancelled.
+  Personnel must be eligible for every service item + assigned to branch; duplicate-active-session protection.
+```
+
+### 25.3 Financial Machines
+```text
+Merchant-Client Invoice — actor Front Office (create), Finance (void/adjust)
+  draft → issued (number allocated; prices/preferred-fee/percentage-fee config snapshotted)
+  issued → partially_paid | paid | void_pending | adjusted ; partially_paid → paid | void_pending | adjusted
+  void_pending → voided | (back to issued/partially_paid on rejection) ; paid → refund_pending | adjustment_required
+  Voiding a paid invoice creates financial adjustments; never deletes ledger rows. Mutations blocked by period lock (423).
+
+Payment Recording Group — actor Front Office maker (record), Finance checker (validate); the durable grouping for single, split, or multi-method recording
+  draft → recorded → pending_validation → validated | rejected | correction_required
+  correction_required → pending_validation ; rejected/validated terminal for the group (corrections via new group or reversal)
+  Group invariants: total_amount = sum(component payment_records); single currency; sum(components) ≤ invoice balance (validated). Validation acts on the WHOLE group atomically (one payment_validation_event for the group, one receipt covering all validated components). Maker cannot self-validate. Idempotency keyed on the group.
+
+Payment Record + Validation — Front Office maker, Finance checker; period-lock + step-up where designated; every record belongs to a Payment Recording Group
+  recorded(pending_validation) → validated | rejected | correction_required
+  correction_required → pending_validation ; validated → reversed/adjusted only via controlled finance workflow
+  At group 'validated': lock invoice + all component payment rows; create immutable payment_validation_event for the group; increase validated_paid; update invoice status; auto-issue one receipt covering all validated components; create earned commission entries allocated by component; emit audit/notifications; commit atomically (or outbox-guaranteed). Maker cannot self-validate.
+
+Receipt — issued automatically once per validated Payment Recording Group (containing all validated component methods/amounts) → reissued (new tracking row referencing original). Not generated before validation.
+
+Refund — actor Finance; period-lock + approval + step-up on finalize
+  requested → approved → finalized ; requested/approved → rejected
+  Finalize reduces recognized paid balance via adjustment/reversal only; creates proportional commission reversal; preserves original payment/receipt/commission rows.
+
+Finance Dispute — open → under_review → resolved | rejected.
+
+Cash-Up — Branch Manager submit, Finance approve (maker≠checker)
+  draft → submitted → approved | rejected | correction_requested ; correction_requested → submitted ; approved → locked (period/day controls).
+
+Financial Period Lock — open → locked → reopened (reopen requires Finance; exceptional reopen approval by Merchant Admin where policy requires). Mutations in a locked period → 423.
+```
+
+### 25.4 Billing, M-Pesa, Promotions Machines
+```text
+Subscription (merchant_subscriptions.status) — trialing → active (record lifecycle; merchants.billing_status is projected from it, §22); → read_only_grace/overdue/suspended_billing track the access projection; → cancelled | expired are terminal record states. Plan changes scheduled (no proration) apply at next cycle.
+
+Subscription Invoice — draft → issued → pending_payment → partially_paid → paid ; issued/partially_paid → overdue ;
+  pending_payment → payment_failed or back to issued after attempt expiry ; any payable → reconciliation_required when confirmed funds cannot be safely applied ; draft/issued → void (terminal, pre-payment supersession). Issued invoices immutable; transitions produce event rows/timestamps.
+  Terminology: subscription invoices use **`void`** only (never `cancelled`); `cancelled` is reserved for non-invoice records (subscription, payout run, promotion, free-period offer). These are distinct documented transitions.
+
+M-Pesa Payment Attempt (Correction 14.6) —
+  initiated → stk_push_sent → callback_received → validated → applied_to_invoice
+  initiated/stk_push_sent → customer_cancelled | timeout | failed
+  callback_received → duplicate | rejected | reconciliation_required
+  applied_to_invoice → refunded_externally (confirmed payment later refunded outside Servana; reconciliation-driven, no Servana fund movement)
+  Apply under invoice row lock: <balance → partially_paid; =balance → paid; >balance → pay invoice + create billing credit. Reactivate ONLY billing-only suspension.
+
+M-Pesa Reconciliation Event — matched | exception(open) → resolved | dismissed. Super Admin resolves by linking a confirmed provider payment to the correct invoice (reason + step-up + before/after audit + maker/checker for high-risk).
+
+Promotion — draft → scheduled | active → paused → active → expired ; any pre-active → cancelled. Snapshotted at application; does not mutate issued invoices.
+
+Free-Period Offer — draft → scheduled → active → paused → active → expired ; any pre-active → cancelled. Applied days snapshotted onto subscription; later edits never rewrite an existing trial.
+```
+
+### 25.5 Compensation Machines
+```text
+Compensation Plan — draft → pending_approval → scheduled | active | rejected ; scheduled → active ; active → superseded | expired ; any pre-active → cancelled.
+  Effective-date overlap blocked (exclusion constraint); backdating requires approval + critical-severity audit; active monetary terms immutable (supersede with new version).
+
+Commission Ledger Item — pending_preview (optional at session completion) → earned (at validated payment) → included_in_payout → paid.
+  earned → reversed (negative row referencing original) on void/refund/payment reversal; adjustments are new rows; never edit/delete originals.
+
+Salary Ledger Item — accrual(pending) → included_in_payout → paid ; reversal/adjustment as new rows. Scheduler idempotent per (plan, staff, pay-period segment, entry_type).
+
+Payout Run (Correction 17.3) — draft → submitted → finance_verified → approved (ordinary) ;
+  finance_verified → pending_merchant_admin_approval (high-value) → approved | rejected ; approved → paid ;
+  pre-paid → rejected/cancelled per actor ; paid → adjusted only via new adjustment workflow (never status rewind).
+  HR creates/edits/submits; Finance verifies/approves-standard/marks-paid; Merchant Admin approves high-value; high-value threshold snapshotted (not hardcoded). Mark-paid requires external reference + paid date + fresh step-up + idempotency + row lock + ledger-status update + personnel notification.
+
+Payout Item — mirrors run status; snapshots salary/commission/adjustment/gross + source ledger refs at creation; frozen on submit.
+
+Earnings Query — open → assigned → resolved | rejected. Resolution never mutates ledgers silently; monetary correction creates an adjustment entry.
+
+Audit Flagged Event — open → under_review → resolved | dismissed ; resolved/dismissed → reopened (explicit permission + audit). Only review metadata mutable; source audit log immutable.
+```
+
+---
+
+## 26. UI Design System
+- **Tokens:** brand color tokens (per `SERVANA COMBINED.txt` Brand Identity), spacing, radius, typography (self-hosted Inter/Manrope), elevation; light + dark token sets. Primary/CTA contrast meets WCAG AA (`text-brand-deep` on brand orange; ADR-009).
+- **Core components:** `SvButton` (variants, loading, disabled, 44px touch target), `SvInput`/`SvSelect`/`SvTextarea` (labels, `aria-invalid`/`aria-describedby`/`aria-required`), `SvCard`, `SvModal` (focus trap, Esc, `aria-modal`), `SvToast` (`role="status"`, auto-dismiss, pause on hover), `SvStateBoundary` (loading/empty/error/success), `SvEmptyState`, `PermissionGate`. All components ship light + dark + every state and are axe-verified.
+- **Money/date display:** integer-minor-unit formatter; `Africa/Nairobi` date helpers.
+
+## 27. Complete Screen and Route Inventory
+
+### 27.1 Per-Screen Specification Format (mandatory file per route)
+Create one spec per route under `/docs/frontend/screens/{role-or-domain}/{screen-key}.md` containing: route name + URL; layout; allowed roles; required permissions; merchant/branch/own scope; required entitlement; billing-state behavior; API dependencies; fields + table columns; primary/secondary/destructive actions + confirmation behavior; loading/empty/error/success states; no-permission/no-branch states; locked/read-only/suspended-billing states; mobile/tablet/desktop transformation; keyboard + screen-reader behavior; dark-mode requirements; audit events triggered; unit/component/e2e tests. **No screen is implemented before its specification exists and passes review** (this is the named mandatory specification, not a placeholder).
+
+### 27.2 Role Entry Surfaces (every role)
+Each role has (1) a live landing page showing role-true actionable work and (2) a guided get-started page with persisted checklist completion, deep links, resumability, dismissal, and reopen behavior — populated with the scope-defined checklist content, not generic placeholders.
+
+### 27.3 Minimum Screen Inventory (Correction 22.4)
+```text
+Public/Auth: marketing/landing (where applicable); merchant self-registration; magic-link request/verify result; invitation acceptance; MFA enrollment/challenge/recovery.
+Merchant Administrator: landing + get-started; first-time setup; merchant profile; branch list/create/detail; staff overview/lifecycle; subscription dashboard; plan management + scheduled change; subscription invoices/detail/download/payment; billing recovery; merchant reports; compensation summary.
+Branch Manager: landing/get-started; branch profile/calendar/day open-close; service catalogue; queue/appointment read views; cash-up submission; branch reports; subscription payment notice/recovery.
+HR: landing/get-started; staff roster/detail/invite/edit/lifecycle; role + branch assignment; eligibility + availability; compensation list/detail/setup/history; payout draft preparation.
+Finance: landing/get-started/task inbox; invoice/payment validation; duplicate-reference review; receipts/reissue; refunds/disputes; cash-up approval; period locks; exports; payout verification/approval/mark-paid; subscription payment attempts.
+Front Office: landing/get-started; client create/search/detail; appointment + walk-in; queue assignment/transfer; service-session workflow; invoice create/detail; payment record; receipt status; simple subscription payment banner/recovery.
+Personnel: landing/get-started; own queue/appointments/sessions; own served clients; SMS composer; My Earnings tabs; statements + queries.
+Audit: landing/get-started; branch audit log; flagged-event review; compensation/finance audit; permissioned masked export.
+Super Administrator: landing/get-started; billing settings; plans/prices/entitlements; promotions/free periods; preferred-personnel fee rules; merchant registration monitoring/list/detail/governance; M-Pesa payment + reconciliation exceptions; platform audit/reports. NO merchant-create screen.
+```
+
+## 28. Responsive Strategy
+- **Breakpoints:** `md: 768px`, `lg: 1025px`. Desktop: persistent side navigation + full data tables. Tablet: condensed navigation, responsive columns, deliberate labelled scroll only where unavoidable. Mobile: single-column; tables convert to cards; primary actions remain visible; financial confirmations remain readable.
+- **Critical mobile flows:** queue, payment, M-Pesa, personnel earnings, served clients, and SMS must be fully usable on mobile.
+- **Per-feature gate:** every feature phase tests desktop/tablet/mobile + a no-horizontal-scroll test; a release-wide responsive audit runs at Phase 23.
+
+## 29. Dark-Mode Strategy
+Class-based dark mode with pre-paint flash prevention; every component and screen ships dark tokens and is verified in both themes. Each feature phase includes dark-mode verification; the Phase 23 audit covers all launch screens.
+
+## 30. Accessibility Strategy
+Every feature phase includes keyboard navigation, focus management, screen-reader semantics, contrast validation, accessible error messages, loading/empty states, automated axe checks, and manual checks for critical workflows. A whole-product accessibility audit runs at Phase 23 after all launch screens exist. Targets: WCAG 2.1 AA.
+
+## 31. Forms and Validation Strategy
+- Client-side validation via `useForm<T>` is UX only; the backend Form Request is authoritative.
+- Server 422 field errors merge into the form; duplicate submits are prevented; destructive actions require typed confirmation; financial confirmations show amounts in readable minor-unit-formatted currency.
+- No HTML `<form>` posts that bypass the SPA contract; all mutations go through the typed API client.
+
+---
+
+# Feature Domains (§32–§78)
+
+Each domain references its owning phase (Section 80), state machine (Section 25), permission keys (Section 19), schema (Section 13), and screens (Section 27). Domain-specific rules below are binding and supplement those artifacts. Authoritative product behavior is `SERVANA COMBINED.txt`.
+
+## 32. Merchant Self-Registration and Onboarding (Phase 6 as-built; verify)
+Self-registration is the **only** merchant-creation path (`POST /api/v1/merchant-registration/self-register`, public_mutation, uniform 202, no enumeration): creates user + merchant `pending_setup` + shell profile + `merchant_admin`/`active` membership + status-history row in one transaction, then emails a Magic Link. No Super-Admin/KYC route or screen exists (tested). First-time setup (`EnsureFirstTimeSetupAccess`: pending_setup + merchant_admin) sets plan/tier, profile, ≥1 branch, initial Branch+HR invited memberships, welcome emails, then flips merchant → `active`. Trial starts at this Merchant Admin creation (Section 22). Audit: registration, setup completion.
+
+## 33. Branch Management (Phase 7 as-built; verify)
+Admin-only branch create/update/archive; merchant-scoped list/show; weekly operating hours; calendar exceptions; day open/pause/close/reopen (Section 25); `BranchClosureGuard` blockers (unclosed day, cash-up discrepancy now; queue/session/invoice/payment/receipt/appointment guards flipped on by Phases 16–18; branch-fee debt by 20). Service catalogue ownership is **Branch Manager** (Section 39). Audit: branch lifecycle, day open/close/reopen.
+
+## 34. Staff, HR, Invitations, and Lifecycle (Phase 7 as-built; verify)
+HR owns staff + invitations + lifecycle + role/branch assignment + eligibility/availability + compensation setup. Invitations: SHA-256-hashed 72h token, create/resend/revoke, atomic public accept (user + active membership + staff_profile + active branch assignment + append-only history). Lifecycle service: activate/suspend/deactivate/assignBranch/revoke — suspend/deactivate revokes sessions + unused Magic Links + pending invitations; sole-active-admin orphan guard; branch-assignment-required-to-activate. Authority: Merchant Admin invites Branch Manager/HR; HR invites operational roles within its own branch. Audit: invitation + lifecycle events.
+
+## 35. Client Records (Phase 15A)
+Branch-scoped client create/search/update by Front Office (`client.*`). Contact stored encrypted, displayed masked; `phone_last_four` for display. SMS consent recorded (`client_consents`). No client self-service portal at launch. Audit: client create/update.
+
+## 36. Appointments (Phase 16A)
+Front Office owns appointments (Section 25 Appointment machine). Eligibility + availability + branch-open revalidated on assign/transfer. Transfer is Front Office only (not Branch Manager). Audit: create/reschedule/cancel/transfer/no_show.
+
+## 37. Walk-Ins and Queues (Phase 16B)
+Walk-ins convert to queue entries; queue assignment/transfer/reorder by Front Office; Personnel cannot access another personnel member's entries. Queue wait-time metric defined in Section 69. Audit: queue create/assign/transfer/cancel.
+
+## 38. Service Sessions (Phase 16C)
+Personnel must be eligible for every service item and assigned to the branch; duplicate-active-session protection (partial-unique). Session completion may create a non-payable commission **preview** only (earning happens at validated payment). Audit: session start/complete/cancel.
+
+## 39. Services, Pricing, and Personnel Eligibility (Phase 15A)
+**Branch Manager** owns the service catalogue (`service.create/update/archive`). Each service has price (minor units), duration, category, and an effective **preferred-personnel fee** (Section 41/59 treatment). Eligibility (`service_personnel_eligibility`) gates which personnel may perform a service. **Preferred-personnel-fee rules are launch-active Super-Administrator configuration** in `preferred_personnel_fee_rules` (§13.10, owned by Phase 20A; `platform.preferred_personnel_fee.manage`, MFA + step-up) supporting both `fixed_amount` and `percentage` (basis points, round-half-up; ADR-005), with platform-default or per-service scope, effective dating with no overlap, and immutable active terms (supersede to change). Branch users may view the applicable rule (`preferred_personnel_fee.view_branch_rule`) but cannot edit it. The effective fee is **snapshotted onto the invoice at finalization** (Phase 17); existing invoices are never recalculated when a rule changes. The legacy fixed `services.preferred_personnel_fee_minor` is migrated to rules via expand-and-contract and retained read-only until contract. Audit: service create/update/archive, eligibility changes, fee-rule create/supersede.
+
+## 40. Invoices (Phase 17)
+Front Office creates merchant-client invoices (`invoice.create`); Finance voids/adjusts. Numbers allocated at finalization from a gap-free per-merchant **`invoice_number_sequences`** counter (row-locked, never reused; §13.15); finalization snapshots prices, the resolved preferred-personnel fee, taxes/discounts, and percentage-platform-fee config (Section 25 Invoice machine). Balance is based on **validated** payments only. Voiding a paid invoice creates adjustments; never deletes ledger rows. Mutations in a locked period → 423. Audit: create/finalize/void/adjust.
+
+## 41. Merchant-Client Payments (Phase 18A) — Correction 18
+Methods: `cash`, `mpesa_offline`, `bank_transfer`, `card_terminal`, `voucher`, `split_payment`, `other`. Every recording opens a durable **`payment_recording_groups`** row (§13.15): a single-method payment is a group of one; a `split_payment`/multi-method payment is one group with multiple component `payment_records` (`payment_records.payment_recording_group_id`). Front Office records (maker) against an issued/partially-paid invoice in the same branch; backend verifies group currency consistency, group total = sum(components), balance, branch, merchant, billing-mutation allowance, and period openness; each component amount positive; **overpayment rejected by default** (overpayment credit applies only to merchant→Servana billing). Method-specific references: cash optional (no duplicate check); offline M-Pesa required, normalized uppercase, format-validated, merchant/branch duplicate detection; bank transfer required; card terminal terminal/auth code per setup; voucher validated where a voucher module exists else external evidence; other requires merchant-defined label + evidence. Duplicate-reference detection is recorded durably in **`payment_reference_checks`** (§13.15) with result `unique`/`duplicate_suspected`/`override_approved`; a `duplicate_suspected` result raises a critical warning and only Finance with `customer_payment.duplicate_override` may proceed (reason + step-up for high-risk); the original reference is never silently edited. Records created `pending_validation`; Finance notified; audit (maker, group, amounts, methods, masked references, balance before/after). Partial/split: invoice balance uses validated payments only; concurrent pending may not collectively exceed balance (invoice row lock + pending-total check); commission allocated proportionally to eligible items by validated allocation per component. Idempotency required and keyed on the recording group (Section 24.4). Tests: each method's reference behavior, `payment_reference_checks` duplicate+override, group total = sum(components), single-currency enforcement, partial, split/multi-method, concurrent recording, maker-cannot-self-validate, locked-period denial, cross-tenant/branch denial, billing read-only denial.
+
+## 42. Payment Validation (Phase 18B) — Correction 18.5
+Finance validates (checker) a **payment recording group** as a unit; cannot validate a group it recorded under an exception permission unless a separate checker exists or an approved small-team exception policy applies. Validation (atomic, locked over the invoice + all component rows): verify each component's reference/amount/method + group total + invoice/branch/evidence; create one immutable `payment_validation_event` for the group; set components validated; increase invoice validated-paid; update invoice status; auto-issue one receipt covering all validated components; create earned commission entries allocated by component; emit audit + notifications. A failure in receipt/commission creation rolls back the whole group validation unless an outbox design guarantees completion — the invoice never says paid while side effects are silently missing. Audit: validate/reject/correction_required (group-level). Step-up where designated.
+
+## 43. Receipts (Phase 18B)
+Issued automatically once per validated **payment recording group**, containing all validated component methods/amounts (Plan A-12); numbers come from a gap-free per-merchant **`receipt_number_sequences`** counter (row-locked; §13.15); reissue (`receipt_reissues` is modelled as a new `receipts` row referencing the original via `reissue_of_receipt_id`, §13.16) creates a new tracking row; receipts are never generated before validation. Receipt PDFs are files (Section 65). Audit: issue/reissue.
+
+## 44. Refunds and Disputes (Phase 18B) — Correction 18.8
+Servana records external refunds; it does not move merchant-client funds at launch. Finance creates a refund request against validated-payment allocation, **allocated by component** of the original payment recording group; verify period-lock policy + approval; store amount/method/external reference/reason/evidence/approval; finalization reduces recognized paid balance via adjustment/reversal entries only; create proportional commission reversal per affected component; preserve original payment/receipt/commission rows. Disputes: open → under_review → resolved/rejected. Step-up on finalize. Audit: refund request/approve/finalize/reject; dispute lifecycle.
+
+## 45. Cash-Up and Reconciliation (Phase 18B)
+Branch Manager submits cash-up (`branch.cash_up.submit`); Finance approves/rejects/requests correction (maker≠checker). Lines per method with expected/counted/variance. Approval locks with period/day controls. Daily branch day-close and cash-up PDFs (Section 69, Phase 21N). Audit: submit/approve/reject/correction.
+
+## 46. Financial Period Locks (Phase 18B)
+Finance owns period locks (`period_lock.create/reopen`); Merchant Admin only approves exceptional reopen where policy requires (`merchant.period_reopen.approve_exception`). Mutations affecting a locked period return 423. Reopen requires reason + audit + (step-up). Audit: lock/reopen.
+
+## 47. Plan Catalogue and Entitlements (Phase 20A)
+Super Admin manages plans (non-price metadata), prices (`subscription_plan_prices` — sole price source, effective-dated, no overlap; ADR-011), and entitlements (`plan_entitlements`). Every price carries a `billing_interval` from the five canonical billing periods — `weekly`, `bi_weekly`, `monthly`, `quarterly`, `annual` — used consistently across PHP enums, PostgreSQL CHECKs, price/subscription tables, billing settings, API contracts, frontend TypeScript types, Super Admin and merchant plan-selection screens, invoice-generation schedules, renewal-date calculation, reminder schedules, reports, and tests. `platform_billing_settings` holds billing mode + trial/grace defaults + currency (versioned, single active via effective dates). Merchants get pricing visibility read models. No invoices or M-Pesa in this phase. Canonical billing modes only (Section 2.1.9). Audit: settings/plan/price/entitlement changes (platform_mutation, MFA + step-up).
+
+## 48. Subscription Lifecycle (Phase 20B)
+`merchant_subscriptions` with billing-status machine (Section 25); trial starts at Merchant Admin creation with snapshotted days; read-only grace + suspension transitions; no-proration next-cycle plan changes via `scheduled_plan_changes`; shared overdue escalation events; recovery allowlist middleware. Price (and its `billing_interval`) captured at issuance. Audit: subscription lifecycle, plan-change scheduled/applied.
+
+## 49. Subscription Invoices (Phase 20B)
+`subscription_invoices` (+ items) with the subscription-invoice machine; invoice number per merchant; exact `account_reference` for M-Pesa; issued invoices immutable; balance from confirmed payments. Discounts/free periods snapshot at issuance and never mutate issued invoices. Invoice finalization (number/percentage-fee rollup) is a financial_mutation (idempotent). Billing-invoice PDFs are files (Section 65). Audit: issue/overdue/paid.
+- **Interval date math (deterministic, `Africa/Nairobi`):** the next period and due/renewal dates are computed per `billing_interval`: `weekly` = +7 days; `bi_weekly` = +14 days; `monthly` = +1 calendar month with **end-of-month clamping** (e.g., Jan 31 → Feb 28/29); `quarterly` = +3 calendar months with the same clamp; `annual` = +1 calendar year with **leap-year clamping** (Feb 29 → Feb 28 in non-leap years). Anchor day is the subscription's billing anchor (issuance day-of-month), preserved across months and clamped to the shortest month. Reminder schedules and overdue/grace timers derive from these computed boundaries. Tests cover each interval plus the Jan-31, Feb-29, and year-boundary edge cases.
+
+## 50. Fixed Billing Mode (Phase 20A/20B)
+`billing_mode = fixed_amount`: subscription invoice is the flat plan price; **no** percentage-fee ledger entries created (tested). Default launch mode unless configured otherwise.
+
+## 51. Percentage Billing Mode (Phase 20E)
+`billing_mode = percentage_on_merchant_client_invoice`: the percentage platform-fee engine computes fees from validated merchant-client invoice amounts into `platform_fee_ledger_entries`, aggregated into subscription-invoice lines. Built and launch-capable; **activated only when configured**. Tier behavior: customer-centric/shared/business-centric. Adjustments/disputes supported. Integer arithmetic + round-half-up + largest-remainder residual (ADR-005).
+
+## 52. Fixed-Plus-Percentage Billing Mode (Phase 20E)
+`billing_mode = fixed_amount_plus_percentage_on_merchant_client_invoice`: flat plan price + percentage component; percentage tiers apply only when the percentage component is active (tested). Snapshots fee configuration at invoice finalization.
+
+## 53. Promotions and Free-Period Offers (Phase 20C)
+`promotional_discounts` + explicit `promotional_discount_targets`; `free_period_offers` + explicit `free_period_offer_targets` (normalized rows, no unvalidated JSON for targets). Both targeting models support `target_type` in `merchant` | `plan` | `billing_mode` (exactly one of `merchant_id`/`subscription_plan_id`/`billing_mode` set, matching `target_type`); global reach is expressed via the parent `target_scope = all_new_merchants`. **Stacking/priority/conflict resolution:** at most one discount and one free-period offer apply per subscription issuance; when multiple eligible targets match, precedence is `merchant` > `plan` > `billing_mode` > global, ties broken by latest `effective_from` then target ULID; the selected discount and free-period days are snapshotted onto the subscription/invoice and never recomputed afterward. Snapshot application to subscription/invoice; approval + audit workflows; tests prove (a) billing_mode-targeted offers resolve correctly, (b) precedence/tie-breaking is deterministic, and (c) discounts/free periods do not mutate issued invoices or existing trial snapshots. Platform-governed (`platform.promotion.manage`, `platform.free_period_offer.manage`, MFA + step-up).
+
+## 54. Shared Overdue Escalation (Phase 20B)
+A single shared escalation pathway drives `active → overdue → suspended_billing` per configured grace, regardless of billing mode; each step is recorded durably in **`billing_escalation_events`** (§13.15; `reminder`/`grace_entered`/`overdue`/`suspended_billing`/`recovered`) and applied to `merchants.billing_status` via the projection service (§22), emitting escalation + suspension events. Scheduler-driven (Section 67); idempotent per `(merchant_subscription_id, event_type, period boundary)`; feeds Super-Admin overdue-escalation reporting (§69). Alerts on scheduler failure (Section 71).
+
+## 55. M-Pesa Provider Architecture (Phase 20D) — Corrections 14, 15
+Components (bounded-domain): `MpesaClientInterface`, `DarajaMpesaClient`, `InitiateSubscriptionStkPush`, `ReceiveMpesaStkCallback`, `ReceiveMpesaC2bValidation`, `ReceiveMpesaC2bConfirmation`, `ReconcileSubscriptionPayment`, `ApplySubscriptionPayment`, `CreateMerchantBillingCredit`, `RecoverBillingSuspendedMerchant`, `QueryStaleMpesaTransaction`, `ResolveMpesaReconciliationException`. Provider payload DTOs are separate from domain models; controllers parse/validate and hand off to actions; controllers contain no settlement logic. Credentials in a secrets manager; OAuth token cached; separate sandbox/staging/production URLs + credentials. **No manual Super-Admin payment-recording path.** Callback security uses only provider-supported controls (TLS, separate URLs, strict POST/content-type, small body limit, exact JSON schema, payload hash + encrypted store, correlation to an initiated request, unique checkout/merchant request IDs + receipt uniqueness, amount/account/timestamp/relationship validation, treat callback as evidence requiring reconciliation, transaction-status verification for suspicious callbacks, IP allowlist only if Safaricom supplies stable ranges, mTLS/signature only if explicitly supported, endpoint/anomaly rate limiting without blocking legitimate retries, fast ack + async settlement, full redaction). No invented HMAC/signature is claimed (ADR-006).
+
+## 56. STK Push (Phase 20D) — Correction 14.4
+### 56.1 M-Pesa API Endpoint Contracts (Correction 4)
+Canonical endpoints (authoritative inventory in the OpenAPI contract). Each lists classification + controls. These contracts cover the whole M-Pesa domain (§55–§58).
+
+```text
+POST /api/v1/billing/subscription-invoices/{invoice}/mpesa/stk     route: billing.mpesa.stk_initiate
+  class financial_mutation | auth Sanctum | tenant yes | branch optional(snapshot) | permission merchant.subscription.pay | merchant.subscription.pay_from_branch | merchant.subscription.pay_simple
+  mfa role-mandatory where applicable | step_up no (initiation) | rate limit per-merchant+per-invoice strict | idempotency REQUIRED (Idempotency-Key; attempt keyed)
+  request { phone_msisdn } | response { attempt_ulid, status:'stk_push_sent'|'initiated' } (NEVER success-from-initiation) | errors 409 request_in_progress(lock), 422 invalid_msisdn, 423 financial_period_locked(n/a), 403 merchant_suspended/no access
+  audit mpesa.stk_initiated (info) | txn: row-lock invoice + subscription_invoice_payment_locks; persist attempt before provider call | queue: provider call may be sync with async settlement | tests STK success/lock-conflict/invalid-phone/foreign-invoice/suspended
+
+GET  /api/v1/billing/payment-attempts/{attempt}                    route: billing.payment_attempt_show
+  class authenticated read | auth Sanctum | tenant yes | permission merchant.billing_attempts.view_detailed (Merchant Admin) | subscription.payment_attempts.view (Finance) | own initiator
+  response { attempt_ulid, status, amount_minor, currency, masked_phone, provider_channel, created_at, applied_invoice_ulid? } | no full MSISDN | errors 404 foreign-tenant | audit none (read) | tests polling states; Front Office cannot view sensitive fields
+
+GET  /api/v1/billing/subscription-invoices/{invoice}/payment-instructions   route: billing.payment_instructions
+  class authenticated read | auth Sanctum | tenant yes | permission any billing-pay permission | response { paybill_or_till, account_reference(exact), amount_minor, currency } | errors 404 foreign-tenant | tests reference correctness
+
+POST /api/v1/integrations/mpesa/stk/callback                       route: integrations.mpesa.stk_callback
+  class provider_webhook_mutation | auth NONE(provider contract) | provider verification: correlation to checkout/merchant request id + payload hash + receipt uniqueness | tenant n/a(resolved via attempt) | permission none
+  rate limit endpoint/anomaly (no legitimate-retry blocking) | idempotency provider-dedup (mpesa_callback_inbox unique correlation) | request Daraja STK result body | response 200 fast ack
+  audit mpesa.callback_received (info/high on mismatch) | txn persist raw(encrypted) → ack → async ApplySubscriptionPayment/Reconcile | tests duplicate/out-of-order/late/wrong-account/replay
+
+POST /api/v1/integrations/mpesa/c2b/validation                     route: integrations.mpesa.c2b_validation
+  class provider_webhook_mutation | auth NONE | provider verification network/account-reference validation | idempotency inbox dedup | request Daraja C2B validation body
+  response provider-required ResultCode/ResultDesc | audit mpesa.c2b_validation (info) | tests valid/invalid account reference
+
+POST /api/v1/integrations/mpesa/c2b/confirmation                   route: integrations.mpesa.c2b_confirmation
+  class provider_webhook_mutation | auth NONE | provider verification receipt uniqueness + account-reference + amount | idempotency inbox dedup
+  request Daraja C2B confirmation body | response 200 fast ack | audit mpesa.c2b_confirmation (info) | txn persist → ack → async reconcile/apply | tests exact-match auto-apply; ambiguous→exception
+
+GET  /api/v1/platform/mpesa/reconciliation-events                  route: platform.mpesa.reconciliation_index
+  class platform read | auth Sanctum | platform staff | permission platform.mpesa_exception.view | mfa mandatory | response paginated reconciliation events (masked) | errors 403 non-platform | tests platform-only
+
+POST /api/v1/platform/mpesa/reconciliation-events/{event}/resolve  route: platform.mpesa.reconciliation_resolve
+  class financial_mutation(platform) | auth Sanctum | platform staff | permission platform.mpesa_exception.resolve | mfa mandatory | step_up REQUIRED | idempotency REQUIRED
+  request { resolution:'link_to_invoice'|'dismiss', subscription_invoice_ulid?, note } | response { event_ulid, resolution_status } | errors 409 idempotency, 422 invalid-link, 423 n/a
+  audit mpesa.reconciliation_resolved (high/critical) | txn row-lock event + target invoice; link confirmed payment (NOT manual recording); before/after audit | tests link-by-reconciliation; no manual record path; maker/checker on high-risk
+```
+
+
+Eligible Merchant Admin/Branch Manager/Finance/Front Office opens the subscription invoice; backend authorizes role/permission/merchant/branch/recovery access/payable state/balance; acquire invoice row lock + `subscription_invoice_payment_locks`; validate normalized Kenyan MSISDN; create user-specific `subscription_payment_attempt` (`initiated`, idempotency key); create provider request with server-held credentials (never exposed to SPA); persist provider IDs, set `stk_push_sent`; return a public-safe attempt ULID + polling status (never success from initiation). Never issue a second STK while an unexpired payment lock exists. Frontend states: initiating, prompt-sent/polling, success, cancelled, timeout, failed, retry/support.
+
+## 57. PayBill/Till Callback Reconciliation (Phase 20D) — Correction 14.5
+Display official PayBill/Till instructions + exact invoice account reference; receive C2B validation/confirmation events where supported; persist callback inbox row; match on receipt number + exact account reference + amount + merchant invoice number + phone (if available) + timestamp. Exact safe match → validate + apply automatically. Ambiguous/missing-reference/duplicate/underpayment-conflict/suspicious → reconciliation exception. Super Admin resolves an exception by linking an already-confirmed provider payment to the correct invoice (reconciliation, **not** offline manual recording); resolution requires reason + MFA step-up + before/after audit + maker/checker for high-risk adjustments/refunds.
+
+## 58. M-Pesa Transaction Reconciliation and Recovery (Phase 20D) — Correction 14.6–14.9
+Apply confirmed amount under invoice row lock: <balance → partially_paid; =balance → paid; >balance → pay + create billing credit. Reactivate **only** billing-only suspension. STK attempts expire after a configurable period (timeout ≠ proof no funds moved); query provider transaction-status API for stale attempts where supported; scheduled reconciliation retries use exponential backoff + dead-letter/exception queue; provider downtime leaves the invoice payable with a transparent retry/support state. Role-specific exposure: Merchant Admin (plan/invoice/payment/recovery), Branch Manager (branch-context invoice/payment action), Finance (detailed attempts, masked phone, receipts, balance, reconciliation status), Front Office (simple amount due + progress), HR/Personnel/Audit (no default initiation), Super Admin (exceptions + provider ops; no normal "record payment"). Tests: STK success; cancellation; timeout-then-late-callback; duplicate callback; same receipt against two invoices; concurrent initiations; partial payment; overpayment credit; wrong account reference; foreign-merchant invoice; paid invoice late callback; billing-only recovery; fraud/manual suspension stays blocked; provider outage + retry; payload redaction; Front Office cannot view sensitive attempts.
+
+## 59. Compensation-Plan Management (Phase 20F) — Correction 19
+`compensation_model` is separate from employment type: `commission_only` (commission rule required, salary null, no salary ledger), `salary_only` (salary fields required, commission rule null, no commission ledger), `salary_plus_commission` (both required, both ledgers). Compensation configuration never grants login/role/branch/availability/eligibility. Effective-dated plans: one active plan per staff profile, branch, and date (date-range exclusion constraint); active monetary terms immutable (supersede with a new `effective_from` version); mid-period changes split salary by effective dates; commission uses the rule active on the configured business event date (service/invoice date recommended unless configured otherwise); backdated changes require approval + reason + impact preview + critical-severity audit. HR sets up and submits; HR approves per `compensation.plan.approve` where the scope assigns approval to HR (and Merchant Admin/Finance where policy requires). Preferred-personnel-fee treatment per `applies_to_preferred_personnel_fee`. Audit: plan create/submit/approve/reject/supersede; backdated change (critical).
+
+## 60. Salary Processing (Phase 20G) — Correction 19.5
+Scheduler creates accruals per pay period (`salary_ledger`) in `Africa/Nairobi`; daily/hourly/per-shift salary requires approved source attendance/shift data (no inferred hours); monthly/weekly salary prorated across effective-date segments using a documented day-count convention; **suspension behavior defaults to `suspension_salary_policy = continue`** (Plan A-11), with an optional **prospective** merchant override to `pause` that takes effect from its effective timestamp and **never retroactively rewrites accrued salary**; on resumption, accrual restarts from the resumption date; termination ends accrual on the termination date while preserving unpaid earned commission; every scheduler run idempotent via unique (plan, staff, pay-period segment, entry_type). Override change requires HR permission + approval and is audited; personnel see the policy in their compensation terms. Liability reports (Section 69).
+
+## 61. Commission Processing (Phase 20G) — Correction 19.4
+Service-session completion may create a non-payable `pending_preview` only; invoice finalization snapshots personnel/service/rule identity/basis; payment recording does **not** earn commission; **Finance validation** allocates validated amount to invoice items; for each eligible item, resolve the plan/rule effective on the configured date; compute with integer arithmetic (percentage `round_half_up(basis_minor * basis_points / 10000)`; residual minor units across items via largest-remainder, ties by ascending invoice-item ULID; fixed minor capped where required) per ADR-005; create exactly one idempotent earned ledger entry per validation allocation; refund/void/payment reversal creates a negative reversal entry that is the **exact negative of the original stored amount** (never recomputed) referencing the original; already-paid commission reversals become a negative adjustment in a future payout (paid history never rewritten). Salary-only plans never generate commission rows (tested). Audit: earned/reversal/adjustment.
+
+## 62. Payout Runs (Phase 20H) — Correction 19.6–19.7
+Ownership: HR creates/edits/submits draft; Finance verifies; **Finance approves ordinary** runs; **Merchant Admin approves high-value** runs after Finance verification; Finance marks paid after external payment. Servana does not move payout money at launch. High-value threshold comes from merchant compensation settings, is snapshotted onto the run, and is not hardcoded. At creation, snapshot eligible unpaid ledger entries into payout items (salary/commission/approved adjustments/gross + source refs); the run freezes on submit (corrections via rejection→new draft or an adjustment run, never silent line edits). Mark-paid requires approved status + external reference + paid date + Finance actor + fresh step-up + idempotency + row lock + ledger-status update + personnel notification/statement availability. Audit: create/submit/verify/approve/reject/mark-paid (mark-paid critical).
+
+## 63. Earnings Statements and Queries (Phase 20H) — Correction 19.8–19.9
+Personnel own-scope: overview; commission tab only for models with commission; salary tab only for models with salary; compensation terms; payout history; downloadable period statement (PDF file, Section 65); earnings query. `staff_profile_id` derived from membership; arbitrary staff IDs rejected. Earnings queries: personnel creates against own ledger/payout item; type validated; Finance/HR assignment by type; resolution never mutates ledger silently (monetary correction = adjustment entry); personnel sees status + resolution note; all events audited.
+
+## 64. Personnel Bulk SMS (Phase 21S) — Correction 20
+Controlled messaging to **personally served clients only**; permanently no contact export (ADR-010). Compose/send: personnel opens served-clients view (own served clients only, paginated, masked contact); select recipients (configurable max batch); compose within configurable char/segment limit; backend revalidates every recipient at preview (returns recipient count, excluded count/reasons, estimated segments, estimated KES cost, billing notice); personnel confirms explicitly; backend revalidates entitlement/billing status/own-scope/consent/cost; create campaign/recipient snapshots transactionally; queue delivery; record provider result + cost; roll up billable SMS charge to Servana billing; show final status without a downloadable phone list. Contact-protection controls: no CSV/XLSX/PDF/clipboard/print/API export of contacts; no endpoint returns bulk full phone numbers; rate-limit search + sends; detect enumeration patterns; escape/validate search input; no phone numbers in logs/analytics/URLs/frontend persistence; guessed export-shaped routes → 404 + high-severity audit. Provider adapter interface; redact provider payloads; retry transient (capped backoff), not permanent invalid/opt-out failures; dedupe by campaign-recipient key; idempotent delivery receipts. Tests per Correction 20.8 (prove personnel cannot view/message others' clients, cannot message a client with no completed own session, cannot export contacts, billing/entitlement gates, cost-preview accuracy, duplicate-confirmation single send, opt-out suppression, cross-tenant/branch denial, no full-phone exposure).
+
+## 65. Files and Media (Phase 10F) — Correction 13
+Owning phase before any feature that stores/exports files. `uploaded_files` + `file_scan_events` (Section 13.13). Pipeline: authorize purpose before bytes; per-purpose size/extension allowlists; stream to private quarantine; compute SHA-256 while streaming; inspect magic-byte/server-detected MIME (never trust browser MIME/filename); reject archives unless a feature requires them; reject executables/scripts/active-SVG/macro-office/polyglot unless an approved sanitizer exists; create `uploaded_files` `pending/quarantined`; dispatch tenant-aware ClamAV scan; on clean → move to private final prefix + mark available; on infected/failed → block download, quarantine/delete per policy, notify security ops; generate images via safe server-side processing stripping metadata; never expose storage paths (downloads via an authorized endpoint issuing a short-lived signed URL or streaming). Download authorization: authenticated (except public brand assets) + tenant ownership + branch scope + resource permission + file purpose + available status + billing read-only policy (existing downloads allowed; new export/report generation blocked during read-only grace/suspension) + personnel own-scope for statements/personnel files. Jobs (idempotent, tenant-aware): `ScanUploadedFile`, `FinalizeCleanFile`, `ExpireSignedExport`, `DeleteExpiredQuarantineFile`, `VerifyOrphanedFileRecords`. Tests: MIME spoofing, double extension, oversize, malware EICAR, cross-tenant/branch download, personnel-other-statement, signed-URL expiry, export download count, read-only blocks new export but allows existing download, log redaction.
+
+## 66. Notifications (Phase 21N)
+`notifications` (mail/database channels); branded templates; no secrets/PII beyond masked data in payloads; recipient authorization (e.g., daily branch reports email only authorized Merchant Admin). Notification + file audit events on report delivery. Used by: invitations, welcome, payment validation, payout mark-paid, billing escalation, M-Pesa outcomes, reconciliation exceptions, earnings-query updates.
+
+## 67. Queues and Scheduled Tasks (Phase 21N)
+Queue classes (separate workers): `critical-billing`, `notifications`, `reports-exports`, `file-scanning`, `default`. All jobs are tenant-aware (`TenantAwareJob`) and idempotent. Scheduler (singleton/leader) runs: trial/grace/suspension transitions; shared overdue escalation; salary accrual; M-Pesa reconciliation retries + stale-attempt status queries; daily branch day-close + cash-up report generation/email; signed-export expiry; quarantine cleanup; orphan-file verification; idempotency prune; audit-chain verification. Critical-billing/recovery job lag target ≤30s (Section 71). Failures route to dead-letter/exception queues with alerts.
+
+## 68. Search (Phase 22)
+Tenant/branch-scoped search (e.g., Meilisearch) with permission-aware indexing; never index or return cross-tenant data; never cache an unscoped result and filter in the frontend; served-client search is own-scope, masked, and rate-limited (Section 64). Sort/filter fields allowlisted.
+
+## 69. Reporting Catalogue (Phase 21N + owning phases) — Correction 21
+Create `docs/reporting/report-catalogue.md`; every report defines: key; business definition; roles + permission; merchant/branch/own scope; source tables/events; metric formula; timezone + date boundary (`Africa/Nairobi`); currency behavior; freshness target; filters + sorting; row-level masking; export availability; retention; scheduled delivery; acceptance tests. Launch reports by role per Correction 21.2 (Merchant Admin revenue/branch revenue/service revenue/staff performance/subscription+billing/compensation liabilities/daily day-close PDF/daily cash-up PDF; Branch Manager operational dashboard/queue delays/appointments-walk-ins-sessions/service performance/day-close+cash-up; Finance pending validations/payment-method breakdown/outstanding invoices/refunds-disputes/cash-up discrepancies/locked periods/salary-commission liabilities/payout runs/subscription attempts; HR staff status/availability+missing eligibility/missing compensation/compensation changes/config summary; Personnel own performance + earnings; Super Admin registrations+suspicious patterns/plan adoption/trial-grace-suspension funnel/subscription revenue/percentage-fee liabilities/M-Pesa success-failure-exceptions/overdue escalation; Audit branch events/flagged/compensation/finance/export events). Metric definitions are precise (revenue = validated payments allocated in period, not issuance; outstanding = total − validated − finalized adjustments; commission liability = earned-unpaid balance; queue wait = service-start/call minus queue-entry with documented exclusions; staff performance counts completed sessions + validated revenue, excluding transferred/cancelled). Architecture: operational cards query indexed tables/read models; heavy aggregations use materialized views/read models refreshed by jobs/events; cached report keys include merchant+branch+role/masking+filters+date range; invalidation follows domain events; never cache unscoped + filter client-side. Scheduled PDFs/email: `GenerateBranchDayCloseReport`, `GenerateBranchCashUpReport`, `EmailDailyBranchReportsToMerchantAdmin` (after day close/cutoff; tenant/branch-scoped PDFs in private storage; email only authorized Merchant Admin; idempotent `(branch_id, business_date, report_type)`; notification+file audit; no new report generation during billing read-only while existing reports remain downloadable). Tests: formula correctness with partial/split/refund; isolation; date boundary; PDF idempotency; recipient authorization; read-only behavior; large-dataset performance; masking.
+
+## 70. Audit Logging and Chain Verification (Phase R2 core; Phase 19 full)
+`audit_logs` append-only, hash-chained, DB trigger blocks UPDATE/DELETE; `AuditRecorder`/`DatabaseAuditRecorder`. R2 adds auth/invitation/membership/role/permission-override/branch-lifecycle/staff-lifecycle events + the hash-chain **verifier** command + masked read API + branch/platform policies. Phase 19 completes coverage across all financial/billing/compensation/M-Pesa/SMS/file/export events and the flagged-event workflow (`audit_flagged_events`). Audit reads are branch-scoped and field-masked per permission; Audit role can update only flagged-event review metadata. Every transition action emits a typed event with severity (info/warning/high/critical). Alerts on chain-verification failure (Section 71).
+
+## 71. Observability (Phase 25 baseline; per-phase metrics) — Correction 24.5–24.6
+Structured JSON logs with correlation ID, route name, environment, service, and safe actor/tenant identifiers, with the Section 24.5 redaction list enforced. Centralized logs with access control + retention. Distributed tracing across API/queue/provider for critical flows. Metrics for billing lifecycle, payment attempts, reconciliations, queue state, report generation, and audit events. Sentry (or equivalent) for exceptions with PII scrubbing. Alerts (each with severity, owner, runbook link, escalation): availability probe failure; readiness dependency failure; HTTP 5xx >2% over 5 min (critical financial endpoints >1%); p95 latency over target for 10 min; queue lag over threshold; failed jobs above baseline or any repeated critical-billing job failure; DB connection saturation/replication lag/disk pressure/long locks/backup failure; Redis memory pressure/evictions; object-storage errors; M-Pesa initiation-failure spike, callback-mismatch spike, reconciliation backlog, unapplied confirmed payments; trial/grace/suspension scheduler failures; audit-chain verification failure; certificate/secret expiry; dependency vulnerability alerts.
+
+## 72. Performance and Scalability — Correction 24.2
+Initial service objectives (replaceable only by a stricter signed infra ADR): monthly availability 99.9% (excluding announced maintenance); API p95 read ≤500 ms (indexed); API p95 write ≤800 ms (excluding external-provider completion); M-Pesa initiation API response ≤2 s (excluding handset prompt); webhook acknowledgement within the provider window, internal target ≤2 s; queue lag p95 ≤60 s; critical billing/recovery job lag ≤30 s; RPO ≤15 min; RTO ≤2 h. External provider delays are measured separately and never hidden inside application latency. Performance tests run on large datasets for reports and list endpoints; indexes back every filter/sort; N+1 queries are prohibited and tested.
+
+## 73. Threat Model — Section 9 applied
+For every sensitive workflow the owning phase documents and tests the attacker model from Section 9.1. The cross-cutting threats explicitly covered: cross-tenant/branch data access; over-privileged staff; suspended-user session reuse; compromised email account replaying Magic Links; replayed/duplicated financial requests and M-Pesa callbacks; concurrent financial writes; personnel contact extraction; file-upload abuse (MIME spoof, malware, polyglot); SSRF on provider/URL fetches; secret leakage in logs/exports; audit tampering. Each has a documented control and a security-regression test.
+
+## 74. Privacy, Masking, Retention, and Deletion
+PII (phone, email, references) stored encrypted where display masking is required; masked at read time per permission; never logged in plaintext (Section 24.5). Retention: financial/audit retention ≥ legal/financial policy (operational backup retention ≥35 days, Section 78); idempotency retention per Section 24.4; SMS recipient/phone data retained per policy then purged; finance/audit exports expire and are revocable. Deletion: merchant deactivation is soft lifecycle removal (history preserved); append-only ledgers/audit are never destructively deleted; quarantine and orphan files are cleaned by scheduled jobs. No personnel contact-export channel exists.
+
+## 75. Testing Strategy — Sections 6.4, 13.3, 19.5, 24
+Layers: unit (Money, value objects, calculators), domain-service/action, feature, API, request-validation, authentication, authorization, role/permission (parity + per-key positive/denial), tenant-isolation, branch-scope, personnel-own-scope, plan-entitlement, billing-status, operational-status, period-lock, idempotency, concurrency/locking (DB-level), duplicate-callback/replay, ledger-integrity, audit-chain, notification, queue-job, scheduler, file-upload-security, frontend component/store/composable, browser/e2e (Playwright + axe), responsive (3 breakpoints + no-horizontal-scroll), dark-mode, accessibility, security-regression, deployment-smoke, backup-restore. Coverage guards: `DataDictionaryCoverageTest`, `TenantColumnCoverageTest`, `RouteSecurityContractTest`, `FinancialRouteIdempotencyCoverageTest`, permission-matrix parity, OpenAPI/TS parity, traceability CI (Section 85). Tests run in clean containers against **PostgreSQL** + Redis, repeatedly/parallel where flakiness is a risk; isolated Redis/cache/rate-limit prefixes per test (R7). Cases include success/denied/invalid/duplicate/expired/suspended/cross-tenant/cross-branch/unauthorized/concurrent/retry/provider-failure/partial-failure/recovery. No test is skipped/weakened/deleted to pass without an approved documented reason; security/isolation is never weakened to pass a test.
+
+## 76. CI/CD — Correction 24.7
+PR pipeline: Pint → Larastan (level 8 + custom rules + source-scan) → ESLint/vue-tsc → Pest (PostgreSQL 16 + Redis 7 service containers, parallel) → Vitest → SPA build → Playwright + axe → dependency audits (`composer audit`, `npm audit`) → `gitleaks` → container build/scan → coverage/parity/traceability guards → remediation-gate check (Section 5.5). Deployment: immutable versioned images; DB migration job before app switch using expand-and-contract; health/readiness gate before load-balancer registration; queue-worker restart with graceful drain; Horizon/scheduler coordination; automatic smoke tests; application rollback only within schema compatibility; feature flags for high-risk billing integrations where staged activation is allowed (but launch-required functionality cannot remain permanently disabled). Security-sensitive PRs require a second reviewer.
+
+## 77. Production Infrastructure — Correction 24.3
+Topology: ≥2 stateless web/app replicas behind a load balancer; queue workers separated by class (critical-billing, notifications, reports-exports, file-scanning, default); singleton/leader scheduler; managed/HA PostgreSQL with automated backups + PITR + connection pooling; Redis with persistence/failover sized for sessions/queues/cache/locks; private S3-compatible storage with versioning + lifecycle; separate staging and production databases/buckets/Redis/provider credentials/webhook URLs; no production data copied to development without approved anonymization. Region/data-residency recorded in an infra ADR; network segmentation; TLS termination at the edge; secrets in a managed secrets store. PHP/Node/Composer versions aligned across all images (R7).
+
+## 78. Backup and Disaster Recovery — Correction 24.4, 24.8
+Continuous/PITR log retention supporting 15-minute RPO; daily full/base backup; ≥35-day operational retention (longer per financial/audit/legal policy); object-storage versioning + lifecycle; quarterly restore test into an isolated environment proving application boot, tenant counts, financial totals, audit-chain verification, and representative downloads, with restore duration recorded against RTO. Backups encrypted. Incident severities: SEV-1 (cross-tenant exposure, incorrect financial settlement, widespread outage, compromised credentials), SEV-2 (major role workflow unavailable, reconciliation backlog risking access recovery, scoped data corruption), SEV-3 (degraded noncritical feature). SEV-1 actions: immediate containment, evidence preservation, credential rotation where required, stakeholder notification, post-incident review. Financial/audit data is never repaired through ad hoc SQL without a reviewed script and before/after evidence.
+
+---
+
+## 79. Step-by-Step Remediation Roadmap (Phase V + R1–R7)
+
+Per-phase fields follow Section 7. One correction domain per PR; security-sensitive PRs require a second reviewer; each PR carries migration notes, rollback/forward-repair notes, tests, proof, and updated progress records. The pre-feature remediation gate (Section 5.4) must be fully satisfied before any feature phase in Section 80 begins; feature-delivery obligations (Section 5.4a) are gated by their own owning phase's exit, not its start.
+
+### Phase V — As-Built Verification (Correction 25)
+- **Objective:** establish a trustworthy baseline; do not rewrite features.
+- **Authoritative refs:** Correction 25; Section 4.
+- **Dependencies:** repository access. **Exclusions:** no feature/remediation code changes beyond evidence capture.
+- **Procedure:** record commit SHA/branch and confirm no uncommitted production changes; inspect `composer.json`/`composer.lock`/`package.json`/lock/Dockerfiles/compose/CI/env examples and derive actual framework/package versions from lock files and running containers; run migrations on a clean PostgreSQL DB, inspect status, export actual schema, and compare tables/constraints/indexes/triggers/tenant columns with this plan and the data dictionary (verify the audit immutability trigger + hash columns); export `route:list --json` and map every route to classification/middleware/policy/permission, proving forbidden Super-Admin merchant-creation routes do not exist and public/auth routes have correct enumeration posture; inspect tenant global scopes/escape hatches and search for `withoutGlobalScopes`, raw SQL, unscoped queries, direct `find`, mass assignment, status assignment, frontend secrets, and UI-only authorization; inspect queue jobs for tenant context and logging redaction; run all suites in clean containers against PostgreSQL/Redis (repeatedly/parallel; do not trust copied counts; verify skipped tests + reasons) plus Pint, Larastan, ESLint, TypeScript, Vitest, Playwright, axe, dependency audits, gitleaks, image build; verify session revocation after suspension, Magic-Link hashing/expiry/single-use, cross-tenant 404/cross-branch 403 posture, permission-override semantics, and audit rows for implemented events.
+- **Deliverables:** `docs/verification/as-built-discrepancies.md` (claim | reported source | actual evidence | status confirmed/partially_confirmed/contradicted/not_verifiable | impact | required correction); regenerated Section 4 + `PROGRESS.md` phase statuses linked to commits/tests, distinguishing `local_complete`/`ci_passed`/`merged`/`deployed_staging`/`deployed_production`; no "reviewed" without reviewer evidence; seed `docs/remediation/register.yaml`.
+- **Acceptance/Exit:** every claim in Section 4 has an evidence-based status; any contradicted/materially-partial claim is filed as a C0/C1 item; narrative progress files no longer serve as sole proof. **Blocks** all subsequent phases until complete.
+
+### Phase R1 — Dependency and Runtime Security (Correction 5; ADR-001)
+- **Objective:** remove the unsupported/vulnerable framework state.
+- **Work:** upgrade to Laravel 12.60+; verify the exact patched version from lock files; pin PHP 8.3 across local/CI/worker/scheduler/production images; remove the invalid advisory ignore (CVE-2026-48019 / GHSA-5vg9-5847-vvmq) after remediation; Composer/PHP/package compatibility review; DB + cache compatibility checks; upgrade notes; CR/LF email-input regression tests; full regression suite.
+- **Migration/rollout/rollback:** image rollback within schema compatibility; no schema change required beyond framework defaults (handle any via expand-and-contract).
+- **Tests/proof:** full baseline green in clean containers; `composer audit` shows zero unapproved advisories; CR/LF regression tests pass; dependency-audit evidence attached.
+- **Exit:** zero unapproved advisories; full baseline green.
+
+### Phase R2 — Core Audit Completeness (Corrections 6 gate, 22)
+- **Objective:** complete core audit events + chain verification + masked read.
+- **Work:** replace interim auth logging with `AuditRecorder`; add auth, invitation, membership, role, permission-override, branch-lifecycle, and staff-lifecycle events; add the audit hash-chain **verifier** command; add a masked read API + branch/platform policies.
+- **DB:** confirm `audit_logs` immutability trigger + hash columns; add `audit_flagged_events` seam if needed (full workflow in Phase 19).
+- **Tests/proof:** event-coverage tests + tamper-verification command pass; masked-read denial tests.
+- **Exit:** event coverage tests and tamper-verification pass.
+
+### Phase R3 — Privileged MFA and Step-Up (Correction 7)
+- **Objective:** real privileged MFA + step-up.
+- **DB:** `mfa_credentials` (encrypted secret), `mfa_recovery_codes` (hashed).
+- **Work:** TOTP enrollment/confirmation; mandatory MFA for Super Admin/Merchant Admin/Finance; step-up freshness for billing configuration, refund finalization, period reopen, payout approval, payout mark-paid, reconciliation resolution, and sensitive compensation changes; enforcement order per Section 9.4.
+- **Tests/proof:** privileged routes deny absent/stale MFA; recovery-code single-use; step-up required per designated action; secrets never logged.
+- **Exit:** privileged routes deny absent/stale MFA.
+
+### Phase R4 — Idempotency and Replay Protection (Correction 3)
+- **Objective:** correct idempotency store + middleware + coverage.
+- **DB:** corrected `idempotency_keys` schema (Section 13.5).
+- **Work:** idempotency middleware (Section 24.4); financial-route classification; provider-callback dedupe seams; concurrency + crash-recovery handling.
+- **Tests/proof:** same key+same request → one effect; same key+different request → 409; concurrent submissions → one effect; crashed-worker expired-lock recovery; replayed responses contain no secrets/unsafe headers; `FinancialRouteIdempotencyCoverageTest` passes.
+- **Exit:** duplicate and concurrent requests produce one effect.
+
+### Phase R5 — Tenant and Branch Schema Hardening (Correction 7)
+- **Objective:** structural tenant/branch isolation completeness.
+- **DB:** add `merchant_id` to branch-owned tables where missing; backfill from parent branch (expand-and-contract); add indexes/constraints.
+- **Work:** extend static analysis + source-scan rules; verify route-bound models cannot bypass tenant resolution (any directly-route-bound branch-owned table must carry `BelongsToMerchant`/`merchant_id` so its binding audits).
+- **Tests/proof:** cross-tenant and cross-branch suites pass; `TenantColumnCoverageTest` passes; scoped-binding audit proof.
+- **Exit:** cross-tenant and cross-branch suites pass.
+
+### Phase R6 — Session and Authorization Revocation (Correction 7)
+- **Objective:** complete revocation + per-request authorization freshness.
+- **Work:** verify session, token, Magic-Link, invitation, and cache invalidation; add active-membership + active-role check to every authenticated request; document the 404 cross-tenant / 403 same-tenant cross-branch posture.
+- **Tests/proof:** mid-session suspension/deactivation → next request denied; revoked links/invitations unusable.
+- **Exit:** next request after suspension is denied.
+
+### Phase R7 — Production Probes, CI Isolation, Environment Parity (Correction 7; ADR-009)
+- **Objective:** operability + test isolation + parity + brand decision.
+- **Work:** separate liveness from readiness; make production dependencies required in readiness (503 on failure); isolate Redis/cache/rate-limit prefixes in tests; align PHP/Node/Composer versions across images; record the brand contrast decision (ADR-009).
+- **Tests/proof:** production-like dependency failure returns 503; repeated parallel CI is stable; rate-limit isolation verified.
+- **Exit:** production-like dependency failures return 503; repeated parallel CI is stable. **On completion of V + R1–R7, run the pre-feature remediation completion report and close the pre-feature gate (Section 5.4).**
+
+---
+
+## 80. Step-by-Step Feature Roadmap
+
+Feature phases begin only after the pre-feature remediation gate (Section 5.4) is closed; each phase must additionally complete every FEATURE_DELIVERY_OBLIGATION mapped to it before it exits (Section 5.4a). Each phase follows the Section 7 template, includes the per-feature responsive/dark/accessibility gate (Sections 28–30) and the per-domain spec deliverables (data-dictionary entries §13.2, screen specs §27.1, permission-matrix reconciliation §19, state machines §25, traceability §85), and is one reviewable PR (subphases split where noted). Every phase: reads its scope refs, inspects current code, proves state, produces a file-level checklist, implements only its scope, writes tests first, runs the full suite, produces proof, updates `PROGRESS.md`/`CHANGELOG.md`/traceability, and stops on acceptance failure.
+
+### 80.1 Dependency Graph
+```text
+Gate(V+R1..R7) → 10 → 10F → 11
+10 + 11 → 15A → 15B
+15A/15B → 16A → 16B → 16C
+16C → 17 → 18A → 18B → 19
+20A(preferred_personnel_fee_rules) → 17 (invoice preferred-personnel-fee resolution; legacy fixed field used until the rule table exists)
+20A → 20B → 20C ; 20B → 20D ; 20A + 17/18 → 20E ; 20F + 18B(validated payments) → 20G → 20H
+(17,18,20) → 21N ; 16C + 15A(consent) → 21S ; → 22 → 23 → 24 → 25
+```
+
+### Phase 10 — API Foundation (Corrections 10, 11, 12; REM-ROUTE/MIG-001)
+- **Objective:** establish the API contract substrate all features inherit.
+- **Refs:** Sections 23, 24; Corrections 10–12.
+- **Dependencies:** gate closed. **Exclusions:** no business domains.
+- **Backend/API:** pagination/filter/sort traits (default 25/max 100, allowlisted sorts, validated/indexed filters); `Idempotency-Key` middleware (Section 24.4); resource `can` maps; route-classification metadata/registry; expand-and-contract **migration manifest** convention (Section 13/ADR-004); OpenAPI generation + TypeScript contract generation.
+- **Tests/proof:** `RouteSecurityContractTest`, `FinancialRouteIdempotencyCoverageTest` (passing on the seam routes), pagination/sort/filter tests, OpenAPI/TS parity test, migration-manifest lint.
+- **Acceptance/Exit:** every non-GET route has a valid classification + required middleware; financial routes cannot exist without idempotency; contract generated and parity-verified.
+
+### Phase 10F — File and Media Foundation (Correction 13; REM-FILE-001)
+- **Objective:** own the file domain before any feature stores/exports files.
+- **DB:** `uploaded_files`, `file_scan_events` (Section 13.13).
+- **Backend/security:** upload pipeline + ClamAV scanning + signed downloads + authorization (Section 65); jobs `ScanUploadedFile`/`FinalizeCleanFile`/`ExpireSignedExport`/`DeleteExpiredQuarantineFile`/`VerifyOrphanedFileRecords` (idempotent, tenant-aware) on the `file-scanning` queue.
+- **Frontend:** upload component states (selecting/scanning/available/rejected); private download via authorized endpoint.
+- **Tests/proof:** MIME spoof, double extension, oversize, malware EICAR, cross-tenant/branch download, signed-URL expiry, read-only blocks new export but allows existing download, log redaction.
+- **Acceptance/Exit:** a named phase owns schema/pipeline/authorization/jobs/UI states/tests before any feature stores files.
+
+### Phase 11 — UI Layout Foundation and Role Navigation (Correction 22)
+- **Objective:** finalize role layouts, navigation, and entry surfaces.
+- **Frontend:** verbatim scope-defined role navigation per role; landing + get-started pages per role (Section 27.2) with persisted checklist completion/deep links/resumability/dismissal/reopen; `PermissionGate`-driven visibility (UX only); state boundaries everywhere.
+- **Tests/proof:** role navigation matches scope; get-started persistence; responsive/dark/axe on all foundation screens.
+- **Acceptance/Exit:** every role has a live landing + guided get-started with real scope content.
+
+### Phase 15A — Services, Catalogue, Clients (Corrections 16, 17, 22)
+- **Objective:** Branch-Manager service catalogue + Front-Office client records.
+- **DB:** `service_categories`, `services`, `service_personnel_eligibility`, `clients`, `client_consents` (Section 13.7).
+- **Backend/API/authz:** branch_mutation routes; Branch Manager owns `service.*`; Front Office owns `client.*`; eligibility management; SMS consent capture; canonical state where applicable.
+- **Frontend:** catalogue + eligibility screens (Branch Manager); client create/search/detail (Front Office, masked contact).
+- **Tests/proof:** role-boundary (Branch Manager owns catalogue; Front Office cannot mutate catalogue), tenant/branch isolation, consent, masking; responsive/dark/axe.
+- **Acceptance/Exit:** catalogue + clients usable with correct ownership and masking; per-screen specs + data-dictionary entries merged.
+
+### Phase 15B — Personnel Availability and Eligibility Completion (Corrections 16, 17)
+- **DB:** `personnel_availability`. **Backend:** HR manages availability/eligibility (`personnel.availability.manage`, `personnel.eligibility.manage`).
+- **Tests/proof:** availability drives scheduling validation; isolation; role boundaries.
+- **Acceptance/Exit:** eligibility + availability complete and enforced in scheduling.
+
+### Phase 16A — Appointments (Corrections 16, 17, 22)
+- **DB:** `appointments`. **Backend:** Front Office appointment machine (Section 25); eligibility/availability/branch-open revalidation on assign/transfer.
+- **Frontend:** appointment create/reschedule/cancel/assign/transfer screens; mobile-usable.
+- **Tests/proof:** valid-transition-only, invalid-transition denial, eligibility/availability revalidation, isolation, audit; responsive/dark/axe.
+- **Acceptance/Exit:** appointment lifecycle correct and audited.
+
+### Phase 16B — Walk-Ins and Queues (Corrections 16, 17, 22)
+- **DB:** `walk_ins`, `queue_entries`. **Backend:** queue machine; Front Office transfer; Personnel cannot access others' entries.
+- **Frontend:** queue board + assignment/transfer/reorder; **mobile-usable** (critical flow).
+- **Tests/proof:** queue transitions, transfer authority, own-scope denial, position integrity under concurrency, audit; responsive/dark/axe.
+- **Acceptance/Exit:** queue operations correct, isolated, and mobile-usable.
+
+### Phase 16C — Service Sessions and Preferred Personnel (Corrections 16, 17)
+- **DB:** `service_sessions`. **Backend:** session machine; eligibility + branch-assignment per service item; duplicate-active-session protection; preferred-personnel selection; session completion creates non-payable commission **preview** only.
+- **Tests/proof:** eligibility enforcement, duplicate-active protection, preview-not-earned, isolation, audit.
+- **Acceptance/Exit:** sessions correct; preview commissions never payable pre-validation.
+
+### Phase 17 — Invoicing (Corrections 1, 9, 17; financial)
+- **DB:** `invoices`, `invoice_items`, `invoice_number_sequences` (Section 13.8/13.15). **Dependency:** preferred-personnel-fee resolution reads `preferred_personnel_fee_rules` (Phase 20A); until that table exists, the legacy fixed `services.preferred_personnel_fee_minor` is used. **Backend:** Front Office creates; Finance voids/adjusts; finalization allocates a gap-free per-merchant number from `invoice_number_sequences` + snapshots prices/percentage-fee config and the **resolved effective preferred-personnel fee** (fixed or percentage, round-half-up; never recalculated after finalization); balance from validated payments; period-lock 423; financial_mutation idempotency on finalization.
+- **Frontend:** invoice create/detail; read-only/locked/suspended-billing states.
+- **Tests/proof:** finalization snapshot stability, number allocation, void-creates-adjustment, period-lock denial, idempotent finalization, isolation, audit; responsive/dark/axe.
+- **Acceptance/Exit:** invoices finalize deterministically with snapshots and audit; no destructive edits.
+
+### Phase 18A — Merchant-Client Payment Recording (Correction 18; financial)
+- **Objective:** Front-Office maker recording across all methods.
+- **DB:** `payment_recording_groups`, `payment_records` (+ `payment_recording_group_id`), `payment_allocations`, `payment_reference_checks`, `invoice_number_sequences` (Section 13.8/13.15).
+- **Backend/security:** durable recording group (single, split, or multi-method); group total = sum(components) + single-currency enforcement; method set (cash/mpesa_offline/bank_transfer/card_terminal/voucher/split_payment/other); method-specific reference rules; durable duplicate-reference detection in `payment_reference_checks`; overpayment rejected by default; partial/split allocation with invoice row lock + pending-total check; idempotency keyed on the group; records `pending_validation`; Finance notified.
+- **Frontend:** payment record form (method-aware), split/multi-method group builder, masked references; confirmation with readable amounts.
+- **Tests/proof:** group total = sum(components), single-currency enforcement, per-method reference behavior, `payment_reference_checks` duplicate+override, partial, split/multi-method, concurrent recording, maker-cannot-self-validate, locked-period denial, billing read-only denial, cross-tenant/branch denial, idempotent replay, audit.
+- **Acceptance/Exit:** all methods record correctly within a durable group with maker/checker separation preserved.
+
+### Phase 18B — Validation, Receipts, Refunds, Disputes, Cash-Up, Period Locks (Correction 18; financial)
+- **DB:** `payment_validation_events` (group-level), `receipts`, `receipt_number_sequences`, `refunds`, `finance_disputes`, `branch_cash_ups`/`cash_up_lines`, `financial_period_locks`, `finance_exports`.
+- **Backend/security:** Finance validation of the **whole payment recording group** (atomic, locked; one immutable event for the group; validated-paid update; invoice status; one auto receipt covering all components with a gap-free `receipt_number_sequences` number; per-component earned commission seam to 20G; outbox-guaranteed side effects); receipts (one per validated group, reissue tracking via new receipts row); refunds (external record, component-allocated, adjustment/reversal only, proportional commission reversal, step-up on finalize); disputes; cash-up (Branch Manager submit, Finance approve, maker≠checker, lock); period locks (Finance owns; Merchant-Admin exceptional reopen; 423); finance exports (async, scoped, masked, signed, expiring, download-counted, audited — files via 10F).
+- **Frontend:** Finance task inbox; group validation/duplicate-review; receipts/reissue; refunds/disputes; cash-up approval; period locks; exports.
+- **Tests/proof:** group validation atomicity + rollback-on-side-effect-failure, one-receipt-per-group with gap-free numbering, receipt reissue references original, refund reduces balance via adjustment + per-component commission reversal, dispute lifecycle, cash-up maker≠checker, period-lock denial, export masking + expiry + download count, step-up on designated actions, concurrency, isolation, audit; responsive/dark/axe.
+- **Acceptance/Exit:** money lifecycle is auditable, group-validated, locked-period-safe, maker/checker-separated, and never destructively edited.
+
+### Phase 19 — Audit Logging Completion and Flagged Events (Corrections 16, 22)
+- **DB:** `audit_flagged_events`. **Backend:** complete audit coverage across all financial/billing/compensation/M-Pesa/SMS/file/export events; flagged-event workflow (open→under_review→resolved/dismissed→reopened; only review metadata mutable); branch-scoped, field-masked Audit reads; Audit role updates only review metadata; chain-verification scheduled (Section 67) + alert (Section 71).
+- **Tests/proof:** event coverage for every mutating action, tamper-verification, masked-read enforcement, Audit cannot mutate source records, flagged-event lifecycle.
+- **Acceptance/Exit:** every mutating action emits a typed, severity-tagged, chain-verified event; Audit role is provably read-only except flagged-event metadata.
+
+### Phase 20A — Plan Catalogue, Prices, Entitlements, Billing Settings (Corrections 2, 4, 8; ADR-011; platform)
+- **DB:** `platform_billing_settings`, `subscription_plans`, `subscription_plan_prices`, `plan_entitlements` (Section 13.9); `preferred_personnel_fee_rules` (§13.10, launch-active; expand-and-contract from `services.preferred_personnel_fee_minor`).
+- **Backend/authz:** Super-Admin platform_mutation (MFA + step-up); canonical billing-mode enum across PHP/DB/API/TS/seed/audit; the five canonical billing intervals (`weekly`/`bi_weekly`/`monthly`/`quarterly`/`annual`) across enum/DB CHECK/API/TS/screens; price as sole source with non-overlapping effective ranges; entitlement gate (Section 20); merchant pricing read models.
+- **Tests/proof:** canonical-enum parity (mode + interval), price-overlap rejection, entitlement allow/deny/limit, platform-only access, no merchant-context insertion, audit; preferred-personnel-fee rule fixed/percentage validation, overlap rejection, supersede-not-edit, percentage round-half-up, invoice snapshot stability (rule change does not recalculate existing invoices), legacy-field migration equivalence.
+- **Acceptance/Exit:** plans/prices/entitlements/settings managed with canonical modes, all five intervals, entitlement enforcement, and launch-active fixed+percentage preferred-personnel-fee rules.
+
+### Phase 20B — Subscription Lifecycle and Subscription Invoices (Corrections 2, 8; financial)
+- **DB:** `merchant_subscriptions` (record lifecycle on `status`), `scheduled_plan_changes`, `subscription_invoices`, `subscription_invoice_items`, `billing_escalation_events`; project `merchants.billing_status` from the active subscription (Section 22).
+- **Backend:** billing-status machine on `merchants.billing_status` projected from `merchant_subscriptions.status` (Section 22/25); transactional projection service; per-interval date math (§49); trial at Merchant-Admin creation (snapshotted days); read-only grace + suspension gates; no-proration next-cycle changes; shared overdue escalation seam (20-/scheduler); invoice issuance (immutable, snapshotted discounts/free periods, exact account reference); billing-invoice PDFs via 10F; finalization idempotent.
+- **Frontend:** subscription dashboard; plan management + scheduled change; invoices/detail/download.
+- **Tests/proof:** projection synchronizes `merchants.billing_status` from subscription transitions transactionally and is the gate authority; per-interval next-date/renewal math incl. Jan-31/Feb-29/year-boundary; trial start/snapshot, read-only behavior (mutations blocked, reads allowed, new exports blocked), no-proration change at next cycle, invoice immutability, isolation, audit; responsive/dark/axe.
+- **Acceptance/Exit:** subscription + billing invoices correct with read-only grace, `merchants.billing_status` as access authority, all-interval date math, and immutable issuance.
+
+### Phase 20C — Promotions and Free-Period Offers (Correction 2; platform)
+- **DB:** `promotional_discounts`(+targets), `free_period_offers`(+targets).
+- **Backend:** explicit target rows (no JSON targets); snapshot application; approval + audit; trial-snapshot immutability.
+- **Tests/proof:** target resolution for merchant/plan/**billing_mode** types, exactly-one-target constraint, **precedence/tie-breaking determinism**, snapshot does not mutate issued invoices or existing trials, approval/audit, platform-only access.
+- **Acceptance/Exit:** promotions/free periods apply via snapshots without rewriting issued financial state.
+
+### Phase 20D — M-Pesa Provider, STK, Callbacks, Reconciliation, Recovery (Corrections 3, 14, 15; financial)
+- **DB:** `subscription_payment_attempts`, `subscription_payments`, `mpesa_callback_inbox`, `mpesa_reconciliation_events`, `subscription_invoice_payment_locks`, `merchant_billing_credits`.
+- **Backend/security:** provider abstraction + DTOs (Section 55); STK initiation (Section 56) with server-held credentials, invoice + payment lock, public-safe attempt ULID; C2B validation/confirmation reconciliation (Section 57); apply-under-lock + overpayment credit + billing-only recovery (Section 58); reconciliation exceptions resolved by Super Admin via linking confirmed payments (no manual recording), step-up + before/after audit; provider-supported callback security only (ADR-006); idempotency + dedupe; scheduled reconciliation retries + stale-attempt status queries on `critical-billing`.
+- **Frontend:** STK states (initiating/prompt-sent/polling/success/cancelled/timeout/failed/retry); PayBill/Till instructions + account reference; Finance reconciliation views; role-specific exposure (Section 58).
+- **Tests/proof:** the full Section 58 test list (success/cancel/timeout-late-callback/duplicate/same-receipt-two-invoices/concurrent/partial/overpayment/wrong-reference/foreign-merchant/paid-invoice-late-callback/billing-only-recovery/non-billing-suspension-stays-blocked/outage-retry/redaction/Front-Office-cannot-view-sensitive-attempts).
+- **Acceptance/Exit:** M-Pesa subscription payment + reconciliation + billing-only recovery work with no manual Super-Admin recording and full redaction.
+
+### Phase 20E — Percentage Platform-Fee Engine (Corrections 2, 4, 8; financial)
+- **DB:** `platform_fee_configurations`, `platform_fee_ledger_entries`, `platform_fee_adjustments`, `platform_fee_disputes` (§13.10).
+- **Backend:** compute fees from validated merchant-client invoice amounts; tier behavior (customer/shared/business-centric); integer arithmetic + round-half-up + largest-remainder residual (ADR-005); aggregate into subscription-invoice lines; adjustments + platform-fee disputes (resolution creates adjustments, never edits ledger rows); **no entries created in fixed-only mode** (tested); launch-inactive until configured.
+- **Tests/proof:** fixed-only creates no fee entries; percentage/fixed-plus-percentage compute correctly; rounding determinism; reversal on invoice void/refund; isolation; audit.
+- **Acceptance/Exit:** engine is launch-capable, correct, and inert unless a percentage component is configured.
+
+### Phase 20F — Compensation Plan Setup and Commission Rules (Correction 19; HR)
+- **DB:** `personnel_compensation_plans`, `compensation_plan_history`, `commission_rules`.
+- **Backend:** three compensation models with model-specific validation (no cross-model ledgers); effective-dated plans/rules with overlap exclusion constraints; immutable active monetary terms (supersede); backdated change approval + critical audit; preferred-personnel-fee applicability; configuration grants no login/role/branch.
+- **Tests/proof:** model validation, overlap rejection, supersede-not-edit, backdated approval/audit, salary-only has no commission rule, isolation.
+- **Acceptance/Exit:** compensation setup correct, effective-dated, and immutable where required.
+
+### Phase 20G — Salary Accrual and Commission Processing (Correction 19; financial)
+- **DB:** `salary_ledger`, `commission_ledger`, `compensation_adjustments`.
+- **Backend:** scheduler salary accrual (idempotent per segment; attendance-backed sub-monthly; effective-date proration; settled suspension policy; termination handling); commission earned **only** at Finance validation (idempotent earned entries; effective-date rule resolution; integer + ADR-005 rounding); refund/void/reversal creates negative reversal/adjustment; salary-only never earns commission.
+- **Tests/proof:** accrual idempotency + proration + suspension policy, earn-at-validation, one entry per validation allocation, reversal on refund/void, salary-only exclusion, concurrency, isolation, audit.
+- **Acceptance/Exit:** ledgers correct, idempotent, reversible-by-adjustment, never destructively edited.
+
+### Phase 20H — Payout Runs and Earnings (Correction 19; financial)
+- **DB:** `personnel_payout_runs`, `personnel_payout_items`, `earnings_queries`.
+- **Backend:** HR draft/submit; Finance verify/approve-standard/mark-paid; Merchant-Admin high-value approval (snapshotted threshold); frozen-on-submit; mark-paid (external ref + paid date + Finance + fresh step-up + idempotency + row lock + ledger status + notification); personnel earnings (own-scope tabs by model, statements via 10F); earnings queries (assignment by type; resolution via adjustment only).
+- **Frontend:** HR payout prep; Finance verification/approval/mark-paid; Merchant-Admin high-value approval; personnel My Earnings + statements + queries.
+- **Tests/proof:** ownership routing, high-value approval routing, frozen-on-submit, mark-paid idempotency + step-up, ledger status updates, own-scope earnings, query-resolution-creates-adjustment, isolation, audit; responsive/dark/axe.
+- **Acceptance/Exit:** payouts flow HR→Finance→(Merchant-Admin high value)→paid with correct ownership, freezing, and personnel visibility.
+
+### Phase 21N — Queues, Notifications, Scheduled Reports (Corrections 21, 24)
+- **DB:** `notifications`, `scheduled_report_runs`.
+- **Backend:** Horizon + class-separated workers (Section 67); branded notifications (no secrets/masked PII; recipient authorization); report catalogue read models/materialized views (Section 69); scheduled day-close + cash-up PDFs (idempotent per branch/date/type; private storage; email only authorized Merchant Admin; no new generation during billing read-only while existing remain downloadable).
+- **Tests/proof:** job idempotency + tenancy, notification recipient authorization, report formula correctness (partial/split/refund), PDF idempotency, read-only behavior, masking, large-dataset performance.
+- **Acceptance/Exit:** queues/notifications/scheduled reports operate idempotently with correct authorization and formulas.
+
+### Phase 21S — Personnel Bulk SMS (Correction 20; ADR-010)
+- **DB:** `personnel_sms_campaigns`, `personnel_sms_recipients`, `sms_delivery_attempts`, `sms_billing_entries`.
+- **Backend/security:** served-client own-scope + consent + entitlement + billing-status gating; recipient revalidation at preview + confirm; cost preview; transactional snapshots; provider adapter + redaction; retry transient only; dedupe by campaign-recipient; SMS billing roll-up; **no contact export channel**; guessed export routes → 404 + high-severity audit.
+- **Frontend:** served-clients view (masked), recipient selection (max batch), composer (char/segment + cost), confirmation, status (no phone list).
+- **Tests/proof:** Correction 20.8 list (cannot view/message others' clients, no completed-session no message, no export, billing/entitlement gates, cost-preview accuracy, duplicate-confirm single send, opt-out suppression, cross-tenant/branch denial, no full-phone exposure, log redaction).
+- **Acceptance/Exit:** personnel SMS works without ever becoming a contact-export surrogate.
+
+### Phase 22 — Search (Correction 16; security)
+- **Backend:** tenant/branch-scoped, permission-aware indexing; never index/return cross-tenant data; never cache unscoped + filter client-side; own-scope masked served-client search + rate limiting; allowlisted sort/filter.
+- **Tests/proof:** cross-tenant/branch exclusion, own-scope masking, rate limiting, injection-safe queries.
+- **Acceptance/Exit:** search is scoped, masked, and isolation-safe.
+
+### Phase 23 — Security Hardening, Responsive/Dark/Accessibility Release Audit, Threat-Model Verification (Corrections 8, 9, 16, 23)
+- **Objective:** whole-product release gates after all launch screens exist.
+- **Work:** run the per-workflow attacker-model verification (Section 9.1/73); whole-product responsive audit (no horizontal scroll across launch screens), dark-mode audit, and accessibility audit (axe + manual for critical flows); finalize finance/audit export controls; confirm forbidden routes absent (Super-Admin merchant creation, personnel contact export); complete the requirement traceability matrix (Section 85) and enforce it in CI.
+- **Tests/proof:** security-regression suite, responsive/dark/axe across all launch screens, traceability coverage report (no launch requirement without complete mapping), forbidden-route absence tests.
+- **Acceptance/Exit:** all release gates pass; traceability is complete; no forbidden capability exists.
+
+### Phase 24 — Performance Optimization (Correction 24.2)
+- **Work:** index/query review (no N+1; tested), report read-model/materialized-view tuning, cache key correctness (scoped), opcache/preload, list/report load tests on large datasets; verify p95 targets (Section 72).
+- **Tests/proof:** performance tests meet read/write/report targets; N+1 guards; cache-scoping tests.
+- **Acceptance/Exit:** measured p95s within Section 72 targets on representative data.
+
+### Phase 25 — Deployment Pipeline and Production Readiness (Correction 24)
+- **Work:** production topology (Section 77); expand-and-contract deploy with migration-before-switch + readiness gate + graceful worker drain + scheduler/Horizon coordination; smoke tests; observability + alerts (Section 71); backup + PITR + restore exercise (Section 78); runbooks + incident severities + on-call; secrets management; certificate/secret-expiry alerts.
+- **Tests/proof:** deployment smoke tests, readiness-gated rollout, restore exercise evidence (boot + tenant counts + financial totals + audit-chain verify + sample downloads, with RTO timing), alert firing tests.
+- **Acceptance/Exit:** production deploy is repeatable, observable, recoverable, and meets the measurable production requirements; the final production verification checklist (Section 86) passes.
+
+---
+
+## 81. IDE-Agent Execution Protocol
+The implementation agent must, for every phase:
+1. Read the complete owning phase before changing code.
+2. Read the linked authoritative scope sections in `SERVANA COMBINED.txt`.
+3. Inspect the current repository (migrations, `route:list`, policies, services, components, tests, lock files, CI).
+4. Prove the current state with commands and evidence.
+5. Identify the root cause of every discrepancy before editing.
+6. Produce a file-level implementation checklist.
+7. Implement only the scoped phase.
+8. Avoid unrelated changes and refactors.
+9. Add or update tests before declaring completion.
+10. Run the complete relevant quality suite (Section 75).
+11. Produce the phase's proof artifacts.
+12. Update `PROGRESS.md`, `CHANGELOG.md`, the traceability matrix, and any ADRs.
+13. Stop when acceptance criteria fail.
+14. Never mark a task complete based solely on compilation.
+15. Never bypass a failing test by deleting, weakening, skipping, or suppressing it without an approved documented reason.
+16. Never weaken security or tenant isolation to make a test pass.
+17. Never infer a missing business rule — locate it in scope or record a blocking ambiguity.
+18. Never implement a future-only placeholder for a launch requirement.
+19. Never expose sequential internal identifiers through public APIs.
+20. Never allow a frontend permission check to replace backend enforcement.
+
+## 82. Phase-Level Acceptance Criteria (every phase)
+A phase is complete only when: its objective is met; all required tests (Section 7 + 75) pass in clean containers; the per-feature responsive/dark/accessibility gate passes; required proof artifacts exist; data-dictionary entries, screen specs, state machines, and permission-matrix reconciliation for the phase are merged; the traceability matrix is updated; `PROGRESS.md`/`CHANGELOG.md` reflect actual commits/CI; no C0/C1 regression is introduced; and a reviewer approves. Blocking conditions for progression: any failing acceptance test; any unresolved authoritative ambiguity; any missing spec deliverable; any security/isolation/financial-integrity regression; any forbidden capability introduced.
+
+## 83. System-Level Acceptance Criteria (launch)
+Launch requires, in addition to all phase exits:
+- Pre-feature remediation gate closed (Section 5.4) and every FEATURE_DELIVERY_OBLIGATION satisfied at its owning phase (Section 5.4a); as-built verification truthful (Phase V).
+- Every launch requirement in `SERVANA COMBINED.txt` mapped to an implemented, tested phase in the traceability matrix (Section 85) with no gaps.
+- Tenant, branch, own-scope, entitlement, billing-status, operational-status, and period-lock controls enforced server-side and tested.
+- Subscription-first billing, M-Pesa subscription payment + reconciliation + billing-only recovery, merchant-client payment lifecycle, compensation + payouts + earnings, personnel SMS, files, notifications, reporting, and audit all complete with passing tests.
+- No manual Super-Admin payment-recording path; no merchant-creation path other than self-registration; no personnel contact-export channel; Merchant Admin not an operational superuser; role boundaries (Branch Manager/HR/Finance/Front Office/Personnel/Audit) enforced.
+- Financial integrity: integer money, transactions, locks, idempotency, immutable ledgers, reversal/adjustment corrections, maker/checker, audit chain verified.
+- Measurable production requirements met (Sections 72, 77, 78); observability + alerts live; restore exercise passed.
+- Accessibility (WCAG 2.1 AA), responsive, and dark-mode release audits passed across all launch screens.
+
+## 84. Risk Register
+| ID | Risk | Likelihood | Impact | Mitigation | Owner |
+|---|---|---|---|---|---|
+| RK-01 | M-Pesa callback authenticity assumptions exceed provider capabilities | Med | High | Provider-supported controls only (ADR-006); reconciliation + receipt uniqueness + status verification; no invented HMAC | Backend/Security |
+| RK-02 | Unapplied confirmed M-Pesa payments / reconciliation backlog | Med | High | Reconciliation events + exception queue + alerts + Super-Admin linking workflow | Backend |
+| RK-03 | Commission/payout double-count or destructive correction | Med | High | Idempotent ledger entries; reversal/adjustment-only; frozen-on-submit; maker/checker; audit | Finance/Backend |
+| RK-04 | Cross-tenant/branch leakage via new models | Med | Critical | Global scopes + scoped binding + coverage tests + static analysis | Backend |
+| RK-05 | Personnel contact exfiltration via SMS/search | Med | High | Own-scope + masking + no-export + rate limit + enumeration detection + 404/audit | Backend/Security |
+| RK-06 | Billing read-only/suspension bypass | Low | High | Billing-status gate + recovery allowlist + tests | Backend |
+| RK-07 | Idempotency gaps on financial routes | Low | High | Middleware + `FinancialRouteIdempotencyCoverageTest` | Backend |
+| RK-08 | Migration rollback expectations rely on destructive down() | Low | High | Expand-and-contract + forward-repair + manifest (ADR-004) | DevOps/DB |
+| RK-09 | Framework advisory left unpatched | Low | High | R1 upgrade + remove ignore + CR/LF tests | Backend |
+| RK-10 | File-upload malware/polyglot | Low | High | Magic-byte detection + ClamAV + private signed downloads (10F) | Security |
+| RK-11 | Audit-chain break undetected | Low | High | Verifier command + scheduled run + alert | Backend |
+| RK-12 | Scheduler missed billing/salary transitions | Low | High | Singleton scheduler + idempotent jobs + lag alerts | DevOps |
+| RK-13 | Report metric drift vs. validated-payment definitions | Med | Med | Catalogue formulas + tests with partial/split/refund | Backend/Product |
+| RK-14 | Permission registry drift from canonical matrix | Med | Med | YAML↔code↔DB↔TS parity test | Backend |
+| RK-15 | Progress files overstating completion | Med | Med | Phase V verification + commit/CI-linked progress | Lead |
+
+## 85. Requirement Traceability Matrix
+Create `/docs/traceability/servana-requirements.csv`. Every launch requirement maps to: `scope_section | requirement_id | description | phase | db_objects | service_or_action | controller_or_endpoint | policy_and_permission | frontend_route_and_component | queue_or_scheduler | audit_event | automated_tests | manual_verification | status | evidence`. Stable requirement IDs use domain prefixes, e.g. `SRV-AUTH-*`, `SRV-TEN-*`, `SRV-BRANCH-*`, `SRV-STAFF-*`, `SRV-CAT-*`, `SRV-CLIENT-*`, `SRV-SCHED-*`, `SRV-INV-*`, `SRV-PAY-*`, `SRV-RCPT-*`, `SRV-REF-*`, `SRV-CASH-*`, `SRV-LOCK-*`, `SRV-PLAN-*`, `SRV-SUB-*`, `SRV-BILL-*`, `SRV-FEE-*`, `SRV-MPESA-*`, `SRV-COMP-*`, `SRV-PAYOUT-*`, `SRV-EARN-*`, `SRV-SMS-*`, `SRV-FILE-*`, `SRV-NOTIF-*`, `SRV-REPORT-*`, `SRV-AUDIT-*`, `SRV-OPS-*`. CI enforcement: a traceability test parses the CSV and fails when a launch requirement has no phase, no test reference, or status `not_implemented` at the Phase 23 gate; the final verification phase fails if any launch requirement lacks complete traceability. The matrix is updated in every feature-phase PR.
+
+## 86. Final Production Verification Checklist (executable)
+Run as the launch gate; each item must produce evidence.
+1. Remediation gate file shows all C0/C1 `verified_complete`; remediation completion report signed.
+2. Phase V discrepancy register shows no open `contradicted` items; `PROGRESS.md` statuses are commit/CI-linked.
+3. `composer audit`, `npm audit`, `gitleaks`, and image scans clean (or approved time-bound suppressions with guard tests); framework is Laravel 12.60+ on PHP 8.3 across all images.
+4. Full suites green in clean containers on PostgreSQL 16 + Redis 7 (backend, frontend, e2e + axe), run repeatedly/parallel; skipped tests enumerated with reasons.
+5. Coverage/parity guards pass: data-dictionary, tenant-column, route-security contract, financial-route idempotency, permission-matrix parity, OpenAPI/TS parity, traceability.
+6. `route:list` proves forbidden routes absent (Super-Admin merchant creation; personnel contact export) and correct classification/middleware per class.
+7. Tenant/branch/own-scope/entitlement/billing-status/operational-status/period-lock denial suites pass.
+8. Financial integrity proofs: idempotent replay, duplicate M-Pesa callback, concurrent writes, reversal/adjustment-only corrections, maker/checker separation, audit-chain verification.
+9. M-Pesa: STK success/cancel/timeout-late-callback/duplicate/overpayment-credit/wrong-reference/foreign-merchant/billing-only-recovery/non-billing-suspension-stays-blocked/outage-retry, with full payload redaction and no manual recording path.
+10. Compensation/payouts/earnings: earn-at-validation, reversal on refund/void, salary accrual idempotency, payout ownership + freezing + step-up mark-paid, personnel own-scope earnings.
+11. Personnel SMS proves no contact export and all Correction 20.8 cases.
+12. Files: MIME spoof/malware/oversize rejected; signed-download expiry; cross-tenant/branch and personnel-other-statement denied; read-only blocks new export while existing download works.
+13. Reports: formula correctness with partial/split/refund; scheduled day-close + cash-up PDFs idempotent; recipient authorization; masking; read-only behavior.
+14. Accessibility (WCAG 2.1 AA), responsive (no horizontal scroll), and dark-mode audits pass across all launch screens.
+15. Production readiness: topology deployed; expand-and-contract deploy with readiness gate; observability + alerts firing; backup + PITR + restore exercise evidence (boot, tenant counts, financial totals, audit-chain verify, sample downloads, RTO timing); runbooks + incident severities + on-call documented.
+16. Traceability CSV complete: every launch requirement mapped with tests and evidence; zero gaps.
+
+---
+
+*End of `SERVANA_DEVELOPMENT_PLAN.md` (v3). This plan supersedes all prior versions. Begin at Phase V; do not start any feature phase until the pre-feature remediation gate (Section 5.4) is closed.*
