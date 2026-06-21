@@ -1,6 +1,10 @@
 # Servana Landing Page Content
 
-*Grounded in the Servana scope, brand identity, and corrected Merchant Administrator self-registration model.*  
+**Audience:** Merchant Administrator / Merchant Owner
+**CTA:** **GET STARTED**
+**CTA behavior:** Directs the user to **Login** and **Create Account**.
+
+This version uses the corrected Merchant Administrator self-registration model, the subscription-first billing amendment, and Servana’s warm, practical brand direction as the source of truth.   
 
 ---
 
@@ -9,13 +13,11 @@
 **Logo:** Servana
 
 **Navigation Links:**
-Home | Features | How It Works | Security | Support
+Features | How It Works | Pricing | Security | Support
 
+**Login Link:** Login
 
-**Primary CTA Button:** **GET STARTED**
-
-**CTA behavior:**
-When **GET STARTED** is clicked, the user should be directed to the authentication page with **Login** and **Create Account** options.
+**Primary CTA:** **GET STARTED**
 
 ---
 
@@ -23,20 +25,22 @@ When **GET STARTED** is clicked, the user should be directed to the authenticati
 
 # Serve Better. Run Smarter. Grow Steadily.
 
-Run your service business with more clarity, better records, and less daily confusion.
+Run your service business with clearer records, smoother daily work, and better control.
 
-Servana helps you manage clients, staff, services, invoices, offline payment records, commissions, and business activity from one secure dashboard — so you can spend less time chasing details and more time growing the business.
+Servana gives you one secure dashboard to manage clients, branches, staff, invoices, offline payment records, commissions, reports, and business activity — without depending on notebooks, screenshots, scattered messages, or memory.
 
-**CTA Button:** **GET STARTED**
-**Supporting text below CTA:** Create your merchant account or log in to continue.
+**CTA:** **GET STARTED**
+**Supporting line:** Create your merchant account or log in to continue.
+
+**Optional secondary link:** See How It Works
 
 ---
 
-## 3. Trust Statement / Social Proof Section
+## 3. Trust / Social Proof Section
 
 ## Built for the service businesses that keep communities moving.
 
-Whether you run a salon, barbershop, spa, massage parlour, grooming studio, beauty parlour, or similar service-based business, Servana gives you a cleaner way to organize the work happening every day.
+From salons and barbershops to spas, grooming studios, massage parlours, and beauty parlours, Servana is built for real service businesses that need better structure without complicated software.
 
 **Simple records. Clear roles. Better control.**
 
@@ -46,57 +50,61 @@ Whether you run a salon, barbershop, spa, massage parlour, grooming studio, beau
 
 # Your business should not depend on scattered records.
 
-Many service businesses still run on notebooks, WhatsApp messages, screenshots, verbal updates, and memory.
+Busy service businesses move fast.
 
-That may work for a while — until payments need confirming, commissions need checking, clients come back, staff ask questions, or you need to know what really happened during the day.
+Clients walk in. Staff serve. Payments are made offline. Commissions need checking. Invoices need tracking. Branch activity needs reviewing. And when everything is spread across notebooks, WhatsApp messages, receipts, memory, and screenshots, small issues become expensive confusion.
 
-Servana helps bring order to that.
+Servana brings that daily work into one clearer place.
 
 ---
 
-## 5. Solution Section
+## 5. Solution / Value Proposition Section
 
 # One dashboard for the work behind every service.
 
-With Servana, you can keep your daily operations connected in one place.
+With Servana, you can see what is happening across your business without chasing updates from everyone.
 
-You can manage client records, track walk-ins and appointments, organize services, monitor invoices, record offline payments, view staff activity, and keep a clearer picture of how your business is performing.
+Track services, clients, branches, invoices, payment records, staff activity, commissions, and reports from one organized workspace. You stay closer to the business, your team works with better structure, and your records become easier to trust.
 
-No unnecessary complexity.
-No scattered information.
-Just a more organized way to run your service business.
-
-**CTA Button:** **GET STARTED**
+**CTA:** **GET STARTED**
 
 ---
 
-## 6. Feature Highlights Section
+## 6. Features Section
 
 # Everything you need to stay in control.
 
-### Manage clients with confidence
+### Business overview
 
-Keep client details, visits, service history, preferences, and receipts easier to find when your team needs them.
+See daily activity, clients served, invoices, payments, branch performance, and staff output from your Merchant Administrator dashboard.
 
-### Organize daily service flow
+### Branch management
 
-Handle walk-ins, appointments, queues, selected services, assigned personnel, and service activity without losing track.
+Create and manage branches under your business, then view branch performance without mixing up records.
 
-### Keep invoices and payments clearer
+### Staff visibility
 
-Create invoices, record offline payments such as cash, M-Pesa, bank transfer, card terminal, voucher, or split payment, and maintain cleaner payment records.
+See staff activity across your branches and keep better oversight of who is doing what.
 
-### Track staff work and commissions
+### Client and service records
 
-See who served which client, what services were completed, and where commissions stand — reducing confusion and unnecessary disputes.
+Keep client visits, services delivered, receipts, and service history easier to find when needed.
 
-### Control user access
+### Invoices and offline payment records
 
-Give the right team members the right level of access across front office, finance, HR, personnel, audit, and branch-level work.
+Record payment methods such as cash, M-Pesa, bank transfer, card terminal, voucher, split payment, or other offline methods — without processing client payments inside the platform.
 
-### See what matters faster
+### Commission clarity
 
-View business activity, branch performance, clients served, invoices, payments, personnel performance, and operational records from your Merchant Administrator dashboard.
+Reduce commission confusion by keeping service work, payment records, and personnel activity easier to review.
+
+### Reports that make sense
+
+Understand what is happening today, this week, last month, and across your branches with clearer operational reporting.
+
+### Safer access control
+
+Give your team the right role-based access while keeping business records protected.
 
 ---
 
@@ -106,122 +114,179 @@ View business activity, branch performance, clients served, invoices, payments, 
 
 ### 1. Create your merchant account
 
-Start by registering your business account as the Merchant Administrator.
+Register your business account as the Merchant Administrator. The system creates your merchant tenant and assigns you as the Merchant Owner / Merchant Administrator. 
 
-### 2. Set up your business
+### 2. Choose your plan
 
-Add your merchant profile, branches, services, pricing, and team structure.
+Select the plan that fits your business size. Your free period starts from account creation, so early setup does not reduce your trial time. 
 
-### 3. Invite and activate your team
+### 3. Set up your business
 
-Give your staff the correct roles and permissions so everyone works from the right dashboard.
+Complete your merchant profile, add your first branch, and invite the initial branch and HR users.
 
-### 4. Start running daily operations
+### 4. Start running with more clarity
 
-Manage clients, appointments, queues, invoices, payments, commissions, and reports from one secure workspace.
+Manage clients, branches, staff, invoices, payment records, commissions, and reports from one secure dashboard.
 
-**CTA Button:** **GET STARTED**
-
----
-
-## 8. Product Showcase Section
-
-# A calmer way to manage busy service days.
-
-Imagine opening one dashboard and seeing what matters:
-
-Today’s clients.
-Active queues.
-Pending invoices.
-Payment records.
-Staff performance.
-Commission activity.
-Branch progress.
-Business reports.
-
-Servana is designed to make your daily operations easier to follow without overwhelming your team.
+**CTA:** **GET STARTED**
 
 ---
 
-## 9. Benefits Section
+## 8. Benefits Section
 
 # Built to make your work easier.
 
 ### Save time
 
-Spend less time searching for records, confirming details, and following up manually.
+Spend less time asking for updates and searching for records.
 
-### Reduce confusion
+### Reduce daily confusion
 
-Give your team a clearer workflow for clients, services, payments, and daily activity.
+Keep clients, staff, invoices, payments, and branch activity easier to follow.
 
 ### Improve accountability
 
-Track important actions, roles, invoices, payment records, and service history more clearly.
+Know who served which client, what was done, how payment was recorded, and what needs attention.
 
-### Understand your business better
+### Make better decisions
 
-See what is happening across your services, staff, branches, clients, and revenue records.
+See branch activity, staff performance, invoices, payment records, and business trends more clearly.
 
 ### Grow with structure
 
-Move from informal tracking to a more professional operating system for your service business.
+Move from informal tracking to a more professional way of running your service business.
 
 ---
 
-## 10. Security / Control Section
+## 9. Product Showcase Section
 
-# Your business data needs proper control.
+# A calmer way to manage busy service days.
 
-Servana is built with secure access, role-based permissions, tenant separation, branch-level controls, Magic Link login, and audit-ready activity records.
+Open Servana and see what matters:
 
-That means your business information stays better organized, better protected, and easier to review when needed.
+Today’s activity.
+Clients served.
+Branch performance.
+Pending invoices.
+Offline payment records.
+Staff performance.
+Commission activity.
+Business reports.
 
----
-
-## 11. FAQ Section
-
-### Who is Servana for?
-
-Servana is built for service-based SMEs such as salons, barbershops, spas, grooming studios, beauty parlours, massage parlours, and similar businesses.
-
-### Do clients need accounts?
-
-At launch, clients mainly exist as client records. This keeps the system focused on helping your business manage daily operations first.
-
-### Does Servana process payments?
-
-No. Servana records offline payment details such as cash, M-Pesa, bank transfer, card terminal, voucher, split payment, and other merchant-defined methods. Payments happen outside the platform.
-
-### Can I manage staff roles?
-
-Yes. As a Merchant Administrator, you can manage users, roles, branches, permissions, services, pricing, commissions, and operational access.
-
-### How do users log in?
-
-Merchant users log in through secure Magic Links sent to their email after their account is active under the merchant business.
+Servana gives you a clearer view of the work happening behind every service — without overwhelming your team.
 
 ---
 
-## 12. Final CTA Section
+## 10. Use Cases Section
+
+# Made for the way service businesses actually run.
+
+### For salon owners
+
+Track services, clients, staff activity, invoices, and daily revenue records with less guesswork.
+
+### For barbershop operators
+
+Keep queues, preferred personnel requests, service records, payments, and commissions easier to follow.
+
+### For spa and wellness businesses
+
+Manage appointments, branches, staff roles, payment records, and client history from one workspace.
+
+### For growing multi-branch businesses
+
+See how each branch is performing and keep operations structured as the business expands.
+
+---
+
+## 11. Pricing Section
+
+# Start with the plan that fits your business.
+
+Your first free period starts when you create your Merchant Administrator account. After that, choose a monthly plan that matches your branch and staff needs. The launch billing model is subscription-first, with no percentage platform fee active at launch. 
+
+### Starter
+
+**KES 2,000 / month**
+Best for a small single-branch business getting organized.
+Includes **1 branch** and up to **4 staff**.
+
+### Growth
+
+**KES 4,500 / month**
+Best for a busier single-branch business with a growing team.
+Includes **1 branch** and up to **12 staff**.
+
+### Pro Branch
+
+**KES 8,500–9,000 / month**
+Best for a high-volume single branch that needs stronger visibility and reporting.
+
+### Multi-Branch
+
+**KES 12,000 / month + extra branch add-on**
+Best for businesses expanding beyond one branch.
+
+**CTA for each plan:** **GET STARTED**
+
+---
+
+## 12. FAQ Section
+
+### Can I create my own merchant account?
+
+Yes. You create your Merchant Administrator account yourself. Servana creates your merchant tenant and assigns you as the Merchant Owner / Merchant Administrator. 
+
+### Do I need Super Administrator approval before using my dashboard?
+
+No. Your dashboard access is not held pending manual Super Administrator activation. You still need to complete first-time setup before operational access.
+
+### Is there a free period?
+
+Yes. The free period starts from Merchant Administrator account creation and is configurable, with a default of 30 days. 
+
+### Does Servana process client payments?
+
+No. Clients pay your business offline. Servana records the payment method, amount, reference, and status so your records stay clear.
+
+### Can I manage more than one branch?
+
+Yes. The right plan allows your business to grow with branch and staff limits managed through your subscription.
+
+### Is my business data protected?
+
+Yes. Servana is built around tenant separation, role-based access, secure Magic Link login, audit logs, and production-grade security controls.
+
+---
+
+## 13. Security / Control Section
+
+# Your business records need proper control.
+
+Servana is built to protect merchant data, separate tenant records, control user access, and keep important actions traceable.
+
+Your team gets access based on role and branch scope. Sensitive activity is logged. Records are easier to review. Your business becomes less dependent on memory and more supported by clear evidence.
+
+---
+
+## 14. Final CTA Section
 
 # Ready to bring more order to your service business?
 
-Start with one dashboard built to help you manage clients, services, payments, staff, commissions, and daily records with more confidence.
+Start with one secure dashboard for clients, branches, staff, invoices, payment records, commissions, and daily business visibility.
 
-**CTA Button:** **GET STARTED**
-
-**Small text below CTA:** Create your merchant account or log in to continue.
+**CTA:** **GET STARTED**
+**Supporting line:** Create your merchant account or log in to continue.
 
 ---
 
-## 13. Footer
+## 15. Footer
 
 **Servana**
 Service operations made simple for African SMEs.
 
 **Footer Links:**
-Features | How It Works | Security |
+Features | How It Works | Pricing |
 
 **Resources**
 FAQ
@@ -232,6 +297,10 @@ Data Policy
 Terms of Service
 
 **Footer Note:**
-Built for service businesses that want clearer records, smoother daily work, and stronger operational control.
+Built for real service businesses. Designed for the people who run them.
+
+**Footer Note:**
+Built for real service businesses. Designed for the people who run them.
+
 
 ---
