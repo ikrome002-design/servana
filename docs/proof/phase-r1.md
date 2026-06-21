@@ -137,3 +137,22 @@ sensitive PR) signs off.
 
 ## 16. Lifecycle status
 `local_complete` — pending push, CI, and second-reviewer sign-off.
+
+## Solo-Maintainer Review Exception
+
+An independent second reviewer was unavailable because the repository currently
+has one eligible maintainer. The product owner authorized a documented,
+PR-specific governance exception rather than fabricating approval.
+
+Evidence:
+
+- PR: #13
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Security: passed
+- CI/Docker: passed
+- GitHub reviewDecision: intentionally blank
+- Exception record:
+  docs/governance/solo-maintainer-review-exception-pr-13.md
+
+This exception applies only to PR #13.
