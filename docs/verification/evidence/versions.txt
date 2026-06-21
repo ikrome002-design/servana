@@ -1,0 +1,61 @@
+Servana — Phase V As-Built Verification: Runtime & Dependency Versions
+======================================================================
+Captured: 2026-06-21
+Branch:   phase-v-as-built-verification
+HEAD:     e8681f63571db501fbd0f7b421311171dae784b2
+origin/main: e8681f63571db501fbd0f7b421311171dae784b2  (0 ahead / 0 behind)
+Base main: e8681f6  (PRs #1–#11 merged; #9 phase-9, #10 v3 docs, #11 L12 upgrade)
+
+Evidence is derived from lock files and the RUNNING containers, not from prose.
+
+--- Framework / PHP (authoritative: container app image) ---
+Laravel Framework        12.62.0     (php artisan --version, in servana-app-1)
+laravel/framework         v12.62.0   (composer.lock)
+composer.json constraint  ^12.61.1
+PHP (container)           8.3.31 NTS  (php -v in servana-app-1)
+PHP (composer platform)   8.3.31      (composer.json config.platform.php)
+PHP (host, NOT used)      8.5.6       (host CLI; CI/Docker enforce 8.3)
+Composer                  2.9.8
+
+R1 (REM-DEP-001) version assertions:
+  Laravel >= 12.60 ...... PASS (12.62.0)
+  PHP 8.3 pinned ........ PASS (php:8.3-fpm-alpine in docker/php.Dockerfile;
+                          php-version '8.3' in .github/workflows/ci.yml;
+                          composer platform 8.3.31)
+  advisory ignore removed PASS (no "audit" key in composer.json;
+                          no CVE-2026-48019/GHSA-5vg9 reference in source)
+
+--- Backend packages (composer.lock) ---
+laravel/sanctum          v4.3.2      (statefulApi() wired in bootstrap/app.php:51)
+laravel/tinker           present
+guzzlehttp/guzzle        7.12.1      (raised in PR #11)
+guzzlehttp/psr7          2.12.1      (raised in PR #11)
+sentry/sentry-laravel    4.26.0
+league/flysystem-aws-s3-v3 ^3.0
+
+--- Frontend packages (package.json / package-lock.json) ---
+Vue                      ^3.5.0
+vue-router               ^4.4.0
+pinia                    ^2.2.0
+axios                    ^1.17.0
+Vite                     ^8.0.16
+Vitest                   ^4.1.8
+TypeScript               ^5.6.0
+@playwright/test         ^1.60.0
+tailwindcss              ^3.4.14
+Node (host)              v24.15.0    (build/test ran on host)
+npm (host)               11.12.1
+Node (CI / nginx build)  20          (actions/setup-node node-version '20';
+                          node:20-alpine spa-build stage in nginx.Dockerfile)
+
+--- Infrastructure (running docker compose services) ---
+PostgreSQL               16.14       (postgres:16-alpine; healthy)
+Redis                    7.4.9       (redis:7-alpine; healthy)
+Meilisearch              1.10.3      (getmeili/meilisearch:v1.10; healthy)
+MinIO (S3)               latest      (healthy)
+Mailpit                  latest      (healthy)
+nginx                    1.27-alpine (nginxinc/nginx-unprivileged; running)
+
+--- Absent subsystems (confirmed via clean schema dump) ---
+idempotency_keys table   ABSENT  -> Phase R4 (REM-IDEMP-001)
+mfa_credentials/totp     ABSENT  -> Phase R3 (REM-MFA-001)

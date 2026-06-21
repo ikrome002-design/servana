@@ -1,0 +1,29 @@
+
+  Migration name .............................................. Batch / Status  
+  0001_01_01_000000_create_users_table ............................... [1] Ran  
+  0001_01_01_000001_create_cache_table ............................... [1] Ran  
+  0001_01_01_000002_create_jobs_table ................................ [1] Ran  
+  2026_06_14_000001_add_auth_columns_to_users_table .................. [1] Ran  
+  2026_06_14_000002_create_magic_login_tokens_table .................. [1] Ran  
+  2026_06_14_000100_add_platform_staff_to_users_table ................ [1] Ran  
+  2026_06_14_000101_create_merchants_table ........................... [1] Ran  
+  2026_06_14_000102_create_merchant_profiles_table ................... [1] Ran  
+  2026_06_14_000103_create_merchant_branches_table ................... [1] Ran  
+  2026_06_14_000104_create_merchant_users_table ...................... [1] Ran  
+  2026_06_14_000105_create_merchant_status_histories_table ........... [1] Ran  
+  2026_06_14_073055_create_personal_access_tokens_table .............. [1] Ran  
+  2026_06_15_000100_expand_merchant_branches_for_phase_7 ............. [1] Ran  
+  2026_06_15_000101_create_branch_user_assignments_table ............. [1] Ran  
+  2026_06_15_000102_create_staff_invitations_table ................... [1] Ran  
+  2026_06_15_000103_create_staff_profiles_table ...................... [1] Ran  
+  2026_06_15_000104_create_staff_history_table ....................... [1] Ran  
+  2026_06_15_000105_create_branch_operating_hours_table .............. [1] Ran  
+  2026_06_15_000106_create_branch_calendar_exceptions_table .......... [1] Ran  
+  2026_06_15_000107_create_branch_day_records_table .................. [1] Ran  
+  2026_06_15_000108_create_branch_cash_ups_table ..................... [1] Ran  
+  2026_06_16_000001_create_permissions_table ......................... [1] Ran  
+  2026_06_16_000002_create_roles_table ............................... [1] Ran  
+  2026_06_16_000003_create_role_permission_assignments_table ......... [1] Ran  
+  2026_06_16_000004_create_merchant_user_permission_overrides_table .. [1] Ran  
+  2026_06_16_000005_create_audit_logs_table .......................... [1] Ran  
+

@@ -123,6 +123,8 @@ The platform has one platform-side role and seven merchant-side roles. Role boun
 
 `PROGRESS.md` and `CHANGELOG.md` report Phases 1–8 merged (PRs #1–#8) and Phase 9 (tenant-scoped data-access hardening) complete locally and awaiting CI/owner approval. **These are claims, not verified facts.** Phase V (Section 79) regenerates this section from repository evidence and produces `docs/verification/as-built-discrepancies.md`. Until Phase V completes, no remediation or feature phase may rely on any row below being correct.
 
+> **Phase V status (2026-06-21, `local_complete` on branch `phase-v-as-built-verification` @ `e8681f6`):** the verification is done; PR #9 (Phase 9) is in fact **merged**, and the framework upgrade landed via **PR #11** (Laravel 12.62.0, PHP 8.3.31). The evidence-based outcome of every row below is recorded in **§4.1** and in `docs/verification/as-built-discrepancies.md` (with supporting `docs/verification/evidence/*` and the seeded `docs/remediation/register.yaml`). The "Status before Phase V" column is retained as the historical pre-verification claim.
+
 Verification statuses used: `Claimed` (reported, not yet independently verified), `Verified`, `Partially verified`, `Not found`, `Contradicted`, `Requires remediation`.
 
 | # | Reported as-built claim (source) | Status before Phase V | Phase V action / expected remediation linkage |
@@ -142,6 +144,28 @@ Verification statuses used: `Claimed` (reported, not yet independently verified)
 | 13 | `PROGRESS.md` Phase 20 still titled "Citrus Billing Engine & commissions" tracking the **pre-correction** roadmap (`PROGRESS`) | Claimed → **Contradicted / superseded** | The pre-correction §27 roadmap is replaced by the corrected roadmap (Section 79–80). Phase 20 is decomposed into 20A–20H (subscription-first). Rewrite `PROGRESS.md` phase list during Phase V/Section 25 progress correction. |
 
 **Rule:** Any row that Phase V finds `Contradicted` or materially `Partially verified` becomes a C0/C1 item in the remediation register (Section 5) before dependent feature work.
+
+### 4.1 Phase V Verified Outcomes (evidence-based, 2026-06-21)
+
+Statuses: `confirmed` / `partially_confirmed` / `contradicted` / `not_verifiable`. Full evidence per row in `docs/verification/as-built-discrepancies.md`.
+
+| # | Claim (short) | Verified status | Evidence | Owning phase |
+|---|---|---|---|---|
+| 1 | Laravel 11 / advisory ignored | **contradicted (superseded)** — Laravel 12.62.0, PHP 8.3.31, advisory removed, audit clean | versions.txt; composer.lock; container | R1 (REM-DEP-001, *partial*) |
+| 2 | Magic Link hashing/expiry/atomic + idle timeout | **confirmed** | MagicLinkTokenService; auth tests | verified |
+| 3 | MFA placeholder only | **confirmed** (no privileged MFA) | no mfa table/route | R3 (REM-MFA-001) |
+| 4 | Tenant model; self-registration only; no SA create route | **confirmed** | route:list; NoPlatformMerchantCreationTest | verified |
+| 5 | Branch/staff schema; hashed invite; lifecycle revocation | **partially_confirmed** (closure stubs deferred) | schema; HR tests | 16–18/20 (feature) |
+| 6 | Roles/permissions 54×8; deny-beats-grant | **partially_confirmed** (matrix < §19) | PermissionMatrixTest | 19 (REM-PERM-001) |
+| 7 | audit_logs append-only hash-chained; trigger | **confirmed** (immutability runtime-proven); coverage partial | schema.sql; DB trigger proof | R2 (REM-AUD-001) |
+| 8 | Tenant isolation scopes/binding/404-403 | **confirmed** (Phase 9 merged); **structure partial** (branch tables lack merchant_id) | Isolation tests; coverage query | R5 (REM-TEN-001) |
+| 9 | idempotency_keys (prior invalid schema) | **contradicted** — table absent entirely | clean schema (grep=0) | R4 (REM-IDEMP-001) |
+| 10 | Money/redaction/correlation/limiters/health | **confirmed** | Phase 3 tests | verified; readiness → R7 |
+| 11 | Frontend foundation | **confirmed** | typecheck/vitest/e2e/build | verified |
+| 12 | Reported test counts; 1 ignored advisory | **confirmed** (238/4 BE, 72 FE, 27 e2e) — advisory sub-claim **contradicted** (0 advisories) | test-results.md | verified |
+| 13 | PROGRESS §27 roadmap (pre-correction) | **contradicted/superseded** | PROGRESS/CHANGELOG/CLAUDE.md | Phase V (REM-DOC-001) |
+
+**Gate:** the pre-feature remediation gate (§5.4) remains **closed-not-satisfied**; open C0 items (REM-DEP-001 partial, REM-AUD-001, REM-MFA-001, REM-IDEMP-001, REM-TEN-001, REM-SESS-001) and C1 REM-OPS-001 block every Section 80 feature phase.
 
 ---
 

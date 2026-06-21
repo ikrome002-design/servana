@@ -1,0 +1,450 @@
+# Servana Remediation Register
+# Seeded from Plan §5.3 (REM-* corrections) + Phase V discoveries.
+# Fields per Plan §5.2 (extended). Statuses are evidence-based only:
+#   not_started | open | in_progress | partially_complete | local_complete |
+#   ci_passed | merged | verified_complete | blocked
+# Gating: PRE_FEATURE_REMEDIATION (§5.4) | FEATURE_DELIVERY_OBLIGATION (§5.4a)
+# Generated: 2026-06-21 on branch phase-v-as-built-verification @ e8681f6.
+
+meta:
+  generated: "2026-06-21"
+  branch: phase-v-as-built-verification
+  head: e8681f6
+  pre_feature_gate_closed: false   # §5.4 — blocks all Section 80 feature phases
+
+items:
+
+  # ---------------- PRE-FEATURE (Phase V + R1–R7 + discovered C0/C1) ----------
+  - id: REM-V-001
+    classification: C0
+    gating_category: PRE_FEATURE_REMEDIATION
+    scope_requirement: "As-built verification baseline + discrepancy register (Plan §79 Phase V, Correction 25)."
+    repository_evidence: "docs/verification/as-built-discrepancies.md; docs/verification/evidence/*; this register."
+    root_cause: "PROGRESS/CHANGELOG narrative used as proof; Plan §4 statuses were unverified claims."
+    affected_files_tables_routes: "docs/verification/*, docs/remediation/register.yaml, docs/PROGRESS.md, docs/CHANGELOG.md, Plan §4, CLAUDE.md."
+    security_data_business_impact: "Without a trustworthy baseline, remediation/feature work could build on false assumptions."
+    precise_correction: "Capture clean-env evidence; regenerate §4 statuses; seed register; regenerate PROGRESS to v3 roadmap."
+    migration_impact: "none (verification only)."
+    test_plan: "Full suite re-run in clean containers (see evidence/test-results.md)."
+    proof_artifact: "docs/proof/phase-v.md"
+    owner: "Phase V"
+    completion_commit: "phase-v branch (pending push)"
+    reviewer: "TBD"
+    status: local_complete
+
+  - id: REM-DEP-001
+    classification: C0
+    gating_category: PRE_FEATURE_REMEDIATION
+    scope_requirement: "Upgrade Laravel to 12.60+, pin PHP 8.3 across all images, remove advisory ignore, CR/LF email regression tests (Plan §79 R1; ADR-001; Correction 5)."
+    repository_evidence: >
+      DONE: laravel/framework v12.62.0 (composer.lock + container); PHP 8.3.31
+      pinned (docker/php.Dockerfile php:8.3-fpm-alpine, CI php-version '8.3',
+      composer platform 8.3.31); composer.json advisory ignore removed;
+      composer audit --locked clean; tests/Feature/Security/EmailHeaderInjectionTest.php
+      (CR/LF) + SignedUrlIntegrityTest.php added by PR #11 (cbcf50c); docker
+      images build clean.
+      MISSING: docs/architecture/adr/0001-* (ADR-001); docs/proof/phase-r1.md;
+      upgrade notes; formal R1 dependency-audit evidence doc.
+    root_cause: "Framework upgrade landed as a security PR (#11) rather than the formal R1 phase, so phase artifacts (ADR/proof/notes) were not produced."
+    affected_files_tables_routes: "composer.json, composer.lock, docker/php.Dockerfile, .github/workflows/ci.yml, tests/Feature/Security/{EmailHeaderInjection,SignedUrlIntegrity}Test.php."
+    security_data_business_impact: "Core advisories (CR/LF email, signed-URL path confusion) are remediated; residual is governance/evidence completeness, not an open vulnerability."
+    precise_correction: "Run formal R1: author ADR-001, write docs/proof/phase-r1.md + upgrade notes, attach composer audit evidence; confirm CR/LF + signed-URL regression tests in the R1 proof. Do NOT auto-close on PR #11 alone."
+    migration_impact: "none beyond framework defaults (expand-and-contract if any)."
+    test_plan: "Full baseline green in clean containers; composer audit zero unapproved; CR/LF + signed-URL regression pass."
+    proof_artifact: "docs/proof/phase-r1.md (to be created in R1)"
+    owner: "R1"
+    completion_commit: "partial: cbcf50c (#11)"
+    reviewer: "TBD"
+    status: partially_complete   # R1 remains REQUIRED — missing ADR/proof/notes
+
+  - id: REM-AUD-001
+    classification: C0
+    gating_category: PRE_FEATURE_REMEDIATION
+    scope_requirement: "Core audit-event completeness + hash-chain verifier + masked read API/policies (Plan §79 R2; ADR-008; Corrections 6,22)."
+    repository_evidence: "audit_logs has previous_hash/hash char(64); trigger audit_logs_block_mutation() blocks UPDATE/DELETE (runtime-proven). Interim AuthEventLogger still in use; no verifier command; no masked read API; partial event coverage (only unauthorized_access + override events)."
+    root_cause: "Phase 8/9 built the immutable substrate; coverage + verifier deferred by design."
+    affected_files_tables_routes: "audit_logs; app/Domain/Audit/*; AuditRecorder/DatabaseAuditRecorder; auth/invitation/membership/role/branch/staff lifecycle events."
+    security_data_business_impact: "Tamper detection (verifier) and complete forensic trail absent; masked audit reads not yet enforced."
+    precise_correction: "Replace interim logging with AuditRecorder for all core events; add hash-chain verifier command; add masked read API + branch/platform policies; audit_flagged_events seam."
+    migration_impact: "possible audit_flagged_events seam (additive)."
+    test_plan: "event-coverage tests; tamper-verification command; masked-read denial tests."
+    proof_artifact: "docs/proof/phase-r2.md"
+    owner: "R2"
+    completion_commit: null
+    reviewer: "TBD"
+    status: open
+
+  - id: REM-MFA-001
+    classification: C0
+    gating_category: PRE_FEATURE_REMEDIATION
+    scope_requirement: "TOTP enrollment, encrypted secrets, hashed recovery codes, mandatory MFA (Super Admin/Merchant Admin/Finance), step-up freshness (Plan §79 R3; Correction 7)."
+    repository_evidence: "No mfa_credentials/totp tables in clean schema; no MFA route; no MFA middleware on privileged routes; only a safe MfaController placeholder (mfa_not_enabled)."
+    root_cause: "MFA explicitly deferred since Phase 5 (placeholder only)."
+    affected_files_tables_routes: "new mfa_credentials, mfa_recovery_codes; privileged routes; auth pipeline (Plan §9.4 order)."
+    security_data_business_impact: "Privileged accounts protected only by Magic Link; no step-up on billing/refund/period/payout/reconciliation actions."
+    precise_correction: "Implement TOTP enroll/confirm; mandatory MFA for privileged roles; step-up freshness per designated action."
+    migration_impact: "additive: mfa_credentials (encrypted), mfa_recovery_codes (hashed)."
+    test_plan: "privileged routes deny absent/stale MFA; recovery-code single-use; step-up per action; secrets never logged."
+    proof_artifact: "docs/proof/phase-r3.md"
+    owner: "R3"
+    completion_commit: null
+    reviewer: "TBD"
+    status: open
+
+  - id: REM-IDEMP-001
+    classification: C0
+    gating_category: PRE_FEATURE_REMEDIATION
+    scope_requirement: "Corrected idempotency_keys schema + middleware + financial-route coverage test + provider-callback dedupe seams (Plan §79 R4; ADR-003; Correction 3)."
+    repository_evidence: "No idempotency_keys table in clean schema (grep=0); no idempotency middleware; no financial routes yet."
+    root_cause: "Idempotency store not yet built; the prior invalid definition (no key_hash) does not exist in repo."
+    affected_files_tables_routes: "new idempotency_keys (Plan §13.5); idempotency middleware (§24.4); future financial routes."
+    security_data_business_impact: "Without it, financial mutations (R-PAY/MPESA phases) could double-apply on retry/duplicate callback."
+    precise_correction: "Build corrected idempotency_keys schema + middleware + FinancialRouteIdempotencyCoverageTest + provider dedupe seams."
+    migration_impact: "additive: idempotency_keys."
+    test_plan: "same key+request → one effect; key+diff request → 409; concurrent → one effect; crashed-worker lock recovery; replay redaction."
+    proof_artifact: "docs/proof/phase-r4.md"
+    owner: "R4"
+    completion_commit: null
+    reviewer: "TBD"
+    status: open
+
+  - id: REM-TEN-001
+    classification: C0
+    gating_category: PRE_FEATURE_REMEDIATION
+    scope_requirement: "Add merchant_id to branch-owned tables where missing; backfill; indexes/constraints; static-analysis/source-scan; route-binding tenant safety (Plan §79 R5; ADR-002; Correction 7)."
+    repository_evidence: "Tenant-column coverage query: branch_calendar_exceptions, branch_cash_ups, branch_day_records, branch_operating_hours, branch_user_assignments carry branch_id but NOT merchant_id. Global scopes + scoped binding + PHPStan rules present (Phase 9, PR #9) and tested."
+    root_cause: "Phase 9 derived merchant isolation for branch-owned tables via a branch→merchant subquery instead of a direct merchant_id column."
+    affected_files_tables_routes: "5 branch-owned tables; BelongsToBranch; BranchScope; route bindings for branch-owned models."
+    security_data_business_impact: "Any future directly-route-bound branch-owned table without merchant_id could bypass the merchant binding audit."
+    precise_correction: "Expand-and-contract add merchant_id to the 5 tables; backfill from parent branch; indexes/constraints; extend source-scan; verify scoped-binding audit."
+    migration_impact: "expand-and-contract: add+backfill merchant_id on 5 tables."
+    test_plan: "cross-tenant + cross-branch suites; TenantColumnCoverageTest; scoped-binding audit proof."
+    proof_artifact: "docs/proof/phase-r5.md"
+    owner: "R5"
+    completion_commit: null
+    reviewer: "TBD"
+    status: open
+
+  - id: REM-SESS-001
+    classification: C0
+    gating_category: PRE_FEATURE_REMEDIATION
+    scope_requirement: "Session/token/Magic-Link/invitation/cache revocation; active-membership+role check on every authenticated request; mid-session suspension tests; 404/403 posture (Plan §79 R6; Correction 7)."
+    repository_evidence: "StaffLifecycleService revokes sessions + unused links + pending invitations (StaffLifecycleRevocationTest/StaffSuspensionTest/SuspendedMerchantTest passing). Per-request re-check currently via ResolveTenantContext + EnsureMerchantActive; no dedicated per-request active-role re-check; cache invalidation not explicit."
+    root_cause: "Revocation built at lifecycle-event time; per-request freshness + cache invalidation deferred to R6."
+    affected_files_tables_routes: "auth middleware pipeline; sessions; magic_login_tokens; staff_invitations; cache."
+    security_data_business_impact: "Edge: a role downgrade (not full suspension) mid-session may not be re-checked until context re-resolves."
+    precise_correction: "Add active-membership+active-role check to every authenticated request; verify token/link/invitation/cache invalidation; document 404/403 posture."
+    migration_impact: "none expected."
+    test_plan: "mid-session suspension/deactivation → next request denied; revoked links/invitations unusable."
+    proof_artifact: "docs/proof/phase-r6.md"
+    owner: "R6"
+    completion_commit: null
+    reviewer: "TBD"
+    status: open
+
+  - id: REM-OPS-001
+    classification: C1
+    gating_category: PRE_FEATURE_REMEDIATION
+    scope_requirement: "Split liveness/readiness; production deps required in readiness; isolate Redis/cache/rate-limit prefixes in tests; align PHP/Node/Composer; brand contrast ADR (Plan §79 R7; ADR-009)."
+    repository_evidence: "/health + /health/deep exist (DeepHealthTest passing); /health/deep treats Meilisearch + S3 as optional. No ADR-009 (no adr dir). Host PHP 8.5/Node 24 differ from pinned 8.3/Node 20 (CI/Docker enforce pinned)."
+    root_cause: "Readiness probe intentionally lenient for CI; ADRs never created; host toolchain drift."
+    affected_files_tables_routes: "HealthController; config/logging; CI; docs/architecture/adr/."
+    security_data_business_impact: "Orchestrator may route traffic to an instance with a failed prod dependency; test cross-talk risk via shared cache prefixes."
+    precise_correction: "Make prod deps required in readiness (503 on failure); isolate test cache/redis/rate-limit prefixes; align versions; author ADR-009."
+    migration_impact: "none."
+    test_plan: "prod-like dependency failure → 503; repeated parallel CI stable; rate-limit isolation."
+    proof_artifact: "docs/proof/phase-r7.md"
+    owner: "R7"
+    completion_commit: null
+    reviewer: "TBD"
+    status: open
+
+  - id: REM-DOC-001
+    classification: C1
+    gating_category: PRE_FEATURE_REMEDIATION
+    scope_requirement: "Regenerate progress/changelog/CLAUDE.md/Plan §4 onto the v3 roadmap; remove stale §27/Laravel-11 references (Plan §4 row 13; Correction 25)."
+    repository_evidence: "docs/PROGRESS.md + docs/CHANGELOG.md track old §27 'Phases 1–25'; in-repo CLAUDE.md pins 'Laravel 11' and '§27 roadmap (Phases 1–25)'; Plan §4 statuses were pre-verification."
+    root_cause: "Docs not regenerated when v3 plan (PR #10) and L12 upgrade (PR #11) merged."
+    affected_files_tables_routes: "docs/PROGRESS.md, docs/CHANGELOG.md, CLAUDE.md, Plan §4."
+    security_data_business_impact: "Misleading roadmap/runtime references could misdirect future phases."
+    precise_correction: "Regenerate PROGRESS to v3 (Phase V + R1–R7 + §80 features, retain historical 1–9); add Phase V CHANGELOG; minimal CLAUDE.md stack/roadmap correction; refresh Plan §4 statuses."
+    migration_impact: "none."
+    test_plan: "n/a (documentation)."
+    proof_artifact: "docs/proof/phase-v.md"
+    owner: "Phase V"
+    completion_commit: "phase-v branch (pending push)"
+    reviewer: "TBD"
+    status: local_complete
+
+  # ---------------- FEATURE-DELIVERY OBLIGATIONS (gated by owning phase) -------
+  - id: REM-DDL-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Per-table data-dictionary completeness; DataDictionaryCoverageTest; TenantColumnCoverageTest; PostgreSQL migration tests (Corrections 1,2)."
+    repository_evidence: "No docs/db data-dictionary spec files; no coverage guards yet. 26 migrations apply clean on PG16."
+    root_cause: "Data-dictionary substrate not built (Phase 13)."
+    affected_files_tables_routes: "all tables; CI coverage guards."
+    security_data_business_impact: "Schema drift / missing tenant columns could go undetected."
+    precise_correction: "Add §13.2 spec files + coverage guards per owning phase."
+    migration_impact: "per owning phase."
+    test_plan: "DataDictionaryCoverageTest; TenantColumnCoverageTest."
+    proof_artifact: "per owning phase"
+    owner: "Phase 13 substrate + each owning phase"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-ENT-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Add missing entities (commission_rules, commission_ledger, salary_ledger, finance_exports, free_period_offers, file+SMS records, reconciliation records, Correction-3 scope entities) (Correction 2)."
+    repository_evidence: "None of these tables exist in the clean schema."
+    root_cause: "Feature tables not yet built."
+    affected_files_tables_routes: "many new tables across §13.7–13.16."
+    security_data_business_impact: "Feature scope unmet until built (not a defect in existing code)."
+    precise_correction: "Build per owning feature phases."
+    migration_impact: "additive per phase."
+    test_plan: "per owning phase."
+    proof_artifact: "per owning phase"
+    owner: "owning feature phases"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-ENUM-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Canonical billing-mode enum across PHP/DB/API/TS/seed/audit/tests; expand-and-contract data migration (Correction 4)."
+    repository_evidence: "No billing-mode enum / billing tables yet."
+    root_cause: "Billing not yet built."
+    affected_files_tables_routes: "billing enums, subscription tables."
+    security_data_business_impact: "n/a until billing."
+    precise_correction: "Implement in 20A/20E."
+    migration_impact: "expand-and-contract."
+    test_plan: "canonical-enum parity (mode + interval)."
+    proof_artifact: "per owning phase"
+    owner: "20A/20E"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-ROUTE-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Route classifications + RouteSecurityContractTest; class-specific acceptance matrix (Corrections 10,11)."
+    repository_evidence: "Routes carry middleware but no classification registry/metadata; no RouteSecurityContractTest."
+    root_cause: "API foundation (Phase 10) not started."
+    affected_files_tables_routes: "routes/api.php; new route-classification registry."
+    security_data_business_impact: "No automated guarantee every non-GET route has required controls."
+    precise_correction: "Build classification metadata + RouteSecurityContractTest in Phase 10."
+    migration_impact: "none."
+    test_plan: "RouteSecurityContractTest."
+    proof_artifact: "docs/proof/phase-10.md"
+    owner: "Phase 10"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-MIG-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Expand-and-contract migration strategy + migration manifest; remove reliance on destructive down() (Correction 12; ADR-004)."
+    repository_evidence: "Migrations are forward-only in practice but no manifest convention / lint."
+    root_cause: "Migration-manifest convention is Phase 10."
+    affected_files_tables_routes: "database/migrations; CI migration-manifest lint."
+    security_data_business_impact: "Production rollback safety not formalized."
+    precise_correction: "Add manifest + lint in Phase 10; apply across phases."
+    migration_impact: "process."
+    test_plan: "migration-manifest lint; PG migration tests."
+    proof_artifact: "docs/proof/phase-10.md"
+    owner: "Phase 10 + all phases"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-FILE-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "File/media foundation (schema, pipeline, scanning, signed downloads, authorization, jobs, tests) (Correction 13)."
+    repository_evidence: "No uploaded_files/file_scan_events tables; only logo_path/profile_photo_path metadata seams."
+    root_cause: "File domain (Phase 10F) not started."
+    affected_files_tables_routes: "new uploaded_files, file_scan_events; file pipeline + jobs."
+    security_data_business_impact: "No upload pipeline yet (no upload route exists)."
+    precise_correction: "Build Phase 10F before any feature stores files."
+    migration_impact: "additive."
+    test_plan: "MIME spoof, EICAR, oversize, cross-tenant download, signed-URL expiry."
+    proof_artifact: "docs/proof/phase-10f.md"
+    owner: "Phase 10F"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-MPESA-001
+    classification: C0
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Complete M-Pesa stateful domain + provider-supported callback security; no manual Super-Admin payment recording (Corrections 14,15; ADR-006)."
+    repository_evidence: "No M-Pesa tables/routes exist."
+    root_cause: "Phase 20D not started."
+    affected_files_tables_routes: "mpesa_* tables; STK/callback routes."
+    security_data_business_impact: "n/a until built; C0 obligation at 20D exit."
+    precise_correction: "Build in 20D per §§55–58."
+    migration_impact: "additive."
+    test_plan: "full §58 list."
+    proof_artifact: "docs/proof/phase-20d.md"
+    owner: "20D"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-PERM-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Complete canonical permission matrix + parity tests + role-boundary tests (Correction 16)."
+    repository_evidence: "Registry = 54 keys × 8 roles (PermissionMatrixTest DB==registry); canonical §19 matrix is larger; no docs/auth/permission-matrix.yaml parity test."
+    root_cause: "Baseline registry shipped Phase 8; canonical reconciliation deferred."
+    affected_files_tables_routes: "PermissionRegistry; permissions/roles tables; docs/auth/permission-matrix.yaml."
+    security_data_business_impact: "Some canonical permission keys not yet enforced (their routes arrive with owning phases)."
+    precise_correction: "Reconcile registry to canonical matrix; add parity test (Correction 16.5)."
+    migration_impact: "additive seed."
+    test_plan: "permission-matrix parity; role-boundary tests."
+    proof_artifact: "docs/proof/phase-19.md"
+    owner: "Phase 19 + owning phases"
+    completion_commit: null
+    reviewer: "TBD"
+    status: partially_complete
+
+  - id: REM-SM-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Complete state-machine catalogue with transition actions; no direct status assignment (Correction 17)."
+    repository_evidence: "Status fields are enum-backed + DB CHECKs (18 CHECK constraints); per-domain state machines arrive with owning phases."
+    root_cause: "Feature state machines not yet built."
+    affected_files_tables_routes: "status columns across domains."
+    security_data_business_impact: "n/a until features."
+    precise_correction: "Implement machines per owning phase."
+    migration_impact: "per phase."
+    test_plan: "valid/invalid transition tests per machine."
+    proof_artifact: "per owning phase"
+    owner: "each owning phase"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-PAY-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Full merchant-client payment domain (methods, allocation, maker/checker, receipts, refunds) (Correction 18)."
+    repository_evidence: "No payment/receipt/refund tables; branch_cash_ups is a Phase 7 seam only."
+    root_cause: "Phases 18A/18B not started."
+    affected_files_tables_routes: "payment_* / receipts / refunds tables + routes."
+    security_data_business_impact: "n/a until built."
+    precise_correction: "Build in 18A/18B."
+    migration_impact: "additive."
+    test_plan: "§18A/18B test lists."
+    proof_artifact: "docs/proof/phase-18.md"
+    owner: "18A/18B"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-COMP-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Full compensation domain (models, effective dating, ledgers, payouts, earnings) (Correction 19)."
+    repository_evidence: "No compensation tables exist."
+    root_cause: "Phases 20F/20G/20H not started."
+    affected_files_tables_routes: "compensation/ledger/payout tables + routes."
+    security_data_business_impact: "n/a until built."
+    precise_correction: "Build in 20F/20G/20H."
+    migration_impact: "additive."
+    test_plan: "earn-at-validation, reversal, accrual idempotency, payout step-up."
+    proof_artifact: "docs/proof/phase-20fgh.md"
+    owner: "20F/20G/20H"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-SMS-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Personnel served-client SMS with contact-protection controls; no contact export (Correction 20; ADR-010)."
+    repository_evidence: "No SMS tables/routes; no contact-export route (confirmed absent in route:list)."
+    root_cause: "Phase 21S not started."
+    affected_files_tables_routes: "personnel_sms_* tables + routes."
+    security_data_business_impact: "n/a until built; the no-export invariant already holds."
+    precise_correction: "Build in 21S with own-scope/consent/entitlement gating."
+    migration_impact: "additive."
+    test_plan: "Correction 20.8 list."
+    proof_artifact: "docs/proof/phase-21s.md"
+    owner: "21S"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-REP-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Report catalogue with formulas, scope, masking, scheduled PDFs (Correction 21)."
+    repository_evidence: "No reporting tables/jobs."
+    root_cause: "Phase 21N not started."
+    affected_files_tables_routes: "scheduled_report_runs; report read models."
+    security_data_business_impact: "n/a until built."
+    precise_correction: "Build in 21N + owning phases."
+    migration_impact: "additive."
+    test_plan: "formula correctness (partial/split/refund); PDF idempotency; masking."
+    proof_artifact: "docs/proof/phase-21n.md"
+    owner: "21N + owning phases"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-SCR-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Complete screen inventory + per-screen specifications (Correction 22)."
+    repository_evidence: "SPA foundation + Phase 6–8 screens exist; no §27.1 per-screen spec files; role navigation not yet verbatim-final."
+    root_cause: "Phase 11 not started."
+    affected_files_tables_routes: "resources/spa; docs/screens/*."
+    security_data_business_impact: "n/a (UX completeness)."
+    precise_correction: "Build screen inventory + specs in Phase 11 + owning phases."
+    migration_impact: "none."
+    test_plan: "role-navigation matches scope; responsive/dark/axe on foundation screens."
+    proof_artifact: "docs/proof/phase-11.md"
+    owner: "Phase 11 + owning phases"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-TRACE-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Requirement traceability matrix + CI enforcement (Correction 23; Plan §85)."
+    repository_evidence: "docs/traceability/servana-requirements.csv seeded in Phase V (foundation rows); CI enforcement not yet wired."
+    root_cause: "Traceability matrix introduced by v3 plan; CI gate is Phase 23."
+    affected_files_tables_routes: "docs/traceability/servana-requirements.csv; CI."
+    security_data_business_impact: "Launch requirements could lack test/evidence mapping."
+    precise_correction: "Maintain CSV every feature PR; enforce in CI; gate at Phase 23."
+    migration_impact: "none."
+    test_plan: "traceability coverage report."
+    proof_artifact: "docs/proof/phase-23.md"
+    owner: "continuous; gated at Phase 23"
+    completion_commit: null
+    reviewer: "TBD"
+    status: in_progress
+
+  - id: REM-PRODOPS-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Measurable SLOs, topology, backup/DR, alerts, runbooks (Correction 24)."
+    repository_evidence: "docker-compose.prod.yml exists; no SLOs/alerts/backup-DR/runbooks."
+    root_cause: "Phase 25 not started."
+    affected_files_tables_routes: "infra; observability; runbooks."
+    security_data_business_impact: "n/a until deployment phase."
+    precise_correction: "Build in Phase 25."
+    migration_impact: "none."
+    test_plan: "deployment smoke; restore exercise; alert firing."
+    proof_artifact: "docs/proof/phase-25.md"
+    owner: "Phase 25"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started

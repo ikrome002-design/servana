@@ -1,9 +1,50 @@
 # Changelog
 
 All notable changes to Servana by Citrus. Format loosely follows
-[Keep a Changelog](https://keepachangelog.com/); phases map to Plan §27.
+[Keep a Changelog](https://keepachangelog.com/); phases now map to the active v3
+roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
+
+### Phase V — As-built verification (`phase-v-as-built-verification`)
+
+#### Added
+- Verification evidence (clean-environment, container-derived):
+  `docs/verification/evidence/{versions.txt,migrations.txt,schema.sql,routes.json,test-results.md,security-results.md}`.
+- `docs/verification/as-built-discrepancies.md` — evidence-based status for every
+  Plan §4 claim (confirmed/partially_confirmed/contradicted/not_verifiable).
+- `docs/remediation/register.yaml` — seeded all Plan §5.3 items + Phase V
+  discoveries (REM-DOC-001) with evidence-based statuses and gating categories.
+- `docs/traceability/servana-requirements.csv` — Plan §85 traceability matrix
+  (foundation rows for implemented domains).
+- `docs/proof/phase-v.md`.
+
+#### Verified (no code changes)
+- Runtime/deps from lock files **and running containers**: Laravel **12.62.0**,
+  PHP **8.3.31**, Sanctum 4.3.2, PostgreSQL 16.14, Redis 7.4.9, Meilisearch
+  1.10.3; PHP 8.3 pinned across Dockerfile/CI/composer; `composer audit` clean
+  (advisory ignore removed).
+- Clean `migrate:fresh` (26 migrations) on a disposable DB; audit_logs
+  immutability trigger runtime-proven (UPDATE/DELETE blocked); 18 CHECK / 40 FK /
+  34 UNIQUE / 0 exclusion constraints.
+- Forbidden routes proven absent (Super-Admin merchant creation; personnel
+  contact export). Full suite re-run: backend **238 passed / 4 skipped**,
+  frontend **72**, e2e **27** (axe AA); Pint/Larastan/validate/audit; `npm audit`
+  0; gitleaks clean; both Docker images build.
+
+#### Findings / deferrals
+- C0 pre-feature items open: REM-DEP-001 (**partial** — L12 upgrade landed via PR
+  #11 but ADR-001/proof/notes missing, R1 still required), REM-AUD-001,
+  REM-MFA-001, REM-IDEMP-001 (no idempotency_keys table), REM-TEN-001 (branch
+  tables lack `merchant_id`), REM-SESS-001. C1: REM-OPS-001, REM-DOC-001 (closed).
+- The pre-feature remediation gate (§5.4) is **not** closed; no Section 80
+  feature phase may begin.
+
+#### Documentation
+- Plan §4 refreshed with §4.1 verified outcomes; `CLAUDE.md` stack (Laravel
+  11→12.62) and roadmap (§27 → §§79–80) references corrected; `PROGRESS.md`
+  regenerated onto the v3 roadmap (Phase 9 → merged #9; #11 L12 upgrade; #10 v3
+  docs); this changelog.
 
 ### Phase 9 — Tenant-scoped data access hardening (`phase-9-tenant-scoped-data-access-hardening`)
 
