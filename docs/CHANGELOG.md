@@ -6,7 +6,48 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase R1 — Dependency & runtime security (`phase-r1-dependency-runtime-security`)
+
+Closes (locally) REM-DEP-001 — formalizes and re-verifies the Laravel 12 upgrade
+delivered by PR #11 (`cbcf50c`). **No application/source/`composer.*`/Docker/CI
+code changed in R1**; it adds the missing governance/evidence and re-runs the
+gates.
+
+#### Added
+- `docs/architecture/adr/0001-framework-upgrade.md` (**ADR-001**): Laravel 12.60+
+  on PHP 8.3 canonical (Docker), advisory-removal + dependency rationale,
+  runtime parity, schema compatibility, rollout, rollback limitation,
+  forward-repair, consequences. (Laravel 12 is **not** LTS.)
+- `docs/operations/laravel-12-upgrade.md`: before/after versions, PR #11 + merge
+  commit, packages changed, the `LogUnauthorizedAttempt` compat change, security
+  tests, rebuild procedure incl. the **servana-vendor named-volume** warning,
+  DB/cache results, deploy sequence, rollback, residual risks.
+- `docs/proof/phase-r1.md`: full R1 verification evidence.
+
+#### Verified (no code changes)
+- Laravel **12.62.0** (≥12.60); PHP **8.3.31** across app/worker/scheduler
+  (same image), CI, and prod compose; composer platform 8.3.31.
+- `composer validate --strict` valid; `composer audit --locked` **0 advisories,
+  0 suppressions**; guzzle 7.12.1 + psr7 2.12.1 retained.
+- Security regressions: `EmailHeaderInjectionTest` (4) — embedded CR/LF rejected;
+  `SignedUrlIntegrityTest` (4) — valid accepted, query-tamper/path-confusion/
+  expiry rejected.
+- DB/cache: clean disposable PG16 `migrate:fresh --seed` (26 + PermissionSeeder);
+  Redis ping/round-trip; `cache:clear`; worker/scheduler boot on 8.3 image. No
+  schema change from the upgrade.
+- Full gates green: pint (254), Larastan L8 (0), backend **238 passed / 4
+  skipped** (serial + parallel), vitest **72**, build, lint/typecheck (0),
+  `npm audit` 0, gitleaks clean, both Docker images build.
+
+#### Known deferrals
+- e2e: first run 26/1 (intermittent `auth-magic-link` flake), reruns 27/0 —
+  recorded, not erased; stabilization → Phase 23.
+- REM-DEP-001 = `local_complete`; `verified_complete` only after PR merge, green
+  CI, and the Plan-required **second reviewer**. Readiness/env-parity (R7), audit
+  (R2), MFA (R3), idempotency (R4), tenant-schema (R5), revocation (R6) remain.
+
 ### Phase V — As-built verification (`phase-v-as-built-verification`)
+*(Merged via PR #12, commit `c58b64a`; CI Backend/Frontend/Security/Docker passed.)*
 
 #### Added
 - Verification evidence (clean-environment, container-derived):

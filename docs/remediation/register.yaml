@@ -4,12 +4,13 @@
 #   not_started | open | in_progress | partially_complete | local_complete |
 #   ci_passed | merged | verified_complete | blocked
 # Gating: PRE_FEATURE_REMEDIATION (§5.4) | FEATURE_DELIVERY_OBLIGATION (§5.4a)
-# Generated: 2026-06-21 on branch phase-v-as-built-verification @ e8681f6.
+# Generated: 2026-06-21 (Phase V). Updated: 2026-06-21 (R1).
 
 meta:
   generated: "2026-06-21"
-  branch: phase-v-as-built-verification
-  head: e8681f6
+  last_updated: "2026-06-21 (R1)"
+  branch: phase-r1-dependency-runtime-security
+  base: c58b64a   # merged main (PR #12, Phase V)
   pre_feature_gate_closed: false   # §5.4 — blocks all Section 80 feature phases
 
 items:
@@ -28,34 +29,40 @@ items:
     test_plan: "Full suite re-run in clean containers (see evidence/test-results.md)."
     proof_artifact: "docs/proof/phase-v.md"
     owner: "Phase V"
-    completion_commit: "phase-v branch (pending push)"
-    reviewer: "TBD"
-    status: local_complete
+    completion_commit: "c58b64a (PR #12)"
+    reviewer: "merged via PR #12"
+    status: merged   # CI Backend/Frontend/Security/Docker passed; merged to main
 
   - id: REM-DEP-001
     classification: C0
     gating_category: PRE_FEATURE_REMEDIATION
     scope_requirement: "Upgrade Laravel to 12.60+, pin PHP 8.3 across all images, remove advisory ignore, CR/LF email regression tests (Plan §79 R1; ADR-001; Correction 5)."
     repository_evidence: >
-      DONE: laravel/framework v12.62.0 (composer.lock + container); PHP 8.3.31
-      pinned (docker/php.Dockerfile php:8.3-fpm-alpine, CI php-version '8.3',
-      composer platform 8.3.31); composer.json advisory ignore removed;
-      composer audit --locked clean; tests/Feature/Security/EmailHeaderInjectionTest.php
-      (CR/LF) + SignedUrlIntegrityTest.php added by PR #11 (cbcf50c); docker
-      images build clean.
-      MISSING: docs/architecture/adr/0001-* (ADR-001); docs/proof/phase-r1.md;
-      upgrade notes; formal R1 dependency-audit evidence doc.
-    root_cause: "Framework upgrade landed as a security PR (#11) rather than the formal R1 phase, so phase artifacts (ADR/proof/notes) were not produced."
-    affected_files_tables_routes: "composer.json, composer.lock, docker/php.Dockerfile, .github/workflows/ci.yml, tests/Feature/Security/{EmailHeaderInjection,SignedUrlIntegrity}Test.php."
-    security_data_business_impact: "Core advisories (CR/LF email, signed-URL path confusion) are remediated; residual is governance/evidence completeness, not an open vulnerability."
-    precise_correction: "Run formal R1: author ADR-001, write docs/proof/phase-r1.md + upgrade notes, attach composer audit evidence; confirm CR/LF + signed-URL regression tests in the R1 proof. Do NOT auto-close on PR #11 alone."
-    migration_impact: "none beyond framework defaults (expand-and-contract if any)."
-    test_plan: "Full baseline green in clean containers; composer audit zero unapproved; CR/LF + signed-URL regression pass."
-    proof_artifact: "docs/proof/phase-r1.md (to be created in R1)"
+      IMPLEMENTATION (PR #11, merge cbcf50c): laravel/framework v12.62.0
+      (composer.lock + container php artisan --version); PHP 8.3.31 verified in
+      app+worker+scheduler (same servana-app image via &app-build anchor),
+      CI php-version '8.3', prod compose target prod (8.3 base), composer
+      platform 8.3.31; composer.json advisory ignore removed; composer audit
+      --locked = 0 advisories / 0 suppressions; guzzle 7.12.1 + psr7 2.12.1
+      retained; tests/Feature/Security/EmailHeaderInjectionTest.php (4 pass) +
+      SignedUrlIntegrityTest.php (4 pass); L12 compat = LogUnauthorizedAttempt
+      instanceof-Route guard removed (behavior unchanged).
+      R1 GOVERNANCE (this branch): ADR-001 + upgrade notes + R1 proof authored;
+      clean disposable PG16 migrate:fresh --seed OK; Redis ping/round-trip OK;
+      full baselines green (BE 238/4, FE 72, e2e 27 after 1 flake rerun, pint,
+      stan L8, npm/composer audit, gitleaks, both docker images build).
+    root_cause: "Framework upgrade landed as a security PR (#11) rather than the formal R1 phase, so phase artifacts (ADR/proof/notes) were not produced. R1 supplies them and re-verifies; no re-upgrade performed."
+    affected_files_tables_routes: "IMPL: composer.json, composer.lock, docker/php.Dockerfile, .github/workflows/ci.yml, app/Domain/Tenancy/Services/LogUnauthorizedAttempt.php, tests/Feature/Security/{EmailHeaderInjection,SignedUrlIntegrity}Test.php (PR #11). R1 DOCS: docs/architecture/adr/0001-framework-upgrade.md, docs/operations/laravel-12-upgrade.md, docs/proof/phase-r1.md (no code changed in R1)."
+    security_data_business_impact: "All five advisories (guzzle x2, psr7, framework signed-URL, framework CR/LF email) remediated; zero suppressions. Residual was governance/evidence completeness — now closed locally."
+    precise_correction: "R1: authored ADR-001 + docs/operations/laravel-12-upgrade.md + docs/proof/phase-r1.md; re-verified versions/parity/audit/security-regressions/DB+cache/full-suite/images. composer.json/lock unchanged (no R1 failure)."
+    migration_impact: "none (upgrade requires no schema change; verified by clean migrate:fresh --seed)."
+    test_plan: "Full baseline green in clean containers; composer audit zero unapproved; CR/LF + signed-URL regression pass. ALL PASSED (see docs/proof/phase-r1.md)."
+    proof_artifact: "docs/proof/phase-r1.md; docs/architecture/adr/0001-framework-upgrade.md; docs/operations/laravel-12-upgrade.md"
     owner: "R1"
-    completion_commit: "partial: cbcf50c (#11)"
-    reviewer: "TBD"
-    status: partially_complete   # R1 remains REQUIRED — missing ADR/proof/notes
+    completion_commit: "cbcf50c (#11 impl) + phase-r1 branch (governance, pending push/CI/2nd-review)"
+    rollback_forward_repair: "Image rollback within schema compatibility only (no schema change); rollback reintroduces advisories (emergency-only); forward-repair via new patched image; no destructive down()."
+    reviewer: "TBD — security-sensitive PR requires a SECOND reviewer before verified_complete"
+    status: local_complete   # verified_complete only after PR merge + green CI + 2nd review
 
   - id: REM-AUD-001
     classification: C0
