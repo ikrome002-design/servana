@@ -15,9 +15,10 @@ relevant section before each task.
 - **Operator:** Citrus Labs Limited.
 - **Project root:** `C:\Users\nderu\Documents\Development\Product\Servana`
   (all paths below are relative to this root).
-- **Stack (pinned, Plan §2 AS-1):** Laravel 11 / PHP 8.3 · Vue 3 + TypeScript +
-  Pinia · Tailwind CSS · PostgreSQL 16 · Redis 7 · Meilisearch · S3-compatible
-  storage · Docker · GitHub Actions. **No jQuery. Ever.**
+- **Stack (pinned, Plan §7 A-09 / ADR-001):** Laravel 12 (installed 12.62.0) /
+  PHP 8.3 · Vue 3 + TypeScript + Pinia · Tailwind CSS · PostgreSQL 16 · Redis 7 ·
+  Meilisearch · S3-compatible storage · Docker · GitHub Actions. **No jQuery.
+  Ever.** (Upgraded from Laravel 11 in PR #11; do not call any version "LTS".)
 - **Auth model:** Magic Link only, for all users (Plan §9). No passwords exist.
 - **Currency/time:** KES as integer minor units; timestamps UTC; business-day
   logic in `Africa/Nairobi`.
@@ -98,9 +99,13 @@ Test result · Proof of resolution · Remaining risk.
 
 ## 5. Phase Workflow
 
-- Execute the Plan §27 roadmap **strictly in order** (Phases 1–25). One phase
-  = one reviewed branch/PR. Do not start phase N+1 until phase N's acceptance
-  criteria are demonstrably met and the human approves.
+- Execute the active **v3 roadmap (Plan §§79–80) strictly in order**: Phase V
+  (as-built verification) → R1–R7 (pre-feature remediation, §79) → the feature
+  phases (10, 10F, 11, 15A…25, §80). The pre-feature gate (§5.4) must be closed
+  before any feature phase begins. (This supersedes the old §27 "Phases 1–25"
+  roadmap that earlier docs reference.) One phase = one reviewed branch/PR. Do
+  not start the next phase until the current phase's acceptance criteria are
+  demonstrably met and the human approves.
 - At phase start: restate the phase objective, list the Plan sections it
   implements, list files to create/modify, and the tests you will write.
 - At phase end: run the full suite, write `docs/proof/phase-{n}.md`, update

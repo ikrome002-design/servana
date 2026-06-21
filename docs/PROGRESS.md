@@ -1,40 +1,143 @@
 # Servana — Build Progress
 
-Tracks the Plan §27 roadmap. One phase = one reviewed PR. A phase is not
-"Done" until its acceptance criteria are demonstrably met and the owner approves.
+Tracks the **active v3 roadmap (Plan §§79–80)**: Phase V (as-built verification)
+→ R1–R7 (pre-feature remediation) → feature phases (10…25). The old §27
+"Phases 1–25" roadmap is superseded (see Plan §4 / `docs/verification/`). One
+phase = one reviewed PR. A phase is not "Done" until its acceptance criteria are
+demonstrably met and the owner approves. Lifecycle statuses: `local_complete` /
+`ci_passed` / `merged` / `verified_complete` / `blocked`.
 
-| Phase | Title | Status | Branch / PR | Proof |
-|---|---|---|---|---|
-| 1 | Project initialization | ✅ Complete — merged PR #1 | `phase-1-initialization` | [phase-1.md](proof/phase-1.md) |
-| 2 | Docker & environment setup | ✅ Complete — merged PR #2 | `phase-2-docker-environment` | [phase-2.md](proof/phase-2.md) |
-| 3 | Laravel backend foundation | ✅ Complete — merged PR #3 | `phase-3-laravel-backend-foundation` | [phase-3.md](proof/phase-3.md) |
-| 4 | Frontend foundation | ✅ Complete — merged PR #4 | `phase-4-frontend-foundation` | [phase-4.md](proof/phase-4.md) |
-| 5 | Authentication (Magic Link + sessions) | ✅ Complete — merged PR #5 | `phase-5-authentication` | [phase-5.md](proof/phase-5.md) |
-| 6 | Account & tenant model | ✅ Complete — merged PR #6 | `phase-6-account-tenant-model` | [phase-6.md](proof/phase-6.md) |
-| 7 | Branches, memberships, invitations | ✅ Complete — merged PR #7 | `phase-7-branches-memberships-invitations` | [phase-7.md](proof/phase-7.md) |
-| 8 | Roles & permissions | ✅ Complete — merged PR #8 | `phase-8-roles-permissions` | [phase-8.md](proof/phase-8.md) |
-| 9 | Tenant-scoped data access hardening | 🔄 In progress | `phase-9-tenant-scoped-data-access-hardening` | [phase-9.md](proof/phase-9.md) |
-| 10 | API foundation | ⬜ Not started | — | — |
-| 11 | UI layout foundation | ⬜ Not started | — | — |
-| 12 | Responsive design pass | ⬜ Not started | — | — |
-| 13 | Dark mode | ⬜ Not started | — | — |
-| 14 | Accessibility foundation | ⬜ Not started | — | — |
-| 15 | HR, catalogue, clients | ⬜ Not started | — | — |
-| 16 | Scheduling, queue, sessions, preferred personnel | ⬜ Not started | — | — |
-| 17 | Invoicing | ⬜ Not started | — | — |
-| 18 | Payments, receipts, refunds, disputes, cash-up, period locks | ⬜ Not started | — | — |
-| 19 | Audit logging completion | ⬜ Not started | — | — |
-| 20 | Citrus Billing Engine & commissions | ⬜ Not started | — | — |
-| 21 | Queues, notifications, scheduled reports | ⬜ Not started | — | — |
-| 22 | Search | ⬜ Not started | — | — |
-| 23 | Security hardening & threat-model verification | ⬜ Not started | — | — |
-| 24 | Performance optimization | ⬜ Not started | — | — |
-| 25 | Deployment pipeline & final production readiness | ⬜ Not started | — | — |
+## Historical phases 1–9 (pre-v3 numbering; all merged into `main`)
+
+These predate the v3 roadmap; they map onto the v3 phases noted. Evidence status
+is the Phase V verification outcome (see `docs/verification/as-built-discrepancies.md`).
+
+| Phase | Title | PR | Merge commit | Proof | Phase V evidence status |
+|---|---|---|---|---|---|
+| 1 | Project initialization | #1 | `4c2c49c` | [phase-1.md](proof/phase-1.md) | confirmed |
+| 2 | Docker & environment setup | #2 | `bae929c` | [phase-2.md](proof/phase-2.md) | confirmed |
+| 3 | Laravel backend foundation | #3 | `63176e4` | [phase-3.md](proof/phase-3.md) | confirmed |
+| 4 | Frontend foundation | #4 | `89a8f7f` | [phase-4.md](proof/phase-4.md) | confirmed |
+| 5 | Authentication (Magic Link + sessions) | #5 | `3d41af6` | [phase-5.md](proof/phase-5.md) | confirmed |
+| 6 | Account & tenant model | #6 | `b1d21f4` | [phase-6.md](proof/phase-6.md) | confirmed |
+| 7 | Branches, memberships, invitations | #7 | `ffed679` | [phase-7.md](proof/phase-7.md) | partially_confirmed (closure stubs deferred) |
+| 8 | Roles & permissions | #8 | `1031a29` | [phase-8.md](proof/phase-8.md) | partially_confirmed (matrix < §19 → Ph19) |
+| 9 | Tenant-scoped data access hardening | **#9 (merged)** | `6ed26ec` | [phase-9.md](proof/phase-9.md) | confirmed; structure partial (branch tables lack merchant_id → R5) |
+| — | Laravel 11→12.62 security upgrade | **#11 (merged)** | `cbcf50c` | — | partial R1 (REM-DEP-001) — ADR/proof missing |
+| — | v3 Plan/Scope documentation | **#10 (merged)** | `e8681f6` | — | confirmed |
+
+## Active v3 roadmap
+
+### Pre-feature remediation (Plan §79) — gate §5.4 must close before any feature phase
+| Phase | Title | Status | Register item |
+|---|---|---|---|
+| V | As-built verification | 🔄 `local_complete` (branch `phase-v-as-built-verification`) | REM-V-001, REM-DOC-001 |
+| R1 | Dependency & runtime security (Laravel 12.60+, PHP 8.3, advisory removal, CR/LF) | 🟡 partial — upgrade landed via PR #11; ADR-001/proof/notes missing | REM-DEP-001 |
+| R2 | Core audit completeness + chain verifier + masked read | ⬜ Not started | REM-AUD-001 |
+| R3 | Privileged MFA + step-up | ⬜ Not started | REM-MFA-001 |
+| R4 | Idempotency & replay protection | ⬜ Not started | REM-IDEMP-001 |
+| R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | ⬜ Not started | REM-TEN-001 |
+| R6 | Session & authorization revocation (per-request freshness) | ⬜ Not started | REM-SESS-001 |
+| R7 | Production probes, CI isolation, env parity, ADR-009 | ⬜ Not started | REM-OPS-001 |
+
+### Feature roadmap (Plan §80) — begins only after the §5.4 gate closes
+| Phase | Title | Status |
+|---|---|---|
+| 10 | API foundation (Corrections 10–12) | ⬜ Not started |
+| 10F | File & media foundation | ⬜ Not started |
+| 11 | UI layout foundation & role navigation | ⬜ Not started |
+| 15A / 15B | Services, catalogue, clients / personnel availability | ⬜ Not started |
+| 16A / 16B / 16C | Appointments / walk-ins & queues / service sessions | ⬜ Not started |
+| 17 | Invoicing | ⬜ Not started |
+| 18A / 18B | Payment recording / validation, receipts, refunds, cash-up, period locks | ⬜ Not started |
+| 19 | Audit logging completion & flagged events | ⬜ Not started |
+| 20A–20H | Plans/prices, subscriptions, promotions, M-Pesa, %-fee engine, compensation, payouts | ⬜ Not started |
+| 21N / 21S | Queues/notifications/reports / personnel bulk SMS | ⬜ Not started |
+| 22 | Search | ⬜ Not started |
+| 23 | Security hardening + responsive/dark/a11y release audit + threat-model | ⬜ Not started |
+| 24 | Performance optimization | ⬜ Not started |
+| 25 | Deployment pipeline & production readiness | ⬜ Not started |
+
+## Phase V — As-built verification
+
+- **Branch:** `phase-v-as-built-verification` (based on merged `main` @ `e8681f6`; PRs #1–#11).
+- **Status:** 🔄 `local_complete` — pending push, CI, and reviewer sign-off.
+- **Proof:** [docs/proof/phase-v.md](proof/phase-v.md).
+- **Evidence:** `docs/verification/as-built-discrepancies.md`, `docs/verification/evidence/*`, `docs/remediation/register.yaml`, `docs/traceability/servana-requirements.csv`.
+
+### Work completed
+- Repository baseline confirmed (branch/SHA/sync, merged PRs #1–#11).
+- Runtime/deps verified from lock files **and running containers**: Laravel
+  12.62.0, PHP 8.3.31, Sanctum 4.3.2, PostgreSQL 16.14, Redis 7.4.9,
+  Meilisearch 1.10.3. PHP 8.3 pinned across Dockerfile/CI/composer.
+- Clean `migrate:fresh` (26 migrations) on a **disposable** `servana_asbuilt` DB
+  (dev volume untouched); schema exported; constraints inventoried (18 CHECK, 40
+  FK, 34 UNIQUE, 0 exclusion); audit_logs hash columns + immutability trigger
+  **runtime-proven** (UPDATE/DELETE blocked).
+- Route/authorization inventory (38 routes): forbidden Super-Admin
+  merchant-creation route and personnel contact-export route **proven absent**;
+  enumeration posture + middleware chain recorded.
+- Source/security scan: no unsanctioned `withoutTenancy`/`withoutGlobalScope`,
+  no raw-SQL concat, no `$guarded=[]`, no static `::find()` in controllers, no
+  frontend secrets.
+- Full quality suite re-run in clean containers (counts re-derived, not copied):
+  backend **238 passed / 4 skipped** (serial & parallel); Pint, Larastan L8,
+  `composer validate/audit`; frontend typecheck/lint, **vitest 72**, build,
+  **e2e 27** (axe AA); `npm audit` 0; gitleaks clean; both Docker images build.
+- Documentation regenerated (Plan §4 outcomes, CLAUDE.md stack/roadmap, this
+  file, CHANGELOG, traceability CSV); remediation register seeded.
+
+### Work skipped / deferred (with owning phase)
+```
+Skipped (correct for Phase V — verification only):
+- Item: Any remediation code (MFA, idempotency, merchant_id backfill, per-request
+  revocation, readiness split). Reason: Phase V is evidence-only; fixing here
+  would violate scope. Owner: R1–R7 respectively.
+- Item: ADR-001 + docs/proof/phase-r1.md + upgrade notes for the Laravel 12
+  upgrade. Reason: belongs to the formal R1 phase; PR #11 did not produce them.
+  Owner: R1 (REM-DEP-001 left partially_complete; R1 remains required).
+- Item: 4 isolation tests (invoices/payments/exports/personnel-queue) remain
+  permanently skipped placeholders. Owner: Phases 16/17/18/19 (feature).
+- Item: Full §85 traceability CSV + CI enforcement. Reason: foundation rows
+  seeded now; completeness + CI gate is Phase 23. Owner: continuous → Phase 23.
+```
+
+### Pending work
+- Push branch, confirm CI green, obtain reviewer sign-off, then mark `merged`.
+
+### Known risks
+- The pre-feature gate (§5.4) is **not** closed; six C0 + one C1 pre-feature
+  items remain. No feature phase may start.
+- REM-DEP-001 must **not** be auto-closed on PR #11 alone (missing ADR/proof).
+- Branch-owned tables lack `merchant_id` (R5); no idempotency store (R4); no MFA (R3).
+
+### Commands passed
+- Container: `migrate:fresh` (26), `php artisan test` 238/4 (serial+parallel),
+  `composer pint -- --test` (254), `composer stan` (L8, 0), `composer validate
+  --strict`, `composer audit --locked` (clean).
+- Host: `npm run typecheck` (0), `npm run lint` (0 err/28 warn), `npm run test`
+  (72), `npm run build`, `npm run e2e` (27), `npm audit --audit-level=high` (0),
+  `gitleaks detect --no-git --redact` (clean), `docker build` php:dev + nginx:prod.
+
+### Commands failed
+- None.
+
+### Commands skipped
+- `make up` (stack already healthy 14h — not re-run to avoid disrupting it);
+  `make fresh`/`make test` substituted by their underlying container commands
+  against the disposable DB to avoid wiping the dev volume.
+
+### Context for R1 (Dependency & runtime security)
+- The upgrade itself is done (12.62.0). R1's remaining work is **governance/
+  evidence**: author `docs/architecture/adr/0001-framework-upgrade.md` (ADR-001),
+  write `docs/proof/phase-r1.md` + upgrade notes, attach `composer audit`
+  evidence, and confirm `EmailHeaderInjectionTest` + `SignedUrlIntegrityTest`
+  in the R1 proof. Only then flip REM-DEP-001 to `verified_complete`.
 
 ## Phase 9 — Tenant-scoped data access hardening
 
-- **Branch:** `phase-9-tenant-scoped-data-access-hardening` (based on merged `main`: PR #1–#8).
-- **Status:** 🔄 Complete locally — awaiting CI + owner approval.
+- **Branch:** `phase-9-tenant-scoped-data-access-hardening` → **PR #9 merged into main** (merge commit `6ed26ec`).
+- **Status:** ✅ `merged`. Phase V verification: `confirmed` for implemented isolation; structure partial — branch-owned tables lack `merchant_id` (→ R5 / REM-TEN-001).
 - **Proof:** [docs/proof/phase-9.md](proof/phase-9.md).
 
 ### Completed
