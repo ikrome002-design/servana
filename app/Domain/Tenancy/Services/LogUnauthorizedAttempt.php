@@ -9,7 +9,6 @@ use App\Domain\Audit\Enums\AuditSeverity;
 use App\Domain\Tenancy\TenantContext;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
@@ -59,7 +58,7 @@ final class LogUnauthorizedAttempt
                 'model' => class_basename($modelClass),
                 'field' => $field,
                 'attempted_id' => $value,
-                'route' => $route instanceof Route ? $route->getName() : null,
+                'route' => $route->getName(),
                 'method' => Request::method(),
                 'path' => Request::path(),
             ],
