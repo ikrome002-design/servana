@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\V1\Audit\AuditLogController;
 use App\Http\Controllers\Api\V1\Auth\MagicLinkController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Branches\BranchController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Api\V1\Hr\StaffInvitationController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantDashboardController;
 use App\Http\Controllers\Api\V1\Onboarding\FirstTimeSetupController;
 use App\Http\Controllers\Api\V1\Onboarding\MerchantRegistrationController;
+use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureBranchScope;
 use App\Http\Middleware\EnsureFirstTimeSetupAccess;
@@ -163,5 +165,23 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, 'throttle:api', Re
             // hold. Branch- and merchant-scoped; never enables self-escalation.
             Route::get('hr/permission-preview', [PermissionPreviewController::class, 'preview'])
                 ->name('hr.permission-preview');
+
+            // Merchant audit-log reads (Scope §4.8, Plan §70). READ-ONLY, masked,
+            // merchant-scoped (branch-scoped for the Audit role via the policy).
+            // `audit.view_full` is the backend authorization boundary.
+            Route::middleware(EnsurePermission::class.':audit.view_full')->group(function (): void {
+                Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+                Route::get('audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('audit-logs.show');
+            });
         });
+
+        // Platform / governance audit reads (Scope §4.8, Plan §70). OUTSIDE the
+        // merchant gate — platform staff have no merchant. READ-ONLY, masked,
+        // platform-chain only (merchant_id null); `platform.audit.view` required.
+        Route::middleware(EnsurePermission::class.':platform.audit.view')
+            ->prefix('platform')
+            ->group(function (): void {
+                Route::get('audit-logs', [PlatformAuditLogController::class, 'index'])->name('platform.audit-logs.index');
+                Route::get('audit-logs/{auditLog}', [PlatformAuditLogController::class, 'show'])->name('platform.audit-logs.show');
+            });
     });

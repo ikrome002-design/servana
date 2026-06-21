@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Auth\Models\MagicLoginToken;
 use App\Domain\Auth\Notifications\MagicLoginLinkNotification;
 use App\Domain\Auth\Services\MagicLinkTokenService;
@@ -37,7 +38,7 @@ it('rejects an expired token at the service level', function (): void {
     expect($service->consume($raw))->toBeNull();
 });
 
-it('never writes the raw token to the application log', function (): void {
+it('audits the request to audit_logs and never writes the raw token to the log or the audit row', function (): void {
     Notification::fake();
 
     $lines = collect();
@@ -62,8 +63,14 @@ it('never writes the raw token to the application log', function (): void {
     );
 
     expect($raw)->not->toBeNull();
-    expect($lines)->not->toBeEmpty(); // the request WAS audited…
+
+    // R2: the request is audited to the hash-chained audit_logs table (no longer
+    // the application log). The raw token must appear in NEITHER the audit row…
+    $audit = AuditLog::query()->where('action', 'login_link_requested')->latest('id')->firstOrFail();
+    expect(json_encode($audit->getAttributes()))->not->toContain($raw);
+
+    // …NOR any application log line that happened to be emitted.
     foreach ($lines as $line) {
-        expect($line)->not->toContain($raw); // …but never with the raw token.
+        expect($line)->not->toContain($raw);
     }
 });

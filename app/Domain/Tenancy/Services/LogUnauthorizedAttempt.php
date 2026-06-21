@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Tenancy\Services;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
-use App\Domain\Audit\Enums\AuditSeverity;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Tenancy\TenantContext;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -49,10 +49,10 @@ final class LogUnauthorizedAttempt
         $route = Request::route();
 
         $this->audit->record(
-            'unauthorized_access',
-            AuditSeverity::High,
+            AuditEvent::UnauthorizedAccess,
             $actor instanceof User ? $actor : null,
             $this->context->merchantId(),
+            null, // branch — not attributable for a cross-tenant probe
             null, // no subject — do not link/leak the foreign row
             [
                 'model' => class_basename($modelClass),

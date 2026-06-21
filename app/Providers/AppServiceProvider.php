@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Audit\Services\DatabaseAuditRecorder;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
@@ -14,6 +15,7 @@ use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Tenancy\TenantContext;
+use App\Policies\AuditLogPolicy;
 use App\Policies\BranchDayRecordPolicy;
 use App\Policies\BranchOperatingHourPolicy;
 use App\Policies\MerchantBranchPolicy;
@@ -43,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         StaffProfile::class => StaffProfilePolicy::class,
         BranchOperatingHour::class => BranchOperatingHourPolicy::class,
         BranchDayRecord::class => BranchDayRecordPolicy::class,
+        AuditLog::class => AuditLogPolicy::class,
     ];
 
     public function register(): void

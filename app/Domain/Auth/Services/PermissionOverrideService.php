@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Auth\Services;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
-use App\Domain\Audit\Enums\AuditSeverity;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Auth\Enums\PermissionOverrideEffect;
 use App\Domain\Auth\Models\MerchantUserPermissionOverride;
 use App\Domain\Auth\Models\Permission;
@@ -73,10 +73,10 @@ final class PermissionOverrideService
         );
 
         $this->audit->record(
-            $existing !== null ? 'permission.override.updated' : 'permission.override.created',
-            AuditSeverity::High,
+            $existing !== null ? AuditEvent::PermissionOverrideUpdated : AuditEvent::PermissionOverrideCreated,
             $actor,
             $this->context->merchantId(),
+            null,
             $target,
             [
                 'permission' => $permissionKey,
@@ -108,10 +108,10 @@ final class PermissionOverrideService
         $override->delete();
 
         $this->audit->record(
-            'permission.override.revoked',
-            AuditSeverity::High,
+            AuditEvent::PermissionOverrideRevoked,
             $actor,
             $this->context->merchantId(),
+            null,
             $target,
             [
                 'permission' => $permissionKey,
@@ -140,7 +140,7 @@ final class PermissionOverrideService
     {
         // Anti-self-escalation: nobody edits their own membership's permissions.
         if ($target->user_id === $actor->id) {
-            $this->auditDenied($actor, $target, 'permission.override.denied_self_escalation', 'self_escalation');
+            $this->auditDenied($actor, $target, AuditEvent::PermissionOverrideDeniedSelfEscalation, 'self_escalation');
             throw new AccessDeniedHttpException('This action is unauthorized.');
         }
 
@@ -153,7 +153,7 @@ final class PermissionOverrideService
         }
 
         // No manage authority (includes the read-only audit role) — audit + deny.
-        $this->auditDenied($actor, $target, 'permission.write_denied', 'insufficient_permission');
+        $this->auditDenied($actor, $target, AuditEvent::PermissionWriteDenied, 'insufficient_permission');
         throw new AccessDeniedHttpException('This action is unauthorized.');
     }
 
@@ -164,13 +164,13 @@ final class PermissionOverrideService
     private function assertGrantAllowed(User $actor, MerchantUser $target, string $permissionKey): void
     {
         if (! $this->registry->isGrantableFor($target->role->value, $permissionKey)) {
-            $this->auditDenied($actor, $target, 'permission.override.denied_self_escalation', 'not_grantable', $permissionKey);
+            $this->auditDenied($actor, $target, AuditEvent::PermissionOverrideDeniedSelfEscalation, 'not_grantable', $permissionKey);
             throw new AccessDeniedHttpException('This permission is not grantable for the target role.');
         }
 
         $isAdmin = $this->context->can('branches.manage_users_lifecycle');
         if (! $isAdmin && ! $this->context->can($permissionKey)) {
-            $this->auditDenied($actor, $target, 'permission.override.denied_self_escalation', 'escalation', $permissionKey);
+            $this->auditDenied($actor, $target, AuditEvent::PermissionOverrideDeniedSelfEscalation, 'escalation', $permissionKey);
             throw new AccessDeniedHttpException('Cannot grant a permission you do not hold.');
         }
     }
@@ -199,13 +199,13 @@ final class PermissionOverrideService
         return true;
     }
 
-    private function auditDenied(User $actor, MerchantUser $target, string $action, string $reason, ?string $permissionKey = null): void
+    private function auditDenied(User $actor, MerchantUser $target, AuditEvent $event, string $reason, ?string $permissionKey = null): void
     {
         $this->audit->record(
-            $action,
-            AuditSeverity::Warning,
+            $event,
             $actor,
             $this->context->merchantId(),
+            null,
             $target,
             array_filter([
                 'reason' => $reason,

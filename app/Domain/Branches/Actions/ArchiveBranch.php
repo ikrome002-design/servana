@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Branches\Actions;
 
+use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Branches\Enums\BranchStatus;
 use App\Domain\Branches\Exceptions\BranchClosureBlockedException;
 use App\Domain\Branches\Models\MerchantBranch;
@@ -20,7 +22,10 @@ use Illuminate\Support\Facades\DB;
  */
 final class ArchiveBranch
 {
-    public function __construct(private readonly BranchClosureGuard $guard) {}
+    public function __construct(
+        private readonly BranchClosureGuard $guard,
+        private readonly AuditRecorder $audit,
+    ) {}
 
     public function handle(MerchantBranch $branch, User $actor, ?string $reason = null): MerchantBranch
     {
@@ -31,11 +36,25 @@ final class ArchiveBranch
         }
 
         return DB::transaction(function () use ($branch, $actor, $reason): MerchantBranch {
+            $from = $branch->status->value;
             $branch->status = BranchStatus::Archived;
             $branch->status_reason = $reason;
             $branch->archived_at = now();
             $branch->updated_by = $actor->id;
             $branch->save();
+
+            $this->audit->record(
+                AuditEvent::BranchArchived,
+                $actor,
+                $branch->merchant_id,
+                $branch->id,
+                $branch,
+                array_filter([
+                    'old_values' => ['status' => $from],
+                    'new_values' => ['status' => BranchStatus::Archived->value],
+                    'reason' => $reason,
+                ], static fn ($v): bool => $v !== null),
+            );
 
             return $branch->refresh();
         });

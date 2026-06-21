@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Actions;
 
-use App\Domain\Auth\Enums\AuthEvent;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Auth\Notifications\MagicLoginLinkNotification;
 use App\Domain\Auth\Services\LoginEligibilityService;
 use App\Domain\Auth\Services\MagicLinkTokenService;
-use App\Domain\Auth\Support\AuthEventLogger;
+use App\Domain\Auth\Support\AuthAuditLogger;
 
 /**
  * Request a Magic Link (Plan §9.1).
@@ -23,7 +23,7 @@ final class RequestMagicLink
     public function __construct(
         private readonly LoginEligibilityService $eligibility,
         private readonly MagicLinkTokenService $tokens,
-        private readonly AuthEventLogger $audit,
+        private readonly AuthAuditLogger $audit,
     ) {}
 
     public function handle(string $email, ?string $ipAddress = null, ?string $userAgent = null): void
@@ -32,7 +32,7 @@ final class RequestMagicLink
 
         if (! $result->eligible) {
             // No email, no token row. Audit the denial reason (Plan §9.1).
-            $this->audit->record(AuthEvent::LinkDenied, $email, $result->deniedReason);
+            $this->audit->record(AuditEvent::LoginLinkDenied, $email, $result->deniedReason);
 
             return;
         }
@@ -41,7 +41,7 @@ final class RequestMagicLink
 
         if ($user === null) {
             // Defensive: eligibility passed but user vanished (race). Treat as denial.
-            $this->audit->record(AuthEvent::LinkDenied, $email, LoginEligibilityService::REASON_USER_NOT_FOUND);
+            $this->audit->record(AuditEvent::LoginLinkDenied, $email, LoginEligibilityService::REASON_USER_NOT_FOUND);
 
             return;
         }
@@ -50,6 +50,6 @@ final class RequestMagicLink
 
         $user->notify(new MagicLoginLinkNotification($rawToken));
 
-        $this->audit->record(AuthEvent::LinkRequested, $email, null, $user->ulid);
+        $this->audit->record(AuditEvent::LoginLinkRequested, $email, null, $user->ulid);
     }
 }

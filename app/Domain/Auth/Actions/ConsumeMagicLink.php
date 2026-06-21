@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Actions;
 
-use App\Domain\Auth\Enums\AuthEvent;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Auth\Services\LoginEligibilityService;
 use App\Domain\Auth\Services\MagicLinkTokenService;
-use App\Domain\Auth\Support\AuthEventLogger;
+use App\Domain\Auth\Support\AuthAuditLogger;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +25,7 @@ final class ConsumeMagicLink
     public function __construct(
         private readonly MagicLinkTokenService $tokens,
         private readonly LoginEligibilityService $eligibility,
-        private readonly AuthEventLogger $audit,
+        private readonly AuthAuditLogger $audit,
     ) {}
 
     public function handle(string $rawToken): ?User
@@ -34,7 +34,7 @@ final class ConsumeMagicLink
         $email = $this->tokens->consume($rawToken);
 
         if ($email === null) {
-            $this->audit->record(AuthEvent::LinkFailed, null, 'invalid_or_expired_token');
+            $this->audit->record(AuditEvent::LoginLinkFailed, null, 'invalid_or_expired_token');
 
             return null;
         }
@@ -43,7 +43,7 @@ final class ConsumeMagicLink
         $result = $this->eligibility->check($email);
 
         if (! $result->eligible) {
-            $this->audit->record(AuthEvent::LinkFailed, $email, $result->deniedReason);
+            $this->audit->record(AuditEvent::LoginLinkFailed, $email, $result->deniedReason);
 
             return null;
         }
@@ -51,7 +51,7 @@ final class ConsumeMagicLink
         $user = $this->eligibility->findUser($email);
 
         if ($user === null) {
-            $this->audit->record(AuthEvent::LinkFailed, $email, LoginEligibilityService::REASON_USER_NOT_FOUND);
+            $this->audit->record(AuditEvent::LoginLinkFailed, $email, LoginEligibilityService::REASON_USER_NOT_FOUND);
 
             return null;
         }
@@ -66,7 +66,7 @@ final class ConsumeMagicLink
             $user->save();
         });
 
-        $this->audit->record(AuthEvent::LoginSuccess, $email, null, $user->ulid);
+        $this->audit->record(AuditEvent::LoginSuccess, $email, null, $user->ulid);
 
         return $user;
     }

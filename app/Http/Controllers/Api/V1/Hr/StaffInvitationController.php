@@ -16,6 +16,7 @@ use App\Http\Requests\Hr\CreateStaffInvitationRequest;
 use App\Http\Resources\StaffInvitationResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
@@ -84,11 +85,14 @@ final class StaffInvitationController extends Controller
         return StaffInvitationResource::make($action->handle($invitation)->load('branch'));
     }
 
-    public function revoke(StaffInvitation $invitation, RevokeStaffInvitation $action): StaffInvitationResource
+    public function revoke(Request $request, StaffInvitation $invitation, RevokeStaffInvitation $action): StaffInvitationResource
     {
         $this->authorizeManages($invitation);
 
-        return StaffInvitationResource::make($action->handle($invitation)->load('branch'));
+        /** @var User $actor */
+        $actor = $request->user();
+
+        return StaffInvitationResource::make($action->handle($invitation, $actor)->load('branch'));
     }
 
     /**

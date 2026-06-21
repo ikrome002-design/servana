@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Auth\Actions\ConsumeMagicLink;
 use App\Domain\Auth\Actions\RequestMagicLink;
-use App\Domain\Auth\Enums\AuthEvent;
 use App\Domain\Auth\Exceptions\InvalidMagicLinkException;
-use App\Domain\Auth\Support\AuthEventLogger;
+use App\Domain\Auth\Support\AuthAuditLogger;
 use App\Domain\Tenancy\TenantContext;
 use App\Domain\Tenancy\TenantContextResolver;
 use App\Http\Controllers\Controller;
@@ -73,7 +73,7 @@ final class MagicLinkController extends Controller
     /**
      * POST /auth/logout — invalidate the session and rotate the CSRF token.
      */
-    public function logout(Request $request, AuthEventLogger $audit): Response
+    public function logout(Request $request, AuthAuditLogger $audit): Response
     {
         $user = $request->user();
 
@@ -85,7 +85,8 @@ final class MagicLinkController extends Controller
             $request->session()->regenerateToken();
         }
 
-        $audit->record(AuthEvent::Logout, null, null, $user?->getAttribute('ulid'));
+        $ulid = $user?->getAttribute('ulid');
+        $audit->record(AuditEvent::Logout, null, null, is_string($ulid) ? $ulid : null);
 
         return response()->noContent();
     }

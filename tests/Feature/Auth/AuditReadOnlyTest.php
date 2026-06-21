@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 use App\Domain\Audit\Contracts\AuditRecorder;
-use App\Domain\Audit\Enums\AuditSeverity;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Auth\Seeders\PermissionSeeder;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class)->group('auth', 'permissions', 'authority', 'audit');
 
@@ -57,12 +58,14 @@ it('denies an audit user suspending staff', function (): void {
 });
 
 it('makes audit_logs append-only — UPDATE and DELETE are blocked at the database', function (): void {
-    $log = app(AuditRecorder::class)
-        ->record('test.event', AuditSeverity::Info);
+    $log = app(AuditRecorder::class)->record(AuditEvent::LoginSuccess);
 
-    expect(fn () => AuditLog::query()->whereKey($log->id)->update(['action' => 'tampered']))
+    // Wrap each mutation in its own savepoint: the trigger aborts the statement's
+    // (sub)transaction, so the savepoint isolates the abort from the surrounding
+    // RefreshDatabase transaction.
+    expect(fn () => DB::transaction(fn () => AuditLog::query()->whereKey($log->id)->update(['action' => 'tampered'])))
         ->toThrow(QueryException::class);
 
-    expect(fn () => AuditLog::query()->whereKey($log->id)->delete())
+    expect(fn () => DB::transaction(fn () => AuditLog::query()->whereKey($log->id)->delete()))
         ->toThrow(QueryException::class);
 });

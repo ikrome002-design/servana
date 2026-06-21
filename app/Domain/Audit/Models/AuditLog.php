@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Domain\Audit\Models;
 
 use App\Domain\Audit\Enums\AuditSeverity;
+use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Models\Merchant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * An append-only, hash-chained audit record (Plan §7.5, §22.2).
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $ulid
  * @property int|null $merchant_id
+ * @property int|null $branch_id
  * @property int|null $actor_id
  * @property string|null $actor_label
  * @property string $action
@@ -32,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $correlation_id
  * @property string|null $previous_hash
  * @property string $hash
+ * @property Carbon|null $created_at
  */
 class AuditLog extends Model
 {
@@ -40,6 +44,7 @@ class AuditLog extends Model
     protected $fillable = [
         'ulid',
         'merchant_id',
+        'branch_id',
         'actor_id',
         'actor_label',
         'action',
@@ -71,6 +76,12 @@ class AuditLog extends Model
     public function merchant(): BelongsTo
     {
         return $this->belongsTo(Merchant::class);
+    }
+
+    /** @return BelongsTo<MerchantBranch, $this> */
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(MerchantBranch::class, 'branch_id');
     }
 
     /** @return BelongsTo<User, $this> */
