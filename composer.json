@@ -7,7 +7,7 @@
     "license": "proprietary",
     "require": {
         "php": "^8.3",
-        "laravel/framework": "^11.31",
+        "laravel/framework": "^12.61.1",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.0",
@@ -73,11 +73,6 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
-        },
-        "audit": {
-            "ignore": {
-                "CVE-2026-48019": "CRLF injection in Laravel's default email validation rule (PKSA-mdq4-51ck-6kdq). Affects all Laravel 11.x; patched only in 12.60+/13.10+, so no fix exists on the pinned Laravel 11 stack (Plan AS-1). Not rated high/critical. Mitigation: Servana uses Magic Link auth (Plan A3) and validates every email through FormRequests; no validated email is written into raw mail headers. Re-evaluate at the Laravel 12 upgrade and during Phase 5 (auth). Tracked in docs/proof/phase-1.md."
-            }
         },
         "platform": {
             "php": "8.3.31"
