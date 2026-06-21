@@ -31,8 +31,8 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 ### Pre-feature remediation (Plan §79) — gate §5.4 must close before any feature phase
 | Phase | Title | Status | Register item |
 |---|---|---|---|
-| V | As-built verification | 🔄 `local_complete` (branch `phase-v-as-built-verification`) | REM-V-001, REM-DOC-001 |
-| R1 | Dependency & runtime security (Laravel 12.60+, PHP 8.3, advisory removal, CR/LF) | 🟡 partial — upgrade landed via PR #11; ADR-001/proof/notes missing | REM-DEP-001 |
+| V | As-built verification | ✅ `merged` — PR #12, commit `c58b64a` (CI Backend/Frontend/Security/Docker passed) | REM-V-001, REM-DOC-001 |
+| R1 | Dependency & runtime security (Laravel 12.60+, PHP 8.3, advisory removal, CR/LF) | 🔄 `local_complete` (branch `phase-r1-dependency-runtime-security`); impl PR #11, R1 governance added; pending CI + 2nd review | REM-DEP-001 |
 | R2 | Core audit completeness + chain verifier + masked read | ⬜ Not started | REM-AUD-001 |
 | R3 | Privileged MFA + step-up | ⬜ Not started | REM-MFA-001 |
 | R4 | Idempotency & replay protection | ⬜ Not started | REM-IDEMP-001 |
@@ -58,10 +58,79 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase R1 — Dependency & runtime security
+
+- **Branch:** `phase-r1-dependency-runtime-security` (based on merged `main` @ `c58b64a`, PR #12 / Phase V).
+- **Status:** 🔄 `local_complete` — pending push, CI, and **second-reviewer** sign-off (security-sensitive PR).
+- **Proof:** [docs/proof/phase-r1.md](proof/phase-r1.md) · **ADR:** [ADR-001](architecture/adr/0001-framework-upgrade.md) · **Notes:** [laravel-12-upgrade.md](operations/laravel-12-upgrade.md).
+- **Register:** REM-DEP-001.
+
+### Work completed
+- Re-verified PR #11's upgrade (no re-upgrade): Laravel **12.62.0** (≥12.60),
+  PHP **8.3.31** across app+worker+scheduler (same `servana-app` image), CI
+  `php-version '8.3'`, prod compose `target prod`, composer platform 8.3.31.
+- Advisory state: `composer validate --strict` valid; `composer audit --locked`
+  **0 advisories, 0 suppressions**; guzzle 7.12.1 + psr7 2.12.1 retained.
+- Compatibility review: direct deps L12-compatible; only app change was PR #11's
+  `LogUnauthorizedAttempt` `instanceof Route` removal (behavior unchanged); no
+  schema change; `composer.json`/`composer.lock` unchanged in R1.
+- Security regressions: `EmailHeaderInjectionTest` 4 pass; `SignedUrlIntegrityTest`
+  4 pass (valid/query-tamper/path-confusion/expiry).
+- DB/cache: clean disposable PG16 `migrate:fresh --seed` (26 + PermissionSeeder);
+  Redis ping/round-trip OK; `cache:clear` OK; worker/scheduler boot on 8.3 image.
+- Full gates: pint (254), stan L8 (0), BE test **238/4** (serial+parallel), FE
+  typecheck 0/lint 0/vitest 72/build, e2e (see risks), npm audit 0, gitleaks
+  clean, both Docker images build.
+- Authored ADR-001, upgrade notes, R1 proof; updated register + traceability.
+
+### Work skipped / deferred (with owning phase)
+```
+- Item: Readiness/liveness split, CI cache-prefix isolation, env parity, ADR-009.
+  Reason: out of R1 scope. Owner: R7 (REM-OPS-001).
+- Item: Audit completeness / MFA / idempotency / tenant-schema / session revocation.
+  Owner: R2 / R3 / R4 / R5 / R6 respectively.
+- Item: e2e flake stabilization. Owner: UI/e2e hardening (Phase 23).
+- Item: composer.json/lock changes. Reason: no concrete R1 failure required one.
+```
+
+### Pending work
+- Push branch; confirm CI green; obtain the Plan-required **second reviewer**
+  (security-sensitive); merge; then flip REM-DEP-001 → `verified_complete`.
+
+### Known risks
+- Laravel 12 is not LTS — track point releases; re-run `composer audit`.
+- Host vs container PHP divergence — always operate in the container.
+- `servana-vendor` named volume hides `composer.lock` changes until in-container
+  `composer install`.
+- One intermittent e2e test: first R1 run 26/1, reruns 27/0 (retries=0 local,
+  matches the known `auth-magic-link` check-email flake; not an R1 regression).
+
+### Commands passed
+- Container: `php -v` (8.3.31 app/worker/scheduler), `php artisan --version`
+  (12.62.0), `composer validate --strict`, `composer audit --locked` (0),
+  `migrate:fresh --seed` (disposable), `cache:clear`, `pint -- --test` (254),
+  `stan` (L8 0), `php artisan test` 238/4 (serial+parallel), 2 security filters (4+4).
+- Host: `redis-cli ping` (PONG), `npm run lint`/`typecheck`/`test` (72)/`build`,
+  `npm audit` (0), `gitleaks` (clean), `docker build` php:dev + nginx:prod.
+
+### Commands failed
+- `npm run e2e` first run: 1 failed / 26 passed (flake); reruns 27/0. Recorded
+  in proof §9; not erased by the passing rerun.
+
+### Commands skipped
+- `make up`/`make fresh`/`make test` — stack already healthy; underlying
+  container commands run directly against a disposable DB to protect dev data.
+
+### Context for R2 (Core audit completeness)
+- Audit substrate exists and is verified: `audit_logs` hash columns +
+  immutability trigger (Phase V runtime-proven). R2 replaces interim
+  `AuthEventLogger` with full `AuditRecorder` coverage, adds the hash-chain
+  verifier command and masked read API + branch/platform policies (REM-AUD-001).
+
 ## Phase V — As-built verification
 
-- **Branch:** `phase-v-as-built-verification` (based on merged `main` @ `e8681f6`; PRs #1–#11).
-- **Status:** 🔄 `local_complete` — pending push, CI, and reviewer sign-off.
+- **Branch:** `phase-v-as-built-verification` → **PR #12 merged into `main`** (merge commit `c58b64a`).
+- **Status:** ✅ `merged`. CI Backend/Frontend/Security/Docker passed.
 - **Proof:** [docs/proof/phase-v.md](proof/phase-v.md).
 - **Evidence:** `docs/verification/as-built-discrepancies.md`, `docs/verification/evidence/*`, `docs/remediation/register.yaml`, `docs/traceability/servana-requirements.csv`.
 
@@ -103,7 +172,7 @@ Skipped (correct for Phase V — verification only):
 ```
 
 ### Pending work
-- Push branch, confirm CI green, obtain reviewer sign-off, then mark `merged`.
+- None. PR #12 merged into `main` (`c58b64a`); CI passed. R1 now in progress.
 
 ### Known risks
 - The pre-feature gate (§5.4) is **not** closed; six C0 + one C1 pre-feature
