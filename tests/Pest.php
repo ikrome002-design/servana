@@ -154,3 +154,21 @@ function totpCode(string $secret): string
 {
     return (new Google2FA)->getCurrentOtp($secret);
 }
+
+/**
+ * Forensic + route metadata for a direct IdempotencyStore claim (R4 tests).
+ *
+ * @param  array<string, mixed>  $overrides
+ * @return array{actor_user_id: int|null, merchant_id: int|null, branch_id: int|null, route_name: string, http_method: string, request_content_type: string|null}
+ */
+function idempotencyMeta(array $overrides = []): array
+{
+    return array_merge([
+        'actor_user_id' => null,
+        'merchant_id' => null,
+        'branch_id' => null,
+        'route_name' => 'testing.idempotency.financial',
+        'http_method' => 'POST',
+        'request_content_type' => 'application/json',
+    ], $overrides);
+}

@@ -13,7 +13,8 @@ existing as-built tables are documented by their owning feature phases (§13.2).
 
 | File | Domain | Tables covered (this repo state) |
 |---|---|---|
-| `core-identity-and-tenancy.md` | Core / identity / tenancy | `mfa_credentials` (R3), `mfa_recovery_codes` (R3) |
+| `core-identity-and-tenancy.md` | Core / identity / tenancy | `mfa_credentials` (R3), `mfa_recovery_codes` (R3), `idempotency_keys` (R4) |
 
 > As feature/remediation phases land, they extend the matching file with their
-> tables. Phase R3 (REM-MFA-001) authored the two MFA tables below.
+> tables. Phase R3 (REM-MFA-001) authored the two MFA tables; Phase R4
+> (REM-IDEMP-001) authored `idempotency_keys`.

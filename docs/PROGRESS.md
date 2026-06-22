@@ -34,8 +34,8 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | V | As-built verification | ✅ `merged` — PR #12, commit `c58b64a` (CI Backend/Frontend/Security/Docker passed) | REM-V-001, REM-DOC-001 |
 | R1 | Dependency & runtime security (Laravel 12.60+, PHP 8.3, advisory removal, CR/LF) | ✅ `verified_complete` — PR #13, commit `8fe575f` (CI passed; solo-maintainer governance exception, reviewDecision blank) | REM-DEP-001 |
 | R2 | Core audit completeness + chain verifier + masked read | ✅ `verified_complete` — PR #14, commit `1df759e` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-AUD-001 |
-| R3 | Privileged MFA + step-up | 🔄 `local_complete` (branch `phase-r3-privileged-mfa-step-up`); pending CI + review/merge | REM-MFA-001 |
-| R4 | Idempotency & replay protection | ⬜ Not started | REM-IDEMP-001 |
+| R3 | Privileged MFA + step-up | ✅ `verified_complete` — PR #15, commit `c0402b2` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-MFA-001 |
+| R4 | Idempotency & replay protection | 🔄 `local_complete` (branch `phase-r4-idempotency-replay-protection`); pending CI + review/merge | REM-IDEMP-001 |
 | R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | ⬜ Not started | REM-TEN-001 |
 | R6 | Session & authorization revocation (per-request freshness) | ⬜ Not started | REM-SESS-001 |
 | R7 | Production probes, CI isolation, env parity, ADR-009 | ⬜ Not started | REM-OPS-001 |
@@ -58,12 +58,113 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase R4 — Idempotency & replay protection
+
+- **Branch:** `phase-r4-idempotency-replay-protection` (based on merged `main` @ `c0402b2`, PR #15 / R3).
+- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Proof:** [docs/proof/phase-r4.md](proof/phase-r4.md) · **ADR:** [ADR-003](architecture/adr/0003-idempotency-and-replay-protection.md) · **Data dictionary:** [core-identity-and-tenancy.md](architecture/data-dictionary/core-identity-and-tenancy.md).
+- **Register:** REM-IDEMP-001.
+
+### Work completed
+- **Schema (forward-only, §13.5 corrected):** `idempotency_keys` —
+  `UNIQUE(idempotency_scope, key_hash)` (the concurrency boundary); indexes
+  `(state, lock_expires_at)` + `(expires_at)`; `state` CHECK
+  (processing/completed/failed); `key_hash` = SHA-256(raw key); `response_body_
+  encrypted` (`encrypted:array`); FKs actor `SET NULL`, merchant/branch `RESTRICT`.
+  Data-dictionary entry authored before the migration (§13.2).
+- **Deterministic scope + request hash:** `IdempotencyScopeResolver`
+  (`merchant:{ulid}:user:{ulid}` / `platform:user:{ulid}` / `webhook:{provider}:
+  {env}`); `CanonicalRequestHasher` (method + route + normalized path params +
+  content type + recursively key-sorted body; JSON key order irrelevant).
+- **Middleware** `EnsureIdempotentRequest` (§24.4): require key 16–255; first claim
+  `INSERT ON CONFLICT DO NOTHING`; existing-row resolution under `SELECT … FOR
+  UPDATE`; completed→replay, different request→409
+  `idempotency_key_reused_with_different_request`, active lock→409
+  `request_in_progress`+Retry-After, expired/failed→reclaim+retry; missing/malformed
+  key→422 `idempotency_key_required`/`invalid_idempotency_key`.
+- **Replay safety:** `ReplayResponseSanitizer` allowlists `content-type` only;
+  never cookies/auth/xsrf/session/CSP/signed-URL/server/debug; body encrypted at
+  rest; replay tagged `Idempotent-Replay: true`; no key hash / row id exposed.
+- **Retention:** `idempotency:prune` (bounded; never deletes an active lock;
+  standard ≥72h, retriable ≥30d) scheduled daily; config in `.env.example`.
+- **Provider dedupe seam:** `ProviderReplayGuard` (generic; no M-Pesa) —
+  first/duplicate/payload-mismatch by `webhook:{provider}:{env}` scope.
+- **Classification seam:** `RouteClass` + `RouteClassification` (`route_class`
+  default); `FinancialRouteIdempotencyCoverageTest` fails on any unprotected
+  `financial_mutation` route. Middleware pinned LAST in `bootstrap/app.php`
+  priority (Plan §9.4 step 16).
+
+### Work skipped / deferred (with exact owning phase)
+```
+- Full route-classification / OpenAPI contract  -> Phase 10 (reuses route_class).
+- Real invoice/payment/refund route attachment   -> Phases 17-18.
+- M-Pesa callback/inbox/receipt dedupe attachment -> Phase 20D (ADR-006).
+- Billing/payout/compensation route attachment    -> owning Phase 20 subphases.
+- Tenant-schema remediation -> R5; session/authz revocation -> R6; readiness -> R7.
+- No production financial/M-Pesa routes created (truthfully empty); the reusable
+  control is proven by a testing-only harness.
+```
+
+### Commands — passed / failed / skipped
+```
+PASSED:
+  php artisan migrate:fresh --seed ................................ ok
+  php artisan test (full backend) ........... 351 passed, 4 skipped
+  php artisan test --parallel ............... pass (4 processes)
+  Idempotency + coverage (10 suites) ........ 41 tests pass
+  php artisan audit:verify-chain ............ OK (no chains on fresh DB)
+  composer validate --strict ................ valid
+  composer pint -- --test ................... clean
+  composer stan (Larastan L8) ............... no errors
+  composer audit --locked ................... 0 advisories
+  npm run lint .............. 0 errors (28 pre-existing warnings)
+  npm run typecheck ......................... clean
+  npm run test (vitest) ..................... 77 passed
+  npm run build ............................. built
+  npm run e2e (playwright) .................. 30 passed
+  npm audit --audit-level=high .............. 0 vulnerabilities
+  gitleaks detect --no-git --redact ......... no leaks
+  docker build php.Dockerfile  --target dev . exit 0
+  docker build nginx.Dockerfile --target prod exit 0
+FAILED then fixed (recorded, not erased):
+  IdempotencyConcurrencyTest used DatabaseTruncation -> committed rows leaked
+    into later RefreshDatabase tests (prune counts off). Converted to
+    RefreshDatabase + a same-connection unique-constraint contention proof.
+  retryAfter() returned float (Carbon 3 diffInSeconds) -> TypeError; (int) ceil().
+  Two test-assertion bugs (replay Set-Cookie from framework session; "boom" in
+    route_name) -> assert secret VALUES / exception detail instead. Impl correct.
+  Pint (imports/strict-types), Larastan (nullable row, raw-SQL concat, untyped
+    arrays) -> fixed. gitleaks (2 high-entropy test keys) -> renamed + allow.
+SKIPPED:
+  4 pre-existing skipped backend tests (unchanged by R4).
+  e2e auth-magic-link check-email flake: first run 27/3, rerun 30/30 (documented).
+```
+
+### Known risks / residual
+- Crash after the effect but before completion re-executes on recovery; exactly-once
+  across a crash additionally relies on the owning phase's ledger-level unique
+  constraints (ADR-003 limitation).
+- Lock TTL (30s default) too short for a very slow provider call surfaces as a
+  spurious `request_in_progress`; tune `IDEMPOTENCY_LOCK_TTL_SECONDS`.
+- True OS-parallel contention is enforced by the PG unique constraint + `FOR
+  UPDATE`; the harness exercises them deterministically (no process forking).
+
+### Context for R5 (tenant/branch schema hardening)
+- `idempotency_keys` carries nullable `merchant_id`/`branch_id` as **forensic**
+  columns (not a `BelongsToMerchant` model — platform/webhook scopes have no
+  merchant); isolation is via the scope being part of the unique key. R5's
+  `TenantColumnCoverageTest` should treat it as cross-cutting infrastructure, not a
+  tenant-owned business table.
+- Financial routes built later must carry BOTH tenant/branch controls AND
+  `EnsureIdempotentRequest` (order per §9.4: auth → MFA → tenant/branch/permission
+  → step-up → validation → idempotency+transaction).
+
 ## Phase R3 — Privileged MFA & step-up
 
-- **Branch:** `phase-r3-privileged-mfa-step-up` (based on merged `main` @ `1df759e`, PR #14 / R2).
-- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Branch:** `phase-r3-privileged-mfa-step-up` → merged as **PR #15**, commit `c0402b2`.
+- **Status:** ✅ `verified_complete` — PR #15 merged; CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception recorded ([docs/governance/solo-maintainer-review-exception-pr-15.md](governance/solo-maintainer-review-exception-pr-15.md)); `reviewDecision` intentionally blank (NOT an independent approval).
 - **Proof:** [docs/proof/phase-r3.md](proof/phase-r3.md) · **Data dictionary:** [core-identity-and-tenancy.md](architecture/data-dictionary/core-identity-and-tenancy.md).
-- **Register:** REM-MFA-001.
+- **Register:** REM-MFA-001 (`verified_complete`).
 
 ### Work completed
 - **Schema (forward-only):** `mfa_credentials` (encrypted TOTP secret via Laravel

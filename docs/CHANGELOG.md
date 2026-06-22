@@ -6,9 +6,69 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase R3 — Privileged MFA & step-up (`phase-r3-privileged-mfa-step-up`)
+### Phase R4 — Idempotency & replay protection (`phase-r4-idempotency-replay-protection`)
 
-Closes (locally) REM-MFA-001 — real privileged TOTP MFA, one-time recovery
+Closes (locally) REM-IDEMP-001 — the corrected `idempotency_keys` store + a
+reusable middleware so duplicate, concurrent and recoverable-retry requests
+produce exactly one durable effect, and a completed request replays its stored
+(encrypted, sanitised) response (Plan §13.5, §24.4, §79 R4; ADR-003). Built on
+merged R3 `main` (`c0402b2`, PR #15).
+
+#### Added
+- **Schema (forward-only, §13.5 corrected):** migration
+  `2026_06_22_000003_create_idempotency_keys_table` —
+  `UNIQUE(idempotency_scope, key_hash)`, indexes `(state, lock_expires_at)` +
+  `(expires_at)`, `state` CHECK; `key_hash` = SHA-256(raw key); encrypted
+  `response_body_encrypted`; FKs actor `SET NULL`, merchant/branch `RESTRICT`.
+  Data-dictionary entry authored first (Plan §13.2).
+- **Domain** `app/Domain/Idempotency/*`: `IdempotencyKey` model + `IdempotencyState`
+  enum; `IdempotencyStore` (claim/complete/fail; `INSERT ON CONFLICT DO NOTHING`
+  first-claim + `SELECT … FOR UPDATE` resolution); `CanonicalRequestHasher`;
+  `IdempotencyScopeResolver`; `ReplayResponseSanitizer`; `ClaimResult`/`ClaimOutcome`;
+  `ProviderReplayGuard` + `ProviderClaimResult`; idempotency exceptions.
+- **Middleware** `EnsureIdempotentRequest` (§24.4 algorithm; key 16–255;
+  replay / 409 conflict / 409 in-progress+Retry-After / reclaim; stable-4xx replay;
+  redacted server failure) pinned last in `bootstrap/app.php` priority.
+- **Classification seam** `RouteClass` + `RouteClassification` (`route_class`
+  default) — extendable by Phase 10 without replacement.
+- **Command** `idempotency:prune` (bounded; never deletes an active lock) scheduled
+  daily; config in `config/servana.php` + `.env.example`.
+- **ADR-003** (`docs/architecture/adr/0003-idempotency-and-replay-protection.md`).
+- **Tests** `tests/Feature/Idempotency/*` (9 suites) +
+  `tests/Feature/Security/FinancialRouteIdempotencyCoverageTest` (41 tests); a
+  `testing`-only route harness (no production financial route ships).
+
+#### Changed
+- `bootstrap/app.php` — `EnsureIdempotentRequest` added to middleware priority
+  (after authorization, immediately before the controller; §9.4 step 16).
+- `routes/api.php` — `testing/idempotency/*` harness (financial-classified) +
+  `RouteClassification` import. `routes/console.php` — prune schedule.
+
+#### Security
+- Only `SHA-256(raw key)` is stored; the response body is encrypted at rest; only a
+  `content-type` header allowlist is persisted/replayed (never cookies, auth,
+  XSRF, session, CSP, signed-URL, server, or debug headers); server failures store
+  only a redacted code. PostgreSQL (unique constraint + row locks) is the
+  concurrency boundary, not process memory.
+
+#### Tests / proof
+- `pint` clean, `stan` L8 0 errors, `composer validate` valid, backend **351
+  passed / 4 skipped** (serial + parallel), vitest **77**, e2e **30** (after one
+  documented `auth-magic-link` flake rerun), `composer audit` / `npm audit` /
+  `gitleaks` clean, both Docker images build. Proof: `docs/proof/phase-r4.md`.
+
+#### Known deferrals
+- Full route-classification/OpenAPI contract → Phase 10; real invoice/payment/
+  refund attachment → Phases 17–18; M-Pesa callback/inbox/receipt dedupe → Phase
+  20D; billing/payout/compensation → owning Phase 20 subphases; tenant schema → R5;
+  session revocation → R6; readiness → R7. REM-IDEMP-001 = `local_complete`.
+
+### Phase R3 — Privileged MFA & step-up (`phase-r3-privileged-mfa-step-up`)
+*(Merged via PR #15, commit `c0402b2`; CI Backend/Frontend/Security/Docker passed;
+REM-MFA-001 `verified_complete` under a documented solo-maintainer governance
+exception — `reviewDecision` blank, not an independent approval.)*
+
+Closes REM-MFA-001 — real privileged TOTP MFA, one-time recovery
 codes, mandatory enforcement for Super Administrator / Merchant Administrator /
 Finance, and a reusable fresh step-up control (Plan §17, §18, §79 R3). Built on
 merged R2 `main` (`1df759e`, PR #14).
@@ -72,7 +132,7 @@ merged R2 `main` (`1df759e`, PR #14).
   reconciliation 20D; backdated compensation 20F/20G). WebAuthn/passkeys &
   SMS/email OTP → later security enhancement. Administrator MFA reset/recovery →
   future account-recovery phase. Complete per-request revocation → R6.
-  REM-MFA-001 = `local_complete`.
+  REM-MFA-001 = `verified_complete` (PR #15, `c0402b2`).
 
 ### Phase R2 — Core audit completeness (`phase-r2-core-audit-completeness`)
 *(Merged via PR #14, commit `1df759e`; CI Backend/Frontend/Security/Docker passed;

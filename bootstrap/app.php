@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Exceptions\ApiErrorRenderer;
 use App\Http\Controllers\HealthController;
 use App\Http\Middleware\CorrelationIdMiddleware;
+use App\Http\Middleware\EnsureIdempotentRequest;
 use App\Http\Middleware\EnsurePrivilegedMfa;
 use App\Http\Middleware\ResolveTenantContext;
 use Illuminate\Auth\Middleware\Authorize;
@@ -74,6 +75,10 @@ return Application::configure(basePath: dirname(__DIR__))
             SubstituteBindings::class,
             AuthenticatesSessions::class,
             Authorize::class,
+            // Idempotency runs last — immediately before the controller — so the
+            // claim is taken after all authorization gates pass (Plan §9.4 step
+            // 16, §10.2: "idempotency middleware (financial)").
+            EnsureIdempotentRequest::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
