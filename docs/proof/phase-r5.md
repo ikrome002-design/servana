@@ -218,9 +218,13 @@ docker build nginx.Dockerfile --target prod . exit 0
 
 ## 12. REM-TEN-001 status
 
-`local_complete`. Promotion to `verified_complete` requires the R5 PR merged, CI
-green, and required review or a truthful PR-specific governance exception — not
-asserted here.
+`verified_complete`. Merged as **PR #17** (squash merge commit `66aaead` to
+`main`). CI Backend/Frontend/Security passed; the initial CI/Docker run failed on
+an external Buildx/Docker Hub timeout and a rerun passed with no product-code or
+Dockerfile change. A solo-maintainer governance exception is recorded
+(`docs/governance/solo-maintainer-review-exception-pr-17.md`); GitHub
+`reviewDecision` is intentionally blank — this is not independent reviewer
+approval.
 
 ## Solo-Maintainer Review Exception
 

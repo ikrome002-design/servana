@@ -6,16 +6,15 @@ namespace App\Domain\Hr\Services;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
-use App\Domain\Auth\Services\MagicLinkTokenService;
+use App\Domain\Auth\Services\AccessRevocationService;
+use App\Domain\Auth\Support\RevocationSummary;
 use App\Domain\Branches\Enums\BranchUserAssignmentStatus;
 use App\Domain\Branches\Models\BranchUserAssignment;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Hr\Enums\StaffEmploymentStatus;
 use App\Domain\Hr\Enums\StaffHistoryField;
-use App\Domain\Hr\Enums\StaffInvitationStatus;
 use App\Domain\Hr\Exceptions\StaffLifecycleException;
 use App\Domain\Hr\Models\StaffHistory;
-use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Enums\MerchantUserStatus;
@@ -27,16 +26,19 @@ use Illuminate\Support\Facades\DB;
  * Staff lifecycle transitions (Scope §3.4 Suspension/Deactivation, Plan §27
  * Phase 7). Every transition is transactional and records staff_history.
  *
- * Suspend/deactivate enforce the Scope §3.4 revocation rule: existing sessions
- * are invalidated immediately, unused Magic Links are invalidated, login is
- * blocked (membership no longer active → eligibility checks 2/4 deny), and
- * pending invitations for that email in the merchant are revoked. Historical
- * records are preserved (no deletes).
+ * Suspend/deactivate enforce the Scope §3.4 revocation rule by delegating to the
+ * central {@see AccessRevocationService} (Plan §79 R6): existing sessions and
+ * Sanctum tokens are revoked immediately, unused Magic Links are invalidated,
+ * login is blocked (membership no longer active → eligibility checks 2/4 deny),
+ * and pending invitations for that email in the merchant are revoked. The
+ * revocation's secret-free aggregate counts are attached to the lifecycle audit
+ * event (no new event, no duplication). Historical records are preserved (no
+ * deletes).
  */
 final class StaffLifecycleService
 {
     public function __construct(
-        private readonly MagicLinkTokenService $tokens,
+        private readonly AccessRevocationService $revocation,
         private readonly AuditRecorder $audit,
     ) {}
 
@@ -75,9 +77,9 @@ final class StaffLifecycleService
             $membership->save();
 
             $this->syncProfileActive($membership, false);
-            $this->revokeAccess($membership);
+            $summary = $this->revocation->revokeForMembership($membership);
             $this->recordStatusHistory($membership, $from, MerchantUserStatus::Suspended, $actor, $reason);
-            $this->auditLifecycle(AuditEvent::MembershipSuspended, $membership, $from, MerchantUserStatus::Suspended, $actor, $reason);
+            $this->auditLifecycle(AuditEvent::MembershipSuspended, $membership, $from, MerchantUserStatus::Suspended, $actor, $reason, $summary);
 
             return $membership->refresh();
         });
@@ -105,9 +107,9 @@ final class StaffLifecycleService
                 $profile->save();
             }
 
-            $this->revokeAccess($membership);
+            $summary = $this->revocation->revokeForMembership($membership);
             $this->recordStatusHistory($membership, $from, MerchantUserStatus::Deactivated, $actor, $reason);
-            $this->auditLifecycle(AuditEvent::MembershipDeactivated, $membership, $from, MerchantUserStatus::Deactivated, $actor, $reason);
+            $this->auditLifecycle(AuditEvent::MembershipDeactivated, $membership, $from, MerchantUserStatus::Deactivated, $actor, $reason, $summary);
 
             return $membership->refresh();
         });
@@ -197,32 +199,6 @@ final class StaffLifecycleService
         }
     }
 
-    /**
-     * Scope §3.4 revocation rule: kill sessions + unused Magic Links + pending
-     * invitations so the next request fails and no stale link works.
-     */
-    private function revokeAccess(MerchantUser $membership): void
-    {
-        $user = $membership->user;
-
-        if ($user !== null) {
-            // Delete DB-backed sessions for this user (immediate logout).
-            DB::table('sessions')->where('user_id', $user->id)->delete();
-            // Invalidate any unconsumed Magic Links.
-            $this->tokens->invalidateUnconsumedForEmail($user->email);
-        }
-
-        // Revoke any still-pending invitations for this email in the merchant.
-        StaffInvitation::query()
-            ->where('merchant_id', $membership->merchant_id)
-            ->where('email', $user?->email)
-            ->pending()
-            ->update([
-                'status' => StaffInvitationStatus::Revoked->value,
-                'revoked_at' => now(),
-            ]);
-    }
-
     private function syncProfileActive(MerchantUser $membership, bool $isActive): ?StaffProfile
     {
         $profile = $membership->staffProfile;
@@ -271,6 +247,7 @@ final class StaffLifecycleService
         MerchantUserStatus $to,
         ?User $actor,
         ?string $reason = null,
+        ?RevocationSummary $revocation = null,
     ): void {
         $this->audit->record(
             $event,
@@ -284,6 +261,8 @@ final class StaffLifecycleService
                 'old_values' => ['status' => $from->value],
                 'new_values' => ['status' => $to->value],
                 'reason' => $reason,
+                // Secret-free aggregate revocation counts (no ids/hashes/tokens).
+                'revocation' => $revocation?->toAuditContext(),
             ], static fn ($v): bool => $v !== null),
         );
     }

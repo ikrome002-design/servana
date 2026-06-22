@@ -46,6 +46,11 @@ final class RequestMagicLink
             return;
         }
 
+        // A newly issued link supersedes any earlier unconsumed link for this
+        // identity (Plan §79 R6): only the latest link is ever usable, so a
+        // previously-emailed-but-unclicked link silently stops working.
+        $this->tokens->invalidateUnconsumedForEmail($email);
+
         $rawToken = $this->tokens->issue($email, $ipAddress, $userAgent);
 
         $user->notify(new MagicLoginLinkNotification($rawToken));
