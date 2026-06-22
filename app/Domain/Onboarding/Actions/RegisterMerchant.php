@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Onboarding\Actions;
 
+use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Merchants\Enums\MerchantStatus;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Enums\MerchantUserStatus;
@@ -35,6 +37,8 @@ use Illuminate\Support\Str;
  */
 final class RegisterMerchant
 {
+    public function __construct(private readonly AuditRecorder $audit) {}
+
     public function handle(string $ownerName, string $email, string $businessName): ?Merchant
     {
         $email = Str::lower(trim($email));
@@ -64,7 +68,7 @@ final class RegisterMerchant
                 'contact_email' => $email,
             ]);
 
-            MerchantUser::query()->create([
+            $membership = MerchantUser::query()->create([
                 'merchant_id' => $merchant->id,
                 'user_id' => $user->id,
                 'role' => MerchantUserRole::MerchantAdmin,
@@ -79,6 +83,17 @@ final class RegisterMerchant
                 'reason' => 'merchant_self_registration',
                 'changed_by' => $user->id,
             ]);
+
+            // Audit the founding owner membership (Plan §70). The new owner is the
+            // actor; merchant-level event (no branch yet).
+            $this->audit->record(
+                AuditEvent::MembershipCreated,
+                $user,
+                $merchant->id,
+                null,
+                $membership,
+                ['target_membership' => $membership->ulid, 'target_role' => $membership->role->value, 'via' => 'self_registration'],
+            );
 
             return $merchant;
         });

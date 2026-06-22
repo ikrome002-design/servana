@@ -32,8 +32,8 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | Phase | Title | Status | Register item |
 |---|---|---|---|
 | V | As-built verification | ✅ `merged` — PR #12, commit `c58b64a` (CI Backend/Frontend/Security/Docker passed) | REM-V-001, REM-DOC-001 |
-| R1 | Dependency & runtime security (Laravel 12.60+, PHP 8.3, advisory removal, CR/LF) | 🔄 `local_complete` (branch `phase-r1-dependency-runtime-security`); impl PR #11, R1 governance added; pending CI + 2nd review | REM-DEP-001 |
-| R2 | Core audit completeness + chain verifier + masked read | ⬜ Not started | REM-AUD-001 |
+| R1 | Dependency & runtime security (Laravel 12.60+, PHP 8.3, advisory removal, CR/LF) | ✅ `verified_complete` — PR #13, commit `8fe575f` (CI passed; solo-maintainer governance exception, reviewDecision blank) | REM-DEP-001 |
+| R2 | Core audit completeness + chain verifier + masked read | 🔄 `local_complete` (branch `phase-r2-core-audit-completeness`); pending CI + review/merge | REM-AUD-001 |
 | R3 | Privileged MFA + step-up | ⬜ Not started | REM-MFA-001 |
 | R4 | Idempotency & replay protection | ⬜ Not started | REM-IDEMP-001 |
 | R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | ⬜ Not started | REM-TEN-001 |
@@ -58,12 +58,101 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase R2 — Core audit completeness
+
+- **Branch:** `phase-r2-core-audit-completeness` (based on merged `main` @ `8fe575f`, PR #13 / R1).
+- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Proof:** [docs/proof/phase-r2.md](proof/phase-r2.md) · **ADR:** [ADR-008](architecture/adr/0008-audit-immutability-and-chain.md).
+- **Register:** REM-AUD-001.
+
+### Work completed
+- **Canonical typed catalogue:** `AuditEvent` enum (one snake_case name per
+  action, central `severity()`); existing strings preserved. No free-form event
+  strings in transitions.
+- **AuthEventLogger replaced + deleted** (with `AuthEvent`): auth now audits to
+  `audit_logs` via `AuthAuditLogger`→`AuditRecorder` (masked email, null actor;
+  no token/session stored). No runtime reference remains.
+- **Core event coverage** wired in actions/services: auth (request/denied/failed/
+  success/logout), invitation (created/resent/revoked/accepted), membership
+  (created/activated/suspended/deactivated), branch_assignment (granted/revoked),
+  branch lifecycle (created/profile_updated/archived/operating_hours_updated/
+  day_opened/closed/reopened), permission overrides (created/updated/revoked +
+  denials), unauthorized_access. Recorded in-transaction with actor/merchant/
+  branch/target/severity and old/new values for sensitive transitions.
+- **Per-merchant + platform hash chains** via shared `AuditChainHasher` + pg
+  advisory lock; `branch_id` added (forward-only expand migration) and hashed.
+- **Verifier** `audit:verify-chain` (per-merchant + platform; tamper/forgery
+  detection; no mutation; safe output; `--merchant`/`--platform` filters).
+- **Masked read API:** `GET /api/v1/audit-logs(+/{id})`, `/api/v1/platform/
+  audit-logs(+/{id})` — paginated, allowlisted filters/sort, `AuditValueMasker`
+  server-side, `AuditLogPolicy` (read-only; branch/platform scope; foreign 404).
+  Reused `audit.view_full` / `platform.audit.view` (no registry change).
+- **ADR-008** + 7 Audit feature tests (30 tests). Updated 2 existing tests for
+  the new recorder API / audit-to-DB move (not weakened).
+
+### Work skipped / deferred (with owning phase)
+```
+- Item: Full audit coverage (financial/billing/M-Pesa/compensation/SMS/file/
+  export) + flagged-event workflow (audit_flagged_events) + exceptional
+  reason-gated unmasking. Owner: Phase 19.
+- Item: Standalone role-change event (no endpoint yet; role captured in
+  membership.created/invitation context). Owner: HR phase (15B+) / Phase 19.
+- Item: Calendar-exception change events (no endpoint yet). Owner: owning
+  branch/scheduling phase.
+- Item: Chain-failure alerting + scheduled verification. Owner: Phase 25.
+- Item: Audit dashboard/frontend. Owner: Phase 11/19.
+- Item: Audit export / signed delivery. Owner: Phase 19/23.
+- Item: audit_flagged_events table — NOT created (no R2 need). Owner: Phase 19.
+```
+
+### Pending CI / review / merge
+- Push branch; confirm CI green; obtain PR review (or a truthful PR-specific
+  governance exception); merge; then flip REM-AUD-001 → `verified_complete`.
+
+### Known risks
+- R2 redefines the chain as per-merchant + platform (Phase 8 was a single global
+  chain) and adds `branch_id` to the hash — safe because no production audit rows
+  exist (no deployment); `migrate:fresh` rebuilds cleanly.
+- Operating-hours audit is emitted from the controller (no domain action exists
+  for the weekly upsert) — inside the same transaction; a future action should
+  absorb it.
+- Only CORE domains are covered; financial/billing/etc. emit no audit until their
+  owning phases — do not assume full coverage before Phase 19.
+
+### Commands passed
+- Container: `pint -- --test` (271), `stan` (L8, 192, 0), `php artisan test`
+  **268/4** (serial+parallel), disposable `migrate:fresh --seed` (27 + seeder),
+  `audit:verify-chain` (exit 0), 7 Audit filters green.
+- Host: `npm run lint` (0 err/28 warn), `typecheck` (0), `test` (72), `build`,
+  `npm audit` (0), `gitleaks` (clean), both `docker build` images.
+
+### Commands failed
+- `npm run e2e` first run: 1 failed / 26 passed (known `auth-magic-link` flake);
+  rerun **27 passed**. Recorded in proof §7; not erased; R2 changes no frontend.
+- During development: 4 initial test failures (transaction-poison on trigger,
+  old recorder signature, unseeded override key, log-vs-DB assertion) — all root-
+  caused and fixed; see proof §6.
+
+### Commands skipped
+- `make up`/`make fresh`/`make test` — stack already healthy; container commands
+  run directly against a disposable DB to protect dev data.
+
+### Context for R3 (Privileged MFA + step-up)
+- R2 leaves the audit seam complete for CORE domains: any new privileged action
+  in R3 should emit an `AuditEvent` (add a case + record in the transition). MFA
+  enrollment/step-up events will be new `AuditEvent` cases. No `mfa_*` tables
+  exist yet (REM-MFA-001). The pre-feature gate (§5.4) remains open.
+
 ## Phase R1 — Dependency & runtime security
 
-- **Branch:** `phase-r1-dependency-runtime-security` (based on merged `main` @ `c58b64a`, PR #12 / Phase V).
-- **Status:** 🔄 `local_complete` — pending push, CI, and **second-reviewer** sign-off (security-sensitive PR).
+- **Branch:** `phase-r1-dependency-runtime-security` → **PR #13 merged into `main`** (merge commit `8fe575f`).
+- **Status:** ✅ `verified_complete`. CI Backend/Frontend/Security/Docker passed.
+  Review: a documented **solo-maintainer governance exception** (PR #13;
+  `reviewDecision` intentionally blank) — see
+  [solo-maintainer-review-exception-pr-13.md](governance/solo-maintainer-review-exception-pr-13.md);
+  **not** an independent reviewer approval.
 - **Proof:** [docs/proof/phase-r1.md](proof/phase-r1.md) · **ADR:** [ADR-001](architecture/adr/0001-framework-upgrade.md) · **Notes:** [laravel-12-upgrade.md](operations/laravel-12-upgrade.md).
-- **Register:** REM-DEP-001.
+- **Register:** REM-DEP-001 → `verified_complete`.
 
 ### Work completed
 - Re-verified PR #11's upgrade (no re-upgrade): Laravel **12.62.0** (≥12.60),
@@ -94,8 +183,8 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 ```
 
 ### Pending work
-- Push branch; confirm CI green; obtain the Plan-required **second reviewer**
-  (security-sensitive); merge; then flip REM-DEP-001 → `verified_complete`.
+- None. PR #13 merged into `main` (`8fe575f`); CI passed; REM-DEP-001 is
+  `verified_complete` under the documented solo-maintainer exception. R2 in progress.
 
 ### Known risks
 - Laravel 12 is not LTS — track point releases; re-run `composer audit`.

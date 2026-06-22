@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1\Branches;
 
+use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Branches\Models\BranchOperatingHour;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Http\Controllers\Controller;
@@ -13,7 +15,9 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Branch weekly operating hours (Scope §3.3). Branch-scoped (EnsureBranchScope);
- * the configuring role is Branch Manager (coarse — Phase 8 adds the real grant).
+ * the configuring role is Branch Manager (`branch.profile.manage`). There is no
+ * domain action for the weekly upsert, so the change is audited here inside the
+ * same transaction as the upsert (Plan §70).
  */
 final class BranchOperatingHoursController extends Controller
 {
@@ -32,12 +36,12 @@ final class BranchOperatingHoursController extends Controller
         return response()->json(['data' => $hours]);
     }
 
-    public function update(UpdateOperatingHoursRequest $request, MerchantBranch $branch): JsonResponse
+    public function update(UpdateOperatingHoursRequest $request, MerchantBranch $branch, AuditRecorder $audit): JsonResponse
     {
         /** @var array<int, array<string, mixed>> $hours */
         $hours = $request->validated()['hours'];
 
-        DB::transaction(function () use ($branch, $hours): void {
+        DB::transaction(function () use ($branch, $hours, $audit, $request): void {
             foreach ($hours as $entry) {
                 BranchOperatingHour::query()->updateOrCreate(
                     ['branch_id' => $branch->id, 'weekday' => (int) $entry['weekday']],
@@ -50,6 +54,15 @@ final class BranchOperatingHoursController extends Controller
                     ],
                 );
             }
+
+            $audit->record(
+                AuditEvent::BranchOperatingHoursUpdated,
+                $request->user(),
+                $branch->merchant_id,
+                $branch->id,
+                $branch,
+                ['weekdays' => array_map(static fn (array $e): int => (int) $e['weekday'], $hours)],
+            );
         });
 
         return $this->show($branch);

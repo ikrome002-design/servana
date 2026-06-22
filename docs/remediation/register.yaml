@@ -4,13 +4,13 @@
 #   not_started | open | in_progress | partially_complete | local_complete |
 #   ci_passed | merged | verified_complete | blocked
 # Gating: PRE_FEATURE_REMEDIATION (§5.4) | FEATURE_DELIVERY_OBLIGATION (§5.4a)
-# Generated: 2026-06-21 (Phase V). Updated: 2026-06-21 (R1).
+# Generated: 2026-06-21 (Phase V). Updated: 2026-06-21 (R2).
 
 meta:
   generated: "2026-06-21"
-  last_updated: "2026-06-21 (R1)"
-  branch: phase-r1-dependency-runtime-security
-  base: c58b64a   # merged main (PR #12, Phase V)
+  last_updated: "2026-06-21 (R2)"
+  branch: phase-r2-core-audit-completeness
+  base: 8fe575f   # merged main (PR #13, R1)
   pre_feature_gate_closed: false   # §5.4 — blocks all Section 80 feature phases
 
 items:
@@ -57,29 +57,56 @@ items:
     precise_correction: "R1: authored ADR-001 + docs/operations/laravel-12-upgrade.md + docs/proof/phase-r1.md; re-verified versions/parity/audit/security-regressions/DB+cache/full-suite/images. composer.json/lock unchanged (no R1 failure)."
     migration_impact: "none (upgrade requires no schema change; verified by clean migrate:fresh --seed)."
     test_plan: "Full baseline green in clean containers; composer audit zero unapproved; CR/LF + signed-URL regression pass. ALL PASSED (see docs/proof/phase-r1.md)."
-    proof_artifact: "docs/proof/phase-r1.md; docs/architecture/adr/0001-framework-upgrade.md; docs/operations/laravel-12-upgrade.md"
+    proof_artifact: "docs/proof/phase-r1.md; docs/architecture/adr/0001-framework-upgrade.md; docs/operations/laravel-12-upgrade.md; docs/governance/solo-maintainer-review-exception-pr-13.md"
     owner: "R1"
-    completion_commit: "cbcf50c (#11 impl) + phase-r1 branch (governance, pending push/CI/2nd-review)"
+    completion_commit: "cbcf50c (#11 impl) + 8fe575f (PR #13, R1 governance)"
     rollback_forward_repair: "Image rollback within schema compatibility only (no schema change); rollback reintroduces advisories (emergency-only); forward-repair via new patched image; no destructive down()."
-    reviewer: "TBD — security-sensitive PR requires a SECOND reviewer before verified_complete"
-    status: local_complete   # verified_complete only after PR merge + green CI + 2nd review
+    reviewer: "Solo-maintainer governance exception (PR #13; reviewDecision blank; CI Backend/Frontend/Security/Docker passed) — documented in docs/governance/solo-maintainer-review-exception-pr-13.md; NOT an independent approval."
+    status: verified_complete   # PR #13 merged (8fe575f); CI passed; documented solo-maintainer exception
 
   - id: REM-AUD-001
     classification: C0
     gating_category: PRE_FEATURE_REMEDIATION
     scope_requirement: "Core audit-event completeness + hash-chain verifier + masked read API/policies (Plan §79 R2; ADR-008; Corrections 6,22)."
-    repository_evidence: "audit_logs has previous_hash/hash char(64); trigger audit_logs_block_mutation() blocks UPDATE/DELETE (runtime-proven). Interim AuthEventLogger still in use; no verifier command; no masked read API; partial event coverage (only unauthorized_access + override events)."
-    root_cause: "Phase 8/9 built the immutable substrate; coverage + verifier deferred by design."
-    affected_files_tables_routes: "audit_logs; app/Domain/Audit/*; AuditRecorder/DatabaseAuditRecorder; auth/invitation/membership/role/branch/staff lifecycle events."
-    security_data_business_impact: "Tamper detection (verifier) and complete forensic trail absent; masked audit reads not yet enforced."
-    precise_correction: "Replace interim logging with AuditRecorder for all core events; add hash-chain verifier command; add masked read API + branch/platform policies; audit_flagged_events seam."
-    migration_impact: "possible audit_flagged_events seam (additive)."
-    test_plan: "event-coverage tests; tamper-verification command; masked-read denial tests."
-    proof_artifact: "docs/proof/phase-r2.md"
+    repository_evidence: >
+      DONE (R2): canonical AuditEvent enum (one name per action, central
+      severity(); existing strings preserved). AuthEventLogger + AuthEvent
+      DELETED — auth now audits to audit_logs via AuthAuditLogger→AuditRecorder
+      (masked email, null actor; no token/session stored). Core coverage wired in
+      actions/services: auth (request/denied/failed/success/logout), invitation
+      (created/resent/revoked/accepted), membership (created/activated/suspended/
+      deactivated), branch_assignment (granted/revoked), branch lifecycle
+      (created/profile_updated/archived/operating_hours_updated/day_opened/closed/
+      reopened), permission overrides (created/updated/revoked + denials),
+      unauthorized_access. Recorder rewritten to PER-MERCHANT + platform hash
+      chains via shared AuditChainHasher + pg advisory lock. branch_id added
+      (forward-only expand migration) and hashed. Verifier `audit:verify-chain`
+      (per-merchant + platform; tamper/forgery detection; no mutation; safe
+      output). Masked read API GET /api/v1/audit-logs(+/{id}) and
+      /api/v1/platform/audit-logs(+/{id}) — paginated, allowlisted filters,
+      AuditValueMasker server-side, AuditLogPolicy (read-only; branch/platform
+      scope; foreign-tenant 404). Reused audit.view_full / platform.audit.view
+      (no registry change). audit_flagged_events NOT created (deferred to 19).
+    root_cause: "Phase 8/9 built the immutable substrate but coverage was partial, auth used a log-only logger, there was no verifier/masked-read API, and the chain was a single global chain instead of per-merchant."
+    affected_files_tables_routes: >
+      app/Domain/Audit/{Enums/AuditEvent,Services/AuditChainHasher,Support/AuditValueMasker,
+      Services/DatabaseAuditRecorder,Contracts/AuditRecorder,Models/AuditLog}.php;
+      app/Domain/Auth/Support/AuthAuditLogger.php; app/Console/Commands/VerifyAuditChain.php;
+      app/Http/Controllers/Api/V1/Audit/*, Platform/PlatformAuditLogController.php;
+      app/Http/Requests/Audit/AuditLogIndexRequest.php; app/Http/Resources/AuditLogResource.php;
+      app/Policies/AuditLogPolicy.php; auth actions + MagicLinkController; branch actions +
+      BranchOperatingHoursController; StaffLifecycleService; invitation actions + RegisterMerchant;
+      PermissionOverrideService; LogUnauthorizedAttempt; AppServiceProvider; routes/api.php;
+      migration 2026_06_21_000001_add_branch_id_to_audit_logs; audit_logs(+branch_id).
+    security_data_business_impact: "Every implemented mutating transition now emits a typed, severity-tagged, tamper-evident audit row; chains are independently verifiable; reads are masked + scoped; Audit role provably read-only. No tokens/sessions/secrets stored."
+    precise_correction: "Implemented per scope_requirement; smallest change to complete CORE audit only. Financial/billing/M-Pesa/compensation/SMS/file/export coverage + flagged-event workflow remain Phase 19; alerting/scheduling Phase 25."
+    migration_impact: "Forward-only expand: add nullable branch_id (FK merchant_branches, nullOnDelete, indexed) to audit_logs. branch_id is in the canonical hash. No data backfill (no production rows). No shipped migration edited."
+    test_plan: "DONE — tests/Feature/Audit/{AuditEventCoverage,AuthAuditIntegration,AuditChainVerification,AuditMaskedRead,AuditBranchScope,PlatformAuditPolicy,AuditImmutability}Test (30 tests). Full suite 268 passed/4 skipped (serial+parallel); pint/stan/audit/gitleaks clean; both images build."
+    proof_artifact: "docs/proof/phase-r2.md; docs/architecture/adr/0008-audit-immutability-and-chain.md"
     owner: "R2"
-    completion_commit: null
-    reviewer: "TBD"
-    status: open
+    completion_commit: "phase-r2-core-audit-completeness branch (pending push/CI/review)"
+    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
+    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
 
   - id: REM-MFA-001
     classification: C0

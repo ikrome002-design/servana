@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Hr\Actions;
 
+use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Branches\Enums\BranchUserAssignmentStatus;
 use App\Domain\Branches\Models\BranchUserAssignment;
 use App\Domain\Hr\Enums\StaffHistoryField;
@@ -34,6 +36,8 @@ use Illuminate\Support\Facades\DB;
  */
 final class AcceptStaffInvitation
 {
+    public function __construct(private readonly AuditRecorder $audit) {}
+
     /**
      * @param  array{first_name: string, last_name: string, phone: string}  $profile
      */
@@ -123,6 +127,25 @@ final class AcceptStaffInvitation
                 'changed_by' => $invitation->invited_by,
                 'reason' => 'invitation_accepted',
             ]);
+
+            // Audit the acceptance + the resulting membership (Plan §70). The
+            // invitee is the actor; both rows are branch-scoped to the invite.
+            $this->audit->record(
+                AuditEvent::InvitationAccepted,
+                $user,
+                $invitation->merchant_id,
+                $invitation->branch_id,
+                $invitation,
+                ['role' => $invitation->role->value],
+            );
+            $this->audit->record(
+                AuditEvent::MembershipCreated,
+                $user,
+                $invitation->merchant_id,
+                $invitation->branch_id,
+                $membership,
+                ['target_membership' => $membership->ulid, 'target_role' => $membership->role->value, 'via' => 'invitation'],
+            );
 
             return $user;
         });

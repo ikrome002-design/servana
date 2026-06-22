@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Hr\Services;
 
+use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Auth\Services\MagicLinkTokenService;
 use App\Domain\Branches\Enums\BranchUserAssignmentStatus;
 use App\Domain\Branches\Models\BranchUserAssignment;
@@ -33,7 +35,10 @@ use Illuminate\Support\Facades\DB;
  */
 final class StaffLifecycleService
 {
-    public function __construct(private readonly MagicLinkTokenService $tokens) {}
+    public function __construct(
+        private readonly MagicLinkTokenService $tokens,
+        private readonly AuditRecorder $audit,
+    ) {}
 
     /**
      * Activate a staff membership. A branch-scoped role must already hold an
@@ -53,6 +58,7 @@ final class StaffLifecycleService
 
             $this->syncProfileActive($membership, true);
             $this->recordStatusHistory($membership, $from, MerchantUserStatus::Active, $actor);
+            $this->auditLifecycle(AuditEvent::MembershipActivated, $membership, $from, MerchantUserStatus::Active, $actor);
 
             return $membership->refresh();
         });
@@ -71,6 +77,7 @@ final class StaffLifecycleService
             $this->syncProfileActive($membership, false);
             $this->revokeAccess($membership);
             $this->recordStatusHistory($membership, $from, MerchantUserStatus::Suspended, $actor, $reason);
+            $this->auditLifecycle(AuditEvent::MembershipSuspended, $membership, $from, MerchantUserStatus::Suspended, $actor, $reason);
 
             return $membership->refresh();
         });
@@ -100,6 +107,7 @@ final class StaffLifecycleService
 
             $this->revokeAccess($membership);
             $this->recordStatusHistory($membership, $from, MerchantUserStatus::Deactivated, $actor, $reason);
+            $this->auditLifecycle(AuditEvent::MembershipDeactivated, $membership, $from, MerchantUserStatus::Deactivated, $actor, $reason);
 
             return $membership->refresh();
         });
@@ -129,6 +137,15 @@ final class StaffLifecycleService
 
             $this->recordBranchHistory($membership, null, $branch->id, $actor);
 
+            $this->audit->record(
+                AuditEvent::BranchAssignmentGranted,
+                $actor,
+                $membership->merchant_id,
+                $branch->id,
+                $assignment,
+                ['target_membership' => $membership->ulid, 'target_role' => $membership->role->value],
+            );
+
             return $assignment;
         });
     }
@@ -143,6 +160,15 @@ final class StaffLifecycleService
             $membership = $assignment->merchantUser;
             if ($membership !== null) {
                 $this->recordBranchHistory($membership, $assignment->branch_id, null, $actor);
+
+                $this->audit->record(
+                    AuditEvent::BranchAssignmentRevoked,
+                    $actor,
+                    $membership->merchant_id,
+                    $assignment->branch_id,
+                    $assignment,
+                    ['target_membership' => $membership->ulid, 'target_role' => $membership->role->value],
+                );
             }
         });
     }
@@ -228,6 +254,35 @@ final class StaffLifecycleService
             'changed_by' => $actor?->id,
             'reason' => $reason,
         ]);
+    }
+
+    /**
+     * Audit a membership/staff lifecycle transition (Plan §70). branch_id is the
+     * staff member's primary branch when known, so a branch-scoped Audit user can
+     * see lifecycle events for their own branch's staff.
+     */
+    private function auditLifecycle(
+        AuditEvent $event,
+        MerchantUser $membership,
+        MerchantUserStatus $from,
+        MerchantUserStatus $to,
+        ?User $actor,
+        ?string $reason = null,
+    ): void {
+        $this->audit->record(
+            $event,
+            $actor,
+            $membership->merchant_id,
+            $membership->staffProfile?->primary_branch_id,
+            $membership,
+            array_filter([
+                'target_membership' => $membership->ulid,
+                'target_role' => $membership->role->value,
+                'old_values' => ['status' => $from->value],
+                'new_values' => ['status' => $to->value],
+                'reason' => $reason,
+            ], static fn ($v): bool => $v !== null),
+        );
     }
 
     private function recordBranchHistory(MerchantUser $membership, ?int $oldBranchId, ?int $newBranchId, ?User $actor): void

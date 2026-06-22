@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Domain\Hr\Actions;
 
+use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Audit\Support\AuditValueMasker;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Notifications\StaffInvitationNotification;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
@@ -23,6 +27,8 @@ final class CreateStaffInvitation
 {
     public const EXPIRY_HOURS = 72;
 
+    public function __construct(private readonly AuditRecorder $audit) {}
+
     /**
      * @param  array{role: MerchantUserRole, role_title?: ?string, service_eligibility_ids?: ?array<int, int>}  $data
      */
@@ -31,23 +37,34 @@ final class CreateStaffInvitation
         $email = Str::lower(trim($email));
         $rawToken = $this->generateRawToken();
 
-        $invitation = StaffInvitation::query()->create([
-            'merchant_id' => $merchant->id,
-            'branch_id' => $branch->id,
-            'email' => $email,
-            'role' => $data['role'],
-            'role_title' => $data['role_title'] ?? null,
-            'service_eligibility_ids' => $data['service_eligibility_ids'] ?? null,
-            'token_hash' => hash('sha256', $rawToken),
-            'expires_at' => now()->addHours(self::EXPIRY_HOURS),
-            'resend_count' => 0,
-            'last_sent_at' => now(),
-            'invited_by' => $actor->id,
-        ]);
+        return DB::transaction(function () use ($merchant, $branch, $actor, $email, $data, $rawToken): StaffInvitation {
+            $invitation = StaffInvitation::query()->create([
+                'merchant_id' => $merchant->id,
+                'branch_id' => $branch->id,
+                'email' => $email,
+                'role' => $data['role'],
+                'role_title' => $data['role_title'] ?? null,
+                'service_eligibility_ids' => $data['service_eligibility_ids'] ?? null,
+                'token_hash' => hash('sha256', $rawToken),
+                'expires_at' => now()->addHours(self::EXPIRY_HOURS),
+                'resend_count' => 0,
+                'last_sent_at' => now(),
+                'invited_by' => $actor->id,
+            ]);
 
-        $this->send($invitation, $rawToken, $merchant, $branch);
+            $this->audit->record(
+                AuditEvent::InvitationCreated,
+                $actor,
+                $merchant->id,
+                $branch->id,
+                $invitation,
+                ['email' => AuditValueMasker::maskEmail($email), 'role' => $invitation->role->value],
+            );
 
-        return $invitation;
+            $this->send($invitation, $rawToken, $merchant, $branch);
+
+            return $invitation;
+        });
     }
 
     /** Re-send a fresh token for a pending invitation, returning the new instance. */
@@ -55,19 +72,31 @@ final class CreateStaffInvitation
     {
         $rawToken = $this->generateRawToken();
 
-        $invitation->token_hash = hash('sha256', $rawToken);
-        $invitation->expires_at = now()->addHours(self::EXPIRY_HOURS);
-        $invitation->resend_count = $invitation->resend_count + 1;
-        $invitation->last_sent_at = now();
-        $invitation->save();
+        return DB::transaction(function () use ($invitation, $rawToken): StaffInvitation {
+            $invitation->token_hash = hash('sha256', $rawToken);
+            $invitation->expires_at = now()->addHours(self::EXPIRY_HOURS);
+            $invitation->resend_count = $invitation->resend_count + 1;
+            $invitation->last_sent_at = now();
+            $invitation->save();
 
-        /** @var Merchant $merchant */
-        $merchant = $invitation->merchant;
-        /** @var MerchantBranch $branch */
-        $branch = $invitation->branch;
-        $this->send($invitation, $rawToken, $merchant, $branch);
+            /** @var Merchant $merchant */
+            $merchant = $invitation->merchant;
+            /** @var MerchantBranch $branch */
+            $branch = $invitation->branch;
 
-        return $invitation->refresh();
+            $this->audit->record(
+                AuditEvent::InvitationResent,
+                null,
+                $invitation->merchant_id,
+                $invitation->branch_id,
+                $invitation,
+                ['email' => AuditValueMasker::maskEmail($invitation->email), 'resend_count' => $invitation->resend_count],
+            );
+
+            $this->send($invitation, $rawToken, $merchant, $branch);
+
+            return $invitation->refresh();
+        });
     }
 
     private function send(StaffInvitation $invitation, string $rawToken, Merchant $merchant, MerchantBranch $branch): void

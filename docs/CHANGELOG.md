@@ -6,9 +6,72 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase R1 — Dependency & runtime security (`phase-r1-dependency-runtime-security`)
+### Phase R2 — Core audit completeness (`phase-r2-core-audit-completeness`)
 
-Closes (locally) REM-DEP-001 — formalizes and re-verifies the Laravel 12 upgrade
+Closes (locally) REM-AUD-001 — completes CORE audit-event coverage, hash-chain
+verification, and secure masked audit reads for the already-implemented domains
+(Plan §70, §79 R2; ADR-008). Financial/billing/M-Pesa/compensation/SMS/file/
+export coverage and the flagged-event workflow remain Phase 19.
+
+#### Added
+- **Canonical typed event catalogue** `app/Domain/Audit/Enums/AuditEvent.php` —
+  one snake_case action per transition with central `severity()`; existing Phase
+  8/9 strings preserved. `AuditRecorder::record()` now takes an `AuditEvent`.
+- **`AuditChainHasher`** — single canonical hash shared by recorder + verifier.
+- **`AuditValueMasker`** — recursive server-side masking (email/phone/reference/
+  token/secret/restricted) for `context`/`actor_label`.
+- **`AuthAuditLogger`** — writes auth events to `audit_logs` (masked email, null
+  actor; no token/session stored).
+- **`audit:verify-chain`** Artisan command — verifies per-merchant + platform
+  chains; detects altered/forged/reordered rows; no mutation; exit non-zero on
+  failure; `--merchant`/`--platform` filters.
+- **Masked read API** — `GET /api/v1/audit-logs(+/{auditLog})` (merchant;
+  `audit.view_full`) and `GET /api/v1/platform/audit-logs(+/{auditLog})`
+  (platform; `platform.audit.view`); paginated, allowlisted filters/sort;
+  `AuditLogResource` (ULIDs only, masked). No write/delete routes.
+- **`AuditLogPolicy`** — read-only; merchant + branch scope; platform separation;
+  foreign-tenant 404. Registered in `AppServiceProvider`.
+- **ADR-008** (`docs/architecture/adr/0008-audit-immutability-and-chain.md`).
+- Migration `2026_06_21_000001_add_branch_id_to_audit_logs` (forward-only expand;
+  nullable FK, indexed; part of the hash).
+- 7 Audit feature tests (`tests/Feature/Audit/*`, 30 tests).
+
+#### Changed
+- `DatabaseAuditRecorder` — per-merchant + platform chains, advisory-lock
+  serialization, `branch_id`, shared hasher.
+- Core coverage wired into actions/services (auth, invitations, membership/staff
+  lifecycle, branch lifecycle + day, branch assignment, permission overrides,
+  unauthorized access) — in-transaction, with old/new values where sensitive.
+- `AuditLog` model gains `branch_id` + `branch()` relation.
+- Existing tests updated for the new recorder API and the audit-to-DB move (not
+  weakened): `Auth/AuditReadOnlyTest`, `Security/MagicLinkTokenSecurityTest`.
+
+#### Removed
+- `AuthEventLogger` and `AuthEvent` (replaced by `AuditRecorder`/`AuditEvent`;
+  no parallel audit system).
+
+#### Security
+- No raw Magic Link token, session id, full email (where masked), or request
+  body is stored. `audit_logs` remains append-only (DB trigger; re-asserted).
+  Chains are tamper-evident and independently verifiable per tenant.
+
+#### Tests / proof
+- `pint` (271), `stan` L8 (192, 0), backend **268 passed / 4 skipped**
+  (serial + parallel), `audit:verify-chain` exit 0, vitest 72, build, `composer
+  audit`/`npm audit`/`gitleaks` clean, both Docker images build. e2e: known
+  `auth-magic-link` flake (26/1 then 27/0). Proof: `docs/proof/phase-r2.md`.
+
+#### Known deferrals
+- Full audit coverage + flagged-event workflow + exceptional unmasking → Phase 19;
+  chain-failure alerting/scheduling → Phase 25; audit dashboard → Phase 11/19;
+  audit export/signed delivery → Phase 19/23. REM-AUD-001 = `local_complete`.
+
+### Phase R1 — Dependency & runtime security (`phase-r1-dependency-runtime-security`)
+*(Merged via PR #13, commit `8fe575f`; CI Backend/Frontend/Security/Docker passed;
+REM-DEP-001 `verified_complete` under a documented solo-maintainer governance
+exception — `reviewDecision` blank, not an independent approval.)*
+
+Closes REM-DEP-001 — formalizes and re-verifies the Laravel 12 upgrade
 delivered by PR #11 (`cbcf50c`). **No application/source/`composer.*`/Docker/CI
 code changed in R1**; it adds the missing governance/evidence and re-runs the
 gates.
