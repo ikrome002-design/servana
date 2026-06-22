@@ -25,6 +25,9 @@ class BranchCashUpFactory extends Factory
         return [
             'ulid' => (string) Str::ulid(),
             'branch_id' => MerchantBranch::factory(),
+            // Derive merchant_id from the branch so the composite consistency FK holds.
+            'merchant_id' => fn (array $attributes) => MerchantBranch::query()
+                ->whereKey($attributes['branch_id'])->value('merchant_id'),
             'expected_total' => 0,
             'cash_counted' => 0,
             'discrepancy_amount' => 0,

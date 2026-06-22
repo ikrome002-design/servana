@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Branches\Models;
 
 use App\Domain\Branches\Enums\CashUpStatus;
+use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Database\Factories\BranchCashUpFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +24,7 @@ use Illuminate\Support\Str;
  *
  * @property int $id
  * @property string $ulid
+ * @property int $merchant_id
  * @property int $branch_id
  * @property int|null $branch_day_record_id
  * @property int $expected_total
@@ -32,6 +35,7 @@ use Illuminate\Support\Str;
 class BranchCashUp extends Model
 {
     use BelongsToBranch;
+    use BelongsToMerchant;
 
     /** @use HasFactory<BranchCashUpFactory> */
     use HasFactory;
@@ -46,6 +50,7 @@ class BranchCashUp extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'merchant_id',
         'branch_id',
         'branch_day_record_id',
         'expected_total',
@@ -90,5 +95,11 @@ class BranchCashUp extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(MerchantBranch::class, 'branch_id');
+    }
+
+    /** @return BelongsTo<Merchant, $this> */
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class);
     }
 }

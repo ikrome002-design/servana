@@ -31,6 +31,7 @@ final class OpenBranchDay
                 'branch_id' => $branch->id,
                 'business_date' => $date,
             ]);
+            $record->merchant_id = $branch->merchant_id; // R5: ownership from the branch
 
             $reopening = $record->exists && $record->status === BranchDayStatus::Closed;
 

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Auth\Models;
 
 use App\Domain\Auth\Enums\PermissionOverrideEffect;
+use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +19,7 @@ use Illuminate\Support\Str;
  *
  * @property int $id
  * @property string $ulid
+ * @property int $merchant_id
  * @property int $merchant_user_id
  * @property int $permission_id
  * @property PermissionOverrideEffect $effect
@@ -25,7 +28,10 @@ use Illuminate\Support\Str;
  */
 class MerchantUserPermissionOverride extends Model
 {
+    use BelongsToMerchant;
+
     protected $fillable = [
+        'merchant_id',
         'merchant_user_id',
         'permission_id',
         'effect',
@@ -53,6 +59,12 @@ class MerchantUserPermissionOverride extends Model
     public function getRouteKeyName(): string
     {
         return 'ulid';
+    }
+
+    /** @return BelongsTo<Merchant, $this> */
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class);
     }
 
     /** @return BelongsTo<MerchantUser, $this> */

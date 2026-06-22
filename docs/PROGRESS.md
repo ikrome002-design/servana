@@ -35,8 +35,8 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | R1 | Dependency & runtime security (Laravel 12.60+, PHP 8.3, advisory removal, CR/LF) | ✅ `verified_complete` — PR #13, commit `8fe575f` (CI passed; solo-maintainer governance exception, reviewDecision blank) | REM-DEP-001 |
 | R2 | Core audit completeness + chain verifier + masked read | ✅ `verified_complete` — PR #14, commit `1df759e` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-AUD-001 |
 | R3 | Privileged MFA + step-up | ✅ `verified_complete` — PR #15, commit `c0402b2` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-MFA-001 |
-| R4 | Idempotency & replay protection | 🔄 `local_complete` (branch `phase-r4-idempotency-replay-protection`); pending CI + review/merge | REM-IDEMP-001 |
-| R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | ⬜ Not started | REM-TEN-001 |
+| R4 | Idempotency & replay protection | ✅ `verified_complete` — PR #16, commit `1288f48` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-IDEMP-001 |
+| R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | 🔄 `local_complete` (branch `phase-r5-tenant-branch-schema-hardening`); pending CI + review/merge | REM-TEN-001 |
 | R6 | Session & authorization revocation (per-request freshness) | ⬜ Not started | REM-SESS-001 |
 | R7 | Production probes, CI isolation, env parity, ADR-009 | ⬜ Not started | REM-OPS-001 |
 
@@ -58,12 +58,99 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase R5 — Tenant & branch schema hardening
+
+- **Branch:** `phase-r5-tenant-branch-schema-hardening` (based on merged `main` @ `1288f48`, PR #16 / R4).
+- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Proof:** [docs/proof/phase-r5.md](proof/phase-r5.md) · **ADR:** [ADR-002](architecture/adr/0002-tenancy-enforcement-model.md) · **Data dictionary:** [branches-and-staff.md](architecture/data-dictionary/branches-and-staff.md).
+- **Register:** REM-TEN-001.
+
+### Work completed
+- **Ownership inventory / central registry:** `app/Domain/Tenancy/TenantOwnership.php`
+  classifies every existing base table (branch_owned / tenant_owned / exempt-with-
+  reason), driving the coverage tests. No undocumented table is permitted.
+- **Tables changed (forward-only, expand→backfill→constrain):**
+  - +`merchant_id` (NN, indexed, FKs) on **5 branch-owned** tables —
+    `branch_user_assignments`, `branch_operating_hours`, `branch_calendar_exceptions`,
+    `branch_day_records`, `branch_cash_ups`;
+  - +`merchant_id` on **2 tenant-owned** tables — `staff_history`,
+    `merchant_user_permission_overrides`;
+  - +`UNIQUE (id, merchant_id)` on **3 parents** — `merchant_branches`,
+    `staff_profiles`, `merchant_users` (composite-FK targets).
+- **Rows backfilled:** `merchant_id` derived from the parent branch/profile/
+  membership (parameterized cursor; fail-safe on orphans). Post-`migrate:fresh
+  --seed`: **0** null `merchant_id` rows across affected tables.
+- **Constraints/indexes added:** per table — `merchant_id → merchants` FK
+  (RESTRICT); **composite consistency FK** `(fk, merchant_id) → parent(id,
+  merchant_id)` (CASCADE) so a row's merchant can never disagree with its parent;
+  index beginning with `merchant_id`. Existing `branch_id` CASCADE FK retained.
+- **Models/scopes updated:** `BelongsToMerchant` added to all 7 owned models
+  (`+BelongsToBranch` on the 4 branch models). `BranchUserAssignment` uses
+  `BelongsToMerchant` **only** — it is the branch-assignment authority that
+  resolves `TenantContext::branchIds`, so `BranchScope` there would be circular
+  (documented in the registry). Creation sites set `merchant_id` from the
+  branch/parent (`AcceptStaffInvitation` runs without context → explicit).
+- **Coverage:** `TenantColumnCoverageTest` (live PostgreSQL schema),
+  `ModelTenancyTraitCoverageTest`, `RouteBindingTenantSafetyTest`, plus the
+  retained `TenancyStaticAnalysisTest`. The 404 cross-tenant / 403 cross-branch
+  contract is unchanged.
+
+### Work skipped / deferred (with exact owning phase)
+```
+- Session/token/Magic-Link/invitation/cache revocation + per-request
+  membership/role freshness                                  -> R6 (REM-SESS-001)
+- Readiness / environment parity                              -> R7 (REM-OPS-001)
+- Migration manifest + full route-classification/OpenAPI      -> Phase 10
+- Future tenant/branch tables' ownership columns              -> each owning phase
+- Invoice/payment/queue/personnel isolation rows (tables N/A)  -> Phases 16-19
+- Cash-up workflow behaviour (only ownership columns hardened) -> Phase 18B
+```
+
+### Commands — passed / failed / skipped
+```
+PASSED:
+  php artisan migrate:status ................ all R5 migrations Ran
+  php artisan migrate:fresh --seed .......... DONE; 0 null merchant_id rows
+  php artisan test .......................... 370 passed, 4 skipped
+  php artisan test --parallel ............... pass (4 processes)
+  php artisan audit:verify-chain ............ OK (no chains on fresh DB)
+  composer validate --strict / pint / stan L8 clean
+  composer audit / npm audit / gitleaks ..... clean
+  npm run lint (0 err) / typecheck / test (77) / build  ..... pass
+  npm run e2e ............................... 30 passed
+  docker build php(dev) / nginx(prod) ....... exit 0
+FAILED then fixed (recorded, not erased):
+  Adding BelongsToBranch to BranchUserAssignment made BranchScope circular ->
+    12 auth/branch/HR tests failed. Fixed: BelongsToMerchant only (authority
+    table), documented BranchScope exemption; rerun green.
+  Pest toContain is variadic -> a failure-message 2nd arg became a needle;
+    removed the messages.
+SKIPPED:
+  4 pre-existing skipped backend tests (feature-phase isolation rows N/A).
+  e2e: known auth-magic-link flake + one webServer-startup timeout (port
+    contended by a concurrent docker build); clean rerun 30/30.
+```
+
+### Known risks / residual
+- The composite FK assumes every branch-owned row has a resolvable parent; truly
+  orphaned legacy data fails the backfill safely (operator must resolve).
+- `merchant_id` auto-fill relies on `TenantContext` on authenticated routes; the
+  composite FK is the fail-closed backstop on any context/branch disagreement.
+
+### Context for R6 (session & authorization revocation)
+- R5 added no per-request revocation. R6 must add active-membership/active-role
+  re-checks every authenticated request and verify session/token/Magic-Link/
+  invitation/cache invalidation. The `merchant_id`/`branch_id` columns + scopes
+  R5 added are the structural substrate R6's freshness checks build on; the
+  documented 404 cross-tenant / 403 cross-branch posture is unchanged and must
+  remain so.
+
 ## Phase R4 — Idempotency & replay protection
 
-- **Branch:** `phase-r4-idempotency-replay-protection` (based on merged `main` @ `c0402b2`, PR #15 / R3).
-- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Branch:** `phase-r4-idempotency-replay-protection` → merged as **PR #16**, commit `1288f48`.
+- **Status:** ✅ `verified_complete` — PR #16 merged; CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception recorded ([docs/governance/solo-maintainer-review-exception-pr-16.md](governance/solo-maintainer-review-exception-pr-16.md)); `reviewDecision` intentionally blank (NOT an independent approval).
 - **Proof:** [docs/proof/phase-r4.md](proof/phase-r4.md) · **ADR:** [ADR-003](architecture/adr/0003-idempotency-and-replay-protection.md) · **Data dictionary:** [core-identity-and-tenancy.md](architecture/data-dictionary/core-identity-and-tenancy.md).
-- **Register:** REM-IDEMP-001.
+- **Register:** REM-IDEMP-001 (`verified_complete`).
 
 ### Work completed
 - **Schema (forward-only, §13.5 corrected):** `idempotency_keys` —

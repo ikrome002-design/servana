@@ -25,6 +25,9 @@ class BranchDayRecordFactory extends Factory
         return [
             'ulid' => (string) Str::ulid(),
             'branch_id' => MerchantBranch::factory(),
+            // Derive merchant_id from the branch so the composite consistency FK holds.
+            'merchant_id' => fn (array $attributes) => MerchantBranch::query()
+                ->whereKey($attributes['branch_id'])->value('merchant_id'),
             'business_date' => now()->toDateString(),
             'status' => BranchDayStatus::Closed,
         ];

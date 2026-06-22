@@ -6,9 +6,74 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase R4 — Idempotency & replay protection (`phase-r4-idempotency-replay-protection`)
+### Phase R5 — Tenant & branch schema hardening (`phase-r5-tenant-branch-schema-hardening`)
 
-Closes (locally) REM-IDEMP-001 — the corrected `idempotency_keys` store + a
+Closes (locally) REM-TEN-001 — makes tenant/branch ownership structurally
+complete so every existing branch-owned record is protected by `merchant_id` +
+`branch_id`, a database consistency constraint, global scopes, scoped binding,
+and automated coverage (Plan §2.1, §13.1, §79 R5; ADR-002). Built on merged R4
+`main` (`1288f48`, PR #16).
+
+#### Added
+- **Central registry** `app/Domain/Tenancy/TenantOwnership.php` — classifies every
+  existing table (branch_owned / tenant_owned / exempt-with-reason); the single
+  source of truth for the coverage tests.
+- **Migrations (forward-only, expand→backfill→constrain):**
+  `2026_06_23_000001` adds `UNIQUE (id, merchant_id)` to `merchant_branches`,
+  `staff_profiles`, `merchant_users`; `…000002` adds `merchant_id` to the five
+  branch-owned tables (`branch_user_assignments`, `branch_operating_hours`,
+  `branch_calendar_exceptions`, `branch_day_records`, `branch_cash_ups`);
+  `…000003` adds `merchant_id` to `staff_history` and
+  `merchant_user_permission_overrides`. Each: backfill from the parent
+  (parameterized, fail-safe), NOT NULL, index, `merchant_id → merchants` FK
+  (RESTRICT), and a **composite consistency FK** `(fk, merchant_id) → parent(id,
+  merchant_id)`.
+- **Data dictionary** `docs/architecture/data-dictionary/branches-and-staff.md`
+  (authored before the migrations, Plan §13.2).
+- **ADR-002** (`docs/architecture/adr/0002-tenancy-enforcement-model.md`).
+- **Tests** `tests/Feature/Tenancy/{TenantColumnCoverage,TenantBackfillMigration,
+  TenantBranchConsistencyConstraint,ModelTenancyTraitCoverage}Test` +
+  `tests/Feature/Isolation/{CrossTenantBranchOwnedModel,RouteBindingTenantSafety}Test`.
+
+#### Changed
+- **Models** gain `BelongsToMerchant` (+ `BelongsToBranch` on the four branch
+  models): `BranchOperatingHour`, `BranchCalendarException`, `BranchDayRecord`,
+  `BranchCashUp`, `BranchUserAssignment` (BelongsToMerchant only — BranchScope
+  would be circular for the branch-assignment authority), `StaffHistory`,
+  `MerchantUserPermissionOverride`. Factories derive `merchant_id` from the branch.
+- **Creation sites** set `merchant_id` from the branch/parent:
+  `AcceptStaffInvitation` (no tenant context — explicit), `StaffLifecycleService`,
+  `OpenBranchDay`, `CloseBranchDay`, `BranchOperatingHoursController`,
+  `PermissionOverrideService`.
+
+#### Security
+- Every branch-owned record now carries `merchant_id` + `branch_id` with a DB
+  composite FK that **rejects** a merchant/branch mismatch (proven by inserting
+  via `DB::table`, bypassing the model). Route-bound owned models resolve only
+  within merchant scope (foreign ULID → 404 + `unauthorized_access` audit;
+  same-tenant out-of-branch → 403 `no_branch_scope`, unchanged).
+  `idempotency_keys` and `audit_logs` remain cross-cutting (nullable merchant by
+  design).
+
+#### Tests / proof
+- `pint` clean, `stan` L8 0 errors, `composer validate` valid, backend **370
+  passed / 4 skipped** (serial + parallel), vitest **77**, e2e **30** (after one
+  documented flake + one webServer-timeout rerun), `composer audit` / `npm audit`
+  / `gitleaks` clean, both Docker images build. Proof: `docs/proof/phase-r5.md`.
+
+#### Known deferrals
+- Session/token/link/invitation/cache revocation + per-request membership/role
+  freshness → R6; readiness/parity → R7; migration manifest + full route contract
+  → Phase 10; future tenant/branch tables → each owning feature phase; invoice/
+  payment/queue/personnel isolation rows → Phases 16–19. REM-TEN-001 =
+  `local_complete`.
+
+### Phase R4 — Idempotency & replay protection (`phase-r4-idempotency-replay-protection`)
+*(Merged via PR #16, commit `1288f48`; CI Backend/Frontend/Security/Docker passed;
+REM-IDEMP-001 `verified_complete` under a documented solo-maintainer governance
+exception — `reviewDecision` blank, not an independent approval.)*
+
+Closes REM-IDEMP-001 — the corrected `idempotency_keys` store + a
 reusable middleware so duplicate, concurrent and recoverable-retry requests
 produce exactly one durable effect, and a completed request replays its stored
 (encrypted, sanitised) response (Plan §13.5, §24.4, §79 R4; ADR-003). Built on
@@ -61,7 +126,8 @@ merged R3 `main` (`c0402b2`, PR #15).
 - Full route-classification/OpenAPI contract → Phase 10; real invoice/payment/
   refund attachment → Phases 17–18; M-Pesa callback/inbox/receipt dedupe → Phase
   20D; billing/payout/compensation → owning Phase 20 subphases; tenant schema → R5;
-  session revocation → R6; readiness → R7. REM-IDEMP-001 = `local_complete`.
+  session revocation → R6; readiness → R7. REM-IDEMP-001 = `verified_complete`
+  (PR #16, `1288f48`).
 
 ### Phase R3 — Privileged MFA & step-up (`phase-r3-privileged-mfa-step-up`)
 *(Merged via PR #15, commit `c0402b2`; CI Backend/Frontend/Security/Docker passed;

@@ -102,7 +102,10 @@ final class AcceptStaffInvitation
                 'is_active' => true,
             ]);
 
+            // Acceptance runs WITHOUT tenant context (public invitee), so the
+            // merchant_id is set explicitly from the invitation (R5 / REM-TEN-001).
             BranchUserAssignment::query()->create([
+                'merchant_id' => $invitation->merchant_id,
                 'merchant_user_id' => $membership->id,
                 'branch_id' => $invitation->branch_id,
                 'status' => BranchUserAssignmentStatus::Active,
@@ -112,6 +115,7 @@ final class AcceptStaffInvitation
 
             // Initial append-only history (Scope §3.4).
             StaffHistory::query()->create([
+                'merchant_id' => $invitation->merchant_id,
                 'staff_profile_id' => $staffProfile->id,
                 'field' => StaffHistoryField::Status,
                 'old_value' => null,
@@ -120,6 +124,7 @@ final class AcceptStaffInvitation
                 'reason' => 'invitation_accepted',
             ]);
             StaffHistory::query()->create([
+                'merchant_id' => $invitation->merchant_id,
                 'staff_profile_id' => $staffProfile->id,
                 'field' => StaffHistoryField::Branch,
                 'old_value' => null,
