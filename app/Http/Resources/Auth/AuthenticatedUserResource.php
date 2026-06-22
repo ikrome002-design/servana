@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Auth;
 
+use App\Domain\Auth\Mfa\MfaStatus;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Onboarding\Services\FirstTimeSetupProgress;
@@ -36,6 +37,9 @@ final class AuthenticatedUserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        /** @var User $user */
+        $user = $this->resource;
+
         $context = app(TenantContext::class);
         $merchant = $context->merchant();
         $membership = $context->merchantUser();
@@ -69,6 +73,12 @@ final class AuthenticatedUserResource extends JsonResource
             // (EnsurePermission + policies) is the security boundary.
             'permissions' => $context->permissions(),
             'setup' => $this->setupState($merchant),
+            // Safe MFA state (Plan §18): drives the SPA enrollment/challenge/
+            // step-up routing. Never exposes the secret or recovery-code hashes.
+            'mfa' => app(MfaStatus::class)->for(
+                $user,
+                $request->hasSession() ? $request->session() : null,
+            ),
         ];
     }
 

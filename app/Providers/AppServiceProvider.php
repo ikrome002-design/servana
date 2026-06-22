@@ -96,6 +96,18 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('invitation-accept', fn (Request $request) => Limit::perHour(10)->by('ip:'.(string) $request->ip()));
 
+        // MFA confirmation and challenge attempts (Plan §18, §9.3). Per-user
+        // (authenticated) and per-IP, so brute-forcing a 6-digit code or a
+        // recovery code is throttled to a structured 429.
+        RateLimiter::for('mfa-confirm', fn (Request $request) => [
+            Limit::perMinute(5)->by($this->identify($request)),
+        ]);
+
+        RateLimiter::for('mfa-challenge', fn (Request $request) => [
+            Limit::perMinute(5)->by($this->identify($request)),
+            Limit::perMinute(15)->by('ip:'.(string) $request->ip()),
+        ]);
+
         RateLimiter::for('api', fn (Request $request) => Limit::perMinute(120)->by($this->identify($request)));
 
         RateLimiter::for('finance-sensitive', fn (Request $request) => Limit::perMinute(30)->by($this->identify($request)));

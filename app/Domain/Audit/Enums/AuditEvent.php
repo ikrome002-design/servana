@@ -63,6 +63,17 @@ enum AuditEvent: string
     case PermissionOverrideDeniedSelfEscalation = 'permission.override.denied_self_escalation';
     case PermissionWriteDenied = 'permission.write_denied';
 
+    // --- MFA + step-up (Plan §18; R3). Identity-level (null merchant chain);
+    // secrets/codes/session ids are NEVER placed in audit context.
+    case MfaEnrollmentStarted = 'mfa.enrollment_started';
+    case MfaEnrollmentConfirmed = 'mfa.enrollment_confirmed';
+    case MfaChallengeSucceeded = 'mfa.challenge_succeeded';
+    case MfaChallengeFailed = 'mfa.challenge_failed';
+    case MfaRecoveryCodeUsed = 'mfa.recovery_code_used';
+    case MfaRecoveryCodesRegenerated = 'mfa.recovery_codes_regenerated';
+    case MfaStepUpSucceeded = 'mfa.step_up_succeeded';
+    case MfaStepUpDenied = 'mfa.step_up_denied';
+
     // --- Tenant/branch isolation (Plan §8.4) — name preserved from Phase 9.
     case UnauthorizedAccess = 'unauthorized_access';
 
@@ -81,10 +92,14 @@ enum AuditEvent: string
             self::BranchCreated,
             self::BranchProfileUpdated,
             self::BranchOperatingHoursUpdated,
+            self::MfaChallengeSucceeded,
+            self::MfaStepUpSucceeded,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
-            self::BranchDayClosed => AuditSeverity::Notice,
+            self::BranchDayClosed,
+            self::MfaEnrollmentStarted,
+            self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,
             self::LoginLinkFailed,
@@ -92,7 +107,11 @@ enum AuditEvent: string
             self::BranchAssignmentRevoked,
             self::BranchDayReopened,
             self::PermissionOverrideDeniedSelfEscalation,
-            self::PermissionWriteDenied => AuditSeverity::Warning,
+            self::PermissionWriteDenied,
+            self::MfaChallengeFailed,
+            self::MfaRecoveryCodeUsed,
+            self::MfaRecoveryCodesRegenerated,
+            self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::MembershipSuspended,
             self::MembershipDeactivated,

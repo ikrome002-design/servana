@@ -8,10 +8,10 @@
 
 meta:
   generated: "2026-06-21"
-  last_updated: "2026-06-21 (R2)"
-  branch: phase-r2-core-audit-completeness
-  base: 8fe575f   # merged main (PR #13, R1)
-  pre_feature_gate_closed: false   # §5.4 — blocks all Section 80 feature phases
+  last_updated: "2026-06-22 (R3)"
+  branch: phase-r3-privileged-mfa-step-up
+  base: 1df759e   # merged main (PR #14, R2)
+  pre_feature_gate_closed: false   # §5.4 — still blocks all Section 80 feature phases (R4–R7 open)
 
 items:
 
@@ -102,28 +102,78 @@ items:
     precise_correction: "Implemented per scope_requirement; smallest change to complete CORE audit only. Financial/billing/M-Pesa/compensation/SMS/file/export coverage + flagged-event workflow remain Phase 19; alerting/scheduling Phase 25."
     migration_impact: "Forward-only expand: add nullable branch_id (FK merchant_branches, nullOnDelete, indexed) to audit_logs. branch_id is in the canonical hash. No data backfill (no production rows). No shipped migration edited."
     test_plan: "DONE — tests/Feature/Audit/{AuditEventCoverage,AuthAuditIntegration,AuditChainVerification,AuditMaskedRead,AuditBranchScope,PlatformAuditPolicy,AuditImmutability}Test (30 tests). Full suite 268 passed/4 skipped (serial+parallel); pint/stan/audit/gitleaks clean; both images build."
-    proof_artifact: "docs/proof/phase-r2.md; docs/architecture/adr/0008-audit-immutability-and-chain.md"
+    proof_artifact: "docs/proof/phase-r2.md; docs/architecture/adr/0008-audit-immutability-and-chain.md; docs/governance/solo-maintainer-review-exception-pr-14.md"
     owner: "R2"
-    completion_commit: "phase-r2-core-audit-completeness branch (pending push/CI/review)"
-    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
-    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
+    completion_commit: "1df759e (PR #14)"
+    reviewer: "Solo-maintainer governance exception (PR #14; reviewDecision blank; CI Backend/Frontend/Security/Docker passed) — documented in docs/governance/solo-maintainer-review-exception-pr-14.md; NOT an independent approval."
+    status: verified_complete   # PR #14 merged (1df759e); CI passed; documented solo-maintainer exception
 
   - id: REM-MFA-001
     classification: C0
     gating_category: PRE_FEATURE_REMEDIATION
     scope_requirement: "TOTP enrollment, encrypted secrets, hashed recovery codes, mandatory MFA (Super Admin/Merchant Admin/Finance), step-up freshness (Plan §79 R3; Correction 7)."
-    repository_evidence: "No mfa_credentials/totp tables in clean schema; no MFA route; no MFA middleware on privileged routes; only a safe MfaController placeholder (mfa_not_enabled)."
-    root_cause: "MFA explicitly deferred since Phase 5 (placeholder only)."
-    affected_files_tables_routes: "new mfa_credentials, mfa_recovery_codes; privileged routes; auth pipeline (Plan §9.4 order)."
-    security_data_business_impact: "Privileged accounts protected only by Magic Link; no step-up on billing/refund/period/payout/reconciliation actions."
-    precise_correction: "Implement TOTP enroll/confirm; mandatory MFA for privileged roles; step-up freshness per designated action."
-    migration_impact: "additive: mfa_credentials (encrypted), mfa_recovery_codes (hashed)."
-    test_plan: "privileged routes deny absent/stale MFA; recovery-code single-use; step-up per action; secrets never logged."
+    repository_evidence: >
+      BEFORE (proven): no mfa_credentials/mfa_recovery_codes tables in schema; no
+      MFA route in route:list; no privileged-MFA / step-up middleware; only a safe
+      MfaController placeholder returning mfa_not_enabled.
+      DONE (R3): mfa_credentials (encrypted secret via Laravel `encrypted` cast;
+      UNIQUE(user_id,type); type CHECK('totp'); last_used_timestep replay guard;
+      user_id FK RESTRICT) and mfa_recovery_codes (char(64) SHA-256 code_hash;
+      used_at single-use; UNIQUE(code_hash); index(user_id,used_at)) created
+      forward-only. TOTP via pragmarx/google2fa v8.0.3 (RFC 6238, constant-time
+      hash_equals); replay prevented with verifyKeyNewer + persisted time-step.
+      MfaRequirementResolver resolves mandatory roles from platform status +
+      ACTIVE memberships WITHOUT TenantContext (Super Administrator via
+      is_platform_staff; active merchant_admin/finance). EnsurePrivilegedMfa pinned
+      in bootstrap/app.php priority BETWEEN AuthenticatesRequests and
+      ResolveTenantContext (proven by MfaMiddlewareOrderTest via
+      gatherRouteMiddleware + a behavioural before-binding test); allowlists only
+      status/enroll/confirm/challenge/recovery-challenge + /me + logout while MFA
+      incomplete; distinguishes mfa_enrollment_required / mfa_challenge_required /
+      mfa_invalid_code (+ 429 mfa rate limit). RequireFreshMfa + StepUpAction enum
+      (7 business classifications + RecoveryCodeRegeneration) gate fresh step-up;
+      env-configurable window servana.mfa.step_up_window_minutes (default 5).
+      Magic Link login does NOT assert MFA; assertion (mfa_verified_at) lives only
+      in the server session, set on challenge/confirm, session id regenerated,
+      cleared on logout. Real endpoints under /api/v1/auth/mfa replace the
+      placeholder. MFA audit events added to canonical AuditEvent enum and recorded
+      via AuditRecorder (no secrets/codes/session ids); audit:verify-chain passes.
+      Minimal SPA flow (MfaSetup.vue, MfaChallenge.vue, authStore, router guard).
+    root_cause: "MFA explicitly deferred since Phase 5 (placeholder only); privileged accounts had no second factor and no step-up."
+    affected_files_tables_routes: >
+      NEW tables: mfa_credentials, mfa_recovery_codes (migrations
+      2026_06_22_000001/000002). NEW: app/Domain/Auth/Mfa/{TotpProvider,
+      RecoveryCodeManager,MfaRequirementResolver,MfaSession,MfaManager,MfaStatus,
+      MfaAuditLogger,StepUpAction}.php; app/Domain/Auth/Models/{MfaCredential,
+      MfaRecoveryCode}.php; app/Domain/Auth/Exceptions/{MfaException,
+      MfaEnrollmentRequiredException,MfaChallengeRequiredException,
+      InvalidMfaCodeException,StepUpRequiredException,MfaStateException}.php;
+      app/Http/Middleware/{EnsurePrivilegedMfa,RequireFreshMfa}.php;
+      app/Http/Requests/Auth/MfaCodeRequest.php; database/factories/{MfaCredential,
+      MfaRecoveryCode}Factory.php; docs/architecture/data-dictionary/*.
+      CHANGED: app/Http/Controllers/Api/V1/Auth/MfaController.php (real flow);
+      app/Domain/Audit/Enums/AuditEvent.php (+8 MFA cases); bootstrap/app.php
+      (priority); routes/api.php (mfa group + main-group gate + test harness);
+      app/Providers/AppServiceProvider.php (mfa rate limiters);
+      app/Http/Resources/Auth/AuthenticatedUserResource.php (mfa block);
+      config/servana.php (mfa config); SPA (types/authStore/router/pages).
+    security_data_business_impact: "Privileged accounts (Super Admin / Merchant Admin / Finance) now require a confirmed TOTP factor and a per-session assertion; designated sensitive actions require a fresh step-up. Secrets encrypted at rest; recovery codes hashed + single-use; nothing sensitive logged or audited."
+    precise_correction: "Implemented per scope_requirement; smallest change to deliver privileged MFA + reusable step-up only. Step-up attachment to real business routes is deferred to their owning phases (StepUpAction::owningPhase): billing 20A; refund/period 18B; payout 20H; reconciliation 20D; backdated compensation 20F/20G. WebAuthn/passkeys, SMS/email OTP, and an administrator MFA reset/recovery workflow are out of scope (future security/account-recovery phase). Full per-request revocation remains R6."
+    migration_impact: "additive forward-only: mfa_credentials (encrypted secret), mfa_recovery_codes (hashed, single-use). No shipped migration edited; no backfill."
+    test_plan: >
+      DONE — tests/Feature/Auth/{MfaEnrollment,MfaChallenge,MfaRecoveryCode,
+      PrivilegedMfaMiddleware,MfaMiddlewareOrder,MfaStepUp,MfaAudit}Test.php +
+      tests/Feature/Security/MfaSecretRedactionTest.php (43 MFA tests);
+      authStore.spec.ts (+6); tests/e2e/mfa.spec.ts (3). Full backend 311
+      passed / 4 skipped; vitest 77 passed; e2e 30 passed; pint/stan L8/composer
+      audit/npm audit/gitleaks clean; both docker images build; audit:verify-chain
+      passes after MFA events.
     proof_artifact: "docs/proof/phase-r3.md"
     owner: "R3"
-    completion_commit: null
-    reviewer: "TBD"
-    status: open
+    completion_commit: "phase-r3-privileged-mfa-step-up branch (pending push/CI/review)"
+    rollback_forward_repair: "Forward-only; down() drops the two new tables. No data backfill, so rollback is safe within the release; forward-repair via a new additive migration. Disabling enforcement is config/route-level, never a destructive migration."
+    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
+    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
 
   - id: REM-IDEMP-001
     classification: C0

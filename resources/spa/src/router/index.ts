@@ -49,3 +49,33 @@ router.beforeEach(async () => {
     await auth.bootstrap();
   }
 });
+
+// Mandatory MFA gate (Plan §18, Phase R3) — UX only; the API is the security
+// boundary. An authenticated mandatory-role user is routed to enrollment or the
+// session challenge before any privileged page. The MFA pages and logout/login
+// are always reachable so the flow can complete.
+const MFA_EXEMPT = new Set([
+  'auth.mfa.setup',
+  'auth.mfa.challenge',
+  'auth.login',
+  'auth.verify',
+  'auth.check-email',
+]);
+
+router.beforeEach((to) => {
+  const auth = useAuthStore();
+
+  if (!auth.isAuthenticated() || MFA_EXEMPT.has(String(to.name))) {
+    return true;
+  }
+
+  if (auth.mfaEnrollmentRequired()) {
+    return { name: 'auth.mfa.setup' };
+  }
+
+  if (auth.mfaChallengeRequired()) {
+    return { name: 'auth.mfa.challenge' };
+  }
+
+  return true;
+});

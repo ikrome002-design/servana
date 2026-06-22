@@ -6,7 +6,78 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase R3 — Privileged MFA & step-up (`phase-r3-privileged-mfa-step-up`)
+
+Closes (locally) REM-MFA-001 — real privileged TOTP MFA, one-time recovery
+codes, mandatory enforcement for Super Administrator / Merchant Administrator /
+Finance, and a reusable fresh step-up control (Plan §17, §18, §79 R3). Built on
+merged R2 `main` (`1df759e`, PR #14).
+
+#### Added
+- **Schema (forward-only):** `mfa_credentials` (encrypted TOTP secret;
+  `UNIQUE(user_id,type)`; type `CHECK('totp')`; `last_used_timestep` replay
+  guard; `user_id` FK RESTRICT) and `mfa_recovery_codes` (SHA-256 `code_hash`;
+  single-use `used_at`; `UNIQUE(code_hash)`; index `(user_id, used_at)`).
+  Migrations `2026_06_22_000001/000002`. Data-dictionary entry authored first
+  (`docs/architecture/data-dictionary/core-identity-and-tenancy.md`, Plan §13.2).
+- **TOTP** via `pragmarx/google2fa` v8.0.3 (RFC 6238, constant-time). Domain
+  services `app/Domain/Auth/Mfa/*`: `TotpProvider`, `RecoveryCodeManager`,
+  `MfaRequirementResolver`, `MfaSession`, `MfaManager`, `MfaStatus`,
+  `MfaAuditLogger`, `StepUpAction`.
+- **Models/factories** `MfaCredential`, `MfaRecoveryCode` (secret/hash hidden).
+- **Middleware** `EnsurePrivilegedMfa` (mandatory-role gate, pinned after auth
+  and before tenant context) and `RequireFreshMfa` (reusable step-up).
+- **API** `GET /api/v1/auth/mfa` + `POST /auth/mfa/{enroll,confirm,challenge,
+  recovery-challenge,recovery-codes}`; `MfaCodeRequest`; `mfa-confirm` /
+  `mfa-challenge` rate limiters; MFA exceptions rendering the §11.5 envelope
+  (`mfa_enrollment_required`, `mfa_challenge_required`, `mfa_invalid_code`,
+  `step_up_required`, `mfa_invalid_state`).
+- **8 MFA `AuditEvent` cases** (enrollment started/confirmed, challenge
+  succeeded/failed, recovery code used, recovery codes regenerated, step-up
+  succeeded/denied).
+- **Frontend** `MfaSetup.vue`, `MfaChallenge.vue`, `authStore` MFA state +
+  actions, a UX-only router guard, and the `mfa` block in the bootstrap payload.
+- **Tests** 8 backend suites (`tests/Feature/Auth/Mfa*`, `tests/Feature/Security/
+  MfaSecretRedactionTest`), authStore vitest cases, and `tests/e2e/mfa.spec.ts`.
+  A test-only step-up harness exercises every `StepUpAction` (no fake business
+  routes ship).
+
+#### Changed
+- `MfaController` — real flow replaces the `mfa_not_enabled` placeholder.
+- `bootstrap/app.php` — `EnsurePrivilegedMfa` pinned between auth and
+  `ResolveTenantContext` (Plan §9.4 step 2).
+- `routes/api.php` — `auth/mfa` group, `EnsurePrivilegedMfa` on the authenticated
+  group, and a `testing`-only step-up/privileged-probe harness.
+- `AuthenticatedUserResource` — safe `mfa` state block.
+- `AppServiceProvider` — MFA rate limiters. `config/servana.php` — `mfa` config
+  (issuer, totp window, recovery-code count, step-up window).
+
+#### Security
+- TOTP secret encrypted at rest (`encrypted` cast); recovery codes stored only as
+  SHA-256 hashes and shown once. Replay blocked via `last_used_timestep`. The MFA
+  assertion lives only in the server session (`mfa_verified_at`), regenerated on
+  challenge and cleared on logout — the Magic Link is never the MFA assertion. No
+  secret / code / session id is logged or written to the audit trail;
+  `audit:verify-chain` passes after MFA events.
+
+#### Tests / proof
+- `pint` clean, `stan` L8 0 errors, `composer validate` valid, backend **311
+  passed / 4 skipped**, `audit:verify-chain` exit 0, vitest **77 passed**,
+  `npm run build`, e2e **30 passed**, `composer audit` / `npm audit` / `gitleaks`
+  clean, both Docker images build (dev + prod). Proof: `docs/proof/phase-r3.md`.
+
+#### Known deferrals
+- Step-up attachment to real business routes → owning phases (billing 20A; refund
+  finalization & period reopen 18B; payout approval/mark-paid 20H; M-Pesa
+  reconciliation 20D; backdated compensation 20F/20G). WebAuthn/passkeys &
+  SMS/email OTP → later security enhancement. Administrator MFA reset/recovery →
+  future account-recovery phase. Complete per-request revocation → R6.
+  REM-MFA-001 = `local_complete`.
+
 ### Phase R2 — Core audit completeness (`phase-r2-core-audit-completeness`)
+*(Merged via PR #14, commit `1df759e`; CI Backend/Frontend/Security/Docker passed;
+REM-AUD-001 `verified_complete` under a documented solo-maintainer governance
+exception — `reviewDecision` blank, not an independent approval.)*
 
 Closes (locally) REM-AUD-001 — completes CORE audit-event coverage, hash-chain
 verification, and secure masked audit reads for the already-implemented domains
@@ -64,7 +135,8 @@ export coverage and the flagged-event workflow remain Phase 19.
 #### Known deferrals
 - Full audit coverage + flagged-event workflow + exceptional unmasking → Phase 19;
   chain-failure alerting/scheduling → Phase 25; audit dashboard → Phase 11/19;
-  audit export/signed delivery → Phase 19/23. REM-AUD-001 = `local_complete`.
+  audit export/signed delivery → Phase 19/23. REM-AUD-001 = `verified_complete`
+  (PR #14, `1df759e`).
 
 ### Phase R1 — Dependency & runtime security (`phase-r1-dependency-runtime-security`)
 *(Merged via PR #13, commit `8fe575f`; CI Backend/Frontend/Security/Docker passed;

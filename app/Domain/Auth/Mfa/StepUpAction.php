@@ -1,0 +1,70 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Auth\Mfa;
+
+use App\Http\Middleware\RequireFreshMfa;
+
+/**
+ * Central registry of actions that require a *fresh* MFA step-up (Plan §18, §9.4
+ * step 13; Phase R3).
+ *
+ * This enum is the single source of truth for the designated sensitive actions.
+ * The reusable {@see RequireFreshMfa} middleware is
+ * parameterised by a case value: `RequireFreshMfa::class.':'.StepUpAction::RefundFinalization->value`.
+ *
+ * Most owning business routes do NOT exist yet — Phase R3 ships the reusable
+ * control and proves it with a test-only harness; each future phase listed in
+ * {@see self::owningPhase()} MUST attach the matching classification when it
+ * creates the real route. No fake business routes are created here.
+ */
+enum StepUpAction: string
+{
+    case BillingConfiguration = 'billing_configuration';
+    case RefundFinalization = 'refund_finalization';
+    case PeriodReopen = 'period_reopen';
+    case PayoutApproval = 'payout_approval';
+    case PayoutMarkPaid = 'payout_mark_paid';
+    case ReconciliationResolution = 'reconciliation_resolution';
+    case CompensationBackdatedChange = 'compensation_backdated_change';
+
+    // R3-owned MFA self-management action (a real, already-implemented route).
+    case RecoveryCodeRegeneration = 'recovery_code_regeneration';
+
+    /** The phase that owns the real route this classification protects. */
+    public function owningPhase(): string
+    {
+        return match ($this) {
+            self::BillingConfiguration => 'Phase 20A',
+            self::RefundFinalization => 'Phase 18B',
+            self::PeriodReopen => 'Phase 18B',
+            self::PayoutApproval => 'Phase 20H',
+            self::PayoutMarkPaid => 'Phase 20H',
+            self::ReconciliationResolution => 'Phase 20D',
+            self::CompensationBackdatedChange => 'Phase 20F/20G',
+            self::RecoveryCodeRegeneration => 'Phase R3 (implemented)',
+        };
+    }
+
+    /**
+     * The seven designated *business* step-up actions (Plan §18). Their owning
+     * feature phases attach the classification when they create the real route;
+     * RecoveryCodeRegeneration is deliberately excluded — it is the R3 MFA
+     * self-management action and already has a live route.
+     *
+     * @return list<self>
+     */
+    public static function businessActions(): array
+    {
+        return [
+            self::BillingConfiguration,
+            self::RefundFinalization,
+            self::PeriodReopen,
+            self::PayoutApproval,
+            self::PayoutMarkPaid,
+            self::ReconciliationResolution,
+            self::CompensationBackdatedChange,
+        ];
+    }
+}
