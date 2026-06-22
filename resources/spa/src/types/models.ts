@@ -50,6 +50,22 @@ export interface SetupState {
 }
 
 /**
+ * Safe MFA state (Plan §18, Phase R3). UX-only routing signals — never the
+ * secret or recovery-code hashes. The API is the security boundary.
+ */
+export interface MfaState {
+  required: boolean;
+  enrolled: boolean;
+  confirmed: boolean;
+  verified: boolean;
+  enrollment_required: boolean;
+  challenge_required: boolean;
+  step_up_fresh: boolean;
+  step_up_fresh_until: string | null;
+  recovery_codes_remaining: number;
+}
+
+/**
  * Bootstrap payload returned by GET /api/v1/me and the Magic Link verify
  * endpoint (Plan §6.2, §8.1). `permissions` carries the resolved §10.3
  * permission keys (Phase 8) — UX only; the API is the authorization boundary.
@@ -62,6 +78,7 @@ export interface BootstrapPayload {
   permissions: string[];
   setup: SetupState;
   branch_ids: string[];
+  mfa: MfaState;
 }
 
 export type BranchStatus = 'active' | 'suspended' | 'archived';

@@ -33,8 +33,8 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 |---|---|---|---|
 | V | As-built verification | ✅ `merged` — PR #12, commit `c58b64a` (CI Backend/Frontend/Security/Docker passed) | REM-V-001, REM-DOC-001 |
 | R1 | Dependency & runtime security (Laravel 12.60+, PHP 8.3, advisory removal, CR/LF) | ✅ `verified_complete` — PR #13, commit `8fe575f` (CI passed; solo-maintainer governance exception, reviewDecision blank) | REM-DEP-001 |
-| R2 | Core audit completeness + chain verifier + masked read | 🔄 `local_complete` (branch `phase-r2-core-audit-completeness`); pending CI + review/merge | REM-AUD-001 |
-| R3 | Privileged MFA + step-up | ⬜ Not started | REM-MFA-001 |
+| R2 | Core audit completeness + chain verifier + masked read | ✅ `verified_complete` — PR #14, commit `1df759e` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-AUD-001 |
+| R3 | Privileged MFA + step-up | 🔄 `local_complete` (branch `phase-r3-privileged-mfa-step-up`); pending CI + review/merge | REM-MFA-001 |
 | R4 | Idempotency & replay protection | ⬜ Not started | REM-IDEMP-001 |
 | R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | ⬜ Not started | REM-TEN-001 |
 | R6 | Session & authorization revocation (per-request freshness) | ⬜ Not started | REM-SESS-001 |
@@ -58,12 +58,121 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase R3 — Privileged MFA & step-up
+
+- **Branch:** `phase-r3-privileged-mfa-step-up` (based on merged `main` @ `1df759e`, PR #14 / R2).
+- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Proof:** [docs/proof/phase-r3.md](proof/phase-r3.md) · **Data dictionary:** [core-identity-and-tenancy.md](architecture/data-dictionary/core-identity-and-tenancy.md).
+- **Register:** REM-MFA-001.
+
+### Work completed
+- **Schema (forward-only):** `mfa_credentials` (encrypted TOTP secret via Laravel
+  `encrypted` cast; `UNIQUE(user_id,type)` = one authenticator per user; type
+  `CHECK('totp')`; `last_used_timestep` replay guard; `user_id` FK RESTRICT) and
+  `mfa_recovery_codes` (char(64) SHA-256 `code_hash`; `used_at` single-use;
+  `UNIQUE(code_hash)`; index `(user_id, used_at)`). Data-dictionary entry authored
+  before the migrations (Plan §13.2).
+- **TOTP:** `pragmarx/google2fa` v8.0.3 (RFC 6238, constant-time `hash_equals`).
+  `TotpProvider` generates CSPRNG secrets + the otpauth URI and verifies with
+  `verifyKeyNewer`, persisting the matched time-step so a code cannot be replayed.
+- **Mandatory-role resolution:** `MfaRequirementResolver` resolves Super
+  Administrator (`is_platform_staff`) + active `merchant_admin`/`finance`
+  memberships **without** `TenantContext` (checked before tenant resolution).
+- **Middleware:** `EnsurePrivilegedMfa` pinned in `bootstrap/app.php` priority
+  **between auth and `ResolveTenantContext`**; allowlists only the
+  status/enroll/confirm/challenge/recovery-challenge + `/me` + logout routes while
+  MFA is incomplete; emits `mfa_enrollment_required` / `mfa_challenge_required`.
+  `RequireFreshMfa` + `StepUpAction` enum gate a *fresh* step-up for the seven
+  designated business actions (+ recovery-code regeneration); window is
+  `servana.mfa.step_up_window_minutes` (env, default 5).
+- **Magic Link handoff:** login never asserts MFA; the assertion (`mfa_verified_at`)
+  lives only in the server session, set on challenge/confirm with session-id
+  regeneration, and cleared on logout.
+- **API:** real `/api/v1/auth/mfa` endpoints (status/enroll/confirm/challenge/
+  recovery-challenge/recovery-codes) replace the `mfa_not_enabled` placeholder;
+  Form Request + rate limiters (`mfa-confirm`, `mfa-challenge`).
+- **Audit:** 8 MFA cases added to the canonical `AuditEvent`; recorded via
+  `AuditRecorder` with no secrets/codes/session ids; `audit:verify-chain` passes.
+- **Frontend:** minimal `MfaSetup.vue` + `MfaChallenge.vue`, `authStore` MFA state
+  + actions, and a UX-only router guard. No secret/recovery code in web storage.
+
+### Work skipped / deferred (with exact owning phase)
+```
+- Step-up attachment to the real business routes (the routes do not exist yet;
+  R3 ships the reusable RequireFreshMfa control + a test-only harness):
+    billing configuration        -> Phase 20A
+    refund finalization          -> Phase 18B
+    period reopen                -> Phase 18B
+    payout approval / mark-paid   -> Phase 20H
+    M-Pesa reconciliation resolve -> Phase 20D
+    backdated compensation change -> Phase 20F/20G
+  Each owning phase MUST attach `RequireFreshMfa::class.':'.StepUpAction::<case>`.
+- WebAuthn/passkeys and SMS/email OTP -> later security enhancement (unless
+  separately authorized).
+- Administrator-driven MFA reset/recovery (and any "disable MFA" endpoint) ->
+  future defined security/account-recovery phase (intentionally NOT built).
+- Complete per-request session/membership revocation -> R6 (REM-SESS-001).
+- Idempotency on MFA mutations -> not required (no financial effect); R4 owns the
+  financial idempotency store.
+```
+
+### Commands — passed / failed / skipped
+```
+PASSED:
+  docker compose exec app php artisan migrate (mfa tables) ........... ok
+  php artisan test (full backend) ............... 311 passed, 4 skipped
+  php artisan test --filter Mfa* (8 suites) ......... 43 MFA tests pass
+  php artisan audit:verify-chain ..................... exit 0
+  composer pint --test .............................. clean (4 auto-fixed)
+  composer stan (Larastan L8) ....................... no errors
+  composer validate --strict ........................ valid
+  composer audit --locked ........................... 0 advisories
+  npm run lint ...................... 0 errors (28 pre-existing warnings)
+  npm run typecheck (vue-tsc) ....................... clean
+  npm run test (vitest) ............................. 77 passed
+  npm run build ..................................... built
+  npm run e2e (playwright) .......................... 30 passed
+  npm audit --audit-level=high ...................... 0 vulnerabilities
+  gitleaks detect --no-git --redact ................. no leaks
+  docker build php.Dockerfile --target dev .......... exit 0
+  docker build nginx.Dockerfile --target prod ....... exit 0
+FAILED then fixed (recorded, not erased):
+  MfaChallengeTest replay test — first run accepted a replayed code
+    (verifyKeyNewer returns boolean true when oldTimestamp is null, so the
+    stored time-step was 1). Fixed in TotpProvider (pass 0 for first verify);
+    rerun green. A flake never erases the original failure.
+  Pint — 4 style issues (import ordering) auto-fixed; Larastan — 1 nullable
+    arg in AuthenticatedUserResource, fixed with an explicit `User` bind.
+SKIPPED:
+  4 pre-existing skipped backend tests (unchanged by R3).
+```
+
+### Known risks / residual
+- TOTP acceptance window is ±1 step (±30s) for clock drift; replay is blocked
+  independently by `last_used_timestep`, so a code is single-use within its window.
+- No administrator MFA reset path yet — a user who loses both authenticator and
+  recovery codes needs the future account-recovery phase (documented deferral).
+- `actingAs(..., 'sanctum')` in the test base now provisions a confirmed MFA
+  session for mandatory roles (R3 changed the precondition for privileged routes);
+  MFA-state tests opt out via `withoutMfaSession()`/`statefulMfa()`.
+- Timestamps use `timestamp(0)` (no tz), consistent with sibling as-built tables;
+  the project-wide tz reconciliation is not owned by R3.
+
+### Context for R4 (idempotency & replay protection)
+- The MFA assertion lives in the **server session** (`mfa_verified_at`), not a
+  token; R4's idempotency store is independent. Designated financial routes built
+  later must carry BOTH `RequireFreshMfa` (step-up) and the R4 idempotency
+  middleware — order: auth → EnsurePrivilegedMfa → tenant/branch/permission →
+  step-up → validation → idempotency+transaction (Plan §9.4).
+- `StepUpAction` is the central registry; R4/feature phases attach it to real
+  routes. `EnsurePrivilegedMfa` runs before tenant context — keep that ordering.
+
 ## Phase R2 — Core audit completeness
 
-- **Branch:** `phase-r2-core-audit-completeness` (based on merged `main` @ `8fe575f`, PR #13 / R1).
-- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Branch:** `phase-r2-core-audit-completeness` → merged as **PR #14**, commit `1df759e`.
+- **Status:** ✅ `verified_complete` — PR #14 merged; CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception recorded ([docs/governance/solo-maintainer-review-exception-pr-14.md](governance/solo-maintainer-review-exception-pr-14.md)); `reviewDecision` intentionally blank (NOT an independent approval).
 - **Proof:** [docs/proof/phase-r2.md](proof/phase-r2.md) · **ADR:** [ADR-008](architecture/adr/0008-audit-immutability-and-chain.md).
-- **Register:** REM-AUD-001.
+- **Register:** REM-AUD-001 (`verified_complete`).
 
 ### Work completed
 - **Canonical typed catalogue:** `AuditEvent` enum (one snake_case name per

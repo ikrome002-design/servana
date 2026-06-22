@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Exceptions\ApiErrorRenderer;
 use App\Http\Controllers\HealthController;
 use App\Http\Middleware\CorrelationIdMiddleware;
+use App\Http\Middleware\EnsurePrivilegedMfa;
 use App\Http\Middleware\ResolveTenantContext;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
@@ -54,6 +55,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // resolve inside merchant scope (Plan §8.2): a foreign-tenant ULID then
         // 404s (and audits) at binding time. This pins ResolveTenantContext just
         // ahead of SubstituteBindings in the framework's default priority order.
+        //
+        // EnsurePrivilegedMfa is pinned BETWEEN authentication and tenant
+        // context (Plan §18, §9.4 step 2): mandatory-role MFA state is checked
+        // immediately after auth and before any tenant resolution.
         $middleware->priority([
             HandlePrecognitiveRequests::class,
             EncryptCookies::class,
@@ -64,6 +69,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ThrottleRequests::class,
             ThrottleRequestsWithRedis::class,
             AuthenticatesRequests::class,
+            EnsurePrivilegedMfa::class,
             ResolveTenantContext::class,
             SubstituteBindings::class,
             AuthenticatesSessions::class,

@@ -26,6 +26,18 @@ export const authRoutes: RouteRecordRaw[] = [
         name: 'auth.verify',
         component: () => import('@/pages/auth/Verify.vue'),
       },
+      {
+        // Mandatory-MFA enrollment (Plan §18, Phase R3).
+        path: 'mfa/setup',
+        name: 'auth.mfa.setup',
+        component: () => import('@/pages/auth/MfaSetup.vue'),
+      },
+      {
+        // Per-session MFA / step-up challenge (Plan §18, Phase R3).
+        path: 'mfa/challenge',
+        name: 'auth.mfa.challenge',
+        component: () => import('@/pages/auth/MfaChallenge.vue'),
+      },
     ],
   },
 ];

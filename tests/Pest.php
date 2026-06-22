@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Models\MfaCredential;
 use App\Domain\Branches\Models\BranchUserAssignment;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Hr\Models\StaffProfile;
@@ -10,6 +11,7 @@ use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
+use PragmaRX\Google2FA\Google2FA;
 use Tests\TestCase;
 
 /*
@@ -107,4 +109,48 @@ function branchStaff(
     }
 
     return [$user, $membership, $profile];
+}
+
+/**
+ * A user holding one active membership of the given role in an active merchant
+ * (R3 MFA tests). For a Finance member (mandatory MFA) this is the standard way
+ * to get a privileged non-admin identity.
+ *
+ * @return array{0: User, 1: Merchant, 2: MerchantUser}
+ */
+function memberWithRole(MerchantUserRole $role, ?Merchant $merchant = null): array
+{
+    $merchant ??= Merchant::factory()->active()->create();
+    $user = User::factory()->create();
+    $membership = MerchantUser::factory()->create([
+        'user_id' => $user->id,
+        'merchant_id' => $merchant->id,
+        'role' => $role,
+    ]);
+
+    return [$user, $merchant, $membership];
+}
+
+/**
+ * A confirmed TOTP credential for a user, returning [credential, plaintext
+ * secret]. The secret is encrypted at rest by the `encrypted` cast; the returned
+ * plaintext is used by tests to compute valid OTPs.
+ *
+ * @return array{0: MfaCredential, 1: string}
+ */
+function confirmedTotp(User $user): array
+{
+    $secret = (new Google2FA)->generateSecretKey();
+    $credential = MfaCredential::factory()->confirmed()->create([
+        'user_id' => $user->id,
+        'secret_encrypted' => $secret,
+    ]);
+
+    return [$credential, $secret];
+}
+
+/** A currently-valid 6-digit TOTP for the given base32 secret. */
+function totpCode(string $secret): string
+{
+    return (new Google2FA)->getCurrentOtp($secret);
 }

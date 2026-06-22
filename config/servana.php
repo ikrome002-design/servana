@@ -35,4 +35,28 @@ return [
         // reset the clock; exceeding it logs the session out.
         'idle_timeout_minutes' => (int) env('AUTH_IDLE_TIMEOUT_MINUTES', 60),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | MFA and Step-Up (Plan §18, Phase R3)
+    |--------------------------------------------------------------------------
+    |
+    | TOTP MFA is mandatory for Super Administrator, Merchant Administrator and
+    | Finance (resolved by MfaRequirementResolver). A confirmed credential must
+    | be asserted once per session to reach privileged routes; designated
+    | sensitive actions additionally require a *fresh* assertion within
+    | `step_up_window_minutes`.
+    |
+    | The Plan does not pin a numeric freshness window, so a conservative 5-min
+    | default is used (overridable via env). `totp_window` is the RFC 6238
+    | acceptance window in time-steps either side of now (1 ⇒ ±30s for clock
+    | drift); replay is prevented independently by last_used_timestep.
+    |
+    */
+    'mfa' => [
+        'issuer' => env('MFA_TOTP_ISSUER', 'Servana'),
+        'totp_window' => (int) env('MFA_TOTP_WINDOW', 1),
+        'recovery_code_count' => (int) env('MFA_RECOVERY_CODE_COUNT', 10),
+        'step_up_window_minutes' => (int) env('MFA_STEP_UP_WINDOW_MINUTES', 5),
+    ],
 ];

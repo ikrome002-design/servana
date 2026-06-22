@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Mfa\StepUpAction;
 use App\Http\Controllers\Api\V1\Audit\AuditLogController;
 use App\Http\Controllers\Api\V1\Auth\MagicLinkController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
+use App\Http\Controllers\Api\V1\Auth\MfaController;
 use App\Http\Controllers\Api\V1\Branches\BranchController;
 use App\Http\Controllers\Api\V1\Branches\BranchDayController;
 use App\Http\Controllers\Api\V1\Branches\BranchOperatingHoursController;
@@ -22,6 +24,8 @@ use App\Http\Middleware\EnsureBranchScope;
 use App\Http\Middleware\EnsureFirstTimeSetupAccess;
 use App\Http\Middleware\EnsureMerchantActive;
 use App\Http\Middleware\EnsurePermission;
+use App\Http\Middleware\EnsurePrivilegedMfa;
+use App\Http\Middleware\RequireFreshMfa;
 use App\Http\Middleware\ResolveTenantContext;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +59,45 @@ Route::prefix('auth')->group(function (): void {
     Route::post('logout', [MagicLinkController::class, 'logout'])
         ->middleware('auth:sanctum')
         ->name('auth.logout');
+
+    /*
+     | MFA enrollment / challenge (Plan §17, §18; Phase R3). Authenticated but
+     | identity-level — no ResolveTenantContext here (MFA is resolved before
+     | tenant context). EnsurePrivilegedMfa runs after auth (proving order) and
+     | allowlists these bootstrap/recovery routes so an enrolling/challenging
+     | mandatory user can reach them. Confirm/challenge are rate-limited.
+     */
+    Route::prefix('mfa')
+        ->middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsurePrivilegedMfa::class])
+        ->group(function (): void {
+            Route::get('/', [MfaController::class, 'status'])->name('auth.mfa.status');
+
+            Route::post('enroll', [MfaController::class, 'enroll'])
+                ->middleware('throttle:mfa-confirm')
+                ->name('auth.mfa.enroll');
+
+            Route::post('confirm', [MfaController::class, 'confirm'])
+                ->middleware('throttle:mfa-confirm')
+                ->name('auth.mfa.confirm');
+
+            Route::post('challenge', [MfaController::class, 'challenge'])
+                ->middleware('throttle:mfa-challenge')
+                ->name('auth.mfa.challenge');
+
+            Route::post('recovery-challenge', [MfaController::class, 'recoveryChallenge'])
+                ->middleware('throttle:mfa-challenge')
+                ->name('auth.mfa.recovery-challenge');
+
+            // Recovery-code regeneration is a sensitive MFA self-management
+            // action: it requires a confirmed credential (not allowlisted, so a
+            // session assertion is enforced) AND a *fresh* step-up.
+            Route::post('recovery-codes', [MfaController::class, 'regenerateRecoveryCodes'])
+                ->middleware([
+                    'throttle:mfa-confirm',
+                    RequireFreshMfa::class.':'.StepUpAction::RecoveryCodeRegeneration->value,
+                ])
+                ->name('auth.mfa.recovery-codes.regenerate');
+        });
 });
 
 /*
@@ -83,7 +126,7 @@ Route::post('staff-invitations/accept', [StaffInvitationAcceptController::class,
  | view. Per-route gates (EnsureFirstTimeSetupAccess / EnsureMerchantActive) are
  | the security boundary for setup vs. operational access (Plan §8.1).
  */
-Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, 'throttle:api', ResolveTenantContext::class])
+Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, 'throttle:api', EnsurePrivilegedMfa::class, ResolveTenantContext::class])
     ->group(function (): void {
         Route::get('me', [MeController::class, 'show'])->name('me');
 
@@ -185,3 +228,30 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, 'throttle:api', Re
                 Route::get('audit-logs/{auditLog}', [PlatformAuditLogController::class, 'show'])->name('platform.audit-logs.show');
             });
     });
+
+/*
+ | Test-only security harness (Plan §18 / Phase R3). NEVER registered outside the
+ | `testing` environment, so no fake business route ships. The designated
+ | business step-up routes are owned by their feature phases (see StepUpAction);
+ | here we only exercise the REUSABLE controls:
+ |   - `testing/privileged-probe` — a non-allowlisted authenticated route proving
+ |     EnsurePrivilegedMfa blocks mandatory roles and passes non-mandatory roles.
+ |   - `testing/step-up/{action}` — one route per designated business action,
+ |     proving RequireFreshMfa denies a missing/stale assertion and passes a
+ |     fresh one, for every central classification.
+ */
+if (app()->environment('testing')) {
+    Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsurePrivilegedMfa::class, ResolveTenantContext::class])
+        ->get('testing/privileged-probe', fn () => response()->json(['ok' => true]))
+        ->name('testing.privileged-probe');
+
+    Route::prefix('testing/step-up')
+        ->middleware('auth:sanctum')
+        ->group(function (): void {
+            foreach (StepUpAction::businessActions() as $action) {
+                Route::post($action->value, fn () => response()->json(['ok' => true, 'action' => $action->value]))
+                    ->middleware(RequireFreshMfa::class.':'.$action->value)
+                    ->name('testing.step-up.'.$action->value);
+            }
+        });
+}
