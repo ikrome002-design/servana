@@ -128,6 +128,8 @@ final class StaffLifecycleService
             }
 
             $assignment = BranchUserAssignment::query()->create([
+                // merchant_id derives from the branch (R5 consistency FK).
+                'merchant_id' => $branch->merchant_id,
                 'merchant_user_id' => $membership->id,
                 'branch_id' => $branch->id,
                 'status' => BranchUserAssignmentStatus::Active,
@@ -247,6 +249,7 @@ final class StaffLifecycleService
         }
 
         StaffHistory::query()->create([
+            'merchant_id' => $profile->merchant_id,
             'staff_profile_id' => $profile->id,
             'field' => StaffHistoryField::Status,
             'old_value' => ['status' => $from->value],
@@ -294,6 +297,7 @@ final class StaffLifecycleService
         }
 
         StaffHistory::query()->create([
+            'merchant_id' => $profile->merchant_id,
             'staff_profile_id' => $profile->id,
             'field' => StaffHistoryField::Branch,
             'old_value' => ['branch_id' => $oldBranchId],

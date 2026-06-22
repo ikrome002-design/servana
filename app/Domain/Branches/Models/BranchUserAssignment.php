@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Branches\Models;
 
 use App\Domain\Branches\Enums\BranchUserAssignmentStatus;
+use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
 use Database\Factories\BranchUserAssignmentFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,6 +24,7 @@ use Illuminate\Support\Str;
  *
  * @property int $id
  * @property string $ulid
+ * @property int $merchant_id
  * @property int $merchant_user_id
  * @property int $branch_id
  * @property BranchUserAssignmentStatus $status
@@ -31,6 +34,13 @@ use Illuminate\Support\Str;
  */
 class BranchUserAssignment extends Model
 {
+    // BelongsToMerchant only — NOT BelongsToBranch. This table is the branch-
+    // assignment authority that RESOLVES TenantContext::branchIds, so applying
+    // BranchScope here would be circular (the scope would depend on the very rows
+    // it filters). Merchant isolation + the composite merchant_id/branch_id FK
+    // provide structural protection; EnsureBranchScope governs branch access.
+    use BelongsToMerchant;
+
     /** @use HasFactory<BranchUserAssignmentFactory> */
     use HasFactory;
 
@@ -44,6 +54,7 @@ class BranchUserAssignment extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'merchant_id',
         'merchant_user_id',
         'branch_id',
         'status',
@@ -76,6 +87,12 @@ class BranchUserAssignment extends Model
     public function getRouteKeyName(): string
     {
         return 'ulid';
+    }
+
+    /** @return BelongsTo<Merchant, $this> */
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class);
     }
 
     /** @return BelongsTo<MerchantUser, $this> */

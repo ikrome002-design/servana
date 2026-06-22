@@ -69,7 +69,8 @@ final class PermissionOverrideService
 
         $override = MerchantUserPermissionOverride::query()->updateOrCreate(
             ['merchant_user_id' => $target->id, 'permission_id' => $permission->id],
-            ['effect' => $effect, 'granted_by' => $actor->id, 'reason' => $reason],
+            // merchant_id derives from the target membership (R5 consistency FK).
+            ['merchant_id' => $target->merchant_id, 'effect' => $effect, 'granted_by' => $actor->id, 'reason' => $reason],
         );
 
         $this->audit->record(

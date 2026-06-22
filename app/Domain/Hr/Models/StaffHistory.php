@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Hr\Models;
 
 use App\Domain\Hr\Enums\StaffHistoryField;
+use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +18,7 @@ use Illuminate\Support\Str;
  *
  * @property int $id
  * @property string $ulid
+ * @property int $merchant_id
  * @property int $staff_profile_id
  * @property StaffHistoryField $field
  * @property mixed $old_value
@@ -26,6 +29,8 @@ use Illuminate\Support\Str;
  */
 class StaffHistory extends Model
 {
+    use BelongsToMerchant;
+
     public const UPDATED_AT = null;
 
     protected $table = 'staff_history';
@@ -34,6 +39,7 @@ class StaffHistory extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'merchant_id',
         'staff_profile_id',
         'field',
         'old_value',
@@ -62,6 +68,12 @@ class StaffHistory extends Model
             'old_value' => 'array',
             'new_value' => 'array',
         ];
+    }
+
+    /** @return BelongsTo<Merchant, $this> */
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class);
     }
 
     /** @return BelongsTo<StaffProfile, $this> */

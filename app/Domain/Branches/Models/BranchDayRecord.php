@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Branches\Models;
 
 use App\Domain\Branches\Enums\BranchDayStatus;
+use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Database\Factories\BranchDayRecordFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +21,7 @@ use Illuminate\Support\Str;
  *
  * @property int $id
  * @property string $ulid
+ * @property int $merchant_id
  * @property int $branch_id
  * @property Carbon $business_date
  * @property BranchDayStatus $status
@@ -32,6 +35,7 @@ use Illuminate\Support\Str;
 class BranchDayRecord extends Model
 {
     use BelongsToBranch;
+    use BelongsToMerchant;
 
     /** @use HasFactory<BranchDayRecordFactory> */
     use HasFactory;
@@ -46,6 +50,7 @@ class BranchDayRecord extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'merchant_id',
         'branch_id',
         'business_date',
         'status',
@@ -89,5 +94,11 @@ class BranchDayRecord extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(MerchantBranch::class, 'branch_id');
+    }
+
+    /** @return BelongsTo<Merchant, $this> */
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class);
     }
 }

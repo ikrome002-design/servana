@@ -8,10 +8,10 @@
 
 meta:
   generated: "2026-06-21"
-  last_updated: "2026-06-22 (R4)"
-  branch: phase-r4-idempotency-replay-protection
-  base: c0402b2   # merged main (PR #15, R3)
-  pre_feature_gate_closed: false   # §5.4 — still blocks all Section 80 feature phases (R5–R7 open)
+  last_updated: "2026-06-22 (R5)"
+  branch: phase-r5-tenant-branch-schema-hardening
+  base: 1288f48   # merged main (PR #16, R4)
+  pre_feature_gate_closed: false   # §5.4 — still blocks all Section 80 feature phases (R6–R7 open)
 
 items:
 
@@ -232,29 +232,70 @@ items:
       Full backend 351 passed / 4 skipped (serial + parallel); pint/stan L8/
       composer validate/composer audit/npm audit/gitleaks clean; vitest 77; e2e 30
       (after 1 documented auth flake rerun); both docker images build.
-    proof_artifact: "docs/proof/phase-r4.md; docs/architecture/adr/0003-idempotency-and-replay-protection.md"
+    proof_artifact: "docs/proof/phase-r4.md; docs/architecture/adr/0003-idempotency-and-replay-protection.md; docs/governance/solo-maintainer-review-exception-pr-16.md"
     owner: "R4"
-    completion_commit: "phase-r4-idempotency-replay-protection branch (pending push/CI/review)"
+    completion_commit: "1288f48 (PR #16)"
     rollback_forward_repair: "Forward-only; down() drops idempotency_keys. No backfill; rollback safe within the release. Disabling enforcement is route/config-level, never a destructive migration. Pruning is bounded + idempotent."
-    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
-    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
+    reviewer: "Solo-maintainer governance exception (PR #16; reviewDecision blank; CI Backend/Frontend/Security/Docker passed) — documented in docs/governance/solo-maintainer-review-exception-pr-16.md; NOT an independent approval."
+    status: verified_complete   # PR #16 merged (1288f48); CI passed; documented solo-maintainer exception
 
   - id: REM-TEN-001
     classification: C0
     gating_category: PRE_FEATURE_REMEDIATION
     scope_requirement: "Add merchant_id to branch-owned tables where missing; backfill; indexes/constraints; static-analysis/source-scan; route-binding tenant safety (Plan §79 R5; ADR-002; Correction 7)."
-    repository_evidence: "Tenant-column coverage query: branch_calendar_exceptions, branch_cash_ups, branch_day_records, branch_operating_hours, branch_user_assignments carry branch_id but NOT merchant_id. Global scopes + scoped binding + PHPStan rules present (Phase 9, PR #9) and tested."
-    root_cause: "Phase 9 derived merchant isolation for branch-owned tables via a branch→merchant subquery instead of a direct merchant_id column."
-    affected_files_tables_routes: "5 branch-owned tables; BelongsToBranch; BranchScope; route bindings for branch-owned models."
-    security_data_business_impact: "Any future directly-route-bound branch-owned table without merchant_id could bypass the merchant binding audit."
-    precise_correction: "Expand-and-contract add merchant_id to the 5 tables; backfill from parent branch; indexes/constraints; extend source-scan; verify scoped-binding audit."
-    migration_impact: "expand-and-contract: add+backfill merchant_id on 5 tables."
-    test_plan: "cross-tenant + cross-branch suites; TenantColumnCoverageTest; scoped-binding audit proof."
-    proof_artifact: "docs/proof/phase-r5.md"
+    repository_evidence: >
+      BEFORE (proven via information_schema): branch_user_assignments,
+      branch_operating_hours, branch_calendar_exceptions, branch_day_records,
+      branch_cash_ups carry branch_id but NOT merchant_id; staff_history and
+      merchant_user_permission_overrides (tenant-owned) also lacked merchant_id.
+      Models BranchOperatingHour/CalendarException/DayRecord/CashUp used
+      BelongsToBranch but not BelongsToMerchant; BranchUserAssignment used neither.
+      DONE (R5): central registry app/Domain/Tenancy/TenantOwnership.php classifies
+      every existing table (branch_owned / tenant_owned / exempt-with-reason).
+      Three forward-only migrations (2026_06_23_000001/2/3): parent UNIQUE(id,
+      merchant_id) on merchant_branches/staff_profiles/merchant_users; expand→
+      backfill(parameterized cursor, fail-safe)→NOT NULL→index→FKs on the 5 branch
+      tables; same for staff_history + merchant_user_permission_overrides. DB
+      consistency via composite FK (fk, merchant_id)→parent(id, merchant_id) +
+      merchant_id→merchants RESTRICT; index beginning with merchant_id. Models gain
+      BelongsToMerchant (+BelongsToBranch for the 4 branch models); BranchUserAssignment
+      is BranchScope-exempt (it resolves TenantContext::branchIds; BranchScope would
+      be circular) — documented in the registry. Creation sites set merchant_id from
+      the branch/parent (AcceptStaffInvitation runs without context → explicit).
+      Coverage: TenantColumnCoverageTest (live schema), ModelTenancyTraitCoverageTest,
+      RouteBindingTenantSafetyTest + retained TenancyStaticAnalysisTest. 404
+      cross-tenant / 403 cross-branch contract unchanged.
+    root_cause: "Phase 9 derived merchant isolation for branch-owned tables via a branch→merchant subquery instead of a direct merchant_id column; no DB guarantee that a row's merchant matches its branch, and a future route-bound branch table could resolve a ULID outside merchant scope."
+    affected_files_tables_routes: >
+      TABLES: branch_user_assignments, branch_operating_hours, branch_calendar_exceptions,
+      branch_day_records, branch_cash_ups (+merchant_id, composite FK); staff_history,
+      merchant_user_permission_overrides (+merchant_id, composite FK); merchant_branches,
+      staff_profiles, merchant_users (+UNIQUE(id,merchant_id)). NEW:
+      app/Domain/Tenancy/TenantOwnership.php; migrations 2026_06_23_000001/2/3;
+      docs/architecture/data-dictionary/branches-and-staff.md; ADR-002; tests
+      (TenantColumnCoverage, TenantBackfillMigration, TenantBranchConsistencyConstraint,
+      ModelTenancyTraitCoverage, CrossTenantBranchOwnedModel, RouteBindingTenantSafety).
+      CHANGED MODELS: BranchUserAssignment, BranchOperatingHour, BranchCalendarException,
+      BranchDayRecord, BranchCashUp, StaffHistory, MerchantUserPermissionOverride.
+      CHANGED CREATION SITES: AcceptStaffInvitation, StaffLifecycleService, OpenBranchDay,
+      CloseBranchDay, BranchOperatingHoursController, PermissionOverrideService; 3 factories.
+    security_data_business_impact: "Every branch-owned record is now structurally protected by merchant_id + branch_id with a DB composite FK that rejects a merchant/branch mismatch; tenant-owned history/override tables carry merchant_id; route-bound owned models resolve only within merchant scope. Defense in depth beyond the prior subquery isolation."
+    precise_correction: "Smallest correct expand-and-contract hardening of EXISTING tables only. No new business tables/routes; no R6 revocation; cash-up behaviour (18B) untouched beyond ownership columns."
+    migration_impact: "expand-and-contract, forward-only: +merchant_id on 7 tables (backfilled, NOT NULL, indexed, composite-FK consistency); +UNIQUE(id,merchant_id) on 3 parents. No shipped migration edited; backfill fails safely on orphans."
+    test_plan: >
+      DONE — tests/Feature/Tenancy/{TenantColumnCoverage,TenantBackfillMigration,
+      TenantBranchConsistencyConstraint,ModelTenancyTraitCoverage}Test +
+      tests/Feature/Isolation/{CrossTenantBranchOwnedModel,RouteBindingTenantSafety}Test
+      + retained cross-tenant/cross-branch/route-binding/unauthorized-audit/static-analysis
+      suites. Full backend 370 passed / 4 skipped (serial + parallel); pint/stan L8/
+      composer validate/composer audit/npm audit/gitleaks clean; vitest 77; e2e 30;
+      both docker images build.
+    proof_artifact: "docs/proof/phase-r5.md; docs/architecture/adr/0002-tenancy-enforcement-model.md"
     owner: "R5"
-    completion_commit: null
-    reviewer: "TBD"
-    status: open
+    completion_commit: "phase-r5-tenant-branch-schema-hardening branch (pending push/CI/review)"
+    rollback_forward_repair: "Forward-only; each down() drops only the R5 additions (columns/constraints/uniques). No backfill loss; rollback safe within the release. Orphaned legacy data fails the backfill safely (actionable error) rather than guessing a merchant."
+    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
+    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
 
   - id: REM-SESS-001
     classification: C0

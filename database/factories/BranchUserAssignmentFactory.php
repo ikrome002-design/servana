@@ -23,10 +23,15 @@ class BranchUserAssignmentFactory extends Factory
      */
     public function definition(): array
     {
+        $branch = MerchantBranch::factory();
+
         return [
             'ulid' => (string) Str::ulid(),
             'merchant_user_id' => MerchantUser::factory(),
-            'branch_id' => MerchantBranch::factory(),
+            'branch_id' => $branch,
+            // Derive merchant_id from the branch so the composite consistency FK holds.
+            'merchant_id' => fn (array $attributes) => MerchantBranch::query()
+                ->whereKey($attributes['branch_id'])->value('merchant_id'),
             'status' => BranchUserAssignmentStatus::Active,
             'assigned_at' => now(),
         ];

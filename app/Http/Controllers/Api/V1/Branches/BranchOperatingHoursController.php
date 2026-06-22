@@ -46,6 +46,8 @@ final class BranchOperatingHoursController extends Controller
                 BranchOperatingHour::query()->updateOrCreate(
                     ['branch_id' => $branch->id, 'weekday' => (int) $entry['weekday']],
                     [
+                        // merchant_id derives from the branch (R5 consistency FK).
+                        'merchant_id' => $branch->merchant_id,
                         'opens_at' => $entry['opens_at'] ?? null,
                         'closes_at' => $entry['closes_at'] ?? null,
                         'is_closed' => (bool) $entry['is_closed'],

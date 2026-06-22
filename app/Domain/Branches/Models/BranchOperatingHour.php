@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Branches\Models;
 
+use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Weekly operating hours, one row per weekday per branch (Plan §7.2, Scope §3.3).
  *
  * @property int $id
+ * @property int $merchant_id
  * @property int $branch_id
  * @property int $weekday
  * @property string|null $opens_at
@@ -23,11 +26,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class BranchOperatingHour extends Model
 {
     use BelongsToBranch;
+    use BelongsToMerchant;
 
     /**
      * @var list<string>
      */
     protected $fillable = [
+        'merchant_id',
         'branch_id',
         'weekday',
         'opens_at',
@@ -52,5 +57,11 @@ class BranchOperatingHour extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(MerchantBranch::class, 'branch_id');
+    }
+
+    /** @return BelongsTo<Merchant, $this> */
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class);
     }
 }
