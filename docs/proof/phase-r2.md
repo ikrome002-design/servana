@@ -181,3 +181,22 @@ read API + policies, ADR-008, and tests are in place and green locally. Not
 
 ## 12. Lifecycle status
 `local_complete` — pending push, CI, and review.
+
+## Solo-Maintainer Review Exception
+
+An independent second reviewer was unavailable because the repository currently
+has one eligible maintainer. The product owner authorized a PR-specific
+governance exception rather than fabricating approval.
+
+Evidence:
+
+- PR: #14
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Security: passed
+- CI/Docker: passed
+- GitHub reviewDecision: intentionally blank
+- Exception record:
+  docs/governance/solo-maintainer-review-exception-pr-14.md
+
+This exception applies only to PR #14.
