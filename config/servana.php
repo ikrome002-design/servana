@@ -59,4 +59,27 @@ return [
         'recovery_code_count' => (int) env('MFA_RECOVERY_CODE_COUNT', 10),
         'step_up_window_minutes' => (int) env('MFA_STEP_UP_WINDOW_MINUTES', 5),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Idempotency & replay protection (Plan §13.5, §24.4, ADR-003; Phase R4)
+    |--------------------------------------------------------------------------
+    |
+    | Every financial_mutation route requires an `Idempotency-Key`. A claim holds
+    | a lock for `lock_ttl_seconds`; if a worker crashes, the lock expires and a
+    | later identical request can safely recover it. Completed records are pruned
+    | after a retention horizon: `retention_hours` for standard records, and
+    | `retriable_retention_days` for support-retriable financial records. Active
+    | locks are never pruned.
+    |
+    */
+    'idempotency' => [
+        'lock_ttl_seconds' => (int) env('IDEMPOTENCY_LOCK_TTL_SECONDS', 30),
+        'retention_hours' => (int) env('IDEMPOTENCY_RETENTION_HOURS', 72),
+        'retriable_retention_days' => (int) env('IDEMPOTENCY_RETRIABLE_RETENTION_DAYS', 30),
+        'key_min_length' => 16,
+        'key_max_length' => 255,
+        // Max rows deleted per prune run (bounded cleanup).
+        'prune_batch' => (int) env('IDEMPOTENCY_PRUNE_BATCH', 1000),
+    ],
 ];

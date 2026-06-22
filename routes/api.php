@@ -22,11 +22,16 @@ use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureBranchScope;
 use App\Http\Middleware\EnsureFirstTimeSetupAccess;
+use App\Http\Middleware\EnsureIdempotentRequest;
 use App\Http\Middleware\EnsureMerchantActive;
 use App\Http\Middleware\EnsurePermission;
 use App\Http\Middleware\EnsurePrivilegedMfa;
 use App\Http\Middleware\RequireFreshMfa;
 use App\Http\Middleware\ResolveTenantContext;
+use App\Http\Routing\RouteClass;
+use App\Http\Routing\RouteClassification;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -254,4 +259,52 @@ if (app()->environment('testing')) {
                     ->name('testing.step-up.'.$action->value);
             }
         });
+
+    /*
+     | Idempotency harness (Plan §24.4 / Phase R4). These are `financial_mutation`-
+     | classified so FinancialRouteIdempotencyCoverageTest verifies they carry the
+     | idempotency middleware — proving the reusable control on real routes without
+     | shipping any production financial route. The counter side effect (array
+     | cache, per test process) lets a test assert "exactly one effect".
+     */
+    $financialClass = [RouteClassification::KEY => RouteClass::FinancialMutation->value];
+    $idempotent = EnsureIdempotentRequest::class.':'.EnsureIdempotentRequest::RETENTION_RETRIABLE;
+
+    Route::prefix('testing/idempotency')
+        ->middleware(['auth:sanctum', ResolveTenantContext::class, $idempotent])
+        ->group(function () use ($financialClass): void {
+            // One-effect counter: returns the post-increment count.
+            Route::post('financial', function (): JsonResponse {
+                return response()->json(['count' => Cache::increment('idem_test_effect')]);
+            })->defaults(RouteClassification::KEY, $financialClass[RouteClassification::KEY])
+                ->name('testing.idempotency.financial');
+
+            // Always a stable 422 — deterministic 4xx replay.
+            Route::post('stable-failure', fn () => response()->json([
+                'error' => ['code' => 'demo_validation', 'message' => 'stable', 'fields' => (object) [], 'meta' => (object) []],
+            ], 422))->defaults(RouteClassification::KEY, $financialClass[RouteClassification::KEY])
+                ->name('testing.idempotency.stable-failure');
+
+            // Server failure — stored as a redacted, retryable failure.
+            Route::post('boom', function (): void {
+                throw new RuntimeException('boom secret detail should never be stored');
+            })->defaults(RouteClassification::KEY, $financialClass[RouteClassification::KEY])
+                ->name('testing.idempotency.boom');
+
+            // Sets unsafe headers that must never be stored/replayed.
+            Route::post('unsafe-headers', function (): JsonResponse {
+                return response()->json(['count' => Cache::increment('idem_unsafe_effect')])
+                    ->withHeaders([
+                        'Set-Cookie' => 'session=secretcookievalue; Path=/',
+                        'Authorization' => 'Bearer secret-token',
+                        'X-XSRF-TOKEN' => 'csrf-secret',
+                        'Server' => 'nginx-internal',
+                    ]);
+            })->defaults(RouteClassification::KEY, $financialClass[RouteClassification::KEY])
+                ->name('testing.idempotency.unsafe-headers');
+        });
+
+    // A financial route DELIBERATELY left without idempotency middleware is NOT
+    // registered (it would make the coverage test fail). The coverage test proves
+    // detection against a synthetic in-memory route instead.
 }

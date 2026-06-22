@@ -8,10 +8,10 @@
 
 meta:
   generated: "2026-06-21"
-  last_updated: "2026-06-22 (R3)"
-  branch: phase-r3-privileged-mfa-step-up
-  base: 1df759e   # merged main (PR #14, R2)
-  pre_feature_gate_closed: false   # §5.4 — still blocks all Section 80 feature phases (R4–R7 open)
+  last_updated: "2026-06-22 (R4)"
+  branch: phase-r4-idempotency-replay-protection
+  base: c0402b2   # merged main (PR #15, R3)
+  pre_feature_gate_closed: false   # §5.4 — still blocks all Section 80 feature phases (R5–R7 open)
 
 items:
 
@@ -168,29 +168,76 @@ items:
       passed / 4 skipped; vitest 77 passed; e2e 30 passed; pint/stan L8/composer
       audit/npm audit/gitleaks clean; both docker images build; audit:verify-chain
       passes after MFA events.
-    proof_artifact: "docs/proof/phase-r3.md"
+    proof_artifact: "docs/proof/phase-r3.md; docs/governance/solo-maintainer-review-exception-pr-15.md"
     owner: "R3"
-    completion_commit: "phase-r3-privileged-mfa-step-up branch (pending push/CI/review)"
+    completion_commit: "c0402b2 (PR #15)"
     rollback_forward_repair: "Forward-only; down() drops the two new tables. No data backfill, so rollback is safe within the release; forward-repair via a new additive migration. Disabling enforcement is config/route-level, never a destructive migration."
-    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
-    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
+    reviewer: "Solo-maintainer governance exception (PR #15; reviewDecision blank; CI Backend/Frontend/Security/Docker passed) — documented in docs/governance/solo-maintainer-review-exception-pr-15.md; NOT an independent approval."
+    status: verified_complete   # PR #15 merged (c0402b2); CI passed; documented solo-maintainer exception
 
   - id: REM-IDEMP-001
     classification: C0
     gating_category: PRE_FEATURE_REMEDIATION
     scope_requirement: "Corrected idempotency_keys schema + middleware + financial-route coverage test + provider-callback dedupe seams (Plan §79 R4; ADR-003; Correction 3)."
-    repository_evidence: "No idempotency_keys table in clean schema (grep=0); no idempotency middleware; no financial routes yet."
-    root_cause: "Idempotency store not yet built; the prior invalid definition (no key_hash) does not exist in repo."
-    affected_files_tables_routes: "new idempotency_keys (Plan §13.5); idempotency middleware (§24.4); future financial routes."
-    security_data_business_impact: "Without it, financial mutations (R-PAY/MPESA phases) could double-apply on retry/duplicate callback."
-    precise_correction: "Build corrected idempotency_keys schema + middleware + FinancialRouteIdempotencyCoverageTest + provider dedupe seams."
-    migration_impact: "additive: idempotency_keys."
-    test_plan: "same key+request → one effect; key+diff request → 409; concurrent → one effect; crashed-worker lock recovery; replay redaction."
-    proof_artifact: "docs/proof/phase-r4.md"
+    repository_evidence: >
+      BEFORE (proven): no idempotency_keys table (\dt absent); no Idempotency-Key
+      middleware/hasher; no encrypted response replay; no coverage test; no
+      expired-lock recovery; no provider dedupe seam. Plan §4 finding 9: prior
+      invalid schema (no key_hash) contradicted — table absent.
+      DONE (R4): idempotency_keys per §13.5 (UNIQUE(idempotency_scope,key_hash);
+      indexes (state,lock_expires_at) + (expires_at); state CHECK; key_hash
+      char(64)=SHA-256(raw key); response_body_encrypted via `encrypted:array`;
+      FKs actor SET NULL / merchant,branch RESTRICT). EnsureIdempotentRequest
+      implements §24.4: require Idempotency-Key 16-255; deterministic scope
+      (IdempotencyScopeResolver: merchant:{ulid}:user:{ulid} | platform:user:{ulid}
+      | webhook:{provider}:{env}); canonical request hash (CanonicalRequestHasher:
+      method+route+normalized path params+content type+recursively key-sorted body;
+      JSON key order irrelevant). Concurrency boundary is PostgreSQL: first claim
+      INSERT ON CONFLICT DO NOTHING (insertOrIgnore), existing-row resolution under
+      SELECT FOR UPDATE. completed→replay; different request→409
+      idempotency_key_reused_with_different_request; processing+active→409
+      request_in_progress+Retry-After; processing+expired or failed→reclaim+retry.
+      Stable 4xx stored completed (replayed); 5xx/transient → failed (redacted code,
+      retryable). ReplayResponseSanitizer allowlists content-type only; never
+      cookies/auth/xsrf/session/CSP/signed-URL/server/debug; replay tagged
+      Idempotent-Replay:true; body encrypted at rest. idempotency:prune (bounded;
+      never deletes active locks; standard ≥72h, retriable ≥30d) scheduled daily.
+      ProviderReplayGuard generic dedupe seam (no M-Pesa). RouteClass +
+      RouteClassification seam; FinancialRouteIdempotencyCoverageTest detects an
+      unprotected financial route and passes once corrected.
+    root_cause: "Idempotency store not yet built; the prior invalid definition (no key_hash, unique on (merchant_id,key_hash)) never existed in repo. Without it, financial mutations could double-apply on retry/duplicate/concurrent submission or provider redelivery."
+    affected_files_tables_routes: >
+      NEW table: idempotency_keys (migration 2026_06_22_000003). NEW:
+      app/Domain/Idempotency/{ClaimResult,ClaimOutcome,IdempotencyStore,
+      ProviderClaimResult,ProviderReplayGuard}.php, Enums/IdempotencyState.php,
+      Models/IdempotencyKey.php, Support/{CanonicalRequestHasher,
+      IdempotencyScopeResolver,ReplayResponseSanitizer}.php, Exceptions/*;
+      app/Http/Middleware/EnsureIdempotentRequest.php;
+      app/Http/Routing/{RouteClass,RouteClassification}.php;
+      app/Console/Commands/PruneIdempotencyKeys.php;
+      database/factories/IdempotencyKeyFactory.php; ADR-003; 10 test files.
+      CHANGED: bootstrap/app.php (priority: EnsureIdempotentRequest last);
+      routes/api.php (testing harness + financial classification);
+      routes/console.php (prune schedule); config/servana.php; .env.example;
+      docs/architecture/data-dictionary/*.
+    security_data_business_impact: "Duplicate/concurrent/recoverable-retry requests produce exactly one durable effect; completed requests replay an encrypted, sanitised response. Only SHA-256(key) stored; body encrypted at rest; no cookies/tokens/session/unsafe headers stored or replayed; server failures store only a redacted code."
+    precise_correction: "Built the corrected schema + reusable middleware + store + provider dedupe seam + classification seam only. No production financial/M-Pesa routes (truthfully empty); proven via a testing-only harness. Attachment to real routes is deferred to owning phases."
+    migration_impact: "additive forward-only: idempotency_keys. No shipped migration edited; no backfill."
+    test_plan: >
+      DONE — tests/Feature/Idempotency/{IdempotencySchema,CanonicalRequestHash,
+      IdempotentReplay,IdempotencyConflict,IdempotencyConcurrency,
+      ExpiredLockRecovery,ReplayResponseSecurity,IdempotencyPrune,
+      ProviderCallbackDedupeSeam}Test.php +
+      tests/Feature/Security/FinancialRouteIdempotencyCoverageTest.php (41 tests).
+      Full backend 351 passed / 4 skipped (serial + parallel); pint/stan L8/
+      composer validate/composer audit/npm audit/gitleaks clean; vitest 77; e2e 30
+      (after 1 documented auth flake rerun); both docker images build.
+    proof_artifact: "docs/proof/phase-r4.md; docs/architecture/adr/0003-idempotency-and-replay-protection.md"
     owner: "R4"
-    completion_commit: null
-    reviewer: "TBD"
-    status: open
+    completion_commit: "phase-r4-idempotency-replay-protection branch (pending push/CI/review)"
+    rollback_forward_repair: "Forward-only; down() drops idempotency_keys. No backfill; rollback safe within the release. Disabling enforcement is route/config-level, never a destructive migration. Pruning is bounded + idempotent."
+    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
+    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
 
   - id: REM-TEN-001
     classification: C0
