@@ -285,3 +285,21 @@ SPA `types/models.ts`, `stores/authStore.ts` (+ spec), `router/index.ts`,
 `local_complete`. Promotion to `verified_complete` requires the R3 PR merged, CI
 green, and a required review or a truthful PR-specific governance exception — not
 asserted here.
+
+## Solo-Maintainer Review Exception
+
+An independent second reviewer was unavailable because the repository currently
+has one eligible maintainer. The product owner authorized a PR-specific
+governance exception rather than fabricating approval.
+
+Evidence:
+
+- PR: #15
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Security: passed
+- CI/Docker: passed
+- GitHub reviewDecision: intentionally blank
+- Exception record: docs/governance/solo-maintainer-review-exception-pr-15.md
+
+This exception applies only to PR #15.
