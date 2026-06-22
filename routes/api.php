@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\V1\Onboarding\FirstTimeSetupController;
 use App\Http\Controllers\Api\V1\Onboarding\MerchantRegistrationController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Middleware\EnforceIdleTimeout;
+use App\Http\Middleware\EnsureActivePrincipal;
 use App\Http\Middleware\EnsureBranchScope;
 use App\Http\Middleware\EnsureFirstTimeSetupAccess;
 use App\Http\Middleware\EnsureIdempotentRequest;
@@ -73,7 +74,7 @@ Route::prefix('auth')->group(function (): void {
      | mandatory user can reach them. Confirm/challenge are rate-limited.
      */
     Route::prefix('mfa')
-        ->middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsurePrivilegedMfa::class])
+        ->middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrincipal::class, EnsurePrivilegedMfa::class])
         ->group(function (): void {
             Route::get('/', [MfaController::class, 'status'])->name('auth.mfa.status');
 
@@ -131,7 +132,7 @@ Route::post('staff-invitations/accept', [StaffInvitationAcceptController::class,
  | view. Per-route gates (EnsureFirstTimeSetupAccess / EnsureMerchantActive) are
  | the security boundary for setup vs. operational access (Plan §8.1).
  */
-Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, 'throttle:api', EnsurePrivilegedMfa::class, ResolveTenantContext::class])
+Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrincipal::class, 'throttle:api', EnsurePrivilegedMfa::class, ResolveTenantContext::class])
     ->group(function (): void {
         Route::get('me', [MeController::class, 'show'])->name('me');
 
@@ -246,7 +247,7 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, 'throttle:api', En
  |     fresh one, for every central classification.
  */
 if (app()->environment('testing')) {
-    Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsurePrivilegedMfa::class, ResolveTenantContext::class])
+    Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrincipal::class, EnsurePrivilegedMfa::class, ResolveTenantContext::class])
         ->get('testing/privileged-probe', fn () => response()->json(['ok' => true]))
         ->name('testing.privileged-probe');
 

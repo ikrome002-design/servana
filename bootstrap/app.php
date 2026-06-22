@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Exceptions\ApiErrorRenderer;
 use App\Http\Controllers\HealthController;
 use App\Http\Middleware\CorrelationIdMiddleware;
+use App\Http\Middleware\EnsureActivePrincipal;
 use App\Http\Middleware\EnsureIdempotentRequest;
 use App\Http\Middleware\EnsurePrivilegedMfa;
 use App\Http\Middleware\ResolveTenantContext;
@@ -60,6 +61,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // EnsurePrivilegedMfa is pinned BETWEEN authentication and tenant
         // context (Plan §18, §9.4 step 2): mandatory-role MFA state is checked
         // immediately after auth and before any tenant resolution.
+        //
+        // EnsureActivePrincipal is pinned BETWEEN authentication and MFA (Plan
+        // §79 R6 ordering): a suspended/deactivated principal is rejected right
+        // after auth, before any MFA, tenant or permission work runs.
         $middleware->priority([
             HandlePrecognitiveRequests::class,
             EncryptCookies::class,
@@ -70,6 +75,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ThrottleRequests::class,
             ThrottleRequestsWithRedis::class,
             AuthenticatesRequests::class,
+            EnsureActivePrincipal::class,
             EnsurePrivilegedMfa::class,
             ResolveTenantContext::class,
             SubstituteBindings::class,

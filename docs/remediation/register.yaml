@@ -292,27 +292,61 @@ items:
       both docker images build.
     proof_artifact: "docs/proof/phase-r5.md; docs/architecture/adr/0002-tenancy-enforcement-model.md"
     owner: "R5"
-    completion_commit: "phase-r5-tenant-branch-schema-hardening branch (pending push/CI/review)"
+    completion_commit: "66aaead (PR #17, squash merge to main)"
     rollback_forward_repair: "Forward-only; each down() drops only the R5 additions (columns/constraints/uniques). No backfill loss; rollback safe within the release. Orphaned legacy data fails the backfill safely (actionable error) rather than guessing a merchant."
-    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
-    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
+    reviewer: "Solo-maintainer governance exception (docs/governance/solo-maintainer-review-exception-pr-17.md); reviewDecision intentionally blank — not independent approval. CI Backend/Frontend/Security passed; CI/Docker reran past an external Buildx/Docker Hub timeout with no code change."
+    status: verified_complete   # PR #17 merged; CI green; governance exception recorded
 
   - id: REM-SESS-001
     classification: C0
     gating_category: PRE_FEATURE_REMEDIATION
     scope_requirement: "Session/token/Magic-Link/invitation/cache revocation; active-membership+role check on every authenticated request; mid-session suspension tests; 404/403 posture (Plan §79 R6; Correction 7)."
-    repository_evidence: "StaffLifecycleService revokes sessions + unused links + pending invitations (StaffLifecycleRevocationTest/StaffSuspensionTest/SuspendedMerchantTest passing). Per-request re-check currently via ResolveTenantContext + EnsureMerchantActive; no dedicated per-request active-role re-check; cache invalidation not explicit."
-    root_cause: "Revocation built at lifecycle-event time; per-request freshness + cache invalidation deferred to R6."
-    affected_files_tables_routes: "auth middleware pipeline; sessions; magic_login_tokens; staff_invitations; cache."
-    security_data_business_impact: "Edge: a role downgrade (not full suspension) mid-session may not be re-checked until context re-resolves."
-    precise_correction: "Add active-membership+active-role check to every authenticated request; verify token/link/invitation/cache invalidation; document 404/403 posture."
-    migration_impact: "none expected."
-    test_plan: "mid-session suspension/deactivation → next request denied; revoked links/invitations unusable."
+    repository_evidence: >
+      DONE (R6): central AccessRevocationService (revokeForUser/Membership/Merchant)
+      revokes DB sessions + Sanctum personal-access tokens + unconsumed Magic Links +
+      applicable pending invitations, idempotent and transactional, returning a
+      secret-free RevocationSummary (counts only). Per-request active-principal gate
+      EnsureActivePrincipal pinned after auth and BEFORE EnsurePrivilegedMfa /
+      ResolveTenantContext (bootstrap priority + the authenticated/mfa/probe route
+      groups): a suspended/deactivated merchant OR platform user is rejected 401 with
+      its session torn down. Membership/role/branch/permission freshness is enforced by
+      ResolveTenantContext + PermissionResolver re-resolving from the database every
+      request (no persistent authorization cache exists; documented). StaffLifecycleService
+      suspend/deactivate delegate to the service and record the revocation counts on the
+      existing membership audit event; logout invalidates unconsumed links; a new Magic
+      Link supersedes prior unconsumed links. 404 cross-tenant / 403 cross-branch contract
+      unchanged. Frontend (UX only): loop-safe central 401 → clear state + redirect to login.
+    root_cause: "Revocation was built at lifecycle-event time only; there was no single revocation service, no Sanctum-token revocation, and no per-request active-principal (user/platform status) re-check. Per-request membership/role/branch/permission freshness was already enforced by context re-resolution; R6 adds the missing active-principal gate, consolidates revocation, and documents the (absent) authorization cache."
+    affected_files_tables_routes: >
+      NEW: app/Domain/Auth/Services/AccessRevocationService.php;
+      app/Domain/Auth/Support/RevocationSummary.php;
+      app/Http/Middleware/EnsureActivePrincipal.php; tests
+      (SessionRevocation, AuthorizationFreshness, MagicLinkRevocation,
+      SanctumTokenRevocation, InvitationRevocation, PermissionFreshness,
+      BranchAssignmentFreshness, RevocationMiddlewareOrder, MidSessionSuspension,
+      RevocationIsolationPosture). CHANGED: bootstrap/app.php (priority);
+      routes/api.php (route groups); app/Domain/Hr/Services/StaffLifecycleService.php;
+      app/Http/Controllers/Api/V1/Auth/MagicLinkController.php (logout);
+      app/Domain/Auth/Actions/RequestMagicLink.php; resources/spa/src/services/apiClient.ts;
+      resources/spa/src/main.ts. TABLES (revocation targets, no schema change):
+      sessions, personal_access_tokens, magic_login_tokens, staff_invitations.
+    security_data_business_impact: "A suspension/deactivation/authority change takes effect no later than the next authenticated request; multi-device sessions and tokens are revoked; revoked links/invitations are unusable; a surviving session for a suspended principal is rejected (defence in depth). No secret identifiers appear in logs or audit."
+    precise_correction: "Add EnsureActivePrincipal (per-request user/platform active check) after auth and before MFA/tenant; consolidate revocation into AccessRevocationService (+ Sanctum tokens); invalidate links on logout and supersede prior links on issue; verify/document that membership/role/branch/permission freshness needs no cache invalidation (none persistent); document the unchanged 404/403 posture."
+    migration_impact: "none (no schema change)."
+    test_plan: >
+      DONE — real mid-session suspension/deactivation → next request denied
+      (EnsureActivePrincipal, real DB-backed session via Magic Link login);
+      multi-device session + token revocation; idempotent revocation; unconsumed
+      links + pending invitations invalidated; role/permission/branch change → next
+      request; middleware order (auth→active-principal→MFA→tenant); 404/403 posture
+      unchanged; audit chain verified; no secrets in logs/audit. Full backend 409
+      passed / 4 skipped; pint/stan L8/composer validate/composer audit/npm audit/
+      gitleaks clean; vitest 77; npm build; docker dev/prod images build.
     proof_artifact: "docs/proof/phase-r6.md"
     owner: "R6"
-    completion_commit: null
-    reviewer: "TBD"
-    status: open
+    completion_commit: "phase-r6-session-authorization-revocation branch (pending push/CI/review)"
+    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
+    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
 
   - id: REM-OPS-001
     classification: C1

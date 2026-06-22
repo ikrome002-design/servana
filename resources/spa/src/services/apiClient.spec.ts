@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseApiError } from './apiClient';
+import { ownsUnauthenticatedResponse, parseApiError } from './apiClient';
 
 describe('parseApiError', () => {
   it('extracts a well-formed error envelope', () => {
@@ -65,5 +65,22 @@ describe('parseApiError', () => {
     const result = parseApiError({ error: { code: 'internal_error', message: 'Boom.' } });
     expect(result.fields).toEqual({});
     expect(result.meta).toEqual({});
+  });
+});
+
+describe('ownsUnauthenticatedResponse (401 redirect loop-guard)', () => {
+  it('owns the session bootstrap and auth/csrf endpoints (no global redirect)', () => {
+    // These 401s are expected/owned by their callers — they must NOT trigger the
+    // central revocation redirect, or login/bootstrap would loop.
+    expect(ownsUnauthenticatedResponse('/me')).toBe(true);
+    expect(ownsUnauthenticatedResponse('/auth/magic-link')).toBe(true);
+    expect(ownsUnauthenticatedResponse('/auth/logout')).toBe(true);
+    expect(ownsUnauthenticatedResponse('/sanctum/csrf-cookie')).toBe(true);
+  });
+
+  it('does not own protected resource calls (mid-session revocation → redirect)', () => {
+    expect(ownsUnauthenticatedResponse('/merchant/dashboard')).toBe(false);
+    expect(ownsUnauthenticatedResponse('/branches')).toBe(false);
+    expect(ownsUnauthenticatedResponse(undefined)).toBe(false);
   });
 });

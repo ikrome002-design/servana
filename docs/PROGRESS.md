@@ -36,8 +36,8 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | R2 | Core audit completeness + chain verifier + masked read | ✅ `verified_complete` — PR #14, commit `1df759e` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-AUD-001 |
 | R3 | Privileged MFA + step-up | ✅ `verified_complete` — PR #15, commit `c0402b2` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-MFA-001 |
 | R4 | Idempotency & replay protection | ✅ `verified_complete` — PR #16, commit `1288f48` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-IDEMP-001 |
-| R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | 🔄 `local_complete` (branch `phase-r5-tenant-branch-schema-hardening`); pending CI + review/merge | REM-TEN-001 |
-| R6 | Session & authorization revocation (per-request freshness) | ⬜ Not started | REM-SESS-001 |
+| R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | ✅ `verified_complete` — PR #17, commit `66aaead` (CI Backend/Frontend/Security passed; CI/Docker reran past an external Buildx/Docker Hub timeout with no code change; solo-maintainer governance exception, reviewDecision blank) | REM-TEN-001 |
+| R6 | Session & authorization revocation (per-request freshness) | 🔄 `local_complete` (branch `phase-r6-session-authorization-revocation`); pending push + CI + review/merge | REM-SESS-001 |
 | R7 | Production probes, CI isolation, env parity, ADR-009 | ⬜ Not started | REM-OPS-001 |
 
 ### Feature roadmap (Plan §80) — begins only after the §5.4 gate closes
@@ -58,12 +58,103 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase R6 — Session & authorization revocation
+
+- **Branch:** `phase-r6-session-authorization-revocation` (based on merged `main` @ `66aaead`, PR #17 / R5).
+- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Proof:** [docs/proof/phase-r6.md](proof/phase-r6.md).
+- **Register:** REM-SESS-001.
+
+### Work completed
+- **Central revocation service** `app/Domain/Auth/Services/AccessRevocationService.php`
+  (`revokeForUser` / `revokeForMembership` / `revokeForMerchant`) — idempotent,
+  transactional; revokes DB sessions + Sanctum personal-access tokens +
+  unconsumed Magic Links + applicable pending invitations; returns a secret-free
+  `RevocationSummary` (counts only).
+- **Per-request active-principal gate** `app/Http/Middleware/EnsureActivePrincipal.php`
+  — pinned after auth and before MFA/tenant context (bootstrap priority + the
+  authenticated route groups). Rejects a suspended/deactivated merchant OR
+  platform user 401 and tears its session down.
+- **Lifecycle integration:** `StaffLifecycleService` suspend/deactivate delegate
+  to the central service (adds token revocation) and record the secret-free
+  revocation counts on the existing membership audit event. Logout invalidates
+  unconsumed Magic Links; a new Magic Link supersedes prior unconsumed links.
+- **Per-request freshness (verified, no new cache):** membership, role, branch
+  ids and permissions are re-resolved from the DB every request; a role/branch/
+  permission change takes effect on the next request. No persistent authorization
+  cache exists to invalidate.
+- **Frontend (UX only):** loop-safe central 401 handler clears auth state and
+  returns to login on a mid-session revocation.
+
+### Revocation surfaces implemented
+```
+sessions (database)            — deleteSessions(user ids)
+personal_access_tokens         — revokeTokens(user ids)  [no issuance surface; defence in depth]
+magic_login_tokens             — invalidateUnconsumedForEmail
+staff_invitations (pending)    — revoke (membership-scoped or merchant-wide)
+authorization cache            — none persistent (documented no-op seam)
+```
+
+### Middleware & lifecycle actions changed
+```
+bootstrap/app.php              — EnsureActivePrincipal pinned auth → (here) → MFA → tenant
+routes/api.php                 — EnsureActivePrincipal added to authenticated + mfa + probe groups
+StaffLifecycleService          — suspend/deactivate → AccessRevocationService
+MagicLinkController::logout     — invalidate unconsumed Magic Links
+RequestMagicLink                — invalidate previous unconsumed links on issue
+resources/spa/src/{services/apiClient,main}.ts — central 401 → clear + redirect
+```
+
+### Work skipped / deferred (with exact owning phase)
+```
+- Redis/cache/rate-limit prefix isolation                     -> R7 (REM-OPS-001)
+- Liveness/readiness split + environment parity               -> R7 (REM-OPS-001)
+- ADR-009 brand contrast decision                             -> R7
+- Full route contract / OpenAPI                               -> Phase 10
+- Future-domain (finance/queue/M-Pesa/...) revocation hooks   -> each owning feature phase
+- Release-wide browser/security hardening                     -> Phase 23
+```
+Reason skipped: each is owned by a later phase per Plan §§79–80; mixing it into
+R6 would exceed the Correction-7 scope.
+
+### Known risks
+- Mid-session "deleted real DB session → 401" is proven via the active-principal
+  gate (real login + status revoked) and the physical session-row deletion; an
+  in-process HTTP cookie re-read after deletion is masked by Laravel's singleton
+  session Store retaining in-memory attributes (a test-harness artifact, not a
+  product defect — documented in the proof).
+- Merchant-level suspension has no HTTP action yet (Super-Admin governance is a
+  later phase); `revokeForMerchant` + `EnsureMerchantActive` cover it and are
+  tested at the service level.
+
+### Commands — passed / failed / skipped
+```
+PASS  composer pint --test (after autofix)   PASS  composer stan (L8)
+PASS  php artisan test  (409 passed, 4 skipped)   PASS  targeted R6 filters (47)
+PASS  audit:verify-chain (no chains to verify on the empty dev table)
+PASS  composer validate --strict   PASS  composer audit --locked (0)
+PASS  npm run lint (0 errors)   PASS  npm run typecheck   PASS  npm run test (77)
+PASS  npm run build   PASS  npm audit --audit-level=high (0)   PASS  gitleaks (0)
+PASS  npm run test (vitest 79, +2 new 401 loop-guard tests)
+PASS  docker build php.Dockerfile --target dev   PASS  docker build nginx --target prod
+FLAKY npm run e2e — env timeouts on Windows: 23/30 (concurrent), 29/30 (isolated);
+      the failing test passed on re-run while a different one flaked. R6 ships no
+      UI flow; interceptor provably inert for the stubbed endpoints. Phase 23 owns
+      the release a11y/e2e gate.
+```
+
+### Context required by R7
+- R6 documents that NO persistent authorization cache exists; R7 owns Redis/
+  cache/rate-limit prefix isolation and must not assume R6 added one.
+- `EnsureActivePrincipal` ordering (auth → active-principal → MFA → tenant) must
+  be preserved by any R7 middleware change.
+
 ## Phase R5 — Tenant & branch schema hardening
 
 - **Branch:** `phase-r5-tenant-branch-schema-hardening` (based on merged `main` @ `1288f48`, PR #16 / R4).
-- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Status:** ✅ `verified_complete` — merged as PR #17 (squash `66aaead`). CI Backend/Frontend/Security passed; the initial CI/Docker job failed on an external Buildx/Docker Hub timeout and a rerun passed with no product-code or Dockerfile change; solo-maintainer governance exception recorded (reviewDecision intentionally blank, not independent approval).
 - **Proof:** [docs/proof/phase-r5.md](proof/phase-r5.md) · **ADR:** [ADR-002](architecture/adr/0002-tenancy-enforcement-model.md) · **Data dictionary:** [branches-and-staff.md](architecture/data-dictionary/branches-and-staff.md).
-- **Register:** REM-TEN-001.
+- **Register:** REM-TEN-001 (`verified_complete`).
 
 ### Work completed
 - **Ownership inventory / central registry:** `app/Domain/Tenancy/TenantOwnership.php`

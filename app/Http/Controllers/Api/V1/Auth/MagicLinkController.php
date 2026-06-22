@@ -8,6 +8,7 @@ use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Auth\Actions\ConsumeMagicLink;
 use App\Domain\Auth\Actions\RequestMagicLink;
 use App\Domain\Auth\Exceptions\InvalidMagicLinkException;
+use App\Domain\Auth\Services\MagicLinkTokenService;
 use App\Domain\Auth\Support\AuthAuditLogger;
 use App\Domain\Tenancy\TenantContext;
 use App\Domain\Tenancy\TenantContextResolver;
@@ -73,9 +74,18 @@ final class MagicLinkController extends Controller
     /**
      * POST /auth/logout — invalidate the session and rotate the CSRF token.
      */
-    public function logout(Request $request, AuthAuditLogger $audit): Response
+    public function logout(Request $request, AuthAuditLogger $audit, MagicLinkTokenService $tokens): Response
     {
         $user = $request->user();
+
+        // Logout invalidates any unconsumed Magic Link for this identity (Plan
+        // §79 R6): a link minted before sign-out cannot be used to silently
+        // re-authenticate after it. Done before the session teardown so the
+        // authenticated email is still available.
+        $email = $user?->getAttribute('email');
+        if (is_string($email)) {
+            $tokens->invalidateUnconsumedForEmail($email);
+        }
 
         // Tear down the stateful session (Plan §9.2). Token-only requests have no
         // session, so guard the session calls to stay robust either way.

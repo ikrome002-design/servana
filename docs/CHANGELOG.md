@@ -6,13 +6,74 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase R6 — Session & authorization revocation (`phase-r6-session-authorization-revocation`)
+
+Closes (locally) REM-SESS-001 — completes credential revocation and per-request
+authorization freshness so a suspension, deactivation or authority change takes
+effect no later than the next authenticated request, with no stale session,
+token, membership, role, branch or permission (Plan §79 R6; §9, §17–§19, §24;
+Correction 7). Built on merged R5 `main` (`66aaead`, PR #17).
+
+#### Added
+- **Central revocation service** `app/Domain/Auth/Services/AccessRevocationService.php`
+  — one idempotent, transactional domain service with `revokeForUser` /
+  `revokeForMembership` / `revokeForMerchant`. Each revokes all database
+  sessions, all Sanctum personal-access tokens (defence in depth — no token
+  issuance surface exists; proven), all unconsumed Magic Links, and all
+  applicable pending invitations. Returns a secret-free `RevocationSummary`
+  (counts only) — `app/Domain/Auth/Support/RevocationSummary.php`.
+- **Per-request active-principal gate** `app/Http/Middleware/EnsureActivePrincipal.php`
+  — pinned after authentication and BEFORE `EnsurePrivilegedMfa` /
+  `ResolveTenantContext` (bootstrap priority + route groups). A
+  suspended/deactivated user (merchant or platform) is rejected 401 and its
+  session torn down, even if a session survived revocation.
+- **Tests** `tests/Feature/Auth/{SessionRevocation,AuthorizationFreshness,
+  MagicLinkRevocation,SanctumTokenRevocation,InvitationRevocation,
+  PermissionFreshness,BranchAssignmentFreshness,RevocationMiddlewareOrder}Test`,
+  `tests/Feature/Security/MidSessionSuspensionTest` (real DB-backed session via
+  the Magic Link login flow), `tests/Feature/Isolation/RevocationIsolationPostureTest`.
+
+#### Changed
+- **`StaffLifecycleService`** suspend/deactivate now delegate revocation to
+  `AccessRevocationService` (adds Sanctum-token revocation) and attach the
+  secret-free revocation counts to the existing membership lifecycle audit event
+  (no new event, no duplication).
+- **Logout** (`MagicLinkController`) invalidates the signed-in identity's
+  unconsumed Magic Links; **Magic Link request** (`RequestMagicLink`) invalidates
+  any previous unconsumed link so only the latest link is ever usable.
+- **SPA** `apiClient` gains a loop-safe central 401 handler (registered in
+  `main.ts`) that clears auth state and returns to login on a mid-session
+  revocation — UX only; the backend remains the security boundary.
+
+#### Security / freshness
+- Membership, role, branch ids and the permission set are re-resolved from the
+  database on every authenticated request (TenantContextResolver +
+  PermissionResolver issue fresh queries; TenantContext caches per-request only).
+  There is no cross-request authorization cache to invalidate; a second request
+  re-queries authoritative state. Redis/cache/rate-limit prefix isolation is R7.
+- The 404 cross-tenant / 403 same-tenant cross-branch contract is unchanged.
+- No session id, token hash, Magic-Link value or invitation token is logged or
+  audited; only aggregate counts. `audit:verify-chain` passes.
+
+#### Known deferrals
+- Redis/cache/rate-limit prefix isolation, liveness/readiness split, environment
+  parity, ADR-009 → R7. Full route contract/OpenAPI → Phase 10. Future-domain
+  revocation hooks → each owning feature phase. Release-wide browser/security
+  hardening → Phase 23. REM-SESS-001 = `local_complete` (→ `verified_complete`
+  after PR merge + green CI + review/exception).
+
 ### Phase R5 — Tenant & branch schema hardening (`phase-r5-tenant-branch-schema-hardening`)
 
-Closes (locally) REM-TEN-001 — makes tenant/branch ownership structurally
-complete so every existing branch-owned record is protected by `merchant_id` +
-`branch_id`, a database consistency constraint, global scopes, scoped binding,
-and automated coverage (Plan §2.1, §13.1, §79 R5; ADR-002). Built on merged R4
-`main` (`1288f48`, PR #16).
+Closes REM-TEN-001 (`verified_complete`) — merged as PR #17 (squash
+`66aaead`) — makes tenant/branch ownership structurally complete so every
+existing branch-owned record is protected by `merchant_id` + `branch_id`, a
+database consistency constraint, global scopes, scoped binding, and automated
+coverage (Plan §2.1, §13.1, §79 R5; ADR-002). Built on merged R4 `main`
+(`1288f48`, PR #16). CI Backend/Frontend/Security passed; the initial CI/Docker
+run failed on an external Buildx/Docker Hub timeout and a rerun passed with no
+product-code or Dockerfile change; solo-maintainer governance exception recorded
+(`docs/governance/solo-maintainer-review-exception-pr-17.md`, reviewDecision
+intentionally blank).
 
 #### Added
 - **Central registry** `app/Domain/Tenancy/TenantOwnership.php` — classifies every
@@ -66,7 +127,7 @@ and automated coverage (Plan §2.1, §13.1, §79 R5; ADR-002). Built on merged R
   freshness → R6; readiness/parity → R7; migration manifest + full route contract
   → Phase 10; future tenant/branch tables → each owning feature phase; invoice/
   payment/queue/personnel isolation rows → Phases 16–19. REM-TEN-001 =
-  `local_complete`.
+  `verified_complete` (PR #17 merged).
 
 ### Phase R4 — Idempotency & replay protection (`phase-r4-idempotency-replay-protection`)
 *(Merged via PR #16, commit `1288f48`; CI Backend/Frontend/Security/Docker passed;

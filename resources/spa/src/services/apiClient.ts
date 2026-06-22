@@ -27,6 +27,27 @@ export async function primeCsrfCookie(): Promise<void> {
   await axios.get('/sanctum/csrf-cookie', { withCredentials: true });
 }
 
+// Central handler for an authentication-revocation 401 (Plan §79 R6). The app
+// registers a callback (clear auth state + redirect to login) at startup. The
+// backend is the security boundary — this only keeps the UI honest after the
+// server has already revoked access mid-session.
+type UnauthorizedHandler = () => void;
+let unauthorizedHandler: UnauthorizedHandler | null = null;
+
+export function setUnauthorizedHandler(handler: UnauthorizedHandler): void {
+  unauthorizedHandler = handler;
+}
+
+// Requests whose own callers own the 401/422 outcome — never trigger the global
+// redirect for these (the session bootstrap legitimately 401s when logged out,
+// and the auth/csrf endpoints drive their own screens). Prevents redirect loops.
+export function ownsUnauthenticatedResponse(url: string | undefined): boolean {
+  if (url === undefined) {
+    return false;
+  }
+  return url.startsWith('/auth/') || url === '/me' || url.includes('/sanctum/');
+}
+
 function isApiErrorEnvelope(data: unknown): data is ApiErrorEnvelope {
   return (
     typeof data === 'object' &&
@@ -65,6 +86,17 @@ apiClient.interceptors.response.use(
     ) {
       // Attach typed error so callers can discriminate without re-parsing.
       err.apiError = parseApiError(err.response.data);
+
+      // A mid-session revocation surfaces as a 401 on a protected call. Clear
+      // client state and bounce to login (Plan §79 R6). Bootstrap/auth/csrf
+      // 401s are owned by their callers, so they never trigger the redirect.
+      if (
+        err.response.status === 401 &&
+        unauthorizedHandler !== null &&
+        !ownsUnauthenticatedResponse(err.config?.url)
+      ) {
+        unauthorizedHandler();
+      }
     }
     return Promise.reject(err);
   },
