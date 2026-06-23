@@ -159,6 +159,9 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
+            // Bounded connect/read timeout so a dead Redis fails fast instead of
+            // hanging the request (incl. the readiness probe) — Plan §79 R7.
+            'timeout' => (float) env('REDIS_TIMEOUT', 2),
         ],
 
         'cache' => [
@@ -168,6 +171,7 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
+            'timeout' => (float) env('REDIS_TIMEOUT', 2),
         ],
 
     ],

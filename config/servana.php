@@ -82,4 +82,34 @@ return [
         // Max rows deleted per prune run (bounded cleanup).
         'prune_batch' => (int) env('IDEMPOTENCY_PRUNE_BATCH', 1000),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Health probes (Plan §22.1, §79 R7; REM-OPS-001)
+    |--------------------------------------------------------------------------
+    |
+    | Liveness (`GET /health`) is dependency-free. Readiness (`GET /health/deep`)
+    | returns 200 only when every REQUIRED production dependency is healthy and
+    | 503 otherwise. The required set is derived from the production topology
+    | (docker-compose.prod.yml: managed PostgreSQL, Redis and S3); Redis backs the
+    | cache and queue. Meilisearch is NOT required yet — search lands in Phase 22 —
+    | so it is probed informationally and only degrades readiness, never fails it.
+    | Local-only services (e.g. Mailpit) are never readiness dependencies.
+    |
+    | `require_configured` makes an unconfigured REQUIRED dependency fail readiness
+    | (so production cannot silently treat a managed dependency as optional). It
+    | defaults to true only in production; non-production allows an unconfigured
+    | required dependency (e.g. S3 in CI) to pass as "skipped". A required
+    | dependency that is configured but ERRORING always fails (503), in any env.
+    |
+    | `probe_timeout` bounds every network probe so a hung dependency cannot stall
+    | the readiness response.
+    |
+    */
+    'health' => [
+        'required_dependencies' => ['database', 'redis', 'cache', 's3'],
+        'optional_dependencies' => ['queue', 'meilisearch'],
+        'require_configured' => (bool) env('HEALTH_REQUIRE_CONFIGURED', env('APP_ENV') === 'production'),
+        'probe_timeout' => (float) env('HEALTH_PROBE_TIMEOUT', 2),
+    ],
 ];

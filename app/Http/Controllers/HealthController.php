@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
@@ -14,20 +15,22 @@ use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 /**
- * Health probes (Plan §22.1):
- *  - live(): dependency-free liveness — is the PHP process serving requests.
- *  - deep(): readiness — DB, Redis, cache, queue table, Meilisearch, S3.
+ * Health probes (Plan §22.1, §79 R7; REM-OPS-001):
  *
- * deep() returns 200 only when the REQUIRED dependencies (database, redis,
- * cache) are healthy; optional dependencies (meilisearch, s3) that are down
- * degrade the response but still return 200, while unconfigured optionals are
- * reported as "skipped". No credentials or exception details are ever leaked.
+ *  - live(): dependency-free LIVENESS — is the PHP process serving requests. It
+ *    never touches PostgreSQL, Redis, cache, queues, search or object storage.
+ *  - deep(): READINESS — every dependency REQUIRED by the production runtime
+ *    (database, redis, cache, s3; Redis backs cache + queue) must be healthy for
+ *    a 200; any required failure returns 503. Optional dependencies (queue probe,
+ *    meilisearch — search lands Phase 22) only degrade the response, never fail
+ *    it. The required/optional split and the per-probe timeout are config-driven
+ *    (config/servana.php `health`), so production cannot silently treat a managed
+ *    dependency as optional. No credentials, hosts, buckets, SQL or exception
+ *    details are ever leaked — only safe dependency names and statuses.
  */
 final class HealthController extends Controller
 {
-    /** @var list<string> */
-    private const REQUIRED = ['database', 'redis', 'cache'];
-
+    /** Dependency-free liveness — process health only. */
     public function live(): JsonResponse
     {
         return response()->json([
@@ -48,9 +51,10 @@ final class HealthController extends Controller
                 Cache::forget('__deep_health__');
             }),
             'queue' => $this->probe(function (): void {
-                // Guarded: when the DB is unreachable, hasTable() throws — the
-                // probe must report 'error', never let the exception escape and
-                // turn the readiness response into a 500 that leaks config.
+                // The production queue backend is Redis (already a REQUIRED check
+                // above); this guards the database-queue fallback. When the DB is
+                // unreachable hasTable() throws — report 'error', never let the
+                // exception escape and leak config via a 500.
                 if (! Schema::hasTable('jobs')) {
                     throw new \RuntimeException('jobs table is not migrated');
                 }
@@ -59,11 +63,14 @@ final class HealthController extends Controller
             's3' => $this->probeS3(),
         ];
 
-        $requiredHealthy = collect(self::REQUIRED)
-            ->every(fn (string $key): bool => $this->isHealthy($checks[$key]['status']));
+        $required = (array) Config::get('servana.health.required_dependencies', ['database', 'redis', 'cache']);
+        $requireConfigured = (bool) Config::get('servana.health.require_configured', false);
 
-        $allHealthy = collect($checks)
-            ->every(fn (array $check): bool => $this->isHealthy($check['status']));
+        $requiredHealthy = collect($required)->every(
+            fn (string $key): bool => $this->isRequiredHealthy($checks[$key]['status'] ?? 'error', $requireConfigured),
+        );
+
+        $allHealthy = collect($checks)->every(fn (array $check): bool => $this->isOptionalHealthy($check['status']));
 
         $status = match (true) {
             ! $requiredHealthy => 'unhealthy',
@@ -107,7 +114,7 @@ final class HealthController extends Controller
         }
 
         try {
-            $response = Http::timeout(2)->get(rtrim($host, '/').'/health');
+            $response = Http::timeout($this->timeout())->get(rtrim($host, '/').'/health');
 
             return ['status' => $response->successful() ? 'ok' : 'error'];
         } catch (Throwable $e) {
@@ -127,8 +134,9 @@ final class HealthController extends Controller
         }
 
         try {
-            // When an endpoint is configured (MinIO/dev) do a lightweight live
-            // reachability probe; otherwise report configured-disk readiness.
+            // When a custom endpoint is configured (MinIO/dev) do a lightweight,
+            // timeout-bounded live reachability probe; otherwise (managed AWS S3)
+            // report configured-disk readiness without a network round-trip.
             if (filled(config('filesystems.disks.s3.endpoint'))) {
                 Storage::disk('s3')->exists('.deep-health-probe');
             }
@@ -139,8 +147,33 @@ final class HealthController extends Controller
         }
     }
 
-    private function isHealthy(string $status): bool
+    /**
+     * A REQUIRED dependency is healthy when it reports 'ok'. An unconfigured
+     * required dependency ('skipped') passes only when `require_configured` is
+     * off (non-production); in production an unconfigured managed dependency is a
+     * misconfiguration and fails readiness. 'error' always fails.
+     */
+    private function isRequiredHealthy(string $status, bool $requireConfigured): bool
+    {
+        if ($status === 'ok') {
+            return true;
+        }
+
+        if ($status === 'skipped') {
+            return ! $requireConfigured;
+        }
+
+        return false;
+    }
+
+    /** Optional dependencies are healthy when ok or skipped; an error only degrades. */
+    private function isOptionalHealthy(string $status): bool
     {
         return $status === 'ok' || $status === 'skipped';
+    }
+
+    private function timeout(): float
+    {
+        return (float) config('servana.health.probe_timeout', 2);
     }
 }

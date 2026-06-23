@@ -344,26 +344,60 @@ items:
       gitleaks clean; vitest 77; npm build; docker dev/prod images build.
     proof_artifact: "docs/proof/phase-r6.md"
     owner: "R6"
-    completion_commit: "phase-r6-session-authorization-revocation branch (pending push/CI/review)"
-    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
-    status: local_complete   # verified_complete only after PR merge + green CI + review/exception
+    completion_commit: "57ae8db (PR #18, squash merge to main; merged 2026-06-22T19:50:09Z)"
+    reviewer: "Solo-maintainer governance exception; reviewDecision intentionally blank — not independent approval. CI Backend/Frontend/Docker/Security all SUCCESS on the merge commit."
+    status: verified_complete   # PR #18 merged; CI green (Backend/Frontend/Docker/Security); governance exception recorded
 
   - id: REM-OPS-001
     classification: C1
     gating_category: PRE_FEATURE_REMEDIATION
     scope_requirement: "Split liveness/readiness; production deps required in readiness; isolate Redis/cache/rate-limit prefixes in tests; align PHP/Node/Composer; brand contrast ADR (Plan §79 R7; ADR-009)."
-    repository_evidence: "/health + /health/deep exist (DeepHealthTest passing); /health/deep treats Meilisearch + S3 as optional. No ADR-009 (no adr dir). Host PHP 8.5/Node 24 differ from pinned 8.3/Node 20 (CI/Docker enforce pinned)."
-    root_cause: "Readiness probe intentionally lenient for CI; ADRs never created; host toolchain drift."
-    affected_files_tables_routes: "HealthController; config/logging; CI; docs/architecture/adr/."
-    security_data_business_impact: "Orchestrator may route traffic to an instance with a failed prod dependency; test cross-talk risk via shared cache prefixes."
-    precise_correction: "Make prod deps required in readiness (503 on failure); isolate test cache/redis/rate-limit prefixes; align versions; author ADR-009."
-    migration_impact: "none."
-    test_plan: "prod-like dependency failure → 503; repeated parallel CI stable; rate-limit isolation."
-    proof_artifact: "docs/proof/phase-r7.md"
+    repository_evidence: >
+      DONE (R7): /health is dependency-free liveness (200 even with every dependency
+      down; LivenessProbeTest). /health/deep is STRICT readiness driven by
+      config/servana.php `health`: REQUIRED = database, redis, cache, s3 (derived
+      from docker-compose.prod.yml managed services; Redis backs cache+queue); 503
+      on any required failure; Meilisearch stays OPTIONAL (Phase 22) and Mailpit is
+      never a dependency. `require_configured` fails an unconfigured required
+      dependency in production (no silent-optional). Bounded timeouts: probe_timeout
+      (HTTP), Redis connection `timeout`, S3 `http.connect_timeout`, PG via
+      PGCONNECT_TIMEOUT. Prod nginx healthcheck → /health/deep (traffic eligibility);
+      app container keeps php -v liveness. Safe redaction proven
+      (HealthResponseRedactionTest). Test isolation: per-run + per-parallel-process
+      Redis/cache namespace in tests/bootstrap.php (cache/session/queue already
+      array/sync, no FLUSHDB); RedisPrefix/Cache/RateLimit/ParallelTest isolation
+      tests prove identical keys isolated across namespaces. Parity: PHP 8.3/Node
+      20/Composer 2 pinned across image/build/CI/metadata (package.json engines +
+      .nvmrc); RuntimeParityTest fails on drift. ADR-009 authored with measured AA
+      ratios + BrandContrastTokenTest.
+    root_cause: "Readiness probe intentionally lenient for CI (S3 optional); ADR-009 never created; Node runtime not pinned in package metadata; no per-run/process test namespace for Redis-backed behaviour."
+    affected_files_tables_routes: >
+      NEW: docs/architecture/adr/0009-brand-contrast-tokens.md;
+      docs/remediation/pre-feature-completion-report.md; tests
+      (LivenessProbe, ReadinessProbe, ReadinessDependencyFailure,
+      HealthResponseRedaction, ProductionReadinessConfiguration, RedisPrefixIsolation,
+      CacheIsolation, RateLimitIsolation, ParallelTestIsolation, RuntimeParity,
+      BrandContrastToken); .nvmrc. CHANGED: app/Http/Controllers/HealthController.php;
+      config/servana.php (health); config/database.php (redis timeout);
+      config/filesystems.php (s3 http timeout); tests/bootstrap.php (namespace +
+      AWS_ENDPOINT); docker-compose.prod.yml (nginx readiness healthcheck +
+      PGCONNECT_TIMEOUT); package.json (engines). REMOVED: tests/Feature/Api/DeepHealthTest.php
+      (migrated into the focused probe tests).
+    security_data_business_impact: "An orchestrator/LB stops routing to an instance whose REQUIRED dependency is down (503 readiness); probe output leaks no secrets/hosts/SQL; parallel/CI test runs cannot cross-talk via shared Redis/cache/rate-limit keys."
+    precise_correction: "Config-driven strict readiness (REQUIRED db/redis/cache/s3, 503 on failure, bounded timeouts, redacted); per-run/process Redis+cache namespace; PHP/Node/Composer parity with a drift test; ADR-009 + contrast test; prod nginx readiness healthcheck."
+    migration_impact: "none (no schema change)."
+    test_plan: >
+      DONE — readiness 503 for each required dependency (db/redis/cache/s3) +
+      optional-failure stays 200; liveness stays 200 with deps down; redaction;
+      production-config strictness; Redis/cache/rate-limit/parallel isolation;
+      runtime parity drift; brand AA contrast. Full backend serial 443 passed /4
+      skipped; 3x parallel stable; pint/stan/validate/audit/gitleaks; frontend; both
+      docker images; R6 regression preserved (recorded in docs/proof/phase-r7.md).
+    proof_artifact: "docs/proof/phase-r7.md; docs/architecture/adr/0009-brand-contrast-tokens.md; docs/remediation/pre-feature-completion-report.md"
     owner: "R7"
-    completion_commit: null
-    reviewer: "TBD"
-    status: open
+    completion_commit: "phase-r7-production-probes-ci-parity branch (pending push/CI/review)"
+    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
+    status: local_complete   # verified_complete only after PR merge + green CI + review/exception; §5.4 gate stays BLOCKED until the post-merge gate-closure update
 
   - id: REM-DOC-001
     classification: C1
@@ -378,9 +412,9 @@ items:
     test_plan: "n/a (documentation)."
     proof_artifact: "docs/proof/phase-v.md"
     owner: "Phase V"
-    completion_commit: "phase-v branch (pending push)"
-    reviewer: "TBD"
-    status: local_complete
+    completion_commit: "c58b64a (PR #12, squash merge to main)"
+    reviewer: "Solo-maintainer governance exception; reviewDecision intentionally blank — not independent approval. CI Backend/Frontend/Docker/Security all SUCCESS."
+    status: verified_complete
 
   # ---------------- FEATURE-DELIVERY OBLIGATIONS (gated by owning phase) -------
   - id: REM-DDL-001
