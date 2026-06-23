@@ -469,4 +469,39 @@ are **not** marked `verified_complete` until the Phase 10 PR merges with green C
 
 ## Test & quality results
 
-See the consolidated results section below (updated at phase close).
+Commit `e67d2d3`, pushed to `origin/phase-10-api-foundation`.
+
+```
+PASSED:
+  composer pint -- --test ............................ 381 files, no style issues
+  composer stan (Larastan level 8) ................... No errors
+  composer validate --strict ......................... valid
+  php artisan test (serial, PostgreSQL) .............. 485 passed, 4 skipped (2102 assertions)
+    incl. RouteSecurityContractTest(7), ForbiddenRouteAbsenceTest(2),
+          FinancialRouteIdempotencyCoverageTest(3), PaginationContractTest(8),
+          FilterSortContractTest(5), ResourceCapabilityMapTest(4),
+          OpenApiContractTest(6), OpenApiTypeParityTest(4), MigrationManifestTest(6)
+  php artisan audit:verify-chain ..................... OK (no chains on dev DB)
+  composer api:openapi ............................... docs/api/openapi.json (43 ops)
+  npm run api:types .................................. resources/spa/src/types/generated/api.ts
+  npm run api:contract:check ......................... OK — 37 paths, 43 operations
+  npm run lint ....................................... 0 errors (28 pre-existing warnings)
+  npm run typecheck (vue-tsc) ........................ clean
+  npm run test (vitest) .............................. 17 files, 79 passed (clean rerun)
+  npm run build ...................................... built in 29.58s
+  composer audit --locked ............................ 0 advisories
+  npm audit --audit-level=high ....................... exit 0 (2 moderate dev-only, below gate)
+  gitleaks detect --no-git --redact .................. no leaks (also clean as pre-commit hook)
+
+FLAKED then passed (recorded, not erased):
+  npm run test (first run) ........................... 69 passed + 3 teardown errors while
+    running concurrently with the docker backend suite + composer audit; isolated
+    rerun = 17 files / 79 passed / 0 errors. No frontend source changed in Phase 10.
+
+DEFERRED to CI (environment-heavy; unaffected by Phase 10 — no Dockerfile/e2e-flow change):
+  php artisan test --parallel ........................ CI backend job (per-process namespacing from R7)
+  docker build php.Dockerfile --target dev ........... CI docker job
+  docker build nginx.Dockerfile --target prod ........ CI docker job
+  npm run e2e (playwright) ........................... CI / known env-flaky on Windows (Phase 23 owns the gate)
+```
+
