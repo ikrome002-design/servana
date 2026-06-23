@@ -1,9 +1,9 @@
-# CLAUDE.md — Servana by Citrus
+# AGENTS.md — Servana by Citrus
 
-Agent instructions for Claude Code. This file is an IDE operating guide only. It
-does not override, replace, or compete with **Servana Software Development
-Plan.md**, the primary engineering source of truth. Read the relevant Plan
-sections before every task and the complete active phase before implementation.
+Agent instructions for Codex. This file is an IDE operating guide only. It does
+not override, replace, or compete with **Servana Software Development Plan.md**,
+the primary engineering source of truth. Read the relevant Plan sections before
+every task and the complete active phase before implementation.
 
 ---
 
@@ -38,7 +38,7 @@ material.
    controllers, policies, migrations, tests, generated artifacts, and CI
 4. `docs/PROGRESS.md`, `docs/CHANGELOG.md`, and `docs/proof/` — historical
    context and evidence records, not source-of-truth substitutes
-5. `CLAUDE.md` (this file) — IDE workflow guide only; it never overrides,
+5. `AGENTS.md` (this file) — IDE workflow guide only; it never overrides,
    replaces, or competes with the Development Plan
 6. `docs/brand/Servana Brand Identity.md` — colors, typography, tone, logo
    usage
@@ -50,7 +50,7 @@ document already defines — read the file.
 
 | Asset | Path |
 |---|---|
-| Agent instructions | `CLAUDE.md` (root) |
+| Agent instructions | `AGENTS.md` (root) |
 | Development plan | `Servana Software Development Plan.md` (root) |
 | Project scope | `Servana Project Scope.md` (root) |
 | Brand identity | `docs/brand/Servana Brand Identity.md` |

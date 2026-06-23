@@ -12,9 +12,10 @@ meta:
   branch: docs/pre-feature-remediation-gate-closure
   base: 4f0d4f3   # merged main (PR #19, R7)
   # §5.4 — CLOSED decision: all PRE_FEATURE_REMEDIATION items are verified_complete
-  # (Phase V + R1–R7). Effective when this gate-closure docs PR merges into main.
+  # (Phase V + R1–R7). Effective: the gate-closure docs PR #20 merged into main
+  # (merge commit 7ac20a5, 2026-06-23; CI Backend/Frontend/Docker/Security SUCCESS).
   # See docs/remediation/pre-feature-completion-report.md and
-  # docs/proof/pre-feature-remediation-gate-closure.md. Next eligible phase: 10.
+  # docs/proof/pre-feature-remediation-gate-closure.md. Current phase: 10 (started).
   pre_feature_gate_closed: true
 
 items:
@@ -476,35 +477,35 @@ items:
     classification: C1
     gating_category: FEATURE_DELIVERY_OBLIGATION
     scope_requirement: "Route classifications + RouteSecurityContractTest; class-specific acceptance matrix (Corrections 10,11)."
-    repository_evidence: "Routes carry middleware but no classification registry/metadata; no RouteSecurityContractTest."
-    root_cause: "API foundation (Phase 10) not started."
-    affected_files_tables_routes: "routes/api.php; new route-classification registry."
-    security_data_business_impact: "No automated guarantee every non-GET route has required controls."
-    precise_correction: "Build classification metadata + RouteSecurityContractTest in Phase 10."
+    repository_evidence: "Phase 10: RouteClass (8 classes incl. liveness_readiness) + RouteClassification registry (required/forbidden middleware per class, VALIDATION_EXEMPT allowlist) extend the R4 seam; every production non-GET route declares exactly one class via route defaults; health probes are liveness_readiness."
+    root_cause: "API foundation (Phase 10) was not started at register seeding; built on branch phase-10-api-foundation."
+    affected_files_tables_routes: "routes/api.php; bootstrap/app.php; app/Http/Routing/RouteClass.php; app/Http/Routing/RouteClassification.php; tests/Feature/Security/RouteSecurityContractTest.php; tests/Feature/Security/ForbiddenRouteAbsenceTest.php."
+    security_data_business_impact: "Automated, test-enforced guarantee that every non-GET route carries its class-required controls; forbidden routes (SA merchant-create, personnel contact-export) proven absent; financial routes cannot exist without idempotency (R4 guard preserved)."
+    precise_correction: "Extended (not replaced) the R4 RouteClass/RouteClassification seam; added RouteSecurityContractTest + ForbiddenRouteAbsenceTest + OpenAPI inventory (docs/api/openapi.json) + generated TypeScript contract."
     migration_impact: "none."
-    test_plan: "RouteSecurityContractTest."
+    test_plan: "RouteSecurityContractTest; ForbiddenRouteAbsenceTest; FinancialRouteIdempotencyCoverageTest; OpenApiContractTest; OpenApiTypeParityTest; PaginationContractTest; FilterSortContractTest; ResourceCapabilityMapTest."
     proof_artifact: "docs/proof/phase-10.md"
     owner: "Phase 10"
     completion_commit: null
-    reviewer: "TBD"
-    status: not_started
+    reviewer: "solo-maintainer governance exception (pending Phase 10 PR; not an independent approval)"
+    status: local_complete
 
   - id: REM-MIG-001
     classification: C1
     gating_category: FEATURE_DELIVERY_OBLIGATION
     scope_requirement: "Expand-and-contract migration strategy + migration manifest; remove reliance on destructive down() (Correction 12; ADR-004)."
-    repository_evidence: "Migrations are forward-only in practice but no manifest convention / lint."
-    root_cause: "Migration-manifest convention is Phase 10."
-    affected_files_tables_routes: "database/migrations; CI migration-manifest lint."
-    security_data_business_impact: "Production rollback safety not formalized."
-    precise_correction: "Add manifest + lint in Phase 10; apply across phases."
-    migration_impact: "process."
-    test_plan: "migration-manifest lint; PG migration tests."
+    repository_evidence: "Phase 10: ADR-004 (expand-and-contract, forward-repair, image-rollback-within-compatibility, PITR, PG-only, data-dictionary-before-migration) + docs/architecture/migrations/{README.md,manifest.yaml} inventory all 33 migrations (4 framework + 29 business) with per-migration governance metadata; MigrationManifestTest lints it."
+    root_cause: "Migration-manifest convention was Phase 10; built on branch phase-10-api-foundation."
+    affected_files_tables_routes: "database/migrations (inventoried, none edited); docs/architecture/adr/0004-migration-strategy.md; docs/architecture/migrations/README.md; docs/architecture/migrations/manifest.yaml; tests/Feature/Infrastructure/MigrationManifestTest.php."
+    security_data_business_impact: "Production rollback safety formalized (forward-repair, not destructive rollback); every business migration traceable to owner/dict-ref/verification; lint blocks drift."
+    precise_correction: "Authored ADR-004 + manifest + lint test; no shipped migration edited; no new business migration created merely to demonstrate the convention."
+    migration_impact: "process (no schema change)."
+    test_plan: "MigrationManifestTest; PostgreSQL migration tests (TenantColumnCoverageTest et al.)."
     proof_artifact: "docs/proof/phase-10.md"
     owner: "Phase 10 + all phases"
     completion_commit: null
-    reviewer: "TBD"
-    status: not_started
+    reviewer: "solo-maintainer governance exception (pending Phase 10 PR; not an independent approval)"
+    status: local_complete
 
   - id: REM-FILE-001
     classification: C1

@@ -113,6 +113,9 @@ jobs:
       - name: Type-check — vue-tsc
         run: npm run typecheck
 
+      - name: API contract check — OpenAPI ⇄ generated TypeScript parity (Phase 10)
+        run: npm run api:contract:check
+
       - name: Unit tests — Vitest
         run: npm run test
 

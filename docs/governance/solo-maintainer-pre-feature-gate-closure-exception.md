@@ -46,9 +46,12 @@ the §5.4 criteria:
 
 ## Decision
 
-The §5.4 pre-feature remediation gate is declared **CLOSED**, effective when this
-gate-closure documentation PR merges into `main`. The next eligible phase is
-**Phase 10**, which is not started and must not begin before that merge.
+The §5.4 pre-feature remediation gate is declared **CLOSED and effective** — the
+gate-closure documentation PR #20 merged into `main` (merge commit `7ac20a5`,
+2026-06-23). This governance exception records only the solo-maintainer review
+posture (one eligible maintainer, no independent approval claimed); it is **not**
+itself an independent approval. The Section 80 feature roadmap has begun with
+**Phase 10 (API Foundation)**.
 
 ## Compensating controls
 

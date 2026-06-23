@@ -9,7 +9,9 @@ use App\Domain\Branches\Actions\CreateBranch;
 use App\Domain\Branches\Actions\UpdateBranch;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Tenancy\TenantContext;
+use App\Http\Api\ApiPagination;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Branches\BranchIndexRequest;
 use App\Http\Requests\Branches\CreateBranchRequest;
 use App\Http\Requests\Branches\UpdateBranchRequest;
 use App\Http\Resources\BranchResource;
@@ -32,9 +34,10 @@ final class BranchController extends Controller
 {
     public function __construct(private readonly TenantContext $context) {}
 
-    public function index(): AnonymousResourceCollection
+    public function index(BranchIndexRequest $request): AnonymousResourceCollection
     {
         $merchantId = $this->context->merchantId();
+        $filters = $request->validated();
 
         $query = MerchantBranch::query()->where('merchant_id', $merchantId);
 
@@ -43,7 +46,15 @@ final class BranchController extends Controller
             $query->whereIn('id', $this->context->branchIds());
         }
 
-        return BranchResource::collection($query->orderBy('name')->get());
+        if (isset($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        ApiPagination::applySort($query, $filters['sort'] ?? null, 'name');
+
+        return BranchResource::collection(
+            $query->paginate(ApiPagination::perPage($filters))->withQueryString(),
+        );
     }
 
     public function store(CreateBranchRequest $request, CreateBranch $action): JsonResponse

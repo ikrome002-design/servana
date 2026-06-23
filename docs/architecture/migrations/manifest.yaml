@@ -1,0 +1,374 @@
+# Servana migration manifest (ADR-004; Plan §13.1-§13.3, §80 Phase 10 / REM-MIG-001).
+# Authoritative inventory of every migration in database/migrations/. Linted by
+# tests/Feature/Infrastructure/MigrationManifestTest.php. Forward-only; no shipped
+# migration is ever edited (Guardrail 12) — corrections are new forward migrations.
+
+meta:
+  generated: "2026-06-23"
+  owner_phase: 10
+  adr: docs/architecture/adr/0004-migration-strategy.md
+  readme: docs/architecture/migrations/README.md
+  database: postgresql-16
+  # Standard forward-repair posture for every forward-only/additive migration:
+  default_forward_repair: "Forward-only; a correction ships as a new forward migration. down() is local/CI convenience only, never the production recovery path. Restoration via tested PITR (ADR-004)."
+
+# Laravel / package migrations — not Servana business tables.
+framework_migrations:
+  - file: 0001_01_01_000000_create_users_table.php
+    note: "Laravel default users + password_reset_tokens (+ sessions). Servana auth/identity columns added by later expand migrations."
+  - file: 0001_01_01_000001_create_cache_table.php
+    note: "Laravel cache/cache_locks tables (array/redis used at runtime; table is framework default)."
+  - file: 0001_01_01_000002_create_jobs_table.php
+    note: "Laravel jobs/job_batches/failed_jobs queue tables."
+  - file: 2026_06_14_073055_create_personal_access_tokens_table.php
+    note: "Laravel Sanctum personal access tokens (SPA uses stateful cookies; table is package default + revocation target)."
+
+# Servana business / infrastructure migrations.
+business_migrations:
+  - file: 2026_06_14_000001_add_auth_columns_to_users_table.php
+    table: users
+    domain: Auth
+    owner_phase: "5"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: [0001_01_01_000000_create_users_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-5.md
+
+  - file: 2026_06_14_000002_create_magic_login_tokens_table.php
+    table: magic_login_tokens
+    domain: Auth
+    owner_phase: "5"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: [2026_06_14_000001_add_auth_columns_to_users_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-5.md
+
+  - file: 2026_06_14_000100_add_platform_staff_to_users_table.php
+    table: users
+    domain: Identity
+    owner_phase: "6"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: [2026_06_14_000001_add_auth_columns_to_users_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-6.md
+
+  - file: 2026_06_14_000101_create_merchants_table.php
+    table: merchants
+    domain: Tenancy
+    owner_phase: "6"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: [2026_06_14_000100_add_platform_staff_to_users_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-6.md
+
+  - file: 2026_06_14_000102_create_merchant_profiles_table.php
+    table: merchant_profiles
+    domain: Tenancy
+    owner_phase: "6"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: [2026_06_14_000101_create_merchants_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-6.md
+
+  - file: 2026_06_14_000103_create_merchant_branches_table.php
+    table: merchant_branches
+    domain: Branches
+    owner_phase: "6"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_14_000101_create_merchants_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-6.md
+
+  - file: 2026_06_14_000104_create_merchant_users_table.php
+    table: merchant_users
+    domain: Identity
+    owner_phase: "6"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000100_add_platform_staff_to_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-6.md
+
+  - file: 2026_06_14_000105_create_merchant_status_histories_table.php
+    table: merchant_status_histories
+    domain: Tenancy
+    owner_phase: "6"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: [2026_06_14_000101_create_merchants_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-6.md
+
+  - file: 2026_06_15_000100_expand_merchant_branches_for_phase_7.php
+    table: merchant_branches
+    domain: Branches
+    owner_phase: "7"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_14_000103_create_merchant_branches_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-7.md
+
+  - file: 2026_06_15_000101_create_branch_user_assignments_table.php
+    table: branch_user_assignments
+    domain: Branches
+    owner_phase: "7"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on:
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_14_000104_create_merchant_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-7.md
+
+  - file: 2026_06_15_000102_create_staff_invitations_table.php
+    table: staff_invitations
+    domain: HR
+    owner_phase: "7"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_14_000103_create_merchant_branches_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-7.md
+
+  - file: 2026_06_15_000103_create_staff_profiles_table.php
+    table: staff_profiles
+    domain: HR
+    owner_phase: "7"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on:
+      - 2026_06_14_000104_create_merchant_users_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-7.md
+
+  - file: 2026_06_15_000104_create_staff_history_table.php
+    table: staff_history
+    domain: HR
+    owner_phase: "7"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_15_000103_create_staff_profiles_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-7.md
+
+  - file: 2026_06_15_000105_create_branch_operating_hours_table.php
+    table: branch_operating_hours
+    domain: Branches
+    owner_phase: "7"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_14_000103_create_merchant_branches_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-7.md
+
+  - file: 2026_06_15_000106_create_branch_calendar_exceptions_table.php
+    table: branch_calendar_exceptions
+    domain: Branches
+    owner_phase: "7"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_14_000103_create_merchant_branches_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-7.md
+
+  - file: 2026_06_15_000107_create_branch_day_records_table.php
+    table: branch_day_records
+    domain: Branches
+    owner_phase: "7"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_14_000103_create_merchant_branches_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-7.md
+
+  - file: 2026_06_15_000108_create_branch_cash_ups_table.php
+    table: branch_cash_ups
+    domain: CashUp
+    owner_phase: "7"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_15_000107_create_branch_day_records_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-7.md
+
+  - file: 2026_06_16_000001_create_permissions_table.php
+    table: permissions
+    domain: Access
+    owner_phase: "8"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: []
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-8.md
+    notes: "Detailed per-table data-dictionary entry pending (predates dict files); owed to Phase 19 (access/governance). ADR-004 §6."
+
+  - file: 2026_06_16_000002_create_roles_table.php
+    table: roles
+    domain: Access
+    owner_phase: "8"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: []
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-8.md
+    notes: "Detailed per-table data-dictionary entry pending (predates dict files); owed to Phase 19. ADR-004 §6."
+
+  - file: 2026_06_16_000003_create_role_permission_assignments_table.php
+    table: role_permission_assignments
+    domain: Access
+    owner_phase: "8"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on:
+      - 2026_06_16_000002_create_roles_table.php
+      - 2026_06_16_000001_create_permissions_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-8.md
+    notes: "Detailed per-table data-dictionary entry pending (predates dict files); owed to Phase 19. ADR-004 §6."
+
+  - file: 2026_06_16_000004_create_merchant_user_permission_overrides_table.php
+    table: merchant_user_permission_overrides
+    domain: Access
+    owner_phase: "8"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on:
+      - 2026_06_14_000104_create_merchant_users_table.php
+      - 2026_06_16_000001_create_permissions_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-8.md
+
+  - file: 2026_06_16_000005_create_audit_logs_table.php
+    table: audit_logs
+    domain: Audit
+    owner_phase: "8/R2"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on:
+      - 2026_06_14_000001_add_auth_columns_to_users_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-r2.md
+    notes: "Append-only + hash chain + immutability trigger (ADR-008). Detailed per-table dict entry pending; owed to Phase 19. ADR-004 §6."
+
+  - file: 2026_06_21_000001_add_branch_id_to_audit_logs.php
+    table: audit_logs
+    domain: Audit
+    owner_phase: "R2"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on:
+      - 2026_06_16_000005_create_audit_logs_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-r2.md
+    notes: "Adds branch_id to the hash chain; safe (no production rows). ADR-008."
+
+  - file: 2026_06_22_000001_create_mfa_credentials_table.php
+    table: mfa_credentials
+    domain: Auth/MFA
+    owner_phase: "R3"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: [2026_06_14_000001_add_auth_columns_to_users_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-r3.md
+
+  - file: 2026_06_22_000002_create_mfa_recovery_codes_table.php
+    table: mfa_recovery_codes
+    domain: Auth/MFA
+    owner_phase: "R3"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on: [2026_06_22_000001_create_mfa_credentials_table.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-r3.md
+
+  - file: 2026_06_22_000003_create_idempotency_keys_table.php
+    table: idempotency_keys
+    domain: Support/Idempotency
+    owner_phase: "R4"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on:
+      - 2026_06_14_000001_add_auth_columns_to_users_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-r4.md
+    notes: "Corrected idempotency_keys schema (ADR-003); UNIQUE(idempotency_scope,key_hash) is the concurrency boundary."
+
+  - file: 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+    table: [merchant_branches, staff_profiles, merchant_users]
+    domain: Tenancy
+    owner_phase: "R5"
+    change_type: constrain
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on:
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_14_000104_create_merchant_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-r5.md
+    notes: "Adds UNIQUE(id,merchant_id) on composite-FK parents (ADR-002). Constrain step."
+
+  - file: 2026_06_23_000002_add_merchant_id_to_branch_owned_tables.php
+    table: [branch_user_assignments, branch_operating_hours, branch_calendar_exceptions, branch_day_records, branch_cash_ups]
+    domain: Tenancy
+    owner_phase: "R5"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_23_000001_add_composite_unique_to_tenant_parents.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-r5.md
+    notes: "expand->backfill->constrain inline: +merchant_id, backfill from parent branch, then FK + composite consistency FK + index (ADR-002). Future production tenant columns must split the steps."
+
+  - file: 2026_06_23_000003_add_merchant_id_to_tenant_history_tables.php
+    table: [staff_history, merchant_user_permission_overrides]
+    domain: Tenancy
+    owner_phase: "R5"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/branches-and-staff.md
+    depends_on: [2026_06_23_000001_add_composite_unique_to_tenant_parents.php]
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-r5.md
+    notes: "expand->backfill->constrain inline: +merchant_id, backfill from parent, then FK + index (ADR-002)."

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Http\Resources\Concerns\HasCapabilities;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,6 +16,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 final class BranchResource extends JsonResource
 {
+    use HasCapabilities;
+
     /**
      * @return array<string, mixed>
      */
@@ -32,6 +35,13 @@ final class BranchResource extends JsonResource
             'status' => $this->status->value,
             'status_reason' => $this->status_reason,
             'archived_at' => $this->archived_at?->toIso8601String(),
+            'can' => $this->capabilities($request, [
+                'view' => 'view',
+                'update' => 'update',
+                'archive' => 'archive',
+                'manage_operating_hours' => 'manageOperatingHours',
+                'manage_day' => 'manageDay',
+            ]),
         ];
     }
 }

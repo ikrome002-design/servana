@@ -6,13 +6,51 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase 10 — API Foundation (`phase-10-api-foundation`)
+
+Establishes the secure, generated, test-enforced API contract substrate every later
+feature phase inherits (Plan §23, §24, §80; REM-ROUTE-001, REM-MIG-001; ADR-004).
+Built on the merged gate-closure commit `7ac20a5` (PR #20). `local_complete` —
+pending push/CI/merge; the two register items stay `local_complete` until merge.
+
+- **Route classification:** extended the R4 `RouteClass`/`RouteClassification` seam
+  (not replaced) with the 8th class `liveness_readiness`, per-class required/forbidden
+  middleware, and the `VALIDATION_EXEMPT` allowlist. Every production non-GET route
+  declares exactly one class; health probes are `liveness_readiness`.
+- **Security contract:** `RouteSecurityContractTest` + `ForbiddenRouteAbsenceTest`
+  (SA merchant-creation and personnel contact-export proven absent);
+  `FinancialRouteIdempotencyCoverageTest` preserved — financial routes cannot exist
+  without idempotency.
+- **Pagination/filter/sort:** reusable `App\Http\Api\ApiPagination` (default 25, max
+  100, over-limit 422, allowlisted sorts + stable tiebreaker, validated filters);
+  retrofitted the `branches`, `staff` and `staff-invitations` listings.
+- **Resource `can` maps:** `HasCapabilities` concern (policy-derived, booleans,
+  ULID ids only) on the branch/staff/invitation/audit resources.
+- **OpenAPI generation:** deterministic route-derived generator
+  (`composer api:openapi` → `docs/api/openapi.json`, 43 operations, no test/future
+  operations) with the §11.5 error envelope, security scheme, pagination params and
+  the financial `Idempotency-Key` header.
+- **TypeScript contract:** `npm run api:types` →
+  `resources/spa/src/types/generated/api.ts` (openapi-typescript@7.4.4);
+  `npm run api:contract:check` fails on stale/leaked/duplicate/missing contract and
+  runs in CI (frontend job).
+- **Migration governance:** ADR-004 (expand-and-contract, forward-repair, PITR) +
+  `docs/architecture/migrations/{README.md,manifest.yaml}` (all 33 migrations) +
+  `MigrationManifestTest` lint. No shipped migration edited.
+- **Tooling deps:** `symfony/yaml` (dev, manifest lint), `openapi-typescript` (dev,
+  pinned 7.4.4).
+- **Deferrals:** files/media → 10F; role nav → 11; business domains → owning §80
+  phases; full per-table dict entries for audit/permissions/roles → 19.
+
 ### Pre-feature remediation gate closure (§5.4) (`docs/pre-feature-remediation-gate-closure`)
 
 Documentation/evidence only — **no product code, migrations, routes, dependencies,
 Dockerfiles, configuration, tests or frontend changed**.
 
-- **Gate §5.4: CLOSED** — effective when this gate-closure PR merges into `main`.
-  All nine `PRE_FEATURE_REMEDIATION` items (Phase V + R1–R7) are
+- **Gate §5.4: CLOSED and effective** — the gate-closure PR #20 merged into
+  `main` (merge commit `7ac20a5`, 2026-06-23; CI Backend/Frontend/Docker/Security
+  all SUCCESS; reviewDecision blank under the solo-maintainer governance
+  exception). All nine `PRE_FEATURE_REMEDIATION` items (Phase V + R1–R7) are
   `verified_complete`.
 - **R7 finalized:** REM-OPS-001 → `verified_complete` — PR #19, merge commit
   `4f0d4f3`, CI Backend/Frontend/Docker/Security all SUCCESS, reviewDecision
@@ -24,9 +62,10 @@ Dockerfiles, configuration, tests or frontend changed**.
   evidence recorded (`docs/governance/solo-maintainer-pre-feature-gate-closure-exception.md`,
   one eligible maintainer, no independent approval claimed).
 - **Gate-closure proof:** `docs/proof/pre-feature-remediation-gate-closure.md`.
-- **Phase 10 becomes eligible only after this PR merges**; it remains not started.
-  Stale gate-blocked and R7-pending status wording was replaced with the closed
-  state across PROGRESS.md, CHANGELOG.md, register.yaml and the completion report.
+- **Phase 10 (API Foundation) has started** on branch `phase-10-api-foundation`
+  now that the gate-closure PR #20 is merged. Stale gate-blocked and R7-pending
+  status wording was replaced with the closed/effective state across PROGRESS.md,
+  CHANGELOG.md, register.yaml and the completion report.
 
 ### Phase R7 — Production probes, CI isolation, environment parity (`phase-r7-production-probes-ci-parity`)
 

@@ -9,6 +9,8 @@ use App\Http\Middleware\EnsureActivePrincipal;
 use App\Http\Middleware\EnsureIdempotentRequest;
 use App\Http\Middleware\EnsurePrivilegedMfa;
 use App\Http\Middleware\ResolveTenantContext;
+use App\Http\Routing\RouteClass;
+use App\Http\Routing\RouteClassification;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Contracts\Session\Middleware\AuthenticatesSessions;
@@ -38,8 +40,12 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function (): void {
             // Health probes live outside the web group: only global middleware,
             // so no session/CSRF/database dependency (Plan §22.1).
-            Route::get('/health', [HealthController::class, 'live'])->name('health');
-            Route::get('/health/deep', [HealthController::class, 'deep'])->name('health.deep');
+            Route::get('/health', [HealthController::class, 'live'])
+                ->defaults(RouteClassification::KEY, RouteClass::LivenessReadiness->value)
+                ->name('health');
+            Route::get('/health/deep', [HealthController::class, 'deep'])
+                ->defaults(RouteClassification::KEY, RouteClass::LivenessReadiness->value)
+                ->name('health.deep');
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

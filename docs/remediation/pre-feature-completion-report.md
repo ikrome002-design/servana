@@ -8,23 +8,27 @@
 ## Gate status
 
 ```
-Gate status: CLOSED
-Effective condition: this gate-closure PR is merged into main
+Gate status: CLOSED and effective
+Gate-closure PR: #20  (MERGED 2026-06-23 04:44Z)
+Gate-closure merge commit: 7ac20a56cb94e8b54a34f96db637b65e8af4eb91
+Gate-closure CI: Backend/Frontend/Docker/Security = SUCCESS
+Gate-closure reviewDecision: blank (solo-maintainer governance exception — not an independent approval)
 R7 PR: #19
 R7 merge commit: 4f0d4f3d497ff3bdb42e7d8a50a92949aebb25e2
 R7 CI: Backend/Frontend/Docker/Security = SUCCESS
 R7 reviewDecision: blank
 R7 governance exception recorded: docs/governance/solo-maintainer-review-exception-pr-19.md
-Next eligible phase after this PR merges: Phase 10
+Current phase (started): Phase 10 — API Foundation (branch phase-10-api-foundation)
 ```
 
 All nine `PRE_FEATURE_REMEDIATION` items (Phase V + R1–R7) are
 `verified_complete`: each is merged to `main` with green CI, a proof artifact,
 its required ADR/migration evidence where applicable, and a recorded
 solo-maintainer governance exception. R7 (REM-OPS-001), the last open item, is now
-merged as **PR #19** (`4f0d4f3`). The §5.4 gate is therefore **CLOSED**; the
-closure becomes effective when *this* documentation gate-closure PR merges into
-`main`. No Section 80 feature phase (Phase 10 onward) may begin before that.
+merged as **PR #19** (`4f0d4f3`). The §5.4 gate is therefore **CLOSED and
+effective**: the documentation gate-closure PR #20 merged into `main` (merge
+commit `7ac20a5`, 2026-06-23; CI Backend/Frontend/Docker/Security all SUCCESS).
+The Section 80 feature roadmap has begun with **Phase 10 — API Foundation**.
 
 > Review/approval note: every PR below has `reviewDecision` intentionally **blank**
 > and a recorded **solo-maintainer governance exception** (the repository has one
@@ -95,13 +99,15 @@ idempotency_keys .............................. docs/proof/phase-r4.md
 
 - REM-OPS-001: `local_complete` → `verified_complete` (PR #19, `4f0d4f3`).
 - REM-V-001: `merged` → `verified_complete`.
-- Register `meta.pre_feature_gate_closed`: `false` → `true` (effective on merge).
+- Register `meta.pre_feature_gate_closed`: `false` → `true` (effective; gate-closure PR #20 merged).
 - Replaced the prior gate-blocked-pending-merge marker and all R7 pending status
-  wording with the closed state across PROGRESS.md, CHANGELOG.md, register.yaml
-  and this report.
+  wording with the closed/effective state across PROGRESS.md, CHANGELOG.md,
+  register.yaml and this report.
 
 ## Final gate decision
 
-**CLOSED**, effective when this gate-closure PR merges into `main`. The next
-eligible phase is **Phase 10 (API Foundation)**, which is **not started** and must
-not begin until this PR is merged.
+**CLOSED and effective** — the gate-closure PR #20 merged into `main` (merge
+commit `7ac20a5`, 2026-06-23; CI Backend/Frontend/Docker/Security all SUCCESS;
+reviewDecision blank under the solo-maintainer governance exception, which is not
+an independent approval). The Section 80 feature roadmap has begun with **Phase 10
+(API Foundation)** on branch `phase-10-api-foundation`.

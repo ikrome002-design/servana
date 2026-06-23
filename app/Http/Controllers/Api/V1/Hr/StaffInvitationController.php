@@ -11,8 +11,10 @@ use App\Domain\Hr\Actions\RevokeStaffInvitation;
 use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Tenancy\TenantContext;
+use App\Http\Api\ApiPagination;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hr\CreateStaffInvitationRequest;
+use App\Http\Requests\Hr\StaffInvitationIndexRequest;
 use App\Http\Resources\StaffInvitationResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -34,8 +36,10 @@ final class StaffInvitationController extends Controller
 {
     public function __construct(private readonly TenantContext $context) {}
 
-    public function index(): AnonymousResourceCollection
+    public function index(StaffInvitationIndexRequest $request): AnonymousResourceCollection
     {
+        $filters = $request->validated();
+
         $query = StaffInvitation::query()
             ->where('merchant_id', $this->context->merchantId())
             ->with('branch');
@@ -44,7 +48,19 @@ final class StaffInvitationController extends Controller
             $query->whereIn('branch_id', $this->context->branchIds());
         }
 
-        return StaffInvitationResource::collection($query->latest()->get());
+        if (isset($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (isset($filters['role'])) {
+            $query->where('role', $filters['role']);
+        }
+
+        ApiPagination::applySort($query, $filters['sort'] ?? null, '-created_at');
+
+        return StaffInvitationResource::collection(
+            $query->paginate(ApiPagination::perPage($filters))->withQueryString(),
+        );
     }
 
     public function store(CreateStaffInvitationRequest $request, CreateStaffInvitation $action): JsonResponse

@@ -115,14 +115,17 @@ docs/proof/pre-feature-remediation-gate-closure.md                      (new)
 
 ## 10. Final gate decision
 
-**§5.4 pre-feature remediation gate: CLOSED**, effective when this gate-closure
-PR merges into `main`. All nine PRE_FEATURE_REMEDIATION items are
+**§5.4 pre-feature remediation gate: CLOSED and effective** — this gate-closure
+PR merged into `main` as **PR #20** (merge commit `7ac20a5`, 2026-06-23; CI
+Backend/Frontend/Docker/Security all SUCCESS; reviewDecision blank under the
+solo-maintainer governance exception). All nine PRE_FEATURE_REMEDIATION items are
 `verified_complete` with merged PRs, green CI, proofs, required ADRs/migrations
 and governance evidence.
 
-## 11. Next eligible phase
+## 11. Current phase
 
-**Phase 10 — API Foundation** (status: **not started**). It must not begin until
-this gate-closure PR is merged. Application verification for this closure relies on
-the already-green PR #19 CI and the R7 proof; no application suite was re-run
-because only documentation/evidence files changed.
+**Phase 10 — API Foundation** (status: **started**, branch
+`phase-10-api-foundation`). The feature roadmap began once this gate-closure PR
+merged. Application verification for this closure relied on the already-green
+PR #19 CI and the R7 proof; no application suite was re-run because only
+documentation/evidence files changed.

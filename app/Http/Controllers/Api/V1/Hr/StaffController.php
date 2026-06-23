@@ -7,7 +7,9 @@ namespace App\Http\Controllers\Api\V1\Hr;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Hr\Services\StaffLifecycleService;
 use App\Domain\Tenancy\TenantContext;
+use App\Http\Api\ApiPagination;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Hr\StaffIndexRequest;
 use App\Http\Resources\StaffProfileResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -25,8 +27,10 @@ final class StaffController extends Controller
 {
     public function __construct(private readonly TenantContext $context) {}
 
-    public function index(): AnonymousResourceCollection
+    public function index(StaffIndexRequest $request): AnonymousResourceCollection
     {
+        $filters = $request->validated();
+
         $query = StaffProfile::query()
             ->where('merchant_id', $this->context->merchantId())
             ->with(['merchantUser', 'primaryBranch']);
@@ -35,7 +39,19 @@ final class StaffController extends Controller
             $query->whereIn('primary_branch_id', $this->context->branchIds());
         }
 
-        return StaffProfileResource::collection($query->orderBy('display_name')->get());
+        if (isset($filters['employment_status'])) {
+            $query->where('employment_status', $filters['employment_status']);
+        }
+
+        if (isset($filters['employment_type'])) {
+            $query->where('employment_type', $filters['employment_type']);
+        }
+
+        ApiPagination::applySort($query, $filters['sort'] ?? null, 'display_name');
+
+        return StaffProfileResource::collection(
+            $query->paginate(ApiPagination::perPage($filters))->withQueryString(),
+        );
     }
 
     public function show(StaffProfile $staff): StaffProfileResource
