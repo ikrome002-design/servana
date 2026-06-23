@@ -28,17 +28,24 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 
 ## Active v3 roadmap
 
-### Pre-feature remediation (Plan §79) — gate §5.4 must close before any feature phase
+### Pre-feature remediation (Plan §79) — gate §5.4 **CLOSED** (effective when the gate-closure PR merges)
 | Phase | Title | Status | Register item |
 |---|---|---|---|
-| V | As-built verification | ✅ `merged` — PR #12, commit `c58b64a` (CI Backend/Frontend/Security/Docker passed) | REM-V-001, REM-DOC-001 |
+| V | As-built verification | ✅ `verified_complete` — PR #12, commit `c58b64a` (CI Backend/Frontend/Docker/Security all SUCCESS; solo-maintainer governance exception, reviewDecision blank) | REM-V-001, REM-DOC-001 |
 | R1 | Dependency & runtime security (Laravel 12.60+, PHP 8.3, advisory removal, CR/LF) | ✅ `verified_complete` — PR #13, commit `8fe575f` (CI passed; solo-maintainer governance exception, reviewDecision blank) | REM-DEP-001 |
 | R2 | Core audit completeness + chain verifier + masked read | ✅ `verified_complete` — PR #14, commit `1df759e` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-AUD-001 |
 | R3 | Privileged MFA + step-up | ✅ `verified_complete` — PR #15, commit `c0402b2` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-MFA-001 |
 | R4 | Idempotency & replay protection | ✅ `verified_complete` — PR #16, commit `1288f48` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-IDEMP-001 |
 | R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | ✅ `verified_complete` — PR #17, commit `66aaead` (CI Backend/Frontend/Security passed; CI/Docker reran past an external Buildx/Docker Hub timeout with no code change; solo-maintainer governance exception, reviewDecision blank) | REM-TEN-001 |
 | R6 | Session & authorization revocation (per-request freshness) | ✅ `verified_complete` — PR #18, commit `57ae8db` (CI Backend/Frontend/Docker/Security all SUCCESS; solo-maintainer governance exception, reviewDecision blank) | REM-SESS-001 |
-| R7 | Production probes, CI isolation, env parity, ADR-009 | 🔄 `local_complete` (branch `phase-r7-production-probes-ci-parity`); pending push + CI + review/merge | REM-OPS-001 |
+| R7 | Production probes, CI isolation, env parity, ADR-009 | ✅ `verified_complete` — PR #19, commit `4f0d4f3` (CI Backend/Frontend/Docker/Security all SUCCESS; solo-maintainer governance exception, reviewDecision blank) | REM-OPS-001 |
+
+> **Pre-feature remediation gate (§5.4): CLOSED** — effective when this
+> gate-closure PR (`docs/pre-feature-remediation-gate-closure`) merges into `main`.
+> V and R1–R7 are `verified_complete`; all nine PRE_FEATURE_REMEDIATION items are
+> `verified_complete`. **Next eligible phase: Phase 10** (status: **not started**).
+> See `docs/remediation/pre-feature-completion-report.md` and
+> `docs/proof/pre-feature-remediation-gate-closure.md`.
 
 ### Feature roadmap (Plan §80) — begins only after the §5.4 gate closes
 | Phase | Title | Status |
@@ -58,12 +65,34 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Gate closure — Pre-feature remediation (§5.4)
+
+- **Branch:** `docs/pre-feature-remediation-gate-closure` (based on merged `main` @ `4f0d4f3`, PR #19 / R7). Documentation/evidence only — no product code.
+- **Gate decision:** **CLOSED** — effective when this gate-closure PR merges into `main`. Next eligible phase: **Phase 10** (not started).
+- **Work completed:** finalized R7/REM-OPS-001 to `verified_complete` (PR #19, `4f0d4f3`); normalized REM-V-001 to `verified_complete`; set register `meta.pre_feature_gate_closed: true`; finalized the completion report (gate CLOSED + full §5.4 criteria matrix); authored the gate-closure governance exception; regenerated PROGRESS/CHANGELOG; updated traceability; wrote the gate-closure proof.
+- **Evidence reviewed:** PR #12–#19 merge commits + CI conclusions (Backend/Frontend/Docker/Security SUCCESS); proofs `phase-v.md`…`phase-r7.md`; ADR-001/002/003/008/009; migration proofs (R2–R5); per-PR governance exceptions pr-13…pr-19. All nine PRE_FEATURE_REMEDIATION items `verified_complete`; no unresolved blocker.
+- **Documents changed:** `docs/remediation/register.yaml`, `docs/remediation/pre-feature-completion-report.md`, `docs/governance/solo-maintainer-pre-feature-gate-closure-exception.md`, `docs/PROGRESS.md`, `docs/CHANGELOG.md`, `docs/traceability/servana-requirements.csv`, `docs/proof/pre-feature-remediation-gate-closure.md`.
+- **Work skipped (with owning phase):**
+  ```
+  API contract / pagination / OpenAPI    -> Phase 10
+  file and media foundation              -> Phase 10F
+  role navigation and landing surfaces   -> Phase 11
+  feature business domains               -> owning Section 80 phases
+  release-wide accessibility audit       -> Phase 23
+  deployment / backup / alerting         -> Phase 25
+  ```
+  Reason skipped: this is a documentation/evidence reconciliation task; all feature
+  work is owned by its Section 80 phase and gated by §5.4a obligations.
+- **Pending CI/review/merge:** this gate-closure PR must pass CI before merge; reviewDecision will remain blank (solo-maintainer governance exception — not independent approval). Closure is effective only on merge.
+- **Known risks:** none introduced (no product code changed); the §5.4 closure is a documentation decision backed by already-green PR #19 CI and the R7 proof. Residual technical risks remain as recorded in each phase proof (e.g. R7 S3 live-probe scope, `PGCONNECT_TIMEOUT` env-level bound).
+- **Next-phase context:** Phase 10 (API Foundation) is the next eligible phase and must not begin until this PR merges. Phase 10 inherits strict config-driven readiness (do not re-couple `/health` liveness to dependencies) and the per-run/process test namespace (never FLUSHDB).
+
 ## Phase R7 — Production probes, CI isolation, environment parity
 
 - **Branch:** `phase-r7-production-probes-ci-parity` (based on merged `main` @ `57ae8db`, PR #18 / R6).
-- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Status:** ✅ `verified_complete` — merged as PR #19 (squash `4f0d4f3`, 2026-06-23). CI Backend/Frontend/Docker/Security all SUCCESS; solo-maintainer governance exception (reviewDecision intentionally blank — not independent approval).
 - **Proof:** [docs/proof/phase-r7.md](proof/phase-r7.md) · **ADR:** [ADR-009](architecture/adr/0009-brand-contrast-tokens.md) · **Report:** [pre-feature-completion-report.md](remediation/pre-feature-completion-report.md).
-- **Register:** REM-OPS-001.
+- **Register:** REM-OPS-001 (`verified_complete`).
 
 ### Work completed
 - **Probe behaviour:** `/health` is dependency-free liveness (200 even when every
@@ -125,12 +154,13 @@ PASS  R6 regression (RevocationMiddlewareOrder/MidSessionSuspension/Authorizatio
 - `PGCONNECT_TIMEOUT` bounds PG connect at the libpq/env level (the Laravel pgsql
   DSN builder has no `connect_timeout` key); documented in ADR/proof.
 
-### Pre-feature gate status (do NOT close locally)
+### Pre-feature gate status — CLOSED (R7 merged)
 - `docs/remediation/pre-feature-completion-report.md` records **gate status:
-  BLOCKED_PENDING_R7_MERGE**. V + R1–R6 are `verified_complete`; R7 is
-  `local_complete`. The §5.4 gate closes only in a dedicated post-merge gate-closure
-  update after the R7 PR merges with green CI + review/exception. **Phase 10 must
-  not start before that update merges.**
+  CLOSED**. V + R1–R7 are `verified_complete` (R7 = PR #19, `4f0d4f3`, CI
+  Backend/Frontend/Docker/Security all SUCCESS, governance exception). The §5.4
+  gate closure becomes **effective when this gate-closure PR
+  (`docs/pre-feature-remediation-gate-closure`) merges into `main`**. **Phase 10
+  must not start before that merge.**
 
 ### Context required before Phase 10
 - Readiness is strict and config-driven; Phase 10's route/OpenAPI work must not
