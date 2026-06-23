@@ -6,13 +6,77 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase R7 — Production probes, CI isolation, environment parity (`phase-r7-production-probes-ci-parity`)
+
+Closes (locally) REM-OPS-001 — makes production readiness truthful, isolates
+parallel/CI test infrastructure, aligns runtime tooling, and records the
+accessible brand-token decision (Plan §22, §24, §26, §76–77, §79 R7; ADR-009;
+Correction 7). Built on merged R6 `main` (`57ae8db`, PR #18). The §5.4 pre-feature
+gate stays **BLOCKED_PENDING_R7_MERGE** — it closes only via a dedicated
+post-merge gate-closure update.
+
+#### Probes
+- **Liveness/readiness split.** `GET /health` is dependency-free liveness (200
+  even when every dependency is down; no versions/hosts/secrets). `GET
+  /health/deep` is strict readiness — **503** when any REQUIRED production
+  dependency (`database`, `redis`, `cache`, `s3`) fails; optional dependencies
+  (Meilisearch — Phase 22) only degrade (200). Mailpit is never a dependency.
+- **Config-driven & redacted.** Required/optional sets and `require_configured`
+  (production cannot silently treat a managed dependency as optional) live in
+  `config/servana.php`. Probe bodies expose only safe names+statuses — no DSN,
+  host, bucket, credential, SQL or exception detail.
+- **Bounded timeouts.** `probe_timeout` (HTTP), Redis connection `timeout`, S3
+  `http.connect_timeout`, and PG `PGCONNECT_TIMEOUT`. The prod **nginx**
+  healthcheck now uses `/health/deep` (traffic eligibility); the app container
+  keeps `php -v` liveness.
+
+#### Test isolation & CI
+- **Per-run + per-process namespace.** `tests/bootstrap.php` assigns a unique
+  Redis + cache prefix (`servana_test_{runId}_{token}_`) from the CI run id and
+  parallel-test token. Cache/session/queue already use array/sync (in-memory, per
+  process — no shared store, **no FLUSHDB**); identical logical keys are isolated
+  across namespaces. Proven by `RedisPrefixIsolation`/`Cache`/`RateLimit`/
+  `ParallelTestIsolation` tests; three consecutive parallel backend runs are stable.
+
+#### Runtime parity
+- **PHP 8.3 / Node 20 / Composer 2** pinned across the app image, SPA/nginx build
+  image, dev tooling, CI and machine-readable metadata (`package.json` `engines`
+  + new `.nvmrc`). `RuntimeParityTest` fails on drift. Docker remains the
+  canonical local runtime.
+
+#### ADR-009
+- Brand contrast decision recorded with **measured** ratios: dark Brand Deep on
+  the Savannah-Orange CTA (≈ 4.92:1, AA) — white-on-orange (≈ 2.80:1) fails AA.
+  `BrandContrastTokenTest` guards the committed tokens.
+
+#### Tests & docs
+- New: `tests/Feature/Api/{LivenessProbe,ReadinessProbe,ReadinessDependencyFailure,
+  ProductionReadinessConfiguration}Test`, `tests/Feature/Security/HealthResponseRedactionTest`,
+  `tests/Feature/Infrastructure/{RedisPrefixIsolation,CacheIsolation,RateLimitIsolation,
+  ParallelTestIsolation,RuntimeParity}Test`, `tests/Unit/BrandContrastTokenTest`.
+  Removed `tests/Feature/Api/DeepHealthTest` (migrated). ADR-009 + draft
+  pre-feature completion report.
+- **R6 corrected:** REM-SESS-001 = `verified_complete` (PR #18 merged, `57ae8db`,
+  CI all SUCCESS, governance exception). REM-DOC-001 corrected to
+  `verified_complete` (PR #12, `c58b64a`).
+
+#### Known deferrals
+- Full OpenAPI/route contract → Phase 10; file/media → Phase 10F; release-wide
+  responsive/dark/a11y redesign + axe sweep → Phase 23; deployment/backups/
+  alerting → Phase 25; Horizon/queue observability → Phase 21N/25. REM-OPS-001 =
+  `local_complete` (→ `verified_complete` after PR merge + green CI +
+  review/exception).
+
 ### Phase R6 — Session & authorization revocation (`phase-r6-session-authorization-revocation`)
 
-Closes (locally) REM-SESS-001 — completes credential revocation and per-request
-authorization freshness so a suspension, deactivation or authority change takes
-effect no later than the next authenticated request, with no stale session,
-token, membership, role, branch or permission (Plan §79 R6; §9, §17–§19, §24;
-Correction 7). Built on merged R5 `main` (`66aaead`, PR #17).
+Closes REM-SESS-001 (`verified_complete`) — merged as PR #18 (squash
+`57ae8db`) — completes credential revocation and per-request authorization
+freshness so a suspension, deactivation or authority change takes effect no later
+than the next authenticated request, with no stale session, token, membership,
+role, branch or permission (Plan §79 R6; §9, §17–§19, §24; Correction 7). Built
+on merged R5 `main` (`66aaead`, PR #17). CI Backend/Frontend/Docker/Security all
+SUCCESS; solo-maintainer governance exception (reviewDecision intentionally
+blank — not independent approval).
 
 #### Added
 - **Central revocation service** `app/Domain/Auth/Services/AccessRevocationService.php`
@@ -59,8 +123,8 @@ Correction 7). Built on merged R5 `main` (`66aaead`, PR #17).
 - Redis/cache/rate-limit prefix isolation, liveness/readiness split, environment
   parity, ADR-009 → R7. Full route contract/OpenAPI → Phase 10. Future-domain
   revocation hooks → each owning feature phase. Release-wide browser/security
-  hardening → Phase 23. REM-SESS-001 = `local_complete` (→ `verified_complete`
-  after PR merge + green CI + review/exception).
+  hardening → Phase 23. REM-SESS-001 = `verified_complete` (PR #18 merged, CI
+  green).
 
 ### Phase R5 — Tenant & branch schema hardening (`phase-r5-tenant-branch-schema-hardening`)
 

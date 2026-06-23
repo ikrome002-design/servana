@@ -8,6 +8,10 @@ name: servana-prod
 x-app-prod-environment: &app-prod-environment
   APP_ENV: production
   APP_DEBUG: "false"
+  # Bound libpq connect time so a dead PostgreSQL fails the readiness probe fast
+  # instead of hanging (Plan §79 R7). Redis/S3/Meilisearch timeouts are bounded in
+  # config (REDIS_TIMEOUT / AWS_CONNECT_TIMEOUT / servana.health.probe_timeout).
+  PGCONNECT_TIMEOUT: "5"
 
 services:
   app:
@@ -37,8 +41,12 @@ services:
         condition: service_started
     ports:
       - "80:8080"
+    # Traffic eligibility depends on the app's REQUIRED dependencies, so the
+    # edge healthcheck uses READINESS (/health/deep → 503 when a required
+    # dependency is down) — an orchestrator/LB then stops routing to this
+    # instance. The app container below keeps a dependency-free liveness check.
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health/deep"]
       interval: 30s
       timeout: 5s
       retries: 5

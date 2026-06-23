@@ -22,7 +22,35 @@ $forcedTestEnv = [
     'QUEUE_CONNECTION' => 'sync',
     'MAIL_MAILER' => 'array',
     'SANCTUM_STATEFUL_DOMAINS' => 'localhost',
+    // The readiness probe must not make a live object-store round-trip during
+    // tests (CI has no MinIO). Clearing the S3 endpoint makes the s3 probe report
+    // configured-disk readiness ('ok') without a network call (Plan §79 R7); the
+    // dependency-failure test exercises the error path explicitly.
+    'AWS_ENDPOINT' => '',
 ];
+
+/*
+ | Per-run, per-process namespace isolation (Plan §79 R7; REM-OPS-001).
+ |
+ | Cache/session/queue already use array/sync drivers in tests (in-memory, per
+ | process — no shared store, no FLUSHDB), so they are inherently isolated. To
+ | also isolate any DIRECT Redis usage and the CI shared Redis instance, every
+ | test PROCESS (incl. each parallel worker) and every CI RUN gets a unique Redis
+ | + cache key prefix. Two namespaces can use identical logical keys without
+ | colliding, and a cache clear is scoped to the current namespace only.
+ */
+$parallelToken = getenv('TEST_TOKEN')
+    ?: getenv('LARAVEL_PARALLEL_TESTING_TOKEN')
+    ?: (string) getmypid();
+$runId = getenv('CI_TEST_RUN_ID')
+    ?: getenv('GITHUB_RUN_ID')
+    ?: getenv('GITHUB_RUN_ATTEMPT')
+    ?: 'local';
+$namespace = 'servana_test_'.$runId.'_'.$parallelToken.'_';
+
+$forcedTestEnv['REDIS_PREFIX'] = $namespace;
+$forcedTestEnv['CACHE_PREFIX'] = $namespace;
+$forcedTestEnv['SERVANA_TEST_NAMESPACE'] = $namespace;
 
 foreach ($forcedTestEnv as $key => $value) {
     $_SERVER[$key] = $value;

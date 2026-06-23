@@ -4,6 +4,10 @@
     "private": true,
     "type": "module",
     "description": "Servana by Citrus - Vue 3 + TypeScript SPA.",
+    "engines": {
+        "node": ">=20.0.0 <21",
+        "npm": ">=10"
+    },
     "scripts": {
         "dev": "vite",
         "build": "vue-tsc --noEmit && vite build",

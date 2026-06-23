@@ -37,8 +37,8 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | R3 | Privileged MFA + step-up | ✅ `verified_complete` — PR #15, commit `c0402b2` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-MFA-001 |
 | R4 | Idempotency & replay protection | ✅ `verified_complete` — PR #16, commit `1288f48` (CI Backend/Frontend/Security/Docker passed; solo-maintainer governance exception, reviewDecision blank) | REM-IDEMP-001 |
 | R5 | Tenant/branch schema hardening (`merchant_id` on branch tables) | ✅ `verified_complete` — PR #17, commit `66aaead` (CI Backend/Frontend/Security passed; CI/Docker reran past an external Buildx/Docker Hub timeout with no code change; solo-maintainer governance exception, reviewDecision blank) | REM-TEN-001 |
-| R6 | Session & authorization revocation (per-request freshness) | 🔄 `local_complete` (branch `phase-r6-session-authorization-revocation`); pending push + CI + review/merge | REM-SESS-001 |
-| R7 | Production probes, CI isolation, env parity, ADR-009 | ⬜ Not started | REM-OPS-001 |
+| R6 | Session & authorization revocation (per-request freshness) | ✅ `verified_complete` — PR #18, commit `57ae8db` (CI Backend/Frontend/Docker/Security all SUCCESS; solo-maintainer governance exception, reviewDecision blank) | REM-SESS-001 |
+| R7 | Production probes, CI isolation, env parity, ADR-009 | 🔄 `local_complete` (branch `phase-r7-production-probes-ci-parity`); pending push + CI + review/merge | REM-OPS-001 |
 
 ### Feature roadmap (Plan §80) — begins only after the §5.4 gate closes
 | Phase | Title | Status |
@@ -58,12 +58,92 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase R7 — Production probes, CI isolation, environment parity
+
+- **Branch:** `phase-r7-production-probes-ci-parity` (based on merged `main` @ `57ae8db`, PR #18 / R6).
+- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Proof:** [docs/proof/phase-r7.md](proof/phase-r7.md) · **ADR:** [ADR-009](architecture/adr/0009-brand-contrast-tokens.md) · **Report:** [pre-feature-completion-report.md](remediation/pre-feature-completion-report.md).
+- **Register:** REM-OPS-001.
+
+### Work completed
+- **Probe behaviour:** `/health` is dependency-free liveness (200 even when every
+  dependency is down; no versions/hosts/secrets). `/health/deep` is strict
+  readiness — 200 only when every REQUIRED production dependency is healthy, 503
+  on any required failure, with safe names+statuses only and bounded per-probe
+  timeouts. `HealthController` is now config-driven (`config/servana.php health`).
+- **Required production dependencies:** `database`, `redis`, `cache`, `s3`
+  (derived from `docker-compose.prod.yml` — managed PostgreSQL, Redis, S3; Redis
+  backs cache + queue). `meilisearch` stays OPTIONAL until Phase 22; Mailpit
+  (local-only) is never a readiness dependency. Production strictness
+  (`require_configured`) fails an unconfigured required dependency so production
+  cannot silently treat a managed dependency as optional.
+- **Healthcheck wiring:** prod `nginx` healthcheck → `/health/deep` (traffic
+  eligibility); the app container keeps `php -v` liveness. `PGCONNECT_TIMEOUT`
+  bounds PG connect time; Redis (`timeout`) and S3 (`http.connect_timeout`) bounded.
+- **Test-isolation strategy:** cache/session/queue already use array/sync drivers
+  (in-memory, per process — no shared store, no FLUSHDB). Added a unique Redis +
+  cache **namespace per run + parallel process** in `tests/bootstrap.php`
+  (`servana_test_{runId}_{token}_`), so direct Redis usage and the CI shared Redis
+  are isolated; two namespaces use identical logical keys without collision.
+- **Runtime-version parity:** PHP 8.3, Node 20, Composer 2 pinned across the app
+  image, SPA/nginx build image, dev tooling, CI and machine-readable metadata
+  (`package.json` engines + `.nvmrc`). `RuntimeParityTest` fails on drift.
+- **ADR-009:** brand contrast decision recorded with measured ratios — dark Brand
+  Deep text on the Savannah-Orange CTA (≈ 4.92:1, AA) because white-on-orange
+  (≈ 2.80:1) fails AA. `BrandContrastTokenTest` guards the committed tokens.
+
+### Commands — passed / failed / rerun
+```
+PASS  health suite (Liveness/Readiness/ReadinessDependencyFailure/Redaction/
+      ProductionReadinessConfiguration) — 18
+PASS  isolation suite (RedisPrefix/Cache/RateLimit/ParallelTest) + RuntimeParity +
+      BrandContrastToken
+FAIL→PASS RedisPrefixIsolationTest: first cut changed the prefix via config()+purge
+      (RedisManager caches its config, so the prefix did not reconnect) → rewrote
+      to raw phpredis OPT_PREFIX clients; rerun green.
+PASS  R6 regression (RevocationMiddlewareOrder/MidSessionSuspension/Authorization
+      Freshness/SessionRevocation/MfaMiddlewareOrder/CrossTenant/CrossBranch)
+<full backend serial + 3× parallel, pint/stan/validate/audit/gitleaks, frontend,
+ docker images, e2e — recorded in docs/proof/phase-r7.md>
+```
+
+### Work skipped / deferred (with exact owning phase)
+```
+- Full OpenAPI / route contract                              -> Phase 10
+- File/media pipeline                                        -> Phase 10F
+- Release-wide responsive/dark/a11y redesign + axe sweep     -> Phase 23
+- Deployment, backups, alerting, restore exercises           -> Phase 25
+- Horizon/queue observability                                -> Phase 21N/25
+- Feature-domain business routes/tables                      -> owning feature phases
+```
+
+### Known risks
+- The S3 readiness probe does a live round-trip only when a custom endpoint is set
+  (MinIO/dev); for managed AWS S3 (no endpoint) it reports configured-disk
+  readiness without a network call. Acceptable for R7; a deeper live S3 check can
+  be added when file storage lands (Phase 10F).
+- `PGCONNECT_TIMEOUT` bounds PG connect at the libpq/env level (the Laravel pgsql
+  DSN builder has no `connect_timeout` key); documented in ADR/proof.
+
+### Pre-feature gate status (do NOT close locally)
+- `docs/remediation/pre-feature-completion-report.md` records **gate status:
+  BLOCKED_PENDING_R7_MERGE**. V + R1–R6 are `verified_complete`; R7 is
+  `local_complete`. The §5.4 gate closes only in a dedicated post-merge gate-closure
+  update after the R7 PR merges with green CI + review/exception. **Phase 10 must
+  not start before that update merges.**
+
+### Context required before Phase 10
+- Readiness is strict and config-driven; Phase 10's route/OpenAPI work must not
+  re-introduce dependency-coupling into `/health` (liveness stays dependency-free).
+- The per-run/per-process test namespace exists; new Redis-backed tests should rely
+  on it (never FLUSHDB).
+
 ## Phase R6 — Session & authorization revocation
 
 - **Branch:** `phase-r6-session-authorization-revocation` (based on merged `main` @ `66aaead`, PR #17 / R5).
-- **Status:** 🔄 `local_complete` — pending push, CI, and review/merge.
+- **Status:** ✅ `verified_complete` — merged as PR #18 (squash `57ae8db`, 2026-06-22). CI Backend/Frontend/Docker/Security all SUCCESS; solo-maintainer governance exception (reviewDecision intentionally blank — not independent approval).
 - **Proof:** [docs/proof/phase-r6.md](proof/phase-r6.md).
-- **Register:** REM-SESS-001.
+- **Register:** REM-SESS-001 (`verified_complete`).
 
 ### Work completed
 - **Central revocation service** `app/Domain/Auth/Services/AccessRevocationService.php`

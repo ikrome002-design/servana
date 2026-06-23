@@ -60,6 +60,12 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
             'report' => false,
+            // Bounded HTTP timeouts so an unreachable object store fails fast
+            // (notably the readiness probe) instead of hanging — Plan §79 R7.
+            'http' => [
+                'connect_timeout' => (float) env('AWS_CONNECT_TIMEOUT', 2),
+                'timeout' => (float) env('AWS_TIMEOUT', 15),
+            ],
         ],
 
     ],
