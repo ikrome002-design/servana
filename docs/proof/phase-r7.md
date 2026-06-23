@@ -283,3 +283,22 @@ review or a truthful PR-specific governance exception — not asserted here.
 The §5.4 pre-feature gate remains **BLOCKED_PENDING_R7_MERGE**
 (`docs/remediation/pre-feature-completion-report.md`). Phase 10 must not start
 before the dedicated post-merge gate-closure update is merged.
+
+## Solo-Maintainer Review Exception
+
+An independent second reviewer was unavailable because the repository currently
+has one eligible maintainer. The product owner authorized a PR-specific
+governance exception rather than fabricating approval.
+
+Evidence:
+
+- PR: #19
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Security: passed
+- CI/Docker: passed
+- GitHub reviewDecision: intentionally blank
+- Exception record:
+  docs/governance/solo-maintainer-review-exception-pr-19.md
+
+This exception applies only to PR #19.
