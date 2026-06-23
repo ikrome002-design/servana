@@ -13,34 +13,17 @@ uses()->group('api', 'openapi');
  | cover every production endpoint, and leak no test-only or future operation.
  */
 
-function committedSpec(): array
-{
-    return json_decode((string) file_get_contents(base_path('docs/api/openapi.json')), true, flags: JSON_THROW_ON_ERROR);
-}
-
-function specOperationIds(array $spec): array
-{
-    $ids = [];
-
-    foreach ($spec['paths'] ?? [] as $methods) {
-        foreach ($methods as $operation) {
-            if (isset($operation['operationId'])) {
-                $ids[] = $operation['operationId'];
-            }
-        }
-    }
-
-    return $ids;
-}
-
 it('keeps docs/api/openapi.json byte-current with the generator', function (): void {
     $generated = app(OpenApiGenerator::class)->toJson();
     $committed = (string) file_get_contents(base_path('docs/api/openapi.json'));
 
     // Normalize line endings so a CRLF checkout does not cause a false failure.
     expect(str_replace("\r\n", "\n", $committed))
-        ->toBe(str_replace("\r\n", "\n", $generated),
-            'docs/api/openapi.json is stale — run `composer api:openapi` and commit it.');
+        ->toBe(str_replace(
+            "\r\n",
+            "\n",
+            $generated,
+        ), 'docs/api/openapi.json is stale — run `composer api:openapi` and commit it.');
 });
 
 it('documents every production route as an operation', function (): void {
@@ -49,6 +32,7 @@ it('documents every production route as an operation', function (): void {
 
     foreach (app(OpenApiGenerator::class)->productionRoutes() as $route) {
         $name = $route->getName();
+
         if ($name !== null && ! in_array($name, $ids, true)) {
             $missing[] = $name;
         }
@@ -81,11 +65,13 @@ it('contains no test-only or future operations', function (): void {
 
     // No path may describe a route that does not actually exist.
     $realNames = [];
+
     foreach (RouteFacade::getRoutes() as $route) {
         if ($name = $route->getName()) {
             $realNames[$name] = true;
         }
     }
+
     foreach (specOperationIds($spec) as $id) {
         if (! isset($realNames[$id])) {
             $leaks[] = 'nonexistent:'.$id;
