@@ -6,14 +6,37 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Pre-feature remediation gate closure (§5.4) (`docs/pre-feature-remediation-gate-closure`)
+
+Documentation/evidence only — **no product code, migrations, routes, dependencies,
+Dockerfiles, configuration, tests or frontend changed**.
+
+- **Gate §5.4: CLOSED** — effective when this gate-closure PR merges into `main`.
+  All nine `PRE_FEATURE_REMEDIATION` items (Phase V + R1–R7) are
+  `verified_complete`.
+- **R7 finalized:** REM-OPS-001 → `verified_complete` — PR #19, merge commit
+  `4f0d4f3`, CI Backend/Frontend/Docker/Security all SUCCESS, reviewDecision
+  blank, governance exception `docs/governance/solo-maintainer-review-exception-pr-19.md`.
+- **Register normalized:** REM-V-001 `merged` → `verified_complete`; register
+  `meta.pre_feature_gate_closed: true`.
+- **Completion report finalized** with the full §5.4 criteria matrix
+  (`docs/remediation/pre-feature-completion-report.md`); gate-closure governance
+  evidence recorded (`docs/governance/solo-maintainer-pre-feature-gate-closure-exception.md`,
+  one eligible maintainer, no independent approval claimed).
+- **Gate-closure proof:** `docs/proof/pre-feature-remediation-gate-closure.md`.
+- **Phase 10 becomes eligible only after this PR merges**; it remains not started.
+  Stale gate-blocked and R7-pending status wording was replaced with the closed
+  state across PROGRESS.md, CHANGELOG.md, register.yaml and the completion report.
+
 ### Phase R7 — Production probes, CI isolation, environment parity (`phase-r7-production-probes-ci-parity`)
 
-Closes (locally) REM-OPS-001 — makes production readiness truthful, isolates
-parallel/CI test infrastructure, aligns runtime tooling, and records the
-accessible brand-token decision (Plan §22, §24, §26, §76–77, §79 R7; ADR-009;
-Correction 7). Built on merged R6 `main` (`57ae8db`, PR #18). The §5.4 pre-feature
-gate stays **BLOCKED_PENDING_R7_MERGE** — it closes only via a dedicated
-post-merge gate-closure update.
+Closes REM-OPS-001 (`verified_complete`) — merged as PR #19 (squash `4f0d4f3`) —
+makes production readiness truthful, isolates parallel/CI test infrastructure,
+aligns runtime tooling, and records the accessible brand-token decision (Plan
+§22, §24, §26, §76–77, §79 R7; ADR-009; Correction 7). Built on merged R6 `main`
+(`57ae8db`, PR #18). CI Backend/Frontend/Docker/Security all SUCCESS;
+solo-maintainer governance exception (reviewDecision intentionally blank — not
+independent approval).
 
 #### Probes
 - **Liveness/readiness split.** `GET /health` is dependency-free liveness (200
@@ -64,8 +87,7 @@ post-merge gate-closure update.
 - Full OpenAPI/route contract → Phase 10; file/media → Phase 10F; release-wide
   responsive/dark/a11y redesign + axe sweep → Phase 23; deployment/backups/
   alerting → Phase 25; Horizon/queue observability → Phase 21N/25. REM-OPS-001 =
-  `local_complete` (→ `verified_complete` after PR merge + green CI +
-  review/exception).
+  `verified_complete` (PR #19 merged, CI green).
 
 ### Phase R6 — Session & authorization revocation (`phase-r6-session-authorization-revocation`)
 

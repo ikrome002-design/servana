@@ -8,10 +8,14 @@
 
 meta:
   generated: "2026-06-21"
-  last_updated: "2026-06-22 (R5)"
-  branch: phase-r5-tenant-branch-schema-hardening
-  base: 1288f48   # merged main (PR #16, R4)
-  pre_feature_gate_closed: false   # §5.4 — still blocks all Section 80 feature phases (R6–R7 open)
+  last_updated: "2026-06-23 (pre-feature gate closure)"
+  branch: docs/pre-feature-remediation-gate-closure
+  base: 4f0d4f3   # merged main (PR #19, R7)
+  # §5.4 — CLOSED decision: all PRE_FEATURE_REMEDIATION items are verified_complete
+  # (Phase V + R1–R7). Effective when this gate-closure docs PR merges into main.
+  # See docs/remediation/pre-feature-completion-report.md and
+  # docs/proof/pre-feature-remediation-gate-closure.md. Next eligible phase: 10.
+  pre_feature_gate_closed: true
 
 items:
 
@@ -29,9 +33,9 @@ items:
     test_plan: "Full suite re-run in clean containers (see evidence/test-results.md)."
     proof_artifact: "docs/proof/phase-v.md"
     owner: "Phase V"
-    completion_commit: "c58b64a (PR #12)"
-    reviewer: "merged via PR #12"
-    status: merged   # CI Backend/Frontend/Security/Docker passed; merged to main
+    completion_commit: "c58b64a (PR #12, squash merge to main)"
+    reviewer: "Solo-maintainer governance exception (reviewDecision blank — not independent approval). CI Backend/Frontend/Docker/Security all SUCCESS."
+    status: verified_complete   # PR #12 merged (c58b64a); CI passed; governance exception recorded
 
   - id: REM-DEP-001
     classification: C0
@@ -395,9 +399,9 @@ items:
       docker images; R6 regression preserved (recorded in docs/proof/phase-r7.md).
     proof_artifact: "docs/proof/phase-r7.md; docs/architecture/adr/0009-brand-contrast-tokens.md; docs/remediation/pre-feature-completion-report.md"
     owner: "R7"
-    completion_commit: "phase-r7-production-probes-ci-parity branch (pending push/CI/review)"
-    reviewer: "TBD — pending PR review or a truthful PR-specific governance exception"
-    status: local_complete   # verified_complete only after PR merge + green CI + review/exception; §5.4 gate stays BLOCKED until the post-merge gate-closure update
+    completion_commit: "4f0d4f3 (PR #19, squash merge to main; merged 2026-06-23T01:57:20Z)"
+    reviewer: "Solo-maintainer governance exception (docs/governance/solo-maintainer-review-exception-pr-19.md); reviewDecision intentionally blank — not independent approval. CI Backend/Frontend/Docker/Security all SUCCESS on the merge commit."
+    status: verified_complete   # PR #19 merged (4f0d4f3); CI Backend/Frontend/Docker/Security SUCCESS; governance exception recorded
 
   - id: REM-DOC-001
     classification: C1
