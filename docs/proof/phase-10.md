@@ -269,8 +269,8 @@ Tests run: none. Checkpoint 0 is a before-state/documentation checkpoint, and no
 # Phase 10 — Implementation Proof
 
 **Branch:** `phase-10-api-foundation` · **Base commit:** `7ac20a5` (merged PR #20).
-**Status:** `local_complete` (pending push + CI). All work below was implemented on
-this branch on top of the Checkpoint-0 baseline above.
+**Status:** `local_complete` — pushed; pending PR #21 CI, governance review, and merge.
+All work below was implemented on this branch on top of the Checkpoint-0 baseline above.
 
 ## Checkpoint 1 — Gate-closure lifecycle reconciliation
 
@@ -499,7 +499,9 @@ platform_mutation / provider_webhook routes      -> owning Phase 20 subphases
 ## REM-ROUTE-001 / REM-MIG-001 status
 
 `local_complete` — evidence above. They are FEATURE_DELIVERY_OBLIGATION items and
-are **not** marked `verified_complete` until the Phase 10 PR merges with green CI.
+remain `local_complete` until **PR #21 merges**. They are **not** marked
+`verified_complete` until that PR merges with green CI — which now includes the
+authoritative Linux `E2E — Playwright` job (see Checkpoint 8).
 
 ## Test & quality results
 
@@ -558,4 +560,72 @@ NOT COMPLETED on this host (environment, not a code defect):
     backend OpenAPI generator, config, and tests — so e2e behaviour is unaffected. The Linux
     CI frontend job runs Playwright and is authoritative; the SPA `npm run build` passed here.
 ```
+
+## Checkpoint 8 — Linux CI Playwright gate (commit `ci: enforce Phase 10 Playwright gate`)
+
+### Problem proven
+
+The local Windows Playwright run **stalled without producing a completed run** (no
+`test-results/.last-run.json`; the run was terminated — recorded above). **No passing
+local E2E result is claimed for Phase 10.** Because Phase 10 ships frontend contract
+artifacts (generated TypeScript types, pagination/can-map-driven payloads) that the SPA
+consumes, the browser suite must be exercised somewhere authoritative before Phase 10
+proceeds. The prior CI workflow had **no explicit Playwright job** — the four jobs were
+Backend, Frontend (ESLint/vue-tsc/Vitest/build only), Docker and Security. Browser
+end-to-end coverage was therefore unenforced in CI.
+
+### Fix
+
+Added an explicit, separate Linux job **`E2E — Playwright`** to `.github/workflows/ci.yml`,
+alongside (not merged into) the existing Backend / Frontend / Docker / Security jobs:
+
+```
+job id:        e2e
+name:          E2E — Playwright            (exact)
+runs-on:       ubuntu-latest
+timeout-minutes: 20                        (fails the workflow if the run stalls)
+steps:
+  actions/checkout@v4
+  actions/setup-node@v4 (node-version 20, npm cache)
+  npm ci
+  npx playwright install --with-deps chromium   (browser + Linux system deps)
+  npm run build                                 (frontend production build — Vite)
+  npm run e2e                                    (Playwright; non-zero exit fails the job)
+  actions/upload-artifact@v4 (if: failure())     (playwright-report/ + test-results/)
+```
+
+- **Fails on any failure or stall:** `npm run e2e` exits non-zero on any failed Playwright
+  test (workflow fails); the job `timeout-minutes: 20` fails the workflow if the run stalls
+  without completing (the exact local Windows failure mode), rather than hanging.
+- **No weakening:** existing Playwright tests are run unmodified — no test skipped, no extra
+  retry, no suppression. `playwright.config.ts` is untouched (CI already pins `retries: 1`,
+  `workers: 1`, `forbidOnly` true under `CI`).
+- **Diagnosability:** on failure the job uploads `playwright-report/` and `test-results/`
+  (`if-no-files-found: ignore`, 7-day retention).
+- **Separation preserved:** the four pre-existing jobs (Backend, Frontend, Docker, Security)
+  are unchanged; `e2e` is a fifth, independent job. The SPA preview is a static build, so the
+  job needs no Postgres/Redis service.
+
+### Authority
+
+The Linux **`E2E — Playwright`** job is the **authoritative Phase 10 browser gate**. **PR #21
+must not merge unless that job passes.** REM-ROUTE-001 and REM-MIG-001 remain `local_complete`
+until PR #21 merges with green CI (Backend, Frontend, Docker, Security, **and E2E — Playwright**).
+
+### Validation run (this correction)
+
+```
+js-yaml parse of .github/workflows/ci.yml ........ valid; jobs = [backend, frontend, docker, security, e2e]
+  jobs.e2e.name .................................. "E2E — Playwright" (exact)
+  jobs.e2e.runs-on ............................... ubuntu-latest
+  jobs.e2e.timeout-minutes ....................... 20
+  four existing jobs (backend/frontend/docker/security) ... preserved unchanged
+npm run e2e (playwright, this Windows host) ...... STILL STALLS locally — no completed run;
+  no passing local E2E result is claimed. The Linux CI job is the authoritative gate.
+```
+
+This change touches only `.github/workflows/ci.yml` and the Phase 10 documentation
+(`docs/proof/phase-10.md`, `docs/PROGRESS.md`, `docs/CHANGELOG.md`). No product source,
+route, migration, dependency, generated artifact, test, Playwright config or frontend
+runtime code was changed, so backend/frontend/contract gate results above are unaffected.
 

@@ -11,7 +11,8 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 Establishes the secure, generated, test-enforced API contract substrate every later
 feature phase inherits (Plan §23, §24, §80; REM-ROUTE-001, REM-MIG-001; ADR-004).
 Built on the merged gate-closure commit `7ac20a5` (PR #20). `local_complete` —
-pending push/CI/merge; the two register items stay `local_complete` until merge.
+pushed; pending PR #21 CI, governance review, and merge; the two register items
+(REM-ROUTE-001, REM-MIG-001) stay `local_complete` until PR #21 merges.
 
 - **Route classification:** extended the R4 `RouteClass`/`RouteClassification` seam
   (not replaced) with the 8th class `liveness_readiness`, per-class required/forbidden
@@ -48,6 +49,17 @@ pending push/CI/merge; the two register items stay `local_complete` until merge.
   into `tests/Pest.php` so the OpenAPI tests are parallel-safe (an undefined-function
   fatal occurred only under `--parallel`). Full parallel suite: 485 passed / 4
   skipped / 2102 assertions / 4 processes.
+- **Linux CI Playwright gate (`ci: enforce Phase 10 Playwright gate`):** added an
+  explicit, separate `E2E — Playwright` job to `.github/workflows/ci.yml`
+  (ubuntu-latest · Node 20 · `npm ci` · `npx playwright install --with-deps chromium`
+  · `npm run build` · `npm run e2e` · `timeout-minutes: 20` so a stall fails the
+  workflow · failure-only upload of `playwright-report/` + `test-results/`). The four
+  existing jobs (Backend, Frontend, Docker, Security) are preserved unchanged; this is
+  a fifth, independent job. The local **Windows** Playwright run **stalled without a
+  completed run** — **no passing local E2E result is claimed**; the Linux
+  `E2E — Playwright` job is the **authoritative Phase 10 browser gate**, and **PR #21
+  must not merge unless it passes**. Existing Playwright tests are run unmodified — no
+  skip, no extra retry, no suppression; `playwright.config.ts` is untouched.
 - **Deferrals:** files/media → 10F; role nav → 11; business domains → owning §80
   phases; full per-table dict entries for audit/permissions/roles → 19.
 

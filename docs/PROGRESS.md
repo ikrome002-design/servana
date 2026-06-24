@@ -71,9 +71,9 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 ## Phase 10 — API Foundation
 
 - **Branch:** `phase-10-api-foundation` (based on merged `main` @ `7ac20a5`, PR #20 / gate closure).
-- **Status:** 🔄 `local_complete` — pending push, CI, and merge.
+- **Status:** 🔄 `local_complete` — pushed; pending PR #21 CI, governance review, and merge.
 - **Proof:** [docs/proof/phase-10.md](proof/phase-10.md) · **ADR:** [ADR-004](architecture/adr/0004-migration-strategy.md) · **Contract:** [docs/api/openapi.json](api/openapi.json).
-- **Register:** REM-ROUTE-001 (`local_complete`), REM-MIG-001 (`local_complete`).
+- **Register:** REM-ROUTE-001 (`local_complete`), REM-MIG-001 (`local_complete`) — both remain `local_complete` until PR #21 merges.
 
 ### Work completed
 - **Gate-closure lifecycle reconciled** to CLOSED/effective (PR #20 `7ac20a5`) across PROGRESS/CHANGELOG/completion-report/register/governance/closure-proof/traceability.
@@ -83,6 +83,7 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 - **Resource can-maps:** `HasCapabilities` concern applied to Branch/StaffProfile/StaffInvitation/AuditLog resources (policy-derived, booleans, ULID ids only).
 - **OpenAPI + TS contract:** maintained **dedoc/scramble** (v0.13.28, declared in `composer.json` `require`) is the authoritative schema engine; a thin `App\Support\OpenApi\OpenApiGenerator` wrapper invokes it and applies determinism, full `/api/v1` paths, testing exclusion (`Scramble::routes()`), operationId=route name, health probes, security scheme, error envelope and the financial Idempotency-Key (`composer api:openapi` → `docs/api/openapi.json`, 43 ops / 37 paths, no test/future ops; `Scramble::ignoreDefaultRoutes()` keeps the docs UI out of the app). `npm run api:types` → `resources/spa/src/types/generated/api.ts` (openapi-typescript@7.4.4); `npm run api:contract:check` (wired into frontend CI).
 - **Migration governance (REM-MIG-001):** ADR-004 + `docs/architecture/migrations/{README.md,manifest.yaml}` (all 33 migrations) + `MigrationManifestTest`. No shipped migration edited.
+- **Linux CI Playwright gate (`ci: enforce Phase 10 Playwright gate`):** added an explicit, separate `E2E — Playwright` job to `.github/workflows/ci.yml` (ubuntu-latest, Node 20, `npm ci`, `npx playwright install --with-deps chromium`, `npm run build`, `npm run e2e`, `timeout-minutes: 20`, failure-only artifact upload of `playwright-report/` + `test-results/`). The local Windows Playwright run **stalled without a completed run** — **no passing local E2E result is claimed**; this Linux job is the **authoritative Phase 10 browser gate**. The four existing jobs (Backend, Frontend, Docker, Security) are preserved unchanged.
 
 ### Current routes remediated
 - Classified: 25 production mutations + 2 health probes + test-only step-up routes.
@@ -110,7 +111,8 @@ platform_mutation / provider_webhook_mutation real routes -> owning Phase 20 sub
 ```
 
 ### Pending CI / review / merge
-- Push `phase-10-api-foundation`; confirm CI Backend/Frontend/Docker/Security green; then flip REM-ROUTE-001/REM-MIG-001 → `verified_complete` after merge (solo-maintainer governance exception, not independent approval).
+- Branch `phase-10-api-foundation` is **pushed**. Open PR #21 and confirm all five CI jobs green: Backend, Frontend, Docker, Security, **and the authoritative `E2E — Playwright` job**. **PR #21 must not merge unless the `E2E — Playwright` job passes.** Then flip REM-ROUTE-001/REM-MIG-001 → `verified_complete` after merge (solo-maintainer governance exception, not independent approval).
+- **Local E2E note:** the local Windows Playwright run stalled without a completed run; no passing local E2E result is claimed. REM-ROUTE-001 and REM-MIG-001 remain `local_complete` until PR #21 merges.
 
 ### Parallel-suite + maintained-generator corrections
 - **Parallel failure → fix (`1d25224`):** the OpenAPI helpers `committedSpec()`/`specOperationIds()` lived in `OpenApiContractTest.php`, so a parallel worker running `OpenApiTypeParityTest.php` hit an undefined function. Moved them to `tests/Pest.php` (always autoloaded). Full parallel suite: **485 passed / 4 skipped / 2102 assertions / 4 processes**.
