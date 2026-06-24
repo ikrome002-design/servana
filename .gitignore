@@ -458,7 +458,10 @@ artifacts/
 # ==============================================================================
 
 docs/generated/
-docs/api/
+# The committed OpenAPI contract is the source for TypeScript generation + CI
+# parity (Phase 10); track it while ignoring any other generated docs/api output.
+docs/api/*
+!docs/api/openapi.json
 api-docs/
 openapi-generated/
 swagger-generated/

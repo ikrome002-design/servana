@@ -6,6 +6,7 @@ namespace App\Http\Resources;
 
 use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Audit\Support\AuditValueMasker;
+use App\Http\Resources\Concerns\HasCapabilities;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,6 +23,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 final class AuditLogResource extends JsonResource
 {
+    use HasCapabilities;
+
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
@@ -39,6 +42,9 @@ final class AuditLogResource extends JsonResource
             'context' => $masker->mask($this->context ?? []),
             'correlation_id' => $this->correlation_id,
             'created_at' => $this->created_at?->toIso8601String(),
+            'can' => $this->capabilities($request, [
+                'view' => 'view',
+            ]),
         ];
     }
 }

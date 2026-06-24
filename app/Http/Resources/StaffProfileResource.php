@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Domain\Hr\Models\StaffProfile;
+use App\Http\Resources\Concerns\HasCapabilities;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,6 +17,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 final class StaffProfileResource extends JsonResource
 {
+    use HasCapabilities;
+
     /**
      * @return array<string, mixed>
      */
@@ -37,6 +40,10 @@ final class StaffProfileResource extends JsonResource
             'employment_status' => $this->employment_status->value,
             'primary_branch_id' => $this->primaryBranch?->ulid,
             'is_active' => $this->is_active,
+            'can' => $this->capabilities($request, [
+                'view' => 'view',
+                'manage' => 'manage',
+            ]),
         ];
     }
 }

@@ -6,13 +6,95 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase 10 — API Foundation (`phase-10-api-foundation`)
+
+Establishes the secure, generated, test-enforced API contract substrate every later
+feature phase inherits (Plan §23, §24, §80; REM-ROUTE-001, REM-MIG-001; ADR-004).
+Built on the merged gate-closure commit `7ac20a5` (PR #20). `local_complete` —
+pushed; pending PR #21 CI, governance review, and merge; the two register items
+(REM-ROUTE-001, REM-MIG-001) stay `local_complete` until PR #21 merges.
+
+- **Route classification:** extended the R4 `RouteClass`/`RouteClassification` seam
+  (not replaced) with the 8th class `liveness_readiness`, per-class required/forbidden
+  middleware, and the `VALIDATION_EXEMPT` allowlist. Every production non-GET route
+  declares exactly one class; health probes are `liveness_readiness`.
+- **Security contract:** `RouteSecurityContractTest` + `ForbiddenRouteAbsenceTest`
+  (SA merchant-creation and personnel contact-export proven absent);
+  `FinancialRouteIdempotencyCoverageTest` preserved — financial routes cannot exist
+  without idempotency.
+- **Pagination/filter/sort:** reusable `App\Http\Api\ApiPagination` (default 25, max
+  100, over-limit 422, allowlisted sorts + stable tiebreaker, validated filters);
+  retrofitted the `branches`, `staff` and `staff-invitations` listings.
+- **Resource `can` maps:** `HasCapabilities` concern (policy-derived, booleans,
+  ULID ids only) on the branch/staff/invitation/audit resources.
+- **OpenAPI generation:** the maintained **dedoc/scramble** generator (v0.13.28,
+  declared in `composer.json` `require`) is authoritative for schema generation; a
+  thin `App\Support\OpenApi\OpenApiGenerator` wrapper invokes it and applies
+  determinism, full `/api/v1` paths, testing exclusion, operationId=route name,
+  health probes, the §11.5 error envelope, the session security scheme and the
+  financial `Idempotency-Key` header (`composer api:openapi` →
+  `docs/api/openapi.json`, 43 operations, no test/future operations).
+  `Scramble::ignoreDefaultRoutes()` keeps the docs UI out of the app.
+- **TypeScript contract:** `npm run api:types` →
+  `resources/spa/src/types/generated/api.ts` (openapi-typescript@7.4.4);
+  `npm run api:contract:check` fails on stale/leaked/duplicate/missing contract and
+  runs in CI (frontend job).
+- **Migration governance:** ADR-004 (expand-and-contract, forward-repair, PITR) +
+  `docs/architecture/migrations/{README.md,manifest.yaml}` (all 33 migrations) +
+  `MigrationManifestTest` lint. No shipped migration edited.
+- **Tooling deps:** `dedoc/scramble` (require, authoritative OpenAPI generator) +
+  `spatie/laravel-package-tools`; `symfony/yaml` (dev, manifest lint);
+  `openapi-typescript` (dev, pinned 7.4.4).
+- **Parallel-suite fix (`1d25224`):** moved `committedSpec()`/`specOperationIds()`
+  into `tests/Pest.php` so the OpenAPI tests are parallel-safe (an undefined-function
+  fatal occurred only under `--parallel`). Full parallel suite: 485 passed / 4
+  skipped / 2102 assertions / 4 processes.
+- **Linux CI Playwright gate (`ci: enforce Phase 10 Playwright gate`):** added an
+  explicit, separate `E2E — Playwright` job to `.github/workflows/ci.yml`
+  (ubuntu-latest · Node 20 · `npm ci` · `npx playwright install --with-deps chromium`
+  · `npm run build` · `npm run e2e` · `timeout-minutes: 20` so a stall fails the
+  workflow · failure-only upload of `playwright-report/` + `test-results/`). The four
+  existing jobs (Backend, Frontend, Docker, Security) are preserved unchanged; this is
+  a fifth, independent job. The local **Windows** Playwright run **stalled without a
+  completed run** — **no passing local E2E result is claimed**; the Linux
+  `E2E — Playwright` job is the **authoritative Phase 10 browser gate**, and **PR #21
+  must not merge unless it passes**. Existing Playwright tests are run unmodified — no
+  skip, no extra retry, no suppression; `playwright.config.ts` is untouched.
+- **OpenAPI contract determinism fix (`fix: make OpenAPI contract deterministic in CI`):**
+  PR #21's first CI run (GitHub Actions run `28093861353`) failed only in
+  `Backend — Pint, Larastan, Pest` → `Tests — Pest on PostgreSQL (parallel)` at
+  `OpenApiContractTest:26` ("docs/api/openapi.json is stale") — 1 failed / 488 passed / 4
+  skipped. The other four jobs (`E2E — Playwright`, Frontend, Docker, Security) had already
+  passed on that run. **Root cause:** dedoc/scramble infers types by introspecting the live
+  PostgreSQL schema, and `OpenApiContractTest` regenerated the document without
+  `RefreshDatabase`, so a parallel worker whose database was not yet migrated read an empty
+  schema and emitted fallback types (ULID ids → integer, booleans/counters → string,
+  nullability lost) that diverged from the correctly-typed committed artifact — a real
+  contract-determinism defect, not an external CI flake. **Fix:** `OpenApiContractTest` now
+  `uses(RefreshDatabase::class)` (guaranteed migrated schema in serial Pest, parallel Pest
+  and fresh CI), and `GenerateOpenApiCommand` (`composer api:openapi`) fails fast with a
+  non-zero exit and no write if any core type-driving table (`merchant_branches`,
+  `staff_profiles`, `staff_invitations`, `branch_operating_hours`, `audit_logs`) is absent.
+  dedoc/scramble remains authoritative; the stale-contract assertion is not removed,
+  skipped, weakened, mocked or bypassed; semantically-correct types are preserved (ULID/
+  permission keys → string, weekday → integer, booleans → boolean, counters → integer,
+  nullable → `string|null`). Regeneration is byte-deterministic (`composer api:openapi`
+  twice → no diff); `docs/api/openapi.json` and `resources/spa/src/types/generated/api.ts`
+  were already byte-current, so no artifact changed. Re-verified locally: full backend
+  parallel suite 489 passed / 4 skipped / 2110 assertions; Pint, Larastan L8, composer
+  validate, vue-tsc typecheck and `npm run api:contract:check` all clean.
+- **Deferrals:** files/media → 10F; role nav → 11; business domains → owning §80
+  phases; full per-table dict entries for audit/permissions/roles → 19.
+
 ### Pre-feature remediation gate closure (§5.4) (`docs/pre-feature-remediation-gate-closure`)
 
 Documentation/evidence only — **no product code, migrations, routes, dependencies,
 Dockerfiles, configuration, tests or frontend changed**.
 
-- **Gate §5.4: CLOSED** — effective when this gate-closure PR merges into `main`.
-  All nine `PRE_FEATURE_REMEDIATION` items (Phase V + R1–R7) are
+- **Gate §5.4: CLOSED and effective** — the gate-closure PR #20 merged into
+  `main` (merge commit `7ac20a5`, 2026-06-23; CI Backend/Frontend/Docker/Security
+  all SUCCESS; reviewDecision blank under the solo-maintainer governance
+  exception). All nine `PRE_FEATURE_REMEDIATION` items (Phase V + R1–R7) are
   `verified_complete`.
 - **R7 finalized:** REM-OPS-001 → `verified_complete` — PR #19, merge commit
   `4f0d4f3`, CI Backend/Frontend/Docker/Security all SUCCESS, reviewDecision
@@ -24,9 +106,10 @@ Dockerfiles, configuration, tests or frontend changed**.
   evidence recorded (`docs/governance/solo-maintainer-pre-feature-gate-closure-exception.md`,
   one eligible maintainer, no independent approval claimed).
 - **Gate-closure proof:** `docs/proof/pre-feature-remediation-gate-closure.md`.
-- **Phase 10 becomes eligible only after this PR merges**; it remains not started.
-  Stale gate-blocked and R7-pending status wording was replaced with the closed
-  state across PROGRESS.md, CHANGELOG.md, register.yaml and the completion report.
+- **Phase 10 (API Foundation) has started** on branch `phase-10-api-foundation`
+  now that the gate-closure PR #20 is merged. Stale gate-blocked and R7-pending
+  status wording was replaced with the closed/effective state across PROGRESS.md,
+  CHANGELOG.md, register.yaml and the completion report.
 
 ### Phase R7 — Production probes, CI isolation, environment parity (`phase-r7-production-probes-ci-parity`)
 

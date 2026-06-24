@@ -22,6 +22,36 @@ use Tests\TestCase;
 pest()->extend(TestCase::class)->in('Feature', 'Unit');
 
 /*
+ | Shared OpenAPI test helpers. These live in Pest.php so every test file and
+ | every parallel test worker can access them without depending on another
+ | test file being loaded first.
+ */
+
+function committedSpec(): array
+{
+    return json_decode(
+        (string) file_get_contents(base_path('docs/api/openapi.json')),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+}
+
+function specOperationIds(array $spec): array
+{
+    $ids = [];
+
+    foreach ($spec['paths'] ?? [] as $methods) {
+        foreach ($methods as $operation) {
+            if (isset($operation['operationId'])) {
+                $ids[] = $operation['operationId'];
+            }
+        }
+    }
+
+    return $ids;
+}
+
+/*
  | Post to the API as a first-party SPA request. Sending an Origin from a
  | stateful domain makes Sanctum apply the session middleware (StartSession),
  | so endpoints that establish a session (Magic Link verify → login + session

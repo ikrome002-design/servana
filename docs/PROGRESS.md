@@ -28,7 +28,7 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 
 ## Active v3 roadmap
 
-### Pre-feature remediation (Plan §79) — gate §5.4 **CLOSED** (effective when the gate-closure PR merges)
+### Pre-feature remediation (Plan §79) — gate §5.4 **CLOSED and effective** (gate-closure PR #20 merged `7ac20a5`)
 | Phase | Title | Status | Register item |
 |---|---|---|---|
 | V | As-built verification | ✅ `verified_complete` — PR #12, commit `c58b64a` (CI Backend/Frontend/Docker/Security all SUCCESS; solo-maintainer governance exception, reviewDecision blank) | REM-V-001, REM-DOC-001 |
@@ -40,17 +40,20 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | R6 | Session & authorization revocation (per-request freshness) | ✅ `verified_complete` — PR #18, commit `57ae8db` (CI Backend/Frontend/Docker/Security all SUCCESS; solo-maintainer governance exception, reviewDecision blank) | REM-SESS-001 |
 | R7 | Production probes, CI isolation, env parity, ADR-009 | ✅ `verified_complete` — PR #19, commit `4f0d4f3` (CI Backend/Frontend/Docker/Security all SUCCESS; solo-maintainer governance exception, reviewDecision blank) | REM-OPS-001 |
 
-> **Pre-feature remediation gate (§5.4): CLOSED** — effective when this
-> gate-closure PR (`docs/pre-feature-remediation-gate-closure`) merges into `main`.
+> **Pre-feature remediation gate (§5.4): CLOSED and effective** — the gate-closure
+> PR #20 merged into `main` (merge commit `7ac20a5`, 2026-06-23; CI Backend/
+> Frontend/Docker/Security all SUCCESS; reviewDecision intentionally blank under
+> the solo-maintainer governance exception — not an independent approval).
 > V and R1–R7 are `verified_complete`; all nine PRE_FEATURE_REMEDIATION items are
-> `verified_complete`. **Next eligible phase: Phase 10** (status: **not started**).
-> See `docs/remediation/pre-feature-completion-report.md` and
-> `docs/proof/pre-feature-remediation-gate-closure.md`.
+> `verified_complete`. **Phase 10 (API Foundation) has started** on branch
+> `phase-10-api-foundation`. See `docs/remediation/pre-feature-completion-report.md`,
+> `docs/proof/pre-feature-remediation-gate-closure.md`, and
+> `docs/governance/solo-maintainer-pre-feature-gate-closure-exception.md`.
 
-### Feature roadmap (Plan §80) — begins only after the §5.4 gate closes
+### Feature roadmap (Plan §80) — gate §5.4 closed; roadmap in progress
 | Phase | Title | Status |
 |---|---|---|
-| 10 | API foundation (Corrections 10–12) | ⬜ Not started |
+| 10 | API foundation (Corrections 10–12) | 🔄 In progress — branch `phase-10-api-foundation` (REM-ROUTE-001, REM-MIG-001) |
 | 10F | File & media foundation | ⬜ Not started |
 | 11 | UI layout foundation & role navigation | ⬜ Not started |
 | 15A / 15B | Services, catalogue, clients / personnel availability | ⬜ Not started |
@@ -65,10 +68,69 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase 10 — API Foundation
+
+- **Branch:** `phase-10-api-foundation` (based on merged `main` @ `7ac20a5`, PR #20 / gate closure).
+- **Status:** 🔄 `local_complete` — pushed; pending PR #21 CI, governance review, and merge.
+- **Proof:** [docs/proof/phase-10.md](proof/phase-10.md) · **ADR:** [ADR-004](architecture/adr/0004-migration-strategy.md) · **Contract:** [docs/api/openapi.json](api/openapi.json).
+- **Register:** REM-ROUTE-001 (`local_complete`), REM-MIG-001 (`local_complete`) — both remain `local_complete` until PR #21 merges.
+
+### Work completed
+- **Gate-closure lifecycle reconciled** to CLOSED/effective (PR #20 `7ac20a5`) across PROGRESS/CHANGELOG/completion-report/register/governance/closure-proof/traceability.
+- **Route classification (REM-ROUTE-001):** extended the R4 `RouteClass`/`RouteClassification` seam — 8th class `liveness_readiness`, per-class required/forbidden middleware, `VALIDATION_EXEMPT` allowlist (12 bodiless mutations). Every production non-GET route declares exactly one class; health probes are `liveness_readiness`.
+- **Security contract:** `RouteSecurityContractTest` + `ForbiddenRouteAbsenceTest`; `FinancialRouteIdempotencyCoverageTest` preserved.
+- **Pagination/filter/sort substrate:** `App\Http\Api\ApiPagination` (default 25 / max 100 / over-limit 422 / allowlisted sort + stable tiebreaker); retrofitted `branches.index`, `staff.index`, `staff-invitations.index` with new index Form Requests.
+- **Resource can-maps:** `HasCapabilities` concern applied to Branch/StaffProfile/StaffInvitation/AuditLog resources (policy-derived, booleans, ULID ids only).
+- **OpenAPI + TS contract:** maintained **dedoc/scramble** (v0.13.28, declared in `composer.json` `require`) is the authoritative schema engine; a thin `App\Support\OpenApi\OpenApiGenerator` wrapper invokes it and applies determinism, full `/api/v1` paths, testing exclusion (`Scramble::routes()`), operationId=route name, health probes, security scheme, error envelope and the financial Idempotency-Key (`composer api:openapi` → `docs/api/openapi.json`, 43 ops / 37 paths, no test/future ops; `Scramble::ignoreDefaultRoutes()` keeps the docs UI out of the app). `npm run api:types` → `resources/spa/src/types/generated/api.ts` (openapi-typescript@7.4.4); `npm run api:contract:check` (wired into frontend CI).
+- **Migration governance (REM-MIG-001):** ADR-004 + `docs/architecture/migrations/{README.md,manifest.yaml}` (all 33 migrations) + `MigrationManifestTest`. No shipped migration edited.
+- **Linux CI Playwright gate (`ci: enforce Phase 10 Playwright gate`):** added an explicit, separate `E2E — Playwright` job to `.github/workflows/ci.yml` (ubuntu-latest, Node 20, `npm ci`, `npx playwright install --with-deps chromium`, `npm run build`, `npm run e2e`, `timeout-minutes: 20`, failure-only artifact upload of `playwright-report/` + `test-results/`). The local Windows Playwright run **stalled without a completed run** — **no passing local E2E result is claimed**; this Linux job is the **authoritative Phase 10 browser gate**. The four existing jobs (Backend, Frontend, Docker, Security) are preserved unchanged.
+- **OpenAPI contract determinism (`fix: make OpenAPI contract deterministic in CI`):** PR #21's first CI run (GitHub Actions run `28093861353`) failed only in `Backend — Pint, Larastan, Pest` → `OpenApiContractTest:26` ("openapi.json is stale"); `E2E — Playwright`, Frontend, Docker and Security had already passed on that run. Root cause: dedoc/scramble infers types from the **live DB schema**, and `OpenApiContractTest` regenerated the document without `RefreshDatabase`, so a parallel CI worker whose DB was not yet migrated read an empty schema and emitted fallback types (ULID ids→integer, booleans/counters→string, nullability lost) that diverged from the (correct) committed artifact. Fix: `OpenApiContractTest` now `uses(RefreshDatabase::class)` (guaranteed migrated schema in serial/parallel/CI), and `GenerateOpenApiCommand` fails fast (exit 1, no write) if a core type-driving table is missing. Scramble stays authoritative; the stale-contract assertion is untouched; correct types preserved. Regeneration is byte-deterministic — `composer api:openapi` twice produced no diff and `docs/api/openapi.json` + `resources/spa/src/types/generated/api.ts` were already byte-current (no change).
+
+### Current routes remediated
+- Classified: 25 production mutations + 2 health probes + test-only step-up routes.
+- Paginated: `GET /api/v1/branches`, `/api/v1/staff`, `/api/v1/staff-invitations`.
+- Can-maps: branches, staff, staff-invitations, audit-logs resources.
+
+### Tests & generation commands
+```
+php artisan test --filter=RouteSecurityContractTest|ForbiddenRouteAbsenceTest|FinancialRouteIdempotencyCoverageTest
+php artisan test --filter=PaginationContractTest|FilterSortContractTest|ResourceCapabilityMapTest
+php artisan test --filter=OpenApiContractTest|OpenApiTypeParityTest|MigrationManifestTest
+composer api:openapi   # docs/api/openapi.json
+npm run api:types      # resources/spa/src/types/generated/api.ts
+npm run api:contract:check
+```
+
+### Work skipped (with exact owner phase)
+```
+files/media -> 10F ; role nav/landing -> 11 ; services/clients/personnel -> 15A/15B ;
+appointments/queues -> 16A-16C ; invoices/payments -> 17-18 ; audit workflow -> 19 ;
+billing/M-Pesa/payouts -> 20A-20H ; notifications/SMS/reports -> 21N/21S ; search -> 22 ;
+a11y/security audit -> 23 ; performance -> 24 ; deploy -> 25 ;
+full per-table dict entries for audit_logs/permissions/roles -> 19 ;
+platform_mutation / provider_webhook_mutation real routes -> owning Phase 20 subphases.
+```
+
+### Pending CI / review / merge
+- Branch `phase-10-api-foundation` is **pushed** (PR #21 open). PR #21's first CI run (GitHub Actions `28093861353`) failed only in `Backend — Pint, Larastan, Pest` (`OpenApiContractTest:26`, openapi.json stale); the other four jobs — `E2E — Playwright`, Frontend, Docker, Security — passed. The determinism fix (`fix: make OpenAPI contract deterministic in CI`) corrects that root cause; the re-run must confirm all five jobs green.
+- **PR #21 must not merge unless all five CI jobs pass**, including the authoritative `E2E — Playwright` job. Then flip REM-ROUTE-001/REM-MIG-001 → `verified_complete` after merge (solo-maintainer governance exception, not independent approval).
+- **Local E2E note:** the local Windows Playwright run stalled without a completed run; no passing local E2E result is claimed. REM-ROUTE-001 and REM-MIG-001 remain `local_complete` until PR #21 merges.
+
+### Parallel-suite + maintained-generator corrections
+- **Parallel failure → fix (`1d25224`):** the OpenAPI helpers `committedSpec()`/`specOperationIds()` lived in `OpenApiContractTest.php`, so a parallel worker running `OpenApiTypeParityTest.php` hit an undefined function. Moved them to `tests/Pest.php` (always autoloaded). Full parallel suite: **485 passed / 4 skipped / 2102 assertions / 4 processes**.
+- **Maintained generator (`phase-10: adopt maintained OpenAPI generator`):** replaced the interim custom route-derived generator with **dedoc/scramble** as the authoritative engine (compatibility proven via `--dry-run`: v0.13.28 on L12.62/PHP8.3, no advisories); the wrapper is now thin.
+
+### Known risks
+- OpenAPI response schemas are now Scramble-inferred from Resources/Form Requests; component schemas may evolve as resources stabilise in feature phases (regeneration is deterministic and CI-guarded).
+- `openapi-typescript` adds 2 **moderate** (dev-only) advisories via `@redocly/openapi-core` — below the `--audit-level=high` gate.
+
+### Context required by Phase 10F
+- The route classification registry, pagination substrate, can-map concern, OpenAPI generator and migration manifest are now the substrate every feature phase inherits — Phase 10F's file routes must declare a class, paginate any listing via `ApiPagination`, expose can-maps, appear in the regenerated `openapi.json`, and add their migrations to `manifest.yaml`.
+
 ## Gate closure — Pre-feature remediation (§5.4)
 
 - **Branch:** `docs/pre-feature-remediation-gate-closure` (based on merged `main` @ `4f0d4f3`, PR #19 / R7). Documentation/evidence only — no product code.
-- **Gate decision:** **CLOSED** — effective when this gate-closure PR merges into `main`. Next eligible phase: **Phase 10** (not started).
+- **Gate decision:** **CLOSED and effective** — gate-closure PR #20 merged into `main` (merge commit `7ac20a5`). Next phase: **Phase 10** (started).
 - **Work completed:** finalized R7/REM-OPS-001 to `verified_complete` (PR #19, `4f0d4f3`); normalized REM-V-001 to `verified_complete`; set register `meta.pre_feature_gate_closed: true`; finalized the completion report (gate CLOSED + full §5.4 criteria matrix); authored the gate-closure governance exception; regenerated PROGRESS/CHANGELOG; updated traceability; wrote the gate-closure proof.
 - **Evidence reviewed:** PR #12–#19 merge commits + CI conclusions (Backend/Frontend/Docker/Security SUCCESS); proofs `phase-v.md`…`phase-r7.md`; ADR-001/002/003/008/009; migration proofs (R2–R5); per-PR governance exceptions pr-13…pr-19. All nine PRE_FEATURE_REMEDIATION items `verified_complete`; no unresolved blocker.
 - **Documents changed:** `docs/remediation/register.yaml`, `docs/remediation/pre-feature-completion-report.md`, `docs/governance/solo-maintainer-pre-feature-gate-closure-exception.md`, `docs/PROGRESS.md`, `docs/CHANGELOG.md`, `docs/traceability/servana-requirements.csv`, `docs/proof/pre-feature-remediation-gate-closure.md`.
@@ -83,9 +145,9 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
   ```
   Reason skipped: this is a documentation/evidence reconciliation task; all feature
   work is owned by its Section 80 phase and gated by §5.4a obligations.
-- **Pending CI/review/merge:** this gate-closure PR must pass CI before merge; reviewDecision will remain blank (solo-maintainer governance exception — not independent approval). Closure is effective only on merge.
+- **CI/review/merge (completed):** gate-closure PR #20 merged `7ac20a5` (2026-06-23 04:44Z) with CI Backend/Frontend/Docker/Security all SUCCESS; reviewDecision blank under the solo-maintainer governance exception (not an independent approval). Closure is effective.
 - **Known risks:** none introduced (no product code changed); the §5.4 closure is a documentation decision backed by already-green PR #19 CI and the R7 proof. Residual technical risks remain as recorded in each phase proof (e.g. R7 S3 live-probe scope, `PGCONNECT_TIMEOUT` env-level bound).
-- **Next-phase context:** Phase 10 (API Foundation) is the next eligible phase and must not begin until this PR merges. Phase 10 inherits strict config-driven readiness (do not re-couple `/health` liveness to dependencies) and the per-run/process test namespace (never FLUSHDB).
+- **Next-phase context:** Phase 10 (API Foundation) has started on branch `phase-10-api-foundation`. Phase 10 inherits strict config-driven readiness (do not re-couple `/health` liveness to dependencies) and the per-run/process test namespace (never FLUSHDB).
 
 ## Phase R7 — Production probes, CI isolation, environment parity
 
@@ -154,13 +216,12 @@ PASS  R6 regression (RevocationMiddlewareOrder/MidSessionSuspension/Authorizatio
 - `PGCONNECT_TIMEOUT` bounds PG connect at the libpq/env level (the Laravel pgsql
   DSN builder has no `connect_timeout` key); documented in ADR/proof.
 
-### Pre-feature gate status — CLOSED (R7 merged)
+### Pre-feature gate status — CLOSED and effective (gate-closure PR #20 merged)
 - `docs/remediation/pre-feature-completion-report.md` records **gate status:
   CLOSED**. V + R1–R7 are `verified_complete` (R7 = PR #19, `4f0d4f3`, CI
   Backend/Frontend/Docker/Security all SUCCESS, governance exception). The §5.4
-  gate closure becomes **effective when this gate-closure PR
-  (`docs/pre-feature-remediation-gate-closure`) merges into `main`**. **Phase 10
-  must not start before that merge.**
+  gate closure is **effective**: the gate-closure PR #20 merged into `main`
+  (merge commit `7ac20a5`, 2026-06-23; CI all SUCCESS). **Phase 10 has started.**
 
 ### Context required before Phase 10
 - Readiness is strict and config-driven; Phase 10's route/OpenAPI work must not

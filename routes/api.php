@@ -56,14 +56,17 @@ Route::middleware('throttle:api')->group(function (): void {
 Route::prefix('auth')->group(function (): void {
     Route::post('magic-link', [MagicLinkController::class, 'request'])
         ->middleware('throttle:magic-link-request')
+        ->defaults(RouteClassification::KEY, RouteClass::PublicMutation->value)
         ->name('auth.magic-link.request');
 
     Route::post('magic-link/verify', [MagicLinkController::class, 'verify'])
         ->middleware('throttle:magic-link-verify')
+        ->defaults(RouteClassification::KEY, RouteClass::PublicMutation->value)
         ->name('auth.magic-link.verify');
 
     Route::post('logout', [MagicLinkController::class, 'logout'])
         ->middleware('auth:sanctum')
+        ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
         ->name('auth.logout');
 
     /*
@@ -80,18 +83,22 @@ Route::prefix('auth')->group(function (): void {
 
             Route::post('enroll', [MfaController::class, 'enroll'])
                 ->middleware('throttle:mfa-confirm')
+                ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
                 ->name('auth.mfa.enroll');
 
             Route::post('confirm', [MfaController::class, 'confirm'])
                 ->middleware('throttle:mfa-confirm')
+                ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
                 ->name('auth.mfa.confirm');
 
             Route::post('challenge', [MfaController::class, 'challenge'])
                 ->middleware('throttle:mfa-challenge')
+                ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
                 ->name('auth.mfa.challenge');
 
             Route::post('recovery-challenge', [MfaController::class, 'recoveryChallenge'])
                 ->middleware('throttle:mfa-challenge')
+                ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
                 ->name('auth.mfa.recovery-challenge');
 
             // Recovery-code regeneration is a sensitive MFA self-management
@@ -102,6 +109,7 @@ Route::prefix('auth')->group(function (): void {
                     'throttle:mfa-confirm',
                     RequireFreshMfa::class.':'.StepUpAction::RecoveryCodeRegeneration->value,
                 ])
+                ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
                 ->name('auth.mfa.recovery-codes.regenerate');
         });
 });
@@ -114,6 +122,7 @@ Route::prefix('auth')->group(function (): void {
 Route::prefix('merchant-registration')->group(function (): void {
     Route::post('self-register', [MerchantRegistrationController::class, 'selfRegister'])
         ->middleware('throttle:registration')
+        ->defaults(RouteClassification::KEY, RouteClass::PublicMutation->value)
         ->name('merchant-registration.self-register');
 });
 
@@ -124,6 +133,7 @@ Route::prefix('merchant-registration')->group(function (): void {
  */
 Route::post('staff-invitations/accept', [StaffInvitationAcceptController::class, 'store'])
     ->middleware('throttle:invitation-accept')
+    ->defaults(RouteClassification::KEY, RouteClass::PublicMutation->value)
     ->name('staff-invitations.accept');
 
 /*
@@ -143,6 +153,7 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 Route::get('first-time-setup', [FirstTimeSetupController::class, 'show'])
                     ->name('merchant-registration.first-time-setup.show');
                 Route::post('first-time-setup', [FirstTimeSetupController::class, 'store'])
+                    ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
                     ->name('merchant-registration.first-time-setup.store');
             });
 
@@ -159,46 +170,62 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('branches', [BranchController::class, 'index'])->name('branches.index');
             Route::post('branches', [BranchController::class, 'store'])
                 ->middleware(EnsurePermission::class.':branches.create')
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
                 ->name('branches.store');
 
             Route::middleware(EnsureBranchScope::class)->group(function (): void {
                 Route::get('branches/{branch}', [BranchController::class, 'show'])->name('branches.show');
                 Route::patch('branches/{branch}', [BranchController::class, 'update'])
                     ->middleware(EnsurePermission::class.':branch.profile.manage')
+                    ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                     ->name('branches.update');
                 Route::post('branches/{branch}/archive', [BranchController::class, 'archive'])
                     ->middleware(EnsurePermission::class.':branches.create')
+                    ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                     ->name('branches.archive');
 
                 Route::get('branches/{branch}/operating-hours', [BranchOperatingHoursController::class, 'show'])
                     ->name('branches.operating-hours.show');
                 Route::put('branches/{branch}/operating-hours', [BranchOperatingHoursController::class, 'update'])
                     ->middleware(EnsurePermission::class.':branch.profile.manage')
+                    ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                     ->name('branches.operating-hours.update');
 
                 Route::post('branches/{branch}/day/open', [BranchDayController::class, 'open'])
                     ->middleware(EnsurePermission::class.':day.open_close')
+                    ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                     ->name('branches.day.open');
                 Route::post('branches/{branch}/day/close', [BranchDayController::class, 'close'])
                     ->middleware(EnsurePermission::class.':day.open_close')
+                    ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                     ->name('branches.day.close');
             });
 
             // Staff invitations (Scope §3.2/§3.4). Authority is StaffInvitationPolicy
             // (capability) + §3.2/§3.4 target-role boundary in the controller.
             Route::get('staff-invitations', [StaffInvitationController::class, 'index'])->name('staff-invitations.index');
-            Route::post('staff-invitations', [StaffInvitationController::class, 'store'])->name('staff-invitations.store');
+            Route::post('staff-invitations', [StaffInvitationController::class, 'store'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('staff-invitations.store');
             Route::post('staff-invitations/{invitation}/resend', [StaffInvitationController::class, 'resend'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
                 ->name('staff-invitations.resend');
             Route::post('staff-invitations/{invitation}/revoke', [StaffInvitationController::class, 'revoke'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
                 ->name('staff-invitations.revoke');
 
             // Staff roster + lifecycle (Scope §3.4). Authority is StaffProfilePolicy.
             Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
             Route::get('staff/{staff}', [StaffController::class, 'show'])->name('staff.show');
-            Route::post('staff/{staff}/suspend', [StaffController::class, 'suspend'])->name('staff.suspend');
-            Route::post('staff/{staff}/activate', [StaffController::class, 'activate'])->name('staff.activate');
-            Route::post('staff/{staff}/deactivate', [StaffController::class, 'deactivate'])->name('staff.deactivate');
+            Route::post('staff/{staff}/suspend', [StaffController::class, 'suspend'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('staff.suspend');
+            Route::post('staff/{staff}/activate', [StaffController::class, 'activate'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('staff.activate');
+            Route::post('staff/{staff}/deactivate', [StaffController::class, 'deactivate'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('staff.deactivate');
 
             // Staff permission overrides + HR permission preview (Plan §10.3).
             // Managed by Merchant Admin (merchant-wide) or HR (own-branch
@@ -206,8 +233,10 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('staff/{staff}/permissions', [PermissionPreviewController::class, 'show'])
                 ->name('staff.permissions.show');
             Route::post('staff/{staff}/permissions', [PermissionOverrideController::class, 'store'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
                 ->name('staff.permissions.store');
             Route::delete('staff/{staff}/permissions/{permission}', [PermissionOverrideController::class, 'destroy'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
                 ->name('staff.permissions.destroy');
 
             // HR permission preview (Plan §10.3): what a target role/user would
@@ -257,6 +286,7 @@ if (app()->environment('testing')) {
             foreach (StepUpAction::businessActions() as $action) {
                 Route::post($action->value, fn () => response()->json(['ok' => true, 'action' => $action->value]))
                     ->middleware(RequireFreshMfa::class.':'.$action->value)
+                    ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
                     ->name('testing.step-up.'.$action->value);
             }
         });

@@ -24,8 +24,10 @@ use App\Policies\MerchantUserPolicy;
 use App\Policies\StaffInvitationPolicy;
 use App\Policies\StaffProfilePolicy;
 use App\Support\CorrelationId;
+use Dedoc\Scramble\Scramble;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -62,12 +64,40 @@ class AppServiceProvider extends ServiceProvider
         // Audit trail (Plan §22.2). Table-backed minimal recorder introduced in
         // Phase 8; full §5.18 coverage matures in Phase 19.
         $this->app->bind(AuditRecorder::class, DatabaseAuditRecorder::class);
+
+        // Must run in register() — before dedoc/scramble's provider boots and
+        // registers its default docs routes (Phase 10).
+        $this->configureOpenApiGenerator();
     }
 
     public function boot(): void
     {
         $this->registerRateLimiters();
         $this->registerPolicies();
+    }
+
+    /**
+     * Configure the maintained dedoc/scramble generator (ADR / Phase 10).
+     *
+     * The generator only ever analyses the current production `/api/v1` surface —
+     * the test-only harness routes (registered under APP_ENV=testing) are excluded
+     * at the source, so the document is identical across environments and Scramble
+     * never analyses a harness closure. The default docs UI routes are not
+     * registered: Servana ships the committed `docs/api/openapi.json` artifact, not
+     * a live docs endpoint.
+     */
+    private function configureOpenApiGenerator(): void
+    {
+        Scramble::ignoreDefaultRoutes();
+
+        Scramble::routes(function (Route $route): bool {
+            $uri = $route->uri();
+            $name = $route->getName() ?? '';
+
+            return str_starts_with($uri, 'api/v1/')
+                && ! str_contains($uri, 'api/v1/testing/')
+                && ! str_starts_with($name, 'testing.');
+        });
     }
 
     /** Register the §10.4 model policies. */

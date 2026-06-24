@@ -13,6 +13,11 @@ export default tseslint.config(
       'node_modules/**',
       'storage/**',
       'bootstrap/cache/**',
+      // Auto-generated from docs/api/openapi.json (npm run api:types). Validated by
+      // vue-tsc + the contract check, not hand-edited, so it is not linted.
+      'resources/spa/src/types/generated/**',
+      // Node tooling scripts (not part of the SPA bundle).
+      'scripts/**',
     ],
   },
   js.configs.recommended,

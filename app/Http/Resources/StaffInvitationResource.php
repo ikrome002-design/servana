@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Domain\Hr\Models\StaffInvitation;
+use App\Http\Resources\Concerns\HasCapabilities;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,6 +17,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 final class StaffInvitationResource extends JsonResource
 {
+    use HasCapabilities;
+
     /**
      * @return array<string, mixed>
      */
@@ -31,6 +34,9 @@ final class StaffInvitationResource extends JsonResource
             'resend_count' => $this->resend_count,
             'expires_at' => $this->expires_at->toIso8601String(),
             'last_sent_at' => $this->last_sent_at?->toIso8601String(),
+            'can' => $this->capabilities($request, [
+                'manage' => 'manage',
+            ]),
         ];
     }
 }
