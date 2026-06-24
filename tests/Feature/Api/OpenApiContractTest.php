@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 use App\Support\OpenApi\OpenApiGenerator;
 use Dedoc\Scramble\Generator as ScrambleGenerator;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route as RouteFacade;
 
-uses()->group('api', 'openapi');
+// dedoc/scramble infers attribute and route-key types by introspecting the live
+// database schema (ULID keys → string, booleans, integer counters, nullability).
+// The "byte-current" test below regenerates the document, so it MUST run against a
+// fully migrated schema — otherwise Scramble reads an empty schema and emits
+// fallback types (integer ids, string booleans), making generation non-deterministic
+// across environments and parallel workers (the PR #21 CI failure). RefreshDatabase
+// guarantees the migrated schema in serial Pest, parallel Pest and fresh CI alike.
+uses(RefreshDatabase::class)->group('api', 'openapi');
 
 /*
  | OpenAPI contract (Plan §23, §24; Phase 10 REM-ROUTE-001). The maintained

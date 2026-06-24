@@ -60,6 +60,29 @@ pushed; pending PR #21 CI, governance review, and merge; the two register items
   `E2E — Playwright` job is the **authoritative Phase 10 browser gate**, and **PR #21
   must not merge unless it passes**. Existing Playwright tests are run unmodified — no
   skip, no extra retry, no suppression; `playwright.config.ts` is untouched.
+- **OpenAPI contract determinism fix (`fix: make OpenAPI contract deterministic in CI`):**
+  PR #21's first CI run (GitHub Actions run `28093861353`) failed only in
+  `Backend — Pint, Larastan, Pest` → `Tests — Pest on PostgreSQL (parallel)` at
+  `OpenApiContractTest:26` ("docs/api/openapi.json is stale") — 1 failed / 488 passed / 4
+  skipped. The other four jobs (`E2E — Playwright`, Frontend, Docker, Security) had already
+  passed on that run. **Root cause:** dedoc/scramble infers types by introspecting the live
+  PostgreSQL schema, and `OpenApiContractTest` regenerated the document without
+  `RefreshDatabase`, so a parallel worker whose database was not yet migrated read an empty
+  schema and emitted fallback types (ULID ids → integer, booleans/counters → string,
+  nullability lost) that diverged from the correctly-typed committed artifact — a real
+  contract-determinism defect, not an external CI flake. **Fix:** `OpenApiContractTest` now
+  `uses(RefreshDatabase::class)` (guaranteed migrated schema in serial Pest, parallel Pest
+  and fresh CI), and `GenerateOpenApiCommand` (`composer api:openapi`) fails fast with a
+  non-zero exit and no write if any core type-driving table (`merchant_branches`,
+  `staff_profiles`, `staff_invitations`, `branch_operating_hours`, `audit_logs`) is absent.
+  dedoc/scramble remains authoritative; the stale-contract assertion is not removed,
+  skipped, weakened, mocked or bypassed; semantically-correct types are preserved (ULID/
+  permission keys → string, weekday → integer, booleans → boolean, counters → integer,
+  nullable → `string|null`). Regeneration is byte-deterministic (`composer api:openapi`
+  twice → no diff); `docs/api/openapi.json` and `resources/spa/src/types/generated/api.ts`
+  were already byte-current, so no artifact changed. Re-verified locally: full backend
+  parallel suite 489 passed / 4 skipped / 2110 assertions; Pint, Larastan L8, composer
+  validate, vue-tsc typecheck and `npm run api:contract:check` all clean.
 - **Deferrals:** files/media → 10F; role nav → 11; business domains → owning §80
   phases; full per-table dict entries for audit/permissions/roles → 19.
 

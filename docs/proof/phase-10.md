@@ -629,3 +629,105 @@ This change touches only `.github/workflows/ci.yml` and the Phase 10 documentati
 route, migration, dependency, generated artifact, test, Playwright config or frontend
 runtime code was changed, so backend/frontend/contract gate results above are unaffected.
 
+## Checkpoint 9 — OpenAPI contract determinism fix (commit `fix: make OpenAPI contract deterministic in CI`)
+
+### PR #21 initial CI failure
+
+After the Playwright gate was pushed (`46de7b3`), **PR #21**'s first CI run failed.
+
+- **GitHub Actions run:** `28093861353`.
+- **Failed job:** `Backend — Pint, Larastan, Pest`; **failed step:** `Tests — Pest on
+  PostgreSQL (parallel)`.
+- **Failing assertion:** `Tests\Feature\Api\OpenApiContractTest`,
+  `tests/Feature/Api/OpenApiContractTest.php:26` — *"docs/api/openapi.json is stale — run
+  `composer api:openapi` and commit it."*
+- **Run totals:** 1 failed, 488 passed, 4 skipped, 2110 assertions, 4 parallel processes.
+- **The other four jobs had already passed on that same run:** `E2E — Playwright`,
+  `Frontend`, `Docker` and `Security` were all green — the failure was isolated to the
+  Backend parallel Pest step. (The Playwright gate from Checkpoint 8 worked: it ran and
+  passed on Linux.)
+
+### Root cause (proven — not an external/CI flake)
+
+The maintained **dedoc/scramble** generator infers attribute and route-key types by
+**introspecting the live PostgreSQL schema**. Generation is therefore only correct when
+the database is fully migrated at the moment the document is built. `OpenApiContractTest`
+regenerates the document in-process (`app(OpenApiGenerator::class)->toJson()`) and compares
+it byte-for-byte to the committed `docs/api/openapi.json` — but the test declared
+`uses()->group('api','openapi')` **without `RefreshDatabase`**, so it did not guarantee a
+migrated schema. Under `--parallel`, the worker that ran the byte-current test could reach
+it before any `RefreshDatabase` test had migrated *that worker's* database, so Scramble
+introspected an **empty schema** and emitted fallback types, which diverge from the
+committed (correctly-typed) artifact.
+
+Locally the bug was masked because the dev/test databases were already migrated from prior
+runs (serial and parallel both passed). It surfaced only on a fresh CI database. Proven
+empirically by generating against a freshly-created empty database — the output degraded in
+exactly the way the failure described:
+
+```
+field/param                              empty-schema (CI worker)   migrated-schema (committed)
+branches/{branch} path param  branch     integer                    string        (ULID)
+StaffInvitationResource.resend_count      string                     integer       (counter)
+StaffProfileResource.is_active            string                     boolean
+AuditLogResource.correlation_id           string                     ["string","null"]  (nullable)
+weekday (operating hours)                 (degraded)                 integer
+is_closed                                 string                     boolean
+=> empty-schema document != committed document  (the PR #21 "stale" failure)
+```
+
+The committed `docs/api/openapi.json` was correct all along; the defect was the **test/
+generation environment determinism**, not the artifact.
+
+### Exact correction (smallest correct change; scramble preserved as authoritative)
+
+1. **`tests/Feature/Api/OpenApiContractTest.php`** — now `uses(RefreshDatabase::class)`
+   (matching the sibling contract tests `PaginationContractTest` / `FilterSortContractTest`
+   / `ResourceCapabilityMapTest`). This guarantees the schema is migrated before the
+   byte-current test regenerates, in serial Pest, parallel Pest and fresh CI alike.
+2. **`app/Console/Commands/GenerateOpenApiCommand.php`** — added a fail-fast schema guard:
+   `servana:openapi` (and therefore `composer api:openapi`) refuses to write and exits
+   non-zero if any core type-driving table (`merchant_branches`, `staff_profiles`,
+   `staff_invitations`, `branch_operating_hours`, `audit_logs`) is absent, with a message to
+   run `php artisan migrate` first. This makes **normal local generation** deterministic-or-
+   loud — it can never silently emit a type-degraded artifact against an un-migrated DB.
+
+dedoc/scramble remains the authoritative schema engine; the wrapper is unchanged; the
+stale-contract assertion at `OpenApiContractTest.php:26` is **not** removed, skipped,
+weakened, mocked or bypassed. The semantically-correct types are preserved exactly (ULID
+route params → string, permission keys → string, weekday → integer, booleans → boolean,
+counters → integer, genuinely-nullable properties → `string|null`).
+
+### Local verification (serial and parallel)
+
+```
+Empty-schema reproduction:
+  generate against freshly-created empty DB ......... reproduced the degraded types (above)
+  servana:openapi against empty DB .................. EXIT 1, refused to write (guard); file unchanged
+
+After fix:
+  drop schema (0 tables) → OpenApiContractTest (serial)  RefreshDatabase migrated → 9 passed (byte-current OK)
+  OpenApiTypeParityTest (serial) .................... 5 passed
+  OpenApiContractTest + OpenApiTypeParityTest (parallel, 4 proc) ... 14 passed
+  composer api:openapi (run 1, migrated DB) ......... no git diff (committed already byte-current)
+  composer api:openapi (run 2) ...................... byte-identical to run 1 — DETERMINISTIC, no git diff
+  npm run api:types ................................. no git diff (api.ts already current)
+  npm run api:contract:check ........................ OK — 37 paths, 43 operations
+  composer pint -- --test ........................... 382 files, no style issues
+  composer stan (Larastan level 8) .................. No errors
+  composer validate --strict ........................ ./composer.json is valid
+  npm run typecheck (vue-tsc) ....................... clean
+  php artisan test --parallel (full backend, 4 proc)  489 passed, 4 skipped, 2110 assertions
+```
+
+Because the committed `docs/api/openapi.json` and `resources/spa/src/types/generated/api.ts`
+were already correct, regenerating them produced **no diff** — proving determinism. This
+commit therefore changes only `OpenApiContractTest.php`, `GenerateOpenApiCommand.php` and the
+Phase 10 documentation; no product route, migration, dependency or generated artifact
+changed, and no other gate result above is affected.
+
+### Status
+
+REM-ROUTE-001 and REM-MIG-001 remain `local_complete` until PR #21 merges with green CI
+(Backend, Frontend, Docker, Security, and the authoritative `E2E — Playwright` job).
+
