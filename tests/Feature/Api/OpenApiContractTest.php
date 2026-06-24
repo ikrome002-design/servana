@@ -3,13 +3,17 @@
 declare(strict_types=1);
 
 use App\Support\OpenApi\OpenApiGenerator;
+use Dedoc\Scramble\Generator as ScrambleGenerator;
 use Illuminate\Support\Facades\Route as RouteFacade;
 
 uses()->group('api', 'openapi');
 
 /*
- | OpenAPI contract (Plan §23, §24; Phase 10 REM-ROUTE-001). The committed
- | docs/api/openapi.json must be byte-current with the route-derived generator,
+ | OpenAPI contract (Plan §23, §24; Phase 10 REM-ROUTE-001). The maintained
+ | dedoc/scramble generator is authoritative for schema generation; the Servana
+ | wrapper applies determinism, full paths, testing exclusion, operationId=route
+ | name, the security scheme, the error envelope and the financial Idempotency-Key.
+ | The committed docs/api/openapi.json must be byte-current with that pipeline,
  | cover every production endpoint, and leak no test-only or future operation.
  */
 
@@ -93,4 +97,41 @@ it('declares the error envelope and the session security scheme', function (): v
 
     expect($spec['components']['schemas']['ErrorEnvelope'] ?? null)->not->toBeNull()
         ->and($spec['components']['securitySchemes']['sanctumSession'] ?? null)->not->toBeNull();
+});
+
+it('declares dedoc/scramble as a direct production dependency', function (): void {
+    $composer = json_decode((string) file_get_contents(base_path('composer.json')), true, flags: JSON_THROW_ON_ERROR);
+
+    expect($composer['require']['dedoc/scramble'] ?? null)->not->toBeNull();
+});
+
+it('uses the maintained scramble generator as the authoritative schema engine', function (): void {
+    // The wrapper depends on Scramble's Generator (not a hand-rolled engine).
+    $constructor = (new ReflectionClass(OpenApiGenerator::class))->getConstructor();
+    $dependsOnScramble = false;
+
+    foreach ($constructor?->getParameters() ?? [] as $parameter) {
+        $type = $parameter->getType();
+        if ($type instanceof ReflectionNamedType && $type->getName() === ScrambleGenerator::class) {
+            $dependsOnScramble = true;
+        }
+    }
+
+    expect($dependsOnScramble)->toBeTrue();
+
+    // And the committed document carries schemas only Scramble infers from the
+    // Resources / Form Requests — proving it (not the wrapper) generated them.
+    $schemas = committedSpec()['components']['schemas'] ?? [];
+
+    expect($schemas)->toHaveKey('BranchResource')
+        ->and($schemas)->toHaveKey('CreateBranchRequest');
+});
+
+it('preserves the scramble-inferred pagination/filter/sort query parameters', function (): void {
+    $params = committedSpec()['paths']['/api/v1/branches']['get']['parameters'] ?? [];
+    $names = array_column($params, 'name');
+
+    // per_page (pagination), sort (allowlisted), status (validated filter) — all
+    // inferred by Scramble from BranchIndexRequest and preserved through the wrapper.
+    expect($names)->toContain('per_page')->toContain('sort')->toContain('status');
 });

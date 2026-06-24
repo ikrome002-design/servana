@@ -26,10 +26,14 @@ pending push/CI/merge; the two register items stay `local_complete` until merge.
   retrofitted the `branches`, `staff` and `staff-invitations` listings.
 - **Resource `can` maps:** `HasCapabilities` concern (policy-derived, booleans,
   ULID ids only) on the branch/staff/invitation/audit resources.
-- **OpenAPI generation:** deterministic route-derived generator
-  (`composer api:openapi` → `docs/api/openapi.json`, 43 operations, no test/future
-  operations) with the §11.5 error envelope, security scheme, pagination params and
-  the financial `Idempotency-Key` header.
+- **OpenAPI generation:** the maintained **dedoc/scramble** generator (v0.13.28,
+  declared in `composer.json` `require`) is authoritative for schema generation; a
+  thin `App\Support\OpenApi\OpenApiGenerator` wrapper invokes it and applies
+  determinism, full `/api/v1` paths, testing exclusion, operationId=route name,
+  health probes, the §11.5 error envelope, the session security scheme and the
+  financial `Idempotency-Key` header (`composer api:openapi` →
+  `docs/api/openapi.json`, 43 operations, no test/future operations).
+  `Scramble::ignoreDefaultRoutes()` keeps the docs UI out of the app.
 - **TypeScript contract:** `npm run api:types` →
   `resources/spa/src/types/generated/api.ts` (openapi-typescript@7.4.4);
   `npm run api:contract:check` fails on stale/leaked/duplicate/missing contract and
@@ -37,8 +41,13 @@ pending push/CI/merge; the two register items stay `local_complete` until merge.
 - **Migration governance:** ADR-004 (expand-and-contract, forward-repair, PITR) +
   `docs/architecture/migrations/{README.md,manifest.yaml}` (all 33 migrations) +
   `MigrationManifestTest` lint. No shipped migration edited.
-- **Tooling deps:** `symfony/yaml` (dev, manifest lint), `openapi-typescript` (dev,
-  pinned 7.4.4).
+- **Tooling deps:** `dedoc/scramble` (require, authoritative OpenAPI generator) +
+  `spatie/laravel-package-tools`; `symfony/yaml` (dev, manifest lint);
+  `openapi-typescript` (dev, pinned 7.4.4).
+- **Parallel-suite fix (`1d25224`):** moved `committedSpec()`/`specOperationIds()`
+  into `tests/Pest.php` so the OpenAPI tests are parallel-safe (an undefined-function
+  fatal occurred only under `--parallel`). Full parallel suite: 485 passed / 4
+  skipped / 2102 assertions / 4 processes.
 - **Deferrals:** files/media → 10F; role nav → 11; business domains → owning §80
   phases; full per-table dict entries for audit/permissions/roles → 19.
 

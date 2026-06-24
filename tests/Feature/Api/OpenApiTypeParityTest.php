@@ -54,3 +54,11 @@ it('leaks no test-only route into the generated types', function (): void {
     expect($types)->not->toContain('/testing/')
         ->and($types)->not->toContain('operations["testing.');
 });
+
+it('carries the scramble-generated component schemas into the types', function (): void {
+    // The TS is generated from the Scramble-authored spec, so its component schemas
+    // (e.g. BranchResource) flow through to the generated `components["schemas"]`.
+    $types = generatedTypes();
+
+    expect($types)->toContain('BranchResource');
+});

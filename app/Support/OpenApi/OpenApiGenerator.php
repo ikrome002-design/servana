@@ -6,42 +6,73 @@ namespace App\Support\OpenApi;
 
 use App\Http\Routing\RouteClass;
 use App\Http\Routing\RouteClassification;
+use Dedoc\Scramble\Generator as ScrambleGenerator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 
 /**
- * Deterministic OpenAPI 3.1 generator for the Servana production API (Plan §23,
- * §24; Phase 10 REM-ROUTE-001).
+ * OpenAPI contract for the Servana production API (Plan §23, §24; Phase 10
+ * REM-ROUTE-001).
  *
- * The endpoint inventory is DERIVED from the live route collection — it is never
- * hand-maintained. The document describes exactly the current production
- * `/api/v1/*` routes plus `/health` and `/health/deep`; test-only routes
- * (`testing.*`) and framework/web routes are excluded. Output is byte-stable
- * (sorted paths/keys, fixed JSON flags) so {@see OpenApiContractTest} can detect a
- * stale committed artifact, and the generated TypeScript types stay in parity.
- *
- * Security, the standard error envelope (§11.5), pagination/filter/sort
- * parameters, and the financial `Idempotency-Key` header are emitted from the
- * route's classification + Form Request, so the contract follows the code.
+ * The maintained **dedoc/scramble** generator is authoritative for OpenAPI schema
+ * generation — it analyses the routes, Form Requests and API Resources and
+ * produces the operations, request/response schemas, component schemas and
+ * pagination/filter/sort parameters. This class is a thin Servana wrapper around
+ * it that ONLY:
+ *   - invokes the maintained generator;
+ *   - restores full `/api/v1` paths under a single `/` server;
+ *   - excludes test-only routes from the production inventory;
+ *   - enforces operation IDs aligned with route names;
+ *   - enforces production-route parity (drives the path set from the live route
+ *     collection) and adds the `/health` probes Scramble does not cover;
+ *   - augments the cross-cutting contract Scramble does not infer: the session
+ *     security scheme, the §11.5 error envelope responses, and the financial
+ *     `Idempotency-Key` header;
+ *   - writes `docs/api/openapi.json` deterministically (sorted, byte-stable).
  */
 final class OpenApiGenerator
 {
-    public function __construct(private readonly Router $router) {}
+    public function __construct(
+        private readonly Router $router,
+        private readonly ScrambleGenerator $scramble,
+    ) {}
 
     /** @return array<string, mixed> */
     public function generate(): array
     {
+        /** @var array<string, mixed> $document Authoritative document from dedoc/scramble. */
+        $document = ($this->scramble)();
+
         $paths = [];
 
-        foreach ($this->productionRoutes() as $route) {
-            $path = '/'.ltrim($route->uri(), '/');
-            $methods = array_values(array_diff($route->methods(), ['HEAD']));
-            sort($methods);
-
-            foreach ($methods as $method) {
-                $paths[$path][strtolower($method)] = $this->operation($route, $method);
+        foreach (($document['paths'] ?? []) as $relativePath => $methods) {
+            if (! is_array($methods)) {
+                continue;
             }
+
+            foreach ($methods as $method => $operation) {
+                if (! is_array($operation)) {
+                    continue;
+                }
+
+                $route = $this->routeForOperation($operation);
+
+                // Drop anything that is not a current production route (test-only
+                // harness routes, or operations Scramble emitted for a route that
+                // no longer exists). Production parity is the route collection.
+                if ($route === null || ! $this->isProduction($route)) {
+                    continue;
+                }
+
+                $fullPath = $this->fullPath($relativePath);
+                $paths[$fullPath][strtolower((string) $method)] = $this->decorate($operation, $route, (string) $method);
+            }
+        }
+
+        // Health probes live outside the api_path, so Scramble never sees them.
+        foreach ($this->healthRoutes() as $route) {
+            $paths['/'.ltrim($route->uri(), '/')]['get'] = $this->healthOperation($route);
         }
 
         ksort($paths);
@@ -50,16 +81,21 @@ final class OpenApiGenerator
         }
         unset($operations);
 
+        $components = is_array($document['components'] ?? null) ? $document['components'] : [];
+        $components['schemas'] = $this->schemas($components['schemas'] ?? []);
+        $components['securitySchemes'] = $this->securitySchemes($components['securitySchemes'] ?? []);
+        ksort($components);
+
         return [
-            'openapi' => '3.1.0',
+            'openapi' => is_string($document['openapi'] ?? null) ? $document['openapi'] : '3.1.0',
             'info' => [
                 'title' => 'Servana by Citrus API',
                 'version' => 'v1',
-                'description' => 'Generated production API contract (Plan §23/§24). Do not edit by hand — run `composer api:openapi`.',
+                'description' => 'Production API contract generated by dedoc/scramble (authoritative) via the Servana wrapper. Do not edit by hand — run `composer api:openapi`.',
             ],
             'servers' => [['url' => '/']],
             'paths' => $paths,
-            'components' => $this->components(),
+            'components' => $components,
         ];
     }
 
@@ -72,7 +108,7 @@ final class OpenApiGenerator
         )."\n";
     }
 
-    /** @return list<Route> production API + health routes, test/framework excluded. */
+    /** @return list<Route> production API + health routes (test/framework excluded). */
     public function productionRoutes(): array
     {
         $routes = [];
@@ -97,109 +133,132 @@ final class OpenApiGenerator
             return false;
         }
 
-        // Never publish test-only routes into the production inventory.
         return ! str_starts_with($name, 'testing.') && ! str_contains($uri, 'api/v1/testing/');
     }
 
-    /** @return array<string, mixed> */
-    private function operation(Route $route, string $method): array
+    /**
+     * Resolve the route a Scramble operation belongs to via its (route-name) operationId.
+     *
+     * @param  array<string, mixed>  $operation
+     */
+    private function routeForOperation(array $operation): ?Route
     {
-        $name = $route->getName() ?? ($method.' '.$route->uri());
+        $operationId = $operation['operationId'] ?? null;
+
+        if (! is_string($operationId)) {
+            return null;
+        }
+
+        return $this->router->getRoutes()->getByName($operationId);
+    }
+
+    /** Scramble strips the api_path prefix; restore the full `/api/v1/...` path. */
+    private function fullPath(string $relativePath): string
+    {
+        $prefix = '/'.trim((string) config('scramble.api_path', 'api/v1'), '/');
+
+        return rtrim($prefix, '/').'/'.ltrim($relativePath, '/');
+    }
+
+    /**
+     * Augment a Scramble operation with the cross-cutting Servana contract:
+     * confirmed operationId, security, standard error responses, idempotency.
+     *
+     * @param  array<string, mixed>  $operation
+     * @return array<string, mixed>
+     */
+    private function decorate(array $operation, Route $route, string $method): array
+    {
+        $operation['operationId'] = $route->getName();
+
         $class = RouteClassification::of($route);
-        $isMutation = $method !== 'GET';
 
-        $operation = [
-            'operationId' => $name,
-            'tags' => [$this->tag($route)],
-            'summary' => $name,
-        ];
-
-        // Security: authenticated routes use the Sanctum session cookie; public &
-        // health routes explicitly carry no security.
         $operation['security'] = $this->requiresAuth($route) ? [['sanctumSession' => []]] : [];
 
-        $parameters = $this->pathParameters($route);
-
-        // Financial mutations require an Idempotency-Key header (§24.4).
         if ($class === RouteClass::FinancialMutation) {
+            $parameters = is_array($operation['parameters'] ?? null) ? $operation['parameters'] : [];
             $parameters[] = [
                 'name' => 'Idempotency-Key',
                 'in' => 'header',
                 'required' => true,
                 'schema' => ['type' => 'string', 'minLength' => 16, 'maxLength' => 255],
             ];
-        }
-
-        $formRequest = $this->formRequestRules($route);
-
-        if (! $isMutation && $formRequest !== null) {
-            // GET collection: validated filters/sort/pagination become query params.
-            foreach ($formRequest as $field => $tokens) {
-                $parameters[] = [
-                    'name' => $field,
-                    'in' => 'query',
-                    'required' => in_array('required', $tokens, true),
-                    'schema' => $this->schemaForTokens($tokens),
-                ];
-            }
-        }
-
-        if ($parameters !== []) {
             $operation['parameters'] = $parameters;
         }
 
-        if ($isMutation && $formRequest !== null) {
-            $operation['requestBody'] = [
-                'required' => true,
-                'content' => ['application/json' => ['schema' => $this->bodySchema($formRequest)]],
-            ];
-        }
-
-        $operation['responses'] = $this->responses($route, $method, $class);
+        $operation['responses'] = $this->mergeResponses(
+            is_array($operation['responses'] ?? null) ? $operation['responses'] : [],
+            $route,
+            strtoupper($method),
+            $class,
+        );
 
         return $operation;
     }
 
-    /** @return array<int|string, mixed> */
-    private function responses(Route $route, string $method, ?RouteClass $class): array
+    /**
+     * Merge Scramble's success responses with the standard §11.5 error envelope
+     * responses for this route's class. Scramble's success bodies are preserved.
+     *
+     * @param  array<int|string, mixed>  $responses
+     * @return array<int|string, mixed>
+     */
+    private function mergeResponses(array $responses, Route $route, string $method, ?RouteClass $class): array
     {
-        $responses = [];
-        $successCode = str_ends_with($route->getName() ?? '', '.store') || str_ends_with($route->getName() ?? '', '.self-register')
-            ? '201'
-            : '200';
-
-        $responses[$successCode] = [
-            'description' => 'Success',
-            'content' => ['application/json' => ['schema' => ['type' => 'object']]],
-        ];
-
         if ($this->requiresAuth($route)) {
-            $responses['401'] = $this->errorRef('Unauthenticated');
-            $responses['403'] = $this->errorRef('Permission denied');
+            $responses['401'] ??= $this->errorRef('Unauthenticated');
+            $responses['403'] ??= $this->errorRef('Permission denied');
         }
 
         if ($route->parameterNames() !== []) {
-            $responses['404'] = $this->errorRef('Not found (foreign-tenant ids 404 without existence leak)');
+            $responses['404'] ??= $this->errorRef('Not found (foreign-tenant ids 404 without existence leak)');
         }
 
         if ($method !== 'GET' && ($class?->requiresValidation() ?? false)) {
-            $responses['422'] = $this->errorRef('Validation failed');
+            $responses['422'] ??= $this->errorRef('Validation failed');
         }
 
-        if ($method === 'GET' && $this->formRequestRules($route) !== null) {
-            $responses['422'] = $this->errorRef('Invalid pagination/filter/sort');
+        if ($method === 'GET' && $this->hasQueryParameters($route)) {
+            $responses['422'] ??= $this->errorRef('Invalid pagination/filter/sort');
         }
 
         if ($class === RouteClass::FinancialMutation) {
-            $responses['409'] = $this->errorRef('Idempotency conflict / request in progress');
-            $responses['423'] = $this->errorRef('Financial period locked');
+            $responses['409'] ??= $this->errorRef('Idempotency conflict / request in progress');
+            $responses['423'] ??= $this->errorRef('Financial period locked');
         }
 
-        $responses['429'] = $this->errorRef('Rate limited');
+        $responses['429'] ??= $this->errorRef('Rate limited');
 
         ksort($responses);
 
         return $responses;
+    }
+
+    /** A GET route validates query input when its Form Request contributed params. */
+    private function hasQueryParameters(Route $route): bool
+    {
+        $action = $route->getActionName();
+
+        if (! str_contains($action, '@')) {
+            return false;
+        }
+
+        [$class, $methodName] = explode('@', $action, 2);
+
+        if (! class_exists($class) || ! method_exists($class, $methodName)) {
+            return false;
+        }
+
+        foreach ((new \ReflectionMethod($class, $methodName))->getParameters() as $parameter) {
+            $type = $parameter->getType();
+            if ($type instanceof \ReflectionNamedType
+                && ! $type->isBuiltin()
+                && is_subclass_of($type->getName(), FormRequest::class)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** @return array<string, mixed> */
@@ -211,164 +270,38 @@ final class OpenApiGenerator
         ];
     }
 
-    /** @return list<array<string, mixed>> */
-    private function pathParameters(Route $route): array
+    /** @return list<Route> */
+    private function healthRoutes(): array
     {
-        $parameters = [];
+        $routes = [];
 
-        foreach ($route->parameterNames() as $param) {
-            $parameters[] = [
-                'name' => $param,
-                'in' => 'path',
-                'required' => true,
-                'description' => 'ULID public identifier',
-                'schema' => ['type' => 'string', 'minLength' => 26, 'maxLength' => 26],
-            ];
+        foreach ($this->router->getRoutes()->getRoutes() as $route) {
+            if (in_array($route->uri(), ['health', 'health/deep'], true)) {
+                $routes[] = $route;
+            }
         }
 
-        return $parameters;
+        return $routes;
     }
 
-    /**
-     * Top-level validation rules for the route's Form Request, normalized to
-     * token lists, or null when the action has no Form Request / rules cannot be
-     * resolved statically.
-     *
-     * @return array<string, list<string>>|null
-     */
-    private function formRequestRules(Route $route): ?array
+    /** @return array<string, mixed> */
+    private function healthOperation(Route $route): array
     {
-        $action = $route->getActionName();
-
-        if (! str_contains($action, '@')) {
-            return null;
-        }
-
-        [$class, $method] = explode('@', $action, 2);
-
-        if (! class_exists($class) || ! method_exists($class, $method)) {
-            return null;
-        }
-
-        $requestClass = null;
-        foreach ((new \ReflectionMethod($class, $method))->getParameters() as $parameter) {
-            $type = $parameter->getType();
-            if ($type instanceof \ReflectionNamedType && ! $type->isBuiltin() && is_subclass_of($type->getName(), FormRequest::class)) {
-                $requestClass = $type->getName();
-                break;
-            }
-        }
-
-        if ($requestClass === null) {
-            return null;
-        }
-
-        try {
-            /** @var FormRequest $instance */
-            $instance = new $requestClass;
-            $rules = method_exists($instance, 'rules') ? $instance->rules() : [];
-        } catch (\Throwable) {
-            return [];
-        }
-
-        if (! is_array($rules)) {
-            return [];
-        }
-
-        $normalized = [];
-        foreach ($rules as $field => $ruleSet) {
-            if (str_contains((string) $field, '.')) {
-                continue; // nested array rules — represented by their parent
-            }
-            $normalized[(string) $field] = $this->ruleTokens($ruleSet);
-        }
-
-        ksort($normalized);
-
-        return $normalized;
-    }
-
-    /**
-     * @param  mixed  $ruleSet
-     * @return list<string>
-     */
-    private function ruleTokens($ruleSet): array
-    {
-        if (is_string($ruleSet)) {
-            return explode('|', $ruleSet);
-        }
-
-        if (is_array($ruleSet)) {
-            return array_values(array_map(
-                fn ($rule): string => is_string($rule) ? $rule : 'rule',
-                $ruleSet,
-            ));
-        }
-
-        return ['rule'];
-    }
-
-    /**
-     * @param  array<string, list<string>>  $fields
-     * @return array<string, mixed>
-     */
-    private function bodySchema(array $fields): array
-    {
-        $properties = [];
-        $required = [];
-
-        foreach ($fields as $field => $tokens) {
-            $properties[$field] = $this->schemaForTokens($tokens);
-            if (in_array('required', $tokens, true)) {
-                $required[] = $field;
-            }
-        }
-
-        $schema = ['type' => 'object', 'properties' => $properties];
-
-        if ($required !== []) {
-            sort($required);
-            $schema['required'] = $required;
-        }
-
-        return $schema;
-    }
-
-    /**
-     * @param  list<string>  $tokens
-     * @return array<string, mixed>
-     */
-    private function schemaForTokens(array $tokens): array
-    {
-        foreach ($tokens as $token) {
-            if ($token === 'integer') {
-                return ['type' => 'integer'];
-            }
-            if ($token === 'boolean') {
-                return ['type' => 'boolean'];
-            }
-            if ($token === 'array') {
-                return ['type' => 'array', 'items' => ['type' => 'string']];
-            }
-            if ($token === 'date') {
-                return ['type' => 'string', 'format' => 'date-time'];
-            }
-        }
-
-        return ['type' => 'string'];
-    }
-
-    private function tag(Route $route): string
-    {
-        $name = $route->getName() ?? '';
-
-        if ($name === 'health' || $name === 'health.deep') {
-            return 'health';
-        }
-
-        $segment = explode('.', $name)[0];
-
-        return $segment !== '' ? $segment : 'api';
+        return [
+            'operationId' => $route->getName(),
+            'tags' => ['health'],
+            'summary' => $route->getName(),
+            'security' => [],
+            'responses' => [
+                '200' => [
+                    'description' => $route->uri() === 'health' ? 'Liveness OK' : 'Readiness OK',
+                    'content' => ['application/json' => ['schema' => ['type' => 'object']]],
+                ],
+                '503' => $route->uri() === 'health/deep'
+                    ? ['description' => 'A required dependency is unhealthy', 'content' => ['application/json' => ['schema' => ['type' => 'object']]]]
+                    : ['description' => 'Service unavailable', 'content' => ['application/json' => ['schema' => ['type' => 'object']]]],
+            ],
+        ];
     }
 
     private function requiresAuth(Route $route): bool
@@ -382,47 +315,53 @@ final class OpenApiGenerator
         return false;
     }
 
-    /** @return array<string, mixed> */
-    private function components(): array
+    /**
+     * Keep Scramble's inferred component schemas (resources, Form Requests) and add
+     * the standard error envelope. Sorted for determinism.
+     *
+     * @param  array<string, mixed>  $schemas
+     * @return array<string, mixed>
+     */
+    private function schemas(array $schemas): array
     {
-        return [
-            'schemas' => [
-                'ErrorEnvelope' => [
+        $schemas['ErrorEnvelope'] = [
+            'type' => 'object',
+            'description' => 'Standard API error envelope (Plan §11.5).',
+            'properties' => [
+                'error' => [
                     'type' => 'object',
-                    'description' => 'Standard API error envelope (Plan §11.5).',
                     'properties' => [
-                        'error' => [
-                            'type' => 'object',
-                            'properties' => [
-                                'code' => ['type' => 'string'],
-                                'message' => ['type' => 'string'],
-                                'fields' => ['type' => 'object'],
-                                'meta' => ['type' => 'object'],
-                            ],
-                            'required' => ['code', 'message'],
-                        ],
+                        'code' => ['type' => 'string'],
+                        'message' => ['type' => 'string'],
+                        'fields' => ['type' => 'object'],
+                        'meta' => ['type' => 'object'],
                     ],
-                    'required' => ['error'],
-                ],
-                'PaginationMeta' => [
-                    'type' => 'object',
-                    'description' => 'Length-aware pagination meta (default 25, max 100).',
-                    'properties' => [
-                        'current_page' => ['type' => 'integer'],
-                        'last_page' => ['type' => 'integer'],
-                        'per_page' => ['type' => 'integer'],
-                        'total' => ['type' => 'integer'],
-                    ],
+                    'required' => ['code', 'message'],
                 ],
             ],
-            'securitySchemes' => [
-                'sanctumSession' => [
-                    'type' => 'apiKey',
-                    'in' => 'cookie',
-                    'name' => 'servana_session',
-                    'description' => 'Laravel Sanctum first-party stateful session cookie + X-XSRF-TOKEN.',
-                ],
-            ],
+            'required' => ['error'],
         ];
+
+        ksort($schemas);
+
+        return $schemas;
+    }
+
+    /**
+     * @param  array<string, mixed>  $schemes
+     * @return array<string, mixed>
+     */
+    private function securitySchemes(array $schemes): array
+    {
+        $schemes['sanctumSession'] = [
+            'type' => 'apiKey',
+            'in' => 'cookie',
+            'name' => 'servana_session',
+            'description' => 'Laravel Sanctum first-party stateful session cookie + X-XSRF-TOKEN.',
+        ];
+
+        ksort($schemes);
+
+        return $schemes;
     }
 }

@@ -382,15 +382,32 @@ Example (`GET /api/v1/branches/{branch}` as Merchant Admin):
 
 ## Checkpoint 6 — OpenAPI + TypeScript contract
 
-- Deterministic route-derived generator `App\Support\OpenApi\OpenApiGenerator`
-  (+ `servana:openapi` command, `composer api:openapi`). The inventory is derived
-  from the live production route collection — never hand-maintained — and excludes
-  test-only and framework routes. **Decision:** a route-derived generator was
-  chosen over a third-party package (e.g. dedoc/scramble was evaluated) to guarantee
-  byte-deterministic output and exact control of the §11.5 error envelope, §24
-  classification-based security, the financial `Idempotency-Key` header, the
-  pagination/filter/sort parameters and ULID identifiers — and so the spec is
-  derived from the same route collection the contract tests assert (stronger parity).
+> **Correction (commit `phase-10: adopt maintained OpenAPI generator`).** The first
+> cut used a custom route-derived generator. Per the Phase 10 requirement to use a
+> **maintained Laravel 12-compatible** generator, `dedoc/scramble` was adopted as
+> the authoritative schema engine. Compatibility was proven against the locked
+> repository: `composer require dedoc/scramble --dry-run` resolved
+> **v0.13.28** cleanly on Laravel 12.62 / PHP 8.3 (adding only
+> `spatie/laravel-package-tools`), with `composer audit` reporting no advisories.
+
+- **Authoritative engine:** `dedoc/scramble` (declared in `composer.json` `require`)
+  analyses the routes, Form Requests and API Resources and produces the operations,
+  request/response/component schemas and pagination/filter/sort parameters. It
+  already emits `operationId` = route name. Configured in `AppServiceProvider`:
+  `Scramble::routes()` restricts it to the production `/api/v1` surface (test-only
+  harness routes excluded at the source, so the document is environment-identical),
+  and `Scramble::ignoreDefaultRoutes()` keeps the docs UI routes out of the app
+  (Servana ships the committed artifact, not a live docs endpoint). `api_path` is
+  `api/v1` (`config/scramble.php`).
+- **Thin wrapper** `App\Support\OpenApi\OpenApiGenerator` (+ `servana:openapi`,
+  `composer api:openapi`) invokes Scramble's `Generator` and ONLY: restores full
+  `/api/v1` paths under a single `/` server; adds the `/health` probes Scramble does
+  not cover; enforces `operationId` = route name; drives production-route parity from
+  the live route collection; augments the session security scheme, the §11.5 error
+  envelope responses and the financial `Idempotency-Key` header; and writes
+  `docs/api/openapi.json` deterministically. Determinism verified: two CLI runs
+  byte-identical, and the testing-env regeneration is byte-identical to the
+  CLI-committed file.
 - Committed artifact `docs/api/openapi.json` — **43 operations / 37 paths**: all 41
   `/api/v1/*` routes + `/health` + `/health/deep`; zero test/future operations;
   operationId = route name; `sanctumSession` security scheme; `ErrorEnvelope`
@@ -433,6 +450,23 @@ Example (`GET /api/v1/branches/{branch}` as Merchant Admin):
    `openapi.json`; `OpenApiContractTest` "byte-current" failed (1 failed). Reverted
    via `composer api:openapi`; `diff` against the pre-edit backup → identical.
 
+## Parallel-suite hardening (commit `1d25224`)
+
+- **Initial failure:** `php artisan test --parallel` failed where the serial suite
+  passed. The OpenAPI helpers `committedSpec()` / `specOperationIds()` were defined
+  as global functions inside `OpenApiContractTest.php`. Under parallel execution the
+  worker running `OpenApiTypeParityTest.php` did not load that file, so the helpers
+  were undefined → fatal "Call to undefined function" in that process.
+- **Root cause:** test helpers depended on another test file being loaded first —
+  unsafe across parallel workers.
+- **Correction:** commit `1d25224` ("test: make OpenAPI helpers parallel-safe")
+  moved `committedSpec()` and `specOperationIds()` into `tests/Pest.php` (always
+  autoloaded for every file and worker). These helpers are preserved and reused by
+  both OpenAPI tests; the maintained-generator adoption builds on top of them.
+- **Result:** the complete parallel backend suite passes — **485 passed, 4 skipped,
+  2102 assertions, 4 parallel processes** (re-run again after the Scramble adoption;
+  see results below).
+
 ## Work skipped (exact owner phases)
 
 ```
@@ -469,39 +503,59 @@ are **not** marked `verified_complete` until the Phase 10 PR merges with green C
 
 ## Test & quality results
 
-Commit `e67d2d3`, pushed to `origin/phase-10-api-foundation`.
+### Initial implementation run (commit `e67d2d3`)
+
+```
+composer pint/stan/validate ........ clean ; php artisan test ... 485 passed / 4 skipped
+api:openapi/types/contract:check ... OK ; lint 0 err ; typecheck clean ; vitest 79 ; build OK
+composer audit 0 ; npm audit high 0 ; gitleaks clean
+```
+
+### Maintained-generator correction — full gate run (commit `phase-10: adopt maintained OpenAPI generator`)
 
 ```
 PASSED:
-  composer pint -- --test ............................ 381 files, no style issues
+  composer pint -- --test ............................ 382 files, no style issues
   composer stan (Larastan level 8) ................... No errors
-  composer validate --strict ......................... valid
-  php artisan test (serial, PostgreSQL) .............. 485 passed, 4 skipped (2102 assertions)
+  composer validate --strict ......................... ./composer.json is valid
+  php artisan test (serial, PostgreSQL) .............. 489 passed, 4 skipped (2110 assertions)
     incl. RouteSecurityContractTest(7), ForbiddenRouteAbsenceTest(2),
           FinancialRouteIdempotencyCoverageTest(3), PaginationContractTest(8),
           FilterSortContractTest(5), ResourceCapabilityMapTest(4),
-          OpenApiContractTest(6), OpenApiTypeParityTest(4), MigrationManifestTest(6)
+          OpenApiContractTest(9: +declares dedoc/scramble, +authoritative engine, +pagination params),
+          OpenApiTypeParityTest(5: +scramble component schemas), MigrationManifestTest(6)
+  php artisan test --parallel ........................ 489 passed, 4 skipped, 4 processes
   php artisan audit:verify-chain ..................... OK (no chains on dev DB)
-  composer api:openapi ............................... docs/api/openapi.json (43 ops)
-  npm run api:types .................................. resources/spa/src/types/generated/api.ts
+  composer api:openapi ............................... docs/api/openapi.json (43 ops, dedoc/scramble authoritative)
+  npm run api:types .................................. resources/spa/src/types/generated/api.ts (openapi-typescript 7.4.4)
   npm run api:contract:check ......................... OK — 37 paths, 43 operations
   npm run lint ....................................... 0 errors (28 pre-existing warnings)
   npm run typecheck (vue-tsc) ........................ clean
-  npm run test (vitest) .............................. 17 files, 79 passed (clean rerun)
-  npm run build ...................................... built in 29.58s
-  composer audit --locked ............................ 0 advisories
+  npm run test (vitest) .............................. 17 files, 79 passed (single-worker isolated run)
+  npm run build ...................................... built in 40.92s
+  composer audit --locked ............................ No advisories
   npm audit --audit-level=high ....................... exit 0 (2 moderate dev-only, below gate)
   gitleaks detect --no-git --redact .................. no leaks (also clean as pre-commit hook)
+  docker build php.Dockerfile --target dev ........... DONE (one external Docker Hub TLS-handshake timeout, clean rerun)
+  docker build nginx.Dockerfile --target prod ........ DONE (incl. SPA build)
+  npm run e2e (playwright, isolation) ................ STALLED on this Windows host (see below)
 
 FLAKED then passed (recorded, not erased):
-  npm run test (first run) ........................... 69 passed + 3 teardown errors while
-    running concurrently with the docker backend suite + composer audit; isolated
-    rerun = 17 files / 79 passed / 0 errors. No frontend source changed in Phase 10.
+  npm run test (vitest) .............................. under concurrent docker load the Windows forks
+    pool failed to spawn workers (69/72-79 passed + 3-9 "failed to start forks worker" infra errors,
+    not assertion failures). Re-run with --no-file-parallelism (single worker): 17 files / 79 passed
+    / 0 errors. No frontend source changed in this correction (only the generated api.ts + tests).
+  docker build php.Dockerfile (first attempt) ........ external Docker Hub TLS-handshake timeout pulling
+    php:8.3-fpm-alpine; clean rerun built (DONE 318s). Not a Dockerfile/code defect.
 
-DEFERRED to CI (environment-heavy; unaffected by Phase 10 — no Dockerfile/e2e-flow change):
-  php artisan test --parallel ........................ CI backend job (per-process namespacing from R7)
-  docker build php.Dockerfile --target dev ........... CI docker job
-  docker build nginx.Dockerfile --target prod ........ CI docker job
-  npm run e2e (playwright) ........................... CI / known env-flaky on Windows (Phase 23 owns the gate)
+NOT COMPLETED on this host (environment, not a code defect):
+  npm run e2e (playwright) ........................... STALLED — the Vite preview webServer started
+    (port 4173 LISTENING) but the Playwright workers hung without producing a run (no
+    test-results/.last-run.json after >10 min); the run was terminated. This is a documented
+    Windows webServer/worker flake (R5/R6/R7 proofs record the same e2e instability; Phase 23
+    owns the release e2e gate). This correction changes NO e2e flow and NO frontend runtime
+    code — only the generated TypeScript types (eslint-ignored, not imported by app code), the
+    backend OpenAPI generator, config, and tests — so e2e behaviour is unaffected. The Linux
+    CI frontend job runs Playwright and is authoritative; the SPA `npm run build` passed here.
 ```
 

@@ -81,7 +81,7 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 - **Security contract:** `RouteSecurityContractTest` + `ForbiddenRouteAbsenceTest`; `FinancialRouteIdempotencyCoverageTest` preserved.
 - **Pagination/filter/sort substrate:** `App\Http\Api\ApiPagination` (default 25 / max 100 / over-limit 422 / allowlisted sort + stable tiebreaker); retrofitted `branches.index`, `staff.index`, `staff-invitations.index` with new index Form Requests.
 - **Resource can-maps:** `HasCapabilities` concern applied to Branch/StaffProfile/StaffInvitation/AuditLog resources (policy-derived, booleans, ULID ids only).
-- **OpenAPI + TS contract:** deterministic route-derived generator (`composer api:openapi` → `docs/api/openapi.json`, 43 ops / 37 paths, no test/future ops); `npm run api:types` → `resources/spa/src/types/generated/api.ts` (openapi-typescript@7.4.4); `npm run api:contract:check` (wired into frontend CI).
+- **OpenAPI + TS contract:** maintained **dedoc/scramble** (v0.13.28, declared in `composer.json` `require`) is the authoritative schema engine; a thin `App\Support\OpenApi\OpenApiGenerator` wrapper invokes it and applies determinism, full `/api/v1` paths, testing exclusion (`Scramble::routes()`), operationId=route name, health probes, security scheme, error envelope and the financial Idempotency-Key (`composer api:openapi` → `docs/api/openapi.json`, 43 ops / 37 paths, no test/future ops; `Scramble::ignoreDefaultRoutes()` keeps the docs UI out of the app). `npm run api:types` → `resources/spa/src/types/generated/api.ts` (openapi-typescript@7.4.4); `npm run api:contract:check` (wired into frontend CI).
 - **Migration governance (REM-MIG-001):** ADR-004 + `docs/architecture/migrations/{README.md,manifest.yaml}` (all 33 migrations) + `MigrationManifestTest`. No shipped migration edited.
 
 ### Current routes remediated
@@ -112,8 +112,12 @@ platform_mutation / provider_webhook_mutation real routes -> owning Phase 20 sub
 ### Pending CI / review / merge
 - Push `phase-10-api-foundation`; confirm CI Backend/Frontend/Docker/Security green; then flip REM-ROUTE-001/REM-MIG-001 → `verified_complete` after merge (solo-maintainer governance exception, not independent approval).
 
+### Parallel-suite + maintained-generator corrections
+- **Parallel failure → fix (`1d25224`):** the OpenAPI helpers `committedSpec()`/`specOperationIds()` lived in `OpenApiContractTest.php`, so a parallel worker running `OpenApiTypeParityTest.php` hit an undefined function. Moved them to `tests/Pest.php` (always autoloaded). Full parallel suite: **485 passed / 4 skipped / 2102 assertions / 4 processes**.
+- **Maintained generator (`phase-10: adopt maintained OpenAPI generator`):** replaced the interim custom route-derived generator with **dedoc/scramble** as the authoritative engine (compatibility proven via `--dry-run`: v0.13.28 on L12.62/PHP8.3, no advisories); the wrapper is now thin.
+
 ### Known risks
-- OpenAPI response **body** schemas are generic (`type: object`); full per-Resource schemas land as resources stabilise in feature phases.
+- OpenAPI response schemas are now Scramble-inferred from Resources/Form Requests; component schemas may evolve as resources stabilise in feature phases (regeneration is deterministic and CI-guarded).
 - `openapi-typescript` adds 2 **moderate** (dev-only) advisories via `@redocly/openapi-core` — below the `--audit-level=high` gate.
 
 ### Context required by Phase 10F

@@ -11,7 +11,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** audit-logs.index */
         get: operations["audit-logs.index"];
         put?: never;
         post?: never;
@@ -28,7 +27,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** audit-logs.show */
         get: operations["audit-logs.show"];
         put?: never;
         post?: never;
@@ -47,7 +45,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** auth.logout */
+        /** POST /auth/logout — invalidate the session and rotate the CSRF token */
         post: operations["auth.logout"];
         delete?: never;
         options?: never;
@@ -64,7 +62,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** auth.magic-link.request */
+        /** POST /auth/magic-link — always 202, never reveals account existence */
         post: operations["auth.magic-link.request"];
         delete?: never;
         options?: never;
@@ -81,7 +79,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** auth.magic-link.verify */
+        /** POST /auth/magic-link/verify — atomic consume, then session login with id
+         *     regeneration (fixation defense). Uniform 422 on any failure */
         post: operations["auth.magic-link.verify"];
         delete?: never;
         options?: never;
@@ -96,7 +95,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** auth.mfa.status */
+        /** GET /auth/mfa — safe MFA state for the SPA */
         get: operations["auth.mfa.status"];
         put?: never;
         post?: never;
@@ -115,7 +114,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** auth.mfa.challenge */
+        /** POST /auth/mfa/challenge — verify a TOTP code, asserting the session */
         post: operations["auth.mfa.challenge"];
         delete?: never;
         options?: never;
@@ -132,7 +131,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** auth.mfa.confirm */
+        /** POST /auth/mfa/confirm — confirm enrollment; returns recovery codes once */
         post: operations["auth.mfa.confirm"];
         delete?: never;
         options?: never;
@@ -149,7 +148,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** auth.mfa.enroll */
+        /** POST /auth/mfa/enroll — start TOTP enrollment; returns the secret + URI once */
         post: operations["auth.mfa.enroll"];
         delete?: never;
         options?: never;
@@ -166,7 +165,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** auth.mfa.recovery-challenge */
+        /** POST /auth/mfa/recovery-challenge — same contract, via a recovery code */
         post: operations["auth.mfa.recovery-challenge"];
         delete?: never;
         options?: never;
@@ -183,7 +182,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** auth.mfa.recovery-codes.regenerate */
+        /** POST /auth/mfa/recovery-codes — regenerate the recovery-code set
+         *     (step-up protected at the route). Returns the new codes once */
         post: operations["auth.mfa.recovery-codes.regenerate"];
         delete?: never;
         options?: never;
@@ -198,10 +198,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** branches.index */
         get: operations["branches.index"];
         put?: never;
-        /** branches.store */
         post: operations["branches.store"];
         delete?: never;
         options?: never;
@@ -216,14 +214,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** branches.show */
         get: operations["branches.show"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** branches.update */
         patch: operations["branches.update"];
         trace?: never;
     };
@@ -236,7 +232,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** branches.archive */
         post: operations["branches.archive"];
         delete?: never;
         options?: never;
@@ -253,7 +248,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** branches.day.close */
         post: operations["branches.day.close"];
         delete?: never;
         options?: never;
@@ -270,7 +264,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** branches.day.open */
         post: operations["branches.day.open"];
         delete?: never;
         options?: never;
@@ -285,9 +278,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** branches.operating-hours.show */
         get: operations["branches.operating-hours.show"];
-        /** branches.operating-hours.update */
         put: operations["branches.operating-hours.update"];
         post?: never;
         delete?: never;
@@ -303,7 +294,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** hr.permission-preview */
         get: operations["hr.permission-preview"];
         put?: never;
         post?: never;
@@ -320,7 +310,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** me */
         get: operations["me"];
         put?: never;
         post?: never;
@@ -337,10 +326,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** merchant-registration.first-time-setup.show */
         get: operations["merchant-registration.first-time-setup.show"];
         put?: never;
-        /** merchant-registration.first-time-setup.store */
         post: operations["merchant-registration.first-time-setup.store"];
         delete?: never;
         options?: never;
@@ -357,7 +344,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** merchant-registration.self-register */
         post: operations["merchant-registration.self-register"];
         delete?: never;
         options?: never;
@@ -372,7 +358,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** merchant.dashboard */
         get: operations["merchant.dashboard"];
         put?: never;
         post?: never;
@@ -389,7 +374,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** platform.audit-logs.index */
         get: operations["platform.audit-logs.index"];
         put?: never;
         post?: never;
@@ -406,7 +390,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** platform.audit-logs.show */
         get: operations["platform.audit-logs.show"];
         put?: never;
         post?: never;
@@ -423,7 +406,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** staff.index */
         get: operations["staff.index"];
         put?: never;
         post?: never;
@@ -440,10 +422,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** staff-invitations.index */
         get: operations["staff-invitations.index"];
         put?: never;
-        /** staff-invitations.store */
         post: operations["staff-invitations.store"];
         delete?: never;
         options?: never;
@@ -460,7 +440,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** staff-invitations.accept */
         post: operations["staff-invitations.accept"];
         delete?: never;
         options?: never;
@@ -477,7 +456,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** staff-invitations.resend */
         post: operations["staff-invitations.resend"];
         delete?: never;
         options?: never;
@@ -494,7 +472,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** staff-invitations.revoke */
         post: operations["staff-invitations.revoke"];
         delete?: never;
         options?: never;
@@ -509,7 +486,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** staff.show */
         get: operations["staff.show"];
         put?: never;
         post?: never;
@@ -528,7 +504,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** staff.activate */
         post: operations["staff.activate"];
         delete?: never;
         options?: never;
@@ -545,7 +520,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** staff.deactivate */
         post: operations["staff.deactivate"];
         delete?: never;
         options?: never;
@@ -560,10 +534,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** staff.permissions.show */
         get: operations["staff.permissions.show"];
         put?: never;
-        /** staff.permissions.store */
         post: operations["staff.permissions.store"];
         delete?: never;
         options?: never;
@@ -581,7 +553,6 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        /** staff.permissions.destroy */
         delete: operations["staff.permissions.destroy"];
         options?: never;
         head?: never;
@@ -597,7 +568,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** staff.suspend */
         post: operations["staff.suspend"];
         delete?: never;
         options?: never;
@@ -643,6 +613,154 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AcceptStaffInvitationRequest
+         * @description Validate staff-invitation acceptance (Scope §3.4). Public (token-based). Phone
+         *     must be unique among active staff platform-wide (Duplicate Staff Prevention);
+         *     the DB partial unique index is the backstop.
+         */
+        AcceptStaffInvitationRequest: {
+            token: string;
+            first_name: string;
+            last_name: string;
+            phone: string;
+        };
+        /** AuditLogResource */
+        AuditLogResource: {
+            id: string;
+            action: string;
+            severity: string;
+            actor: string | null;
+            branch?: string;
+            subject_type: string | null;
+            context: string;
+            correlation_id: string | null;
+            created_at: string;
+            can: {
+                [key: string]: boolean;
+            };
+        };
+        /** AuthenticatedUserResource */
+        AuthenticatedUserResource: {
+            user: {
+                id: string | null;
+                email: string;
+                name: string;
+                status: string;
+                email_verified_at: string;
+                is_platform_staff: boolean;
+            };
+            merchant: unknown[] | null;
+            membership: unknown[] | null;
+            /** @description Retained for guard compatibility; mirrors the single active membership. */
+            memberships: [
+                unknown[] | null
+            ] | string[];
+            /** @description Active branch assignments (Plan §8.2). Empty for a merchant_admin —
+             *     they see all own-merchant branches — and for non-merchant users. */
+            branch_ids: unknown[];
+            /** @description Resolved permission keys (Plan §10.3): role default grants ± per-user
+             *     overrides, request-cached by TenantContext. UX only — the backend
+             *     (EnsurePermission + policies) is the security boundary. */
+            permissions: string;
+            setup: {
+                required: string;
+                current_step: string;
+                completed_at: string;
+            } | {
+                required: boolean;
+                current_step: null;
+                completed_at: null;
+            };
+            /** @description Safe MFA state (Plan §18): drives the SPA enrollment/challenge/
+             *     step-up routing. Never exposes the secret or recovery-code hashes. */
+            mfa: string;
+        };
+        /** BranchResource */
+        BranchResource: {
+            id: string;
+            name: string;
+            code: string;
+            address: string | null;
+            town: string | null;
+            phone: string | null;
+            email: string | null;
+            business_category: string | null;
+            status: string;
+            status_reason: string | null;
+            archived_at: string;
+            can: {
+                [key: string]: boolean;
+            };
+        };
+        /**
+         * CompleteFirstTimeSetupRequest
+         * @description Validates first-time setup completion (Scope §3.2 steps 1–5).
+         *
+         *     Route access (pending_setup + merchant_admin) is enforced by middleware; this
+         *     validates the payload shape. Cross-field rules ensure the two initial staff
+         *     emails are distinct from each other and from the owner — the Merchant
+         *     Administrator may add ONLY a Branch Manager and an HR user (Scope §3.2
+         *     "Add only ... Branch account user ... and ... Human Resource account user").
+         */
+        CompleteFirstTimeSetupRequest: {
+            /** @enum {string} */
+            service_fee_tier: "customer_centric" | "split_tier" | "business_centric";
+            business_category: string;
+            contact_phone: string;
+            /** Format: email */
+            contact_email?: string | null;
+            receipt_display_name?: string | null;
+            address?: string | null;
+            town?: string | null;
+            timezone?: string | null;
+            /** Format: email */
+            branch_manager_email: string;
+            /** Format: email */
+            hr_email: string;
+            branch: {
+                name: string;
+                code: string;
+                town?: string | null;
+                address?: string | null;
+                phone?: string | null;
+                /** Format: email */
+                email?: string | null;
+            };
+        };
+        /**
+         * CreateBranchRequest
+         * @description Validate branch creation (Scope §3.3). Code is unique per merchant (admin-only
+         *     authority is enforced in the controller).
+         */
+        CreateBranchRequest: {
+            name: string;
+            code: string;
+            address?: string | null;
+            town?: string | null;
+            phone?: string | null;
+            /** Format: email */
+            email?: string | null;
+            business_category?: string | null;
+        };
+        /**
+         * CreateStaffInvitationRequest
+         * @description Validate a staff invitation (Scope §3.4). Branch is referenced by ULID; a
+         *     duplicate PENDING invite for the same merchant+email+role+branch is blocked
+         *     (the DB partial unique index is the backstop).
+         */
+        CreateStaffInvitationRequest: {
+            /** Format: email */
+            email: string;
+            branch_id: string;
+            /**
+             * @description Invitable roles only — never merchant_admin (Scope §3.2 / §3.4).
+             * @enum {string}
+             */
+            role: "branch_manager" | "hr" | "finance" | "front_office" | "personnel" | "audit";
+            role_title?: string | null;
+            service_eligibility_ids?: number[] | null;
+        };
         /** @description Standard API error envelope (Plan §11.5). */
         ErrorEnvelope: {
             error: {
@@ -652,15 +770,192 @@ export interface components {
                 meta?: Record<string, never>;
             };
         };
-        /** @description Length-aware pagination meta (default 25, max 100). */
-        PaginationMeta: {
-            current_page?: number;
-            last_page?: number;
-            per_page?: number;
-            total?: number;
+        /** MerchantResource */
+        MerchantResource: {
+            id: string;
+            name: string;
+            slug: string;
+            status: string;
+            service_fee_tier: string;
+            setup_completed_at: string;
+        };
+        /**
+         * MfaCodeRequest
+         * @description Validates a submitted MFA code — a 6-digit TOTP or a recovery code (Plan §18).
+         *
+         *     Only shape is validated; whether the code is genuine is decided by the TOTP
+         *     verification / atomic recovery-code consume, never by validation, so timing
+         *     and messages stay uniform. Authorization is the route's `auth:sanctum` +
+         *     EnsurePrivilegedMfa; this request is shared by confirm/challenge/recovery.
+         */
+        MfaCodeRequest: {
+            code: string;
+        };
+        /**
+         * RegisterMerchantRequest
+         * @description Validates Merchant Administrator self-registration (Scope §3.2).
+         *
+         *     Public endpoint (no auth). Deliberately minimal + safe: owner name, email,
+         *     business name. No KYC / compliance fields exist (Scope §3.1 exclusion). Email
+         *     uniqueness is NOT asserted here — duplicate emails are handled uniformly in
+         *     the action so this endpoint cannot enumerate existing accounts.
+         */
+        RegisterMerchantRequest: {
+            owner_name: string;
+            /** Format: email */
+            email: string;
+            business_name: string;
+        };
+        /**
+         * RequestMagicLinkRequest
+         * @description Validates a Magic Link request (Plan §9.1). Public endpoint — no auth.
+         */
+        RequestMagicLinkRequest: {
+            /** Format: email */
+            email: string;
+        };
+        /** StaffInvitationResource */
+        StaffInvitationResource: {
+            id: string;
+            email: string;
+            role: string;
+            role_title: string | null;
+            branch_id: string;
+            status: string;
+            resend_count: number;
+            expires_at: string;
+            last_sent_at: string;
+            can: {
+                [key: string]: boolean;
+            };
+        };
+        /** StaffProfileResource */
+        StaffProfileResource: {
+            id: string;
+            first_name: string;
+            last_name: string;
+            display_name: string;
+            phone: string;
+            role: string;
+            role_title: string | null;
+            /** @description Membership status drives the UI badge: invited|active|suspended|deactivated. */
+            status: string;
+            employment_type: string;
+            employment_status: string;
+            primary_branch_id: string;
+            is_active: boolean;
+            can: {
+                [key: string]: boolean;
+            };
+        };
+        /**
+         * StorePermissionOverrideRequest
+         * @description Validate a permission-override request (Plan §10.3). The capability key must
+         *     exist in the seeded catalogue; authority + grantability + anti-escalation are
+         *     enforced by PermissionOverrideService.
+         */
+        StorePermissionOverrideRequest: {
+            permission: string;
+            /** @enum {string} */
+            effect: "grant" | "deny";
+            reason?: string | null;
+        };
+        /**
+         * UpdateBranchRequest
+         * @description Validate a branch profile update (Scope §3.3). Code stays unique per merchant,
+         *     ignoring the current branch.
+         */
+        UpdateBranchRequest: {
+            name?: string;
+            code?: string;
+            address?: string | null;
+            town?: string | null;
+            phone?: string | null;
+            /** Format: email */
+            email?: string | null;
+            business_category?: string | null;
+        };
+        /**
+         * UpdateOperatingHoursRequest
+         * @description Validate a weekly operating-hours upsert (Scope §3.3 Branch Operating
+         *     Calendar). Expects one entry per weekday (0–6).
+         */
+        UpdateOperatingHoursRequest: {
+            hours: {
+                weekday: number;
+                is_closed: boolean;
+                opens_at?: string | null;
+                closes_at?: string | null;
+                break_start?: string | null;
+                break_end?: string | null;
+            }[];
+        };
+        /**
+         * VerifyMagicLinkRequest
+         * @description Validates a Magic Link verify submission (Plan §9.1). Public endpoint.
+         *
+         *     Only shape is validated here; whether the token is genuine/unexpired/unused is
+         *     decided by the atomic consume, never by validation (so timing and messages
+         *     stay uniform — no enumeration).
+         */
+        VerifyMagicLinkRequest: {
+            token: string;
         };
     };
-    responses: never;
+    responses: {
+        /** @description Validation error */
+        ValidationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Errors overview. */
+                    message: string;
+                    /** @description A detailed description of each field that failed validation. */
+                    errors: {
+                        [key: string]: string[];
+                    };
+                };
+            };
+        };
+        /** @description Unauthenticated */
+        AuthenticationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+        /** @description Not found */
+        ModelNotFoundException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+        /** @description Authorization error */
+        AuthorizationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+    };
     parameters: never;
     requestBodies: never;
     headers: never;
@@ -671,15 +966,17 @@ export interface operations {
     "audit-logs.index": {
         parameters: {
             query?: {
-                action?: string;
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "unauthorized_access";
+                severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
+                /** @description user ULID */
                 branch?: string;
+                /** @description branch ULID */
+                subject_type?: "MerchantBranch" | "MerchantUser" | "StaffInvitation" | "StaffProfile" | "BranchDayRecord" | "BranchUserAssignment" | "MerchantUserPermissionOverride";
                 date_from?: string;
                 date_to?: string;
+                sort?: "created_at" | "-created_at" | "severity" | "-severity" | "action" | "-action";
                 per_page?: number;
-                severity?: string;
-                sort?: string;
-                subject_type?: string;
             };
             header?: never;
             path?: never;
@@ -687,42 +984,45 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description Paginated set of `AuditLogResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["AuditLogResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Invalid pagination/filter/sort */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -739,49 +1039,27 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The audit log ulid */
                 auditLog: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description `AuditLogResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["AuditLogResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -802,24 +1080,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
-            200: {
+            /** @description No content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": Record<string, never>;
-                };
+                content?: never;
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -858,30 +1126,22 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    email: string;
-                };
+                "application/json": components["schemas"]["RequestMagicLinkRequest"];
             };
         };
         responses: {
-            /** @description Success */
-            200: {
+            202: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        /** @constant */
+                        message: "If the email exists and is active, a link was sent.";
+                    };
                 };
             };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -902,30 +1162,22 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    token: string;
-                };
+                "application/json": components["schemas"]["VerifyMagicLinkRequest"];
             };
         };
         responses: {
-            /** @description Success */
+            /** @description `AuthenticatedUserResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["AuthenticatedUserResource"];
+                    };
                 };
             };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -946,24 +1198,29 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            mfa: {
+                                required: boolean;
+                                enrolled: boolean;
+                                confirmed: string;
+                                verified: string;
+                                enrollment_required: string;
+                                challenge_required: string;
+                                step_up_fresh: string;
+                                step_up_fresh_until: null;
+                                recovery_codes_remaining: number;
+                            };
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -993,30 +1250,22 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    code: string;
-                };
+                "application/json": components["schemas"]["MfaCodeRequest"];
             };
         };
         responses: {
-            /** @description Success */
+            /** @description `AuthenticatedUserResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["AuthenticatedUserResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1026,15 +1275,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1055,30 +1296,34 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    code: string;
-                };
+                "application/json": components["schemas"]["MfaCodeRequest"];
             };
         };
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            recovery_codes: string[];
+                            mfa: {
+                                required: boolean;
+                                enrolled: boolean;
+                                confirmed: string;
+                                verified: string;
+                                enrollment_required: string;
+                                challenge_required: string;
+                                step_up_fresh: string;
+                                step_up_fresh_until: null;
+                                recovery_codes_remaining: number;
+                            };
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1088,15 +1333,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1117,24 +1354,31 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            secret: string;
+                            otpauth_uri: string;
+                            mfa: {
+                                required: boolean;
+                                enrolled: boolean;
+                                confirmed: string;
+                                verified: string;
+                                enrollment_required: string;
+                                challenge_required: string;
+                                step_up_fresh: string;
+                                step_up_fresh_until: null;
+                                recovery_codes_remaining: number;
+                            };
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1173,30 +1417,22 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    code: string;
-                };
+                "application/json": components["schemas"]["MfaCodeRequest"];
             };
         };
         responses: {
-            /** @description Success */
+            /** @description `AuthenticatedUserResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["AuthenticatedUserResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1206,15 +1442,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1235,24 +1463,19 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            recovery_codes: string[];
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1286,8 +1509,8 @@ export interface operations {
         parameters: {
             query?: {
                 per_page?: number;
-                sort?: string;
-                status?: string;
+                sort?: "name" | "-name" | "created_at" | "-created_at";
+                status?: "active" | "suspended" | "archived";
             };
             header?: never;
             path?: never;
@@ -1295,24 +1518,43 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description Paginated set of `BranchResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["BranchResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1322,15 +1564,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Invalid pagination/filter/sort */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1351,54 +1585,38 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    address?: string;
-                    business_category?: string;
-                    code: string;
-                    email?: string;
-                    name: string;
-                    phone?: string;
-                    town?: string;
-                };
+                "application/json": components["schemas"]["CreateBranchRequest"];
             };
         };
         responses: {
-            /** @description Success */
+            /** @description `BranchResource` */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["BranchResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
                 };
             };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1415,31 +1633,25 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The branch ulid */
                 branch: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description `BranchResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["BranchResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1449,15 +1661,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1474,43 +1678,29 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The branch ulid */
                 branch: string;
             };
             cookie?: never;
         };
-        requestBody: {
+        requestBody?: {
             content: {
-                "application/json": {
-                    address?: string;
-                    business_category?: string;
-                    code: string;
-                    email?: string;
-                    name: string;
-                    phone?: string;
-                    town?: string;
-                };
+                "application/json": components["schemas"]["UpdateBranchRequest"];
             };
         };
         responses: {
-            /** @description Success */
+            /** @description `BranchResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["BranchResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1520,24 +1710,8 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1554,31 +1728,31 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The branch ulid */
                 branch: string;
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": {
+                    reason?: string;
+                };
+            };
+        };
         responses: {
-            /** @description Success */
+            /** @description `BranchResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["BranchResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1588,15 +1762,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Validation failed */
             422: {
                 headers: {
@@ -1622,31 +1788,27 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The branch ulid */
                 branch: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            business_date: string;
+                            status: string;
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1656,15 +1818,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Validation failed */
             422: {
                 headers: {
@@ -1690,31 +1844,27 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The branch ulid */
                 branch: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            business_date: string;
+                            status: string;
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1724,15 +1874,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Validation failed */
             422: {
                 headers: {
@@ -1758,31 +1900,31 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The branch ulid */
                 branch: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            weekday: number;
+                            opens_at: string | null;
+                            closes_at: string | null;
+                            is_closed: boolean;
+                            break_start: string | null;
+                            break_end: string | null;
+                        }[];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1792,15 +1934,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1817,37 +1951,35 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The branch ulid */
                 branch: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": {
-                    hours: string[];
-                };
+                "application/json": components["schemas"]["UpdateOperatingHoursRequest"];
             };
         };
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            weekday: number;
+                            opens_at: string | null;
+                            closes_at: string | null;
+                            is_closed: boolean;
+                            break_start: string | null;
+                            break_end: string | null;
+                        }[];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1857,24 +1989,8 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1888,31 +2004,30 @@ export interface operations {
     };
     "hr.permission-preview": {
         parameters: {
-            query?: never;
+            query: {
+                role: "merchant_admin" | "branch_manager" | "hr" | "finance" | "front_office" | "personnel" | "audit";
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            role: string;
+                            default_grants: string[];
+                            grantable: string[];
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1922,6 +2037,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -1942,24 +2058,18 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description `AuthenticatedUserResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["AuthenticatedUserResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -1989,31 +2099,40 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            merchant: components["schemas"]["MerchantResource"];
+                            setup: {
+                                required: boolean;
+                                /** @enum {string} */
+                                current_step: "review" | "staff" | "branch" | "merchant_profile" | "service_fee_tier" | "done";
+                            };
+                            options: {
+                                service_fee_tiers: unknown[];
+                            };
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
                 };
             };
             /** @description Rate limited */
@@ -2036,58 +2155,42 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    address?: string;
-                    branch: string[];
-                    branch_manager_email: string;
-                    business_category: string;
-                    contact_email?: string;
-                    contact_phone: string;
-                    hr_email: string;
-                    receipt_display_name?: string;
-                    service_fee_tier: string;
-                    timezone?: string;
-                    town?: string;
-                };
+                "application/json": components["schemas"]["CompleteFirstTimeSetupRequest"];
             };
         };
         responses: {
-            /** @description Success */
-            201: {
+            /** @description Step 7 — signal the SPA to redirect the now-active owner to the dashboard. */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            merchant: components["schemas"]["MerchantResource"];
+                            /** @constant */
+                            redirect: "merchant.dashboard";
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
                 };
             };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2108,32 +2211,22 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    business_name: string;
-                    email: string;
-                    owner_name: string;
-                };
+                "application/json": components["schemas"]["RegisterMerchantRequest"];
             };
         };
         responses: {
-            /** @description Success */
-            201: {
+            202: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        /** @constant */
+                        message: "If this is a new business, we have sent a sign-in link to continue setup. Please check your email.";
+                    };
                 };
             };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2154,31 +2247,41 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            merchant: components["schemas"]["MerchantResource"];
+                            shell: {
+                                sections: [
+                                    "overview",
+                                    "branches",
+                                    "staff",
+                                    "reports"
+                                ];
+                                ready: boolean;
+                            };
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
             403: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
                 };
             };
             /** @description Rate limited */
@@ -2195,15 +2298,17 @@ export interface operations {
     "platform.audit-logs.index": {
         parameters: {
             query?: {
-                action?: string;
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "unauthorized_access";
+                severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
+                /** @description user ULID */
                 branch?: string;
+                /** @description branch ULID */
+                subject_type?: "MerchantBranch" | "MerchantUser" | "StaffInvitation" | "StaffProfile" | "BranchDayRecord" | "BranchUserAssignment" | "MerchantUserPermissionOverride";
                 date_from?: string;
                 date_to?: string;
+                sort?: "created_at" | "-created_at" | "severity" | "-severity" | "action" | "-action";
                 per_page?: number;
-                severity?: string;
-                sort?: string;
-                subject_type?: string;
             };
             header?: never;
             path?: never;
@@ -2211,42 +2316,45 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description Paginated set of `AuditLogResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["AuditLogResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Invalid pagination/filter/sort */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2263,49 +2371,27 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The audit log ulid */
                 auditLog: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description `AuditLogResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["AuditLogResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2320,10 +2406,10 @@ export interface operations {
     "staff.index": {
         parameters: {
             query?: {
-                employment_status?: string;
-                employment_type?: string;
                 per_page?: number;
-                sort?: string;
+                sort?: "display_name" | "-display_name" | "created_at" | "-created_at";
+                employment_status?: "employed" | "on_leave" | "terminated";
+                employment_type?: "full_time" | "part_time" | "contract" | "commission_only";
             };
             header?: never;
             path?: never;
@@ -2331,24 +2417,43 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description Paginated set of `StaffProfileResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["StaffProfileResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -2358,15 +2463,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Invalid pagination/filter/sort */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2382,9 +2479,9 @@ export interface operations {
         parameters: {
             query?: {
                 per_page?: number;
-                role?: string;
-                sort?: string;
-                status?: string;
+                sort?: "created_at" | "-created_at";
+                status?: "pending" | "accepted" | "revoked" | "expired";
+                role?: "merchant_admin" | "branch_manager" | "hr" | "finance" | "front_office" | "personnel" | "audit";
             };
             header?: never;
             path?: never;
@@ -2392,24 +2489,43 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description Paginated set of `StaffInvitationResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["StaffInvitationResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -2419,15 +2535,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Invalid pagination/filter/sort */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2448,52 +2556,24 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    branch_id: string;
-                    email: string;
-                    role: string;
-                    role_title?: string;
-                    service_eligibility_ids?: string[];
-                };
+                "application/json": components["schemas"]["CreateStaffInvitationRequest"];
             };
         };
         responses: {
-            /** @description Success */
+            /** @description `StaffInvitationResource` */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["StaffInvitationResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2514,33 +2594,22 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    first_name: string;
-                    last_name: string;
-                    phone: string;
-                    token: string;
-                };
+                "application/json": components["schemas"]["AcceptStaffInvitationRequest"];
             };
         };
         responses: {
-            /** @description Success */
-            200: {
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        /** @constant */
+                        message: "Your account is ready. Use your email to request a secure sign-in link.";
+                    };
                 };
             };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2557,31 +2626,25 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The invitation ulid */
                 invitation: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description `StaffInvitationResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["StaffInvitationResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -2591,15 +2654,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Validation failed */
             422: {
                 headers: {
@@ -2625,31 +2680,25 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The invitation ulid */
                 invitation: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description `StaffInvitationResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["StaffInvitationResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -2659,15 +2708,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Validation failed */
             422: {
                 headers: {
@@ -2693,31 +2734,25 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The staff ulid */
                 staff: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description `StaffProfileResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["StaffProfileResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -2727,15 +2762,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2752,31 +2779,25 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The staff ulid */
                 staff: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description `StaffProfileResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["StaffProfileResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -2786,15 +2807,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Validation failed */
             422: {
                 headers: {
@@ -2820,31 +2833,31 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The staff ulid */
                 staff: string;
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": {
+                    reason?: string;
+                };
+            };
+        };
         responses: {
-            /** @description Success */
+            /** @description `StaffProfileResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["StaffProfileResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -2854,15 +2867,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Validation failed */
             422: {
                 headers: {
@@ -2888,49 +2893,37 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The staff ulid */
                 staff: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            membership: string;
+                            role: string;
+                            permissions: unknown[];
+                            default_grants: string[];
+                            grantable: string[];
+                            overrides: {
+                                permission: string;
+                                effect: string;
+                                reason: string | null;
+                            }[];
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Permission denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -2947,39 +2940,31 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The staff ulid */
                 staff: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": {
-                    effect: string;
-                    permission: string;
-                    reason?: string;
-                };
+                "application/json": components["schemas"]["StorePermissionOverrideRequest"];
             };
         };
         responses: {
-            /** @description Success */
-            201: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            membership: string;
+                            permissions: unknown[];
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -2989,24 +2974,8 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -3023,33 +2992,29 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The staff ulid */
                 staff: string;
-                /** @description ULID public identifier */
+                /** @description The permission key */
                 permission: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: {
+                            membership: string;
+                            permissions: unknown[];
+                        };
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -3059,15 +3024,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Validation failed */
             422: {
                 headers: {
@@ -3093,31 +3050,31 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description ULID public identifier */
+                /** @description The staff ulid */
                 staff: string;
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": {
+                    reason?: string;
+                };
+            };
+        };
         responses: {
-            /** @description Success */
+            /** @description `StaffProfileResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": Record<string, never>;
+                    "application/json": {
+                        data: components["schemas"]["StaffProfileResource"];
+                    };
                 };
             };
-            /** @description Unauthenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Permission denied */
             403: {
                 headers: {
@@ -3127,15 +3084,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
-            /** @description Not found (foreign-tenant ids 404 without existence leak) */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Validation failed */
             422: {
                 headers: {
@@ -3165,7 +3114,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description Liveness OK */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -3174,13 +3123,13 @@ export interface operations {
                     "application/json": Record<string, never>;
                 };
             };
-            /** @description Rate limited */
-            429: {
+            /** @description Service unavailable */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -3194,7 +3143,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Success */
+            /** @description Readiness OK */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -3203,13 +3152,13 @@ export interface operations {
                     "application/json": Record<string, never>;
                 };
             };
-            /** @description Rate limited */
-            429: {
+            /** @description A required dependency is unhealthy */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
+                    "application/json": Record<string, never>;
                 };
             };
         };
