@@ -731,3 +731,28 @@ changed, and no other gate result above is affected.
 REM-ROUTE-001 and REM-MIG-001 remain `local_complete` until PR #21 merges with green CI
 (Backend, Frontend, Docker, Security, and the authoritative `E2E — Playwright` job).
 
+
+## Solo-Maintainer Review Exception — PR #21
+
+An independent second reviewer was unavailable because the repository currently
+has one eligible maintainer. The product owner authorized a PR-specific
+governance exception instead of fabricating approval.
+
+Evidence:
+
+- PR: #21
+- verified head before governance evidence: `a6b3e4c`
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E — Playwright: passed
+- GitHub `reviewDecision`: intentionally blank
+- governance record:
+  `docs/governance/solo-maintainer-review-exception-pr-21.md`
+
+The first Backend CI run failed on stale OpenAPI parity. Commit `a6b3e4c`
+corrected the environment-dependent contract generation without weakening the
+stale-contract test. The subsequent five-check CI run passed.
+
+This exception applies only to PR #21 and is not an independent approval.
