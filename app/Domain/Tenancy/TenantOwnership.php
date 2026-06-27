@@ -80,6 +80,8 @@ final class TenantOwnership
         // Cross-cutting infrastructure with nullable/forensic merchant scope.
         'audit_logs' => 'cross-cutting: per-merchant AND platform chain (merchant_id nullable by design, R2)',
         'idempotency_keys' => 'cross-cutting: platform/webhook scopes have null merchant/branch forensic columns (R4)',
+        'uploaded_files' => 'cross-cutting: nullable merchant/branch/owner scope (platform-generated files may have no merchant); isolation enforced by FileAccessService + scoped route binding (10F)',
+        'file_scan_events' => 'inherits scope via uploaded_file_id; never directly route-bound (10F)',
         // Framework / Laravel infrastructure tables.
         'migrations' => 'framework: migration ledger',
         'password_reset_tokens' => 'framework: unused (passwordless), Laravel default',

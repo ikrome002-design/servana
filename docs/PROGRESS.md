@@ -45,15 +45,17 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 > Frontend/Docker/Security all SUCCESS; reviewDecision intentionally blank under
 > the solo-maintainer governance exception — not an independent approval).
 > V and R1–R7 are `verified_complete`; all nine PRE_FEATURE_REMEDIATION items are
-> `verified_complete`. **Phase 10 (API Foundation) has started** on branch
-> `phase-10-api-foundation`. See `docs/remediation/pre-feature-completion-report.md`,
+> `verified_complete`. **Phase 10 (API Foundation) is `verified_complete`** (PR #21,
+> `4f761ff`); **Phase 10F (File & Media Foundation) has started** on branch
+> `phase-10f-file-media-foundation`. See `docs/remediation/pre-feature-completion-report.md`,
 > `docs/proof/pre-feature-remediation-gate-closure.md`, and
 > `docs/governance/solo-maintainer-pre-feature-gate-closure-exception.md`.
 
 ### Feature roadmap (Plan §80) — gate §5.4 closed; roadmap in progress
 | Phase | Title | Status |
 |---|---|---|
-| 10 | API foundation (Corrections 10–12) | 🔄 In progress — branch `phase-10-api-foundation` (REM-ROUTE-001, REM-MIG-001) |
+| 10 | API foundation (Corrections 10–12) | ✅ `verified_complete` — PR #21, commit `4f761ff` (CI Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; solo-maintainer governance exception, reviewDecision blank) (REM-ROUTE-001, REM-MIG-001) |
+| 10F | File & media foundation | 🔄 In progress — branch `phase-10f-file-media-foundation` (REM-FILE-001) |
 | 10F | File & media foundation | ⬜ Not started |
 | 11 | UI layout foundation & role navigation | ⬜ Not started |
 | 15A / 15B | Services, catalogue, clients / personnel availability | ⬜ Not started |
@@ -68,12 +70,62 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase 10F — File & Media Foundation
+
+- **Branch:** `phase-10f-file-media-foundation` (based on merged Phase 10 `4f761ff`, PR #21).
+- **Status:** 🔄 `local_complete` — pending PR/CI/merge.
+- **Proof:** [docs/proof/phase-10f.md](proof/phase-10f.md) · **Data dictionary:** [files-and-media.md](architecture/data-dictionary/files-and-media.md) · **Register:** REM-FILE-001 (`local_complete`).
+
+### Phase 10 verified-complete correction
+- Phase 10 → `verified_complete` (PR #21, `4f761ff`, five-job CI incl. `E2E — Playwright` all SUCCESS; governance exception, not independent approval; `a6b3e4c` determinism-fix history preserved). REM-ROUTE-001 + REM-MIG-001 → `verified_complete`. Stale `local_complete`/`pending PR #21` wording removed.
+
+### Work completed
+- **Schema & indexes:** `uploaded_files` + `file_scan_events` (exact §13.13 fields, 11-purpose CHECK, scan/lifecycle CHECKs, indexes `(merchant_id,purpose,lifecycle_status)`/`(branch_id,purpose)`/`sha256`/`(scan_status,created_at)`, `available⇒clean+final_path` CHECK; **no `download_count`**, **no global SHA-256 uniqueness**). Applied cleanly; in manifest + TenantOwnership (cross-cutting nullable-scope).
+- **Purpose registry:** `FilePurpose`(11) + `FilePurposeRegistry`/`FilePurposeDefinition` + `config/files.php`. Active uploadable: `merchant_logo`, `profile_photo` (image-only). Generated-only deferred: finance_export/invoice_pdf/receipt_pdf/billing_invoice_pdf/earnings_statement/day_close_report/cash_up_report; dispute_evidence/audit_evidence enum-only. Existing permission keys only.
+- **Pipeline:** `FileUploadPipeline` (authorize→reject dangerous/spoofed pre-storage→quarantine→streaming SHA-256→magic-byte MIME→202). `ClamAvScanner` INSTREAM + `FileScanner` contract. `ScanUploadedFile`/`FinalizeCleanFile` (image re-encode + EXIF strip, verify-before-delete, available-after-verified).
+- **Routes & authorization:** `POST /files`, `GET /files/{id}`, `POST /files/{id}/download-link`, `GET /files/{id}/download` (signed+auth). `FileAccessService` rechecks tenant/branch/own-scope/permission/available/clean at issue AND download. `FileResource` (no paths/hash).
+- **Jobs & schedules:** 5 jobs on `file-scanning`; hourly expiry + quarantine cleanup, daily orphan verify (report-only); dedicated `file-worker` in dev + prod compose.
+- **Audit/redaction/boundary:** file `AuditEvent` cases; `Redactor` extended (signature/sha256/paths/filename/scanner payload); `FileStorageBoundaryTest` (deliberate violation demonstrated failing then removed). Billing-read-only seam (`FileGenerationPolicy`).
+- **Frontend states:** `SvFileUpload.vue` (selecting/uploading/scanning/available/rejected/error; aria-live; 44px; light/dark; typed transport; no localStorage) + `useFileDownload`.
+
+### Routes and authorization
+- 4 file routes (ULID-bound, classified tenant_mutation for mutations; download requires `signed`+auth). Per-purpose authorization in the pipeline/access service (not a single route permission). Upload rate limiter `file-upload`.
+
+### Commands passed / failed / rerun
+```
+php artisan migrate (file tables) ......... applied cleanly
+php artisan test tests/Feature/Files ...... 52 passed (153 assertions)
+  + ClamAvEicarIntegrationTest (REAL clamd) 3 passed
+SvFileUpload.spec + useFileDownload.spec .. 6 passed (vitest single-worker)
+composer pint ............................. clean (12 auto-fixed)
+composer stan (L8) ........................ No errors (fixed: fread int<1,max>; fopen|false guard; migration raw-SQL concat → single literal)
+composer api:openapi (x2) ................. deterministic; 47 routes (+4 files); api:contract:check OK (41 paths/47 ops)
+storage-boundary deliberate violation ..... FAILED as expected, then removed → PASS
+```
+
+### Work skipped / owning phase
+```
+role nav/landing -> 11 ; service/client/personnel -> 15A/15B ; appointments/queues -> 16A-C ;
+invoice/receipt gen -> 17-18 ; finance_exports table -> 18B/23 ; file/export audit dashboard+flags -> 19 ;
+billing state machine -> 20A/20B ; M-Pesa files -> 20D ; earnings/report gen -> 20H/21N ;
+sec-ops notifications -> 21N/25 ; prod infra -> 25.
+```
+
+### Pending CI / review / merge
+- Push branch; run the full five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) with the clamav profile for the EICAR integration; REM-FILE-001 stays `local_complete` until that PR merges (governance exception, not independent approval).
+
+### Known risks
+- The EICAR integration test requires a reachable clamd (CI must run the clamav service). Billing-read-only is a seam (boolean) until Phases 20A/20B supply the real state. Image sanitisation is GD-based (png/jpeg/webp only).
+
+### Context required by Phase 11
+- The file domain is the only sanctioned home for private business files: feature phases call the file-domain service (never `Storage::put`/`temporaryUrl` directly — `FileStorageBoundaryTest` enforces this), reference `FilePurposeRegistry`, and use `SvFileUpload`/`useFileDownload` for UI. Generated-only purposes attach their generator in the owning phase.
+
 ## Phase 10 — API Foundation
 
 - **Branch:** `phase-10-api-foundation` (based on merged `main` @ `7ac20a5`, PR #20 / gate closure).
-- **Status:** 🔄 `local_complete` — pushed; pending PR #21 CI, governance review, and merge.
+- **Status:** ✅ `verified_complete` — merged as **PR #21** (merge commit `4f761ff`, 2026-06-24). CI Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; solo-maintainer governance exception (`docs/governance/solo-maintainer-review-exception-pr-21.md`; reviewDecision blank — not independent approval).
 - **Proof:** [docs/proof/phase-10.md](proof/phase-10.md) · **ADR:** [ADR-004](architecture/adr/0004-migration-strategy.md) · **Contract:** [docs/api/openapi.json](api/openapi.json).
-- **Register:** REM-ROUTE-001 (`local_complete`), REM-MIG-001 (`local_complete`) — both remain `local_complete` until PR #21 merges.
+- **Register:** REM-ROUTE-001 (`verified_complete`), REM-MIG-001 (`verified_complete`) — promoted on the PR #21 merge with green five-job CI.
 
 ### Work completed
 - **Gate-closure lifecycle reconciled** to CLOSED/effective (PR #20 `7ac20a5`) across PROGRESS/CHANGELOG/completion-report/register/governance/closure-proof/traceability.
@@ -111,10 +163,10 @@ full per-table dict entries for audit_logs/permissions/roles -> 19 ;
 platform_mutation / provider_webhook_mutation real routes -> owning Phase 20 subphases.
 ```
 
-### Pending CI / review / merge
-- Branch `phase-10-api-foundation` is **pushed** (PR #21 open). PR #21's first CI run (GitHub Actions `28093861353`) failed only in `Backend — Pint, Larastan, Pest` (`OpenApiContractTest:26`, openapi.json stale); the other four jobs — `E2E — Playwright`, Frontend, Docker, Security — passed. The determinism fix (`fix: make OpenAPI contract deterministic in CI`) corrects that root cause; the re-run must confirm all five jobs green.
-- **PR #21 must not merge unless all five CI jobs pass**, including the authoritative `E2E — Playwright` job. Then flip REM-ROUTE-001/REM-MIG-001 → `verified_complete` after merge (solo-maintainer governance exception, not independent approval).
-- **Local E2E note:** the local Windows Playwright run stalled without a completed run; no passing local E2E result is claimed. REM-ROUTE-001 and REM-MIG-001 remain `local_complete` until PR #21 merges.
+### CI / review / merge (completed)
+- **PR #21 merged** to `main` (merge commit `4f761ff`, 2026-06-24). PR #21's first CI run (GitHub Actions `28093861353`) failed only in `Backend — Pint, Larastan, Pest` (`OpenApiContractTest:26`, openapi.json stale); the other four jobs — `E2E — Playwright`, Frontend, Docker, Security — passed. The determinism fix `a6b3e4c` (`fix: make OpenAPI contract deterministic in CI`) corrected the root cause; the subsequent complete run passed **all five jobs**.
+- REM-ROUTE-001 and REM-MIG-001 are now `verified_complete` (promoted on merge; solo-maintainer governance exception `docs/governance/solo-maintainer-review-exception-pr-21.md` — not an independent approval).
+- **Local E2E note (history):** the local Windows Playwright run stalled without a completed run; no passing *local* E2E result was claimed — the authoritative Linux `E2E — Playwright` CI job passed.
 
 ### Parallel-suite + maintained-generator corrections
 - **Parallel failure → fix (`1d25224`):** the OpenAPI helpers `committedSpec()`/`specOperationIds()` lived in `OpenApiContractTest.php`, so a parallel worker running `OpenApiTypeParityTest.php` hit an undefined function. Moved them to `tests/Pest.php` (always autoloaded). Full parallel suite: **485 passed / 4 skipped / 2102 assertions / 4 processes**.

@@ -59,7 +59,16 @@
                                 "mfa.recovery_codes_regenerated",
                                 "mfa.step_up_succeeded",
                                 "mfa.step_up_denied",
-                                "unauthorized_access"
+                                "unauthorized_access",
+                                "file.upload_accepted",
+                                "file.upload_rejected",
+                                "file.scan_clean",
+                                "file.scan_infected",
+                                "file.scan_failed",
+                                "file.available",
+                                "file.downloaded",
+                                "file.access_denied",
+                                "file.expired_or_deleted"
                             ]
                         }
                     },
@@ -2072,6 +2081,299 @@
                 ]
             }
         },
+        "/api/v1/files": {
+            "post": {
+                "operationId": "files.store",
+                "tags": [
+                    "File"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreFileRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "`FileResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FileResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/files/{uploadedFile}": {
+            "get": {
+                "operationId": "files.show",
+                "tags": [
+                    "File"
+                ],
+                "parameters": [
+                    {
+                        "name": "uploadedFile",
+                        "in": "path",
+                        "required": true,
+                        "description": "The uploaded file ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`FileResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FileResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/files/{uploadedFile}/download": {
+            "get": {
+                "operationId": "files.download",
+                "tags": [
+                    "File"
+                ],
+                "parameters": [
+                    {
+                        "name": "uploadedFile",
+                        "in": "path",
+                        "required": true,
+                        "description": "The uploaded file ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/files/{uploadedFile}/download-link": {
+            "post": {
+                "operationId": "files.download-link",
+                "tags": [
+                    "File"
+                ],
+                "parameters": [
+                    {
+                        "name": "uploadedFile",
+                        "in": "path",
+                        "required": true,
+                        "description": "The uploaded file ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "expires_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "url",
+                                                "expires_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/hr/permission-preview": {
             "get": {
                 "operationId": "hr.permission-preview",
@@ -2641,7 +2943,16 @@
                                 "mfa.recovery_codes_regenerated",
                                 "mfa.step_up_succeeded",
                                 "mfa.step_up_denied",
-                                "unauthorized_access"
+                                "unauthorized_access",
+                                "file.upload_accepted",
+                                "file.upload_rejected",
+                                "file.scan_clean",
+                                "file.scan_infected",
+                                "file.scan_failed",
+                                "file.available",
+                                "file.downloaded",
+                                "file.access_denied",
+                                "file.expired_or_deleted"
                             ]
                         }
                     },
@@ -5086,6 +5397,61 @@
                     "error"
                 ]
             },
+            "FileResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "purpose": {
+                        "type": "string"
+                    },
+                    "scan_status": {
+                        "type": "string"
+                    },
+                    "lifecycle_status": {
+                        "type": "string"
+                    },
+                    "safe_download_filename": {
+                        "type": "string"
+                    },
+                    "detected_mime_type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "size_bytes": {
+                        "type": "integer"
+                    },
+                    "available_at": {
+                        "type": "string"
+                    },
+                    "can": {
+                        "type": "object",
+                        "properties": {
+                            "download": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "download"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "purpose",
+                    "scan_status",
+                    "lifecycle_status",
+                    "safe_download_filename",
+                    "detected_mime_type",
+                    "size_bytes",
+                    "available_at",
+                    "can"
+                ],
+                "title": "FileResource"
+            },
             "MerchantResource": {
                 "type": "object",
                 "properties": {
@@ -5294,6 +5660,33 @@
                     "can"
                 ],
                 "title": "StaffProfileResource"
+            },
+            "StoreFileRequest": {
+                "type": "object",
+                "description": "Validated multipart upload request (Plan §65; Phase 10F). Only currently\nuploadable purposes are accepted at the request layer; the pipeline performs the\nauthoritative server-side content validation (magic-byte MIME, dangerous-file\nrejection). A coarse size ceiling here fails huge uploads fast; the per-purpose\nbyte limit is enforced in the pipeline.",
+                "properties": {
+                    "purpose": {
+                        "type": "string",
+                        "enum": [
+                            "merchant_logo",
+                            "profile_photo"
+                        ]
+                    },
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "maxLength": 5120
+                    },
+                    "owner_user_id": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "purpose",
+                    "file"
+                ],
+                "title": "StoreFileRequest"
             },
             "StorePermissionOverrideRequest": {
                 "type": "object",

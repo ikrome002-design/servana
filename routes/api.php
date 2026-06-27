@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Auth\MfaController;
 use App\Http\Controllers\Api\V1\Branches\BranchController;
 use App\Http\Controllers\Api\V1\Branches\BranchDayController;
 use App\Http\Controllers\Api\V1\Branches\BranchOperatingHoursController;
+use App\Http\Controllers\Api\V1\Files\FileController;
 use App\Http\Controllers\Api\V1\Hr\PermissionOverrideController;
 use App\Http\Controllers\Api\V1\Hr\PermissionPreviewController;
 use App\Http\Controllers\Api\V1\Hr\StaffController;
@@ -243,6 +244,24 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             // hold. Branch- and merchant-scoped; never enables self-escalation.
             Route::get('hr/permission-preview', [PermissionPreviewController::class, 'preview'])
                 ->name('hr.permission-preview');
+
+            // Files & media (Plan §65; Phase 10F). Upload streams to private
+            // quarantine then scans; downloads require auth + a valid temporary
+            // signature, with authorization re-checked by FileAccessService.
+            // Authorization is per-purpose (FilePurposeRegistry), so it is enforced
+            // in the pipeline/access service rather than a single route permission.
+            Route::post('files', [FileController::class, 'store'])
+                ->middleware('throttle:file-upload')
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('files.store');
+            Route::get('files/{uploadedFile}', [FileController::class, 'show'])
+                ->name('files.show');
+            Route::post('files/{uploadedFile}/download-link', [FileController::class, 'downloadLink'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('files.download-link');
+            Route::get('files/{uploadedFile}/download', [FileController::class, 'download'])
+                ->middleware('signed')
+                ->name('files.download');
 
             // Merchant audit-log reads (Scope §4.8, Plan §70). READ-ONLY, masked,
             // merchant-scoped (branch-scoped for the Audit role via the policy).

@@ -43,6 +43,18 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
+      clamav:
+        image: clamav/clamav:stable
+        ports:
+          - 3310:3310
+        options: >-
+          --health-cmd "echo PING | nc 127.0.0.1 3310 | grep -q PONG"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 30
+          --health-start-period 120s
+
     steps:
       - uses: actions/checkout@v4
 
@@ -71,6 +83,49 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
+      - name: Verify ClamAV daemon is reachable
+        shell: bash
+        run: |
+          for attempt in {1..60}; do
+            if php -r '
+              $socket = @stream_socket_client(
+                  "tcp://127.0.0.1:3310",
+                  $errorNumber,
+                  $errorMessage,
+                  2
+              );
+
+              if ($socket === false) {
+                  exit(1);
+              }
+
+              stream_set_timeout($socket, 2);
+              fwrite($socket, "zPING\0");
+              $response = stream_get_contents($socket);
+              fclose($socket);
+
+              exit(rtrim($response, "\0\r\n") === "PONG" ? 0 : 1);
+            '; then
+              echo "clamd is reachable on 127.0.0.1:3310."
+              exit 0
+            fi
+
+            echo "Waiting for clamd readiness: attempt ${attempt}/60"
+            sleep 5
+          done
+
+          echo "::error::clamd did not become reachable on 127.0.0.1:3310."
+          exit 1
+
+      - name: Tests — genuine ClamAV EICAR integration
+        env:
+          CLAMAV_HOST: 127.0.0.1
+          CLAMAV_PORT: 3310
+          CLAMAV_CONNECT_TIMEOUT: 3
+          CLAMAV_READ_TIMEOUT: 30
+        run: php vendor/bin/pest tests/Feature/Files/ClamAvEicarIntegrationTest.php --fail-on-skipped
+
+
       - name: Lint — Pint (check only)
         run: composer pint -- --test
 
@@ -87,8 +142,11 @@ jobs:
           DB_PASSWORD: servana
           REDIS_HOST: 127.0.0.1
           REDIS_PORT: 6379
+          CLAMAV_HOST: 127.0.0.1
+          CLAMAV_PORT: 3310
+          CLAMAV_CONNECT_TIMEOUT: 3
+          CLAMAV_READ_TIMEOUT: 30
         run: php artisan test --parallel
-
       - name: Dependency audit (Composer)
         run: composer audit --no-interaction
 

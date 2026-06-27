@@ -10,6 +10,9 @@ use App\Domain\Audit\Services\DatabaseAuditRecorder;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Files\Contracts\FileScanner;
+use App\Domain\Files\Services\ClamAvScanner;
+use App\Domain\Files\Services\ImageSanitizer;
 use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Models\Merchant;
@@ -68,6 +71,19 @@ class AppServiceProvider extends ServiceProvider
         // Must run in register() — before dedoc/scramble's provider boots and
         // registers its default docs routes (Phase 10).
         $this->configureOpenApiGenerator();
+
+        // File malware scanner (Phase 10F): production ClamAV INSTREAM adapter.
+        // Tests bind a deterministic fake; the real EICAR test uses this adapter.
+        $this->app->bind(
+            FileScanner::class,
+            fn (): ClamAvScanner => ClamAvScanner::fromConfig(),
+        );
+
+        // Image re-encoder (Phase 10F) — config-driven limits, not autowirable.
+        $this->app->bind(
+            ImageSanitizer::class,
+            fn (): ImageSanitizer => ImageSanitizer::fromConfig(),
+        );
     }
 
     public function boot(): void
@@ -143,6 +159,9 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('finance-sensitive', fn (Request $request) => Limit::perMinute(30)->by($this->identify($request)));
 
         RateLimiter::for('search', fn (Request $request) => Limit::perMinute(60)->by($this->identify($request)));
+
+        // File uploads (Plan §65; Phase 10F) — per-user upload throttle.
+        RateLimiter::for('file-upload', fn (Request $request) => Limit::perMinute(20)->by($this->identify($request)));
     }
 
     /** Per-user key when authenticated, otherwise per-IP. */
