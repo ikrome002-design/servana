@@ -17,6 +17,18 @@ export const merchantRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'merchant.landing',
+        component: () => import('@/pages/landing/RoleLanding.vue'),
+        meta: { roleIdentity: 'merchant_administrator' },
+      },
+      {
+        path: 'get-started',
+        name: 'merchant.get-started',
+        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
+        meta: { roleIdentity: 'merchant_administrator' },
+      },
+      {
+        path: 'dashboard',
         name: 'merchant.dashboard',
         component: () => import('@/pages/merchant/Dashboard.vue'),
       },

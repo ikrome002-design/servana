@@ -72,7 +72,7 @@ async function submit(): Promise<void> {
     await onboarding.complete();
     notifications.addToast({ type: 'success', message: 'Setup complete. Welcome to Servana!' });
     onboarding.reset();
-    await router.push({ name: 'merchant.dashboard' });
+    await router.push({ name: 'merchant.landing' });
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.apiError) {
       if (err.apiError.code === 'validation_failed') {

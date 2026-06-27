@@ -25,7 +25,7 @@ const logoUrl = '/assets/brand/Logo.png';
         {{ app.tagline }}
       </p>
       <p class="mt-6 text-sm text-text-muted">
-        Phase 1 scaffold — design system and role layouts arrive in Phase 4.
+        Sign in with your Magic Link to reach your role dashboard.
       </p>
     </section>
   </main>

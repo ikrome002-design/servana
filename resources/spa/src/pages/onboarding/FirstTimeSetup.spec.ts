@@ -102,6 +102,6 @@ describe('FirstTimeSetup.vue', () => {
         hr_email: 'hr@demo.co.ke',
       }),
     );
-    expect(routerPush).toHaveBeenCalledWith({ name: 'merchant.dashboard' });
+    expect(routerPush).toHaveBeenCalledWith({ name: 'merchant.landing' });
   });
 });

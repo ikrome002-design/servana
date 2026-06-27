@@ -46,8 +46,9 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 > the solo-maintainer governance exception — not an independent approval).
 > V and R1–R7 are `verified_complete`; all nine PRE_FEATURE_REMEDIATION items are
 > `verified_complete`. **Phase 10 (API Foundation) is `verified_complete`** (PR #21,
-> `4f761ff`); **Phase 10F (File & Media Foundation) has started** on branch
-> `phase-10f-file-media-foundation`. See `docs/remediation/pre-feature-completion-report.md`,
+> `4f761ff`); **Phase 10F (File & Media Foundation) is `verified_complete`** (PR #22,
+> merge `9b493e6`); **Phase 11 (UI Layout & Role Navigation) is `local_complete`** on
+> branch `phase-11-ui-layout-role-navigation`. See `docs/remediation/pre-feature-completion-report.md`,
 > `docs/proof/pre-feature-remediation-gate-closure.md`, and
 > `docs/governance/solo-maintainer-pre-feature-gate-closure-exception.md`.
 
@@ -55,9 +56,8 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | Phase | Title | Status |
 |---|---|---|
 | 10 | API foundation (Corrections 10–12) | ✅ `verified_complete` — PR #21, commit `4f761ff` (CI Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; solo-maintainer governance exception, reviewDecision blank) (REM-ROUTE-001, REM-MIG-001) |
-| 10F | File & media foundation | 🔄 In progress — branch `phase-10f-file-media-foundation` (REM-FILE-001) |
-| 10F | File & media foundation | ⬜ Not started |
-| 11 | UI layout foundation & role navigation | ⬜ Not started |
+| 10F | File & media foundation | ✅ `verified_complete` — PR #22, merge commit `9b493e6` (CI Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; genuine ClamAV EICAR CI test passed without skipping; solo-maintainer governance exception, reviewDecision intentionally blank) (REM-FILE-001 `verified_complete`) |
+| 11 | UI layout foundation & role navigation | 🔄 `local_complete` — branch `phase-11-ui-layout-role-navigation` (REM-SCR-001 Phase 11 substrate); pending PR/CI/merge |
 | 15A / 15B | Services, catalogue, clients / personnel availability | ⬜ Not started |
 | 16A / 16B / 16C | Appointments / walk-ins & queues / service sessions | ⬜ Not started |
 | 17 | Invoicing | ⬜ Not started |
@@ -70,11 +70,72 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase 11 — UI Layout Foundation & Role Navigation
+
+- **Branch:** `phase-11-ui-layout-role-navigation` (based on merged Phase 10F `9b493e6`, PR #22).
+- **Status:** 🔄 `local_complete` — pending PR/CI/merge.
+- **Proof:** [docs/proof/phase-11.md](proof/phase-11.md) · **Screen inventory:** [inventory.json](frontend/screens/inventory.json)/[inventory.yaml](frontend/screens/inventory.yaml) · **Navigation fixture:** [role-navigation.yaml](frontend/navigation/role-navigation.yaml) · **Register:** REM-SCR-001 (`local_complete` — Phase 11 substrate).
+
+### Phase 10F verified-complete correction
+- Phase 10F → `verified_complete` (PR #22, merge `9b493e6`; five-gate CI incl. `E2E — Playwright` all SUCCESS; genuine ClamAV EICAR CI test passed without skipping; impl commit `431dde2` + ClamAV CI correction `c54016d` preserved). REM-FILE-001 → `verified_complete`. Stale `local_complete`/`pending PR #22` wording removed. The local Windows Playwright timeout was not claimed as a pass; Linux CI is the authoritative browser result. The governance exception is a solo-maintainer record, not independent approval.
+
+### Roots / content / brand (authoritative locations)
+- **Landing-page image root:** `public/assets/landing_page_images/{identity}/` (5–10 approved PNGs per role; mapped per role in the proof matrix).
+- **Legal-document root:** `docs/legal/{terms_of_service|privacy_policy|data_policy}/{identity}_*.md` (rendered verbatim via `/legal/:role/:doc`; lazy per-document).
+- **FAQ root:** `docs/support/faq/{identity}_faq.md` (rendered as an accessible `<details>` accordion).
+- **Landing copy root:** `docs/landing_page/{identity}_landing_page_content.md` (hero parsed verbatim). *(Note: CLAUDE.md names a space-folder `docs/landing page`; the repository uses the underscore folder `docs/landing_page` — repository wins.)*
+- **Brand Identity:** `docs/brand/Servana Brand Identity.md` (followed; ADR-009 contrast preserved — no white text on Savannah-Orange CTA; introduced an adaptive `--color-heading` token so headings/anchors stay AA in dark mode; darkened light `--color-text-muted` to `#4b5563` for AA on surface-alt).
+
+### Navigation placement rule (enforced in `AppShell` via resolved role identity)
+- **Super Administrator exception:** primary navigation lives in the **header** (collapses to an accessible disclosure on mobile); no primary sidebar.
+- **All merchant roles:** primary navigation lives in a **desktop sidebar/rail + mobile drawer**; the header is utility-only (identity, merchant/branch context, theme, profile/logout, drawer trigger). No duplicate primary nav in both places. Proven by `RoleLayouts.spec.ts` + `role-navigation-keyboard.spec.ts`.
+
+### Work completed
+- **Canonical role mapping** `types/roles.ts` (backend role → content identity; no aliases) + `router/destinations.ts` role-aware post-login destinations.
+- **Typed navigation registry** `navigation/roleNavigation.ts` + generated fixture `docs/frontend/navigation/role-navigation.yaml` (snapshot-enforced parity); live items → real routes, planned items → owner phase + no route.
+- **Eight role layouts** delegate to `RoleShell` → `AppShell` (skip link, landmarks, current-route indication, focusable main, 44px targets, light/dark, drawer focus-return).
+- **Eight live landing pages** (`RoleLandingScaffold`) — verbatim hero + approved images + FAQ + legal footer + live actions + get-started progress + truthful "coming soon" (no dead links).
+- **Eight guided get-started pages** (`GetStartedChecklist`) with verbatim Scope §3.2 checklists + a mandatory, non-prefilled legal-acknowledgement step.
+- **Persistence** `stores/getStartedStore.ts` — versioned localStorage keyed by user ULID + role identity; stores only item ids + completion/dismissal/acknowledgement + schema version (no tokens/permissions/contacts/secrets/paths/responses). Resumable; dismiss + reopen; isolated per user and role.
+- **Legal** rendered routes `/legal/:role/:doc` (verbatim, lazy per-document) + `LegalAcknowledgement` (separate optional marketing consent; mandatory cannot be bypassed; correct role docs only).
+- **State boundaries** via `SvStateBoundary` extensions: loading/empty/error/no-permission (PermissionGate)/no-branch/unsupported-role.
+- **Routing** role entry/get-started routes per role; `Verify`/`MfaChallenge`/`MfaSetup`/`FirstTimeSetup` now route role-aware (landing); MFA ordering, pending-setup, active-merchant, suspension routing preserved.
+- **Phase 10F lifecycle correction** applied across PROGRESS/CHANGELOG/proof/register/traceability.
+
+### Screen specifications created
+- `docs/frontend/screens/inventory.json` (source of truth) → `inventory.yaml` (generated, snapshot-enforced); **44 §27.1 spec files** under `docs/frontend/screens/{domain}/` for every implemented production route, all 16 Phase-11 landing/get-started screens, and 2 access-state screens; future screens listed `planned` with truthful owner phases and **no routes/components**. Coverage guard `screens/screenInventory.spec.ts` fails on missing specs, status/router conflicts, fake planned routes, missing owner phase, or duplicate keys/routes. Generator: `scripts/generate-screen-specs.mjs`.
+
+### Tests and quality gates (all green locally)
+- Vitest: **133 passed** (incl. `roleNavigation`, `roleEntryRoutes`, `getStartedStore`, `RoleNavigation`, `GetStartedChecklist`, `RoleLandingContent`, `RoleLayouts`, `screenInventory`).
+- Playwright (chromium, Linux-authoritative; run locally here): `role-entry-surfaces` (8 roles land + persistence/dismiss/reopen + legal gate), `role-navigation-keyboard` (placement + drawer focus-return), `role-foundation-responsive` (**56** at 360/768/1280, no overflow), `role-foundation-accessibility` (**32** axe light+dark, no serious/critical).
+- `npm run typecheck` clean · `npm run lint` 0 errors · `npm run build` OK.
+
+### Work skipped / exact owning phase
+```
+service catalogue / clients -> 15A ; eligibility & availability -> 15B ;
+appointments -> 16A ; walk-ins & queues -> 16B ; service sessions -> 16C ;
+invoicing -> 17 ; payments/receipts/refunds/cash-up/locks -> 18A/18B ;
+audit log + flagged events -> 19 ; billing/plans/subscriptions/M-Pesa/%-fee -> 20A-20E ;
+compensation/payouts/earnings -> 20F-20H ; reports/notifications -> 21N ; personnel SMS -> 21S ;
+search -> 22 ; release-wide responsive/dark/a11y audit -> 23 ; performance (per-role content lazy-split) -> 24 ; deployment -> 25.
+```
+
+### Pending CI / review / merge
+- Push branch `phase-11-ui-layout-role-navigation`; run the full Backend/Frontend/Docker/Security/E2E—Playwright gates. REM-SCR-001 stays `local_complete` (Phase 11 substrate) until that PR merges (governance exception, not independent approval).
+
+### Known risks
+- The authenticated landing chunk (`roleContent`, ~134 KB gzip) bundles all roles' landing+FAQ markdown; legal docs are already lazy per-document. Per-role lazy content split is a Phase 24 performance item.
+- Navigation labels for Branch Manager and Finance are verbatim from the Scope's explicit nav lists; the other six roles' labels are derived from each role's §4.x scope functionality + the §3.2 get-started table (no explicit per-role nav list exists in the Scope for them).
+- Frontend visibility is UX only; backend authorization remains the security boundary (re-stated in code + the navigation fixture).
+
+### Context required by Phase 15A
+- Add live nav routes + flip the relevant `planned` items to `live` in `navigation/roleNavigation.ts` (and regenerate the fixture snapshot); add the screens to `inventory.json` as `implemented` and write their final §27.1 specs before implementing; deep-link the matching get-started items in `content/getStartedContent.ts`. Use `RoleLandingScaffold`/`AppShell` patterns; never place merchant-role primary nav in the header; never add a Super-Admin merchant-create item or any Personnel contact-export surface.
+
 ## Phase 10F — File & Media Foundation
 
-- **Branch:** `phase-10f-file-media-foundation` (based on merged Phase 10 `4f761ff`, PR #21).
-- **Status:** 🔄 `local_complete` — pending PR/CI/merge.
-- **Proof:** [docs/proof/phase-10f.md](proof/phase-10f.md) · **Data dictionary:** [files-and-media.md](architecture/data-dictionary/files-and-media.md) · **Register:** REM-FILE-001 (`local_complete`).
+- **Branch:** `phase-10f-file-media-foundation` (based on merged Phase 10 `4f761ff`, PR #21). Implementation commit `431dde2`; ClamAV CI correction `c54016d` (history preserved).
+- **Status:** ✅ `verified_complete` — merged as **PR #22** (merge commit `9b493e6`, 2026-06-26). CI Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; the genuine ClamAV EICAR CI test passed without skipping (the local Windows Playwright timeout was never claimed as a pass — Linux CI is the authoritative browser result). Solo-maintainer governance exception (`docs/governance/solo-maintainer-review-exception-pr-22.md`; reviewDecision intentionally blank — not independent approval).
+- **Proof:** [docs/proof/phase-10f.md](proof/phase-10f.md) · **Data dictionary:** [files-and-media.md](architecture/data-dictionary/files-and-media.md) · **Register:** REM-FILE-001 (`verified_complete`).
 
 ### Phase 10 verified-complete correction
 - Phase 10 → `verified_complete` (PR #21, `4f761ff`, five-job CI incl. `E2E — Playwright` all SUCCESS; governance exception, not independent approval; `a6b3e4c` determinism-fix history preserved). REM-ROUTE-001 + REM-MIG-001 → `verified_complete`. Stale `local_complete`/`pending PR #21` wording removed.
@@ -111,11 +172,11 @@ billing state machine -> 20A/20B ; M-Pesa files -> 20D ; earnings/report gen -> 
 sec-ops notifications -> 21N/25 ; prod infra -> 25.
 ```
 
-### Pending CI / review / merge
-- Push branch; run the full five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) with the clamav profile for the EICAR integration; REM-FILE-001 stays `local_complete` until that PR merges (governance exception, not independent approval).
+### CI / review / merge (verified)
+- Merged as PR #22 (merge commit `9b493e6`). The full five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) passed with the clamav profile; the genuine ClamAV EICAR integration test passed without skipping. REM-FILE-001 → `verified_complete` on merge (solo-maintainer governance exception, reviewDecision intentionally blank — not independent approval).
 
 ### Known risks
-- The EICAR integration test requires a reachable clamd (CI must run the clamav service). Billing-read-only is a seam (boolean) until Phases 20A/20B supply the real state. Image sanitisation is GD-based (png/jpeg/webp only).
+- The EICAR integration test requires a reachable clamd (CI runs the clamav service). Billing-read-only is a seam (boolean) until Phases 20A/20B supply the real state. Image sanitisation is GD-based (png/jpeg/webp only).
 
 ### Context required by Phase 11
 - The file domain is the only sanctioned home for private business files: feature phases call the file-domain service (never `Storage::put`/`temporaryUrl` directly — `FileStorageBoundaryTest` enforces this), reference `FilePurposeRegistry`, and use `SvFileUpload`/`useFileDownload` for UI. Generated-only purposes attach their generator in the owning phase.

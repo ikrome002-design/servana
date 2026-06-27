@@ -22,6 +22,18 @@ export const hrRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'hr.landing',
+        component: () => import('@/pages/landing/RoleLanding.vue'),
+        meta: { roleIdentity: 'merchant_human_resource' },
+      },
+      {
+        path: 'get-started',
+        name: 'hr.get-started',
+        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
+        meta: { roleIdentity: 'merchant_human_resource' },
+      },
+      {
+        path: 'staff',
         name: 'hr.staff',
         component: () => import('@/pages/hr/StaffList.vue'),
       },

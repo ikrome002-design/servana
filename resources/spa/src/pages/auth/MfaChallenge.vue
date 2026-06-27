@@ -7,8 +7,8 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvInput from '@/components/ui/SvInput.vue';
 import { useForm } from '@/composables/useForm';
 import { useAuthStore } from '@/stores/authStore';
-import { useMerchantStore } from '@/stores/merchantStore';
 import { useNotificationStore } from '@/stores/notificationStore';
+import { landingRouteName } from '@/router/destinations';
 
 // Per-session MFA / step-up challenge (Plan §18, Phase R3). A confirmed user
 // proves possession of their authenticator (or a one-time recovery code) to
@@ -16,7 +16,6 @@ import { useNotificationStore } from '@/stores/notificationStore';
 
 const router = useRouter();
 const auth = useAuthStore();
-const merchant = useMerchantStore();
 const notifications = useNotificationStore();
 
 const useRecoveryCode = ref(false);
@@ -32,10 +31,8 @@ const submit = form.handleSubmit(async ({ code }) => {
 
     if (auth.setupRequired()) {
       await router.replace({ name: 'onboarding.first-time-setup' });
-    } else if (merchant.isActive()) {
-      await router.replace({ name: 'merchant.dashboard' });
     } else {
-      await router.replace({ name: 'home' });
+      await router.replace({ name: landingRouteName() });
     }
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.apiError) {

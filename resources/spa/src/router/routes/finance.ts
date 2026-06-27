@@ -9,6 +9,18 @@ export const financeRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'finance.landing',
+        component: () => import('@/pages/landing/RoleLanding.vue'),
+        meta: { roleIdentity: 'merchant_finance' },
+      },
+      {
+        path: 'get-started',
+        name: 'finance.get-started',
+        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
+        meta: { roleIdentity: 'merchant_finance' },
+      },
+      {
+        path: 'dashboard',
         name: 'finance.dashboard',
         component: () => import('@/pages/finance/DashboardStub.vue'),
       },

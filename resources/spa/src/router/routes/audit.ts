@@ -9,6 +9,18 @@ export const auditRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'audit.landing',
+        component: () => import('@/pages/landing/RoleLanding.vue'),
+        meta: { roleIdentity: 'merchant_audit' },
+      },
+      {
+        path: 'get-started',
+        name: 'audit.get-started',
+        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
+        meta: { roleIdentity: 'merchant_audit' },
+      },
+      {
+        path: 'dashboard',
         name: 'audit.dashboard',
         component: () => import('@/pages/audit/DashboardStub.vue'),
       },

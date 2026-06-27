@@ -4,12 +4,11 @@ import { useRoute, useRouter } from 'vue-router';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuthStore } from '@/stores/authStore';
-import { useMerchantStore } from '@/stores/merchantStore';
+import { landingRouteName } from '@/router/destinations';
 
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
-const merchant = useMerchantStore();
 
 type ViewState = 'loading' | 'error';
 const state = ref<ViewState>('loading');
@@ -28,15 +27,13 @@ async function verify(): Promise<void> {
 
   try {
     await auth.verifyMagicLink(token);
-    // Route by tenant state: a pending owner goes to setup, an active merchant
-    // to the dashboard, anyone else to the safe home (full role-aware routing
-    // arrives in Phase 11).
+    // Route by tenant state: a pending owner goes to setup; everyone else goes
+    // to their role-specific landing (Phase 11). The MFA gate and merchant-active
+    // guard still run on the destination — the API remains the security boundary.
     if (auth.setupRequired()) {
       await router.replace({ name: 'onboarding.first-time-setup' });
-    } else if (merchant.isActive()) {
-      await router.replace({ name: 'merchant.dashboard' });
     } else {
-      await router.replace({ name: 'home' });
+      await router.replace({ name: landingRouteName() });
     }
   } catch {
     state.value = 'error';

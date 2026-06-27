@@ -17,13 +17,14 @@
   --color-sun: #fbbf24; /* badges, soft highlights */
   --color-success: #2e7d32;
   --color-growth: #3f7d20;
-  --color-brand-deep: #4a2208; /* headings, footer, admin anchor */
+  --color-brand-deep: #4a2208; /* headings (light), footer, admin anchor; CTA text on orange (ADR-009) */
+  --color-heading: #4a2208; /* adaptive heading/anchor color — brand-deep in light, light in dark */
   --color-accent: #007c78; /* Service Teal — module accents, trust */
   --color-warning: #f59e0b;
   --color-error: #dc2626;
   --color-info: #0284c7;
   --color-text: #1f2933;
-  --color-text-muted: #6b7280;
+  --color-text-muted: #4b5563; /* AA (≥4.5:1) on white, bg, and surface-alt (ADR-009) */
   --color-border: #e5e7eb;
   --color-surface: #ffffff;
   --color-surface-alt: #f3f4f6;
@@ -40,6 +41,7 @@
   --color-surface-alt: #273340;
   --color-text: #f3f4f6;
   --color-text-muted: #9ca3af;
+  --color-heading: #f3f4f6; /* headings/anchors use the light text color in dark mode (AA) */
   --color-border: #374151; /* borders stay visible in dark — never removed */
   --color-primary: #f97316; /* AA on dark */
   --color-accent: #14b8a6; /* lightened teal */

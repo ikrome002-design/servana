@@ -9,6 +9,18 @@ export const personnelRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'personnel.landing',
+        component: () => import('@/pages/landing/RoleLanding.vue'),
+        meta: { roleIdentity: 'merchant_personnel' },
+      },
+      {
+        path: 'get-started',
+        name: 'personnel.get-started',
+        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
+        meta: { roleIdentity: 'merchant_personnel' },
+      },
+      {
+        path: 'dashboard',
         name: 'personnel.dashboard',
         component: () => import('@/pages/personnel/DashboardStub.vue'),
       },
