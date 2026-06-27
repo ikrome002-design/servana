@@ -269,8 +269,14 @@ Tests run: none. Checkpoint 0 is a before-state/documentation checkpoint, and no
 # Phase 10 — Implementation Proof
 
 **Branch:** `phase-10-api-foundation` · **Base commit:** `7ac20a5` (merged PR #20).
-**Status:** `local_complete` — pushed; pending PR #21 CI, governance review, and merge.
-All work below was implemented on this branch on top of the Checkpoint-0 baseline above.
+**Status:** `verified_complete` — **merged as PR #21** (merge commit `4f761ff`,
+2026-06-24; CI Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS;
+reviewDecision blank under the solo-maintainer governance exception — not
+independent approval). Backend CI initially failed on nondeterministic OpenAPI
+generation (dedoc/scramble introspecting an un-migrated parallel-worker schema);
+fixed in `a6b3e4c` without weakening stale-contract enforcement; the subsequent
+complete five-job run passed. All work below was implemented on top of the
+Checkpoint-0 baseline above.
 
 ## Checkpoint 1 — Gate-closure lifecycle reconciliation
 
@@ -498,10 +504,12 @@ platform_mutation / provider_webhook routes      -> owning Phase 20 subphases
 
 ## REM-ROUTE-001 / REM-MIG-001 status
 
-`local_complete` — evidence above. They are FEATURE_DELIVERY_OBLIGATION items and
-remain `local_complete` until **PR #21 merges**. They are **not** marked
-`verified_complete` until that PR merges with green CI — which now includes the
-authoritative Linux `E2E — Playwright` job (see Checkpoint 8).
+`verified_complete` — evidence above. Both FEATURE_DELIVERY_OBLIGATION items were
+promoted on the merge of **PR #21** (merge commit `4f761ff`, 2026-06-24) with green
+five-job CI — Backend/Frontend/Docker/Security and the authoritative Linux
+`E2E — Playwright` job (see Checkpoint 8) — under the solo-maintainer governance
+exception (`docs/governance/solo-maintainer-review-exception-pr-21.md`), which is
+not an independent approval.
 
 ## Test & quality results
 

@@ -6,13 +6,64 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase 10F — File & Media Foundation (`phase-10f-file-media-foundation`)
+
+Establishes the secure, private, reusable file domain before any feature stores,
+generates, exports or downloads business files (Plan §65, §73; REM-FILE-001). Built
+on merged Phase 10 (`4f761ff`, PR #21). `local_complete` — pending PR/CI/merge;
+REM-FILE-001 stays `local_complete` until its PR merges.
+
+- **Schema:** `uploaded_files` + `file_scan_events` (exact §13.13 fields, 11-purpose
+  CHECK, scan/lifecycle CHECKs, required indexes, `available⇒clean+final_path` CHECK).
+  No `download_count`; no global SHA-256 uniqueness (avoids a cross-tenant existence
+  side channel). Data dictionary authored before migrations; manifest + TenantOwnership
+  updated.
+- **Purpose policy:** `FilePurpose`/`FilePurposeRegistry`/`config/files.php` — only
+  `merchant_logo` and `profile_photo` uploadable; every export/PDF/report/statement
+  purpose generated-only. Existing permission keys only.
+- **Pipeline:** authorize→reject dangerous/spoofed pre-storage→stream to private
+  quarantine→streaming SHA-256→server magic-byte MIME→pending row→202.
+- **ClamAV:** `FileScanner` contract + INSTREAM `ClamAvScanner` (bounded timeouts,
+  safe result mapping, version capture). Real EICAR integration test (runtime payload,
+  no malware file committed).
+- **Finalization:** clean files re-encoded (GD, metadata stripped) and promoted to a
+  private final prefix only after verified storage; quarantine deleted post-promotion;
+  infected/failed/rejected never downloadable.
+- **Downloads:** `POST /files/{id}/download-link` issues a short-lived signed link;
+  `GET /files/{id}/download` requires auth + a valid signature, streams from private
+  storage (`nosniff`, safe Content-Disposition, no public cache). Authorization
+  (tenant/branch/own-scope/permission/available/clean) is re-checked at issuance AND
+  download by `FileAccessService`.
+- **Jobs/scheduling:** `ScanUploadedFile`, `FinalizeCleanFile`, `ExpireSignedExport`,
+  `DeleteExpiredQuarantineFile`, `VerifyOrphanedFileRecords` (report-only) on a
+  dedicated `file-scanning` queue + worker (dev + prod compose); hourly/daily schedules.
+- **Audit/redaction/boundary:** file `AuditEvent` cases; `Redactor` extended for
+  signatures/paths/hash/filename/scanner payloads; `FileStorageBoundaryTest`
+  statically forbids private-file writes/signing outside the file domain.
+- **Billing seam:** `FileGenerationPolicy` denies new billing-gated generation when
+  billing is read-only while keeping existing authorized files downloadable (no
+  billing/finance_exports tables created).
+- **Frontend:** accessible `SvFileUpload.vue` (selecting/uploading/scanning/available/
+  rejected/error states, aria-live, 44px, light/dark, typed transport, no localStorage)
+  + `useFileDownload`.
+- **Contracts:** OpenAPI + generated TypeScript regenerated deterministically (47
+  production routes incl. 4 file routes; `api:contract:check` OK).
+- **Tests:** 52 backend file tests + 3 real-ClamAV EICAR + 6 frontend.
+- **Deferrals:** finance_exports/audit dashboard/billing/M-Pesa/reports/UI nav → owning
+  phases (11, 15A/15B, 16A–C, 17–18, 18B/23, 19, 20A–H, 20D, 20H/21N, 25).
+
 ### Phase 10 — API Foundation (`phase-10-api-foundation`)
 
 Establishes the secure, generated, test-enforced API contract substrate every later
 feature phase inherits (Plan §23, §24, §80; REM-ROUTE-001, REM-MIG-001; ADR-004).
-Built on the merged gate-closure commit `7ac20a5` (PR #20). `local_complete` —
-pushed; pending PR #21 CI, governance review, and merge; the two register items
-(REM-ROUTE-001, REM-MIG-001) stay `local_complete` until PR #21 merges.
+Built on the merged gate-closure commit `7ac20a5` (PR #20). **Merged as PR #21**
+(merge commit `4f761ff`, 2026-06-24; CI Backend/Frontend/Docker/Security/E2E—
+Playwright all SUCCESS; reviewDecision blank under the solo-maintainer governance
+exception — not independent approval). `verified_complete`; REM-ROUTE-001 and
+REM-MIG-001 are `verified_complete`. (Backend CI initially failed on
+nondeterministic OpenAPI generation — dedoc/scramble introspecting an un-migrated
+parallel-worker schema — fixed in `a6b3e4c` without weakening stale-contract
+enforcement; the subsequent complete five-job run passed.)
 
 - **Route classification:** extended the R4 `RouteClass`/`RouteClassification` seam
   (not replaced) with the 8th class `liveness_readiness`, per-class required/forbidden

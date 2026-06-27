@@ -203,6 +203,24 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # Dedicated file-scanning worker (Plan §65, §67; Phase 10F). Runs the
+  # ScanUploadedFile/FinalizeCleanFile/cleanup jobs on the file-scanning queue,
+  # separate from mail/default so a slow ClamAV scan never blocks other work.
+  file-worker:
+    build: *app-build
+    image: servana-app:dev
+    command: ["php", "artisan", "queue:work", "--queue=file-scanning", "--tries=3", "--sleep=1", "--max-time=3600"]
+    environment: *app-environment
+    volumes:
+      - .:/var/www/html
+      - servana-vendor:/var/www/html/vendor
+    depends_on:
+      app:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
   # Scheduler placeholder. Real scheduled tasks land from Phase 20 onward.
   scheduler:
     build: *app-build

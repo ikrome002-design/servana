@@ -30,6 +30,17 @@ final class Redactor
         'apikey',
         'secret',
         'payment_reference',
+        // File domain (Plan §24.5, §65, §73; Phase 10F): never log signed-URL
+        // signatures, storage paths, the content hash, the original filename, or
+        // any scanner/malware payload.
+        'signature',
+        'sha256',
+        'quarantine_path',
+        'final_path',
+        'storage_disk',
+        'original_filename',
+        'malware_payload',
+        'scanner_response',
     ];
 
     private const EMAIL_PATTERN = '/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/';

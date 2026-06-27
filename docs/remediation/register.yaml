@@ -486,9 +486,9 @@ items:
     test_plan: "RouteSecurityContractTest; ForbiddenRouteAbsenceTest; FinancialRouteIdempotencyCoverageTest; OpenApiContractTest; OpenApiTypeParityTest; PaginationContractTest; FilterSortContractTest; ResourceCapabilityMapTest."
     proof_artifact: "docs/proof/phase-10.md"
     owner: "Phase 10"
-    completion_commit: null
-    reviewer: "solo-maintainer governance exception (pending Phase 10 PR; not an independent approval)"
-    status: local_complete
+    completion_commit: "4f761ff"
+    reviewer: "solo-maintainer governance exception PR #21 (docs/governance/solo-maintainer-review-exception-pr-21.md; not an independent approval)"
+    status: verified_complete
 
   - id: REM-MIG-001
     classification: C1
@@ -503,26 +503,26 @@ items:
     test_plan: "MigrationManifestTest; PostgreSQL migration tests (TenantColumnCoverageTest et al.)."
     proof_artifact: "docs/proof/phase-10.md"
     owner: "Phase 10 + all phases"
-    completion_commit: null
-    reviewer: "solo-maintainer governance exception (pending Phase 10 PR; not an independent approval)"
-    status: local_complete
+    completion_commit: "4f761ff"
+    reviewer: "solo-maintainer governance exception PR #21 (docs/governance/solo-maintainer-review-exception-pr-21.md; not an independent approval)"
+    status: verified_complete
 
   - id: REM-FILE-001
     classification: C1
     gating_category: FEATURE_DELIVERY_OBLIGATION
     scope_requirement: "File/media foundation (schema, pipeline, scanning, signed downloads, authorization, jobs, tests) (Correction 13)."
-    repository_evidence: "No uploaded_files/file_scan_events tables; only logo_path/profile_photo_path metadata seams."
-    root_cause: "File domain (Phase 10F) not started."
-    affected_files_tables_routes: "new uploaded_files, file_scan_events; file pipeline + jobs."
-    security_data_business_impact: "No upload pipeline yet (no upload route exists)."
-    precise_correction: "Build Phase 10F before any feature stores files."
-    migration_impact: "additive."
-    test_plan: "MIME spoof, EICAR, oversize, cross-tenant download, signed-URL expiry."
+    repository_evidence: "Phase 10F: uploaded_files + file_scan_events (exact §13.13 schema, CHECKs, indexes; cross-cutting nullable-scope in TenantOwnership); FilePurpose/FileScanStatus/FileLifecycleStatus/FileScanResult enums; FilePurposeRegistry + config/files.php (only merchant_logo/profile_photo uploadable; existing permission keys only); FileUploadPipeline (stream quarantine, streaming SHA-256, magic-byte MIME, dangerous-file rejection); ClamAvScanner INSTREAM + FileScanner contract; ScanUploadedFile/FinalizeCleanFile/ExpireSignedExport/DeleteExpiredQuarantineFile/VerifyOrphanedFileRecords; ImageSanitizer (GD re-encode + metadata strip); FileAccessService (recheck at issue+download; signed streamed download); FileController + 4 classified routes; FileGenerationPolicy billing-read-only seam; AuditEvent file cases + Redactor extension; FileStorageBoundaryTest; SvFileUpload.vue + useFileDownload."
+    root_cause: "File domain (Phase 10F) was not started at register seeding; built on branch phase-10f-file-media-foundation."
+    affected_files_tables_routes: "app/Domain/Files/**; database/migrations/2026_06_24_*; app/Http/Controllers/Api/V1/Files; routes/api.php (files.*); bootstrap/app.php (schedule); docker-compose*.yml (file-worker); config/files.php; resources/spa/src/components/files; resources/spa/src/composables/useFileDownload.ts."
+    security_data_business_impact: "Secure private file domain: private quarantine, real ClamAV scanning (EICAR proven), infected/failed never downloadable, signed+authenticated downloads with authorization rechecked at issue and download, cross-tenant/branch/own-scope enforced, no global SHA-256 dedup side channel, paths/hashes never exposed, storage-boundary statically enforced."
+    precise_correction: "Built the full Phase 10F file foundation before any feature stores files; reused existing permissions/AuditRecorder/Phase-10 route+contract substrate; no billing/finance_exports tables created."
+    migration_impact: "additive (forward-only; both migrations applied cleanly on PostgreSQL)."
+    test_plan: "FileSchema, FilePurposeRegistry, FileUploadValidation, FileScanPipeline, ClamAvEicarIntegration (real), FileDownloadAuthorization, FileSignedUrlExpiry, FileJobIdempotency, FileRetentionCleanup, FileStorageBoundary, FileTenantIsolation, FileLogRedaction, FileRouteSecurityContract, FileMigrationManifest, FileBillingReadOnlySeam, SvFileUpload.spec, useFileDownload.spec."
     proof_artifact: "docs/proof/phase-10f.md"
     owner: "Phase 10F"
     completion_commit: null
-    reviewer: "TBD"
-    status: not_started
+    reviewer: "pending Phase 10F PR (solo-maintainer governance exception; not an independent approval)"
+    status: local_complete
 
   - id: REM-MPESA-001
     classification: C0

@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Domain\Files\Jobs\DeleteExpiredQuarantineFile;
+use App\Domain\Files\Jobs\ExpireSignedExport;
+use App\Domain\Files\Jobs\VerifyOrphanedFileRecords;
 use App\Exceptions\ApiErrorRenderer;
 use App\Http\Controllers\HealthController;
 use App\Http\Middleware\CorrelationIdMiddleware;
@@ -12,6 +15,7 @@ use App\Http\Middleware\ResolveTenantContext;
 use App\Http\Routing\RouteClass;
 use App\Http\Routing\RouteClassification;
 use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Contracts\Session\Middleware\AuthenticatesSessions;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -105,4 +109,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 ? $renderer->render($e, $request)
                 : null;
         });
+    })
+    ->withSchedule(function (Schedule $schedule): void {
+        // File-domain maintenance (Plan §65, §67; Phase 10F). Bounded, idempotent,
+        // tenant/platform-safe jobs on the file-scanning queue. VerifyOrphanedFileRecords
+        // only REPORTS mismatches — it never deletes unknown production objects.
+        $schedule->job(new ExpireSignedExport)->hourly();
+        $schedule->job(new DeleteExpiredQuarantineFile)->hourly();
+        $schedule->job(new VerifyOrphanedFileRecords)->daily();
     })->create();

@@ -5,11 +5,17 @@ declare(strict_types=1);
 use App\Domain\Auth\Models\MfaCredential;
 use App\Domain\Branches\Models\BranchUserAssignment;
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Files\Enums\FileLifecycleStatus;
+use App\Domain\Files\Enums\FilePurpose;
+use App\Domain\Files\Enums\FileScanStatus;
+use App\Domain\Files\Models\UploadedFile;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use PragmaRX\Google2FA\Google2FA;
 use Tests\TestCase;
@@ -201,4 +207,58 @@ function idempotencyMeta(array $overrides = []): array
         'http_method' => 'POST',
         'request_content_type' => 'application/json',
     ], $overrides);
+}
+
+/*
+ | Shared file-domain test helpers (Phase 10F). These live in Pest.php so every
+ | test file and every parallel worker can use them without depending on another
+ | test file being loaded first.
+ */
+
+/** Raw PNG bytes (GD) for a small valid image. */
+function pngBytes(int $w = 4, int $h = 4): string
+{
+    $img = imagecreatetruecolor($w, $h);
+    ob_start();
+    imagepng($img);
+    $bytes = (string) ob_get_clean();
+    imagedestroy($img);
+
+    return $bytes;
+}
+
+/** A pending/quarantined image file with a real PNG object on the faked disk. */
+function quarantinedImage(): UploadedFile
+{
+    $disk = (string) config('files.disk');
+    Storage::fake($disk);
+
+    $file = UploadedFile::factory()->create([
+        'storage_disk' => $disk,
+        'quarantine_path' => 'quarantine/'.Str::ulid(),
+        'detected_mime_type' => 'image/png',
+        'scan_status' => FileScanStatus::Pending->value,
+        'lifecycle_status' => FileLifecycleStatus::Quarantined->value,
+    ]);
+    Storage::disk($disk)->put($file->quarantine_path, pngBytes());
+
+    return $file;
+}
+
+/** An available file with a real final object on the faked disk. */
+function availableFile(int $merchantId, FilePurpose $purpose, ?int $ownerUserId = null, ?int $branchId = null): UploadedFile
+{
+    $disk = (string) config('files.disk');
+    Storage::fake($disk);
+
+    $file = UploadedFile::factory()->available()->create([
+        'merchant_id' => $merchantId,
+        'branch_id' => $branchId,
+        'owner_user_id' => $ownerUserId,
+        'purpose' => $purpose->value,
+        'storage_disk' => $disk,
+    ]);
+    Storage::disk($disk)->put((string) $file->final_path, 'final-bytes');
+
+    return $file;
 }

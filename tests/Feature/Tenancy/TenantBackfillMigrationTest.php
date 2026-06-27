@@ -33,8 +33,14 @@ it('backfills merchant_id from the parent on the upgrade path without cross-cont
         'merchant_user_id' => $membershipA->id, 'merchant_id' => $merchantA->id, 'primary_branch_id' => $branchA->id,
     ]);
 
-    // Simulate the pre-R5 schema.
-    Artisan::call('migrate:rollback', ['--step' => 3, '--force' => true]);
+    // Simulate the pre-R5 schema by rolling back the three R5 migrations AND every
+    // migration applied after them — computed dynamically so this stays correct as
+    // later phases append migrations (e.g. Phase 10F's file tables); a fixed --step
+    // would otherwise stop short of the R5 migrations and leave merchant_id NOT NULL.
+    $rollbackSteps = DB::table('migrations')
+        ->where('migration', '>=', '2026_06_23_000001_add_composite_unique_to_tenant_parents')
+        ->count();
+    Artisan::call('migrate:rollback', ['--step' => $rollbackSteps, '--force' => true]);
 
     // Legacy rows carry only the parent FK (no merchant_id column exists now).
     DB::table('branch_day_records')->insert([

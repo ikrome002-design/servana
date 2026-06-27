@@ -77,6 +77,18 @@ enum AuditEvent: string
     // --- Tenant/branch isolation (Plan §8.4) — name preserved from Phase 9.
     case UnauthorizedAccess = 'unauthorized_access';
 
+    // --- File domain (Plan §65, §73; Phase 10F). Full file/export audit workflow
+    // + flagged events remain Phase 19; these are the core pipeline events.
+    case FileUploadAccepted = 'file.upload_accepted';
+    case FileUploadRejected = 'file.upload_rejected';
+    case FileScanClean = 'file.scan_clean';
+    case FileScanInfected = 'file.scan_infected';
+    case FileScanFailed = 'file.scan_failed';
+    case FileAvailable = 'file.available';
+    case FileDownloaded = 'file.downloaded';
+    case FileAccessDenied = 'file.access_denied';
+    case FileExpiredOrDeleted = 'file.expired_or_deleted';
+
     /** Central severity for each event (mirrors audit_logs.severity CHECK). */
     public function severity(): AuditSeverity
     {
@@ -94,11 +106,16 @@ enum AuditEvent: string
             self::BranchOperatingHoursUpdated,
             self::MfaChallengeSucceeded,
             self::MfaStepUpSucceeded,
+            self::FileUploadAccepted,
+            self::FileScanClean,
+            self::FileAvailable,
+            self::FileDownloaded,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
             self::BranchDayClosed,
             self::MfaEnrollmentStarted,
+            self::FileExpiredOrDeleted,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,
@@ -111,8 +128,12 @@ enum AuditEvent: string
             self::MfaChallengeFailed,
             self::MfaRecoveryCodeUsed,
             self::MfaRecoveryCodesRegenerated,
+            self::FileUploadRejected,
+            self::FileScanFailed,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
+            self::FileScanInfected,
+            self::FileAccessDenied,
             self::MembershipSuspended,
             self::MembershipDeactivated,
             self::BranchArchived,

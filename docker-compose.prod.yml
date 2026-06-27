@@ -63,6 +63,19 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # Dedicated file-scanning worker (Plan §65, §67; Phase 10F) — isolates ClamAV
+  # scan/finalize/cleanup jobs from the default queue.
+  file-worker:
+    image: ${APP_IMAGE:-servana-app:prod}
+    command: ["php", "artisan", "queue:work", "--queue=file-scanning", "--tries=3", "--max-time=3600"]
+    environment: *app-prod-environment
+    env_file:
+      - .env
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+
   scheduler:
     image: ${APP_IMAGE:-servana-app:prod}
     command: ["php", "artisan", "schedule:work"]

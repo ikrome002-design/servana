@@ -372,3 +372,31 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-r5.md
     notes: "expand->backfill->constrain inline: +merchant_id, backfill from parent, then FK + index (ADR-002)."
+
+  - file: 2026_06_24_000001_create_uploaded_files_table.php
+    table: uploaded_files
+    domain: Files
+    owner_phase: "10F"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/files-and-media.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_14_000001_add_auth_columns_to_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-10f.md
+    notes: "Cross-cutting nullable-scope (platform files); purpose/scan_status/lifecycle_status CHECKs; available=>clean+final_path CHECK; no global sha256 uniqueness (§73); no download_count."
+
+  - file: 2026_06_24_000002_create_file_scan_events_table.php
+    table: file_scan_events
+    domain: Files
+    owner_phase: "10F"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/files-and-media.md
+    depends_on:
+      - 2026_06_24_000001_create_uploaded_files_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-10f.md
+    notes: "Scope inherited via uploaded_file_id (RESTRICT); never route-bound; result CHECK clean|infected|error; no raw scanner payload stored."
