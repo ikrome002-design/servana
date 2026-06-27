@@ -229,3 +229,17 @@ production infrastructure provisioning     -> 25
 
 `local_complete` — evidence above. Not `verified_complete` until the Phase 10F PR
 merges with green CI and truthful governance evidence.
+
+## Pull Request #22 Evidence
+
+- Pull request: #22
+- Backend CI: SUCCESS
+- Frontend CI: SUCCESS
+- Docker CI: SUCCESS
+- Security CI: SUCCESS
+- E2E — Playwright CI: SUCCESS
+- Genuine ClamAV EICAR CI test: required and passed without skipping
+- reviewDecision: intentionally blank
+- Governance exception:
+  docs/governance/solo-maintainer-review-exception-pr-22.md
+- Status at this documentation commit: CI passed; pending merge
