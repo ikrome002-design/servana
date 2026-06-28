@@ -1,9 +1,12 @@
 # Phase 11 — UI Layout Foundation & Role Navigation Proof (REM-SCR-001 substrate)
 
 **Branch:** `phase-11-ui-layout-role-navigation` · **Base:** `9b493e6` (merged Phase 10F, PR #22).
-**Status:** `local_complete` — pending PR/CI/merge. REM-SCR-001 stays `local_complete`
-(Phase 11 substrate) until its PR merges with green CI. Frontend visibility is UX only;
-the API remains the security boundary.
+**PR:** #23 (base `main`). **Implementation commit:** `0482e10`. **CI remediation commit:** `bb04d87`.
+**Status:** `ci_passed` / `ready_to_merge` — PR #23 open; five required checks green on CI run
+`28314016145` (head `bb04d87`); reviewDecision blank (one eligible maintainer; no independent
+review claimed). REM-SCR-001 stays `local_complete` (Phase 11 substrate) and is **not**
+`verified_complete` until PR #23 merges. The merge commit does not exist yet. Frontend
+visibility is UX only; the API remains the security boundary.
 
 ## Branch safety / base
 
@@ -166,4 +169,78 @@ deployment → 25. No Phase 15A+ business workflow was implemented.
 Phase-11 + access-state screens; canonical navigation registry + snapshot fixture + parity test; eight
 role layouts/landings/get-started + persistence + state boundaries + role-aware routing. Future feature
 screens remain `planned` with truthful owners and no fake routes; each owning phase writes its final spec
-before implementing. Pending PR/CI/merge (governance exception, not independent approval).
+before implementing. CI green on PR #23 (`ci_passed`/`ready_to_merge`); REM-SCR-001 is promoted to
+`verified_complete` only on the PR #23 merge (governance exception, not independent approval).
+
+## Phase 11 CI remediation (PR #23) — truthful record
+
+The implementation commit `0482e10` was opened as PR #23. The first PR CI run failed on **two**
+jobs; the remaining three passed. Both failures were remediated by commit
+`bb04d87898e99b77b77cba1404339dbef6d2d8dc` ("fix: align Phase 11 Docker context and E2E routes").
+Root causes are proven below from the diff, the failing logs/traces, and the commit — no causes invented.
+
+### Initial failed CI run — failed jobs
+- **Docker — build images** (failed)
+- **E2E — Playwright** (failed)
+- Backend / Frontend / Security passed on that first run.
+
+### Proven Docker root cause
+The production Nginx SPA image build (`docker build -f docker/nginx.Dockerfile --target prod`) runs
+`npm run build` = `vue-tsc --noEmit && vite build`. Phase 11 introduced documentation-sourced imports
+under the `@docs` alias: `screenInventory.spec.ts` imports `@docs/frontend/screens/inventory.json`
+(type-checked by `vue-tsc`, which includes `*.spec.ts`), and `content/roleContent.ts` /
+`content/legalContent.ts` import `@docs/**` markdown (`?raw` / `import.meta.glob`). The repository
+`.dockerignore` excluded the entire `docs` directory from the Docker build context (line `docs`), so the
+required documentation path — including `@docs/frontend/screens/inventory.json` — was **not available in
+the Docker build context**, and the SPA build could not resolve it → the image build failed. This is a
+build-context defect, not a product-code defect.
+
+**Fix (in `bb04d87`):** removed the single `docs` line from `.dockerignore` so the documentation path is
+present in the Docker build context. (`*.md` ignore is retained; the `docs/**` tree, incl. the JSON
+inventory, is now included.)
+
+### Proven Playwright root cause
+Phase 11 re-pathed the role-entry routes: each role area's index (`path: ''`) became the **landing**
+page, the pre-existing functional pages moved to explicit sub-paths (`branch.list` `/branch` → `/branch/list`,
+`hr.staff` `/hr` → `/hr/staff`), and the post-setup/login redirect target changed from `merchant.dashboard`
+to `merchant.landing` (the `/merchant` index now renders the landing, not the "Welcome" dashboard shell).
+The three **pre-existing** end-to-end specs still asserted the old routes/headings/redirects, so they
+failed against the changed app:
+- `tests/e2e/merchant-onboarding.spec.ts` — expected the first-time-setup `redirect: merchant.dashboard`
+  and `/merchant$` to show the "Welcome" dashboard heading; after Phase 11 the redirect is
+  `merchant.landing` and `/merchant` renders the landing.
+- `tests/e2e/branches-staff-invitations.spec.ts` — navigated to `/branch` and `/hr` expecting the branch
+  list / staff roster, which moved to `/branch/list` and `/hr/staff`.
+- `tests/e2e/auth-magic-link.spec.ts` — asserted the old post-verify destination instead of the role
+  landing.
+
+**Fix (in `bb04d87`):** updated those three specs to the changed role-entry routes/selectors
+(landing destinations, `redirect: merchant.landing`, the moved list/roster paths). No product code was
+changed to satisfy the tests; the specs were corrected to match the deliberate Phase 11 routing.
+
+### Files changed by `bb04d87`
+- `.dockerignore` (−1 line: `docs`)
+- `tests/e2e/auth-magic-link.spec.ts`
+- `tests/e2e/branches-staff-invitations.spec.ts`
+- `tests/e2e/merchant-onboarding.spec.ts`
+(978 insertions / 419 deletions across 4 files; no `resources/spa/src` product code, no migrations.)
+
+### Targeted + full local regression after remediation
+- Targeted: the three updated e2e specs + the Phase 11 e2e (`role-entry-surfaces`,
+  `role-navigation-keyboard`, `role-foundation-responsive`, `role-foundation-accessibility`).
+- Full: `npm run typecheck` clean · `npm run test` (vitest 133) green · `npm run lint` 0 errors ·
+  `npm run build` OK · Playwright suites green on Linux CI.
+
+### Successful CI run
+- **Run `28314016145`** (event `pull_request`, head `bb04d87`, conclusion **success**),
+  https://github.com/ikrome002-design/servana/actions/runs/28314016145
+- Five successful checks: **Backend — Pint, Larastan, Pest** · **Frontend — ESLint, vue-tsc, Vitest,
+  build** · **E2E — Playwright** · **Security — gitleaks** · **Docker — build images**.
+
+### Remaining warnings (not errors; not acceptance failures)
+- **GitHub Actions Node runtime deprecation annotations** on some marketplace actions — informational
+  CI annotations, non-blocking; the run conclusion is `success`.
+- **Non-blocking ESLint warnings** (37; mostly pre-existing formatting + two `vue/no-v-html` on trusted,
+  version-controlled legal/FAQ content) — `npm run lint` exits with **0 errors**.
+These are warnings only. They are not misrepresented as errors, and they are not Phase 11 acceptance
+failures; all five required checks succeeded.

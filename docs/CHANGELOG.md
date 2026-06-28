@@ -11,8 +11,21 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 Finalizes all eight role layouts, scope-accurate role navigation, live role landing
 pages, and resumable guided get-started entry surfaces (Plan §26–§31, §80 Phase 11;
 REM-SCR-001 Phase 11 substrate). Built on merged Phase 10F (`9b493e6`, PR #22).
-`local_complete` — pending PR/CI/merge; REM-SCR-001 stays `local_complete` (Phase 11
-substrate) until its PR merges.
+**PR #23** (base `main`) — `ci_passed`/`ready_to_merge`: implementation commit `0482e10`
++ CI remediation commit `bb04d87`; five required checks SUCCESS on CI run `28314016145`;
+reviewDecision blank (one eligible maintainer; no independent review claimed). Not yet
+merged — REM-SCR-001 is promoted to `verified_complete` only on the PR #23 merge (the
+merge commit does not exist yet).
+
+- **CI remediation (`bb04d87`, "fix: align Phase 11 Docker context and E2E routes"):**
+  the first PR #23 run failed on **Docker — build images** and **E2E — Playwright**.
+  Docker root cause — `.dockerignore` excluded `docs`, so the SPA build could not resolve
+  the Phase 11 `@docs` documentation imports (`@docs/frontend/screens/inventory.json` +
+  `@docs/**` markdown) in the Docker build context; fix removed the `docs` line. Playwright
+  root cause — Phase 11 re-pathed role-entry routes (landing as each area's index;
+  `branch.list`→`/branch/list`, `hr.staff`→`/hr/staff`; setup/login redirects → `*.landing`),
+  so three pre-existing specs (`merchant-onboarding`, `branches-staff-invitations`,
+  `auth-magic-link`) asserted stale routes; fix updated those specs (no product code changed).
 
 - **Screen inventory & coverage guard:** `docs/frontend/screens/inventory.json`
   (source) → generated `inventory.yaml`; 44 §27.1 spec files for every implemented
