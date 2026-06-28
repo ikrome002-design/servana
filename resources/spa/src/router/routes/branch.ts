@@ -30,6 +30,11 @@ export const branchRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/branch/BranchCreate.vue'),
       },
       {
+        path: 'services',
+        name: 'branch.services',
+        component: () => import('@/pages/branch/ServiceCatalogue.vue'),
+      },
+      {
         path: ':id',
         name: 'branch.detail',
         component: () => import('@/pages/branch/BranchDetail.vue'),

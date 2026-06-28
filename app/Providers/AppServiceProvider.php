@@ -10,6 +10,10 @@ use App\Domain\Audit\Services\DatabaseAuditRecorder;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Catalogue\Models\Service;
+use App\Domain\Catalogue\Models\ServiceCategory;
+use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
+use App\Domain\Clients\Models\Client;
 use App\Domain\Files\Contracts\FileScanner;
 use App\Domain\Files\Services\ClamAvScanner;
 use App\Domain\Files\Services\ImageSanitizer;
@@ -21,9 +25,13 @@ use App\Domain\Tenancy\TenantContext;
 use App\Policies\AuditLogPolicy;
 use App\Policies\BranchDayRecordPolicy;
 use App\Policies\BranchOperatingHourPolicy;
+use App\Policies\ClientPolicy;
 use App\Policies\MerchantBranchPolicy;
 use App\Policies\MerchantPolicy;
 use App\Policies\MerchantUserPolicy;
+use App\Policies\ServiceCategoryPolicy;
+use App\Policies\ServicePersonnelEligibilityPolicy;
+use App\Policies\ServicePolicy;
 use App\Policies\StaffInvitationPolicy;
 use App\Policies\StaffProfilePolicy;
 use App\Support\CorrelationId;
@@ -51,6 +59,11 @@ class AppServiceProvider extends ServiceProvider
         BranchOperatingHour::class => BranchOperatingHourPolicy::class,
         BranchDayRecord::class => BranchDayRecordPolicy::class,
         AuditLog::class => AuditLogPolicy::class,
+        // Phase 15A — catalogue & clients.
+        Service::class => ServicePolicy::class,
+        ServiceCategory::class => ServiceCategoryPolicy::class,
+        ServicePersonnelEligibility::class => ServicePersonnelEligibilityPolicy::class,
+        Client::class => ClientPolicy::class,
     ];
 
     public function register(): void

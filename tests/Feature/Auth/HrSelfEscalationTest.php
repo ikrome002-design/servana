@@ -71,10 +71,10 @@ it('allows HR to manage an in-scope subordinate (deny override) — proving auth
 
     $this->actingAs($hr, 'sanctum')
         ->postJson("/api/v1/staff/{$personnel->ulid}/permissions", [
-            'permission' => 'clients.view',
+            'permission' => 'client.view',
             'effect' => 'deny',
             'reason' => 'data minimisation',
         ])
         ->assertStatus(200)
-        ->assertJsonPath('data.permissions', fn ($p): bool => ! in_array('clients.view', $p, true));
+        ->assertJsonPath('data.permissions', fn ($p): bool => ! in_array('client.view', $p, true));
 });

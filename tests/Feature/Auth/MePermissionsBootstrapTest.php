@@ -23,7 +23,7 @@ it('returns a merchant admin resolved permissions in /me', function (): void {
 
     expect($permissions)->toBe($expected)
         ->and($permissions)->toContain('branches.create')
-        ->and($permissions)->not->toContain('services.manage');
+        ->and($permissions)->not->toContain('service.create');
 });
 
 it('returns a front office member their scoped permissions in /me', function (): void {
@@ -34,7 +34,7 @@ it('returns a front office member their scoped permissions in /me', function ():
     $permissions = $this->actingAs($fo, 'sanctum')->getJson('/api/v1/me')->json('data.permissions');
 
     expect($permissions)->toContain('payments.record')
-        ->and($permissions)->toContain('clients.create')
+        ->and($permissions)->toContain('client.create')
         ->and($permissions)->not->toContain('payments.validate')
         ->and($permissions)->not->toContain('receipts.reissue');
 });

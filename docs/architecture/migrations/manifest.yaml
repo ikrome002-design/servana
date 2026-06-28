@@ -400,3 +400,73 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-10f.md
     notes: "Scope inherited via uploaded_file_id (RESTRICT); never route-bound; result CHECK clean|infected|error; no raw scanner payload stored."
+
+  - file: 2026_06_28_000001_create_service_categories_table.php
+    table: service_categories
+    domain: Catalogue
+    owner_phase: "15A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-15a.md
+    notes: "Branch-owned; partial-unique (branch_id,name) WHERE archived_at IS NULL; UNIQUE (id,merchant_id) composite-FK target; composite consistency FK -> merchant_branches(id,merchant_id)."
+
+  - file: 2026_06_28_000002_create_services_table.php
+    table: services
+    domain: Catalogue
+    owner_phase: "15A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_28_000001_create_service_categories_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-15a.md
+    notes: "Branch-owned; integer minor-unit price + KES currency + duration CHECKs; status active|archived; legacy non-editable preferred_personnel_fee_minor seam (superseded by preferred_personnel_fee_rules, Phase 20A); composite FKs to branch + category."
+
+  - file: 2026_06_28_000003_create_service_personnel_eligibility_table.php
+    table: service_personnel_eligibility
+    domain: Catalogue
+    owner_phase: "15A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_28_000002_create_services_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-15a.md
+    notes: "Branch-owned junction (no ulid); UNIQUE (service_id,staff_profile_id); composite FKs force same-merchant linkage to branch, service, staff; same-branch enforced in AssignEligibility action. HR personnel.eligibility.manage."
+
+  - file: 2026_06_28_000004_create_clients_table.php
+    table: clients
+    domain: Clients
+    owner_phase: "15A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-15a.md
+    notes: "Branch-owned; encrypted phone/email + phone_last_four; HMAC blind index phone_index (no plaintext index); partial-unique (branch_id,phone_index) WHERE status='active' (same-branch dup prevention); status active|archived; no hard delete."
+
+  - file: 2026_06_28_000005_create_client_consents_table.php
+    table: client_consents
+    domain: Clients
+    owner_phase: "15A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_28_000004_create_clients_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-15a.md
+    notes: "Branch-owned; UNIQUE (client_id,channel) one current state; channel sms; state opted_in|opted_out; no SMS delivery in 15A (Phase 21S)."

@@ -112,4 +112,23 @@ return [
         'require_configured' => (bool) env('HEALTH_REQUIRE_CONFIGURED', env('APP_ENV') === 'production'),
         'probe_timeout' => (float) env('HEALTH_PROBE_TIMEOUT', 2),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Clients — contact protection (Plan §35, guardrail §6.4; Phase 15A)
+    |--------------------------------------------------------------------------
+    |
+    | Client phone numbers are encrypted at rest (AES-256-GCM on APP_KEY) and are
+    | searchable / duplicate-checked through a keyed HMAC-SHA256 *blind index*
+    | (never a reversible deterministic ciphertext, never plaintext). The index
+    | key is a dedicated secret, base64-encoded 32 bytes, separate from APP_KEY so
+    | the blind index can be re-keyed independently. It is NEVER committed, logged,
+    | or returned by any API. In non-production it falls back to a derivation of
+    | APP_KEY so local/test runs work without extra setup; production MUST set
+    | CLIENT_CONTACT_INDEX_KEY explicitly (asserted by a guard test).
+    |
+    */
+    'clients' => [
+        'contact_index_key' => env('CLIENT_CONTACT_INDEX_KEY'),
+    ],
 ];

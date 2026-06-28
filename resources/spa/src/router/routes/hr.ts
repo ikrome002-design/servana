@@ -52,6 +52,11 @@ export const hrRoutes: RouteRecordRaw[] = [
         name: 'hr.staff-profile',
         component: () => import('@/pages/hr/StaffProfile.vue'),
       },
+      {
+        path: 'eligibility',
+        name: 'hr.eligibility',
+        component: () => import('@/pages/hr/ServiceEligibility.vue'),
+      },
     ],
   },
 ];

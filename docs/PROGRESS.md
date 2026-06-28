@@ -47,8 +47,10 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 > V and R1–R7 are `verified_complete`; all nine PRE_FEATURE_REMEDIATION items are
 > `verified_complete`. **Phase 10 (API Foundation) is `verified_complete`** (PR #21,
 > `4f761ff`); **Phase 10F (File & Media Foundation) is `verified_complete`** (PR #22,
-> merge `9b493e6`); **Phase 11 (UI Layout & Role Navigation) is `ci_passed`/`ready_to_merge`**
-> (PR #23, head `bb04d87`, CI run `28314016145` — five required checks SUCCESS; not yet merged).
+> merge `9b493e6`); **Phase 11 (UI Layout & Role Navigation) is `verified_complete`**
+> (PR #23 MERGED 2026-06-28, final pre-merge head `44cebdf`, merge commit `d098f37`, CI run
+> `28314638091` — five required checks SUCCESS; reviewDecision blank under the solo-maintainer
+> governance exception — not an independent approval).
 > See `docs/remediation/pre-feature-completion-report.md`,
 > `docs/proof/pre-feature-remediation-gate-closure.md`, and
 > `docs/governance/solo-maintainer-pre-feature-gate-closure-exception.md`.
@@ -58,8 +60,9 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 |---|---|---|
 | 10 | API foundation (Corrections 10–12) | ✅ `verified_complete` — PR #21, commit `4f761ff` (CI Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; solo-maintainer governance exception, reviewDecision blank) (REM-ROUTE-001, REM-MIG-001) |
 | 10F | File & media foundation | ✅ `verified_complete` — PR #22, merge commit `9b493e6` (CI Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; genuine ClamAV EICAR CI test passed without skipping; solo-maintainer governance exception, reviewDecision intentionally blank) (REM-FILE-001 `verified_complete`) |
-| 11 | UI layout foundation & role navigation | 🔄 `ci_passed` / `ready_to_merge` — PR #23 (base `main`), impl `0482e10` + CI remediation `bb04d87`; five required checks SUCCESS on CI run `28314016145`; reviewDecision blank (one eligible maintainer; no independent review). Not yet merged → REM-SCR-001 stays Phase 11 substrate, not `verified_complete` |
-| 15A / 15B | Services, catalogue, clients / personnel availability | ⬜ Not started |
+| 11 | UI layout foundation & role navigation | ✅ `verified_complete` — PR #23 MERGED (base `main`), final pre-merge head `44cebdf`, merge commit `d098f37`; five required checks (Backend, Frontend, Docker, Security, E2E — Playwright) SUCCESS on CI run `28314638091`; reviewDecision blank (solo-maintainer governance exception, not independent review) → REM-SCR-001 promoted to `verified_complete` (Phase 11 substrate) |
+| 15A | Services, catalogue, clients | ✅ `local_complete` — backend + canonical permission activation + client search + frontend screens all built; **all local gates green** (backend 573, vitest 142, Playwright 15A 5, Pint/Larastan/typecheck/lint/build/audits/gitleaks clean). Not `ci_passed`/`merged` (no PR/CI yet). See Phase 15A section. |
+| 15B | Personnel availability | ⬜ Not started |
 | 16A / 16B / 16C | Appointments / walk-ins & queues / service sessions | ⬜ Not started |
 | 17 | Invoicing | ⬜ Not started |
 | 18A / 18B | Payment recording / validation, receipts, refunds, cash-up, period locks | ⬜ Not started |
@@ -71,12 +74,28 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## Phase 15A — Services, Catalogue, Clients (in progress)
+
+- **Branch:** `phase-15a-services-catalogue-clients` · **Base commit:** `d098f37` (Phase 11 merge, PR #23).
+- **Lifecycle status:** ✅ `local_complete` — full Phase 15A built; all local gates green. **Not** `ci_passed`/`merged`/`verified_complete` (no PR/CI). **Proof:** [docs/proof/phase-15a.md](proof/phase-15a.md). **Data dictionary:** [services-clients-scheduling.md](architecture/data-dictionary/services-clients-scheduling.md).
+- **Exact work completed:** 5 branch-owned migrations + 5 enums + 5 models + HMAC blind-index contact protection (foundation, commit `73c7d26`); canonical permission activation (registry/seed/TS, 7 reconciled auth tests); catalogue/eligibility/client/consent domain actions + policies + form requests + thin controllers + masked resources; 16 `/api/v1` routes (`branch_mutation`/read, EnsurePermission + EnsureBranchScope); branch/tenant-scoped name+phone client search (blind index, `front_office.search`); 12 typed audit events; Branch Manager catalogue + HR eligibility + Front Office client create/search/detail screens (Phase 11 shell) + Pinia stores; navigation flips + get-started deep links + 5 §27.1 screen specs + inventory regen; OpenAPI + TS regen.
+- **Tables delivered:** `service_categories`, `services`, `service_personnel_eligibility`, `clients`, `client_consents`.
+- **Routes delivered (16):** `service-categories.{index,store,update}`; `services.{index,show,store,update,archive}`; `services.eligibility.{index,store,destroy}`; `clients.{index,show,store,update}`; `clients.sms-consent.update`.
+- **Permissions activated:** `service.view/create/update/archive` (Branch Manager); `personnel.eligibility.manage` (HR); `client.view/create/update` + `front_office.search` (Front Office).
+- **Screens delivered:** `branch/ServiceCatalogue.vue`, `hr/ServiceEligibility.vue`, `front-office/{ClientList,ClientCreate,ClientDetail}.vue`.
+- **Tests & gate results:** backend **573 passed / 4 skipped / 0 failed**; vitest **142 passed**; Playwright 15A **5 passed** (incl. masked-contact, duplicate-conflict, 360px no-overflow, axe 0 serious/critical); Pint clean; Larastan L8 clean; vue-tsc clean; ESLint 0 errors; SPA build OK; OpenAPI deterministic + TS parity OK; composer audit clean; npm audit 0 high/critical; gitleaks no leaks.
+- **Failures encountered & corrected:** (a) migrations missed a `merchant_id`-leading index (added; foundation slice); (b) validation assertion used Laravel's default `errors` key not the custom `error.fields` envelope (fixed); (c) `RouteSecurityContractTest` flagged two bodiless mutations (added reasoned `VALIDATION_EXEMPT` entries); (d) consent `PUT` returned 201 on first create (forced stable 200 for the idempotent state-set); (e) Larastan/Pint cleanups on the new code.
+- **Work skipped & exact owners:** billing-status mutation gate → Plan §22 / Phases 20A–20E (infra not built at 15A); full canonical `permission-matrix.yaml` + parity/per-key infra (REM-PERM-001) → Phase 19; `personnel_availability` + scheduling enforcement → 15B; `preferred_personnel_fee_rules` → 20A.
+- **Controlling decisions:** (1) canonical §19.2/19.3 keys activated for their owners — **REM-PERM-001 not closed** (Phase 19 owns full closure); (2) HR (not Branch Manager) owns `personnel.eligibility.manage`; (3) `preferred_personnel_fee_minor` kept internal/non-editable.
+- **Pending PR/CI/merge:** none opened (branch pushed only; no PR until authorized). CI authoritative for Linux browser/Docker gates.
+- **Context for Phase 15B:** `service_personnel_eligibility` schema + HR management landed in 15A; `personnel_availability` + scheduling enforcement are **15B** (not created here).
+
 ## Phase 11 — UI Layout Foundation & Role Navigation
 
 - **Branch:** `phase-11-ui-layout-role-navigation` (based on merged Phase 10F `9b493e6`, PR #22).
-- **Status:** 🔄 `ci_passed` / `ready_to_merge` — PR #23 (base `main`); five required checks SUCCESS on CI run `28314016145`; not yet merged.
-- **Commits:** implementation `0482e10`; CI remediation `bb04d87` (Docker context + E2E routes); PR merge commit **does not exist yet**.
-- **Proof:** [docs/proof/phase-11.md](proof/phase-11.md) · **Screen inventory:** [inventory.json](frontend/screens/inventory.json)/[inventory.yaml](frontend/screens/inventory.yaml) · **Navigation fixture:** [role-navigation.yaml](frontend/navigation/role-navigation.yaml) · **Governance:** [solo-maintainer-review-exception-pr-23.md](governance/solo-maintainer-review-exception-pr-23.md) · **Register:** REM-SCR-001 (`local_complete` — Phase 11 substrate; promoted to `verified_complete` only on PR #23 merge).
+- **Status:** ✅ `verified_complete` — PR #23 MERGED into `main` 2026-06-28; five required checks SUCCESS on CI run `28314638091` (final pre-merge head `44cebdf`).
+- **Commits:** implementation `0482e10`; CI remediation `bb04d87` (Docker context + E2E routes); final pre-merge head `44cebdf`; **merge commit `d098f37`**.
+- **Proof:** [docs/proof/phase-11.md](proof/phase-11.md) · **Screen inventory:** [inventory.json](frontend/screens/inventory.json)/[inventory.yaml](frontend/screens/inventory.yaml) · **Navigation fixture:** [role-navigation.yaml](frontend/navigation/role-navigation.yaml) · **Governance:** [solo-maintainer-review-exception-pr-23.md](governance/solo-maintainer-review-exception-pr-23.md) · **Register:** REM-SCR-001 (`verified_complete` — Phase 11 substrate; promoted on PR #23 merge `d098f37`).
 
 ### Phase 10F verified-complete correction
 - Phase 10F → `verified_complete` (PR #22, merge `9b493e6`; five-gate CI incl. `E2E — Playwright` all SUCCESS; genuine ClamAV EICAR CI test passed without skipping; impl commit `431dde2` + ClamAV CI correction `c54016d` preserved). REM-FILE-001 → `verified_complete`. Stale `local_complete`/`pending PR #22` wording removed. The local Windows Playwright timeout was not claimed as a pass; Linux CI is the authoritative browser result. The governance exception is a solo-maintainer record, not independent approval.
@@ -114,7 +133,9 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 
 ### Work skipped / exact owning phase
 ```
-service catalogue / clients -> 15A ; eligibility & availability -> 15B ;
+service catalogue / clients -> 15A ;
+service-personnel eligibility schema and HR management -> 15A ;
+personnel availability and scheduling enforcement -> 15B ;
 appointments -> 16A ; walk-ins & queues -> 16B ; service sessions -> 16C ;
 invoicing -> 17 ; payments/receipts/refunds/cash-up/locks -> 18A/18B ;
 audit log + flagged events -> 19 ; billing/plans/subscriptions/M-Pesa/%-fee -> 20A-20E ;
@@ -128,9 +149,9 @@ search -> 22 ; release-wide responsive/dark/a11y audit -> 23 ; performance (per-
 - **Playwright root cause:** Phase 11 re-pathed role-entry routes (landing became each area's index; `branch.list` → `/branch/list`, `hr.staff` → `/hr/staff`; setup/login redirects → `*.landing`). Three **pre-existing** specs (`merchant-onboarding`, `branches-staff-invitations`, `auth-magic-link`) asserted the old routes/headings/redirects. **Fix:** updated those specs to the changed role-entry routes/selectors (no product code changed to satisfy tests).
 - Full local regression after remediation: typecheck clean · vitest 133 · lint 0 errors · build OK · Playwright green (Linux CI). Detail in [docs/proof/phase-11.md](proof/phase-11.md).
 
-### Pending merge / lifecycle finalization
-- PR #23 is `ci_passed`/`ready_to_merge`: five required checks SUCCESS on CI run `28314016145` (head `bb04d87`); reviewDecision blank (one eligible maintainer; no independent review claimed; `docs/governance/solo-maintainer-review-exception-pr-23.md`).
-- Remaining: a fresh green CI run on the documentation-closeout HEAD, then squash-merge PR #23 into `main` and sync local `main`. REM-SCR-001 is promoted to `verified_complete` **only** on the PR #23 merge. The PR merge commit does not exist yet.
+### Merge / lifecycle finalization (complete)
+- PR #23 is **MERGED** into `main` (2026-06-28): five required checks SUCCESS on the final CI run `28314638091` (final pre-merge head `44cebdf`); merge commit **`d098f37`**; reviewDecision blank under the solo-maintainer governance exception (`docs/governance/solo-maintainer-review-exception-pr-23.md`) — **not** an independent approval.
+- REM-SCR-001 promoted to `verified_complete` on the PR #23 merge.
 
 ### Known risks
 - The authenticated landing chunk (`roleContent`, ~134 KB gzip) bundles all roles' landing+FAQ markdown; legal docs are already lazy per-document. Per-role lazy content split is a Phase 24 performance item.

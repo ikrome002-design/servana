@@ -11,12 +11,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class)->group('auth', 'permissions');
 
 /*
- | The §10.3 permission matrix, transcribed INDEPENDENTLY from the Plan (not from
+ | The permission matrix, transcribed INDEPENDENTLY from the Plan (not from
  | PermissionRegistry) so this test is a genuine spec check: the seeded
  | role_permission_assignments must equal these cells exactly, with zero
  | mismatches. Interpretation per the Plan: any non-empty, non-`◐` cell is a
  | default grant; `◐` cells are grantable overrides (NOT default grants and so
  | absent here); personnel exports are `**never**` (no export key at all).
+ |
+ | Phase 15A reconciled the catalogue/eligibility/client cells to the CANONICAL
+ | §19.2/§19.3 keys (its owning-phase contribution per §19.1): Branch Manager
+ | `service.view/create/update/archive` (was `services.manage`); HR
+ | `personnel.eligibility.manage` (was `eligibility.manage`); Front Office
+ | `client.view/create/update` + `front_office.search` (was `clients.*`). Per
+ | §19.3 `client.view` defaults to Front Office only, so the unwired legacy
+ | `clients.view` grants on the other roles were dropped in the reconciliation
+ | (full §10.3→§19 closure remains Phase 19 / REM-PERM-001).
  */
 function expectedMatrix(): array
 {
@@ -29,21 +38,22 @@ function expectedMatrix(): array
             'reports.view', 'audit.view_full',
         ],
         'branch_manager' => [
-            'branch.profile.manage', 'branch.calendar.manage', 'services.manage',
+            'branch.profile.manage', 'branch.calendar.manage',
+            'service.view', 'service.create', 'service.update', 'service.archive',
             'queue.configure', 'queue.operate', 'queue.transfer_entries',
             'appointments.manage', 'day.open_close', 'cashup.submit',
-            'clients.view', 'sessions.manage', 'invoices.create', 'invoices.view',
+            'sessions.manage', 'invoices.create', 'invoices.view',
             'receipts.view', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
         'hr' => [
             'staff.invite', 'staff.edit', 'staff.suspend',
-            'eligibility.manage', 'availability.manage', 'commissions.manage',
+            'personnel.eligibility.manage', 'availability.manage', 'commissions.manage',
             'commissions.view', 'reports.view', 'audit.view_full',
             'exports.staff_roster',
         ],
         'finance' => [
-            'clients.view', 'invoices.view', 'invoices.void_unpaid',
+            'invoices.view', 'invoices.void_unpaid',
             'payments.record', 'payments.validate', 'payments.reject',
             'receipts.view', 'refunds.request', 'disputes.manage',
             'cashup.review_approve', 'platform_fees.dispute',
@@ -51,16 +61,16 @@ function expectedMatrix(): array
         ],
         'front_office' => [
             'queue.operate', 'appointments.manage',
-            'clients.create', 'clients.edit', 'clients.view',
+            'client.view', 'client.create', 'client.update', 'front_office.search',
             'sessions.manage', 'invoices.create', 'invoices.view',
             'payments.record', 'receipts.view', 'reports.view',
         ],
         'personnel' => [
-            'clients.view', 'invoices.view', 'receipts.view',
+            'invoices.view', 'receipts.view',
             'commissions.view', 'reports.view',
         ],
         'audit' => [
-            'clients.view', 'invoices.view', 'receipts.view',
+            'invoices.view', 'receipts.view',
             'commissions.view', 'platform_fees.view', 'reports.view',
             'audit.view_full', 'audit.flag',
         ],

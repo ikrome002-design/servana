@@ -133,7 +133,8 @@ merchant_branch:
     phase: Phase 7
   - key: branch.services
     label: Services
-    availability: planned
+    availability: live
+    route: branch.services
     permission: service.view
     phase: Phase 15A
   - key: branch.queue
@@ -210,9 +211,10 @@ merchant_human_resource:
     phase: Phase 7
   - key: hr.eligibility
     label: Service eligibility
-    availability: planned
+    availability: live
+    route: hr.eligibility
     permission: personnel.eligibility.manage
-    phase: Phase 15B
+    phase: Phase 15A
   - key: hr.availability
     label: Availability
     availability: planned
@@ -321,7 +323,8 @@ merchant_front_office:
     phase: Phase 11
   - key: front-office.clients
     label: Clients
-    availability: planned
+    availability: live
+    route: front-office.clients
     permission: client.view
     phase: Phase 15A
   - key: front-office.appointments

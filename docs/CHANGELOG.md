@@ -6,16 +6,66 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase 15A — Services, Catalogue, Clients (`phase-15a-services-catalogue-clients`) — local_complete
+
+Branch-Manager service catalogue, HR personnel-service eligibility, and
+Front-Office client records with SMS consent (Plan §13.7, §35, §39, §80 Phase
+15A). Built on merged Phase 11 (`d098f37`, PR #23). **All local gates green**
+(backend 573, vitest 142, Playwright 15A 5, Pint/Larastan/typecheck/lint/build/
+audits/gitleaks clean); not `ci_passed`/`merged` (no PR/CI yet). See
+[docs/proof/phase-15a.md](proof/phase-15a.md).
+
+- **Canonical permissions (§19.2/§19.3):** activated `service.view/create/update/
+  archive` (Branch Manager), `personnel.eligibility.manage` (HR), `client.view/
+  create/update` + `front_office.search` (Front Office), reconciled from the
+  §10.3 baseline (`services.manage`/`eligibility.manage`/`clients.*`). 7 affected
+  auth spec tests updated to canonical names without weakening. **REM-PERM-001
+  stays open** (Phase 19 owns full permission-matrix closure).
+- **Backend/API:** 16 `/api/v1` routes (catalogue CRUD+archive; eligibility
+  assign/revoke; client CRUD+search; SMS consent) on the established Form Request
+  → Policy → action → masked Resource architecture; mutations `branch_mutation`
+  (Sanctum + ResolveTenantContext + EnsureBranchScope + EnsurePermission);
+  deterministic 409s for duplicate client / existing eligibility; 422
+  `invalid_state_transition` for re-archive; 12 typed audit events (masked).
+- **Client search:** branch/tenant-scoped name + normalized-phone (HMAC blind
+  index), masked-only, distinct `front_office.search` capability.
+- **Frontend:** Branch Manager catalogue, HR eligibility, Front Office client
+  create/search/detail screens (Phase 11 shell) + Pinia stores; navigation
+  `planned→live` for `branch.services`/`hr.eligibility`/`front-office.clients`;
+  get-started deep links; 5 §27.1 screen specs + inventory regen; OpenAPI/TS regen.
+- **Decision:** the Plan §22 billing-status mutation gate is owned by the billing
+  phases (20A–20E) and is not built at 15A; 15A mutations are `branch_mutation`
+  and inherit it when it lands.
+
+- **Schema (5 branch-owned tables):** `service_categories`, `services`,
+  `service_personnel_eligibility`, `clients`, `client_consents` — composite-FK
+  tenant/branch consistency, partial-unique constraints (branch-scoped category
+  name; same-branch active client phone), CHECK-backed status enums, integer
+  minor-unit money, legacy non-editable `services.preferred_personnel_fee_minor`
+  seam.
+- **Client contact protection (Plan §35, guardrail §6.4):** AES-256-GCM
+  `encrypted` phone/email + masked display (`phone_last_four`) + keyed **HMAC
+  blind index** (`phone_index`) for branch-scoped search/duplicate prevention
+  without a plaintext index; index `$hidden`, never returned/logged;
+  `CLIENT_CONTACT_INDEX_KEY` env (placeholder in `.env.example`).
+- **Verified (PostgreSQL 16):** `migrate:fresh` OK; tenancy coverage 9; contact
+  protection 7; coverage/contract regression 14 (none broken); Pint 447 PASS;
+  Larastan level 8 clean.
+- **Decisions:** canonical §19.2/19.3 keys (`service.*`, `personnel.eligibility.manage`,
+  `client.*`, `front_office.search`) to be activated in the API slice —
+  **REM-PERM-001 stays open (Phase 19 owns closure)**; **HR** owns eligibility
+  management (not Branch Manager); `preferred_personnel_fee_rules` is Phase 20A.
+
 ### Phase 11 — UI Layout Foundation & Role Navigation (`phase-11-ui-layout-role-navigation`)
 
 Finalizes all eight role layouts, scope-accurate role navigation, live role landing
 pages, and resumable guided get-started entry surfaces (Plan §26–§31, §80 Phase 11;
 REM-SCR-001 Phase 11 substrate). Built on merged Phase 10F (`9b493e6`, PR #22).
-**PR #23** (base `main`) — `ci_passed`/`ready_to_merge`: implementation commit `0482e10`
-+ CI remediation commit `bb04d87`; five required checks SUCCESS on CI run `28314016145`;
-reviewDecision blank (one eligible maintainer; no independent review claimed). Not yet
-merged — REM-SCR-001 is promoted to `verified_complete` only on the PR #23 merge (the
-merge commit does not exist yet).
+**PR #23** (base `main`) — **MERGED** 2026-06-28: implementation commit `0482e10`
++ CI remediation commit `bb04d87`; final pre-merge head `44cebdf`; five required checks
+(Backend, Frontend, Docker, Security, E2E — Playwright) SUCCESS on CI run `28314638091`;
+merge commit **`d098f37`**; reviewDecision blank under the solo-maintainer governance
+exception (not an independent approval). REM-SCR-001 promoted to `verified_complete` on merge.
 
 - **CI remediation (`bb04d87`, "fix: align Phase 11 Docker context and E2E routes"):**
   the first PR #23 run failed on **Docker — build images** and **E2E — Playwright**.

@@ -23,7 +23,7 @@ it('reflects a membership role change on the next request', function (): void {
 
     $before = $this->actingAs($staffUser, 'sanctum')->getJson('/api/v1/me');
     $before->assertJsonPath('data.membership.role', 'front_office');
-    expect($before->json('data.permissions'))->toContain('clients.create');
+    expect($before->json('data.permissions'))->toContain('client.create');
 
     // Change the role directly in the database (authority change, not a logout).
     $membership->update(['role' => MerchantUserRole::Personnel]);
@@ -31,7 +31,7 @@ it('reflects a membership role change on the next request', function (): void {
     $after = $this->actingAs($staffUser->fresh(), 'sanctum')->getJson('/api/v1/me');
     $after->assertJsonPath('data.membership.role', 'personnel');
     // Personnel cannot create clients — the new role's set is what resolves.
-    expect($after->json('data.permissions'))->not->toContain('clients.create');
+    expect($after->json('data.permissions'))->not->toContain('client.create');
 });
 
 it('loses merchant context on the next request when the membership is suspended', function (): void {

@@ -78,10 +78,10 @@ it('rejects granting a key that is not grantable for the target role', function 
     $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
     [, , $finance] = branchStaff($merchant, $branch, MerchantUserRole::Finance);
 
-    // services.manage is a Branch Manager key, never grantable to finance.
+    // service.create is a Branch Manager key, never grantable to finance.
     $this->actingAs($admin, 'sanctum')
         ->postJson("/api/v1/staff/{$finance->ulid}/permissions", [
-            'permission' => 'services.manage',
+            'permission' => 'service.create',
             'effect' => 'grant',
         ])
         ->assertStatus(403);
