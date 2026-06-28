@@ -156,3 +156,25 @@ None. Every Phase 15A acceptance criterion is met and verified locally. The
 billing-status mutation gate is owned by Plan §22 / Phases 20A–20E and is out of
 required 15A scope (see decision 3). REM-PERM-001 full closure is owned by
 Phase 19. CI/PR/merge are pending (no PR opened, per instruction).
+
+## Solo-Maintainer Review Exception - PR #24
+
+An independent second reviewer was unavailable because the repository currently
+has one eligible maintainer. The product owner authorized a PR-specific
+governance exception instead of fabricating approval.
+
+Evidence:
+
+- PR: #24
+- verified implementation head:
+  23aeed1f464d9b3efb412eaf98f9b1ea239276f1
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record:
+  docs/governance/solo-maintainer-review-exception-pr-24.md
+
+This exception applies only to PR #24 and is not independent reviewer approval.
