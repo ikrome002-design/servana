@@ -30,7 +30,6 @@ coverage
 playwright-report
 
 # Local tooling / docs not needed at runtime
-docs
 *.md
 !README.md
 
