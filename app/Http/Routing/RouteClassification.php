@@ -49,6 +49,8 @@ final class RouteClassification
         'staff.deactivate' => 'No request body; {staff} binding + StaffProfilePolicy.',
         'staff.permissions.destroy' => 'No request body; {staff}+{permission} bindings + MerchantUserPolicy.',
         'files.download-link' => 'No request body; issues a signed link, authorized by FileAccessService.',
+        'services.archive' => 'No request body; state transition authorized by service.archive permission + ServicePolicy.',
+        'services.eligibility.destroy' => 'No request body; {service}+{staff} bindings + personnel.eligibility.manage.',
     ];
 
     public static function of(Route $route): ?RouteClass

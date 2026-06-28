@@ -303,10 +303,16 @@ screens:
     spec: ~
   - key: service-catalogue
     domain: branch
-    route: ~
-    status: planned
+    route: branch.services
+    status: implemented
     phase: Phase 15A
-    spec: ~
+    spec: branch/service-catalogue.md
+  - key: service-eligibility
+    domain: hr
+    route: hr.eligibility
+    status: implemented
+    phase: Phase 15A
+    spec: hr/service-eligibility.md
   - key: branch-calendar
     domain: branch
     route: ~
@@ -357,10 +363,22 @@ screens:
     spec: ~
   - key: front-office-clients
     domain: front-office
-    route: ~
-    status: planned
+    route: front-office.clients
+    status: implemented
     phase: Phase 15A
-    spec: ~
+    spec: front-office/front-office-clients.md
+  - key: front-office-client-create
+    domain: front-office
+    route: front-office.clients.create
+    status: implemented
+    phase: Phase 15A
+    spec: front-office/front-office-client-create.md
+  - key: front-office-client-detail
+    domain: front-office
+    route: front-office.clients.detail
+    status: implemented
+    phase: Phase 15A
+    spec: front-office/front-office-client-detail.md
   - key: front-office-appointments
     domain: front-office
     route: ~

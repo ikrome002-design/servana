@@ -10,6 +10,11 @@ use App\Http\Controllers\Api\V1\Auth\MfaController;
 use App\Http\Controllers\Api\V1\Branches\BranchController;
 use App\Http\Controllers\Api\V1\Branches\BranchDayController;
 use App\Http\Controllers\Api\V1\Branches\BranchOperatingHoursController;
+use App\Http\Controllers\Api\V1\Catalogue\ServiceCategoryController;
+use App\Http\Controllers\Api\V1\Catalogue\ServiceController;
+use App\Http\Controllers\Api\V1\Catalogue\ServiceEligibilityController;
+use App\Http\Controllers\Api\V1\Clients\ClientConsentController;
+use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Files\FileController;
 use App\Http\Controllers\Api\V1\Hr\PermissionOverrideController;
 use App\Http\Controllers\Api\V1\Hr\PermissionPreviewController;
@@ -244,6 +249,70 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             // hold. Branch- and merchant-scoped; never enables self-escalation.
             Route::get('hr/permission-preview', [PermissionPreviewController::class, 'preview'])
                 ->name('hr.permission-preview');
+
+            // Service catalogue (Scope §catalogue, Plan §39; Phase 15A). Branch
+            // Manager owns it (`service.*`). Reads authorize `service.view` in the
+            // controller (ServicePolicy); mutations carry EnsurePermission + are
+            // classified branch_mutation (EnsureBranchScope no-ops without a
+            // {branch} param but the class contract requires it). The legacy
+            // preferred-personnel fee is never exposed or editable.
+            Route::get('service-categories', [ServiceCategoryController::class, 'index'])->name('service-categories.index');
+            Route::post('service-categories', [ServiceCategoryController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':service.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('service-categories.store');
+            Route::patch('service-categories/{serviceCategory}', [ServiceCategoryController::class, 'update'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':service.update'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('service-categories.update');
+
+            Route::get('services', [ServiceController::class, 'index'])->name('services.index');
+            Route::get('services/{service}', [ServiceController::class, 'show'])->name('services.show');
+            Route::post('services', [ServiceController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':service.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('services.store');
+            Route::patch('services/{service}', [ServiceController::class, 'update'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':service.update'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('services.update');
+            Route::post('services/{service}/archive', [ServiceController::class, 'archive'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':service.archive'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('services.archive');
+
+            // Personnel-service eligibility (Plan §19.3, §39; Phase 15A). HR owns
+            // mutation (`personnel.eligibility.manage`); reads also serve the Branch
+            // Manager catalogue's read-only summary (authorized in the controller).
+            Route::get('services/{service}/eligibility', [ServiceEligibilityController::class, 'index'])
+                ->name('services.eligibility.index');
+            Route::post('services/{service}/eligibility', [ServiceEligibilityController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':personnel.eligibility.manage'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('services.eligibility.store');
+            Route::delete('services/{service}/eligibility/{staff}', [ServiceEligibilityController::class, 'destroy'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':personnel.eligibility.manage'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('services.eligibility.destroy');
+
+            // Client records (Scope §clients, Plan §35; Phase 15A). Front Office owns
+            // them (`client.*`); search is a distinct capability (`front_office.search`,
+            // enforced in the controller). Contact is ALWAYS masked; the blind index
+            // is never returned. Reads authorize `client.view` (ClientPolicy).
+            Route::get('clients', [ClientController::class, 'index'])->name('clients.index');
+            Route::get('clients/{client}', [ClientController::class, 'show'])->name('clients.show');
+            Route::post('clients', [ClientController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':client.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('clients.store');
+            Route::patch('clients/{client}', [ClientController::class, 'update'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':client.update'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('clients.update');
+            Route::put('clients/{client}/sms-consent', [ClientConsentController::class, 'update'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':client.update'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('clients.sms-consent.update');
 
             // Files & media (Plan §65; Phase 10F). Upload streams to private
             // quarantine then scans; downloads require auth + a valid temporary

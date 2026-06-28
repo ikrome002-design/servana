@@ -37,7 +37,7 @@ it('denies an audit user any staff write and audits the denied attempt', functio
 
     $this->actingAs($audit, 'sanctum')
         ->postJson("/api/v1/staff/{$personnel->ulid}/permissions", [
-            'permission' => 'clients.view',
+            'permission' => 'client.view',
             'effect' => 'deny',
         ])
         ->assertStatus(403)

@@ -6,13 +6,36 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 15A — Services, Catalogue, Clients (`phase-15a-services-catalogue-clients`) — in progress
+### Phase 15A — Services, Catalogue, Clients (`phase-15a-services-catalogue-clients`) — local_complete
 
-Data/security/tenancy **foundation** for the Branch-Manager catalogue and
-Front-Office client records (Plan §13.7, §35, §39, §80 Phase 15A). **Not
-complete** — the API authorization surface, canonical permission activation, and
-frontend screens are not yet built (see [docs/proof/phase-15a.md](proof/phase-15a.md)).
-Built on merged Phase 11 (`d098f37`, PR #23).
+Branch-Manager service catalogue, HR personnel-service eligibility, and
+Front-Office client records with SMS consent (Plan §13.7, §35, §39, §80 Phase
+15A). Built on merged Phase 11 (`d098f37`, PR #23). **All local gates green**
+(backend 573, vitest 142, Playwright 15A 5, Pint/Larastan/typecheck/lint/build/
+audits/gitleaks clean); not `ci_passed`/`merged` (no PR/CI yet). See
+[docs/proof/phase-15a.md](proof/phase-15a.md).
+
+- **Canonical permissions (§19.2/§19.3):** activated `service.view/create/update/
+  archive` (Branch Manager), `personnel.eligibility.manage` (HR), `client.view/
+  create/update` + `front_office.search` (Front Office), reconciled from the
+  §10.3 baseline (`services.manage`/`eligibility.manage`/`clients.*`). 7 affected
+  auth spec tests updated to canonical names without weakening. **REM-PERM-001
+  stays open** (Phase 19 owns full permission-matrix closure).
+- **Backend/API:** 16 `/api/v1` routes (catalogue CRUD+archive; eligibility
+  assign/revoke; client CRUD+search; SMS consent) on the established Form Request
+  → Policy → action → masked Resource architecture; mutations `branch_mutation`
+  (Sanctum + ResolveTenantContext + EnsureBranchScope + EnsurePermission);
+  deterministic 409s for duplicate client / existing eligibility; 422
+  `invalid_state_transition` for re-archive; 12 typed audit events (masked).
+- **Client search:** branch/tenant-scoped name + normalized-phone (HMAC blind
+  index), masked-only, distinct `front_office.search` capability.
+- **Frontend:** Branch Manager catalogue, HR eligibility, Front Office client
+  create/search/detail screens (Phase 11 shell) + Pinia stores; navigation
+  `planned→live` for `branch.services`/`hr.eligibility`/`front-office.clients`;
+  get-started deep links; 5 §27.1 screen specs + inventory regen; OpenAPI/TS regen.
+- **Decision:** the Plan §22 billing-status mutation gate is owned by the billing
+  phases (20A–20E) and is not built at 15A; 15A mutations are `branch_mutation`
+  and inherit it when it lands.
 
 - **Schema (5 branch-owned tables):** `service_categories`, `services`,
   `service_personnel_eligibility`, `clients`, `client_consents` — composite-FK

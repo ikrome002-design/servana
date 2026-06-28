@@ -12,10 +12,13 @@ day.open_close                        ·            ✓           ·            
 queue.configure                       ·            ✓           ·            ·            ·            ·            ·            ·
 queue.operate                         ·            ✓           ·            ·            ✓           ·            ·            ·
 queue.transfer_entries                ·            ✓           ·            ·            ·            ·            ·            ·
-services.manage                       ·            ✓           ·            ·            ·            ·            ·            ·
-clients.create                        ·            ·            ·            ·            ✓           ·            ·            ·
-clients.edit                          ·            ·            ·            ·            ✓           ·            ·            ·
-clients.view                          ·            ✓           ·            ✓           ✓           ✓           ✓           ·
+service.archive                       ·            ✓           ·            ·            ·            ·            ·            ·
+service.create                        ·            ✓           ·            ·            ·            ·            ·            ·
+service.update                        ·            ✓           ·            ·            ·            ·            ·            ·
+service.view                          ·            ✓           ·            ·            ·            ·            ·            ·
+client.create                         ·            ·            ·            ·            ✓           ·            ·            ·
+client.update                         ·            ·            ·            ·            ✓           ·            ·            ·
+client.view                           ·            ·            ·            ·            ✓           ·            ·            ·
 cashup.review_approve                 ·            ·            ·            ✓           ·            ·            ·            ·
 commissions.view                      ✓           ✓           ✓           ·            ·            ✓           ✓           ·
 disputes.manage                       ·            ·            ·            ✓           ·            ·            ·            ·
@@ -36,6 +39,7 @@ receipts.reissue                      ·            ·            ·            
 receipts.view                         ✓           ✓           ·            ✓           ✓           ✓           ✓           ·
 refunds.approve                       ·            ·            ·            ·            ·            ·            ·            ·
 refunds.request                       ·            ·            ·            ✓           ·            ·            ·            ·
+front_office.search                   ·            ·            ·            ·            ✓           ·            ·            ·
 branches.create                       ✓           ·            ·            ·            ·            ·            ·            ·
 branches.manage_users_lifecycle       ✓           ·            ·            ·            ·            ·            ·            ·
 merchant.profile.manage               ✓           ·            ·            ·            ·            ·            ·            ·
@@ -52,7 +56,7 @@ exports.staff_roster                  ·            ·            ✓           
 reports.view                          ✓           ✓           ✓           ✓           ✓           ✓           ✓           ·
 availability.manage                   ·            ·            ✓           ·            ·            ·            ·            ·
 commissions.manage                    ·            ·            ✓           ·            ·            ·            ·            ·
-eligibility.manage                    ·            ·            ✓           ·            ·            ·            ·            ·
+personnel.eligibility.manage          ·            ·            ✓           ·            ·            ·            ·            ·
 staff.edit                            ·            ·            ✓           ·            ·            ·            ·            ·
 staff.invite                          ·            ·            ✓           ·            ·            ·            ·            ·
 staff.suspend                         ·            ·            ✓           ·            ·            ·            ·            ·

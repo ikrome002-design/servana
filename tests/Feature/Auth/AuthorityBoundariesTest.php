@@ -25,7 +25,7 @@ function grants(string $roleKey): array
 it('forbids Merchant Admin from configuring services, commissions, personnel assignment or payment validation', function (): void {
     $admin = grants('merchant_admin');
 
-    expect($admin)->not->toContain('services.manage')
+    expect($admin)->not->toContain('service.create')
         ->and($admin)->not->toContain('commissions.manage')
         ->and($admin)->not->toContain('staff.invite')
         ->and($admin)->not->toContain('availability.manage')

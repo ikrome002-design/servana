@@ -56,15 +56,15 @@ const merchantAdministrator: GetStartedItem[] = [
 const branchManager: GetStartedItem[] = [
   { id: 'confirm-branch-profile', label: 'Confirm branch profile', routeName: 'branch.list', kind: 'action' },
   { id: 'set-operating-hours-calendar', label: 'Set operating hours and calendar', routeName: 'branch.list', kind: 'action' },
-  { id: 'build-service-catalogue', label: 'Build the service catalogue', phase: 'Phase 15A', kind: 'action' },
-  { id: 'set-service-pricing-durations', label: 'Set service pricing and durations', phase: 'Phase 15A', kind: 'action' },
+  { id: 'build-service-catalogue', label: 'Build the service catalogue', routeName: 'branch.services', kind: 'action' },
+  { id: 'set-service-pricing-durations', label: 'Set service pricing and durations', routeName: 'branch.services', kind: 'action' },
   { id: 'open-branch-day', label: 'Open the branch day', phase: 'Phase 16B', kind: 'action' },
   ACKNOWLEDGE,
 ];
 
 const humanResource: GetStartedItem[] = [
   { id: 'invite-staff', label: 'Invite staff', routeName: 'hr.invitations', kind: 'action' },
-  { id: 'set-service-eligibility', label: 'Set service eligibility', phase: 'Phase 15B', kind: 'action' },
+  { id: 'set-service-eligibility', label: 'Set service eligibility', routeName: 'hr.eligibility', kind: 'action' },
   { id: 'set-availability', label: 'Set availability', phase: 'Phase 15B', kind: 'action' },
   { id: 'configure-compensation-models', label: 'Configure personnel compensation models', phase: 'Phase 20F', kind: 'action' },
   { id: 'review-missing-compensation', label: 'Review missing-compensation warnings', phase: 'Phase 20F', kind: 'action' },
@@ -81,7 +81,7 @@ const finance: GetStartedItem[] = [
 ];
 
 const frontOffice: GetStartedItem[] = [
-  { id: 'register-a-client', label: 'Register a client', phase: 'Phase 15A', kind: 'action' },
+  { id: 'register-a-client', label: 'Register a client', routeName: 'front-office.clients.create', kind: 'action' },
   { id: 'start-a-walk-in', label: 'Start a walk-in', phase: 'Phase 16B', kind: 'action' },
   { id: 'assign-personnel', label: 'Assign personnel', phase: 'Phase 16B', kind: 'action' },
   { id: 'create-an-invoice', label: 'Create an invoice', phase: 'Phase 17', kind: 'action' },

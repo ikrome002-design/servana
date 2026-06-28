@@ -74,6 +74,23 @@ enum AuditEvent: string
     case MfaStepUpSucceeded = 'mfa.step_up_succeeded';
     case MfaStepUpDenied = 'mfa.step_up_denied';
 
+    // --- Catalogue & clients (Plan §35, §39; Phase 15A). Branch Manager owns the
+    // service catalogue; HR owns personnel-service eligibility; Front Office owns
+    // client records + SMS consent. Client events carry ONLY safe ids + masked
+    // values — never full phone/email and never the blind index.
+    case ServiceCategoryCreated = 'service_category.created';
+    case ServiceCategoryUpdated = 'service_category.updated';
+    case ServiceCategoryArchived = 'service_category.archived';
+    case ServiceCreated = 'service.created';
+    case ServiceUpdated = 'service.updated';
+    case ServiceArchived = 'service.archived';
+    case PersonnelEligibilityAssigned = 'personnel_eligibility.assigned';
+    case PersonnelEligibilityRevoked = 'personnel_eligibility.revoked';
+    case ClientCreated = 'client.created';
+    case ClientUpdated = 'client.updated';
+    case ClientConsentOptedIn = 'client_consent.opted_in';
+    case ClientConsentOptedOut = 'client_consent.opted_out';
+
     // --- Tenant/branch isolation (Plan §8.4) — name preserved from Phase 9.
     case UnauthorizedAccess = 'unauthorized_access';
 
@@ -110,12 +127,24 @@ enum AuditEvent: string
             self::FileScanClean,
             self::FileAvailable,
             self::FileDownloaded,
+            self::ClientCreated,
+            self::ClientUpdated,
+            self::ClientConsentOptedIn,
+            self::ClientConsentOptedOut,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
             self::BranchDayClosed,
             self::MfaEnrollmentStarted,
             self::FileExpiredOrDeleted,
+            self::ServiceCategoryCreated,
+            self::ServiceCategoryUpdated,
+            self::ServiceCategoryArchived,
+            self::ServiceCreated,
+            self::ServiceUpdated,
+            self::ServiceArchived,
+            self::PersonnelEligibilityAssigned,
+            self::PersonnelEligibilityRevoked,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,

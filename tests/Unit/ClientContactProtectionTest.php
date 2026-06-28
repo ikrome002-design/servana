@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Domain\Clients\Models\Client;
 use App\Domain\Clients\Support\ClientContactIndex;
 use App\Domain\Clients\Support\PhoneNumberNormalizer;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
@@ -65,7 +66,7 @@ it('prevents a duplicate active client per branch + normalized phone', function 
             'merchant_id' => $first->merchant_id,
             'branch_id' => $first->branch_id,
         ]))
-        ->toThrow(Illuminate\Database\QueryException::class); // partial-unique index violation
+        ->toThrow(QueryException::class); // partial-unique index violation
 });
 
 it('allows the same phone in a different branch', function (): void {

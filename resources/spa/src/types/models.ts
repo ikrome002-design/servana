@@ -144,3 +144,54 @@ export interface PermissionPreview {
   default_grants: string[];
   grantable: string[];
 }
+
+// --- Catalogue & clients (Plan §35, §39; Phase 15A) --------------------------
+
+export type ServiceStatus = 'active' | 'archived';
+
+export interface ServiceCategory {
+  id: string;
+  name: string;
+  sort_order: number;
+  archived: boolean;
+  services_count?: number;
+  can?: { view: boolean; update: boolean };
+}
+
+export interface Service {
+  id: string;
+  category_id?: string | null;
+  category_name?: string | null;
+  name: string;
+  description: string | null;
+  price_minor: number;
+  currency: string;
+  duration_minutes: number;
+  status: ServiceStatus;
+  branch_id?: string | null;
+  can?: { view: boolean; update: boolean; archive: boolean };
+}
+
+export interface ServiceEligibility {
+  service_id?: string | null;
+  service_name?: string | null;
+  staff_profile_id?: string | null;
+  staff_name?: string | null;
+  active: boolean;
+}
+
+export type SmsConsentState = 'opted_in' | 'opted_out';
+
+/** Client record — contact is ALWAYS masked (Plan §35; guardrail §6.4). */
+export interface Client {
+  id: string;
+  full_name: string;
+  phone_masked: string;
+  phone_last_four: string;
+  email_masked: string | null;
+  has_email: boolean;
+  notes: string | null;
+  status: 'active' | 'archived';
+  sms_consent?: SmsConsentState | null;
+  can?: { view: boolean; update: boolean };
+}

@@ -77,7 +77,12 @@ final class PermissionRegistry
         // Branch operations.
         'branch.profile.manage' => ['branch', 'Edit own-branch profile and operating hours.', true],
         'branch.calendar.manage' => ['branch', 'Manage own-branch calendar exceptions.', true],
-        'services.manage' => ['branch', 'Configure services and pricing.', true],
+        // Catalogue (Plan §19.2/§19.3; Phase 15A canonical keys — reconciled from the
+        // legacy `services.manage` baseline). Branch Manager owns the catalogue.
+        'service.view' => ['catalogue', 'View services (scoped).', false],
+        'service.create' => ['catalogue', 'Create services.', true],
+        'service.update' => ['catalogue', 'Update services.', true],
+        'service.archive' => ['catalogue', 'Archive a service.', true],
         'queue.configure' => ['branch', 'Configure the branch queue.', true],
         'queue.operate' => ['branch', 'Operate the queue (call/serve/skip).', true],
         'queue.transfer_entries' => ['branch', 'Transfer queue entries from unavailable personnel.', true],
@@ -88,13 +93,18 @@ final class PermissionRegistry
         'staff.invite' => ['staff', 'Invite operational staff (same branch).', true],
         'staff.edit' => ['staff', 'Edit staff profiles.', true],
         'staff.suspend' => ['staff', 'Suspend/deactivate operational staff.', true],
-        'eligibility.manage' => ['staff', 'Manage service eligibility.', true],
+        // Personnel-service eligibility (Plan §19.2/§19.3; Phase 15A canonical key —
+        // reconciled from the legacy `eligibility.manage` baseline). HR-owned.
+        'personnel.eligibility.manage' => ['staff', 'Manage personnel service eligibility.', true],
         'availability.manage' => ['staff', 'Manage staff availability.', true],
         'commissions.manage' => ['staff', 'Set staff commissions.', true],
-        // Clients.
-        'clients.create' => ['clients', 'Create client records.', true],
-        'clients.edit' => ['clients', 'Edit client records.', true],
-        'clients.view' => ['clients', 'View client records (scoped).', false],
+        // Clients (Plan §19.2/§19.3; Phase 15A canonical keys — reconciled from the
+        // legacy `clients.create/edit/view` baseline). Front Office owns client records
+        // and client search; contact is masked at read and never exported.
+        'client.view' => ['clients', 'View client records (scoped, masked).', false],
+        'client.create' => ['clients', 'Create client records.', true],
+        'client.update' => ['clients', 'Update client records.', true],
+        'front_office.search' => ['front_office', 'Search clients (branch-scoped, masked).', false],
         // Sessions & invoices.
         'sessions.manage' => ['operations', 'Manage service sessions.', true],
         'invoices.create' => ['finance', 'Create invoices.', true],
@@ -150,21 +160,22 @@ final class PermissionRegistry
             'reports.view', 'audit.view_full',
         ],
         self::ROLE_BRANCH_MANAGER => [
-            'branch.profile.manage', 'branch.calendar.manage', 'services.manage',
+            'branch.profile.manage', 'branch.calendar.manage',
+            'service.view', 'service.create', 'service.update', 'service.archive',
             'queue.configure', 'queue.operate', 'queue.transfer_entries',
             'appointments.manage', 'day.open_close', 'cashup.submit',
-            'clients.view', 'sessions.manage', 'invoices.create', 'invoices.view',
+            'sessions.manage', 'invoices.create', 'invoices.view',
             'receipts.view', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
         self::ROLE_HR => [
             'staff.invite', 'staff.edit', 'staff.suspend',
-            'eligibility.manage', 'availability.manage', 'commissions.manage',
+            'personnel.eligibility.manage', 'availability.manage', 'commissions.manage',
             'commissions.view', 'reports.view', 'audit.view_full',
             'exports.staff_roster',
         ],
         self::ROLE_FINANCE => [
-            'clients.view', 'invoices.view', 'invoices.void_unpaid',
+            'invoices.view', 'invoices.void_unpaid',
             'payments.record', 'payments.validate', 'payments.reject',
             'receipts.view', 'refunds.request', 'disputes.manage',
             'cashup.review_approve', 'platform_fees.dispute',
@@ -172,16 +183,16 @@ final class PermissionRegistry
         ],
         self::ROLE_FRONT_OFFICE => [
             'queue.operate', 'appointments.manage',
-            'clients.create', 'clients.edit', 'clients.view',
+            'client.view', 'client.create', 'client.update', 'front_office.search',
             'sessions.manage', 'invoices.create', 'invoices.view',
             'payments.record', 'receipts.view', 'reports.view',
         ],
         self::ROLE_PERSONNEL => [
-            'clients.view', 'invoices.view', 'receipts.view',
+            'invoices.view', 'receipts.view',
             'commissions.view', 'reports.view',
         ],
         self::ROLE_AUDIT => [
-            'clients.view', 'invoices.view', 'receipts.view',
+            'invoices.view', 'receipts.view',
             'commissions.view', 'platform_fees.view', 'reports.view',
             'audit.view_full', 'audit.flag',
         ],
