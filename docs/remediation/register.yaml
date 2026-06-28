@@ -656,9 +656,9 @@ items:
     test_plan: "roleNavigation (parity + forbidden-absence), roleEntryRoutes, getStartedStore, RoleNavigation, GetStartedChecklist, RoleLandingContent, RoleLayouts, screenInventory (coverage guard); e2e role-entry-surfaces / role-navigation-keyboard / role-foundation-responsive / role-foundation-accessibility."
     proof_artifact: "docs/proof/phase-11.md"
     owner: "Phase 11 + owning phases"
-    completion_commit: "local_complete on branch phase-11-ui-layout-role-navigation (pending PR/CI/merge)"
-    reviewer: "pending Phase 11 PR (solo-maintainer governance exception; not an independent approval)"
-    status: local_complete
+    completion_commit: "PR #23 MERGED into main; merge commit d098f37 (final pre-merge head 44cebdf, CI run 28314638091)"
+    reviewer: "solo-maintainer governance exception (reviewDecision blank; not an independent approval) — docs/governance/solo-maintainer-review-exception-pr-23.md"
+    status: verified_complete
 
   - id: REM-TRACE-001
     classification: C1
@@ -693,3 +693,20 @@ items:
     completion_commit: null
     reviewer: "TBD"
     status: not_started
+
+  - id: REM-CAT-CLI-001
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Phase 15A — Branch-Manager service catalogue + HR personnel-service eligibility + Front-Office client records with SMS consent, encrypted+masked contact, plaintext-free phone search/duplicate prevention (Plan §13.7, §35, §39, §80)."
+    repository_evidence: "Foundation built & verified on PostgreSQL 16: 5 branch-owned migrations (service_categories, services, service_personnel_eligibility, clients, client_consents) with composite-FK tenant/branch consistency + partial-unique constraints + CHECK-backed enums + integer minor-unit money; 5 enums + 5 models; PhoneNumberNormalizer + ClientContactIndex (keyed HMAC blind index; CLIENT_CONTACT_INDEX_KEY env, .env.example placeholder); TenantOwnership registration; 5 factories; tests/Unit/ClientContactProtectionTest.php. Verified: tenancy coverage 9, contact protection 7, coverage/contract regression 14, Pint 447, Larastan L8 clean."
+    root_cause: "Catalogue/ and Clients/ domains were empty (.gitkeep); no catalogue/client tables, contact protection, or eligibility existed."
+    affected_files_tables_routes: "database/migrations/2026_06_28_0000{01..05}_*; app/Domain/Catalogue/**; app/Domain/Clients/**; app/Domain/Tenancy/TenantOwnership.php; config/servana.php; .env.example; database/factories/Service*/Client*Factory.php; docs/architecture/data-dictionary/services-clients-scheduling.md."
+    security_data_business_impact: "Tenant + branch isolation enforced in DB (composite FKs); client contact encrypted at rest, masked at read, searched/de-duplicated via one-way HMAC blind index (never plaintext index, never returned/logged). API authorization layer + canonical permission activation + frontend NOT yet built — phase not usable."
+    precise_correction: "Spec-first data dictionary, then schema + tenancy + contact-protection foundation. Remaining: API actions/policies/requests/controllers/resources/routes; canonical §19.2/19.3 permission activation (service.*/personnel.eligibility.manage/client.*/front_office.search) — contributes to REM-PERM-001 but DOES NOT close it (Phase 19 owns full permission-matrix closure); client search; frontend screens + §27.1 specs + navigation/get-started; OpenAPI/TS; Playwright/responsive/dark/axe; Docker image builds."
+    migration_impact: "5 new forward-only migrations; no shipped migration edited."
+    test_plan: "ClientContactProtectionTest; TenantColumnCoverageTest; ModelTenancyTraitCoverageTest; (pending) catalogue/clients/eligibility/consent feature suites — role-boundary, cross-tenant 404, cross-branch 403, billing read-only, audit, duplicate-active, search isolation, no Personnel contact-export."
+    proof_artifact: "docs/proof/phase-15a.md"
+    owner: "Phase 15A"
+    completion_commit: null
+    reviewer: "TBD (no PR until authorized)"
+    status: in_progress

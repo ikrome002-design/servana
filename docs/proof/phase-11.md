@@ -2,11 +2,12 @@
 
 **Branch:** `phase-11-ui-layout-role-navigation` · **Base:** `9b493e6` (merged Phase 10F, PR #22).
 **PR:** #23 (base `main`). **Implementation commit:** `0482e10`. **CI remediation commit:** `bb04d87`.
-**Status:** `ci_passed` / `ready_to_merge` — PR #23 open; five required checks green on CI run
-`28314016145` (head `bb04d87`); reviewDecision blank (one eligible maintainer; no independent
-review claimed). REM-SCR-001 stays `local_complete` (Phase 11 substrate) and is **not**
-`verified_complete` until PR #23 merges. The merge commit does not exist yet. Frontend
-visibility is UX only; the API remains the security boundary.
+**Status:** `verified_complete` — PR #23 **MERGED** into `main` 2026-06-28; five required checks
+(Backend, Frontend, Docker, Security, E2E — Playwright) green on the final CI run `28314638091`
+(final pre-merge head `44cebdf`); merge commit **`d098f37`**; reviewDecision blank under the
+solo-maintainer governance exception (not an independent approval). REM-SCR-001 promoted to
+`verified_complete` (Phase 11 substrate) on merge. Frontend visibility is UX only; the API
+remains the security boundary.
 
 ## Branch safety / base
 
@@ -169,8 +170,9 @@ deployment → 25. No Phase 15A+ business workflow was implemented.
 Phase-11 + access-state screens; canonical navigation registry + snapshot fixture + parity test; eight
 role layouts/landings/get-started + persistence + state boundaries + role-aware routing. Future feature
 screens remain `planned` with truthful owners and no fake routes; each owning phase writes its final spec
-before implementing. CI green on PR #23 (`ci_passed`/`ready_to_merge`); REM-SCR-001 is promoted to
-`verified_complete` only on the PR #23 merge (governance exception, not independent approval).
+before implementing. PR #23 **MERGED** (merge commit `d098f37`, final CI run `28314638091`);
+REM-SCR-001 promoted to `verified_complete` on merge (solo-maintainer governance exception, not
+independent approval).
 
 ## Phase 11 CI remediation (PR #23) — truthful record
 

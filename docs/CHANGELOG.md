@@ -6,16 +6,43 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase 15A — Services, Catalogue, Clients (`phase-15a-services-catalogue-clients`) — in progress
+
+Data/security/tenancy **foundation** for the Branch-Manager catalogue and
+Front-Office client records (Plan §13.7, §35, §39, §80 Phase 15A). **Not
+complete** — the API authorization surface, canonical permission activation, and
+frontend screens are not yet built (see [docs/proof/phase-15a.md](proof/phase-15a.md)).
+Built on merged Phase 11 (`d098f37`, PR #23).
+
+- **Schema (5 branch-owned tables):** `service_categories`, `services`,
+  `service_personnel_eligibility`, `clients`, `client_consents` — composite-FK
+  tenant/branch consistency, partial-unique constraints (branch-scoped category
+  name; same-branch active client phone), CHECK-backed status enums, integer
+  minor-unit money, legacy non-editable `services.preferred_personnel_fee_minor`
+  seam.
+- **Client contact protection (Plan §35, guardrail §6.4):** AES-256-GCM
+  `encrypted` phone/email + masked display (`phone_last_four`) + keyed **HMAC
+  blind index** (`phone_index`) for branch-scoped search/duplicate prevention
+  without a plaintext index; index `$hidden`, never returned/logged;
+  `CLIENT_CONTACT_INDEX_KEY` env (placeholder in `.env.example`).
+- **Verified (PostgreSQL 16):** `migrate:fresh` OK; tenancy coverage 9; contact
+  protection 7; coverage/contract regression 14 (none broken); Pint 447 PASS;
+  Larastan level 8 clean.
+- **Decisions:** canonical §19.2/19.3 keys (`service.*`, `personnel.eligibility.manage`,
+  `client.*`, `front_office.search`) to be activated in the API slice —
+  **REM-PERM-001 stays open (Phase 19 owns closure)**; **HR** owns eligibility
+  management (not Branch Manager); `preferred_personnel_fee_rules` is Phase 20A.
+
 ### Phase 11 — UI Layout Foundation & Role Navigation (`phase-11-ui-layout-role-navigation`)
 
 Finalizes all eight role layouts, scope-accurate role navigation, live role landing
 pages, and resumable guided get-started entry surfaces (Plan §26–§31, §80 Phase 11;
 REM-SCR-001 Phase 11 substrate). Built on merged Phase 10F (`9b493e6`, PR #22).
-**PR #23** (base `main`) — `ci_passed`/`ready_to_merge`: implementation commit `0482e10`
-+ CI remediation commit `bb04d87`; five required checks SUCCESS on CI run `28314016145`;
-reviewDecision blank (one eligible maintainer; no independent review claimed). Not yet
-merged — REM-SCR-001 is promoted to `verified_complete` only on the PR #23 merge (the
-merge commit does not exist yet).
+**PR #23** (base `main`) — **MERGED** 2026-06-28: implementation commit `0482e10`
++ CI remediation commit `bb04d87`; final pre-merge head `44cebdf`; five required checks
+(Backend, Frontend, Docker, Security, E2E — Playwright) SUCCESS on CI run `28314638091`;
+merge commit **`d098f37`**; reviewDecision blank under the solo-maintainer governance
+exception (not an independent approval). REM-SCR-001 promoted to `verified_complete` on merge.
 
 - **CI remediation (`bb04d87`, "fix: align Phase 11 Docker context and E2E routes"):**
   the first PR #23 run failed on **Docker — build images** and **E2E — Playwright**.

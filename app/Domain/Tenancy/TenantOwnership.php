@@ -11,6 +11,11 @@ use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
 use App\Domain\Branches\Models\BranchUserAssignment;
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Catalogue\Models\Service;
+use App\Domain\Catalogue\Models\ServiceCategory;
+use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
+use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Models\ClientConsent;
 use App\Domain\Hr\Models\StaffHistory;
 use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
@@ -47,6 +52,12 @@ final class TenantOwnership
         'branch_day_records',
         'branch_cash_ups',
         'staff_invitations',
+        // Phase 15A — Catalogue & Clients (Plan §13.7).
+        'service_categories',
+        'services',
+        'service_personnel_eligibility',
+        'clients',
+        'client_consents',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -117,6 +128,12 @@ final class TenantOwnership
         MerchantStatusHistory::class => 'tenant',
         MerchantUser::class => 'tenant',
         MerchantUserPermissionOverride::class => 'tenant',
+        // Phase 15A — branch-owned catalogue & clients (BelongsToMerchant + BelongsToBranch).
+        ServiceCategory::class => 'branch',
+        Service::class => 'branch',
+        ServicePersonnelEligibility::class => 'branch',
+        Client::class => 'branch',
+        ClientConsent::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -128,5 +145,11 @@ final class TenantOwnership
         'branch_cash_ups' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'staff_history' => ['parent' => 'staff_profiles', 'fk' => 'staff_profile_id'],
         'merchant_user_permission_overrides' => ['parent' => 'merchant_users', 'fk' => 'merchant_user_id'],
+        // Phase 15A — branch consistency via composite FK to merchant_branches.
+        'service_categories' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'services' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'service_personnel_eligibility' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'clients' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'client_consents' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }
