@@ -89,7 +89,7 @@ export function requiresPendingSetup(
   }
 
   if (!auth.setupRequired() && !merchant.isPendingSetup()) {
-    next({ name: 'merchant.dashboard' });
+    next({ name: 'merchant.landing' });
     return;
   }
 

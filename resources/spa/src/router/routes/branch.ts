@@ -9,6 +9,18 @@ export const branchRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'branch.landing',
+        component: () => import('@/pages/landing/RoleLanding.vue'),
+        meta: { roleIdentity: 'merchant_branch' },
+      },
+      {
+        path: 'get-started',
+        name: 'branch.get-started',
+        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
+        meta: { roleIdentity: 'merchant_branch' },
+      },
+      {
+        path: 'list',
         name: 'branch.list',
         component: () => import('@/pages/branch/BranchList.vue'),
       },

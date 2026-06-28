@@ -9,6 +9,18 @@ export const platformRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'platform.landing',
+        component: () => import('@/pages/landing/RoleLanding.vue'),
+        meta: { roleIdentity: 'super_administrator' },
+      },
+      {
+        path: 'get-started',
+        name: 'platform.get-started',
+        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
+        meta: { roleIdentity: 'super_administrator' },
+      },
+      {
+        path: 'dashboard',
         name: 'platform.dashboard',
         component: () => import('@/pages/platform/DashboardStub.vue'),
       },

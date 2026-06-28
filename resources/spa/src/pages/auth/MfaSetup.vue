@@ -7,8 +7,8 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvInput from '@/components/ui/SvInput.vue';
 import { useForm } from '@/composables/useForm';
 import { useAuthStore } from '@/stores/authStore';
-import { useMerchantStore } from '@/stores/merchantStore';
 import { useNotificationStore } from '@/stores/notificationStore';
+import { landingRouteName } from '@/router/destinations';
 
 // Mandatory-MFA TOTP enrollment (Plan §18, Phase R3). The secret and otpauth
 // provisioning URI are shown once for the authenticator; we never write them to
@@ -17,7 +17,6 @@ import { useNotificationStore } from '@/stores/notificationStore';
 
 const router = useRouter();
 const auth = useAuthStore();
-const merchant = useMerchantStore();
 const notifications = useNotificationStore();
 
 type Step = 'loading' | 'scan' | 'recovery' | 'error';
@@ -71,10 +70,12 @@ const confirm = form.handleSubmit(async ({ code }) => {
 });
 
 async function finish(): Promise<void> {
-  if (merchant.isActive()) {
-    await router.replace({ name: 'merchant.dashboard' });
+  // A pending owner still completes setup first; everyone else goes to their
+  // role landing. The MFA gate re-checks challenge state on the destination.
+  if (auth.setupRequired()) {
+    await router.replace({ name: 'onboarding.first-time-setup' });
   } else {
-    await router.replace({ name: 'home' });
+    await router.replace({ name: landingRouteName() });
   }
 }
 

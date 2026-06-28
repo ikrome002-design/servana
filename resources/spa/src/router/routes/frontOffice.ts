@@ -9,6 +9,18 @@ export const frontOfficeRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
+        name: 'front-office.landing',
+        component: () => import('@/pages/landing/RoleLanding.vue'),
+        meta: { roleIdentity: 'merchant_front_office' },
+      },
+      {
+        path: 'get-started',
+        name: 'front-office.get-started',
+        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
+        meta: { roleIdentity: 'merchant_front_office' },
+      },
+      {
+        path: 'dashboard',
         name: 'front-office.dashboard',
         component: () => import('@/pages/front-office/DashboardStub.vue'),
       },

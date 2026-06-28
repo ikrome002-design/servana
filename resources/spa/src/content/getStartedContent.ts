@@ -1,0 +1,122 @@
+import type { RoleIdentity } from '@/types/roles';
+
+/**
+ * Guided get-started checklists (Plan §27.2; Scope §3.2 "Indicative get-started
+ * checklists by role"). Item labels come verbatim from the Scope table. A final
+ * legal-acknowledgement step is appended for every role (Scope §3, B19; the task
+ * legal-acknowledgement obligation) — it is the explicit, non-prefilled
+ * acknowledgement gate placed in the legitimate first-access surface.
+ *
+ * Item ids are stable and versioned by `CHECKLIST_SCHEMA_VERSION`; persistence
+ * stores only these ids + completion/dismissal state (see getStartedStore).
+ */
+export const CHECKLIST_SCHEMA_VERSION = 1;
+
+export type GetStartedItemKind = 'action' | 'acknowledge';
+
+export interface GetStartedItem {
+  /** Stable identifier (persisted). Never reuse across meanings. */
+  id: string;
+  /** Verbatim checklist label. */
+  label: string;
+  /** Live deep-link route name; omitted when the target is a future phase. */
+  routeName?: string;
+  /** Owning phase for not-yet-live steps (truthful, no fake routes). */
+  phase?: string;
+  kind: GetStartedItemKind;
+}
+
+const ACKNOWLEDGE: GetStartedItem = {
+  id: 'legal-acknowledgement',
+  label: 'Review and acknowledge your Terms of Service, Privacy Policy, and Data Policy',
+  kind: 'acknowledge',
+};
+
+const superAdministrator: GetStartedItem[] = [
+  { id: 'configure-billing-mode', label: 'Configure billing mode', phase: 'Phase 20A', kind: 'action' },
+  { id: 'configure-plans-entitlements', label: 'Configure plans and entitlements', phase: 'Phase 20A', kind: 'action' },
+  { id: 'configure-free-period-grace', label: 'Configure free-period and grace settings', phase: 'Phase 20A', kind: 'action' },
+  { id: 'configure-preferred-personnel-fee', label: 'Configure preferred-personnel fee rule', phase: 'Phase 20A', kind: 'action' },
+  { id: 'configure-mpesa', label: 'Configure M-Pesa integration', phase: 'Phase 20D', kind: 'action' },
+  { id: 'review-registration-monitoring', label: 'Review registration monitoring', phase: 'Phase 20A', kind: 'action' },
+  ACKNOWLEDGE,
+];
+
+const merchantAdministrator: GetStartedItem[] = [
+  { id: 'verify-email', label: 'Verify email', phase: 'Phase 6', kind: 'action' },
+  { id: 'choose-subscription-plan', label: 'Choose subscription plan', phase: 'Phase 20A', kind: 'action' },
+  { id: 'confirm-merchant-profile', label: 'Confirm merchant profile', routeName: 'onboarding.first-time-setup', kind: 'action' },
+  { id: 'create-first-branch', label: 'Create first branch', routeName: 'branch.create', kind: 'action' },
+  { id: 'invite-branch-manager-hr', label: 'Invite Branch Manager and HR', phase: 'Phase 7', kind: 'action' },
+  { id: 'confirm-billing-mpesa-phone', label: 'Confirm billing/M-Pesa phone', phase: 'Phase 20D', kind: 'action' },
+  { id: 'finish-setup', label: 'Finish setup', routeName: 'onboarding.first-time-setup', kind: 'action' },
+  ACKNOWLEDGE,
+];
+
+const branchManager: GetStartedItem[] = [
+  { id: 'confirm-branch-profile', label: 'Confirm branch profile', routeName: 'branch.list', kind: 'action' },
+  { id: 'set-operating-hours-calendar', label: 'Set operating hours and calendar', routeName: 'branch.list', kind: 'action' },
+  { id: 'build-service-catalogue', label: 'Build the service catalogue', phase: 'Phase 15A', kind: 'action' },
+  { id: 'set-service-pricing-durations', label: 'Set service pricing and durations', phase: 'Phase 15A', kind: 'action' },
+  { id: 'open-branch-day', label: 'Open the branch day', phase: 'Phase 16B', kind: 'action' },
+  ACKNOWLEDGE,
+];
+
+const humanResource: GetStartedItem[] = [
+  { id: 'invite-staff', label: 'Invite staff', routeName: 'hr.invitations', kind: 'action' },
+  { id: 'set-service-eligibility', label: 'Set service eligibility', phase: 'Phase 15B', kind: 'action' },
+  { id: 'set-availability', label: 'Set availability', phase: 'Phase 15B', kind: 'action' },
+  { id: 'configure-compensation-models', label: 'Configure personnel compensation models', phase: 'Phase 20F', kind: 'action' },
+  { id: 'review-missing-compensation', label: 'Review missing-compensation warnings', phase: 'Phase 20F', kind: 'action' },
+  ACKNOWLEDGE,
+];
+
+const finance: GetStartedItem[] = [
+  { id: 'review-pending-validations', label: 'Review pending validations', phase: 'Phase 18B', kind: 'action' },
+  { id: 'learn-validation-workflow', label: 'Learn the validation workflow', phase: 'Phase 18B', kind: 'action' },
+  { id: 'review-cash-up-submissions', label: 'Review cash-up submissions', phase: 'Phase 18B', kind: 'action' },
+  { id: 'review-payout-runs', label: 'Review payout runs', phase: 'Phase 20H', kind: 'action' },
+  { id: 'review-period-lock-controls', label: 'Review period-lock controls', phase: 'Phase 18B', kind: 'action' },
+  ACKNOWLEDGE,
+];
+
+const frontOffice: GetStartedItem[] = [
+  { id: 'register-a-client', label: 'Register a client', phase: 'Phase 15A', kind: 'action' },
+  { id: 'start-a-walk-in', label: 'Start a walk-in', phase: 'Phase 16B', kind: 'action' },
+  { id: 'assign-personnel', label: 'Assign personnel', phase: 'Phase 16B', kind: 'action' },
+  { id: 'create-an-invoice', label: 'Create an invoice', phase: 'Phase 17', kind: 'action' },
+  { id: 'record-a-payment', label: 'Record a payment', phase: 'Phase 18A', kind: 'action' },
+  { id: 'confirm-receipt-issuance', label: 'Confirm receipt issuance', phase: 'Phase 18B', kind: 'action' },
+  ACKNOWLEDGE,
+];
+
+const personnel: GetStartedItem[] = [
+  { id: 'review-my-earnings', label: 'Review My Earnings', phase: 'Phase 20H', kind: 'action' },
+  { id: 'review-compensation-terms', label: 'Review compensation terms', phase: 'Phase 20H', kind: 'action' },
+  { id: 'acknowledge-terms', label: 'Acknowledge terms', kind: 'acknowledge' },
+  { id: 'view-served-clients', label: 'View served clients', phase: 'Phase 15A', kind: 'action' },
+  { id: 'send-a-permitted-sms', label: 'Send a permitted SMS', phase: 'Phase 21S', kind: 'action' },
+];
+
+const audit: GetStartedItem[] = [
+  { id: 'review-flagged-events', label: 'Review flagged events', phase: 'Phase 19', kind: 'action' },
+  { id: 'learn-branch-scoped-filtering', label: 'Learn branch-scoped filtering', phase: 'Phase 19', kind: 'action' },
+  { id: 'review-masked-client-context', label: 'Review masked client context', phase: 'Phase 19', kind: 'action' },
+  { id: 'review-export-permissions', label: 'Review export permissions', phase: 'Phase 19', kind: 'action' },
+  ACKNOWLEDGE,
+];
+
+export const GET_STARTED_CHECKLISTS: Record<RoleIdentity, GetStartedItem[]> = {
+  super_administrator: superAdministrator,
+  merchant_administrator: merchantAdministrator,
+  merchant_branch: branchManager,
+  merchant_human_resource: humanResource,
+  merchant_finance: finance,
+  merchant_front_office: frontOffice,
+  merchant_personnel: personnel,
+  merchant_audit: audit,
+};
+
+export function getStartedChecklist(identity: RoleIdentity): GetStartedItem[] {
+  return GET_STARTED_CHECKLISTS[identity] ?? [];
+}

@@ -520,9 +520,9 @@ items:
     test_plan: "FileSchema, FilePurposeRegistry, FileUploadValidation, FileScanPipeline, ClamAvEicarIntegration (real), FileDownloadAuthorization, FileSignedUrlExpiry, FileJobIdempotency, FileRetentionCleanup, FileStorageBoundary, FileTenantIsolation, FileLogRedaction, FileRouteSecurityContract, FileMigrationManifest, FileBillingReadOnlySeam, SvFileUpload.spec, useFileDownload.spec."
     proof_artifact: "docs/proof/phase-10f.md"
     owner: "Phase 10F"
-    completion_commit: null
-    reviewer: "pending Phase 10F PR (solo-maintainer governance exception; not an independent approval)"
-    status: local_complete
+    completion_commit: "9b493e6 (PR #22 merge; impl 431dde2, ClamAV CI correction c54016d preserved)"
+    reviewer: "PR #22 merged; five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) all SUCCESS, genuine ClamAV EICAR CI test passed without skipping; solo-maintainer governance exception (docs/governance/solo-maintainer-review-exception-pr-22.md) — reviewDecision intentionally blank, not an independent approval."
+    status: verified_complete
 
   - id: REM-MPESA-001
     classification: C0
@@ -646,19 +646,19 @@ items:
   - id: REM-SCR-001
     classification: C1
     gating_category: FEATURE_DELIVERY_OBLIGATION
-    scope_requirement: "Complete screen inventory + per-screen specifications (Correction 22)."
-    repository_evidence: "SPA foundation + Phase 6–8 screens exist; no §27.1 per-screen spec files; role navigation not yet verbatim-final."
-    root_cause: "Phase 11 not started."
-    affected_files_tables_routes: "resources/spa; docs/screens/*."
-    security_data_business_impact: "n/a (UX completeness)."
-    precise_correction: "Build screen inventory + specs in Phase 11 + owning phases."
+    scope_requirement: "Complete screen inventory + per-screen specifications (Correction 22; Plan §27.1–§27.3)."
+    repository_evidence: "Phase 11 substrate: docs/frontend/screens/inventory.json (source of truth) → generated inventory.yaml; 44 §27.1 spec files under docs/frontend/screens/{domain}/ for every implemented production route + 16 Phase-11 landing/get-started screens + 2 access-state screens; remaining §27.3 screens listed status=planned with truthful owner phases and no routes/components. Navigation: navigation/roleNavigation.ts + snapshot-enforced fixture docs/frontend/navigation/role-navigation.yaml (live→real routes, planned→owner phase). Coverage guard screens/screenInventory.spec.ts fails on missing specs, status/router conflicts, fake planned routes, missing owner phase, or duplicate keys/routes. Eight role layouts/landings/get-started + persistence + state boundaries + role-aware routing implemented."
+    root_cause: "Phase 11 (UI layout foundation + role navigation) had not been built; no §27.1 spec files and no canonical navigation fixture existed."
+    affected_files_tables_routes: "resources/spa/src/{types/roles.ts,navigation/**,content/**,stores/getStartedStore.ts,components/{layout,navigation,onboarding,legal,support}/**,pages/{landing,get-started,legal}/**,router/**,layouts/**,screens/**}; docs/frontend/screens/**; docs/frontend/navigation/**; scripts/generate-screen-specs.mjs."
+    security_data_business_impact: "UX completeness only; frontend visibility is never authorization (PermissionGate UX-only; backend remains the boundary). Forbidden capabilities proven absent in the navigation fixture/tests (no Super-Admin merchant-create; no Personnel contact-export; audit read-only)."
+    precise_correction: "Built the Phase 11 substrate of REM-SCR-001: inventory + coverage guard + §27.1 specs for implemented + Phase-11 + access-state screens; future screens carry truthful owner phases and no fake routes. Each owning feature phase writes its final spec and flips its inventory/nav entry to implemented before building its screen."
     migration_impact: "none."
-    test_plan: "role-navigation matches scope; responsive/dark/axe on foundation screens."
+    test_plan: "roleNavigation (parity + forbidden-absence), roleEntryRoutes, getStartedStore, RoleNavigation, GetStartedChecklist, RoleLandingContent, RoleLayouts, screenInventory (coverage guard); e2e role-entry-surfaces / role-navigation-keyboard / role-foundation-responsive / role-foundation-accessibility."
     proof_artifact: "docs/proof/phase-11.md"
     owner: "Phase 11 + owning phases"
-    completion_commit: null
-    reviewer: "TBD"
-    status: not_started
+    completion_commit: "local_complete on branch phase-11-ui-layout-role-navigation (pending PR/CI/merge)"
+    reviewer: "pending Phase 11 PR (solo-maintainer governance exception; not an independent approval)"
+    status: local_complete
 
   - id: REM-TRACE-001
     classification: C1

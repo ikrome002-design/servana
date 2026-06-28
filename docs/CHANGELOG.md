@@ -6,12 +6,72 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase 11 — UI Layout Foundation & Role Navigation (`phase-11-ui-layout-role-navigation`)
+
+Finalizes all eight role layouts, scope-accurate role navigation, live role landing
+pages, and resumable guided get-started entry surfaces (Plan §26–§31, §80 Phase 11;
+REM-SCR-001 Phase 11 substrate). Built on merged Phase 10F (`9b493e6`, PR #22).
+**PR #23** (base `main`) — `ci_passed`/`ready_to_merge`: implementation commit `0482e10`
++ CI remediation commit `bb04d87`; five required checks SUCCESS on CI run `28314016145`;
+reviewDecision blank (one eligible maintainer; no independent review claimed). Not yet
+merged — REM-SCR-001 is promoted to `verified_complete` only on the PR #23 merge (the
+merge commit does not exist yet).
+
+- **CI remediation (`bb04d87`, "fix: align Phase 11 Docker context and E2E routes"):**
+  the first PR #23 run failed on **Docker — build images** and **E2E — Playwright**.
+  Docker root cause — `.dockerignore` excluded `docs`, so the SPA build could not resolve
+  the Phase 11 `@docs` documentation imports (`@docs/frontend/screens/inventory.json` +
+  `@docs/**` markdown) in the Docker build context; fix removed the `docs` line. Playwright
+  root cause — Phase 11 re-pathed role-entry routes (landing as each area's index;
+  `branch.list`→`/branch/list`, `hr.staff`→`/hr/staff`; setup/login redirects → `*.landing`),
+  so three pre-existing specs (`merchant-onboarding`, `branches-staff-invitations`,
+  `auth-magic-link`) asserted stale routes; fix updated those specs (no product code changed).
+
+- **Screen inventory & coverage guard:** `docs/frontend/screens/inventory.json`
+  (source) → generated `inventory.yaml`; 44 §27.1 spec files for every implemented
+  route + 16 Phase-11 screens + 2 access-state screens; future screens listed
+  `planned` with truthful owner phases and no routes. `screenInventory.spec.ts` fails
+  on missing specs, status/router conflicts, fake planned routes, missing owner phase,
+  or duplicate keys/routes. Generator `scripts/generate-screen-specs.mjs`.
+- **Eight role layouts:** `RoleShell` → `AppShell` (skip link, landmarks, current-route
+  indication, focusable main, 44px targets, light/dark, mobile drawer with focus return).
+- **Canonical navigation registry:** `navigation/roleNavigation.ts` + snapshot-enforced
+  fixture `docs/frontend/navigation/role-navigation.yaml`; live→real routes, planned→owner
+  phase (no dead links); PermissionGate-driven UX visibility.
+- **Navigation placement rule:** Super Administrator primary nav in the header (mobile
+  disclosure); all merchant roles use a desktop sidebar/rail + mobile drawer, header
+  utility-only — enforced and tested.
+- **Eight landing pages:** verbatim role hero + approved role images + role FAQ accordion
+  + role legal footer + live actions + get-started progress + truthful "coming soon".
+- **Eight get-started pages:** verbatim Scope §3.2 checklists + mandatory non-prefilled
+  legal acknowledgement; persistence, dismissal, reopen.
+- **Persistence:** `getStartedStore` — versioned localStorage keyed by user ULID + role;
+  stores only item ids + completion/dismissal/acknowledgement + schema version (no
+  tokens/permissions/contacts/secrets/paths/responses); isolated per user and role.
+- **Legal:** rendered `/legal/:role/:doc` (verbatim, lazy per-document) + `LegalAcknowledgement`
+  (mandatory cannot be bypassed; optional marketing consent kept separate; correct role docs only).
+- **State boundaries:** loading/empty/error/no-permission/no-branch/unsupported-role.
+- **Routing:** role-aware post-login destinations (Verify/MFA/first-time-setup); MFA
+  ordering, pending-setup, active-merchant, and suspension routing preserved.
+- **Content sourcing:** approved landing/FAQ/legal text imported verbatim from `docs/**`
+  via `?raw`/`import.meta.glob` (single source of truth; legal never hand-copied; lazy legal).
+- **Brand/a11y:** ADR-009 preserved (no white text on Savannah-Orange CTA); added adaptive
+  `--color-heading` token for AA headings in dark mode; darkened light `--color-text-muted`
+  to `#4b5563` for AA on surface-alt. Responsive 360/768/1280, axe light+dark clean.
+- **Phase 10F deferral resolved:** role navigation + role entry/landing surfaces (deferred
+  from 10F) delivered here.
+
 ### Phase 10F — File & Media Foundation (`phase-10f-file-media-foundation`)
 
 Establishes the secure, private, reusable file domain before any feature stores,
 generates, exports or downloads business files (Plan §65, §73; REM-FILE-001). Built
-on merged Phase 10 (`4f761ff`, PR #21). `local_complete` — pending PR/CI/merge;
-REM-FILE-001 stays `local_complete` until its PR merges.
+on merged Phase 10 (`4f761ff`, PR #21). **`verified_complete`** — merged as PR #22
+(merge commit `9b493e6`); five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright)
+all SUCCESS; the genuine ClamAV EICAR CI test passed without skipping (impl commit
+`431dde2`, ClamAV CI correction `c54016d` preserved; local Windows Playwright timeout
+not claimed as a pass — Linux CI authoritative). REM-FILE-001 → `verified_complete`
+on merge (solo-maintainer governance exception, reviewDecision intentionally blank —
+not independent approval).
 
 - **Schema:** `uploaded_files` + `file_scan_events` (exact §13.13 fields, 11-purpose
   CHECK, scan/lifecycle CHECKs, required indexes, `available⇒clean+final_path` CHECK).

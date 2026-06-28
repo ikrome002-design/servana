@@ -1,8 +1,14 @@
 # Phase 10F — File & Media Foundation Proof (REM-FILE-001)
 
 **Branch:** `phase-10f-file-media-foundation` · **Base:** `4f761ff` (merged Phase 10, PR #21).
-**Status:** `local_complete` — pending PR/CI/merge. REM-FILE-001 stays `local_complete`
-until its PR merges with green CI.
+**Status:** `verified_complete` — merged as **PR #22** (merge commit `9b493e6`, 2026-06-26).
+Five-gate CI (Backend / Frontend / Docker / Security / **E2E — Playwright**) all SUCCESS;
+the genuine ClamAV EICAR CI test passed without skipping. Implementation commit `431dde2`;
+ClamAV CI correction `c54016d` (history preserved). The local Windows Playwright timeout
+was not claimed as a pass — Linux CI is the authoritative browser result. REM-FILE-001 →
+`verified_complete` on merge. Solo-maintainer governance exception
+(`docs/governance/solo-maintainer-review-exception-pr-22.md`; reviewDecision intentionally
+blank — not an independent approval).
 
 ## Objective
 

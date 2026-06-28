@@ -25,6 +25,7 @@ export default {
         success: 'var(--color-success)',
         growth: 'var(--color-growth)',
         'brand-deep': 'var(--color-brand-deep)',
+        heading: 'var(--color-heading)',
         accent: 'var(--color-accent)',
         warning: 'var(--color-warning)',
         error: 'var(--color-error)',

@@ -1,0 +1,429 @@
+# Servana screen inventory (Plan §27.3). Generated from inventory.json.
+# Enforced by screenInventory.spec.ts (vitest file snapshot). Do not hand-edit.
+screens:
+  - key: home
+    domain: public
+    route: home
+    status: implemented
+    phase: Phase 1
+    spec: public/home.md
+  - key: not-found
+    domain: public
+    route: not-found
+    status: implemented
+    phase: Phase 1
+    spec: public/not-found.md
+  - key: design-system
+    domain: public
+    route: dev.design-system
+    status: implemented
+    phase: Phase 4
+    spec: public/design-system.md
+  - key: legal-document
+    domain: legal
+    route: legal.document
+    status: implemented
+    phase: Phase 11
+    spec: legal/legal-document.md
+  - key: auth-login
+    domain: auth
+    route: auth.login
+    status: implemented
+    phase: Phase 5
+    spec: auth/auth-login.md
+  - key: auth-register
+    domain: auth
+    route: auth.register
+    status: implemented
+    phase: Phase 6
+    spec: auth/auth-register.md
+  - key: auth-check-email
+    domain: auth
+    route: auth.check-email
+    status: implemented
+    phase: Phase 5
+    spec: auth/auth-check-email.md
+  - key: auth-verify
+    domain: auth
+    route: auth.verify
+    status: implemented
+    phase: Phase 5
+    spec: auth/auth-verify.md
+  - key: mfa-setup
+    domain: auth
+    route: auth.mfa.setup
+    status: implemented
+    phase: Phase R3
+    spec: auth/mfa-setup.md
+  - key: mfa-challenge
+    domain: auth
+    route: auth.mfa.challenge
+    status: implemented
+    phase: Phase R3
+    spec: auth/mfa-challenge.md
+  - key: staff-invitation-accept
+    domain: hr
+    route: staff.accept
+    status: implemented
+    phase: Phase 7
+    spec: hr/staff-invitation-accept.md
+  - key: first-time-setup
+    domain: onboarding
+    route: onboarding.first-time-setup
+    status: implemented
+    phase: Phase 6
+    spec: onboarding/first-time-setup.md
+  - key: platform-landing
+    domain: platform
+    route: platform.landing
+    status: phase_11
+    phase: Phase 11
+    spec: platform/platform-landing.md
+  - key: platform-get-started
+    domain: platform
+    route: platform.get-started
+    status: phase_11
+    phase: Phase 11
+    spec: platform/platform-get-started.md
+  - key: platform-dashboard
+    domain: platform
+    route: platform.dashboard
+    status: implemented
+    phase: Phase 4
+    spec: platform/platform-dashboard.md
+  - key: merchant-landing
+    domain: merchant
+    route: merchant.landing
+    status: phase_11
+    phase: Phase 11
+    spec: merchant/merchant-landing.md
+  - key: merchant-get-started
+    domain: merchant
+    route: merchant.get-started
+    status: phase_11
+    phase: Phase 11
+    spec: merchant/merchant-get-started.md
+  - key: merchant-dashboard
+    domain: merchant
+    route: merchant.dashboard
+    status: implemented
+    phase: Phase 6
+    spec: merchant/merchant-dashboard.md
+  - key: branch-landing
+    domain: branch
+    route: branch.landing
+    status: phase_11
+    phase: Phase 11
+    spec: branch/branch-landing.md
+  - key: branch-get-started
+    domain: branch
+    route: branch.get-started
+    status: phase_11
+    phase: Phase 11
+    spec: branch/branch-get-started.md
+  - key: branch-list
+    domain: branch
+    route: branch.list
+    status: implemented
+    phase: Phase 7
+    spec: branch/branch-list.md
+  - key: branch-create
+    domain: branch
+    route: branch.create
+    status: implemented
+    phase: Phase 7
+    spec: branch/branch-create.md
+  - key: branch-detail
+    domain: branch
+    route: branch.detail
+    status: implemented
+    phase: Phase 7
+    spec: branch/branch-detail.md
+  - key: branch-operating-hours
+    domain: branch
+    route: branch.operating-hours
+    status: implemented
+    phase: Phase 7
+    spec: branch/branch-operating-hours.md
+  - key: hr-landing
+    domain: hr
+    route: hr.landing
+    status: phase_11
+    phase: Phase 11
+    spec: hr/hr-landing.md
+  - key: hr-get-started
+    domain: hr
+    route: hr.get-started
+    status: phase_11
+    phase: Phase 11
+    spec: hr/hr-get-started.md
+  - key: hr-staff
+    domain: hr
+    route: hr.staff
+    status: implemented
+    phase: Phase 7
+    spec: hr/hr-staff.md
+  - key: hr-invitations
+    domain: hr
+    route: hr.invitations
+    status: implemented
+    phase: Phase 7
+    spec: hr/hr-invitations.md
+  - key: hr-permission-preview
+    domain: hr
+    route: hr.permission-preview
+    status: implemented
+    phase: Phase 8
+    spec: hr/hr-permission-preview.md
+  - key: hr-staff-profile
+    domain: hr
+    route: hr.staff-profile
+    status: implemented
+    phase: Phase 7
+    spec: hr/hr-staff-profile.md
+  - key: finance-landing
+    domain: finance
+    route: finance.landing
+    status: phase_11
+    phase: Phase 11
+    spec: finance/finance-landing.md
+  - key: finance-get-started
+    domain: finance
+    route: finance.get-started
+    status: phase_11
+    phase: Phase 11
+    spec: finance/finance-get-started.md
+  - key: finance-dashboard
+    domain: finance
+    route: finance.dashboard
+    status: implemented
+    phase: Phase 4
+    spec: finance/finance-dashboard.md
+  - key: front-office-landing
+    domain: front-office
+    route: front-office.landing
+    status: phase_11
+    phase: Phase 11
+    spec: front-office/front-office-landing.md
+  - key: front-office-get-started
+    domain: front-office
+    route: front-office.get-started
+    status: phase_11
+    phase: Phase 11
+    spec: front-office/front-office-get-started.md
+  - key: front-office-dashboard
+    domain: front-office
+    route: front-office.dashboard
+    status: implemented
+    phase: Phase 4
+    spec: front-office/front-office-dashboard.md
+  - key: personnel-landing
+    domain: personnel
+    route: personnel.landing
+    status: phase_11
+    phase: Phase 11
+    spec: personnel/personnel-landing.md
+  - key: personnel-get-started
+    domain: personnel
+    route: personnel.get-started
+    status: phase_11
+    phase: Phase 11
+    spec: personnel/personnel-get-started.md
+  - key: personnel-dashboard
+    domain: personnel
+    route: personnel.dashboard
+    status: implemented
+    phase: Phase 4
+    spec: personnel/personnel-dashboard.md
+  - key: audit-landing
+    domain: audit
+    route: audit.landing
+    status: phase_11
+    phase: Phase 11
+    spec: audit/audit-landing.md
+  - key: audit-get-started
+    domain: audit
+    route: audit.get-started
+    status: phase_11
+    phase: Phase 11
+    spec: audit/audit-get-started.md
+  - key: audit-dashboard
+    domain: audit
+    route: audit.dashboard
+    status: implemented
+    phase: Phase 4
+    spec: audit/audit-dashboard.md
+  - key: unsupported-role
+    domain: access-state
+    route: ~
+    status: phase_11
+    phase: Phase 11
+    spec: access-state/unsupported-role.md
+  - key: no-branch-assignment
+    domain: access-state
+    route: ~
+    status: phase_11
+    phase: Phase 11
+    spec: access-state/no-branch-assignment.md
+  - key: merchant-profile
+    domain: merchant
+    route: ~
+    status: planned
+    phase: Phase 15A
+    spec: ~
+  - key: subscription-dashboard
+    domain: merchant
+    route: ~
+    status: planned
+    phase: Phase 20B
+    spec: ~
+  - key: plan-management
+    domain: merchant
+    route: ~
+    status: planned
+    phase: Phase 20A
+    spec: ~
+  - key: subscription-invoices
+    domain: merchant
+    route: ~
+    status: planned
+    phase: Phase 20B
+    spec: ~
+  - key: merchant-reports
+    domain: merchant
+    route: ~
+    status: planned
+    phase: Phase 21N
+    spec: ~
+  - key: compensation-summary
+    domain: merchant
+    route: ~
+    status: planned
+    phase: Phase 20F
+    spec: ~
+  - key: service-catalogue
+    domain: branch
+    route: ~
+    status: planned
+    phase: Phase 15A
+    spec: ~
+  - key: branch-calendar
+    domain: branch
+    route: ~
+    status: planned
+    phase: Phase 16A
+    spec: ~
+  - key: branch-cash-up
+    domain: branch
+    route: ~
+    status: planned
+    phase: Phase 18B
+    spec: ~
+  - key: branch-reports
+    domain: branch
+    route: ~
+    status: planned
+    phase: Phase 21N
+    spec: ~
+  - key: hr-eligibility
+    domain: hr
+    route: ~
+    status: planned
+    phase: Phase 15B
+    spec: ~
+  - key: hr-compensation
+    domain: hr
+    route: ~
+    status: planned
+    phase: Phase 20F
+    spec: ~
+  - key: hr-payout-prep
+    domain: hr
+    route: ~
+    status: planned
+    phase: Phase 20H
+    spec: ~
+  - key: finance-validation
+    domain: finance
+    route: ~
+    status: planned
+    phase: Phase 18B
+    spec: ~
+  - key: finance-payouts
+    domain: finance
+    route: ~
+    status: planned
+    phase: Phase 20H
+    spec: ~
+  - key: front-office-clients
+    domain: front-office
+    route: ~
+    status: planned
+    phase: Phase 15A
+    spec: ~
+  - key: front-office-appointments
+    domain: front-office
+    route: ~
+    status: planned
+    phase: Phase 16A
+    spec: ~
+  - key: front-office-invoicing
+    domain: front-office
+    route: ~
+    status: planned
+    phase: Phase 17
+    spec: ~
+  - key: personnel-my-work
+    domain: personnel
+    route: ~
+    status: planned
+    phase: Phase 16B
+    spec: ~
+  - key: personnel-my-earnings
+    domain: personnel
+    route: ~
+    status: planned
+    phase: Phase 20H
+    spec: ~
+  - key: personnel-sms
+    domain: personnel
+    route: ~
+    status: planned
+    phase: Phase 21S
+    spec: ~
+  - key: audit-branch-log
+    domain: audit
+    route: ~
+    status: planned
+    phase: Phase 19
+    spec: ~
+  - key: platform-billing-settings
+    domain: platform
+    route: ~
+    status: planned
+    phase: Phase 20A
+    spec: ~
+  - key: platform-promotions
+    domain: platform
+    route: ~
+    status: planned
+    phase: Phase 20C
+    spec: ~
+  - key: platform-mpesa
+    domain: platform
+    route: ~
+    status: planned
+    phase: Phase 20D
+    spec: ~
+  - key: platform-registration-monitoring
+    domain: platform
+    route: ~
+    status: planned
+    phase: Phase 20A
+    spec: ~
+  - key: platform-audit-reports
+    domain: platform
+    route: ~
+    status: planned
+    phase: Phase 19
+    spec: ~

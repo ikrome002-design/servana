@@ -1,0 +1,437 @@
+# Servana role-navigation fixture (Phase 11, Plan §27.2).
+# Generated from resources/spa/src/navigation/roleNavigation.ts.
+# Enforced by roleNavigation.spec.ts (vitest file snapshot). Do not hand-edit.
+super_administrator:
+  - key: platform.overview
+    label: Overview
+    availability: live
+    route: platform.landing
+    phase: Phase 11
+  - key: platform.get-started
+    label: Get started
+    availability: live
+    route: platform.get-started
+    phase: Phase 11
+  - key: platform.merchants
+    label: Merchant directory
+    availability: planned
+    permission: platform.merchant.view
+    phase: Phase 20A
+  - key: platform.registration-monitoring
+    label: Registration monitoring
+    availability: planned
+    permission: platform.registration_monitor.view
+    phase: Phase 20A
+  - key: platform.billing-settings
+    label: Billing settings
+    availability: planned
+    permission: platform.billing_settings.view
+    phase: Phase 20A
+  - key: platform.plans
+    label: Plans and entitlements
+    availability: planned
+    permission: platform.plan.view
+    phase: Phase 20A
+  - key: platform.promotions
+    label: Promotions and free periods
+    availability: planned
+    permission: platform.promotion.manage
+    phase: Phase 20C
+  - key: platform.preferred-personnel-fee
+    label: Preferred-personnel fee rule
+    availability: planned
+    permission: platform.preferred_personnel_fee.manage
+    phase: Phase 20A
+  - key: platform.mpesa
+    label: M-Pesa configuration
+    availability: planned
+    permission: platform.mpesa_configuration.manage
+    phase: Phase 20D
+  - key: platform.mpesa-exceptions
+    label: Reconciliation exceptions
+    availability: planned
+    permission: platform.mpesa_exception.view
+    phase: Phase 20D
+  - key: platform.audit
+    label: Platform audit
+    availability: planned
+    permission: platform.audit.view
+    phase: Phase 19
+  - key: platform.reports
+    label: Platform reports
+    availability: planned
+    permission: platform.audit.view
+    phase: Phase 21N
+  - key: platform.settings
+    label: Platform settings
+    availability: planned
+    permission: platform.settings.view
+    phase: Phase 20A
+merchant_administrator:
+  - key: merchant.overview
+    label: Overview
+    availability: live
+    route: merchant.landing
+    phase: Phase 11
+  - key: merchant.get-started
+    label: Get started
+    availability: live
+    route: merchant.get-started
+    phase: Phase 11
+  - key: merchant.dashboard
+    label: Dashboard
+    availability: live
+    route: merchant.dashboard
+    phase: Phase 6
+  - key: merchant.branches
+    label: Branches
+    availability: live
+    route: branch.list
+    permission: merchant.branch.view_all
+    phase: Phase 7
+  - key: merchant.subscription
+    label: Subscription and billing
+    availability: planned
+    permission: merchant.subscription.view
+    phase: Phase 20B
+  - key: merchant.plan
+    label: Plan management
+    availability: planned
+    permission: merchant.subscription.plan_change
+    phase: Phase 20A
+  - key: merchant.invoices
+    label: Subscription invoices
+    availability: planned
+    permission: merchant.subscription.invoice.view
+    phase: Phase 20B
+  - key: merchant.reports
+    label: Reports
+    availability: planned
+    permission: merchant.report.view_all_branches
+    phase: Phase 21N
+  - key: merchant.compensation-summary
+    label: Compensation summary
+    availability: planned
+    permission: merchant.compensation_summary.view
+    phase: Phase 20F
+merchant_branch:
+  - key: branch.overview
+    label: Branch overview
+    availability: live
+    route: branch.landing
+    phase: Phase 11
+  - key: branch.get-started
+    label: Get started
+    availability: live
+    route: branch.get-started
+    phase: Phase 11
+  - key: branch.directory
+    label: Branches
+    availability: live
+    route: branch.list
+    permission: branch.profile.view
+    phase: Phase 7
+  - key: branch.services
+    label: Services
+    availability: planned
+    permission: service.view
+    phase: Phase 15A
+  - key: branch.queue
+    label: Queue
+    availability: planned
+    phase: Phase 16B
+  - key: branch.appointments
+    label: Appointments
+    availability: planned
+    phase: Phase 16A
+  - key: branch.service-sessions
+    label: Service sessions
+    availability: planned
+    phase: Phase 16C
+  - key: branch.invoices
+    label: Invoices
+    availability: planned
+    phase: Phase 17
+  - key: branch.payments
+    label: Payments
+    availability: planned
+    phase: Phase 18A
+  - key: branch.receipts
+    label: Receipts
+    availability: planned
+    phase: Phase 18B
+  - key: branch.day
+    label: Day opening and closing
+    availability: planned
+    permission: branch.day.open
+    phase: Phase 16B
+  - key: branch.cash-up
+    label: Cash-up and reconciliation
+    availability: planned
+    permission: branch.cash_up.submit
+    phase: Phase 18B
+  - key: branch.reports
+    label: Reports
+    availability: planned
+    permission: branch.report.view
+    phase: Phase 21N
+  - key: branch.audit-logs
+    label: Audit logs
+    availability: planned
+    phase: Phase 19
+merchant_human_resource:
+  - key: hr.overview
+    label: Overview
+    availability: live
+    route: hr.landing
+    phase: Phase 11
+  - key: hr.get-started
+    label: Get started
+    availability: live
+    route: hr.get-started
+    phase: Phase 11
+  - key: hr.staff
+    label: Staff
+    availability: live
+    route: hr.staff
+    permission: staff.view
+    phase: Phase 7
+  - key: hr.invitations
+    label: Invitations
+    availability: live
+    route: hr.invitations
+    permission: staff.invite
+    phase: Phase 7
+  - key: hr.permission-preview
+    label: Permission preview
+    availability: live
+    route: hr.permission-preview
+    permission: staff.role.assign
+    phase: Phase 7
+  - key: hr.eligibility
+    label: Service eligibility
+    availability: planned
+    permission: personnel.eligibility.manage
+    phase: Phase 15B
+  - key: hr.availability
+    label: Availability
+    availability: planned
+    permission: personnel.availability.manage
+    phase: Phase 15B
+  - key: hr.compensation
+    label: Compensation
+    availability: planned
+    permission: compensation.plan.view
+    phase: Phase 20F
+  - key: hr.payout-runs
+    label: Payout runs
+    availability: planned
+    permission: payout_run.create
+    phase: Phase 20H
+merchant_finance:
+  - key: finance.overview
+    label: Finance overview
+    availability: live
+    route: finance.landing
+    phase: Phase 11
+  - key: finance.get-started
+    label: Get started
+    availability: live
+    route: finance.get-started
+    phase: Phase 11
+  - key: finance.pending-validations
+    label: Pending validations
+    availability: planned
+    permission: customer_payment.validate
+    phase: Phase 18B
+  - key: finance.invoices
+    label: Invoices
+    availability: planned
+    permission: invoice.view
+    phase: Phase 17
+  - key: finance.payment-records
+    label: Payment records
+    availability: planned
+    permission: customer_payment.view
+    phase: Phase 18A
+  - key: finance.receipts
+    label: Receipts
+    availability: planned
+    permission: receipt.view
+    phase: Phase 18B
+  - key: finance.disputes
+    label: Disputes
+    availability: planned
+    permission: finance_dispute.manage
+    phase: Phase 18B
+  - key: finance.refunds
+    label: External refunds
+    availability: planned
+    permission: refund.create
+    phase: Phase 18B
+  - key: finance.cash-up
+    label: Cash-up and reconciliation
+    availability: planned
+    permission: cash_up.view
+    phase: Phase 18B
+  - key: finance.periods
+    label: Financial periods
+    availability: planned
+    permission: period_lock.create
+    phase: Phase 18B
+  - key: finance.payout-runs
+    label: Payout runs
+    availability: planned
+    permission: payout_run.verify
+    phase: Phase 20H
+  - key: finance.liabilities
+    label: Commission and salary liabilities
+    availability: planned
+    permission: compensation.liability.view
+    phase: Phase 20G
+  - key: finance.subscription-billing
+    label: Subscription billing
+    availability: planned
+    permission: subscription.payment_attempts.view
+    phase: Phase 20B
+  - key: finance.reports
+    label: Finance reports
+    availability: planned
+    phase: Phase 21N
+  - key: finance.exports
+    label: Exports
+    availability: planned
+    permission: finance_export.create
+    phase: Phase 18B
+  - key: finance.audit
+    label: Audit activity
+    availability: planned
+    permission: finance.audit.view
+    phase: Phase 19
+merchant_front_office:
+  - key: front-office.overview
+    label: Overview
+    availability: live
+    route: front-office.landing
+    phase: Phase 11
+  - key: front-office.get-started
+    label: Get started
+    availability: live
+    route: front-office.get-started
+    phase: Phase 11
+  - key: front-office.clients
+    label: Clients
+    availability: planned
+    permission: client.view
+    phase: Phase 15A
+  - key: front-office.appointments
+    label: Appointments
+    availability: planned
+    permission: appointment.view
+    phase: Phase 16A
+  - key: front-office.walk-ins
+    label: Walk-ins
+    availability: planned
+    phase: Phase 16B
+  - key: front-office.queue
+    label: Queue
+    availability: planned
+    permission: queue.view
+    phase: Phase 16B
+  - key: front-office.service-sessions
+    label: Service sessions
+    availability: planned
+    permission: service_session.view
+    phase: Phase 16C
+  - key: front-office.invoices
+    label: Invoices
+    availability: planned
+    permission: invoice.view
+    phase: Phase 17
+  - key: front-office.payments
+    label: Payments
+    availability: planned
+    permission: customer_payment.record
+    phase: Phase 18A
+  - key: front-office.receipts
+    label: Receipts
+    availability: planned
+    permission: receipt.view
+    phase: Phase 18B
+merchant_personnel:
+  - key: personnel.overview
+    label: Overview
+    availability: live
+    route: personnel.landing
+    phase: Phase 11
+  - key: personnel.get-started
+    label: Get started
+    availability: live
+    route: personnel.get-started
+    phase: Phase 11
+  - key: personnel.my-queue
+    label: My queue
+    availability: planned
+    permission: personnel.my_queue.view
+    phase: Phase 16B
+  - key: personnel.my-appointments
+    label: My appointments
+    availability: planned
+    permission: personnel.my_appointments.view
+    phase: Phase 16A
+  - key: personnel.my-sessions
+    label: My sessions
+    availability: planned
+    permission: personnel.my_sessions.view
+    phase: Phase 16C
+  - key: personnel.my-served-clients
+    label: My served clients
+    availability: planned
+    permission: personnel.my_served_clients.view
+    phase: Phase 15A
+  - key: personnel.my-earnings
+    label: My earnings
+    availability: planned
+    permission: personnel.my_earnings.view
+    phase: Phase 20H
+  - key: personnel.my-sms
+    label: Client SMS
+    availability: planned
+    permission: personnel.my_sms.send
+    phase: Phase 21S
+merchant_audit:
+  - key: audit.overview
+    label: Overview
+    availability: live
+    route: audit.landing
+    phase: Phase 11
+  - key: audit.get-started
+    label: Get started
+    availability: live
+    route: audit.get-started
+    phase: Phase 11
+  - key: audit.branch-events
+    label: Branch audit log
+    availability: planned
+    permission: audit.branch_events.view
+    phase: Phase 19
+  - key: audit.flagged-events
+    label: Flagged events
+    availability: planned
+    permission: audit.flagged_event.create
+    phase: Phase 19
+  - key: audit.compensation
+    label: Compensation audit
+    availability: planned
+    permission: audit.compensation.view
+    phase: Phase 19
+  - key: audit.finance
+    label: Finance audit
+    availability: planned
+    permission: audit.finance.view
+    phase: Phase 19
+  - key: audit.exports
+    label: Exports
+    availability: planned
+    permission: audit.export
+    phase: Phase 19

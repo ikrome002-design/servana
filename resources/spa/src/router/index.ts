@@ -23,6 +23,13 @@ export const router = createRouter({
       name: 'dev.design-system',
       component: () => import('@/pages/dev/DesignSystemDemo.vue'),
     },
+    {
+      // Rendered role-specific legal documents (Phase 11). Public: no secret
+      // data; sourced verbatim from docs/legal/**.
+      path: '/legal/:role/:doc',
+      name: 'legal.document',
+      component: () => import('@/pages/legal/LegalDocument.vue'),
+    },
     ...authRoutes,
     ...platformRoutes,
     ...merchantRoutes,
