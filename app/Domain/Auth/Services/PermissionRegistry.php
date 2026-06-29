@@ -77,6 +77,11 @@ final class PermissionRegistry
         // Branch operations.
         'branch.profile.manage' => ['branch', 'Edit own-branch profile and operating hours.', true],
         'branch.calendar.manage' => ['branch', 'Manage own-branch calendar exceptions.', true],
+        // Branch operational dashboard read (Plan §19 matrix `branch.dashboard.view`;
+        // Phase 15B canonical activation). Backs the Branch Manager's read-only
+        // personnel availability/eligibility visibility. Contributes to — does NOT
+        // close — REM-PERM-001 (Phase 19 owns the full matrix closure).
+        'branch.dashboard.view' => ['branch', 'View the branch operational dashboard (read-only).', false],
         // Catalogue (Plan §19.2/§19.3; Phase 15A canonical keys — reconciled from the
         // legacy `services.manage` baseline). Branch Manager owns the catalogue.
         'service.view' => ['catalogue', 'View services (scoped).', false],
@@ -96,7 +101,9 @@ final class PermissionRegistry
         // Personnel-service eligibility (Plan §19.2/§19.3; Phase 15A canonical key —
         // reconciled from the legacy `eligibility.manage` baseline). HR-owned.
         'personnel.eligibility.manage' => ['staff', 'Manage personnel service eligibility.', true],
-        'availability.manage' => ['staff', 'Manage staff availability.', true],
+        // Personnel availability (Plan §19.2/§19.3; Phase 15B canonical key —
+        // reconciled from the legacy Phase 8 `availability.manage` baseline). HR-owned.
+        'personnel.availability.manage' => ['staff', 'Manage personnel availability.', true],
         'commissions.manage' => ['staff', 'Set staff commissions.', true],
         // Clients (Plan §19.2/§19.3; Phase 15A canonical keys — reconciled from the
         // legacy `clients.create/edit/view` baseline). Front Office owns client records
@@ -160,7 +167,7 @@ final class PermissionRegistry
             'reports.view', 'audit.view_full',
         ],
         self::ROLE_BRANCH_MANAGER => [
-            'branch.profile.manage', 'branch.calendar.manage',
+            'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
             'service.view', 'service.create', 'service.update', 'service.archive',
             'queue.configure', 'queue.operate', 'queue.transfer_entries',
             'appointments.manage', 'day.open_close', 'cashup.submit',
@@ -170,7 +177,7 @@ final class PermissionRegistry
         ],
         self::ROLE_HR => [
             'staff.invite', 'staff.edit', 'staff.suspend',
-            'personnel.eligibility.manage', 'availability.manage', 'commissions.manage',
+            'personnel.eligibility.manage', 'personnel.availability.manage', 'commissions.manage',
             'commissions.view', 'reports.view', 'audit.view_full',
             'exports.staff_roster',
         ],

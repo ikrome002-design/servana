@@ -137,6 +137,12 @@ merchant_branch:
     route: branch.services
     permission: service.view
     phase: Phase 15A
+  - key: branch.personnel-schedule
+    label: Personnel schedule
+    availability: live
+    route: branch.personnel-schedule
+    permission: branch.dashboard.view
+    phase: Phase 15B
   - key: branch.queue
     label: Queue
     availability: planned
@@ -217,7 +223,8 @@ merchant_human_resource:
     phase: Phase 15A
   - key: hr.availability
     label: Availability
-    availability: planned
+    availability: live
+    route: hr.availability
     permission: personnel.availability.manage
     phase: Phase 15B
   - key: hr.compensation

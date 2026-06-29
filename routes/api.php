@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\V1\Merchant\MerchantDashboardController;
 use App\Http\Controllers\Api\V1\Onboarding\FirstTimeSetupController;
 use App\Http\Controllers\Api\V1\Onboarding\MerchantRegistrationController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
+use App\Http\Controllers\Api\V1\Scheduling\StaffAvailabilityController;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureActivePrincipal;
 use App\Http\Middleware\EnsureBranchScope;
@@ -294,6 +295,25 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 ->middleware([EnsureBranchScope::class, EnsurePermission::class.':personnel.eligibility.manage'])
                 ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                 ->name('services.eligibility.destroy');
+
+            // Personnel availability (Plan §13.7, §80 Phase 15B). HR owns mutation
+            // (`personnel.availability.manage`, route-gated + policy); the read also
+            // serves the Branch Manager's read-only schedule visibility (authorized in
+            // the controller via PersonnelAvailabilityPolicy + `branch.dashboard.view`).
+            // The `{staff}` binding resolves StaffProfile inside tenant + branch scope
+            // (foreign tenant 404; same-tenant out-of-branch 404 via BranchScope). The
+            // schedule is atomically replaced. EnsureBranchScope no-ops without a
+            // {branch} param but the branch_mutation class contract requires it.
+            Route::get('staff/{staff}/availability', [StaffAvailabilityController::class, 'show'])
+                ->name('staff.availability.show');
+            Route::put('staff/{staff}/availability', [StaffAvailabilityController::class, 'update'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':personnel.availability.manage'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('staff.availability.update');
+            Route::post('staff/{staff}/availability/emergency-unavailable', [StaffAvailabilityController::class, 'emergencyUnavailable'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':personnel.availability.manage'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('staff.availability.emergency-unavailable');
 
             // Client records (Scope §clients, Plan §35; Phase 15A). Front Office owns
             // them (`client.*`); search is a distinct capability (`front_office.search`,

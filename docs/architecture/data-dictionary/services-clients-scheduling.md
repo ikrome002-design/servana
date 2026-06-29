@@ -1,10 +1,10 @@
 # Services, Clients & Scheduling — Data Dictionary
 
-Canonical DDL authority for the Phase 15A catalogue/clients tables (Plan §13.2,
-§13.7, §35, §39). Scheduling tables (`personnel_availability`, `appointments`,
-`walk_ins`, `queue_entries`, `service_sessions`) are listed in §13.7 but are
-**owned by later phases (15B/16A–16C)** and are intentionally **not** created
-here — their rows below are placeholders marked `(deferred)`.
+Canonical DDL authority for the Phase 15A catalogue/clients tables and the Phase
+15B `personnel_availability` scheduling table (Plan §13.2, §13.7, §35, §39).
+Remaining scheduling tables (`appointments`, `walk_ins`, `queue_entries`,
+`service_sessions`) are listed in §13.7 but are **owned by later phases
+(16A–16C)** and are intentionally **not** created here.
 
 Structural rule (Plan §2.1, §13.1): tenant-owned → `merchant_id`; branch-owned →
 `merchant_id` + `branch_id` with a DB-level composite-FK consistency constraint
@@ -239,8 +239,147 @@ SMS-consent state capture (§35). **No SMS delivery** in Phase 15A (Phase 21S).
 
 ---
 
-## Deferred (later phases — NOT created in 15A)
+## `personnel_availability` (15B) — branch-owned
 
-`personnel_availability` (15B), `appointments` (16A), `walk_ins`/`queue_entries`
-(16B), `service_sessions` (16C). Listed in §13.7; each carries its own
-data-dictionary entry in its owning phase. Phase 15A must not create them.
+HR-owned (`personnel.availability.manage`, §19.3) canonical schedule source for a
+staff member's working time, breaks, days off, and temporary/emergency
+unavailability, within HR's assigned branch. It is the shared availability
+substrate consumed by later scheduling domains (appointments 16A, queues 16B,
+sessions 16C). One staff member has many rows; the effective availability for any
+moment is computed by the deterministic `AvailabilityResolver` (no derived state
+is persisted). Phase 15B creates this table per the §80 roadmap entry (which
+controls over the §13.7 schema-summary's `(16A)` label); `appointments` remain
+Phase 16A.
+
+> **Phase ownership decision (recorded 2026-06-29).** Plan §13.7 schema summary
+> tags `personnel_availability (16A)`, but the §80 roadmap entry for **Phase 15B**
+> explicitly assigns *"DB: `personnel_availability`"* and Phase 16A's entry
+> assigns *"DB: `appointments`"*. The specific §80 sequencing entry is the
+> controlling instruction → **15B owns `personnel_availability`; 16A owns
+> `appointments`.** No appointment table is created in 15B.
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint PK identity | no | — | internal key |
+| `merchant_id` | bigint FK→merchants | no | — | tenant owner; `ON DELETE CASCADE` |
+| `branch_id` | bigint FK→merchant_branches | no | — | branch owner; `ON DELETE CASCADE`; always = `staff.primary_branch_id` |
+| `staff_profile_id` | bigint FK→staff_profiles | no | — | **RESTRICT** (historical schedule never cascade-deleted) |
+| `weekday` | smallint | yes | `null` | recurring rows only; `0=Sunday … 6=Saturday` (same convention as `branch_operating_hours`); `null` for exception rows |
+| `date` | date | yes | `null` | exception rows only (one exact business date, `Africa/Nairobi`); `null` for recurring rows |
+| `start_time` | time | no | — | inclusive interval start (branch business time) |
+| `end_time` | time | no | — | **exclusive** interval end; half-open `[start_time, end_time)` |
+| `type` | varchar(12) | no | — | CHECK `IN ('recurring','exception')` (`AvailabilityType` enum) |
+| `available` | boolean | no | — | `true` = working/available interval; `false` = break / unavailable interval (subtracts time) |
+| `created_at` / `updated_at` | timestamptz | no | — | Eloquent timestamps |
+
+- **No `ulid`** (schedule rows are not individually route-bound — availability is
+  read and atomically replaced per staff member through staff-scoped routes,
+  mirroring §13.7 which defines no ulid). **No `created_by`/`updated_by`/business-
+  reason column** — the canonical §13.7 column set is exactly the list above; the
+  human-readable `change_reason` is a *command + audit* field (sanitised into the
+  append-only audit event), never a stored column. **No operational-mode enum**
+  (`appointment`/`walk_in`/`queue`) — queue active-inactive participation is a
+  later operational state owned by 16B, not a schedule property.
+- **Interval semantics (half-open `[start_time, end_time)`):** the start is
+  included and the end excluded, so back-to-back intervals (`09:00–13:00` and
+  `13:00–17:00`) do **not** overlap. A cross-midnight working span must be
+  normalized into two rows on the two affected weekdays/dates; an ambiguous row
+  whose `end_time ≤ start_time` is rejected by CHECK.
+- **Recurring vs exception:**
+  - `recurring` → `weekday IS NOT NULL` and `date IS NULL` (weekly pattern).
+  - `exception` → `date IS NOT NULL` and `weekday IS NULL` (one exact date).
+  - Exact-date exceptions take precedence over recurring rows for the same
+    interval; within equal specificity, **unavailable wins over available**
+    (resolver rule; see below).
+- **CHECK constraints:**
+  1. `type IN ('recurring','exception')`.
+  2. polarity: `(type='recurring' AND weekday IS NOT NULL AND date IS NULL)
+     OR (type='exception' AND date IS NOT NULL AND weekday IS NULL)`.
+  3. `weekday IS NULL OR (weekday BETWEEN 0 AND 6)`.
+  4. `start_time < end_time` (also forbids zero-length and cross-midnight rows).
+- **Exclusion constraints (PostgreSQL GiST + `btree_gist`):** same-polarity
+  interval overlaps for one staff member are rejected in the DB, not just the
+  app. Time-of-day is mapped to an immutable half-open
+  `numrange(extract(epoch from start_time), extract(epoch from end_time), '[)')`;
+  `available` is included with `=` so only **same-polarity** rows can conflict
+  (an unavailable break may legitimately overlap an available working interval —
+  it subtracts time):
+  - recurring: `EXCLUDE USING gist (staff_profile_id =, weekday =, available =,
+    numrange(...) &&) WHERE (type='recurring')` — covers reqs 7 (available) & 8
+    (unavailable).
+  - exception: `EXCLUDE USING gist (staff_profile_id =, date =, available =,
+    numrange(...) &&) WHERE (type='exception')` — covers reqs 9 & 10.
+  - Opposite-polarity overlap is permitted (req 11) and resolved deterministically
+    (req 12) by the resolver.
+- **Indexes:** `(merchant_id, branch_id)` (merchant-first coverage + branch
+  personnel listing); `(staff_profile_id, weekday)` (recurring weekday
+  resolution); `(staff_profile_id, date)` (exact-date exception resolution +
+  current-availability calculation). The two GiST exclusion constraints also index
+  the overlap lookups.
+- **Composite consistency FKs (same-merchant guaranteed in DB):**
+  `(branch_id, merchant_id) → merchant_branches(id, merchant_id)` CASCADE;
+  `(staff_profile_id, merchant_id) → staff_profiles(id, merchant_id)` RESTRICT.
+  Same-**branch** consistency (`branch_id = staff.primary_branch_id`) is set by
+  the domain action (branch derived from the staff profile) and asserted by tests
+  — there is no cross-branch availability.
+- **Ownership:** `BelongsToMerchant` + `BelongsToBranch`; registered in
+  `TenantOwnership` (BRANCH_OWNED + COMPOSITE_CONSISTENCY + MODELS=`branch`).
+- **Concurrency / API mutation model:** availability is **atomically replaced**
+  per staff member — `ReplaceAvailability` locks the staff member's rows
+  (`SELECT … FOR UPDATE` on the staff anchor), validates the full normalized
+  payload, deletes the canonical recurring + exception rows and re-inserts the new
+  set inside one transaction. Either the complete new schedule commits or the
+  complete old schedule is preserved; concurrent replacements cannot interleave
+  rows from two schedules. `EmergencyUnavailable` inserts a date-specific
+  unavailable exception transactionally. Re-submitting the same normalized payload
+  yields the same final schedule (idempotent set-state).
+- **Timezone:** weekday/date are resolved in branch business time
+  (`Africa/Nairobi`); `start_time`/`end_time` are wall-clock business times. The
+  resolver computes the current weekday/date in `Africa/Nairobi`.
+- **Derived current state (not persisted):** `AvailabilityResolver` exposes
+  `suspended | available | on_break | unavailable | offline`
+  (`PersonnelAvailabilityState` enum). `suspended` derives from staff lifecycle
+  (`is_active=false`), never from availability rows. `busy` is **not** in 15B (it
+  depends on queue/session aggregates — Phases 16B/16C).
+- **Mutation:** restricted to HR with `personnel.availability.manage` within HR's
+  branch scope; Branch Manager has **read-only** visibility via
+  `branch.dashboard.view` and may never mutate.
+- **Audit:** `personnel_availability.updated` (atomic replace — one event per
+  action, not per row) / `personnel_availability.emergency_unavailable`. Safe
+  context only (merchant, branch, staff ulid, actor, recurring/exception counts,
+  effective interval/date, **sanitised** change reason); never tokens/sessions/
+  phones/emails/internal ids/full bodies.
+- **Scheduling validator codes (defined before use):**
+  `invalid_schedule_window`, `personnel_inactive`, `personnel_wrong_branch`,
+  `personnel_not_eligible`, `personnel_unavailable`, `service_inactive` — emitted
+  by `PersonnelSchedulingValidator` (see below). Codes never leak internal ids or
+  cross-tenant existence.
+- **Factory:** `PersonnelAvailabilityFactory` (recurring + exception states).
+- **Tests:** schema/CHECK/exclusion enforcement (incl. raw-SQL bypass of
+  Eloquent); recurring/split-shift/break/day-off/exception/emergency resolution;
+  `Africa/Nairobi` weekday/date determinism; HR same-branch mutation only; Branch
+  Manager read-only; role-boundary denials; atomic replace + concurrency; audit +
+  redaction; isolation.
+
+### Phase 16A consumption contract (binding handoff)
+
+`personnel_availability` is the HR-controlled schedule source. **Every Phase 16A
+appointment creation, assignment, transfer, and rescheduling action MUST invoke
+the Phase 15B `PersonnelSchedulingValidator`** (tenant + branch + staff lifecycle
++ active branch assignment + service status + `service_personnel_eligibility` +
+effective availability + interval). Appointment controllers/actions must **not**
+duplicate eligibility or availability logic. Phase 16A then adds branch-open,
+branch-calendar, and appointment-conflict validation **around** that shared gate.
+Phase 15B does not create appointments, so it does not (and must not) claim a
+production appointment workflow invokes the validator — only the direct
+domain-service tests exercise it in 15B.
+
+---
+
+## Deferred (later phases — NOT created in 15B)
+
+`appointments` (16A), `walk_ins`/`queue_entries` (16B), `service_sessions` (16C).
+Listed in §13.7; each carries its own data-dictionary entry in its owning phase.
+Phase 15B must not create them, nor any appointment/walk-in/queue/session
+workflow, `busy`/`no_show` state, or Personnel operational self-toggle (each owned
+by its 16A/16B/16C workflow).

@@ -73,6 +73,7 @@ const branchManager: NavItem[] = [
   { key: 'branch.get-started', label: 'Get started', routeName: 'branch.get-started', phase: 'Phase 11', availability: 'live' },
   { key: 'branch.directory', label: 'Branches', routeName: 'branch.list', permission: 'branch.profile.view', phase: 'Phase 7', availability: 'live' },
   { key: 'branch.services', label: 'Services', routeName: 'branch.services', permission: 'service.view', phase: 'Phase 15A', availability: 'live' },
+  { key: 'branch.personnel-schedule', label: 'Personnel schedule', routeName: 'branch.personnel-schedule', permission: 'branch.dashboard.view', phase: 'Phase 15B', availability: 'live' },
   { key: 'branch.queue', label: 'Queue', phase: 'Phase 16B', availability: 'planned' },
   { key: 'branch.appointments', label: 'Appointments', phase: 'Phase 16A', availability: 'planned' },
   { key: 'branch.service-sessions', label: 'Service sessions', phase: 'Phase 16C', availability: 'planned' },
@@ -92,7 +93,7 @@ const humanResource: NavItem[] = [
   { key: 'hr.invitations', label: 'Invitations', routeName: 'hr.invitations', permission: 'staff.invite', phase: 'Phase 7', availability: 'live' },
   { key: 'hr.permission-preview', label: 'Permission preview', routeName: 'hr.permission-preview', permission: 'staff.role.assign', phase: 'Phase 7', availability: 'live' },
   { key: 'hr.eligibility', label: 'Service eligibility', routeName: 'hr.eligibility', permission: 'personnel.eligibility.manage', phase: 'Phase 15A', availability: 'live' },
-  { key: 'hr.availability', label: 'Availability', permission: 'personnel.availability.manage', phase: 'Phase 15B', availability: 'planned' },
+  { key: 'hr.availability', label: 'Availability', routeName: 'hr.availability', permission: 'personnel.availability.manage', phase: 'Phase 15B', availability: 'live' },
   { key: 'hr.compensation', label: 'Compensation', permission: 'compensation.plan.view', phase: 'Phase 20F', availability: 'planned' },
   { key: 'hr.payout-runs', label: 'Payout runs', permission: 'payout_run.create', phase: 'Phase 20H', availability: 'planned' },
 ];

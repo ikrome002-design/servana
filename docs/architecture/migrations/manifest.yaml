@@ -470,3 +470,18 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-15a.md
     notes: "Branch-owned; UNIQUE (client_id,channel) one current state; channel sms; state opted_in|opted_out; no SMS delivery in 15A (Phase 21S)."
+
+  - file: 2026_06_29_000001_create_personnel_availability_table.php
+    table: personnel_availability
+    domain: Scheduling
+    owner_phase: "15B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-15b.md
+    notes: "Branch-owned (no ulid); HR personnel.availability.manage. CREATE EXTENSION btree_gist. CHECK type IN (recurring,exception); polarity recurring=weekday/no-date, exception=date/no-weekday; weekday 0..6; start_time<end_time (half-open, no cross-midnight). GiST EXCLUDE same-polarity overlap per staff (recurring: staff+weekday+available+numrange; exception: staff+date+available+numrange) — opposite-polarity break-over-shift allowed, resolved by AvailabilityResolver. Composite FKs (branch_id,merchant_id) to merchant_branches CASCADE and (staff_profile_id,merchant_id) to staff_profiles RESTRICT force same-merchant; same-branch set by ReplaceAvailability from staff.primary_branch_id. Indexes (merchant_id,branch_id)/(staff_profile_id,weekday)/(staff_profile_id,date). Phase 16A consumes via PersonnelSchedulingValidator; no appointment table here."

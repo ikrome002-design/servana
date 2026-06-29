@@ -67,6 +67,8 @@
                                 "service.archived",
                                 "personnel_eligibility.assigned",
                                 "personnel_eligibility.revoked",
+                                "personnel_availability.updated",
+                                "personnel_availability.emergency_unavailable",
                                 "client.created",
                                 "client.updated",
                                 "client_consent.opted_in",
@@ -3451,6 +3453,8 @@
                                 "service.archived",
                                 "personnel_eligibility.assigned",
                                 "personnel_eligibility.revoked",
+                                "personnel_availability.updated",
+                                "personnel_availability.emergency_unavailable",
                                 "client.created",
                                 "client.updated",
                                 "client_consent.opted_in",
@@ -5695,6 +5699,240 @@
                 ]
             }
         },
+        "/api/v1/staff/{staff}/availability": {
+            "get": {
+                "operationId": "staff.availability.show",
+                "tags": [
+                    "StaffAvailability"
+                ],
+                "parameters": [
+                    {
+                        "name": "staff",
+                        "in": "path",
+                        "required": true,
+                        "description": "The staff ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PersonnelAvailabilityScheduleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PersonnelAvailabilityScheduleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "put": {
+                "operationId": "staff.availability.update",
+                "tags": [
+                    "StaffAvailability"
+                ],
+                "parameters": [
+                    {
+                        "name": "staff",
+                        "in": "path",
+                        "required": true,
+                        "description": "The staff ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAvailabilityRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PersonnelAvailabilityScheduleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PersonnelAvailabilityScheduleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/staff/{staff}/availability/emergency-unavailable": {
+            "post": {
+                "operationId": "staff.availability.emergency-unavailable",
+                "tags": [
+                    "StaffAvailability"
+                ],
+                "parameters": [
+                    {
+                        "name": "staff",
+                        "in": "path",
+                        "required": true,
+                        "description": "The staff ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmergencyUnavailableRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PersonnelAvailabilityScheduleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PersonnelAvailabilityScheduleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/staff/{staff}/deactivate": {
             "post": {
                 "operationId": "staff.deactivate",
@@ -6999,6 +7237,34 @@
                 ],
                 "title": "CreateStaffInvitationRequest"
             },
+            "EmergencyUnavailableRequest": {
+                "type": "object",
+                "description": "HR-only emergency-unavailability payload (Plan §80 Phase 15B). Creates a\ndate-specific UNAVAILABLE exception interval; HR authority is route-gated\n(`personnel.availability.manage`) + policy-checked. A non-empty change reason is\nmandatory. merchant_id / branch_id are never accepted from the body.",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "start_time": {
+                        "type": "string"
+                    },
+                    "end_time": {
+                        "type": "string"
+                    },
+                    "change_reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "date",
+                    "start_time",
+                    "end_time",
+                    "change_reason"
+                ],
+                "title": "EmergencyUnavailableRequest"
+            },
             "ErrorEnvelope": {
                 "type": "object",
                 "description": "Standard API error envelope (Plan §11.5).",
@@ -7129,6 +7395,42 @@
                     "code"
                 ],
                 "title": "MfaCodeRequest"
+            },
+            "PersonnelAvailabilityScheduleResource": {
+                "type": "object",
+                "properties": {
+                    "staff": {
+                        "type": "string"
+                    },
+                    "timezone": {
+                        "type": "string"
+                    },
+                    "current_state": {
+                        "type": "string"
+                    },
+                    "recurring": {
+                        "type": "string"
+                    },
+                    "exceptions": {
+                        "type": "string"
+                    },
+                    "eligible_services": {
+                        "type": "string"
+                    },
+                    "can": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "staff",
+                    "timezone",
+                    "current_state",
+                    "recurring",
+                    "exceptions",
+                    "eligible_services",
+                    "can"
+                ],
+                "title": "PersonnelAvailabilityScheduleResource"
             },
             "RegisterMerchantRequest": {
                 "type": "object",
@@ -7598,6 +7900,78 @@
                     "duration_minutes"
                 ],
                 "title": "StoreServiceRequest"
+            },
+            "UpdateAvailabilityRequest": {
+                "type": "object",
+                "description": "Atomic availability-replacement payload (Plan §80 Phase 15B). HR authority is\nroute-gated (`personnel.availability.manage`) + policy-checked. The body carries\nthe COMPLETE new recurring + exception schedule and a required human-readable\nchange reason. merchant_id / branch_id are NEVER accepted from the body — they\nare derived from the staff profile in the domain action. Structural + overlap\nvalidation is delegated to the shared ScheduleNormalizer so the API and the\naction share one rule set.",
+                "properties": {
+                    "change_reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                    },
+                    "recurring": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "weekday": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 6
+                                },
+                                "start_time": {
+                                    "type": "string"
+                                },
+                                "end_time": {
+                                    "type": "string"
+                                },
+                                "available": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "weekday",
+                                "start_time",
+                                "end_time",
+                                "available"
+                            ]
+                        }
+                    },
+                    "exceptions": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "date": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "start_time": {
+                                    "type": "string"
+                                },
+                                "end_time": {
+                                    "type": "string"
+                                },
+                                "available": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "date",
+                                "start_time",
+                                "end_time",
+                                "available"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "change_reason",
+                    "recurring",
+                    "exceptions"
+                ],
+                "title": "UpdateAvailabilityRequest"
             },
             "UpdateBranchRequest": {
                 "type": "object",

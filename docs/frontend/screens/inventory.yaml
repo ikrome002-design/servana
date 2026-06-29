@@ -313,6 +313,18 @@ screens:
     status: implemented
     phase: Phase 15A
     spec: hr/service-eligibility.md
+  - key: personnel-availability
+    domain: hr
+    route: hr.availability
+    status: implemented
+    phase: Phase 15B
+    spec: hr/personnel-availability.md
+  - key: personnel-schedule
+    domain: branch
+    route: branch.personnel-schedule
+    status: implemented
+    phase: Phase 15B
+    spec: branch/personnel-schedule.md
   - key: branch-calendar
     domain: branch
     route: ~

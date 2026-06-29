@@ -86,6 +86,11 @@ enum AuditEvent: string
     case ServiceArchived = 'service.archived';
     case PersonnelEligibilityAssigned = 'personnel_eligibility.assigned';
     case PersonnelEligibilityRevoked = 'personnel_eligibility.revoked';
+    // Personnel availability (Phase 15B). HR owns availability mutation. One
+    // coherent event per atomic action (not per row); context carries only safe
+    // counts/interval + a SANITISED change reason — never tokens/contacts/ids.
+    case PersonnelAvailabilityUpdated = 'personnel_availability.updated';
+    case PersonnelAvailabilityEmergencyUnavailable = 'personnel_availability.emergency_unavailable';
     case ClientCreated = 'client.created';
     case ClientUpdated = 'client.updated';
     case ClientConsentOptedIn = 'client_consent.opted_in';
@@ -145,6 +150,7 @@ enum AuditEvent: string
             self::ServiceArchived,
             self::PersonnelEligibilityAssigned,
             self::PersonnelEligibilityRevoked,
+            self::PersonnelAvailabilityUpdated,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,
@@ -159,6 +165,7 @@ enum AuditEvent: string
             self::MfaRecoveryCodesRegenerated,
             self::FileUploadRejected,
             self::FileScanFailed,
+            self::PersonnelAvailabilityEmergencyUnavailable,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,

@@ -131,4 +131,18 @@ return [
     'clients' => [
         'contact_index_key' => env('CLIENT_CONTACT_INDEX_KEY'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scheduling (Phase 15B)
+    |--------------------------------------------------------------------------
+    |
+    | Personnel availability weekday/date resolution and derived current-state
+    | calculation use branch business time. Plan §1 pins business-day logic to
+    | Africa/Nairobi; timestamps remain UTC. Override only via a signed ADR.
+    |
+    */
+    'scheduling' => [
+        'business_timezone' => env('SCHEDULING_BUSINESS_TIMEZONE', 'Africa/Nairobi'),
+    ],
 ];

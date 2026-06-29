@@ -38,7 +38,7 @@ function expectedMatrix(): array
             'reports.view', 'audit.view_full',
         ],
         'branch_manager' => [
-            'branch.profile.manage', 'branch.calendar.manage',
+            'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
             'service.view', 'service.create', 'service.update', 'service.archive',
             'queue.configure', 'queue.operate', 'queue.transfer_entries',
             'appointments.manage', 'day.open_close', 'cashup.submit',
@@ -48,7 +48,7 @@ function expectedMatrix(): array
         ],
         'hr' => [
             'staff.invite', 'staff.edit', 'staff.suspend',
-            'personnel.eligibility.manage', 'availability.manage', 'commissions.manage',
+            'personnel.eligibility.manage', 'personnel.availability.manage', 'commissions.manage',
             'commissions.view', 'reports.view', 'audit.view_full',
             'exports.staff_roster',
         ],
