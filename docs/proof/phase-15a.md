@@ -1,12 +1,27 @@
 # Phase 15A — Services, Catalogue, Clients — Proof
 
 **Branch:** `phase-15a-services-catalogue-clients` · **Base commit:** `d098f37`
-(Phase 11 merge, PR #23). **Status:** `local_complete` — the full Phase 15A
-specification (backend, authorization, canonical permission activation, client
-search, frontend screens, tests, contracts, docs) is implemented and **all local
-gates pass**. This is **not** `ci_passed`, `merged`, or `verified_complete`: no PR
-has been opened and CI has not run. CI remains authoritative for the Linux
-browser/Docker gates.
+(Phase 11 merge, PR #23). **Status:** `verified_complete`.
+
+> **Lifecycle reconciliation (recorded in Phase 15B, 2026-06-29).** This proof was
+> originally written at `local_complete`. Phase 15A subsequently shipped as
+> **PR #24**, MERGED into `main` (base `main`, merge commit `81a5866`, 2026-06-28).
+> Two-commit implementation history preserved: foundation `73c7d26` → implementation
+> `23aeed1`; final governance/PR head `1fcfa40`. CI run **`28338582235`** (head
+> `1fcfa40`) — the five required checks (Backend — Pint/Larastan/Pest; Frontend —
+> ESLint/vue-tsc/Vitest/build; Docker — build images; Security — gitleaks; E2E —
+> Playwright) all SUCCESS. `reviewDecision` remained intentionally blank under the
+> documented PR-specific solo-maintainer governance exception
+> (`docs/governance/solo-maintainer-review-exception-pr-24.md`) — **this was not an
+> independent approval.** REM-CAT-CLI-001 → `verified_complete`. **REM-PERM-001
+> remains open** (Phase 19 owns full permission-matrix closure). The original
+> `local_complete` narrative below — including the initial failures and their
+> corrections — is preserved unchanged as the historical implementation record.
+
+The full Phase 15A specification (backend, authorization, canonical permission
+activation, client search, frontend screens, tests, contracts, docs) is
+implemented and **all local gates passed**; CI then confirmed the Linux
+browser/Docker gates on PR #24.
 
 Frontend visibility is UX only; the API is the security boundary. Money is integer
 minor units via the `Money` value object. Tests run against PostgreSQL (never

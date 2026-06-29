@@ -65,7 +65,7 @@ const branchManager: GetStartedItem[] = [
 const humanResource: GetStartedItem[] = [
   { id: 'invite-staff', label: 'Invite staff', routeName: 'hr.invitations', kind: 'action' },
   { id: 'set-service-eligibility', label: 'Set service eligibility', routeName: 'hr.eligibility', kind: 'action' },
-  { id: 'set-availability', label: 'Set availability', phase: 'Phase 15B', kind: 'action' },
+  { id: 'set-availability', label: 'Set availability', routeName: 'hr.availability', kind: 'action' },
   { id: 'configure-compensation-models', label: 'Configure personnel compensation models', phase: 'Phase 20F', kind: 'action' },
   { id: 'review-missing-compensation', label: 'Review missing-compensation warnings', phase: 'Phase 20F', kind: 'action' },
   ACKNOWLEDGE,

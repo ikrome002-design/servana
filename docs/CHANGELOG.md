@@ -6,14 +6,58 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 15A — Services, Catalogue, Clients (`phase-15a-services-catalogue-clients`) — local_complete
+### Phase 15B — Personnel Availability and Eligibility Completion (`phase-15b-personnel-availability`) — local_complete
+
+HR-controlled personnel availability (recurring + date-specific exception
+schedules: working days, split shifts, breaks, days off, temporary and emergency
+unavailability), the canonical `personnel_availability` table, canonical
+permission `personnel.availability.manage` (reconciled from the legacy
+`availability.manage`), a single deterministic availability resolver, the reusable
+`PersonnelSchedulingValidator` (eligibility + availability gate), Branch Manager
+branch-scoped read-only schedule visibility, and the HR availability screen
+(Plan §13.7, §80 Phase 15B; Corrections 16, 17). Built on merged Phase 15A
+(`81a5866`, PR #24). No appointment/walk-in/queue/session workflow is introduced
+(deferred to Phases 16A–16C). See [docs/proof/phase-15b.md](proof/phase-15b.md).
+
+- **Schema:** `personnel_availability` (id, merchant_id, branch_id,
+  staff_profile_id, weekday, date, start_time, end_time, type ∈ {recurring,
+  exception}, available, timestamps) — branch-owned, composite-FK tenant/branch
+  consistency, CHECK constraints (type↔weekday/date polarity, weekday range,
+  start<end, no cross-midnight), GiST exclusion constraints preventing same-polarity
+  recurring/exception interval overlaps; merchant-first + staff-schedule indexes.
+- **Permissions:** legacy `availability.manage` → canonical
+  `personnel.availability.manage` (HR-only default grant); `personnel.eligibility.manage`
+  preserved (HR-only). Branch Manager read-only visibility via `branch.dashboard.view`.
+  **REM-PERM-001 stays open** (Phase 19 owns full permission-matrix closure).
+- **Backend/API:** 3 `/api/v1` routes — `staff.availability.show` (HR + Branch
+  Manager read), `staff.availability.update` (HR atomic replace),
+  `staff.availability.emergency-unavailable` (HR) — Form Request → Policy → action
+  → Resource; mutations `branch_mutation` (Sanctum + ResolveTenantContext +
+  EnsureBranchScope + EnsurePermission); atomic schedule replacement under row
+  lock; 2 typed audit events (`personnel_availability.updated`,
+  `personnel_availability.emergency_unavailable`), redacted reason.
+- **Validator (Phase 16A handoff):** `PersonnelSchedulingValidator` checks
+  tenant/branch/staff-lifecycle/active-assignment/service-status/eligibility/
+  availability/interval and returns a typed decision. No appointment workflow
+  invokes it yet — Phase 16A must invoke it on every appointment create/assign/
+  transfer/reschedule and add branch-open + conflict checks around it.
+- **Frontend:** HR `PersonnelAvailability.vue` (weekly editor, split shifts,
+  breaks, date exceptions, day-off, emergency-unavailable, required change reason,
+  unsaved-changes guard, derived state, eligible-services summary) + Pinia store;
+  Branch Manager read-only availability surface; navigation `hr.availability`
+  `planned→live`; get-started `set-availability` deep-linked; screen specs +
+  inventory regen; OpenAPI/TS regen.
+
+### Phase 15A — Services, Catalogue, Clients (`phase-15a-services-catalogue-clients`) — verified_complete
 
 Branch-Manager service catalogue, HR personnel-service eligibility, and
 Front-Office client records with SMS consent (Plan §13.7, §35, §39, §80 Phase
-15A). Built on merged Phase 11 (`d098f37`, PR #23). **All local gates green**
-(backend 573, vitest 142, Playwright 15A 5, Pint/Larastan/typecheck/lint/build/
-audits/gitleaks clean); not `ci_passed`/`merged` (no PR/CI yet). See
-[docs/proof/phase-15a.md](proof/phase-15a.md).
+15A). Built on merged Phase 11 (`d098f37`, PR #23). **MERGED as PR #24** into
+`main` (merge commit `81a5866`, 2026-06-28; foundation `73c7d26`, implementation
+`23aeed1`, final PR head `1fcfa40`); CI run `28338582235` — five required checks
+(Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS; solo-maintainer
+governance exception (reviewDecision blank — not independent approval). REM-CAT-CLI-001
+→ `verified_complete`. See [docs/proof/phase-15a.md](proof/phase-15a.md).
 
 - **Canonical permissions (§19.2/§19.3):** activated `service.view/create/update/
   archive` (Branch Manager), `personnel.eligibility.manage` (HR), `client.view/

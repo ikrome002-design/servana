@@ -22,6 +22,7 @@ use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Models\MerchantProfile;
 use App\Domain\Merchants\Models\MerchantStatusHistory;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Scheduling\Models\PersonnelAvailability;
 
 /**
  * Central tenant/branch ownership registry (Plan §2.1, §8.2, §13.1; ADR-002; R5).
@@ -58,6 +59,8 @@ final class TenantOwnership
         'service_personnel_eligibility',
         'clients',
         'client_consents',
+        // Phase 15B — Personnel availability (Plan §13.7, §80).
+        'personnel_availability',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -134,6 +137,8 @@ final class TenantOwnership
         ServicePersonnelEligibility::class => 'branch',
         Client::class => 'branch',
         ClientConsent::class => 'branch',
+        // Phase 15B — branch-owned personnel availability (BelongsToMerchant + BelongsToBranch).
+        PersonnelAvailability::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -151,5 +156,7 @@ final class TenantOwnership
         'service_personnel_eligibility' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'clients' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'client_consents' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 15B — branch consistency via composite FK to merchant_branches.
+        'personnel_availability' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }

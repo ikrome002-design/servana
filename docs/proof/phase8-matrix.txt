@@ -6,6 +6,7 @@ audit.flag                            ·            ·            ·            
 audit.view_full                       ✓           ✓           ✓           ✓           ·            ·            ✓           ·
 appointments.manage                   ·            ✓           ·            ·            ✓           ·            ·            ·
 branch.calendar.manage                ·            ✓           ·            ·            ·            ·            ·            ·
+branch.dashboard.view                 ·            ✓           ·            ·            ·            ·            ·            ·
 branch.profile.manage                 ·            ✓           ·            ·            ·            ·            ·            ·
 cashup.submit                         ·            ✓           ·            ·            ·            ·            ·            ·
 day.open_close                        ·            ✓           ·            ·            ·            ·            ·            ·
@@ -54,8 +55,8 @@ platform.settings.manage              ·            ·            ·            
 exports.finance                       ·            ·            ·            ·            ·            ·            ·            ·
 exports.staff_roster                  ·            ·            ✓           ·            ·            ·            ·            ·
 reports.view                          ✓           ✓           ✓           ✓           ✓           ✓           ✓           ·
-availability.manage                   ·            ·            ✓           ·            ·            ·            ·            ·
 commissions.manage                    ·            ·            ✓           ·            ·            ·            ·            ·
+personnel.availability.manage         ·            ·            ✓           ·            ·            ·            ·            ·
 personnel.eligibility.manage          ·            ·            ✓           ·            ·            ·            ·            ·
 staff.edit                            ·            ·            ✓           ·            ·            ·            ·            ·
 staff.invite                          ·            ·            ✓           ·            ·            ·            ·            ·

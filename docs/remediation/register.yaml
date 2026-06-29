@@ -8,7 +8,7 @@
 
 meta:
   generated: "2026-06-21"
-  last_updated: "2026-06-23 (pre-feature gate closure)"
+  last_updated: "2026-06-29 (Phase 15B: REM-CAT-CLI-001 → verified_complete on PR #24 merge)"
   branch: docs/pre-feature-remediation-gate-closure
   base: 4f0d4f3   # merged main (PR #19, R7)
   # §5.4 — CLOSED decision: all PRE_FEATURE_REMEDIATION items are verified_complete
@@ -707,6 +707,6 @@ items:
     test_plan: "ServiceCatalogueTest (9), ServiceEligibilityTest (6), ClientRecordsTest (8), ClientContactProtectionTest (7); PermissionMatrixTest + 6 reconciled auth tests; RouteSecurityContract; TenantColumn/ModelTenancy coverage; OpenApiContract; vitest ServiceCatalogue/ClientList/ClientCreate; Playwright catalogue-clients (5)."
     proof_artifact: "docs/proof/phase-15a.md"
     owner: "Phase 15A"
-    completion_commit: "local_complete on branch phase-15a-services-catalogue-clients (pending PR/CI/merge)"
-    reviewer: "TBD (no PR until authorized)"
-    status: local_complete
+    completion_commit: "81a5866 (PR #24 squash merge to main; foundation 73c7d26, implementation 23aeed1, final PR head 1fcfa40)"
+    reviewer: "PR #24 MERGED into main (base main, merge commit 81a5866, 2026-06-28); CI run 28338582235 on head 1fcfa40 — five required checks (Backend — Pint/Larastan/Pest; Frontend — ESLint/vue-tsc/Vitest/build; Docker — build images; Security — gitleaks; E2E — Playwright) all SUCCESS; solo-maintainer governance exception (docs/governance/solo-maintainer-review-exception-pr-24.md), reviewDecision intentionally blank — NOT an independent approval."
+    status: verified_complete   # PR #24 merged (81a5866); CI run 28338582235 five checks SUCCESS; governance exception recorded. REM-PERM-001 stays open (Phase 19 owns full permission-matrix closure).

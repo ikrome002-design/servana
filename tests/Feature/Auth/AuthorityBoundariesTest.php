@@ -28,7 +28,7 @@ it('forbids Merchant Admin from configuring services, commissions, personnel ass
     expect($admin)->not->toContain('service.create')
         ->and($admin)->not->toContain('commissions.manage')
         ->and($admin)->not->toContain('staff.invite')
-        ->and($admin)->not->toContain('availability.manage')
+        ->and($admin)->not->toContain('personnel.availability.manage')
         ->and($admin)->not->toContain('payments.validate')
         ->and($admin)->not->toContain('payments.record');
 });
