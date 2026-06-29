@@ -5,8 +5,10 @@ declare(strict_types=1);
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
+use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Scheduling\Exceptions\SchedulingValidationException;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Domain\Scheduling\Services\PersonnelSchedulingValidator;
 use Carbon\CarbonImmutable;
@@ -25,7 +27,7 @@ uses(RefreshDatabase::class)->group('scheduling', 'scheduling-validator');
  * with an active branch assignment, and a recurring available window covering the
  * proposed interval.
  *
- * @return array{0: Merchant, 1: MerchantBranch, 2: Service, 3: \App\Domain\Hr\Models\StaffProfile, 4: CarbonImmutable, 5: CarbonImmutable}
+ * @return array{0: Merchant, 1: MerchantBranch, 2: Service, 3: StaffProfile, 4: CarbonImmutable, 5: CarbonImmutable}
  */
 function validScenario(): array
 {
@@ -88,7 +90,7 @@ it('fails with personnel_not_eligible when eligibility is inactive', function ()
 });
 
 it('fails with personnel_unavailable when the interval is outside availability', function (): void {
-    [$m, $b, $service, $staff, , ] = validScenario();
+    [$m, $b, $service, $staff] = validScenario();
     $date = CarbonImmutable::parse('2026-07-06', 'Africa/Nairobi');
 
     expect(schedulingValidator()->validate($m, $b, $service, $staff, $date->setTime(18, 0), $date->setTime(19, 0))->code)
@@ -148,7 +150,7 @@ it('throws the canonical envelope exception from ensure() on a denial', function
     $date = CarbonImmutable::parse('2026-07-06', 'Africa/Nairobi');
 
     schedulingValidator()->ensure($m, $b, $service, $staff, $date->setTime(18, 0), $date->setTime(19, 0));
-})->throws(App\Domain\Scheduling\Exceptions\SchedulingValidationException::class);
+})->throws(SchedulingValidationException::class);
 
 it('runs without any appointment, queue, or session record', function (): void {
     [$m, $b, $service, $staff, $start, $end] = validScenario();

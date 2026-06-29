@@ -178,7 +178,7 @@ onBeforeRouteLeave(() => {
 
 <template>
   <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-brand-deep">
+    <h1 class="font-display text-2xl font-bold text-brand-deep dark:text-text">
       Availability
     </h1>
     <p class="mt-1 text-sm text-text-muted">
@@ -270,7 +270,7 @@ onBeforeRouteLeave(() => {
               —
               <RouterLink
                 :to="{ name: 'hr.eligibility' }"
-                class="font-semibold text-brand-deep underline"
+                class="font-semibold text-brand-deep dark:text-text underline"
               >
                 Manage eligibility
               </RouterLink>
@@ -301,7 +301,7 @@ onBeforeRouteLeave(() => {
 
           <!-- Weekly recurring editor. -->
           <div class="flex flex-col gap-4">
-            <h2 class="font-display text-lg font-semibold text-brand-deep">
+            <h2 class="font-display text-lg font-semibold text-brand-deep dark:text-text">
               Weekly schedule
             </h2>
             <SvCard
@@ -406,7 +406,7 @@ onBeforeRouteLeave(() => {
           <!-- Date-specific exceptions. -->
           <div class="flex flex-col gap-3">
             <div class="flex items-center justify-between">
-              <h2 class="font-display text-lg font-semibold text-brand-deep">
+              <h2 class="font-display text-lg font-semibold text-brand-deep dark:text-text">
                 Date exceptions
               </h2>
               <SvButton

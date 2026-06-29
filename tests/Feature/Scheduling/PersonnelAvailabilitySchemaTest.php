@@ -6,6 +6,9 @@ use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
+use App\Domain\Tenancy\Concerns\BelongsToBranch;
+use App\Domain\Tenancy\Concerns\BelongsToMerchant;
+use App\Domain\Tenancy\TenantOwnership;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -61,15 +64,15 @@ it('applies the migration and registers it in the manifest', function (): void {
 });
 
 it('classifies the table as branch-owned with a composite consistency constraint', function (): void {
-    expect(App\Domain\Tenancy\TenantOwnership::BRANCH_OWNED)->toContain('personnel_availability')
-        ->and(App\Domain\Tenancy\TenantOwnership::COMPOSITE_CONSISTENCY)->toHaveKey('personnel_availability')
-        ->and(App\Domain\Tenancy\TenantOwnership::MODELS[PersonnelAvailability::class])->toBe('branch');
+    expect(TenantOwnership::BRANCH_OWNED)->toContain('personnel_availability')
+        ->and(TenantOwnership::COMPOSITE_CONSISTENCY)->toHaveKey('personnel_availability')
+        ->and(TenantOwnership::MODELS[PersonnelAvailability::class])->toBe('branch');
 });
 
 it('uses the BelongsToMerchant + BelongsToBranch traits', function (): void {
     $traits = class_uses(PersonnelAvailability::class);
-    expect($traits)->toContain(App\Domain\Tenancy\Concerns\BelongsToMerchant::class)
-        ->and($traits)->toContain(App\Domain\Tenancy\Concerns\BelongsToBranch::class);
+    expect($traits)->toContain(BelongsToMerchant::class)
+        ->and($traits)->toContain(BelongsToBranch::class);
 });
 
 it('has merchant-first and staff-schedule indexes', function (): void {

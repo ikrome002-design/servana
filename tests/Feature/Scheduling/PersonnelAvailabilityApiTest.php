@@ -6,8 +6,11 @@ use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
+use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Enums\MerchantUserRole;
+use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class)->group('scheduling', 'availability-api');
@@ -18,7 +21,7 @@ uses(RefreshDatabase::class)->group('scheduling', 'availability-api');
  | atomic replacement; redacted audit. Backend is the authorization boundary.
  */
 
-/** @return array{0: \App\Models\User, 1: \App\Domain\Merchants\Models\Merchant, 2: MerchantBranch, 3: \App\Domain\Hr\Models\StaffProfile} */
+/** @return array{0: User, 1: Merchant, 2: MerchantBranch, 3: StaffProfile} */
 function hrAndPersonnel(): array
 {
     [, $merchant] = activeAdmin();
