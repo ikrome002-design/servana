@@ -322,3 +322,29 @@ phases.
 None opened — the phase branch is pushed only; no PR until separately authorized.
 CI remains authoritative for the Linux browser and Docker results. Phase 16A stays
 **Not started**.
+
+## Solo-Maintainer Review Exception - PR #25
+
+An independent second reviewer was unavailable because the repository currently
+has one eligible maintainer. The product owner authorized a PR-specific
+governance exception instead of fabricating approval.
+
+Evidence:
+
+- PR: #25
+- original implementation commit:
+  93f2e728c2db6aa6e386ae1a0ebb1abd1cf68979
+- verified remediated PR head:
+  4b75eb4de9d26d3ea21993da5f132c6695fc25e4
+- successful pre-governance CI run:
+  28358888303
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record:
+  docs/governance/solo-maintainer-review-exception-pr-25.md
+
+This exception applies only to PR #25 and is not independent reviewer approval.
