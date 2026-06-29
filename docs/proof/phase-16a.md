@@ -380,3 +380,62 @@ personnel-busy projection are 16B/16C.
 `checked_in → in_service` and `service_sessions` (start/complete/cancel) extend
 the aggregate; preferred-personnel execution + fee workflow and the commission
 preview are 16C/20A. 16A persists the preferred-personnel ULID (no fee).
+
+## PR #26 Initial CI Remediation - Run 28372954922
+
+The initial PR #26 workflow tested implementation commit
+e62da205de0e452b82dcd91d21b6cf88ba60afdd.
+
+Evidence:
+
+- workflow run: 28372954922
+- failed job: E2E - Playwright
+- failed job ID: 84055148405
+- result: 157 passed, 3 failed
+- Backend: passed
+- Frontend: passed
+- Docker: passed
+- Security: passed
+
+Initial failed browser checks:
+
+1. Front Office checks a client in from the detail screen.
+2. Front Office keeps the status on an invalid transition.
+3. Front Office appointment detail is axe-clean in dark mode.
+
+Root causes:
+
+- The broad Playwright route mock for /api/v1/appointments also matched detail
+  and action requests. Because the most recently registered matching route took
+  precedence, it returned collection data for the detail request. The
+  appointment capability map was unavailable and the check-in action did not
+  render.
+- The appointment detail back link and heading used the non-adaptive
+  text-brand-deep token, causing dark-mode contrast failures.
+- After those corrections, focused verification exposed an additional genuine
+  contrast defect in the shared destructive button. White text on the
+  #f87171 error background produced a 2.76:1 contrast ratio instead of the
+  required 4.5:1 ratio.
+
+Corrections:
+
+- The broad appointments collection route now falls through for detail and
+  action endpoint paths.
+- The appointment detail back link and heading now use the adaptive
+  text-heading token.
+- The shared destructive button now uses bg-red-700 with white text and
+  bg-red-800 on hover.
+- Playwright timeout values were not increased.
+- Accessibility assertions were not weakened.
+- No browser test was skipped.
+
+Focused local verification after the complete remediation:
+
+- npm run e2e -- tests/e2e/appointments.spec.ts --workers=1: passed
+- npm run typecheck: passed
+- npm run lint: completed successfully
+- npm run build: passed
+
+Linux PR CI remains the authoritative final Playwright and Docker evidence.
+Governance evidence must not be created until all five required PR #26 checks
+pass on the remediation commit.

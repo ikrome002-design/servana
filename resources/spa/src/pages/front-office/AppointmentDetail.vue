@@ -116,7 +116,7 @@ onMounted(load);
   <section class="mx-auto w-full max-w-2xl p-4 md:p-6">
     <RouterLink
       :to="{ name: 'front-office.appointments' }"
-      class="text-sm font-semibold text-brand-deep underline"
+      class="text-sm font-semibold text-heading underline"
     >
       ← Back to appointments
     </RouterLink>
@@ -133,7 +133,7 @@ onMounted(load);
         padding="lg"
       >
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h1 class="font-display text-2xl font-bold text-brand-deep">
+          <h1 class="font-display text-2xl font-bold text-heading">
             {{ appointment.client?.full_name ?? 'Appointment' }}
           </h1>
           <span

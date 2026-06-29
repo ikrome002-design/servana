@@ -89,6 +89,10 @@ async function stubAppointments(page: Page, opts: { listStatus?: string; detailC
   await page.route('**/api/v1/appointments/ap1', (r) => r.fulfill(ok({ data: detail() })));
 
   await page.route('**/api/v1/appointments**', (r) => {
+    if (new URL(r.request().url()).pathname !== '/api/v1/appointments') {
+      return r.fallback();
+    }
+
     if (r.request().method() === 'POST') {
       return opts.createConflict
         ? r.fulfill(err(409, 'appointment_schedule_conflict', 'This personnel member already has an appointment during the requested time.'))
