@@ -24,6 +24,11 @@ export const personnelRoutes: RouteRecordRaw[] = [
         name: 'personnel.dashboard',
         component: () => import('@/pages/personnel/DashboardStub.vue'),
       },
+      {
+        path: 'appointments',
+        name: 'personnel.appointments',
+        component: () => import('@/pages/personnel/MyAppointments.vue'),
+      },
     ],
   },
 ];

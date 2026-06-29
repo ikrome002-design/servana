@@ -82,6 +82,7 @@ const finance: GetStartedItem[] = [
 
 const frontOffice: GetStartedItem[] = [
   { id: 'register-a-client', label: 'Register a client', routeName: 'front-office.clients.create', kind: 'action' },
+  { id: 'book-an-appointment', label: 'Book an appointment', routeName: 'front-office.appointments.create', kind: 'action' },
   { id: 'start-a-walk-in', label: 'Start a walk-in', phase: 'Phase 16B', kind: 'action' },
   { id: 'assign-personnel', label: 'Assign personnel', phase: 'Phase 16B', kind: 'action' },
   { id: 'create-an-invoice', label: 'Create an invoice', phase: 'Phase 17', kind: 'action' },

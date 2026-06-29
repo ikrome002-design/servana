@@ -91,7 +91,18 @@ final class PermissionRegistry
         'queue.configure' => ['branch', 'Configure the branch queue.', true],
         'queue.operate' => ['branch', 'Operate the queue (call/serve/skip).', true],
         'queue.transfer_entries' => ['branch', 'Transfer queue entries from unavailable personnel.', true],
-        'appointments.manage' => ['branch', 'Create and manage appointments.', true],
+        // Appointments (Plan §19.2/§19.3, §36; Phase 16A canonical keys — reconciled
+        // from the legacy Phase 8 `appointments.manage` baseline). Front Office owns
+        // appointment operations (branch scope); no-show is authorised via
+        // appointment.cancel (no separate key). Branch Manager gets NONE of these —
+        // read-only appointment visibility uses branch.dashboard.view.
+        'appointment.view' => ['scheduling', 'View appointments (branch-scoped).', false],
+        'appointment.create' => ['scheduling', 'Create appointments.', true],
+        'appointment.reschedule' => ['scheduling', 'Reschedule appointments.', true],
+        'appointment.cancel' => ['scheduling', 'Cancel appointments and mark no-shows.', true],
+        'appointment.check_in' => ['scheduling', 'Check in appointment clients.', true],
+        'appointment.assign' => ['scheduling', 'Assign personnel to appointments.', true],
+        'appointment.transfer' => ['scheduling', 'Transfer appointments between personnel.', true],
         'day.open_close' => ['branch', 'Open and close the branch business day.', true],
         'cashup.submit' => ['branch', 'Submit a branch cash-up.', true],
         // Staff.
@@ -112,6 +123,10 @@ final class PermissionRegistry
         'client.create' => ['clients', 'Create client records.', true],
         'client.update' => ['clients', 'Update client records.', true],
         'front_office.search' => ['front_office', 'Search clients (branch-scoped, masked).', false],
+        // Personnel own-scope appointment read (Plan §19.3, §36; Phase 16A). Personnel
+        // see ONLY appointments assigned to their own staff profile; no mutation, no
+        // branch-wide search, no contact export.
+        'personnel.my_appointments.view' => ['personnel', 'View own assigned appointments (own scope).', false],
         // Sessions & invoices.
         'sessions.manage' => ['operations', 'Manage service sessions.', true],
         'invoices.create' => ['finance', 'Create invoices.', true],
@@ -170,7 +185,7 @@ final class PermissionRegistry
             'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
             'service.view', 'service.create', 'service.update', 'service.archive',
             'queue.configure', 'queue.operate', 'queue.transfer_entries',
-            'appointments.manage', 'day.open_close', 'cashup.submit',
+            'day.open_close', 'cashup.submit',
             'sessions.manage', 'invoices.create', 'invoices.view',
             'receipts.view', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
@@ -189,12 +204,16 @@ final class PermissionRegistry
             'reports.view', 'audit.view_full',
         ],
         self::ROLE_FRONT_OFFICE => [
-            'queue.operate', 'appointments.manage',
+            'queue.operate',
+            'appointment.view', 'appointment.create', 'appointment.reschedule',
+            'appointment.cancel', 'appointment.check_in', 'appointment.assign',
+            'appointment.transfer',
             'client.view', 'client.create', 'client.update', 'front_office.search',
             'sessions.manage', 'invoices.create', 'invoices.view',
             'payments.record', 'receipts.view', 'reports.view',
         ],
         self::ROLE_PERSONNEL => [
+            'personnel.my_appointments.view',
             'invoices.view', 'receipts.view',
             'commissions.view', 'reports.view',
         ],

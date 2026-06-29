@@ -40,6 +40,11 @@ export const branchRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/branch/PersonnelSchedule.vue'),
       },
       {
+        path: 'appointments',
+        name: 'branch.appointments',
+        component: () => import('@/pages/branch/AppointmentsReadOnly.vue'),
+      },
+      {
         path: ':id',
         name: 'branch.detail',
         component: () => import('@/pages/branch/BranchDetail.vue'),

@@ -3,8 +3,12 @@
 declare(strict_types=1);
 
 use App\Domain\Auth\Models\MfaCredential;
+use App\Domain\Branches\Models\BranchOperatingHour;
 use App\Domain\Branches\Models\BranchUserAssignment;
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Catalogue\Models\Service;
+use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
+use App\Domain\Clients\Models\Client;
 use App\Domain\Files\Enums\FileLifecycleStatus;
 use App\Domain\Files\Enums\FilePurpose;
 use App\Domain\Files\Enums\FileScanStatus;
@@ -13,7 +17,9 @@ use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
@@ -145,6 +151,79 @@ function branchStaff(
     }
 
     return [$user, $membership, $profile];
+}
+
+/**
+ * A complete, valid Front-Office appointment scenario (Phase 16A): an active
+ * merchant + branch with operating hours covering the test interval, a Front
+ * Office actor (branch-assigned), an eligible + available Personnel member, an
+ * active 60-minute service, and a branch client. The default start is a future
+ * Monday 10:00 Africa/Nairobi (inside both branch hours and personnel
+ * availability), so create + assign succeed; individual tests tweak as needed.
+ *
+ * @return array{merchant: Merchant, branch: MerchantBranch, frontOffice: User, staff: StaffProfile, staffUser: User, service: Service, client: Client, start: CarbonImmutable, weekday: int}
+ */
+function appointmentScenario(): array
+{
+    $merchant = Merchant::factory()->active()->create();
+    $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
+
+    $date = CarbonImmutable::parse('2026-07-06', 'Africa/Nairobi'); // Monday
+    $weekday = $date->dayOfWeek;
+
+    BranchOperatingHour::query()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'weekday' => $weekday,
+        'opens_at' => '08:00:00',
+        'closes_at' => '18:00:00',
+        'is_closed' => false,
+    ]);
+
+    [$frontOffice] = branchStaff($merchant, $branch, MerchantUserRole::FrontOffice);
+    [$staffUser, , $staff] = branchStaff($merchant, $branch, MerchantUserRole::Personnel);
+
+    $service = Service::factory()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'duration_minutes' => 60,
+    ]);
+
+    ServicePersonnelEligibility::query()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'service_id' => $service->id,
+        'staff_profile_id' => $staff->id,
+        'active' => true,
+    ]);
+
+    PersonnelAvailability::query()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'staff_profile_id' => $staff->id,
+        'type' => 'recurring',
+        'weekday' => $weekday,
+        'start_time' => '09:00:00',
+        'end_time' => '17:00:00',
+        'available' => true,
+    ]);
+
+    $client = Client::factory()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+    ]);
+
+    return [
+        'merchant' => $merchant,
+        'branch' => $branch,
+        'frontOffice' => $frontOffice,
+        'staff' => $staff,
+        'staffUser' => $staffUser,
+        'service' => $service,
+        'client' => $client,
+        'start' => $date->setTime(10, 0),
+        'weekday' => $weekday,
+    ];
 }
 
 /**

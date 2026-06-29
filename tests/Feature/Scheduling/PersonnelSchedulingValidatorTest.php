@@ -9,6 +9,7 @@ use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Scheduling\Exceptions\SchedulingValidationException;
+use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Domain\Scheduling\Services\PersonnelSchedulingValidator;
 use Carbon\CarbonImmutable;
@@ -155,7 +156,8 @@ it('throws the canonical envelope exception from ensure() on a denial', function
 it('runs without any appointment, queue, or session record', function (): void {
     [$m, $b, $service, $staff, $start, $end] = validScenario();
 
-    // No scheduling aggregate exists yet — the validator is fully exercised anyway.
-    expect(class_exists('App\\Domain\\Scheduling\\Models\\Appointment'))->toBeFalse()
+    // The validator is fully exercised without persisting any scheduling aggregate
+    // (Phase 16A now owns the appointments table, but the gate never requires a row).
+    expect(Appointment::query()->count())->toBe(0)
         ->and(schedulingValidator()->validate($m, $b, $service, $staff, $start, $end)->allowed)->toBeTrue();
 });

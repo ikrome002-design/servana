@@ -25,6 +25,8 @@ use App\Http\Controllers\Api\V1\Merchant\MerchantDashboardController;
 use App\Http\Controllers\Api\V1\Onboarding\FirstTimeSetupController;
 use App\Http\Controllers\Api\V1\Onboarding\MerchantRegistrationController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
+use App\Http\Controllers\Api\V1\Scheduling\AppointmentController;
+use App\Http\Controllers\Api\V1\Scheduling\PersonnelAppointmentController;
 use App\Http\Controllers\Api\V1\Scheduling\StaffAvailabilityController;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureActivePrincipal;
@@ -333,6 +335,51 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 ->middleware([EnsureBranchScope::class, EnsurePermission::class.':client.update'])
                 ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                 ->name('clients.sms-consent.update');
+
+            // Appointments (Scope §, Plan §36; Phase 16A). Front Office owns all
+            // mutations (`appointment.*`, branch_mutation); Branch Manager has
+            // branch-scoped read-only visibility via `branch.dashboard.view`
+            // (authorized in the controller via AppointmentPolicy). The
+            // `{appointment}` binding resolves the ULID inside tenant + branch scope
+            // (foreign tenant 404; same-tenant out-of-branch follows BranchScope).
+            // No-show is authorized through `appointment.cancel` (no separate key).
+            // Walk-ins/queue/sessions are later phases (16B/16C) — not here.
+            Route::get('appointments', [AppointmentController::class, 'index'])->name('appointments.index');
+            Route::get('appointments/{appointment}', [AppointmentController::class, 'show'])->name('appointments.show');
+            Route::post('appointments', [AppointmentController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':appointment.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('appointments.store');
+            Route::post('appointments/{appointment}/assign', [AppointmentController::class, 'assign'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':appointment.assign'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('appointments.assign');
+            Route::post('appointments/{appointment}/transfer', [AppointmentController::class, 'transfer'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':appointment.transfer'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('appointments.transfer');
+            Route::post('appointments/{appointment}/reschedule', [AppointmentController::class, 'reschedule'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':appointment.reschedule'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('appointments.reschedule');
+            Route::post('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':appointment.cancel'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('appointments.cancel');
+            Route::post('appointments/{appointment}/check-in', [AppointmentController::class, 'checkIn'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':appointment.check_in'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('appointments.check-in');
+            Route::post('appointments/{appointment}/no-show', [AppointmentController::class, 'noShow'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':appointment.cancel'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('appointments.no-show');
+
+            // Personnel own-scope appointments (Plan §36, §19.3; Phase 16A). Read-only;
+            // the own-scope restriction (own staff profile) + permission
+            // (`personnel.my_appointments.view`) are enforced in the controller.
+            Route::get('personnel/me/appointments', [PersonnelAppointmentController::class, 'index'])
+                ->name('personnel.appointments.index');
 
             // Files & media (Plan §65; Phase 10F). Upload streams to private
             // quarantine then scans; downloads require auth + a valid temporary

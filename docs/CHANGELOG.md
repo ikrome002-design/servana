@@ -6,7 +6,63 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 15B — Personnel Availability and Eligibility Completion (`phase-15b-personnel-availability`) — local_complete
+### Phase 16A — Appointments (`phase-16a-appointments`) — local_complete
+
+Front Office appointment foundation on merged Phase 15B (`02f4dc5`, PR #25): the
+canonical `appointments` table, the Appointment state machine (Plan §25.2), Front
+Office appointment creation / assignment / transfer / rescheduling / cancellation
+/ check-in / no-show, PostgreSQL prevention of overlapping active appointments for
+the same personnel member, branch operating-hours + calendar-exception validation,
+mandatory reuse of the Phase 15B `PersonnelSchedulingValidator`, Branch Manager
+branch-scoped read-only visibility, and Personnel own-scope visibility (Plan §36,
+§25, §19, §13.7, §27; Corrections 16, 17, 22). No walk-in, queue, service-session,
+invoicing, payment, preferred-personnel fee, or notification subsystem is
+introduced (deferred to Phases 16B/16C/17/18/20/21N). See
+[docs/proof/phase-16a.md](proof/phase-16a.md).
+
+- **Schema:** `appointments` (id, ulid, merchant_id, branch_id, client_id,
+  service_id, preferred_personnel_staff_profile_id nullable,
+  assigned_personnel_staff_profile_id nullable, starts_at/ends_at timestamptz,
+  status, cancellation_reason, transfer_reason, checked_in_at, cancelled_at,
+  no_show_at, created_by, timestamps) — branch-owned, composite-FK
+  tenant/branch consistency to branch + client + service + both staff profiles;
+  CHECK constraints (status set, `starts_at < ends_at`, timestamp↔status
+  coherence); btree_gist EXCLUDE on assigned personnel + `tstzrange(starts_at,
+  ends_at,'[)')` over active statuses → deterministic 409
+  `appointment_schedule_conflict`; merchant-first/branch-date/client-date/
+  assigned-date/preferred-date/status indexes.
+- **State machine (Phase 16A):** states `scheduled, confirmed, checked_in,
+  rescheduled, cancelled, cancelled_with_reason, no_show`; transitions
+  `scheduled→confirmed|cancelled`, `confirmed→checked_in|rescheduled|cancelled|
+  no_show`, `checked_in→cancelled_with_reason`, `rescheduled→scheduled|confirmed`;
+  invalid transitions → 422 `invalid_state_transition`; `queued`/`in_service`
+  deferred to 16B/16C.
+- **Permissions:** legacy `appointments.manage` → canonical `appointment.view/
+  create/reschedule/cancel/check_in/assign/transfer` (Front Office defaults,
+  branch scope) + `personnel.my_appointments.view` (Personnel, own scope). Branch
+  Manager keeps read-only via existing `branch.dashboard.view` — **no
+  `appointment.*` on Branch Manager**. No-show authorised through
+  `appointment.cancel` (no new key). **REM-PERM-001 stays open** (Phase 19).
+- **Backend/API:** `/api/v1/appointments` index/store/show + assign/transfer/
+  reschedule/cancel/check-in/no-show, plus `/api/v1/personnel/me/appointments`
+  (own scope). Form Request → Policy → transactional action → Resource; mutations
+  `branch_mutation`; each mutation authorises, row-locks, validates state +
+  scheduling, writes atomically with exactly one typed audit event. Branch
+  operating-hours/calendar enforced by a single
+  `AppointmentBranchScheduleValidator`; eligibility/availability reuse
+  `PersonnelSchedulingValidator` (no duplication).
+- **Audit:** `appointment.created/assigned/transferred/rescheduled/cancelled/
+  checked_in/no_show` — safe context only (masked client, no full contact, no
+  blind index, no sequential id).
+- **Branch closure:** `BranchClosureGuard` now blocks branch archival on active
+  appointments; `CloseBranchDay` blocks on same-day active appointments (Plan
+  §25.2 day-close appointment guard flipped on).
+- **Frontend:** Front Office appointment list/create/detail (+ assign/transfer/
+  reschedule/cancel/check-in/no-show dialogs); Branch Manager read-only
+  appointments; Personnel own appointments; navigation `planned→live`;
+  get-started deep link; regenerated screen/navigation fixtures + OpenAPI/TS.
+
+### Phase 15B — Personnel Availability and Eligibility Completion (`phase-15b-personnel-availability`) — verified_complete (PR #25, squash merge `02f4dc5`)
 
 HR-controlled personnel availability (recurring + date-specific exception
 schedules: working days, split shifts, breaks, days off, temporary and emergency
