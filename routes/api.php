@@ -27,6 +27,9 @@ use App\Http\Controllers\Api\V1\Onboarding\MerchantRegistrationController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Controllers\Api\V1\Scheduling\AppointmentController;
 use App\Http\Controllers\Api\V1\Scheduling\PersonnelAppointmentController;
+use App\Http\Controllers\Api\V1\Scheduling\PersonnelQueueController;
+use App\Http\Controllers\Api\V1\Scheduling\QueueConfigurationController;
+use App\Http\Controllers\Api\V1\Scheduling\QueueController;
 use App\Http\Controllers\Api\V1\Scheduling\StaffAvailabilityController;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureActivePrincipal;
@@ -380,6 +383,74 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             // (`personnel.my_appointments.view`) are enforced in the controller.
             Route::get('personnel/me/appointments', [PersonnelAppointmentController::class, 'index'])
                 ->name('personnel.appointments.index');
+
+            // Walk-ins & queues (Scope §, Plan §37; Phase 16B). Front Office owns all
+            // operational queue work (`queue.view/create/assign/transfer/reorder`);
+            // the call/start/complete/cancel/no-show lifecycle is authorised through
+            // `queue.assign` (no separate keys). Branch Manager has branch-scoped
+            // read-only visibility via `branch.dashboard.view` and configures the
+            // queue (open/close, capacity, default mode) on the Branch Day via
+            // `branch.profile.manage` + `day.open_close` — never operating entries.
+            // Personnel see ONLY their own assigned queue (`personnel.my_queue.view`).
+            // The static reorder route is declared BEFORE the parameterized routes.
+            Route::get('queue/configuration', [QueueConfigurationController::class, 'show'])
+                ->name('queue.configuration.show');
+            Route::put('queue/configuration', [QueueConfigurationController::class, 'update'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':branch.profile.manage'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('queue.configuration.update');
+
+            Route::put('queue-entries/reorder', [QueueController::class, 'reorder'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.reorder'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('queue.reorder');
+
+            Route::get('queue-entries', [QueueController::class, 'index'])->name('queue.index');
+            Route::get('queue-entries/{queueEntry}', [QueueController::class, 'show'])->name('queue.show');
+
+            Route::post('walk-ins', [QueueController::class, 'storeWalkIn'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('walk-ins.store');
+            Route::post('appointments/{appointment}/queue', [QueueController::class, 'convertAppointment'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('appointments.queue.store');
+
+            Route::post('queue-entries/{queueEntry}/assign', [QueueController::class, 'assign'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('queue.assign');
+            Route::post('queue-entries/{queueEntry}/call', [QueueController::class, 'call'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('queue.call');
+            Route::post('queue-entries/{queueEntry}/start', [QueueController::class, 'start'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('queue.start');
+            Route::post('queue-entries/{queueEntry}/complete', [QueueController::class, 'complete'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('queue.complete');
+            Route::post('queue-entries/{queueEntry}/transfer', [QueueController::class, 'transfer'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.transfer'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('queue.transfer');
+            Route::post('queue-entries/{queueEntry}/cancel', [QueueController::class, 'cancel'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('queue.cancel');
+            Route::post('queue-entries/{queueEntry}/no-show', [QueueController::class, 'noShow'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('queue.no-show');
+
+            // Personnel own-scope queue (Plan §37, §19; Phase 16B). Read-only;
+            // own-scope (own staff profile) + `personnel.my_queue.view` enforced in
+            // the controller.
+            Route::get('personnel/me/queue', [PersonnelQueueController::class, 'index'])
+                ->name('personnel.queue.index');
 
             // Files & media (Plan §65; Phase 10F). Upload streams to private
             // quarantine then scans; downloads require auth + a valid temporary

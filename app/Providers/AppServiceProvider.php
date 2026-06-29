@@ -22,6 +22,7 @@ use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Scheduling\Models\Appointment;
+use App\Domain\Scheduling\Models\QueueEntry;
 use App\Domain\Tenancy\TenantContext;
 use App\Policies\AppointmentPolicy;
 use App\Policies\AuditLogPolicy;
@@ -31,6 +32,7 @@ use App\Policies\ClientPolicy;
 use App\Policies\MerchantBranchPolicy;
 use App\Policies\MerchantPolicy;
 use App\Policies\MerchantUserPolicy;
+use App\Policies\QueueEntryPolicy;
 use App\Policies\ServiceCategoryPolicy;
 use App\Policies\ServicePersonnelEligibilityPolicy;
 use App\Policies\ServicePolicy;
@@ -68,6 +70,8 @@ class AppServiceProvider extends ServiceProvider
         Client::class => ClientPolicy::class,
         // Phase 16A — appointments.
         Appointment::class => AppointmentPolicy::class,
+        // Phase 16B — walk-ins & queues.
+        QueueEntry::class => QueueEntryPolicy::class,
     ];
 
     public function register(): void

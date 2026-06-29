@@ -247,6 +247,95 @@ export interface PersonnelAppointment {
   client?: AppointmentClientSummary;
 }
 
+// --- Walk-ins & queues (Plan §37, §25.2; Phase 16B) --------------------------
+
+export type QueueEntryStatus =
+  | 'waiting'
+  | 'assigned'
+  | 'called'
+  | 'in_service'
+  | 'completed'
+  | 'transferred'
+  | 'cancelled'
+  | 'no_show';
+
+export type QueueAssignmentMode = 'next_available' | 'manual' | 'preferred_personnel';
+
+export interface QueueEstimate {
+  label: string;
+  minutes: number;
+  override_minutes: number | null;
+  override_reason: string | null;
+  effective_minutes: number;
+}
+
+/** Server-derived capability map (UX only; the API re-checks every mutation). */
+export interface QueueEntryCapabilities {
+  view: boolean;
+  assign: boolean;
+  call: boolean;
+  start: boolean;
+  complete: boolean;
+  transfer: boolean;
+  cancel: boolean;
+  no_show: boolean;
+}
+
+export interface QueueEntrySource {
+  type: 'walk_in' | 'appointment';
+  id: string;
+}
+
+/** Queue entry — client contact is ALWAYS masked (Plan §37; guardrail §6.4). */
+export interface QueueEntry {
+  id: string;
+  status: QueueEntryStatus;
+  position: number;
+  assignment_mode: QueueAssignmentMode;
+  source: QueueEntrySource | null;
+  queued_at: string;
+  assigned_at: string | null;
+  called_at: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  cancelled_at: string | null;
+  no_show_at: string | null;
+  transferred_at: string | null;
+  cancellation_reason: string | null;
+  transfer_reason: string | null;
+  preferred_personnel_override_reason: string | null;
+  estimated_wait: QueueEstimate;
+  service?: AppointmentServiceSummary;
+  client?: AppointmentClientSummary;
+  assigned_personnel?: AppointmentPersonnelSummary | null;
+  preferred_personnel?: AppointmentPersonnelSummary | null;
+  can?: QueueEntryCapabilities;
+}
+
+/** Personnel own-scope queue entry (minimal, read-only). */
+export interface PersonnelQueueEntry {
+  id: string;
+  status: QueueEntryStatus;
+  position: number;
+  queued_at: string;
+  estimated_wait: { label: string; effective_minutes: number };
+  is_preferred_request: boolean;
+  service?: AppointmentServiceSummary;
+  client?: { id: string; full_name: string; phone_masked: string };
+}
+
+/** Branch queue operational configuration (on the Branch Day aggregate). */
+export interface QueueConfiguration {
+  branch_day_id: string | null;
+  business_date: string;
+  day_status: string;
+  queue_is_open: boolean;
+  effective_queue_open: boolean;
+  queue_capacity: number | null;
+  queue_default_assignment_mode: 'next_available' | 'manual';
+  active_count: number;
+}
+
 export type SmsConsentState = 'opted_in' | 'opted_out';
 
 /** Client record — contact is ALWAYS masked (Plan §35; guardrail §6.4). */

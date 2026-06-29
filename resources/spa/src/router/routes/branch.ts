@@ -45,6 +45,16 @@ export const branchRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/branch/AppointmentsReadOnly.vue'),
       },
       {
+        path: 'queue',
+        name: 'branch.queue',
+        component: () => import('@/pages/branch/QueueReadOnly.vue'),
+      },
+      {
+        path: 'queue-configuration',
+        name: 'branch.queue-configuration',
+        component: () => import('@/pages/branch/QueueConfiguration.vue'),
+      },
+      {
         path: ':id',
         name: 'branch.detail',
         component: () => import('@/pages/branch/BranchDetail.vue'),

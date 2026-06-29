@@ -331,6 +331,18 @@ screens:
     status: implemented
     phase: Phase 16A
     spec: branch/branch-appointments.md
+  - key: branch-queue
+    domain: branch
+    route: branch.queue
+    status: implemented
+    phase: Phase 16B
+    spec: branch/branch-queue.md
+  - key: branch-queue-configuration
+    domain: branch
+    route: branch.queue-configuration
+    status: implemented
+    phase: Phase 16B
+    spec: branch/branch-queue-configuration.md
   - key: branch-calendar
     domain: branch
     route: ~
@@ -415,6 +427,24 @@ screens:
     status: implemented
     phase: Phase 16A
     spec: front-office/front-office-appointment-detail.md
+  - key: front-office-queue
+    domain: front-office
+    route: front-office.queue
+    status: implemented
+    phase: Phase 16B
+    spec: front-office/front-office-queue.md
+  - key: front-office-walk-in
+    domain: front-office
+    route: front-office.walk-in
+    status: implemented
+    phase: Phase 16B
+    spec: front-office/front-office-walk-in.md
+  - key: front-office-queue-detail
+    domain: front-office
+    route: front-office.queue.detail
+    status: implemented
+    phase: Phase 16B
+    spec: front-office/front-office-queue-detail.md
   - key: front-office-invoicing
     domain: front-office
     route: ~
@@ -427,11 +457,17 @@ screens:
     status: implemented
     phase: Phase 16A
     spec: personnel/personnel-appointments.md
-  - key: personnel-my-work
+  - key: personnel-queue
+    domain: personnel
+    route: personnel.queue
+    status: implemented
+    phase: Phase 16B
+    spec: personnel/personnel-queue.md
+  - key: personnel-sessions
     domain: personnel
     route: ~
     status: planned
-    phase: Phase 16B
+    phase: Phase 16C
     spec: ~
   - key: personnel-my-earnings
     domain: personnel

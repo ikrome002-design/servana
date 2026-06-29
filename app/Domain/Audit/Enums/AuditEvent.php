@@ -107,6 +107,27 @@ enum AuditEvent: string
     case AppointmentCheckedIn = 'appointment.checked_in';
     case AppointmentCancelled = 'appointment.cancelled';
     case AppointmentNoShow = 'appointment.no_show';
+    case AppointmentQueued = 'appointment.queued';
+
+    // --- Walk-ins & queues (Plan §37, §25.2; Phase 16B). Front Office operates the
+    // queue; one coherent typed event per action (walk-in creation and the queue
+    // entry it spawns are two first-class aggregates → two creation events). Branch
+    // Manager configures the queue. Context carries only safe ids (queue-entry/
+    // walk-in/appointment/client/service/personnel ULIDs), prev/new state, prev/new
+    // position, assignment mode, and a SANITISED reason — never full contact, blind
+    // index, tokens, headers, full bodies, or sequential ids.
+    case QueueConfigurationUpdated = 'queue.configuration.updated';
+    case WalkInCreated = 'walk_in.created';
+    case QueueEntryCreated = 'queue_entry.created';
+    case QueueEntryAssigned = 'queue_entry.assigned';
+    case QueueEntryCalled = 'queue_entry.called';
+    case QueueEntryStarted = 'queue_entry.started';
+    case QueueEntryCompleted = 'queue_entry.completed';
+    case QueueEntryTransferred = 'queue_entry.transferred';
+    case QueueEntryReordered = 'queue_entry.reordered';
+    case QueueEntryCancelled = 'queue_entry.cancelled';
+    case QueueEntryNoShow = 'queue_entry.no_show';
+    case QueueEntryWaitEstimateOverridden = 'queue_entry.wait_estimate_overridden';
 
     // --- Tenant/branch isolation (Plan §8.4) — name preserved from Phase 9.
     case UnauthorizedAccess = 'unauthorized_access';
@@ -151,6 +172,14 @@ enum AuditEvent: string
             self::AppointmentCreated,
             self::AppointmentAssigned,
             self::AppointmentCheckedIn,
+            self::AppointmentQueued,
+            self::WalkInCreated,
+            self::QueueEntryCreated,
+            self::QueueEntryAssigned,
+            self::QueueEntryCalled,
+            self::QueueEntryStarted,
+            self::QueueEntryCompleted,
+            self::QueueEntryWaitEstimateOverridden,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
@@ -168,6 +197,8 @@ enum AuditEvent: string
             self::PersonnelAvailabilityUpdated,
             self::AppointmentTransferred,
             self::AppointmentRescheduled,
+            self::QueueConfigurationUpdated,
+            self::QueueEntryReordered,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,
@@ -185,6 +216,9 @@ enum AuditEvent: string
             self::PersonnelAvailabilityEmergencyUnavailable,
             self::AppointmentCancelled,
             self::AppointmentNoShow,
+            self::QueueEntryTransferred,
+            self::QueueEntryCancelled,
+            self::QueueEntryNoShow,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,

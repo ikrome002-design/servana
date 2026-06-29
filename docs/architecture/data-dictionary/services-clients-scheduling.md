@@ -29,13 +29,26 @@ an uppercase ISO-4217 `char(3)` defaulting to `KES`.
 6. `…_create_personnel_availability_table` (15B) — branch-owned schedule rows.
 7. `…_create_appointments_table` (16A) — FKs to `clients`/`services`/
    `staff_profiles` (RESTRICT) + assigned-personnel `tstzrange` exclusion.
+8. `…_add_queue_fields_to_branch_day_records` (16B) — adds `queue_is_open`,
+   `queue_capacity`, `queue_default_assignment_mode` (queue operational config
+   anchored on the Branch Day aggregate; no separate `queue_configurations`
+   table).
+9. `…_add_queued_status_to_appointments` (16B) — forward-only expand of the
+   appointments status CHECK to add `queued` (drops + re-adds the CHECK; no row
+   loss; no existing state removed).
+10. `…_create_walk_ins_table` (16B) — branch-owned; FKs to `clients`/`services`/
+    `staff_profiles` (RESTRICT); `UNIQUE (id, merchant_id)` composite-FK target.
+11. `…_create_queue_entries_table` (16B) — branch-owned; FKs to
+    `walk_ins`/`appointments`/`clients`/`services`/`staff_profiles` (RESTRICT);
+    one-entry-per-source uniqueness; partial-unique active position per branch.
 
 Each migration: `Schema::create` → CHECK constraints + partial/unique indexes +
 composite-FK consistency constraint via raw `DB::statement` (mirrors the
 established branch-table pattern). Composite-FK targets require `services`,
-`service_categories` and `clients` to carry `UNIQUE (id, merchant_id)` so their
-own children can reference them; each table adds that pair in its own migration.
-Down migrations `dropIfExists` in reverse dependency order.
+`service_categories`, `clients`, `appointments` and `walk_ins` to carry
+`UNIQUE (id, merchant_id)` so their own children can reference them; each table
+adds that pair in its own migration. Down migrations `dropIfExists` /
+re-narrow the CHECK in reverse dependency order.
 
 ---
 
@@ -558,10 +571,129 @@ invoices, payments, or preferred-personnel fees — those are later aggregates.
 
 ---
 
-## Deferred (later phases — NOT created in 16A)
+## `branch_day_records` Phase 16B additions — branch-owned
 
-`walk_ins`/`queue_entries` (16B), `service_sessions` (16C). Listed in §13.7; each
-carries its own data-dictionary entry in its owning phase. Phase 16A must not
-create them, nor any walk-in/queue/session workflow, `queued`/`in_service`
-appointment state, queue/session/invoice/payment/receipt branch-closure blocker,
-preferred-personnel **fee** calculation, or outbound appointment notification.
+The Branch Day aggregate (`branch_day_records`, Plan §7.2) is the queue
+operational-config anchor — Phase 16B adds **no** `queue_configurations` table
+(§80 names only `walk_ins` + `queue_entries`). Three forward-only columns:
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `queue_is_open` | boolean | no | `false` | meaningful only while `status = open`; a paused/closed/not-opened day makes the **effective queue closed** regardless of this flag |
+| `queue_capacity` | int | yes | `null` | max concurrent active (waiting+assigned+called+in_service+transferred) entries; `CHECK (queue_capacity IS NULL OR queue_capacity > 0)`; `null` = no explicit cap |
+| `queue_default_assignment_mode` | varchar(24) | no | `'next_available'` | `CHECK IN ('next_available','manual')`; default mode the walk-in/board uses; **`preferred_personnel` is a per-client request, never a branch default** |
+
+- **Effective-queue rule.** `effective_queue_open(branch_day) = (status = open) AND queue_is_open`. Walk-in creation and appointment conversion fail safe when the branch lifecycle is not active (`branch_archived`/inactive), the Branch Day is not `open` (`branch_day_not_open`), the effective queue is closed (`queue_closed`), or `queue_capacity` is reached (`queue_capacity_reached`).
+- **Ownership.** Branch Manager configures via `branch.profile.manage` + `day.open_close` (queue config route); Front Office never changes config. Every change audited (`queue.configuration.updated`). Reducing capacity below the current active count → `422 capacity_below_active`. Closing the queue blocks new entries but never deletes/cancels existing ones.
+- **Migration.** `…_add_queue_fields_to_branch_day_records` (expand only; no shipped migration edited).
+
+---
+
+## `walk_ins` (16B) — branch-owned
+
+A walk-in client presenting without an appointment (Plan §13.7, §37). Creating a
+walk-in atomically creates/attaches a branch-scoped client, references an active
+service, records the assignment intent, and (in the same transaction) spawns
+exactly one `queue_entries` row. Historical walk-ins are retained (no hard-delete
+API).
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint PK identity | no | — | internal key (never exposed) |
+| `ulid` | char(26) | no | — | external id; `UNIQUE`; route key |
+| `merchant_id` | bigint FK→merchants | no | — | tenant owner; `ON DELETE CASCADE` |
+| `branch_id` | bigint FK→merchant_branches | no | — | branch owner; `ON DELETE CASCADE` |
+| `client_id` | bigint FK→clients | yes | `null` | nullable in schema, but no **active** queue entry exists without a valid branch-scoped client; `ON DELETE RESTRICT` |
+| `service_id` | bigint FK→services | no | — | selected active service; `ON DELETE RESTRICT` |
+| `assignment_mode` | varchar(24) | no | `'next_available'` | `CHECK IN ('next_available','manual','preferred_personnel')` |
+| `preferred_personnel_staff_profile_id` | bigint FK→staff_profiles | yes | `null` | required only when `assignment_mode = preferred_personnel`; `ON DELETE RESTRICT` |
+| `created_by` | bigint FK→users | yes | `null` | Front Office actor; `ON DELETE SET NULL` |
+| `created_at` / `updated_at` | timestamptz | no | — | Eloquent timestamps |
+
+- **Constraints/indexes:** `UNIQUE (ulid)`; `UNIQUE (id, merchant_id)` (composite-FK target for `queue_entries.walk_in_id`); `CHECK` on assignment mode; `CHECK (assignment_mode <> 'preferred_personnel' OR preferred_personnel_staff_profile_id IS NOT NULL)`; index `(merchant_id, branch_id)`, `(branch_id, created_at)`; composite FKs `(branch_id, merchant_id)→merchant_branches` CASCADE, `(client_id, merchant_id)→clients` RESTRICT, `(service_id, merchant_id)→services` RESTRICT, `(preferred_personnel_staff_profile_id, merchant_id)→staff_profiles` RESTRICT.
+- **Client creation reuse.** The request supplies an existing branch-client ULID **or** the complete fields for the Phase 15A client-creation action — Phase 16B does **not** duplicate client creation, contact encryption, blind-index generation, duplicate-phone detection, or masking; it calls the existing 15A action. On any failure the transaction leaves zero new client/walk-in/queue rows and zero success audit events.
+- **Audit.** `walk_in.created` (+ the linked `queue_entry.created`). No preferred-personnel **fee** is recorded/charged/displayed (Phase 20A fee rule; Phase 17 invoice snapshot).
+- **Factory:** `WalkInFactory`. **Tests:** schema/CHECK; cross-tenant/cross-branch client/service/personnel rejection; atomic create with existing + new client; rollback leaves zero rows; body-supplied scope ignored.
+
+---
+
+## `queue_entries` (16B) — branch-owned
+
+The operational queue position for a branch (Plan §13.7, §25.2, §37). Originates
+from **exactly one** source: a walk-in (`walk_in_id`) or a checked-in appointment
+(`appointment_id`). Carries the full Queue Entry lifecycle (see
+`docs/architecture/state-machines/queue-entry.md`). Terminal records are retained
+(no hard-delete API).
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint PK identity | no | — | internal key (never exposed) |
+| `ulid` | char(26) | no | — | external id; `UNIQUE`; route key |
+| `merchant_id` | bigint FK→merchants | no | — | tenant owner; `ON DELETE CASCADE` |
+| `branch_id` | bigint FK→merchant_branches | no | — | branch owner; `ON DELETE CASCADE` |
+| `walk_in_id` | bigint FK→walk_ins | yes | `null` | source (XOR appointment_id); `UNIQUE`; `ON DELETE RESTRICT` |
+| `appointment_id` | bigint FK→appointments | yes | `null` | source (XOR walk_in_id); `UNIQUE`; `ON DELETE RESTRICT` |
+| `client_id` | bigint FK→clients | no | — | `ON DELETE RESTRICT` |
+| `service_id` | bigint FK→services | no | — | `ON DELETE RESTRICT` |
+| `staff_profile_id` | bigint FK→staff_profiles | yes | `null` | assigned personnel; `ON DELETE RESTRICT` |
+| `preferred_personnel_staff_profile_id` | bigint FK→staff_profiles | yes | `null` | per-client preferred request; `ON DELETE RESTRICT` |
+| `assignment_mode` | varchar(24) | no | `'next_available'` | `CHECK IN ('next_available','manual','preferred_personnel')` |
+| `status` | varchar(24) | no | `'waiting'` | `CHECK IN ('waiting','assigned','called','in_service','completed','transferred','cancelled','no_show')` |
+| `position` | int | no | — | `CHECK (position > 0)`; unique among active-ordered (`waiting/assigned/called`) entries per branch |
+| `queued_at` | timestamptz | no | — | enqueue instant |
+| `assigned_at` | timestamptz | yes | `null` | required when an assignment is established |
+| `called_at` | timestamptz | yes | `null` | required for called/in_service/completed |
+| `started_at` | timestamptz | yes | `null` | required for in_service/completed |
+| `completed_at` | timestamptz | yes | `null` | required only for completed |
+| `cancelled_at` | timestamptz | yes | `null` | required for cancelled |
+| `no_show_at` | timestamptz | yes | `null` | required for no_show |
+| `transferred_at` | timestamptz | yes | `null` | last transfer instant |
+| `transferred_from_staff_profile_id` | bigint FK→staff_profiles | yes | `null` | transfer source; `ON DELETE RESTRICT` |
+| `transferred_to_staff_profile_id` | bigint FK→staff_profiles | yes | `null` | transfer target; `ON DELETE RESTRICT` |
+| `transfer_reason` | text | yes | `null` | required when a transfer occurs |
+| `cancellation_reason` | text | yes | `null` | required for cancelled |
+| `preferred_personnel_override_reason` | text | yes | `null` | required when a preferred request is assigned to another person |
+| `estimated_wait_minutes` | int | no | `0` | CALCULATED snapshot (labelled "Estimate") |
+| `estimated_wait_override_minutes` | int | yes | `null` | manual override; appears only with a reason |
+| `estimated_wait_override_reason` | text | yes | `null` | required with override |
+| `estimated_wait_overridden_by` | bigint FK→users | yes | `null` | override actor; `ON DELETE SET NULL` |
+| `created_by` | bigint FK→users | yes | `null` | Front Office actor; `ON DELETE SET NULL` |
+| `created_at` / `updated_at` | timestamptz | no | — | Eloquent timestamps |
+
+- **Status/timestamp coherence (CHECK):** `assigned_at` not null when status ∈ {assigned,called,in_service,completed} (an assignment was established); `called_at` not null for {called,in_service,completed}; `started_at` not null for {in_service,completed}; `completed_at` not null **iff** completed; `cancelled_at` not null **iff** cancelled; `no_show_at` not null **iff** no_show; `cancellation_reason` not null for cancelled; `transfer_reason`+`transferred_from`/`transferred_to` present when `transferred_at` not null; `estimated_wait_override_minutes` not null **iff** `estimated_wait_override_reason` not null.
+- **Source XOR (CHECK):** `(walk_in_id IS NOT NULL) <> (appointment_id IS NOT NULL)` — exactly one source.
+- **One-entry-per-source:** `UNIQUE (walk_in_id)` and `UNIQUE (appointment_id)` guarantee a walk-in/appointment converts at most once (repeated conversion → deterministic `409 queue_conversion_exists`).
+- **Position integrity:** **partial unique** index on `(branch_id, position) WHERE status IN ('waiting','assigned','called')` — active-ordered positions are unique per branch; positions stay positive and the `waiting` set stays contiguous after every mutation. All position-changing operations take one `pg_advisory_xact_lock(merchant_id, branch_id)` (single mechanism) so concurrent creates/reorders cannot duplicate a position.
+- **Indexes:** `(merchant_id, branch_id)`, `(branch_id, status, position)`, `(branch_id, queued_at)`, `(client_id, queued_at)`, `(service_id, status)`, `(staff_profile_id, status, position)`, `(appointment_id)`, `(walk_in_id)`; `UNIQUE (ulid)`; `UNIQUE (id, merchant_id)`.
+- **Composite FKs (same-merchant linkage):** `(branch_id, merchant_id)→merchant_branches` CASCADE; `(walk_in_id, merchant_id)→walk_ins` RESTRICT; `(appointment_id, merchant_id)→appointments` RESTRICT; `(client_id, merchant_id)→clients` RESTRICT; `(service_id, merchant_id)→services` RESTRICT; each of the four staff-profile columns `(…, merchant_id)→staff_profiles` RESTRICT. Same-branch consistency asserted by the actions + assignment validator.
+- **Assignment modes:** `next_available` (deterministic `NextAvailablePersonnelSelector`), `manual` (explicit target), `preferred_personnel` (needs `preferred_personnel.select`). Preferred personnel must still be active, branch-assigned, service-eligible, availability-valid; a preferred request may stay `waiting` if the preferred person is unavailable; overriding to another person requires a reason and is audited.
+- **Queue position semantics:** new active entries take `max(active position)+1`; cancellation/no-show/completion release the position and compact the `waiting` sequence; reorder reassigns `1..N` for the complete submitted waiting order (stale snapshot → `409 queue_order_changed`).
+- **Estimated wait (deterministic):** `queued_work_minutes = Σ service durations of active entries ahead of the target`; `active_capacity = max(1, count of active eligible+available personnel)`; `estimated_wait_minutes = ceil(queued_work_minutes / active_capacity)`; for an `in_service` entry with a known `started_at`, add `max(service_duration − elapsed_minutes, 0)`. Zero eligible personnel → a safe "unavailable" estimate (no division by zero). Labelled **Estimate**; a manual override never overwrites the calculated value (both retained). Recalculated after every create/convert/assign/transfer/reorder/call/start/complete/cancel/no-show/config change.
+- **Route binding:** ULID inside tenant+branch scope; foreign id → 404; same-tenant wrong branch → 403 (established posture).
+- **Audit:** `queue_entry.created/assigned/called/started/completed/transferred/reordered/cancelled/no_show/wait_estimate_overridden`, `walk_in.created`, `appointment.queued`, `queue.configuration.updated` — safe context only (merchant, branch, queue-entry ULID, source ULID, client/service ULID, actor, prev/new state, prev/new position, prev/new personnel ULIDs, assignment mode, sanitised reason, timestamp). Never full phone/email, blind index, tokens, session ids, headers, full bodies, or sequential ids. Failed transactions write no success event.
+- **Masking:** Resources expose client ULID + name + approved masked contact summary only; Personnel own-scope exposes the minimum to perform assigned work; **no contact export anywhere** (guardrail §6.8).
+- **Factory:** `QueueEntryFactory` (per-state; walk-in + appointment origin). **Tests:** schema/CHECK/partial-unique; source XOR; one-per-source; cross-tenant/cross-branch rejection; full state-machine provider; position/concurrency (PostgreSQL); capacity; assignment (next-available determinism, manual, preferred); estimate; authz/role-boundary/own-scope; branch-closure; audit/redaction; isolation.
+- **Phase 16C handoff:** `called → in_service` will create/start exactly one `service_sessions` row; `in_service → completed` will complete it. Phase 16B creates **no** service session, invoice, payment, receipt, commission preview, or invoice trigger, and no placeholder `service_sessions` table.
+
+---
+
+## `appointments` Phase 16B addition — `queued` status
+
+Forward-only expand (`…_add_queued_status_to_appointments`): the appointments
+status CHECK gains `queued` (no existing state removed). `checked_in → queued` is
+the only new appointment transition (see the appointment state machine). A queued
+appointment spawns exactly one `queue_entries` row (`appointment_id` set) in one
+transaction; repeated conversion is rejected by `UNIQUE (queue_entries.appointment_id)`.
+`queued` is non-reserving — the personnel double-booking exclusion `WHERE` clause
+(`scheduled|confirmed|checked_in`) is unchanged, so a queued appointment no longer
+reserves the interval.
+
+---
+
+## Deferred (later phases — NOT created in 16B)
+
+`service_sessions` (16C). Listed in §13.7; carries its own data-dictionary entry
+in its owning phase. Phase 16B must not create it, nor any service-session/
+queue-session coupling, duplicate-active-session protection, commission preview,
+preferred-personnel **fee** calculation, invoice/payment/receipt behaviour, report
+materialized view, notification delivery, or cross-domain search.

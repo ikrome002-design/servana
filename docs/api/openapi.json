@@ -76,7 +76,8 @@
                                 "rescheduled",
                                 "cancelled",
                                 "cancelled_with_reason",
-                                "no_show"
+                                "no_show",
+                                "queued"
                             ]
                         }
                     },
@@ -695,6 +696,81 @@
                 ]
             }
         },
+        "/api/v1/appointments/{appointment}/queue": {
+            "post": {
+                "operationId": "appointments.queue.store",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "appointment",
+                        "in": "path",
+                        "required": true,
+                        "description": "The appointment ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConvertAppointmentToQueueRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/appointments/{appointment}/reschedule": {
             "post": {
                 "operationId": "appointments.reschedule",
@@ -916,6 +992,19 @@
                                 "appointment.checked_in",
                                 "appointment.cancelled",
                                 "appointment.no_show",
+                                "appointment.queued",
+                                "queue.configuration.updated",
+                                "walk_in.created",
+                                "queue_entry.created",
+                                "queue_entry.assigned",
+                                "queue_entry.called",
+                                "queue_entry.started",
+                                "queue_entry.completed",
+                                "queue_entry.transferred",
+                                "queue_entry.reordered",
+                                "queue_entry.cancelled",
+                                "queue_entry.no_show",
+                                "queue_entry.wait_estimate_overridden",
                                 "unauthorized_access",
                                 "file.upload_accepted",
                                 "file.upload_rejected",
@@ -4303,7 +4392,8 @@
                                 "rescheduled",
                                 "cancelled",
                                 "cancelled_with_reason",
-                                "no_show"
+                                "no_show",
+                                "queued"
                             ]
                         }
                     }
@@ -4320,6 +4410,244 @@
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/PersonnelAppointmentResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/queue": {
+            "get": {
+                "operationId": "personnel.queue.index",
+                "tags": [
+                    "PersonnelQueue"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "position",
+                                "-position",
+                                "queued_at",
+                                "-queued_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "active",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "waiting",
+                                "assigned",
+                                "called",
+                                "in_service",
+                                "completed",
+                                "transferred",
+                                "cancelled",
+                                "no_show"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PersonnelQueueResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PersonnelQueueResource"
                                             }
                                         },
                                         "links": {
@@ -4561,6 +4889,19 @@
                                 "appointment.checked_in",
                                 "appointment.cancelled",
                                 "appointment.no_show",
+                                "appointment.queued",
+                                "queue.configuration.updated",
+                                "walk_in.created",
+                                "queue_entry.created",
+                                "queue_entry.assigned",
+                                "queue_entry.called",
+                                "queue_entry.started",
+                                "queue_entry.completed",
+                                "queue_entry.transferred",
+                                "queue_entry.reordered",
+                                "queue_entry.cancelled",
+                                "queue_entry.no_show",
+                                "queue_entry.wait_estimate_overridden",
                                 "unauthorized_access",
                                 "file.upload_accepted",
                                 "file.upload_rejected",
@@ -4876,6 +5217,1172 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries": {
+            "get": {
+                "operationId": "queue.index",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "position",
+                                "-position",
+                                "queued_at",
+                                "-queued_at",
+                                "created_at",
+                                "-created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "active",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "waiting",
+                                "assigned",
+                                "called",
+                                "in_service",
+                                "completed",
+                                "transferred",
+                                "cancelled",
+                                "no_show"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "assignment_mode",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "next_available",
+                                "manual",
+                                "preferred_personnel"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "service",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "assigned_personnel",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "position",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "queued_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "queued_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/QueueEntryResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries/reorder": {
+            "put": {
+                "operationId": "queue.reorder",
+                "tags": [
+                    "Queue"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReorderQueueEntriesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Array of `QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/QueueEntryResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries/{queueEntry}": {
+            "get": {
+                "operationId": "queue.show",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "queueEntry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The queue entry ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries/{queueEntry}/assign": {
+            "post": {
+                "operationId": "queue.assign",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "queueEntry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The queue entry ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssignQueueEntryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries/{queueEntry}/call": {
+            "post": {
+                "operationId": "queue.call",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "queueEntry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The queue entry ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries/{queueEntry}/cancel": {
+            "post": {
+                "operationId": "queue.cancel",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "queueEntry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The queue entry ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CancelQueueEntryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries/{queueEntry}/complete": {
+            "post": {
+                "operationId": "queue.complete",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "queueEntry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The queue entry ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries/{queueEntry}/no-show": {
+            "post": {
+                "operationId": "queue.no-show",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "queueEntry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The queue entry ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries/{queueEntry}/start": {
+            "post": {
+                "operationId": "queue.start",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "queueEntry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The queue entry ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue-entries/{queueEntry}/transfer": {
+            "post": {
+                "operationId": "queue.transfer",
+                "tags": [
+                    "Queue"
+                ],
+                "parameters": [
+                    {
+                        "name": "queueEntry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The queue entry ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferQueueEntryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/queue/configuration": {
+            "get": {
+                "operationId": "queue.configuration.show",
+                "tags": [
+                    "QueueConfiguration"
+                ],
+                "parameters": [
+                    {
+                        "name": "branch_id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "queue_is_open",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "queue_capacity",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1,
+                            "maximum": 1000
+                        }
+                    },
+                    {
+                        "name": "queue_default_assignment_mode",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "next_available",
+                                "manual"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`QueueConfigurationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/QueueConfigurationResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "branch_day_id": {
+                                                            "type": "null"
+                                                        },
+                                                        "business_date": {
+                                                            "type": "string"
+                                                        },
+                                                        "day_status": {
+                                                            "type": "string",
+                                                            "const": "not_opened"
+                                                        },
+                                                        "queue_is_open": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "effective_queue_open": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "queue_capacity": {
+                                                            "type": "null"
+                                                        },
+                                                        "queue_default_assignment_mode": {
+                                                            "type": "string"
+                                                        },
+                                                        "active_count": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "branch_day_id",
+                                                        "business_date",
+                                                        "day_status",
+                                                        "queue_is_open",
+                                                        "effective_queue_open",
+                                                        "queue_capacity",
+                                                        "queue_default_assignment_mode",
+                                                        "active_count"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "put": {
+                "operationId": "queue.configuration.update",
+                "tags": [
+                    "QueueConfiguration"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateQueueConfigurationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`QueueConfigurationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueConfigurationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "429": {
                         "description": "Rate limited",
@@ -7539,6 +9046,68 @@
                 ]
             }
         },
+        "/api/v1/walk-ins": {
+            "post": {
+                "operationId": "walk-ins.store",
+                "tags": [
+                    "Queue"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreWalkInRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`QueueEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QueueEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/health": {
             "get": {
                 "operationId": "health",
@@ -7898,6 +9467,47 @@
                 ],
                 "title": "AssignAppointmentRequest"
             },
+            "AssignQueueEntryRequest": {
+                "type": "object",
+                "description": "Queue-entry assignment validation (Plan §37; Phase 16B). The assignment mode\nselects next_available (selector), manual (explicit target ULID), or\npreferred_personnel (preferred ULID). Overriding a recorded preferred request to\na different person requires `reason` (enforced in the action; revalidation runs\nvia the shared scheduling services).",
+                "properties": {
+                    "assignment_mode": {
+                        "type": "string",
+                        "enum": [
+                            "next_available",
+                            "manual",
+                            "preferred_personnel"
+                        ]
+                    },
+                    "personnel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "preferred_personnel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "assignment_mode"
+                ],
+                "title": "AssignQueueEntryRequest"
+            },
             "AuditLogResource": {
                 "type": "object",
                 "properties": {
@@ -8196,6 +9806,21 @@
                 },
                 "title": "CancelAppointmentRequest"
             },
+            "CancelQueueEntryRequest": {
+                "type": "object",
+                "description": "Queue-entry cancellation validation (Plan §37; Phase 16B). A non-empty reason is\nrequired (distinct from a no-show, which carries none).",
+                "properties": {
+                    "reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "reason"
+                ],
+                "title": "CancelQueueEntryRequest"
+            },
             "ChangeConsentRequest": {
                 "type": "object",
                 "description": "SMS-consent change validation (Plan §35). Channel is implicitly `sms` (the only\nchannel in Phase 15A); only the state is supplied.",
@@ -8419,6 +10044,40 @@
                     "branch"
                 ],
                 "title": "CompleteFirstTimeSetupRequest"
+            },
+            "ConvertAppointmentToQueueRequest": {
+                "type": "object",
+                "description": "Appointment-to-queue conversion validation (Plan §25.2, §37; Phase 16B). The\nassignment mode defaults to next_available; manual requires a target ULID and\npreferred_personnel a preferred ULID. The appointment is resolved by its ULID\nroute binding (tenant + branch scope); merchant/branch/status/position are derived\nserver-side.",
+                "properties": {
+                    "assignment_mode": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "next_available",
+                            "manual",
+                            "preferred_personnel"
+                        ]
+                    },
+                    "personnel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "preferred_personnel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    }
+                },
+                "title": "ConvertAppointmentToQueueRequest"
             },
             "CreateBranchRequest": {
                 "type": "object",
@@ -8786,6 +10445,403 @@
                 ],
                 "title": "PersonnelAvailabilityScheduleResource"
             },
+            "PersonnelQueueResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "queued_at": {
+                        "type": "string"
+                    },
+                    "estimated_wait": {
+                        "type": "object",
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "const": "Estimate"
+                            },
+                            "effective_minutes": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "label",
+                            "effective_minutes"
+                        ]
+                    },
+                    "is_preferred_request": {
+                        "type": "string"
+                    },
+                    "service": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "duration_minutes": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "duration_minutes"
+                        ]
+                    },
+                    "client": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "full_name": {
+                                "type": "string"
+                            },
+                            "phone_masked": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "full_name",
+                            "phone_masked"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "position",
+                    "queued_at",
+                    "estimated_wait",
+                    "is_preferred_request"
+                ],
+                "title": "PersonnelQueueResource"
+            },
+            "QueueConfigurationResource": {
+                "type": "object",
+                "properties": {
+                    "branch_day_id": {
+                        "type": "string"
+                    },
+                    "business_date": {
+                        "type": "string"
+                    },
+                    "day_status": {
+                        "type": "string"
+                    },
+                    "queue_is_open": {
+                        "type": "boolean"
+                    },
+                    "effective_queue_open": {
+                        "type": "boolean"
+                    },
+                    "queue_capacity": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "queue_default_assignment_mode": {
+                        "type": "string"
+                    },
+                    "active_count": {
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                },
+                "required": [
+                    "branch_day_id",
+                    "business_date",
+                    "day_status",
+                    "queue_is_open",
+                    "effective_queue_open",
+                    "queue_capacity",
+                    "queue_default_assignment_mode",
+                    "active_count"
+                ],
+                "title": "QueueConfigurationResource"
+            },
+            "QueueEntryResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "assignment_mode": {
+                        "type": "string"
+                    },
+                    "source": {
+                        "anyOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "const": "appointment"
+                                    },
+                                    "id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "type",
+                                    "id"
+                                ]
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "const": "walk_in"
+                                    },
+                                    "id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "type",
+                                    "id"
+                                ]
+                            }
+                        ]
+                    },
+                    "queued_at": {
+                        "type": "string"
+                    },
+                    "assigned_at": {
+                        "type": "string"
+                    },
+                    "called_at": {
+                        "type": "string"
+                    },
+                    "started_at": {
+                        "type": "string"
+                    },
+                    "completed_at": {
+                        "type": "string"
+                    },
+                    "cancelled_at": {
+                        "type": "string"
+                    },
+                    "no_show_at": {
+                        "type": "string"
+                    },
+                    "transferred_at": {
+                        "type": "string"
+                    },
+                    "cancellation_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "transfer_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "preferred_personnel_override_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "estimated_wait": {
+                        "type": "object",
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "const": "Estimate"
+                            },
+                            "minutes": {
+                                "type": "integer"
+                            },
+                            "override_minutes": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ]
+                            },
+                            "override_reason": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "effective_minutes": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "label",
+                            "minutes",
+                            "override_minutes",
+                            "override_reason",
+                            "effective_minutes"
+                        ]
+                    },
+                    "service": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "duration_minutes": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "duration_minutes"
+                        ]
+                    },
+                    "client": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "full_name": {
+                                "type": "string"
+                            },
+                            "phone_masked": {
+                                "type": "string"
+                            },
+                            "phone_last_four": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "full_name",
+                            "phone_masked",
+                            "phone_last_four"
+                        ]
+                    },
+                    "assigned_personnel": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "display_name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "display_name"
+                        ]
+                    },
+                    "preferred_personnel": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "display_name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "display_name"
+                        ]
+                    },
+                    "can": {
+                        "type": "object",
+                        "properties": {
+                            "view": {
+                                "type": "string"
+                            },
+                            "assign": {
+                                "type": "string"
+                            },
+                            "call": {
+                                "type": "string"
+                            },
+                            "start": {
+                                "type": "string"
+                            },
+                            "complete": {
+                                "type": "string"
+                            },
+                            "transfer": {
+                                "type": "string"
+                            },
+                            "cancel": {
+                                "type": "string"
+                            },
+                            "no_show": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "view",
+                            "assign",
+                            "call",
+                            "start",
+                            "complete",
+                            "transfer",
+                            "cancel",
+                            "no_show"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "position",
+                    "assignment_mode",
+                    "source",
+                    "queued_at",
+                    "assigned_at",
+                    "called_at",
+                    "started_at",
+                    "completed_at",
+                    "cancelled_at",
+                    "no_show_at",
+                    "transferred_at",
+                    "cancellation_reason",
+                    "transfer_reason",
+                    "preferred_personnel_override_reason",
+                    "estimated_wait",
+                    "can"
+                ],
+                "title": "QueueEntryResource"
+            },
             "RegisterMerchantRequest": {
                 "type": "object",
                 "description": "Validates Merchant Administrator self-registration (Scope §3.2).\n\nPublic endpoint (no auth). Deliberately minimal + safe: owner name, email,\nbusiness name. No KYC / compliance fields exist (Scope §3.1 exclusion). Email\nuniqueness is NOT asserted here — duplicate emails are handled uniformly in\nthe action so this endpoint cannot enumerate existing accounts.",
@@ -8812,6 +10868,33 @@
                     "business_name"
                 ],
                 "title": "RegisterMerchantRequest"
+            },
+            "ReorderQueueEntriesRequest": {
+                "type": "object",
+                "description": "Queue reorder validation (Plan §37; Phase 16B). `order` is the COMPLETE ordered\nlist of active waiting queue-entry ULIDs for one branch. Completeness, duplicates,\nforeign/terminal entries, and stale snapshots are enforced in the action /\nQueuePositionService (deterministic 409 on a stale set). `branch_id` is an\noptional branch ULID used only to disambiguate a multi-branch operator.",
+                "properties": {
+                    "branch_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "order": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "order"
+                ],
+                "title": "ReorderQueueEntriesRequest"
             },
             "RequestMagicLinkRequest": {
                 "type": "object",
@@ -9319,6 +11402,106 @@
                 ],
                 "title": "StoreServiceRequest"
             },
+            "StoreWalkInRequest": {
+                "type": "object",
+                "description": "Create-walk-in validation (Plan §37; Phase 16B). Accepts only safe public\nidentifiers: an existing branch-client ULID OR the complete new-client fields, a\nservice ULID, an assignment mode, optional target/preferred personnel ULIDs, and\nan optional estimated-wait override (value + reason together). The backend derives\nmerchant, branch, queue position, status, estimate, actor, and timestamps —\n`merchant_id`, `branch_id` (as ownership), `status`, position, `created_by`,\ninternal ids, and any preferred-personnel fee are NEVER accepted from the body.",
+                "properties": {
+                    "branch_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "assignment_mode": {
+                        "type": "string",
+                        "enum": [
+                            "next_available",
+                            "manual",
+                            "preferred_personnel"
+                        ]
+                    },
+                    "service": {
+                        "type": "string",
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "personnel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "preferred_personnel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "estimated_wait_override_minutes": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 1440
+                    },
+                    "estimated_wait_override_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 500
+                    },
+                    "client": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Client: an existing ULID or a complete new-client object (exactly one).",
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "new_client": {
+                        "type": "object",
+                        "properties": {
+                            "full_name": {
+                                "type": "string",
+                                "maxLength": 255
+                            },
+                            "phone": {
+                                "type": "string",
+                                "maxLength": 32
+                            },
+                            "email": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "email",
+                                "maxLength": 255
+                            },
+                            "notes": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 1000
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "assignment_mode",
+                    "service"
+                ],
+                "title": "StoreWalkInRequest"
+            },
             "TransferAppointmentRequest": {
                 "type": "object",
                 "description": "Transfer-appointment validation (Plan §36). The target personnel is a public\nstaff ULID (must differ from the current assignee — enforced in the action) and\nan optional reason is sanitised before it reaches the audit record. Front Office\nonly; Branch Manager is rejected by the policy.",
@@ -9340,6 +11523,35 @@
                     "personnel"
                 ],
                 "title": "TransferAppointmentRequest"
+            },
+            "TransferQueueEntryRequest": {
+                "type": "object",
+                "description": "Queue-entry transfer validation (Plan §37; Phase 16B). A non-empty reason is\nalways required. Either a target personnel ULID (→ assigned) or an explicit\n`return_to_waiting` flag (→ waiting) must be supplied; the target is revalidated\nby the shared scheduling services in the action.",
+                "properties": {
+                    "personnel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "return_to_waiting": {
+                        "type": [
+                            "boolean",
+                            "null"
+                        ]
+                    },
+                    "reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "reason"
+                ],
+                "title": "TransferQueueEntryRequest"
             },
             "UpdateAvailabilityRequest": {
                 "type": "object",
@@ -9552,6 +11764,39 @@
                     "hours"
                 ],
                 "title": "UpdateOperatingHoursRequest"
+            },
+            "UpdateQueueConfigurationRequest": {
+                "type": "object",
+                "description": "Queue configuration validation (Plan §37; Phase 16B). Branch Manager only\n(authorized upstream). All fields are optional (partial update); `queue_capacity`\nmay be null (no cap) or a positive integer; the default mode is next_available or\nmanual (preferred_personnel is a per-client request, never a branch default).\nCapacity-below-active is rejected in the action. `branch_id` disambiguates a\nmulti-branch operator.",
+                "properties": {
+                    "branch_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "queue_is_open": {
+                        "type": "boolean"
+                    },
+                    "queue_capacity": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 1,
+                        "maximum": 1000
+                    },
+                    "queue_default_assignment_mode": {
+                        "type": "string",
+                        "enum": [
+                            "next_available",
+                            "manual"
+                        ]
+                    }
+                },
+                "title": "UpdateQueueConfigurationRequest"
             },
             "UpdateServiceCategoryRequest": {
                 "type": "object",

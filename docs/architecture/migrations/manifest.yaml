@@ -502,3 +502,64 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-16a.md
     notes: "Branch-owned; ulid public id (no human-readable number). Front Office appointment.* + Personnel personnel.my_appointments.view. CREATE EXTENSION btree_gist. starts_at/ends_at timestamptz; CHECK starts_at<ends_at; status CHECK in seven 16A states (scheduled,confirmed,checked_in,rescheduled,cancelled,cancelled_with_reason,no_show — queued/in_service deferred 16B/16C by expand-and-contract); timestamp/status coherence (checked_in_at,no_show_at,cancelled_at,cancellation_reason). GiST EXCLUDE on (assigned_personnel_staff_profile_id, tstzrange(starts_at,ends_at,'[)')) WHERE assigned NOT NULL AND status IN (scheduled,confirmed,checked_in) — back-to-back allowed, overlaps for same personnel rejected, different personnel allowed; violation maps to 409 appointment_schedule_conflict. Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (client_id,merchant_id)->clients RESTRICT; (service_id,merchant_id)->services RESTRICT; (assigned/preferred personnel,merchant_id)->staff_profiles RESTRICT. created_by->users SET NULL. Indexes (merchant_id,branch_id)/(branch_id,starts_at,status)/(client_id,starts_at)/(assigned_personnel_staff_profile_id,starts_at)/(preferred_personnel_staff_profile_id,starts_at). Reuses Phase 15B PersonnelSchedulingValidator; no queue/session/invoice columns."
+
+  - file: 2026_06_29_000003_add_queue_fields_to_branch_day_records.php
+    table: branch_day_records
+    domain: Branches
+    owner_phase: "16B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_15_000107_create_branch_day_records_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-16b.md
+    notes: "Queue operational config on the Branch Day aggregate (no queue_configurations table). Adds queue_is_open boolean default false, queue_capacity int nullable (CHECK null or >0), queue_default_assignment_mode varchar(24) default next_available (CHECK in next_available,manual). effective_queue_open = (status=open) AND queue_is_open. Branch Manager configures via branch.profile.manage + day.open_close; Front Office never configures. Forward-only expand; existing rows default to closed queue."
+
+  - file: 2026_06_29_000004_add_queued_status_to_appointments.php
+    table: appointments
+    domain: Scheduling
+    owner_phase: "16B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_29_000002_create_appointments_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-16b.md
+    notes: "Forward-only expand: drop+re-add appointments_status_check adding 'queued' (the only new appointment transition checked_in->queued). No existing state removed, no row touched. queued is non-reserving — the personnel double-booking exclusion WHERE (scheduled,confirmed,checked_in) is unchanged."
+
+  - file: 2026_06_29_000005_create_walk_ins_table.php
+    table: walk_ins
+    domain: Scheduling
+    owner_phase: "16B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_28_000002_create_services_table.php
+      - 2026_06_28_000004_create_clients_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-16b.md
+    notes: "Branch-owned; ulid public id. Front Office queue.create. client_id nullable (no anonymous ACTIVE queue entry). assignment_mode CHECK in next_available,manual,preferred_personnel; CHECK preferred mode requires preferred_personnel_staff_profile_id. Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (client_id,merchant_id)->clients RESTRICT; (service_id,merchant_id)->services RESTRICT; (preferred personnel,merchant_id)->staff_profiles RESTRICT. created_by->users SET NULL. UNIQUE (id,merchant_id) composite-FK target. Reuses Phase 15A client action; no duplicated contact/blind-index/masking. No preferred-personnel fee (20A)."
+
+  - file: 2026_06_29_000006_create_queue_entries_table.php
+    table: queue_entries
+    domain: Scheduling
+    owner_phase: "16B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_29_000005_create_walk_ins_table.php
+      - 2026_06_29_000002_create_appointments_table.php
+      - 2026_06_28_000004_create_clients_table.php
+      - 2026_06_28_000002_create_services_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-16b.md
+    notes: "Branch-owned; ulid public id. Origin XOR walk_in_id/appointment_id (CHECK); per-source UNIQUE (one conversion per walk-in/appointment). status CHECK in eight states (waiting,assigned,called,in_service,completed,transferred,cancelled,no_show); assignment_mode CHECK in next_available,manual,preferred_personnel; position>0. Status/timestamp coherence CHECKs (assigned_at,called_at,started_at,completed_at,cancelled_at+reason,no_show_at,transfer meta+reason,wait-override value/reason pairing). PARTIAL UNIQUE (branch_id,position) WHERE status in (waiting,assigned,called) — active-ordered positions unique per branch (advisory queue lock under concurrency). Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (walk_in_id,merchant_id)->walk_ins RESTRICT; (appointment_id,merchant_id)->appointments RESTRICT; (client_id,merchant_id)->clients RESTRICT; (service_id,merchant_id)->services RESTRICT; four staff-profile columns (.,merchant_id)->staff_profiles RESTRICT. Indexes (merchant_id,branch_id)/(branch_id,status,position)/(branch_id,queued_at)/(client_id,queued_at)/(service_id,status)/(staff_profile_id,status,position)/appointment_id/walk_in_id; UNIQUE (id,merchant_id). Phase 16B creates NO service session/invoice/payment/commission; in_service/completed are queue states only."

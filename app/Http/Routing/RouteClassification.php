@@ -53,6 +53,10 @@ final class RouteClassification
         'services.eligibility.destroy' => 'No request body; {service}+{staff} bindings + personnel.eligibility.manage.',
         'appointments.check-in' => 'No request body; {appointment} binding + appointment.check_in + AppointmentPolicy; branch-day-open enforced in the action.',
         'appointments.no-show' => 'No request body; {appointment} binding + appointment.cancel + AppointmentPolicy; distinct MarkAppointmentNoShow action.',
+        'queue.call' => 'No request body; {queueEntry} binding + queue.assign + QueueEntryPolicy; revalidates personnel in the action.',
+        'queue.start' => 'No request body; {queueEntry} binding + queue.assign + QueueEntryPolicy; revalidates personnel in the action.',
+        'queue.complete' => 'No request body; {queueEntry} binding + queue.assign + QueueEntryPolicy; releases the active queue position.',
+        'queue.no-show' => 'No request body; {queueEntry} binding + queue.assign + QueueEntryPolicy; distinct MarkQueueEntryNoShow action.',
     ];
 
     public static function of(Route $route): ?RouteClass

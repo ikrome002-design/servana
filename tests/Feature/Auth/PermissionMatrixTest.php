@@ -26,6 +26,14 @@ uses(RefreshDatabase::class)->group('auth', 'permissions');
  | §19.3 `client.view` defaults to Front Office only, so the unwired legacy
  | `clients.view` grants on the other roles were dropped in the reconciliation
  | (full §10.3→§19 closure remains Phase 19 / REM-PERM-001).
+ |
+ | Phase 16B reconciled the QUEUE cells to the canonical §19/§37 keys: the legacy
+ | Branch Manager `queue.operate`/`queue.transfer_entries`/`queue.configure` grants
+ | were REMOVED (Branch Manager configures the queue via `branch.profile.manage` +
+ | `day.open_close` and reads via `branch.dashboard.view` — no operational queue
+ | key). Front Office gained `queue.view/create/assign/transfer/reorder` +
+ | `preferred_personnel.select` (replacing the legacy `queue.operate`); Personnel
+ | gained own-scope `personnel.my_queue.view`. REM-PERM-001 stays open (Phase 19).
  */
 function expectedMatrix(): array
 {
@@ -40,7 +48,6 @@ function expectedMatrix(): array
         'branch_manager' => [
             'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
             'service.view', 'service.create', 'service.update', 'service.archive',
-            'queue.configure', 'queue.operate', 'queue.transfer_entries',
             'day.open_close', 'cashup.submit',
             'sessions.manage', 'invoices.create', 'invoices.view',
             'receipts.view', 'commissions.view', 'platform_fees.view',
@@ -60,7 +67,8 @@ function expectedMatrix(): array
             'reports.view', 'audit.view_full',
         ],
         'front_office' => [
-            'queue.operate',
+            'queue.view', 'queue.create', 'queue.assign', 'queue.transfer', 'queue.reorder',
+            'preferred_personnel.select',
             'appointment.view', 'appointment.create', 'appointment.reschedule',
             'appointment.cancel', 'appointment.check_in', 'appointment.assign',
             'appointment.transfer',
@@ -69,7 +77,7 @@ function expectedMatrix(): array
             'payments.record', 'receipts.view', 'reports.view',
         ],
         'personnel' => [
-            'personnel.my_appointments.view',
+            'personnel.my_appointments.view', 'personnel.my_queue.view',
             'invoices.view', 'receipts.view',
             'commissions.view', 'reports.view',
         ],

@@ -53,10 +53,10 @@ describe('RoleNavigation', () => {
     const overview = wrapper.findAll('a').find((a) => a.text() === 'Branch overview');
     expect(overview).toBeTruthy();
 
-    // Planned item (Queue) is a disabled span, not a link.
-    const queue = wrapper.findAll('span').find((s) => s.text().startsWith('Queue'));
-    expect(queue?.attributes('aria-disabled')).toBe('true');
-    expect(wrapper.findAll('a').some((a) => a.text() === 'Queue')).toBe(false);
+    // Planned item (Service sessions, Phase 16C) is a disabled span, not a link.
+    const planned = wrapper.findAll('span').find((s) => s.text().startsWith('Service sessions'));
+    expect(planned?.attributes('aria-disabled')).toBe('true');
+    expect(wrapper.findAll('a').some((a) => a.text() === 'Service sessions')).toBe(false);
   });
 
   it('hides permissioned items when the user lacks the permission', async () => {

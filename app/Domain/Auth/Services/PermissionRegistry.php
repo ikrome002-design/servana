@@ -88,9 +88,20 @@ final class PermissionRegistry
         'service.create' => ['catalogue', 'Create services.', true],
         'service.update' => ['catalogue', 'Update services.', true],
         'service.archive' => ['catalogue', 'Archive a service.', true],
-        'queue.configure' => ['branch', 'Configure the branch queue.', true],
-        'queue.operate' => ['branch', 'Operate the queue (call/serve/skip).', true],
-        'queue.transfer_entries' => ['branch', 'Transfer queue entries from unavailable personnel.', true],
+        // Queue operations (Plan §19, §25.2, §37; Phase 16B canonical keys —
+        // reconciled from the legacy Phase 8 `queue.operate`/`queue.transfer_entries`/
+        // `queue.configure` baseline). Front Office owns operational queue work
+        // (branch scope). Because the canonical catalogue defines no separate
+        // call/cancel/no-show/start/complete key, those lifecycle actions are
+        // enforced through `queue.assign` (no invented keys). Branch Manager gets
+        // NONE of these — queue configuration uses branch.profile.manage +
+        // day.open_close, and read-only visibility uses branch.dashboard.view.
+        'queue.view' => ['queue', 'View the branch queue (branch-scoped).', false],
+        'queue.create' => ['queue', 'Create queue entries (walk-ins, appointment conversion).', true],
+        'queue.assign' => ['queue', 'Assign/call/start/complete/cancel/no-show queue entries.', true],
+        'queue.transfer' => ['queue', 'Transfer queue entries between personnel.', true],
+        'queue.reorder' => ['queue', 'Reorder waiting queue entries.', true],
+        'preferred_personnel.select' => ['queue', 'Record a preferred-personnel request on a queue entry.', true],
         // Appointments (Plan §19.2/§19.3, §36; Phase 16A canonical keys — reconciled
         // from the legacy Phase 8 `appointments.manage` baseline). Front Office owns
         // appointment operations (branch scope); no-show is authorised via
@@ -127,6 +138,10 @@ final class PermissionRegistry
         // see ONLY appointments assigned to their own staff profile; no mutation, no
         // branch-wide search, no contact export.
         'personnel.my_appointments.view' => ['personnel', 'View own assigned appointments (own scope).', false],
+        // Personnel own-scope queue read (Plan §19, §37; Phase 16B). Personnel see
+        // ONLY queue entries assigned to their own staff profile; no branch-wide
+        // queue, no mutation, no contact export.
+        'personnel.my_queue.view' => ['personnel', 'View own assigned queue entries (own scope).', false],
         // Sessions & invoices.
         'sessions.manage' => ['operations', 'Manage service sessions.', true],
         'invoices.create' => ['finance', 'Create invoices.', true],
@@ -182,9 +197,13 @@ final class PermissionRegistry
             'reports.view', 'audit.view_full',
         ],
         self::ROLE_BRANCH_MANAGER => [
+            // Queue: Branch Manager configures (open/close, capacity, default mode)
+            // via branch.profile.manage + day.open_close and reads via
+            // branch.dashboard.view — NO operational queue.* key (Phase 16B; the
+            // legacy queue.operate/queue.transfer_entries/queue.configure grants are
+            // removed, not retained).
             'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
             'service.view', 'service.create', 'service.update', 'service.archive',
-            'queue.configure', 'queue.operate', 'queue.transfer_entries',
             'day.open_close', 'cashup.submit',
             'sessions.manage', 'invoices.create', 'invoices.view',
             'receipts.view', 'commissions.view', 'platform_fees.view',
@@ -204,7 +223,11 @@ final class PermissionRegistry
             'reports.view', 'audit.view_full',
         ],
         self::ROLE_FRONT_OFFICE => [
-            'queue.operate',
+            // Queue operations (Phase 16B): Front Office owns the operational queue
+            // (replaces the legacy queue.operate). Call/start/complete/cancel/no-show
+            // are enforced through queue.assign (no separate keys).
+            'queue.view', 'queue.create', 'queue.assign', 'queue.transfer', 'queue.reorder',
+            'preferred_personnel.select',
             'appointment.view', 'appointment.create', 'appointment.reschedule',
             'appointment.cancel', 'appointment.check_in', 'appointment.assign',
             'appointment.transfer',
@@ -213,7 +236,7 @@ final class PermissionRegistry
             'payments.record', 'receipts.view', 'reports.view',
         ],
         self::ROLE_PERSONNEL => [
-            'personnel.my_appointments.view',
+            'personnel.my_appointments.view', 'personnel.my_queue.view',
             'invoices.view', 'receipts.view',
             'commissions.view', 'reports.view',
         ],

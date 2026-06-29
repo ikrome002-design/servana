@@ -8,6 +8,8 @@ use App\Domain\Branches\Enums\BranchDayStatus;
 use App\Domain\Branches\Enums\CashUpStatus;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Scheduling\Enums\AppointmentStatus;
+use App\Domain\Scheduling\Enums\QueueEntryStatus;
+use App\Domain\Scheduling\Models\QueueEntry;
 use Carbon\CarbonImmutable;
 
 /**
@@ -15,7 +17,7 @@ use Carbon\CarbonImmutable;
  * Protection"). A branch must not be archived/closed while live operational
  * records exist. Scope lists eight blocking conditions:
  *
- *   1 active queue entries          ─ Phase 16B (queue) — explicit stub
+ *   1 active queue entries          ─ ENFORCED (Phase 16B; queue_entries)
  *   2 in-progress service sessions  ─ Phase 16C (sessions) — explicit stub
  *   3 unpaid invoices               ─ Phase 17 (invoicing) — explicit stub
  *   4 pending payment validations   ─ Phase 18 (payments) — explicit stub
@@ -98,6 +100,9 @@ final class BranchClosureGuard
         if ($this->hasActiveAppointmentsOn($branch, $businessDate)) {
             $blockers[] = 'active_appointments';
         }
+        if ($this->hasActiveQueueEntries($branch)) {
+            $blockers[] = 'active_queue_entries';
+        }
 
         return $blockers;
     }
@@ -125,10 +130,17 @@ final class BranchClosureGuard
 
     // ── Explicit stubs (owning phase replaces each method) ────────────────────
 
-    /** Phase 16 (queue). */
+    /**
+     * Phase 16B (queue): any active queue entry (waiting/assigned/called/in_service/
+     * transferred) blocks archival and day close. Terminal completed/cancelled/
+     * no_show never block.
+     */
     private function hasActiveQueueEntries(MerchantBranch $branch): bool
     {
-        return false;
+        return QueueEntry::query()
+            ->where('branch_id', $branch->id)
+            ->whereIn('status', QueueEntry::statusValues(QueueEntryStatus::activeStatuses()))
+            ->exists();
     }
 
     /** Phase 16C (service sessions). */
