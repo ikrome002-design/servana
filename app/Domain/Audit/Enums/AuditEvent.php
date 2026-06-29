@@ -96,6 +96,18 @@ enum AuditEvent: string
     case ClientConsentOptedIn = 'client_consent.opted_in';
     case ClientConsentOptedOut = 'client_consent.opted_out';
 
+    // --- Appointments (Plan §36, §25.2; Phase 16A). Front Office owns appointment
+    // operations; one coherent typed event per action. Context carries only safe
+    // ids (appointment/client/service/personnel ULIDs), state, interval, and a
+    // SANITISED reason — never full client phone/email and never the blind index.
+    case AppointmentCreated = 'appointment.created';
+    case AppointmentAssigned = 'appointment.assigned';
+    case AppointmentTransferred = 'appointment.transferred';
+    case AppointmentRescheduled = 'appointment.rescheduled';
+    case AppointmentCheckedIn = 'appointment.checked_in';
+    case AppointmentCancelled = 'appointment.cancelled';
+    case AppointmentNoShow = 'appointment.no_show';
+
     // --- Tenant/branch isolation (Plan §8.4) — name preserved from Phase 9.
     case UnauthorizedAccess = 'unauthorized_access';
 
@@ -136,6 +148,9 @@ enum AuditEvent: string
             self::ClientUpdated,
             self::ClientConsentOptedIn,
             self::ClientConsentOptedOut,
+            self::AppointmentCreated,
+            self::AppointmentAssigned,
+            self::AppointmentCheckedIn,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
@@ -151,6 +166,8 @@ enum AuditEvent: string
             self::PersonnelEligibilityAssigned,
             self::PersonnelEligibilityRevoked,
             self::PersonnelAvailabilityUpdated,
+            self::AppointmentTransferred,
+            self::AppointmentRescheduled,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,
@@ -166,6 +183,8 @@ enum AuditEvent: string
             self::FileUploadRejected,
             self::FileScanFailed,
             self::PersonnelAvailabilityEmergencyUnavailable,
+            self::AppointmentCancelled,
+            self::AppointmentNoShow,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,

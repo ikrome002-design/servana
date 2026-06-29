@@ -51,6 +51,8 @@ final class RouteClassification
         'files.download-link' => 'No request body; issues a signed link, authorized by FileAccessService.',
         'services.archive' => 'No request body; state transition authorized by service.archive permission + ServicePolicy.',
         'services.eligibility.destroy' => 'No request body; {service}+{staff} bindings + personnel.eligibility.manage.',
+        'appointments.check-in' => 'No request body; {appointment} binding + appointment.check_in + AppointmentPolicy; branch-day-open enforced in the action.',
+        'appointments.no-show' => 'No request body; {appointment} binding + appointment.cancel + AppointmentPolicy; distinct MarkAppointmentNoShow action.',
     ];
 
     public static function of(Route $route): ?RouteClass

@@ -149,7 +149,9 @@ merchant_branch:
     phase: Phase 16B
   - key: branch.appointments
     label: Appointments
-    availability: planned
+    availability: live
+    route: branch.appointments
+    permission: branch.dashboard.view
     phase: Phase 16A
   - key: branch.service-sessions
     label: Service sessions
@@ -336,7 +338,8 @@ merchant_front_office:
     phase: Phase 15A
   - key: front-office.appointments
     label: Appointments
-    availability: planned
+    availability: live
+    route: front-office.appointments
     permission: appointment.view
     phase: Phase 16A
   - key: front-office.walk-ins
@@ -386,7 +389,8 @@ merchant_personnel:
     phase: Phase 16B
   - key: personnel.my-appointments
     label: My appointments
-    availability: planned
+    availability: live
+    route: personnel.appointments
     permission: personnel.my_appointments.view
     phase: Phase 16A
   - key: personnel.my-sessions

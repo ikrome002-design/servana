@@ -1,10 +1,10 @@
 # Services, Clients & Scheduling — Data Dictionary
 
-Canonical DDL authority for the Phase 15A catalogue/clients tables and the Phase
-15B `personnel_availability` scheduling table (Plan §13.2, §13.7, §35, §39).
-Remaining scheduling tables (`appointments`, `walk_ins`, `queue_entries`,
-`service_sessions`) are listed in §13.7 but are **owned by later phases
-(16A–16C)** and are intentionally **not** created here.
+Canonical DDL authority for the Phase 15A catalogue/clients tables, the Phase
+15B `personnel_availability` scheduling table, and the Phase 16A `appointments`
+table (Plan §13.2, §13.7, §35, §36, §39). The remaining scheduling tables
+(`walk_ins`, `queue_entries`, `service_sessions`) are listed in §13.7 but are
+**owned by later phases (16B–16C)** and are intentionally **not** created here.
 
 Structural rule (Plan §2.1, §13.1): tenant-owned → `merchant_id`; branch-owned →
 `merchant_id` + `branch_id` with a DB-level composite-FK consistency constraint
@@ -26,6 +26,9 @@ an uppercase ISO-4217 `char(3)` defaulting to `KES`.
    `staff_profiles` RESTRICT.
 4. `…_create_clients_table` — encrypted contact + HMAC blind index.
 5. `…_create_client_consents_table` — FK `client_id → clients` RESTRICT.
+6. `…_create_personnel_availability_table` (15B) — branch-owned schedule rows.
+7. `…_create_appointments_table` (16A) — FKs to `clients`/`services`/
+   `staff_profiles` (RESTRICT) + assigned-personnel `tstzrange` exclusion.
 
 Each migration: `Schema::create` → CHECK constraints + partial/unique indexes +
 composite-FK consistency constraint via raw `DB::statement` (mirrors the
@@ -376,10 +379,189 @@ domain-service tests exercise it in 15B.
 
 ---
 
-## Deferred (later phases — NOT created in 15B)
+## `appointments` (16A) — branch-owned
 
-`appointments` (16A), `walk_ins`/`queue_entries` (16B), `service_sessions` (16C).
-Listed in §13.7; each carries its own data-dictionary entry in its owning phase.
-Phase 15B must not create them, nor any appointment/walk-in/queue/session
-workflow, `busy`/`no_show` state, or Personnel operational self-toggle (each owned
-by its 16A/16B/16C workflow).
+**Purpose.** Front-Office-owned booked appointment for a known client to receive a
+service from (optionally) an assigned personnel member at a scheduled time within
+a branch. It is the first scheduling aggregate built on the shared
+`personnel_availability` substrate. **Phase owner / table owner:** Phase 16A
+(Plan §36, §80). It does **not** model walk-ins, queue entries, service sessions,
+invoices, payments, or preferred-personnel fees — those are later aggregates.
+
+> **Schema/state reconciliation decision (recorded 2026-06-29).** The Plan §13.7
+> schema summary writes `appointments` with a single `staff_profile_id nullable`,
+> `scheduled_start/scheduled_end`, and a status CHECK that lists `queued`/
+> `in_service` and omits `cancelled_with_reason`. The active v3 **Appointment
+> state machine (§25.2)** and the **Phase 16A roadmap (§80)** are more specific
+> and control: (1) the Phase-16A-owned state set is exactly `scheduled, confirmed,
+> checked_in, rescheduled, cancelled, cancelled_with_reason, no_show` — `queued`
+> (16B) and `in_service` (16C) are **deferred** and are added by expand-and-
+> contract in their owning phases, so the 16A CHECK constrains to the seven 16A
+> states; (2) Scope assigns Front Office both **preferred-personnel selection** and
+> assignment/transfer of the **assigned** personnel, so the single summary column
+> is realized as two authoritative-equivalent columns
+> `preferred_personnel_staff_profile_id` and `assigned_personnel_staff_profile_id`
+> (no preferred-personnel **fee** is computed in 16A — Phase 17/20A); (3)
+> `scheduled_start/scheduled_end` are realized as `starts_at`/`ends_at`
+> (`timestamptz`). These are the §13.7 "authoritative equivalents".
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint PK identity | no | — | internal key; **never** exposed by the API |
+| `ulid` | char(26) UNIQUE | no | — | public identifier + searchable reference (`getRouteKeyName()='ulid'`); no separate human-readable numbering scheme exists |
+| `merchant_id` | bigint FK→merchants | no | — | tenant owner; `ON DELETE CASCADE` |
+| `branch_id` | bigint FK→merchant_branches | no | — | branch owner; `ON DELETE CASCADE` |
+| `client_id` | bigint FK→clients | no | — | **RESTRICT** (history preserved); same merchant+branch as the appointment |
+| `service_id` | bigint FK→services | no | — | **RESTRICT**; same merchant+branch; supplies the duration snapshot |
+| `preferred_personnel_staff_profile_id` | bigint FK→staff_profiles | yes | `null` | **RESTRICT**; optional client preference; same merchant+branch; no fee in 16A |
+| `assigned_personnel_staff_profile_id` | bigint FK→staff_profiles | yes | `null` | **RESTRICT**; the personnel member reserved for the appointment; same merchant+branch; participates in the conflict exclusion when set |
+| `starts_at` | timestamptz | no | — | appointment start; business-time interpreted in `Africa/Nairobi` |
+| `ends_at` | timestamptz | no | — | appointment end; CHECK `starts_at < ends_at`; computed from the service-duration snapshot |
+| `status` | varchar(24) | no | `'scheduled'` | CHECK in the seven 16A states (`AppointmentStatus` enum) |
+| `cancellation_reason` | text | yes | `null` | required for `checked_in → cancelled_with_reason`; sanitised; never contact data |
+| `transfer_reason` | text | yes | `null` | optional reason recorded on a transfer; sanitised |
+| `checked_in_at` | timestamptz | yes | `null` | set on `confirmed → checked_in`; CHECK coherence with status |
+| `cancelled_at` | timestamptz | yes | `null` | set on any cancel transition (`cancelled`/`cancelled_with_reason`) |
+| `no_show_at` | timestamptz | yes | `null` | set on `confirmed → no_show` |
+| `created_by` | bigint FK→users | yes | `null` | recording Front Office actor; `ON DELETE SET NULL` |
+| `created_at` / `updated_at` | timestamptz | no | — | Eloquent timestamps |
+
+- **Public identifier / reference.** The appointment **ULID** is the public id and
+  the searchable reference (filter `q`/binding). The internal bigint `id` is never
+  serialized. No sequential or human-readable appointment number is invented (no
+  authoritative rule defines one).
+- **Schedule interval (`[starts_at, ends_at)`).** Half-open: back-to-back
+  appointments (`10:00–10:30` then `10:30–11:00`) do **not** overlap. CHECK
+  `starts_at < ends_at` forbids zero-length/inverted intervals. An appointment must
+  not cross an unsupported business-date boundary — `CreateAppointment`/
+  `RescheduleAppointment` reject an interval whose `Africa/Nairobi` start and end
+  fall on different business dates (the shared `PersonnelSchedulingValidator`
+  already enforces single-business-date when personnel is assigned; the branch
+  schedule validator enforces it for unassigned appointments too).
+- **Service-duration snapshot.** `ends_at = starts_at + service.duration_minutes`
+  at scheduling/rescheduling time, computed by the backend from the **selected
+  service's current `duration_minutes`**. A later change to `services.duration_minutes`
+  does **not** mutate an existing appointment (the interval is already persisted).
+  The client never supplies `ends_at`.
+- **Status / state machine (§25.2; Phase 16A subset).** States: `scheduled` (on
+  create), `confirmed`, `checked_in`, `rescheduled`, `cancelled`,
+  `cancelled_with_reason`, `no_show`. Legal transitions:
+  `scheduled→confirmed|cancelled`; `confirmed→checked_in|rescheduled|cancelled|
+  no_show`; `checked_in→cancelled_with_reason`; `rescheduled→scheduled|confirmed`.
+  Status is **never** assigned directly — every change runs through a named action
+  (`AppointmentStateMachine` guard). An unlisted transition returns
+  `422 invalid_state_transition`. Terminal states (`cancelled`,
+  `cancelled_with_reason`, `no_show`) cannot be reopened or edited. `queued`
+  (16B) and `in_service` (16C) are **not** in 16A.
+- **State-transition ownership.** `scheduled→confirmed` and assignment changes are
+  established by `AssignAppointment` (and `RescheduleAppointment` while assigned).
+  `confirmed→checked_in` by `CheckInAppointment`; `…→no_show` by
+  `MarkAppointmentNoShow`; cancels by `CancelAppointment`; reschedule by
+  `RescheduleAppointment`. A standalone confirmation action is **not** introduced —
+  confirmation is the documented effect of assigning eligible personnel to a
+  `scheduled` appointment.
+- **Timestamp ↔ status coherence (CHECK).** `checked_in_at` non-null iff the
+  appointment has passed through `checked_in`; `no_show_at` non-null iff status =
+  `no_show`; `cancelled_at` non-null iff status ∈ {`cancelled`,
+  `cancelled_with_reason`}; `cancellation_reason` non-null when status =
+  `cancelled_with_reason`.
+- **Conflict-participating statuses + exclusion constraint.** Active personnel
+  reservations are `scheduled`, `confirmed`, `checked_in`. Terminal/non-reserving
+  states (`cancelled`, `cancelled_with_reason`, `no_show`, `rescheduled`) do **not**
+  reserve time. PostgreSQL `btree_gist` EXCLUDE prevents two overlapping active
+  appointments for the **same assigned personnel member**:
+  `EXCLUDE USING gist (assigned_personnel_staff_profile_id WITH =,
+  tstzrange(starts_at, ends_at, '[)') WITH &&)
+  WHERE (assigned_personnel_staff_profile_id IS NOT NULL
+  AND status IN ('scheduled','confirmed','checked_in'))`. It applies only when
+  personnel is assigned, uses half-open semantics (back-to-back allowed), rejects
+  overlaps for the same personnel, and allows the same interval for **different**
+  personnel. Unassigned appointments never trigger a personnel conflict. A
+  violation maps to a deterministic **`409 appointment_schedule_conflict`** — no
+  SQLSTATE, internal id, or other appointment's hidden data is exposed.
+- **CHECK constraints (summary):** (1) status in the seven 16A states; (2)
+  `starts_at < ends_at`; (3) `checked_in_at`/`no_show_at`/`cancelled_at` coherence
+  with status; (4) `cancellation_reason` present for `cancelled_with_reason`.
+- **Indexes:** `(merchant_id, branch_id)` (merchant-first coverage); `(branch_id,
+  starts_at, status)` (branch date/calendar listing + upcoming + status filter);
+  `(client_id, starts_at)` (client appointment history); `(assigned_personnel_staff_profile_id,
+  starts_at)` (assigned-personnel date lookup); `(preferred_personnel_staff_profile_id,
+  starts_at)` (preferred-personnel date lookup). The exclusion constraint also
+  indexes the overlap lookups.
+- **Composite consistency FKs (same-merchant guaranteed in DB):**
+  `(branch_id, merchant_id) → merchant_branches(id, merchant_id)` CASCADE;
+  `(client_id, merchant_id) → clients(id, merchant_id)` RESTRICT;
+  `(service_id, merchant_id) → services(id, merchant_id)` RESTRICT;
+  `(assigned_personnel_staff_profile_id, merchant_id) → staff_profiles(id, merchant_id)`
+  RESTRICT; `(preferred_personnel_staff_profile_id, merchant_id) →
+  staff_profiles(id, merchant_id)` RESTRICT. Same-**branch** consistency
+  (client/service/personnel branch == appointment branch) is enforced by the
+  `PersonnelSchedulingValidator` (personnel) and the create/reschedule actions
+  (client/service) and asserted by tests; the appointment branch is derived from
+  context, never from the request body.
+- **Ownership:** `BelongsToMerchant` + `BelongsToBranch`; registered in
+  `TenantOwnership` (BRANCH_OWNED + COMPOSITE_CONSISTENCY + MODELS=`branch`).
+- **Route binding.** `{appointment}` resolves the ULID **inside** tenant + branch
+  scope; a foreign-tenant ULID 404s; a same-tenant out-of-branch row follows the
+  established BranchScope posture. The internal id is never route-bound.
+- **Concurrency / locking.** Every mutation locks the appointment row
+  (`SELECT … FOR UPDATE`) before asserting the current state and writing the
+  transition, inside one DB transaction; the DB exclusion constraint is the final
+  concurrency authority for double-booking (two concurrent overlapping creates →
+  one success, one deterministic 409).
+- **Branch schedule / calendar.** `AppointmentBranchScheduleValidator` validates
+  (for the appointment's `Africa/Nairobi` business date): branch lifecycle active;
+  the **full** interval inside operating hours; calendar exceptions
+  (`public_holiday`/`special_closure`/`emergency_closure`/`modified_hours`); the
+  interval does not cross a closed period. Future-dated appointments validate the
+  operating calendar for the **appointment** date (not the branch's current-day
+  open state). Same-day **check-in** additionally requires the Branch Day to be
+  operationally open (Branch Day machine).
+- **Scheduling validator integration (mandatory, no duplication).** Every action
+  that schedules or changes assigned personnel — create-with-assignment, assign,
+  transfer, assigned reschedule, and the confirmation established by assignment —
+  invokes the Phase 15B `PersonnelSchedulingValidator` (merchant/branch/lifecycle/
+  active-assignment/service-status/eligibility/availability/interval). No
+  appointment controller/request/policy/resource/store reimplements eligibility or
+  availability.
+- **Branch closure.** `BranchClosureGuard` blocks **branch archival** while any
+  active appointment (`scheduled`/`confirmed`/`checked_in`) exists; `CloseBranchDay`
+  blocks **day close** while a same-day active appointment exists (Plan §25.2 —
+  the appointment day-close guard is flipped on in 16A). Terminal `cancelled`/
+  `cancelled_with_reason`/`no_show` appointments never block.
+- **Audit.** `appointment.created/assigned/transferred/rescheduled/cancelled/
+  checked_in/no_show` (one coherent typed event per action). Safe context:
+  merchant, branch, appointment ULID, client ULID, service ULID, actor, previous
+  and new state, previous/new assigned-personnel ULIDs (assign/transfer),
+  previous/new interval (reschedule), sanitised reason (cancel/transfer), event
+  timestamp. Never full phone/email, blind index, tokens, session ids, headers,
+  full bodies, or sequential ids.
+- **Masking.** API Resources expose the client ULID + name + already-approved
+  masked contact summary only (`ClientResource` masking rules). Personnel
+  own-scope resources expose the **minimum** client info needed to perform the
+  appointment and preserve the existing contact protection; **no contact export
+  exists anywhere** (guardrail §6.8).
+- **Factory:** `AppointmentFactory` (states: scheduled/confirmed/checked_in,
+  cancelled/cancelled_with_reason/no_show/rescheduled; assigned + unassigned).
+- **Tests:** schema/CHECK/exclusion enforcement (incl. raw-SQL bypass);
+  cross-tenant/cross-branch client/service/personnel rejection; conflict +
+  back-to-back + different-personnel + concurrency; full state-machine provider
+  (valid + invalid pairs); scheduling-validator integration (each action invokes
+  it, none duplicates); API/authorization/role-boundary (Front Office owns
+  mutation; Branch Manager read-only; Personnel own-scope; HR/Admin/Finance/Audit/
+  Super-Admin denied); branch-closure guard; audit + redaction; isolation.
+- **Phase 16B/16C handoff.** `checked_in → queued` (16B) and `checked_in →
+  in_service` (16C) extend this aggregate by expand-and-contract (add the states
+  to the CHECK, add transition actions, add `queue_entries.appointment_id` /
+  `service_sessions` links). 16A creates **no** queue/session row, no
+  appointment-to-queue conversion, and no `queued`/`in_service` button.
+
+---
+
+## Deferred (later phases — NOT created in 16A)
+
+`walk_ins`/`queue_entries` (16B), `service_sessions` (16C). Listed in §13.7; each
+carries its own data-dictionary entry in its owning phase. Phase 16A must not
+create them, nor any walk-in/queue/session workflow, `queued`/`in_service`
+appointment state, queue/session/invoice/payment/receipt branch-closure blocker,
+preferred-personnel **fee** calculation, or outbound appointment notification.

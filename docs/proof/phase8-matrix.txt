@@ -4,7 +4,6 @@ permission                            merchant_adm  branch_manag  hr  finance  f
 --------------------------------------------------------------------------------------------------------------------------
 audit.flag                            ·            ·            ·            ·            ·            ·            ✓           ·
 audit.view_full                       ✓           ✓           ✓           ✓           ·            ·            ✓           ·
-appointments.manage                   ·            ✓           ·            ·            ✓           ·            ·            ·
 branch.calendar.manage                ·            ✓           ·            ·            ·            ·            ·            ·
 branch.dashboard.view                 ·            ✓           ·            ·            ·            ·            ·            ·
 branch.profile.manage                 ·            ✓           ·            ·            ·            ·            ·            ·
@@ -47,6 +46,7 @@ merchant.profile.manage               ✓           ·            ·            
 merchant.tier.update                  ✓           ·            ·            ·            ·            ·            ·            ·
 periods.lock                          ✓           ·            ·            ·            ·            ·            ·            ·
 sessions.manage                       ·            ✓           ·            ·            ✓           ·            ·            ·
+personnel.my_appointments.view        ·            ·            ·            ·            ·            ✓           ·            ·
 platform.audit.view                   ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing.configure            ·            ·            ·            ·            ·            ·            ·            ✓
 platform.fee_rules.manage             ·            ·            ·            ·            ·            ·            ·            ✓
@@ -55,6 +55,13 @@ platform.settings.manage              ·            ·            ·            
 exports.finance                       ·            ·            ·            ·            ·            ·            ·            ·
 exports.staff_roster                  ·            ·            ✓           ·            ·            ·            ·            ·
 reports.view                          ✓           ✓           ✓           ✓           ✓           ✓           ✓           ·
+appointment.assign                    ·            ·            ·            ·            ✓           ·            ·            ·
+appointment.cancel                    ·            ·            ·            ·            ✓           ·            ·            ·
+appointment.check_in                  ·            ·            ·            ·            ✓           ·            ·            ·
+appointment.create                    ·            ·            ·            ·            ✓           ·            ·            ·
+appointment.reschedule                ·            ·            ·            ·            ✓           ·            ·            ·
+appointment.transfer                  ·            ·            ·            ·            ✓           ·            ·            ·
+appointment.view                      ·            ·            ·            ·            ✓           ·            ·            ·
 commissions.manage                    ·            ·            ✓           ·            ·            ·            ·            ·
 personnel.availability.manage         ·            ·            ✓           ·            ·            ·            ·            ·
 personnel.eligibility.manage          ·            ·            ✓           ·            ·            ·            ·            ·

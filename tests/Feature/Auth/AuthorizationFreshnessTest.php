@@ -58,7 +58,7 @@ it('re-queries authoritative state every request (no cross-request authorization
 
     // First request resolves the front-office set.
     $first = $this->actingAs($staffUser, 'sanctum')->getJson('/api/v1/me');
-    expect($first->json('data.permissions'))->toContain('appointments.manage');
+    expect($first->json('data.permissions'))->toContain('appointment.create');
 
     // Deactivate the membership; the next request resolves the empty set.
     $membership->update(['status' => MerchantUserStatus::Deactivated]);

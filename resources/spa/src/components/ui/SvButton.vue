@@ -21,7 +21,7 @@ withDefaults(
       'bg-primary text-brand-deep hover:bg-orange-400': variant === 'primary',
       'border border-border bg-transparent text-text hover:bg-surface-alt': variant === 'secondary',
       'bg-transparent text-text hover:bg-surface-alt': variant === 'ghost',
-      'bg-error text-white hover:bg-red-700': variant === 'destructive',
+      'bg-red-700 text-white hover:bg-red-800': variant === 'destructive',
     }"
   >
     <span

@@ -485,3 +485,20 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-15b.md
     notes: "Branch-owned (no ulid); HR personnel.availability.manage. CREATE EXTENSION btree_gist. CHECK type IN (recurring,exception); polarity recurring=weekday/no-date, exception=date/no-weekday; weekday 0..6; start_time<end_time (half-open, no cross-midnight). GiST EXCLUDE same-polarity overlap per staff (recurring: staff+weekday+available+numrange; exception: staff+date+available+numrange) — opposite-polarity break-over-shift allowed, resolved by AvailabilityResolver. Composite FKs (branch_id,merchant_id) to merchant_branches CASCADE and (staff_profile_id,merchant_id) to staff_profiles RESTRICT force same-merchant; same-branch set by ReplaceAvailability from staff.primary_branch_id. Indexes (merchant_id,branch_id)/(staff_profile_id,weekday)/(staff_profile_id,date). Phase 16A consumes via PersonnelSchedulingValidator; no appointment table here."
+
+  - file: 2026_06_29_000002_create_appointments_table.php
+    table: appointments
+    domain: Scheduling
+    owner_phase: "16A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_28_000002_create_services_table.php
+      - 2026_06_28_000004_create_clients_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-16a.md
+    notes: "Branch-owned; ulid public id (no human-readable number). Front Office appointment.* + Personnel personnel.my_appointments.view. CREATE EXTENSION btree_gist. starts_at/ends_at timestamptz; CHECK starts_at<ends_at; status CHECK in seven 16A states (scheduled,confirmed,checked_in,rescheduled,cancelled,cancelled_with_reason,no_show — queued/in_service deferred 16B/16C by expand-and-contract); timestamp/status coherence (checked_in_at,no_show_at,cancelled_at,cancellation_reason). GiST EXCLUDE on (assigned_personnel_staff_profile_id, tstzrange(starts_at,ends_at,'[)')) WHERE assigned NOT NULL AND status IN (scheduled,confirmed,checked_in) — back-to-back allowed, overlaps for same personnel rejected, different personnel allowed; violation maps to 409 appointment_schedule_conflict. Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (client_id,merchant_id)->clients RESTRICT; (service_id,merchant_id)->services RESTRICT; (assigned/preferred personnel,merchant_id)->staff_profiles RESTRICT. created_by->users SET NULL. Indexes (merchant_id,branch_id)/(branch_id,starts_at,status)/(client_id,starts_at)/(assigned_personnel_staff_profile_id,starts_at)/(preferred_personnel_staff_profile_id,starts_at). Reuses Phase 15B PersonnelSchedulingValidator; no queue/session/invoice columns."

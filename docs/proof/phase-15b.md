@@ -1,12 +1,26 @@
 # Phase 15B — Personnel Availability and Eligibility Completion — Proof
 
 **Branch:** `phase-15b-personnel-availability` · **Base commit:** `81a5866`
-(Phase 15A merge, PR #24). **Status:** `local_complete` — the full Phase 15B
+(Phase 15A merge, PR #24). **Status:** `verified_complete` — the full Phase 15B
 specification (schema, resolver, reusable scheduling validator, HR API,
 Branch-Manager read-only surface, HR frontend, tests, contracts, docs) is
-implemented and **all local gates pass**. This is **not** `ci_passed`, `merged`,
-or `verified_complete`: no PR has been opened and CI has not run. CI remains
-authoritative for the Linux browser/Docker gates.
+implemented, all local gates passed, and the work merged to `main` as **PR #25**.
+
+**Lifecycle (verified against GitHub):** original implementation commit
+`93f2e72`; initial CI run `28353377796` **failed** — Backend reported Laravel
+Pint formatting violations in the Phase 15B scheduling tests, and E2E reported
+the HR personnel-availability screen failing the dark-mode axe contrast test. CI
+remediation commit `4b75eb4` applied Pint-only scheduling-test formatting
+corrections and a precise dark-mode contrast correction in
+`PersonnelAvailability.vue` (no unrelated product capability added); successful
+pre-governance CI run `28358888303`; final governance/PR head `050cca7`; final
+successful CI run `28359652332` (Backend, Frontend, Docker, Security, E2E all
+SUCCESS); squash merge commit `02f4dc5`. `reviewDecision` remained blank under
+the documented PR-specific solo-maintainer governance exception
+(`docs/governance/solo-maintainer-review-exception-pr-25.md`) — **not**
+independent reviewer approval. The local and remote Phase 15B branches were
+deleted after merge. CI remains authoritative for the Linux browser/Docker
+gates. **REM-PERM-001 remains open** (Phase 19).
 
 Times are branch business time in `Africa/Nairobi`; timestamps are UTC. Frontend
 visibility is UX only — the API (`personnel.availability.manage` + EnsureBranchScope

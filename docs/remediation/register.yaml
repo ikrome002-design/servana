@@ -8,7 +8,7 @@
 
 meta:
   generated: "2026-06-21"
-  last_updated: "2026-06-29 (Phase 15B: REM-CAT-CLI-001 → verified_complete on PR #24 merge)"
+  last_updated: "2026-06-29 (Phase 15B verified_complete on PR #25 merge 02f4dc5; Phase 16A appointments started — no new remediation item; REM-PERM-001 remains open, Phase 19)"
   branch: docs/pre-feature-remediation-gate-closure
   base: 4f0d4f3   # merged main (PR #19, R7)
   # §5.4 — CLOSED decision: all PRE_FEATURE_REMEDIATION items are verified_complete

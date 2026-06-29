@@ -325,6 +325,12 @@ screens:
     status: implemented
     phase: Phase 15B
     spec: branch/personnel-schedule.md
+  - key: branch-appointments
+    domain: branch
+    route: branch.appointments
+    status: implemented
+    phase: Phase 16A
+    spec: branch/branch-appointments.md
   - key: branch-calendar
     domain: branch
     route: ~
@@ -393,16 +399,34 @@ screens:
     spec: front-office/front-office-client-detail.md
   - key: front-office-appointments
     domain: front-office
-    route: ~
-    status: planned
+    route: front-office.appointments
+    status: implemented
     phase: Phase 16A
-    spec: ~
+    spec: front-office/front-office-appointments.md
+  - key: front-office-appointment-create
+    domain: front-office
+    route: front-office.appointments.create
+    status: implemented
+    phase: Phase 16A
+    spec: front-office/front-office-appointment-create.md
+  - key: front-office-appointment-detail
+    domain: front-office
+    route: front-office.appointments.detail
+    status: implemented
+    phase: Phase 16A
+    spec: front-office/front-office-appointment-detail.md
   - key: front-office-invoicing
     domain: front-office
     route: ~
     status: planned
     phase: Phase 17
     spec: ~
+  - key: personnel-appointments
+    domain: personnel
+    route: personnel.appointments
+    status: implemented
+    phase: Phase 16A
+    spec: personnel/personnel-appointments.md
   - key: personnel-my-work
     domain: personnel
     route: ~

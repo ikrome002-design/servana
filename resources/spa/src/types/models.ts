@@ -180,6 +180,73 @@ export interface ServiceEligibility {
   active: boolean;
 }
 
+// --- Appointments (Plan §36, §25.2; Phase 16A) -------------------------------
+
+export type AppointmentStatus =
+  | 'scheduled'
+  | 'confirmed'
+  | 'checked_in'
+  | 'rescheduled'
+  | 'cancelled'
+  | 'cancelled_with_reason'
+  | 'no_show';
+
+export interface AppointmentPersonnelSummary {
+  id: string;
+  display_name: string;
+}
+
+export interface AppointmentServiceSummary {
+  id: string;
+  name: string;
+  duration_minutes: number;
+}
+
+export interface AppointmentClientSummary {
+  id: string;
+  full_name: string;
+  phone_masked: string;
+  phone_last_four: string;
+}
+
+/** Server-derived capability map (UX only; the API re-checks every mutation). */
+export interface AppointmentCapabilities {
+  view: boolean;
+  assign: boolean;
+  transfer: boolean;
+  reschedule: boolean;
+  check_in: boolean;
+  cancel: boolean;
+  mark_no_show: boolean;
+}
+
+/** Appointment — client contact is ALWAYS masked (Plan §36; guardrail §6.4). */
+export interface Appointment {
+  id: string;
+  status: AppointmentStatus;
+  starts_at: string;
+  ends_at: string;
+  checked_in_at: string | null;
+  cancelled_at: string | null;
+  no_show_at: string | null;
+  cancellation_reason: string | null;
+  service?: AppointmentServiceSummary;
+  client?: AppointmentClientSummary;
+  preferred_personnel?: AppointmentPersonnelSummary | null;
+  assigned_personnel?: AppointmentPersonnelSummary | null;
+  can?: AppointmentCapabilities;
+}
+
+/** Personnel own-scope appointment (minimal, read-only). */
+export interface PersonnelAppointment {
+  id: string;
+  status: AppointmentStatus;
+  starts_at: string;
+  ends_at: string;
+  service?: AppointmentServiceSummary;
+  client?: AppointmentClientSummary;
+}
+
 export type SmsConsentState = 'opted_in' | 'opted_out';
 
 /** Client record — contact is ALWAYS masked (Plan §35; guardrail §6.4). */

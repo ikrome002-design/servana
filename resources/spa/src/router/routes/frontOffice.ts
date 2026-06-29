@@ -39,6 +39,21 @@ export const frontOfficeRoutes: RouteRecordRaw[] = [
         name: 'front-office.clients.detail',
         component: () => import('@/pages/front-office/ClientDetail.vue'),
       },
+      {
+        path: 'appointments',
+        name: 'front-office.appointments',
+        component: () => import('@/pages/front-office/AppointmentList.vue'),
+      },
+      {
+        path: 'appointments/create',
+        name: 'front-office.appointments.create',
+        component: () => import('@/pages/front-office/AppointmentCreate.vue'),
+      },
+      {
+        path: 'appointments/:id',
+        name: 'front-office.appointments.detail',
+        component: () => import('@/pages/front-office/AppointmentDetail.vue'),
+      },
     ],
   },
 ];

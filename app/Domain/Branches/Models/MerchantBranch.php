@@ -6,6 +6,7 @@ namespace App\Domain\Branches\Models;
 
 use App\Domain\Branches\Enums\BranchStatus;
 use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Database\Factories\MerchantBranchFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -154,5 +155,11 @@ class MerchantBranch extends Model
     public function cashUps(): HasMany
     {
         return $this->hasMany(BranchCashUp::class, 'branch_id');
+    }
+
+    /** @return HasMany<Appointment, $this> */
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class, 'branch_id');
     }
 }

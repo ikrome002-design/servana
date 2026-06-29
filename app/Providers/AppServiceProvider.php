@@ -21,7 +21,9 @@ use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Tenancy\TenantContext;
+use App\Policies\AppointmentPolicy;
 use App\Policies\AuditLogPolicy;
 use App\Policies\BranchDayRecordPolicy;
 use App\Policies\BranchOperatingHourPolicy;
@@ -64,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
         ServiceCategory::class => ServiceCategoryPolicy::class,
         ServicePersonnelEligibility::class => ServicePersonnelEligibilityPolicy::class,
         Client::class => ClientPolicy::class,
+        // Phase 16A — appointments.
+        Appointment::class => AppointmentPolicy::class,
     ];
 
     public function register(): void
