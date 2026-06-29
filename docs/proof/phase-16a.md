@@ -439,3 +439,30 @@ Focused local verification after the complete remediation:
 Linux PR CI remains the authoritative final Playwright and Docker evidence.
 Governance evidence must not be created until all five required PR #26 checks
 pass on the remediation commit.
+## Solo-Maintainer Review Exception - PR #26
+
+An independent second reviewer was unavailable because the repository currently
+has one eligible maintainer. The product owner authorized a PR-specific
+governance exception instead of fabricating approval.
+
+Evidence:
+
+- PR: #26
+- original implementation commit:
+  e62da205de0e452b82dcd91d21b6cf88ba60afdd
+- CI remediation commit:
+  ce04c73445e61dd590e80e91771f0ddce9394335
+- failed initial CI run:
+  28372954922
+- successful replacement initial CI run:
+  28374669729 28372954922
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record:
+  docs/governance/solo-maintainer-review-exception-pr-26.md
+
+This exception applies only to PR #26 and is not independent reviewer approval.
