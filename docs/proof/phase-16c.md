@@ -165,3 +165,30 @@ with the PermissionSeeder picking up the new canonical keys.
 
 Local Windows Playwright is not claimed as a pass (Linux CI authoritative). All other
 gates ran to completion locally with the results above.
+
+## Solo-Maintainer Review Exception — PR #28
+
+An independent second reviewer was unavailable because the repository currently
+has one eligible maintainer. The product owner authorized a PR-specific
+governance exception instead of fabricating approval.
+
+Evidence:
+
+- PR: #28
+- verified implementation head: ac5751aa7a643438118a23c2d5817a04eef9ad8a
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E — Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record:
+  docs/governance/solo-maintainer-review-exception-pr-28.md
+
+The completion preview remains explicitly not earned and not payable. No
+commission ledger, invoice, payment or receipt record is created by Phase 16C.
+
+The queue-linked in-progress abort workflow remains deferred pending an
+authoritative Queue Entry state-machine extension.
+
+This exception applies only to PR #28 and is not independent reviewer approval.
