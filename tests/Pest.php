@@ -396,6 +396,28 @@ function createWalkIn(array $scn, array $overrides = []): TestResponse
     ], $overrides));
 }
 
+/**
+ * Drive a walk-in through assign → call → start over the API (Phase 16C: the start
+ * couples a created+started service session onto the queue called → in_service
+ * transition). Returns the queue-entry ULID and the start response. Lives in Pest.php
+ * so every service-session test file and parallel worker can use it.
+ *
+ * @param  array<string, mixed>  $createOverrides
+ * @return array{ulid: string, start: TestResponse}
+ */
+function startQueueSession(array $scn, array $createOverrides = []): array
+{
+    $ulid = (string) createWalkIn($scn, $createOverrides)->json('data.id');
+
+    test()->actingAs($scn['frontOffice'], 'sanctum')
+        ->postJson("/api/v1/queue-entries/{$ulid}/call")->assertOk();
+
+    $start = test()->actingAs($scn['frontOffice'], 'sanctum')
+        ->postJson("/api/v1/queue-entries/{$ulid}/start");
+
+    return ['ulid' => $ulid, 'start' => $start];
+}
+
 /*
  | Shared file-domain test helpers (Phase 10F). These live in Pest.php so every
  | test file and every parallel worker can use them without depending on another

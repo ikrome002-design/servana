@@ -563,3 +563,20 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-16b.md
     notes: "Branch-owned; ulid public id. Origin XOR walk_in_id/appointment_id (CHECK); per-source UNIQUE (one conversion per walk-in/appointment). status CHECK in eight states (waiting,assigned,called,in_service,completed,transferred,cancelled,no_show); assignment_mode CHECK in next_available,manual,preferred_personnel; position>0. Status/timestamp coherence CHECKs (assigned_at,called_at,started_at,completed_at,cancelled_at+reason,no_show_at,transfer meta+reason,wait-override value/reason pairing). PARTIAL UNIQUE (branch_id,position) WHERE status in (waiting,assigned,called) — active-ordered positions unique per branch (advisory queue lock under concurrency). Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (walk_in_id,merchant_id)->walk_ins RESTRICT; (appointment_id,merchant_id)->appointments RESTRICT; (client_id,merchant_id)->clients RESTRICT; (service_id,merchant_id)->services RESTRICT; four staff-profile columns (.,merchant_id)->staff_profiles RESTRICT. Indexes (merchant_id,branch_id)/(branch_id,status,position)/(branch_id,queued_at)/(client_id,queued_at)/(service_id,status)/(staff_profile_id,status,position)/appointment_id/walk_in_id; UNIQUE (id,merchant_id). Phase 16B creates NO service session/invoice/payment/commission; in_service/completed are queue states only."
+
+  - file: 2026_06_30_000001_create_service_sessions_table.php
+    table: service_sessions
+    domain: Scheduling
+    owner_phase: "16C"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/services-clients-scheduling.md
+    depends_on:
+      - 2026_06_29_000006_create_queue_entries_table.php
+      - 2026_06_28_000004_create_clients_table.php
+      - 2026_06_28_000002_create_services_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-16c.md
+    notes: "Branch-owned; ulid public id. Session source is the queue entry (queue_entry_id nullable, UNIQUE one session per entry) — NO appointment_id (Gate A: appointment provenance via queue_entries.appointment_id). service_id snapshotted from the locked source (Gate B). status CHECK in four states (pending,in_progress,completed,cancelled). Status/timestamp coherence CHECKs (started_at for in_progress/completed; completed_at iff completed; cancelled_at iff cancelled; cancellation_reason for cancelled; completed implies started). PARTIAL UNIQUE (staff_profile_id) WHERE status in (pending,in_progress) — duplicate-active protection, one active session per personnel (DB is concurrency authority -> 409 duplicate_active_service_session). Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (queue_entry_id,merchant_id)->queue_entries RESTRICT; (client_id,merchant_id)->clients RESTRICT; (service_id,merchant_id)->services RESTRICT; (staff_profile_id,merchant_id)->staff_profiles RESTRICT. Indexes (merchant_id,branch_id)/(branch_id,status)/(staff_profile_id,status)/client_id; UNIQUE (queue_entry_id); UNIQUE (id,merchant_id) composite-FK target for Phase 17 invoice_items. preferred_personnel_honored boolean (execution evidence, NOT a fee). Phase 16C creates NO invoice/payment/receipt/commission ledger/rule/plan/fee; completion yields a typed NON-PAYABLE commission preview only."

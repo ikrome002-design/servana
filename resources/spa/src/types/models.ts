@@ -310,6 +310,61 @@ export interface QueueEntry {
   assigned_personnel?: AppointmentPersonnelSummary | null;
   preferred_personnel?: AppointmentPersonnelSummary | null;
   can?: QueueEntryCapabilities;
+  /** Phase 16C: the coupled service session (present on start/complete responses). */
+  service_session?: ServiceSession | null;
+}
+
+/** Service Session lifecycle (Plan §25.2; Phase 16C). */
+export type ServiceSessionStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled';
+
+/** Commission preview status (Phase 16C; never earned or payable). */
+export type CommissionPreviewStatus = 'available' | 'not_applicable' | 'not_configured' | 'unavailable';
+
+/** Non-payable commission preview at completion — "Preview — not earned or payable". */
+export interface CommissionPreview {
+  preview_status: CommissionPreviewStatus;
+  reason: string | null;
+  earned: boolean;
+  payable: boolean;
+  amount_minor: number | null;
+  currency: string | null;
+}
+
+/** Server-derived service-session capability map (UX only; the API re-checks). */
+export interface ServiceSessionCapabilities {
+  view: boolean;
+  complete: boolean;
+  cancel: boolean;
+  update_notes: boolean;
+}
+
+/** Service session — client contact is ALWAYS masked (Plan §25.2; guardrail §6.4). */
+export interface ServiceSession {
+  id: string;
+  status: ServiceSessionStatus;
+  queue_entry_id?: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  cancelled_at: string | null;
+  cancellation_reason: string | null;
+  notes: string | null;
+  preferred_personnel_honored: boolean | null;
+  service?: AppointmentServiceSummary;
+  client?: AppointmentClientSummary;
+  personnel?: AppointmentPersonnelSummary | null;
+  commission_preview: CommissionPreview | null;
+  can?: ServiceSessionCapabilities;
+}
+
+/** Personnel own-scope service session (minimal, read-only; no preview). */
+export interface PersonnelServiceSession {
+  id: string;
+  status: ServiceSessionStatus;
+  started_at: string | null;
+  completed_at: string | null;
+  cancelled_at: string | null;
+  service?: AppointmentServiceSummary;
+  client?: { id: string; full_name: string; phone_masked: string };
 }
 
 /** Personnel own-scope queue entry (minimal, read-only). */

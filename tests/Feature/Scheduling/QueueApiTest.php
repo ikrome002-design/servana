@@ -84,13 +84,22 @@ it('runs the full lifecycle assign → call → start → complete', function ()
 
     $this->actingAs($fo, 'sanctum')->postJson("/api/v1/queue-entries/{$ulid}/call")
         ->assertOk()->assertJsonPath('data.status', 'called');
+    // Phase 16C: start couples a service session (pending → in_progress) onto the
+    // queue called → in_service transition.
     $this->actingAs($fo, 'sanctum')->postJson("/api/v1/queue-entries/{$ulid}/start")
-        ->assertOk()->assertJsonPath('data.status', 'in_service');
+        ->assertOk()
+        ->assertJsonPath('data.status', 'in_service')
+        ->assertJsonPath('data.service_session.status', 'in_progress');
+    // Complete completes both aggregates and returns a non-payable preview.
     $this->actingAs($fo, 'sanctum')->postJson("/api/v1/queue-entries/{$ulid}/complete")
-        ->assertOk()->assertJsonPath('data.status', 'completed');
+        ->assertOk()
+        ->assertJsonPath('data.status', 'completed')
+        ->assertJsonPath('data.service_session.status', 'completed')
+        ->assertJsonPath('data.service_session.commission_preview.earned', false)
+        ->assertJsonPath('data.service_session.commission_preview.payable', false);
 
-    // No service session / invoice exists (Phase 16C/17).
-    expect(Schema::hasTable('service_sessions'))->toBeFalse();
+    // No invoice exists yet (Phase 17).
+    expect(Schema::hasTable('invoices'))->toBeFalse();
 });
 
 it('cancels with a required reason and marks a separate entry no-show', function (): void {

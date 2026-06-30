@@ -83,6 +83,13 @@ final class QueueEntryResource extends JsonResource
 
                 return $personnel === null ? null : ['id' => $personnel->ulid, 'display_name' => $personnel->display_name];
             }),
+            'service_session' => $this->whenLoaded('serviceSession', function (): ?array {
+                if ($this->serviceSession === null) {
+                    return null;
+                }
+
+                return ServiceSessionResource::make($this->serviceSession)->toArray(request());
+            }),
             'can' => $this->capabilities($request, $lifecycle),
         ];
     }

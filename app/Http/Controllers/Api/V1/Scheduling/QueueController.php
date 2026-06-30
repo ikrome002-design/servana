@@ -58,6 +58,12 @@ final class QueueController extends Controller
 
     private const RELATIONS = ['service', 'client', 'assignedPersonnel', 'preferredPersonnel', 'walkIn', 'appointment'];
 
+    /** Start/complete additionally surface the coupled Phase 16C service session. */
+    private const RELATIONS_WITH_SESSION = [
+        'service', 'client', 'assignedPersonnel', 'preferredPersonnel', 'walkIn', 'appointment',
+        'serviceSession.service', 'serviceSession.client', 'serviceSession.personnel', 'serviceSession.queueEntry',
+    ];
+
     public function __construct(private readonly TenantContext $context) {}
 
     public function index(QueueIndexRequest $request): AnonymousResourceCollection
@@ -212,14 +218,16 @@ final class QueueController extends Controller
     {
         $this->authorize('operate', $queueEntry);
 
-        return QueueEntryResource::make($action->handle($queueEntry, $this->actor())->load(self::RELATIONS));
+        return QueueEntryResource::make($action->handle($queueEntry, $this->actor())->load(self::RELATIONS_WITH_SESSION));
     }
 
     public function complete(QueueEntry $queueEntry, CompleteQueueEntry $action): QueueEntryResource
     {
         $this->authorize('operate', $queueEntry);
 
-        return QueueEntryResource::make($action->handle($queueEntry, $this->actor())->load(self::RELATIONS));
+        $result = $action->handle($queueEntry, $this->actor());
+
+        return QueueEntryResource::make($result['entry']->load(self::RELATIONS_WITH_SESSION));
     }
 
     public function transfer(TransferQueueEntryRequest $request, QueueEntry $queueEntry, TransferQueueEntry $action): QueueEntryResource

@@ -28,8 +28,10 @@ use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Controllers\Api\V1\Scheduling\AppointmentController;
 use App\Http\Controllers\Api\V1\Scheduling\PersonnelAppointmentController;
 use App\Http\Controllers\Api\V1\Scheduling\PersonnelQueueController;
+use App\Http\Controllers\Api\V1\Scheduling\PersonnelServiceSessionController;
 use App\Http\Controllers\Api\V1\Scheduling\QueueConfigurationController;
 use App\Http\Controllers\Api\V1\Scheduling\QueueController;
+use App\Http\Controllers\Api\V1\Scheduling\ServiceSessionController;
 use App\Http\Controllers\Api\V1\Scheduling\StaffAvailabilityController;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureActivePrincipal;
@@ -425,12 +427,14 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign'])
                 ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                 ->name('queue.call');
+            // Phase 16C: queue start/complete are the service-session orchestration
+            // routes — they additionally require the canonical session permission.
             Route::post('queue-entries/{queueEntry}/start', [QueueController::class, 'start'])
-                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign', EnsurePermission::class.':service_session.start'])
                 ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                 ->name('queue.start');
             Route::post('queue-entries/{queueEntry}/complete', [QueueController::class, 'complete'])
-                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':queue.assign', EnsurePermission::class.':service_session.complete'])
                 ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                 ->name('queue.complete');
             Route::post('queue-entries/{queueEntry}/transfer', [QueueController::class, 'transfer'])
@@ -451,6 +455,31 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             // the controller.
             Route::get('personnel/me/queue', [PersonnelQueueController::class, 'index'])
                 ->name('personnel.queue.index');
+
+            // Service sessions (Plan §25.2, §37; Phase 16C). Front Office owns the
+            // operational session lifecycle. Start + complete are driven by the queue
+            // orchestration routes above; these own list/detail, cancellation, and
+            // service-notes editing. Reads are branch-scoped; client contact is masked.
+            Route::get('service-sessions', [ServiceSessionController::class, 'index'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':service_session.view'])
+                ->name('service-sessions.index');
+            Route::get('service-sessions/{serviceSession}', [ServiceSessionController::class, 'show'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':service_session.view'])
+                ->name('service-sessions.show');
+            Route::post('service-sessions/{serviceSession}/cancel', [ServiceSessionController::class, 'cancel'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':service_session.cancel'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('service-sessions.cancel');
+            Route::patch('service-sessions/{serviceSession}/notes', [ServiceSessionController::class, 'updateNotes'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':service_session.complete'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('service-sessions.notes');
+
+            // Personnel own-scope sessions (Plan §25.2, §19; Phase 16C). Read-only;
+            // own-scope (own staff profile) + `personnel.my_sessions.view` enforced in
+            // the controller.
+            Route::get('personnel/me/sessions', [PersonnelServiceSessionController::class, 'index'])
+                ->name('personnel.sessions.index');
 
             // Files & media (Plan §65; Phase 10F). Upload streams to private
             // quarantine then scans; downloads require auth + a valid temporary

@@ -6,7 +6,68 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 16B — Walk-Ins and Queues (`phase-16b-walk-ins-queues`) — local_complete
+### Phase 16C — Service Sessions and Preferred Personnel (`phase-16c-service-sessions`) — local_complete
+
+The service-delivery unit on merged Phase 16B (`af79b56`, PR #27): the branch-owned
+`service_sessions` table, the four-state Service Session machine (Plan §25.2), the
+transactional queue↔session coupling (queue `called → in_service` creates+starts one
+session; `in_service → completed` completes it), PostgreSQL duplicate-active-session
+protection, preferred-personnel execution enforcement (no fee), the typed NON-PAYABLE
+commission preview, the `BranchClosureGuard` in-progress-session blocker, and the live
+`busy` projection. Front Office owns the session lifecycle; Personnel get strict
+own-scope read. **No** invoice, payment, receipt, commission ledger/rule/plan,
+preferred-personnel fee, notification, report, or search is introduced (deferred to
+17/18/20/21N/22). See [docs/proof/phase-16c.md](proof/phase-16c.md).
+
+- **Specification gates (resolved):** (A) no `appointment_id` — every session links via
+  `queue_entry_id`; appointment provenance via `queue_entries.appointment_id` (the
+  authoritative appointment machine defers `in_service`/`completed` to the Queue Entry /
+  Service Session). (B) immutable `service_id` snapshotted from the locked source
+  (service identity). (C) `in_progress → cancelled` is defined + unit-tested, but the
+  cancel action refuses a queue-linked in-progress session (`409
+  service_session_in_progress`) because the Queue Entry machine has no `in_service →
+  cancelled` — workflow in-progress abort deferred to a future queue-machine extension.
+  (D) typed `CommissionPreviewResult` = `not_configured` (no compensation tables yet);
+  never earned/payable/zero/ledger.
+- **Schema:** `service_sessions` (branch-owned, ULID) — four-state CHECK,
+  status↔timestamp coherence, partial-unique `(staff_profile_id) WHERE status IN
+  (pending,in_progress)` (duplicate-active), `UNIQUE (queue_entry_id)`,
+  `UNIQUE (id,merchant_id)` (Phase-17 FK target), composite-merchant FKs. One
+  forward-only migration; manifest + `TenantOwnership` updated.
+- **Domain:** `ServiceSession`/`ServiceSessionFactory`, `ServiceSessionStatus`,
+  `ServiceSessionStateMachine`, `DuplicateActiveSessionGuard`,
+  `PreferredPersonnelExecutionValidator`, `CommissionPreviewService` +
+  `CommissionPreviewResult` (Compensation context); `StartQueueEntry`/`CompleteQueueEntry`
+  extended into transactional orchestration; `CancelServiceSession`, `UpdateServiceNotes`.
+  Reuses the 16B `QueuePersonnelAssignmentValidator` → 15B `PersonnelSchedulingValidator`
+  (no duplication).
+- **Permissions:** legacy `sessions.manage` reconciled to canonical
+  `service_session.view/start/complete/cancel` (Front Office) + `personnel.my_sessions.view`
+  (Personnel); Branch Manager session grant removed (no session authority). REM-PERM-001
+  stays open (Phase 19).
+- **API:** 5 new routes (`service-sessions` list/detail/cancel/notes,
+  `personnel/me/sessions`) + queue start/complete now also require the session
+  permission; Form Request → policy → thin controller → transactional action → masked
+  Resource; `service_session.started/completed/cancelled` audit events.
+- **Frontend:** Front Office `ServiceSessionList` (cancel/notes + "Preview — not earned
+  or payable" wording), Personnel mobile-first `MyServiceSessions` (own-scope, no
+  preview); stores, router, navigation, inventory + screen specs.
+- **Tests/proof:** service-session backend group 56; full backend 812 pass / 7 skip /
+  0 fail; vitest 183; Pint + Larastan L8 + vue-tsc + ESLint(0) + build +
+  OpenAPI-deterministic(96) + TS parity + composer/npm audit + gitleaks clean;
+  Playwright Linux-CI authoritative (local Windows not claimed); no PR/CI yet.
+
+### Phase 16B — Walk-Ins and Queues (`phase-16b-walk-ins-queues`) — verified_complete
+
+> **Lifecycle (reconciled):** PR **#27** MERGED into `main` (squash merge commit
+> `af79b56`, 2026-06-30; original implementation `6a9fbcc`, final head `6272f080`).
+> Initial CI run `28420643751` FAILED Backend (8 failed / 4 skipped / 751 passed) —
+> `Call to undefined function createWalkIn()`, a file-local Pest helper not reliably
+> visible to independent parallel workers — corrected by moving the helper to
+> `tests/Pest.php` (parallel execution preserved). Final CI run `28425875550` — five
+> required checks (Backend, Frontend, Docker, Security, E2E — Playwright) all
+> SUCCESS. `reviewDecision` blank under the documented solo-maintainer governance
+> exception (not independent approval). REM-PERM-001 remains open (Phase 19).
 
 Operational queue foundation on merged Phase 16A (`404fed9`, PR #26): the
 branch-owned `walk_ins` and `queue_entries` tables, the eight-state Queue Entry

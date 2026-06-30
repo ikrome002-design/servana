@@ -655,6 +655,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/personnel/me/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["personnel.sessions.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/platform/audit-logs": {
         parameters: {
             query?: never;
@@ -893,6 +909,70 @@ export interface paths {
         options?: never;
         head?: never;
         patch: operations["service-categories.update"];
+        trace?: never;
+    };
+    "/api/v1/service-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["service-sessions.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/service-sessions/{serviceSession}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["service-sessions.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/service-sessions/{serviceSession}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["service-sessions.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/service-sessions/{serviceSession}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["service-sessions.notes"];
         trace?: never;
     };
     "/api/v1/services": {
@@ -1400,6 +1480,15 @@ export interface components {
             reason: string;
         };
         /**
+         * CancelServiceSessionRequest
+         * @description Service-session cancellation validation (Plan §25.2; Phase 16C). A non-empty reason
+         *     is required. Authoritative values (merchant/branch/status/timestamps/actor) are
+         *     never accepted from the body.
+         */
+        CancelServiceSessionRequest: {
+            reason: string;
+        };
+        /**
          * ChangeConsentRequest
          * @description SMS-consent change validation (Plan §35). Channel is implicitly `sms` (the only
          *     channel in Phase 15A); only the state is supplied.
@@ -1621,6 +1710,24 @@ export interface components {
                 phone_masked: string;
             };
         };
+        /** PersonnelServiceSessionResource */
+        PersonnelServiceSessionResource: {
+            id: string;
+            status: string;
+            started_at: string;
+            completed_at: string;
+            cancelled_at: string;
+            service?: {
+                id: string;
+                name: string;
+                duration_minutes: number;
+            };
+            client?: {
+                id: string;
+                full_name: string;
+                phone_masked: string;
+            };
+        };
         /** QueueConfigurationResource */
         QueueConfigurationResource: {
             branch_day_id: string;
@@ -1684,6 +1791,43 @@ export interface components {
             preferred_personnel?: {
                 id: string;
                 display_name: string;
+            } | null;
+            service_session?: {
+                id: string;
+                status: string;
+                queue_entry_id?: string;
+                started_at: string;
+                completed_at: string;
+                cancelled_at: string;
+                cancellation_reason: string | null;
+                notes: string | null;
+                preferred_personnel_honored: boolean | null;
+                service?: {
+                    id: string;
+                    name: string;
+                    duration_minutes: number;
+                };
+                client?: {
+                    id: string;
+                    full_name: string;
+                    phone_masked: string;
+                    phone_last_four: string;
+                };
+                personnel?: {
+                    id: string;
+                    display_name: string;
+                } | null;
+                commission_preview: {
+                    [key: string]: unknown;
+                } | null;
+                can: {
+                    view: string;
+                    /** @description Completion is driven by the queue orchestration route; surfaced here for parity. */
+                    complete: string;
+                    /** @description Cancellation is exposed only where it does not strand a queue entry (Gate C). */
+                    cancel: string;
+                    update_notes: string;
+                };
             } | null;
             can: {
                 view: string;
@@ -1774,6 +1918,44 @@ export interface components {
             branch_id?: string;
             can: {
                 [key: string]: boolean;
+            };
+        };
+        /** ServiceSessionResource */
+        ServiceSessionResource: {
+            id: string;
+            status: string;
+            queue_entry_id?: string;
+            started_at: string;
+            completed_at: string;
+            cancelled_at: string;
+            cancellation_reason: string | null;
+            notes: string | null;
+            preferred_personnel_honored: boolean | null;
+            service?: {
+                id: string;
+                name: string;
+                duration_minutes: number;
+            };
+            client?: {
+                id: string;
+                full_name: string;
+                phone_masked: string;
+                phone_last_four: string;
+            };
+            personnel?: {
+                id: string;
+                display_name: string;
+            } | null;
+            commission_preview: {
+                [key: string]: unknown;
+            } | null;
+            can: {
+                view: string;
+                /** @description Completion is driven by the queue orchestration route; surfaced here for parity. */
+                complete: string;
+                /** @description Cancellation is exposed only where it does not strand a queue entry (Gate C). */
+                cancel: string;
+                update_notes: string;
             };
         };
         /** StaffInvitationResource */
@@ -2051,6 +2233,15 @@ export interface components {
         UpdateServiceCategoryRequest: {
             name?: string;
             sort_order?: number;
+        };
+        /**
+         * UpdateServiceNotesRequest
+         * @description Service-notes update validation (Plan §25.2; Phase 16C). Notes are free-text
+         *     operational context — never client contact. An empty/absent value clears the notes.
+         *     Authoritative values are never accepted from the body.
+         */
+        UpdateServiceNotesRequest: {
+            notes: string | null;
         };
         /**
          * UpdateServiceRequest
@@ -2589,7 +2780,7 @@ export interface operations {
     "audit-logs.index": {
         parameters: {
             query?: {
-                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted";
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted";
                 severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
                 /** @description user ULID */
@@ -4488,10 +4679,88 @@ export interface operations {
             };
         };
     };
+    "personnel.sessions.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "created_at" | "-created_at" | "started_at" | "-started_at" | "completed_at" | "-completed_at";
+                active?: boolean;
+                status?: "pending" | "in_progress" | "completed" | "cancelled";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `PersonnelServiceSessionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PersonnelServiceSessionResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     "platform.audit-logs.index": {
         parameters: {
             query?: {
-                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted";
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted";
                 severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
                 /** @description user ULID */
@@ -5288,6 +5557,191 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: components["schemas"]["ServiceCategoryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "service-sessions.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "created_at" | "-created_at" | "started_at" | "-started_at" | "completed_at" | "-completed_at";
+                active?: boolean;
+                status?: "pending" | "in_progress" | "completed" | "cancelled";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `ServiceSessionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ServiceSessionResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "service-sessions.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The service session ulid */
+                serviceSession: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `ServiceSessionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ServiceSessionResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "service-sessions.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The service session ulid */
+                serviceSession: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelServiceSessionRequest"];
+            };
+        };
+        responses: {
+            /** @description `ServiceSessionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ServiceSessionResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "service-sessions.notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The service session ulid */
+                serviceSession: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateServiceNotesRequest"];
+            };
+        };
+        responses: {
+            /** @description `ServiceSessionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ServiceSessionResource"];
                     };
                 };
             };
