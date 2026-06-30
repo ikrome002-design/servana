@@ -197,3 +197,63 @@ row, and no dead navigation/get-started link is introduced.
 None opened (branch pushed only; no PR until authorized). CI is authoritative for
 the Linux browser/Docker/gitleaks gates. `reviewDecision` will reflect the
 documented solo-maintainer governance exception — not independent approval.
+
+<!-- phase-16b-backend-ci-remediation -->
+## Backend CI remediation
+
+### Initial failure
+
+- GitHub Actions run: `28420643751`
+- Backend job: `84212863355`
+- Initial result: **8 failed, 4 skipped, 751 passed**
+- All eight failures reported:
+  `Call to undefined function createWalkIn()`
+
+### Root cause
+
+`createWalkIn()` was defined inside `QueueApiTest.php`.
+
+Parallel Pest workers do not guarantee that one test file is loaded before
+another test file uses its helper. The assignment and audit workers therefore
+could not access the function.
+
+### Remediation
+
+- Moved `createWalkIn()` into the shared `tests/Pest.php` bootstrap.
+- Removed the local helper from `QueueApiTest.php`.
+- Removed the unused `TestResponse` import from `QueueApiTest.php`.
+- Confirmed there is one definition:
+  `tests/Pest.php:390`.
+
+### Targeted verification
+
+| Test file | Result |
+| --- | --- |
+| `QueueApiTest.php` | 17 passed, 76 assertions |
+| `QueueAssignmentTest.php` | 5 passed, 14 assertions |
+| `QueueAuditTest.php` | 5 passed, 25 assertions |
+
+Combined result: **27 passed, 115 assertions**.
+
+### Full CI-equivalent Backend verification
+
+Environment:
+
+- Container: `servana-app-1`
+- PHP: `8.3.31`
+- Extensions: `pdo_pgsql`, `redis`, `pcntl`
+- PostgreSQL parallel workers: `4`
+
+Results:
+
+| Gate | Result |
+| --- | --- |
+| Composer validation | Passed |
+| Pint | Passed — 604 files |
+| Larastan | Passed — no errors |
+| Full Pest suite | Passed — 759 passed, 4 skipped, 3,476 assertions |
+| Composer audit | Passed — no advisories |
+
+The host-only PHP 8.4 run had environment-specific Redis and OpenAPI failures.
+The affected tests and complete suite passed under the CI-equivalent PHP 8.3
+runtime.

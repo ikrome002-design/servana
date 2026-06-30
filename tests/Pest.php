@@ -381,6 +381,22 @@ function idempotencyMeta(array $overrides = []): array
 }
 
 /*
+ | Shared queue API test helper. This lives in Pest.php so every queue
+ | test file and every parallel worker can access it without depending
+ | on QueueApiTest.php being loaded first.
+ */
+
+/** Create a walk-in over the API as the Front Office actor. */
+function createWalkIn(array $scn, array $overrides = []): TestResponse
+{
+    return test()->actingAs($scn['frontOffice'], 'sanctum')->postJson('/api/v1/walk-ins', array_merge([
+        'assignment_mode' => 'next_available',
+        'service' => $scn['service']->ulid,
+        'client' => $scn['client']->ulid,
+    ], $overrides));
+}
+
+/*
  | Shared file-domain test helpers (Phase 10F). These live in Pest.php so every
  | test file and every parallel worker can use them without depending on another
  | test file being loaded first.

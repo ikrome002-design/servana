@@ -13,19 +13,8 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use Illuminate\Testing\TestResponse;
 
 uses(RefreshDatabase::class)->group('scheduling', 'queue', 'queue-api');
-
-/** Create a walk-in over the API as the Front Office actor. */
-function createWalkIn(array $scn, array $overrides = []): TestResponse
-{
-    return test()->actingAs($scn['frontOffice'], 'sanctum')->postJson('/api/v1/walk-ins', array_merge([
-        'assignment_mode' => 'next_available',
-        'service' => $scn['service']->ulid,
-        'client' => $scn['client']->ulid,
-    ], $overrides));
-}
 
 it('lets Front Office create a walk-in for an existing client (next-available assigns)', function (): void {
     $scn = queueScenario();
