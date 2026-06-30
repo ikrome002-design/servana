@@ -100,6 +100,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/appointments/{appointment}/queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["appointments.queue.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/appointments/{appointment}/reschedule": {
         parameters: {
             query?: never;
@@ -623,6 +639,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/personnel/me/queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["personnel.queue.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/platform/audit-logs": {
         parameters: {
             query?: never;
@@ -648,6 +680,182 @@ export interface paths {
         };
         get: operations["platform.audit-logs.show"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["queue.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["queue.reorder"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries/{queueEntry}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["queue.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries/{queueEntry}/assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["queue.assign"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries/{queueEntry}/call": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["queue.call"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries/{queueEntry}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["queue.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries/{queueEntry}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["queue.complete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries/{queueEntry}/no-show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["queue.no-show"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries/{queueEntry}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["queue.start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue-entries/{queueEntry}/transfer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["queue.transfer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/queue/configuration": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["queue.configuration.show"];
+        put: operations["queue.configuration.update"];
         post?: never;
         delete?: never;
         options?: never;
@@ -975,6 +1183,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/walk-ins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["walk-ins.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -1073,6 +1297,21 @@ export interface components {
         AssignAppointmentRequest: {
             personnel: string;
         };
+        /**
+         * AssignQueueEntryRequest
+         * @description Queue-entry assignment validation (Plan §37; Phase 16B). The assignment mode
+         *     selects next_available (selector), manual (explicit target ULID), or
+         *     preferred_personnel (preferred ULID). Overriding a recorded preferred request to
+         *     a different person requires `reason` (enforced in the action; revalidation runs
+         *     via the shared scheduling services).
+         */
+        AssignQueueEntryRequest: {
+            /** @enum {string} */
+            assignment_mode: "next_available" | "manual" | "preferred_personnel";
+            personnel?: string | null;
+            preferred_personnel?: string | null;
+            reason?: string | null;
+        };
         /** AuditLogResource */
         AuditLogResource: {
             id: string;
@@ -1153,6 +1392,14 @@ export interface components {
             reason?: string | null;
         };
         /**
+         * CancelQueueEntryRequest
+         * @description Queue-entry cancellation validation (Plan §37; Phase 16B). A non-empty reason is
+         *     required (distinct from a no-show, which carries none).
+         */
+        CancelQueueEntryRequest: {
+            reason: string;
+        };
+        /**
          * ChangeConsentRequest
          * @description SMS-consent change validation (Plan §35). Channel is implicitly `sms` (the only
          *     channel in Phase 15A); only the state is supplied.
@@ -1217,6 +1464,20 @@ export interface components {
                 /** Format: email */
                 email?: string | null;
             };
+        };
+        /**
+         * ConvertAppointmentToQueueRequest
+         * @description Appointment-to-queue conversion validation (Plan §25.2, §37; Phase 16B). The
+         *     assignment mode defaults to next_available; manual requires a target ULID and
+         *     preferred_personnel a preferred ULID. The appointment is resolved by its ULID
+         *     route binding (tenant + branch scope); merchant/branch/status/position are derived
+         *     server-side.
+         */
+        ConvertAppointmentToQueueRequest: {
+            /** @enum {string|null} */
+            assignment_mode?: "next_available" | "manual" | "preferred_personnel" | null;
+            personnel?: string | null;
+            preferred_personnel?: string | null;
         };
         /**
          * CreateBranchRequest
@@ -1337,6 +1598,104 @@ export interface components {
             eligible_services: string;
             can: string;
         };
+        /** PersonnelQueueResource */
+        PersonnelQueueResource: {
+            id: string;
+            status: string;
+            position: number;
+            queued_at: string;
+            estimated_wait: {
+                /** @constant */
+                label: "Estimate";
+                effective_minutes: number;
+            };
+            is_preferred_request: string;
+            service?: {
+                id: string;
+                name: string;
+                duration_minutes: number;
+            };
+            client?: {
+                id: string;
+                full_name: string;
+                phone_masked: string;
+            };
+        };
+        /** QueueConfigurationResource */
+        QueueConfigurationResource: {
+            branch_day_id: string;
+            business_date: string;
+            day_status: string;
+            queue_is_open: boolean;
+            effective_queue_open: boolean;
+            queue_capacity: number | null;
+            queue_default_assignment_mode: string;
+            active_count: number;
+        };
+        /** QueueEntryResource */
+        QueueEntryResource: {
+            id: string;
+            status: string;
+            position: number;
+            assignment_mode: string;
+            source: null | {
+                /** @constant */
+                type: "appointment";
+                id: string;
+            } | {
+                /** @constant */
+                type: "walk_in";
+                id: string;
+            };
+            queued_at: string;
+            assigned_at: string;
+            called_at: string;
+            started_at: string;
+            completed_at: string;
+            cancelled_at: string;
+            no_show_at: string;
+            transferred_at: string;
+            cancellation_reason: string | null;
+            transfer_reason: string | null;
+            preferred_personnel_override_reason: string | null;
+            estimated_wait: {
+                /** @constant */
+                label: "Estimate";
+                minutes: number;
+                override_minutes: number | null;
+                override_reason: string | null;
+                effective_minutes: number;
+            };
+            service?: {
+                id: string;
+                name: string;
+                duration_minutes: number;
+            };
+            client?: {
+                id: string;
+                full_name: string;
+                phone_masked: string;
+                phone_last_four: string;
+            };
+            assigned_personnel?: {
+                id: string;
+                display_name: string;
+            } | null;
+            preferred_personnel?: {
+                id: string;
+                display_name: string;
+            } | null;
+            can: {
+                view: string;
+                assign: string;
+                call: string;
+                start: string;
+                complete: string;
+                transfer: string;
+                cancel: string;
+                no_show: string;
+            };
+        };
         /**
          * RegisterMerchantRequest
          * @description Validates Merchant Administrator self-registration (Scope §3.2).
@@ -1351,6 +1710,18 @@ export interface components {
             /** Format: email */
             email: string;
             business_name: string;
+        };
+        /**
+         * ReorderQueueEntriesRequest
+         * @description Queue reorder validation (Plan §37; Phase 16B). `order` is the COMPLETE ordered
+         *     list of active waiting queue-entry ULIDs for one branch. Completeness, duplicates,
+         *     foreign/terminal entries, and stale snapshots are enforced in the action /
+         *     QueuePositionService (deterministic 409 on a stale set). `branch_id` is an
+         *     optional branch ULID used only to disambiguate a multi-branch operator.
+         */
+        ReorderQueueEntriesRequest: {
+            branch_id?: string | null;
+            order: string[];
         };
         /**
          * RequestMagicLinkRequest
@@ -1538,6 +1909,35 @@ export interface components {
             duration_minutes: number;
         };
         /**
+         * StoreWalkInRequest
+         * @description Create-walk-in validation (Plan §37; Phase 16B). Accepts only safe public
+         *     identifiers: an existing branch-client ULID OR the complete new-client fields, a
+         *     service ULID, an assignment mode, optional target/preferred personnel ULIDs, and
+         *     an optional estimated-wait override (value + reason together). The backend derives
+         *     merchant, branch, queue position, status, estimate, actor, and timestamps —
+         *     `merchant_id`, `branch_id` (as ownership), `status`, position, `created_by`,
+         *     internal ids, and any preferred-personnel fee are NEVER accepted from the body.
+         */
+        StoreWalkInRequest: {
+            branch_id?: string | null;
+            /** @enum {string} */
+            assignment_mode: "next_available" | "manual" | "preferred_personnel";
+            service: string;
+            personnel?: string | null;
+            preferred_personnel?: string | null;
+            estimated_wait_override_minutes?: number | null;
+            estimated_wait_override_reason?: string | null;
+            /** @description Client: an existing ULID or a complete new-client object (exactly one). */
+            client?: string | null;
+            new_client?: {
+                full_name?: string;
+                phone?: string;
+                /** Format: email */
+                email?: string | null;
+                notes?: string | null;
+            };
+        };
+        /**
          * TransferAppointmentRequest
          * @description Transfer-appointment validation (Plan §36). The target personnel is a public
          *     staff ULID (must differ from the current assignee — enforced in the action) and
@@ -1547,6 +1947,18 @@ export interface components {
         TransferAppointmentRequest: {
             personnel: string;
             reason?: string | null;
+        };
+        /**
+         * TransferQueueEntryRequest
+         * @description Queue-entry transfer validation (Plan §37; Phase 16B). A non-empty reason is
+         *     always required. Either a target personnel ULID (→ assigned) or an explicit
+         *     `return_to_waiting` flag (→ waiting) must be supplied; the target is revalidated
+         *     by the shared scheduling services in the action.
+         */
+        TransferQueueEntryRequest: {
+            personnel?: string | null;
+            return_to_waiting?: boolean | null;
+            reason: string;
         };
         /**
          * UpdateAvailabilityRequest
@@ -1615,6 +2027,22 @@ export interface components {
                 break_start?: string | null;
                 break_end?: string | null;
             }[];
+        };
+        /**
+         * UpdateQueueConfigurationRequest
+         * @description Queue configuration validation (Plan §37; Phase 16B). Branch Manager only
+         *     (authorized upstream). All fields are optional (partial update); `queue_capacity`
+         *     may be null (no cap) or a positive integer; the default mode is next_available or
+         *     manual (preferred_personnel is a per-client request, never a branch default).
+         *     Capacity-below-active is rejected in the action. `branch_id` disambiguates a
+         *     multi-branch operator.
+         */
+        UpdateQueueConfigurationRequest: {
+            branch_id?: string | null;
+            queue_is_open?: boolean;
+            queue_capacity?: number | null;
+            /** @enum {string} */
+            queue_default_assignment_mode?: "next_available" | "manual";
         };
         /**
          * UpdateServiceCategoryRequest
@@ -1720,7 +2148,7 @@ export interface operations {
                 date?: string;
                 date_from?: string;
                 date_to?: string;
-                status?: "scheduled" | "confirmed" | "checked_in" | "rescheduled" | "cancelled" | "cancelled_with_reason" | "no_show";
+                status?: "scheduled" | "confirmed" | "checked_in" | "rescheduled" | "cancelled" | "cancelled_with_reason" | "no_show" | "queued";
                 client?: string;
                 service?: string;
                 assigned_personnel?: string;
@@ -2032,6 +2460,48 @@ export interface operations {
             };
         };
     };
+    "appointments.queue.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The appointment ulid */
+                appointment: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ConvertAppointmentToQueueRequest"];
+            };
+        };
+        responses: {
+            /** @description `QueueEntryResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     "appointments.reschedule": {
         parameters: {
             query?: never;
@@ -2119,7 +2589,7 @@ export interface operations {
     "audit-logs.index": {
         parameters: {
             query?: {
-                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted";
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted";
                 severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
                 /** @description user ULID */
@@ -3868,7 +4338,7 @@ export interface operations {
                 date?: string;
                 date_from?: string;
                 date_to?: string;
-                status?: "scheduled" | "confirmed" | "checked_in" | "rescheduled" | "cancelled" | "cancelled_with_reason" | "no_show";
+                status?: "scheduled" | "confirmed" | "checked_in" | "rescheduled" | "cancelled" | "cancelled_with_reason" | "no_show" | "queued";
             };
             header?: never;
             path?: never;
@@ -3940,10 +4410,88 @@ export interface operations {
             };
         };
     };
+    "personnel.queue.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "position" | "-position" | "queued_at" | "-queued_at";
+                active?: boolean;
+                status?: "waiting" | "assigned" | "called" | "in_service" | "completed" | "transferred" | "cancelled" | "no_show";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `PersonnelQueueResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PersonnelQueueResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     "platform.audit-logs.index": {
         parameters: {
             query?: {
-                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted";
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted";
                 severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
                 /** @description user ULID */
@@ -4037,6 +4585,578 @@ export interface operations {
             401: components["responses"]["AuthenticationException"];
             403: components["responses"]["AuthorizationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "position" | "-position" | "queued_at" | "-queued_at" | "created_at" | "-created_at";
+                active?: boolean;
+                status?: "waiting" | "assigned" | "called" | "in_service" | "completed" | "transferred" | "cancelled" | "no_show";
+                assignment_mode?: "next_available" | "manual" | "preferred_personnel";
+                service?: string;
+                assigned_personnel?: string;
+                position?: number;
+                queued_from?: string;
+                queued_to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderQueueEntriesRequest"];
+            };
+        };
+        responses: {
+            /** @description Array of `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The queue entry ulid */
+                queueEntry: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The queue entry ulid */
+                queueEntry: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignQueueEntryRequest"];
+            };
+        };
+        responses: {
+            /** @description `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.call": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The queue entry ulid */
+                queueEntry: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Validation failed */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The queue entry ulid */
+                queueEntry: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelQueueEntryRequest"];
+            };
+        };
+        responses: {
+            /** @description `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The queue entry ulid */
+                queueEntry: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Validation failed */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.no-show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The queue entry ulid */
+                queueEntry: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Validation failed */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The queue entry ulid */
+                queueEntry: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Validation failed */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.transfer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The queue entry ulid */
+                queueEntry: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransferQueueEntryRequest"];
+            };
+        };
+        responses: {
+            /** @description `QueueEntryResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.configuration.show": {
+        parameters: {
+            query?: {
+                branch_id?: string | null;
+                queue_is_open?: boolean;
+                queue_capacity?: number | null;
+                queue_default_assignment_mode?: "next_available" | "manual";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `QueueConfigurationResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueConfigurationResource"];
+                    } | {
+                        data: {
+                            branch_day_id: null;
+                            business_date: string;
+                            /** @constant */
+                            day_status: "not_opened";
+                            queue_is_open: boolean;
+                            effective_queue_open: boolean;
+                            queue_capacity: null;
+                            queue_default_assignment_mode: string;
+                            active_count: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "queue.configuration.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateQueueConfigurationRequest"];
+            };
+        };
+        responses: {
+            /** @description `QueueConfigurationResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueConfigurationResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -5377,6 +6497,44 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "walk-ins.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreWalkInRequest"];
+            };
+        };
+        responses: {
+            /** @description `QueueEntryResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QueueEntryResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {

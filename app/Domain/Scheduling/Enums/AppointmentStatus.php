@@ -7,9 +7,9 @@ namespace App\Domain\Scheduling\Enums;
 use App\Domain\Scheduling\Services\AppointmentStateMachine;
 
 /**
- * Appointment lifecycle states (Plan §25.2; Phase 16A subset). Mirrors the DB
- * CHECK. `queued` (16B) and `in_service` (16C) are deferred and added by
- * expand-and-contract in their owning phases — they are intentionally NOT here.
+ * Appointment lifecycle states (Plan §25.2; Phase 16A + the 16B `queued` expand).
+ * Mirrors the DB CHECK. `in_service` (16C) is still deferred and added by
+ * expand-and-contract in its owning phase — it is intentionally NOT here.
  *
  * Status is never assigned directly; every change goes through a named domain
  * action via {@see AppointmentStateMachine}.
@@ -23,6 +23,10 @@ enum AppointmentStatus: string
     case Cancelled = 'cancelled';
     case CancelledWithReason = 'cancelled_with_reason';
     case NoShow = 'no_show';
+    // Phase 16B: the checked-in client has been placed on the branch queue. Terminal
+    // for the appointment workflow (the spawned queue entry owns the lifecycle);
+    // non-reserving (the personnel double-booking exclusion WHERE is unchanged).
+    case Queued = 'queued';
 
     /**
      * Statuses that reserve a personnel member's time (participate in the DB
@@ -45,7 +49,7 @@ enum AppointmentStatus: string
     public function isTerminal(): bool
     {
         return match ($this) {
-            self::Cancelled, self::CancelledWithReason, self::NoShow => true,
+            self::Cancelled, self::CancelledWithReason, self::NoShow, self::Queued => true,
             default => false,
         };
     }
@@ -61,9 +65,9 @@ enum AppointmentStatus: string
         return match ($this) {
             self::Scheduled => [self::Confirmed, self::Cancelled],
             self::Confirmed => [self::CheckedIn, self::Rescheduled, self::Cancelled, self::NoShow],
-            self::CheckedIn => [self::CancelledWithReason],
+            self::CheckedIn => [self::CancelledWithReason, self::Queued],
             self::Rescheduled => [self::Scheduled, self::Confirmed],
-            self::Cancelled, self::CancelledWithReason, self::NoShow => [],
+            self::Cancelled, self::CancelledWithReason, self::NoShow, self::Queued => [],
         };
     }
 

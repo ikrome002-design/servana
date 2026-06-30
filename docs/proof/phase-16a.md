@@ -1,16 +1,25 @@
 # Phase 16A — Appointments — Proof
 
-**Branch:** `phase-16a-appointments` · **Base commit:** `02f4dc5` (verified Phase
-15B merge, PR #25). **Status:** `local_complete` — the full Phase 16A
-specification (data dictionary + state-machine spec + screen specs, schema,
-state machine, double-booking exclusion, branch-calendar validator, mandatory
-Phase 15B `PersonnelSchedulingValidator` integration, domain actions, API,
-authorization, Branch Manager read-only surface, Personnel own-scope surface,
-audit, branch-closure guard, frontend, tests, contracts, docs) is implemented and
-**all local gates pass**. This is **not** `ci_passed`, `merged`, or
-`verified_complete`: no PR has been opened and CI has not run. CI remains
-authoritative for the Linux browser/Docker gates; local Windows Playwright is not
-claimed as a pass (Phase 15B precedent).
+**Branch:** `phase-16a-appointments` (deleted local + remote after merge) ·
+**Base commit:** `02f4dc5` (verified Phase 15B merge, PR #25). **Status:**
+`verified_complete` — MERGED into `main` as **PR #26** (squash merge commit
+`404fed9`, 2026-06-29; original implementation `e62da20`, CI remediation
+`ce04c73`, final pre-merge governance head `794ff85`). The final CI run
+`28378639377` (head `794ff85`) passed all five required checks (Backend,
+Frontend, Docker, Security, E2E — Playwright); the initial run `28372954922`
+failed on E2E and was remediated by `ce04c73` (see the PR #26 lifecycle section
+at the foot of this file). `reviewDecision` remained blank under the documented
+PR-specific solo-maintainer governance exception
+(`docs/governance/solo-maintainer-review-exception-pr-26.md`) — **not**
+independent reviewer approval. The full Phase 16A specification (data dictionary
++ state-machine spec + screen specs, schema, state machine, double-booking
+exclusion, branch-calendar validator, mandatory Phase 15B
+`PersonnelSchedulingValidator` integration, domain actions, API, authorization,
+Branch Manager read-only surface, Personnel own-scope surface, audit,
+branch-closure guard, frontend, tests, contracts, docs) is implemented and all
+gates passed. CI remains authoritative for the Linux browser/Docker gates; local
+Windows Playwright was not claimed as a pass (Phase 15B precedent).
+**REM-PERM-001 remains open** (Phase 19).
 
 Times are branch business time in `Africa/Nairobi`; timestamps are UTC. Frontend
 visibility is UX only — the API (AppointmentPolicy + EnsureBranchScope +

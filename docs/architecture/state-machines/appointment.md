@@ -1,4 +1,14 @@
-# Appointment — State Machine (Plan §25.1, §25.2; Phase 16A)
+# Appointment — State Machine (Plan §25.1, §25.2; Phase 16A, extended 16B)
+
+> **Phase 16B extension (forward-only expand).** Phase 16B adds exactly one
+> transition — `checked_in → queued` — and one state, `queued`, to this aggregate.
+> No existing state or arrow is removed. `queued` is added to the enum, the DB
+> CHECK, the Resource, and the generated contract by a forward-only expand
+> migration (`..._add_queued_status_to_appointments.php`). `in_service`/`completed`
+> are **not** added to the appointment aggregate (those belong to the Queue Entry
+> and, later, the Service Session machines). The `checked_in → queued` transition
+> is specified at the foot of this file under "Phase 16B additions".
+
 
 > Named mandatory state-machine specification (Plan §25.1). One transition record
 > per legal Phase 16A transition. Status is **never** assigned directly — every
@@ -25,8 +35,16 @@ cancelled_with_reason  terminal: cancelled after check-in (reason required)
 no_show                terminal: client did not arrive
 ```
 
-Deferred to later phases (NOT in 16A, added by expand-and-contract):
-`checked_in → queued` (16B), `checked_in → in_service` (16C), `completed` (16C).
+Added by Phase 16B (expand): `queued` — terminal-for-appointment hand-off to the
+queue (see "Phase 16B additions"). Deferred to 16C: `checked_in → in_service`,
+`completed` are **not** added to the appointment aggregate (Queue Entry / Service
+Session own those).
+
+```text
+queued                 the checked-in client has been placed on the branch queue
+                       (exactly one queue_entries row; appointment is now read-only
+                       from the appointment workflow — the queue owns the lifecycle)
+```
 
 ## Transition inventory (the authoritative arrow set)
 
@@ -38,13 +56,17 @@ confirmed   → rescheduled
 confirmed   → cancelled
 confirmed   → no_show
 checked_in  → cancelled_with_reason
+checked_in  → queued                  (Phase 16B)
 rescheduled → scheduled
 rescheduled → confirmed
 ```
 
 Conflict-reserving statuses (participate in the personnel double-booking
 exclusion): `scheduled`, `confirmed`, `checked_in`. Non-reserving: `rescheduled`,
-`cancelled`, `cancelled_with_reason`, `no_show`.
+`cancelled`, `cancelled_with_reason`, `no_show`, `queued`. (`queued` does **not**
+reserve the appointment interval — the queue entry it spawns owns the live
+operational state; the personnel exclusion no longer applies once the client is on
+the queue.)
 
 ---
 
@@ -141,6 +163,36 @@ audit_event: appointment.cancelled (warning; sanitised reason)
 failure_codes: 422 invalid_state_transition, 422 reason_required, 403, 404
 tests: cancel-with-reason requires reason; missing reason 422; terminal cannot reopen
 ```
+
+## Phase 16B additions
+
+### checked_in → queued (place the checked-in client on the branch queue)
+```text
+aggregate: appointment | current_state: checked_in | next_state: queued
+actor: Front Office | required_permission: queue.create
+tenant_conditions: appointment.merchant_id == ctx.merchant
+branch_conditions: appointment.branch_id in active branch assignments AND == target queue branch
+own_scope_conditions: n/a | entitlement_conditions: none
+operational_status_conditions: merchants.status = active; branch active; Branch Day open; effective queue open; capacity not reached
+period_lock_conditions: n/a
+input_validation: appointment resolves in tenant+branch by ULID; optional assignment mode/target/preferred for the spawned entry
+preconditions: appointment.status = checked_in; NO existing queue_entries row for this appointment
+transaction_boundary: single DB transaction | rows_locked: appointment FOR UPDATE | advisory_lock: pg_advisory_xact_lock(merchant_id, branch_id) for queue position
+side_effects: create EXACTLY ONE queue_entries row (appointment_id set, walk_in_id null, status=waiting or assigned, next position, estimate snapshot); appointment.status = queued
+generated_records: one queue_entries row | NO service_session, invoice, payment, commission preview
+duplicate_protection: unique (appointment_id) on queue_entries — repeated conversion → deterministic 409 queue_conversion_exists
+notifications: none (Phase 21N) | queue_jobs: none
+audit_event: appointment.queued (info) + queue_entry.created (info) — two first-class aggregates created in one atomic operation
+failure_codes: 422 invalid_state_transition, 409 queue_conversion_exists, 409 branch_day_not_open, 409 queue_closed, 409 queue_capacity_reached, 403 permission, 404 foreign id
+retry_behavior: re-assert state + appointment_id uniqueness under lock | reversal_or_correction: the queue entry's own lifecycle (cancel/no-show/complete)
+tests: convert once; convert twice → 409; wrong-state appointment → 422; foreign tenant → 404; out-of-branch → 403; closed/capacity-full → 409; both queue row + appointment status commit or both roll back; no walk-in/session duplicate
+```
+
+`queued` is terminal for the **appointment** workflow: the appointment exposes no
+further mutation route once queued; the spawned queue entry owns the operational
+lifecycle. The personnel double-booking exclusion `WHERE` clause is unchanged (it
+already only covers `scheduled|confirmed|checked_in`), so a queued appointment no
+longer reserves the interval.
 
 ## Notes
 - `rescheduled` is transient — every reschedule resolves immediately to `scheduled`

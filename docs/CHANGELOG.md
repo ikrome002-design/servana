@@ -6,7 +6,83 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 16A — Appointments (`phase-16a-appointments`) — local_complete
+### Phase 16B — Walk-Ins and Queues (`phase-16b-walk-ins-queues`) — local_complete
+
+Operational queue foundation on merged Phase 16A (`404fed9`, PR #26): the
+branch-owned `walk_ins` and `queue_entries` tables, the eight-state Queue Entry
+machine (Plan §25.2), the forward-only appointment `checked_in → queued` expand,
+atomic walk-in creation (reusing the Phase 15A client action) and atomic
+appointment-to-queue conversion (one entry per source), a deterministic
+`pg_advisory_xact_lock` + partial-unique active-position model, a deterministic
+next-available personnel selector and wait estimator (labelled "Estimate"), Front
+Office queue operations (board + walk-in wizard + entry detail), Branch Manager
+read-only visibility + queue configuration, and Personnel strict own-scope
+visibility (Plan §37, §19, §13.7, §69, §80). No service session, invoice, payment,
+preferred-personnel fee, notification, report materialized view, or cross-domain
+search is introduced (deferred to 16C/17/18/20A/21N/22). See
+[docs/proof/phase-16b.md](proof/phase-16b.md).
+
+- **Schema:** `walk_ins` + `queue_entries` (branch-owned, ULID), 13 `queue_entries`
+  CHECKs (source-XOR, eight states, three assignment modes, `position > 0`,
+  status↔timestamp coherence, required reasons, wait-override pairing), per-source
+  UNIQUE, partial-unique `(branch_id, position) WHERE status IN
+  (waiting,assigned,called)`, merchant-first + lookup indexes, composite-FK
+  tenant/branch consistency; Branch Day gains `queue_is_open`/`queue_capacity`/
+  `queue_default_assignment_mode`; the appointment status CHECK + `checked_in_at`
+  coherence CHECK expand to include `queued` (no row loss).
+- **State machine (Queue Entry):** `waiting, assigned, called, in_service,
+  completed, transferred, cancelled, no_show`; invalid transitions → 422
+  `invalid_state_transition`; no generic status endpoint; `in_service`/`completed`
+  are queue states only (no service session in 16B).
+- **Permissions:** removed the legacy `queue.operate`/`queue.transfer_entries`/
+  `queue.configure`; activated Front Office `queue.view/create/assign/transfer/
+  reorder` + `preferred_personnel.select` and Personnel own-scope
+  `personnel.my_queue.view`. Branch Manager holds **no** operational `queue.*` —
+  it configures via `branch.profile.manage` + `day.open_close` and reads via
+  `branch.dashboard.view`. **REM-PERM-001 stays open** (Phase 19).
+- **Backend/API:** 15 `/api/v1` routes (queue configuration, queue list/show,
+  walk-in store, appointment conversion, assign/call/start/complete/transfer/
+  cancel/no-show, reorder, personnel own-queue). Form Request → Policy → 11
+  transactional domain actions → masked Resource; mutations `branch_mutation`;
+  each authorises, acquires the per-branch advisory lock + row locks, validates
+  state + capacity + (where personnel is involved) the reused Phase 15B
+  `PersonnelSchedulingValidator`, recalculates estimates, and writes one coherent
+  typed audit event.
+- **Audit:** `queue.configuration.updated`, `walk_in.created`,
+  `queue_entry.created/assigned/called/started/completed/transferred/reordered/
+  cancelled/no_show/wait_estimate_overridden`, `appointment.queued` — safe context
+  only (no full contact, blind index, tokens, headers, full bodies, or sequential
+  ids).
+- **Branch closure:** `BranchClosureGuard` now blocks branch archival **and** day
+  close while any active (waiting/assigned/called/in_service/transferred) queue
+  entry exists; terminal entries never block.
+- **Frontend:** Front Office queue board (capability-gated actions + keyboard
+  move-up/down reorder) + walk-in wizard + entry detail; Branch Manager read-only
+  board + queue settings; Personnel own-queue; navigation flips (Queue/Walk-ins/My
+  queue planned→live) + get-started "Start a walk-in" deep link; six §27.1 screen
+  specs + regenerated inventory/navigation YAML; OpenAPI (91 routes) + TS regen.
+- **Tests/gates:** queue group 62 pass; full backend 759 pass / 4 skip / 0 fail;
+  Vitest 171 pass; Pint + Larastan L8 + vue-tsc + ESLint(0) + build +
+  OpenAPI-deterministic + TS parity + route-security + permission-matrix +
+  audit-coverage clean; Playwright `queue.spec.ts` authored (Linux CI
+  authoritative); composer audit clean; npm audit 0 high/critical. Not yet
+  `ci_passed`/`merged` (no PR/CI).
+
+### Phase 16A — Appointments (`phase-16a-appointments`) — verified_complete (PR #26 MERGED `404fed9`)
+
+Merged into `main` as **PR #26** (squash merge commit `404fed9`, 2026-06-29;
+original implementation `e62da20`, CI remediation `ce04c73`, final pre-merge
+governance head `794ff85`). Final CI run `28378639377` — five required checks
+(Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS. The initial
+CI run `28372954922` failed on E2E (broad appointments collection mock
+intercepting detail/action requests → missing check-in capability and a
+non-adaptive dark-mode text token → genuine axe contrast failure); remediation
+`ce04c73` let detail/action requests fall through to their mocks and used the
+adaptive heading token, with the axe gate, timeouts, retries and business
+behaviour preserved (not a flake). reviewDecision blank under the documented
+PR-specific solo-maintainer governance exception
+(`docs/governance/solo-maintainer-review-exception-pr-26.md`) — not independent
+approval. **REM-PERM-001 remains open** (Phase 19).
 
 Front Office appointment foundation on merged Phase 15B (`02f4dc5`, PR #25): the
 canonical `appointments` table, the Appointment state machine (Plan §25.2), Front

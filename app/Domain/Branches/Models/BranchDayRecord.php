@@ -6,6 +6,7 @@ namespace App\Domain\Branches\Models;
 
 use App\Domain\Branches\Enums\BranchDayStatus;
 use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Scheduling\Enums\QueueAssignmentMode;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Database\Factories\BranchDayRecordFactory;
@@ -31,6 +32,9 @@ use Illuminate\Support\Str;
  * @property Carbon|null $closed_at
  * @property string|null $reopened_reason
  * @property array<string, mixed>|null $summary
+ * @property bool $queue_is_open
+ * @property int|null $queue_capacity
+ * @property QueueAssignmentMode $queue_default_assignment_mode
  */
 class BranchDayRecord extends Model
 {
@@ -60,6 +64,9 @@ class BranchDayRecord extends Model
         'closed_at',
         'reopened_reason',
         'summary',
+        'queue_is_open',
+        'queue_capacity',
+        'queue_default_assignment_mode',
     ];
 
     protected static function booted(): void
@@ -82,12 +89,25 @@ class BranchDayRecord extends Model
             'opened_at' => 'datetime',
             'closed_at' => 'datetime',
             'summary' => 'array',
+            'queue_is_open' => 'boolean',
+            'queue_capacity' => 'integer',
+            'queue_default_assignment_mode' => QueueAssignmentMode::class,
         ];
     }
 
     public function getRouteKeyName(): string
     {
         return 'ulid';
+    }
+
+    /**
+     * The effective queue is open only when the day is operationally open AND the
+     * Branch Manager has opened the queue (Plan §37). A paused/closed/not-opened
+     * day is effectively a closed queue regardless of the flag.
+     */
+    public function effectiveQueueOpen(): bool
+    {
+        return $this->status === BranchDayStatus::Open && $this->queue_is_open;
     }
 
     /** @return BelongsTo<MerchantBranch, $this> */

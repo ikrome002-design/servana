@@ -54,6 +54,21 @@ export const frontOfficeRoutes: RouteRecordRaw[] = [
         name: 'front-office.appointments.detail',
         component: () => import('@/pages/front-office/AppointmentDetail.vue'),
       },
+      {
+        path: 'queue',
+        name: 'front-office.queue',
+        component: () => import('@/pages/front-office/QueueBoard.vue'),
+      },
+      {
+        path: 'walk-in',
+        name: 'front-office.walk-in',
+        component: () => import('@/pages/front-office/WalkInCreate.vue'),
+      },
+      {
+        path: 'queue/:id',
+        name: 'front-office.queue.detail',
+        component: () => import('@/pages/front-office/QueueEntryDetail.vue'),
+      },
     ],
   },
 ];

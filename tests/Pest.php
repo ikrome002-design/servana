@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Domain\Auth\Models\MfaCredential;
+use App\Domain\Branches\Enums\BranchDayStatus;
+use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
 use App\Domain\Branches\Models\BranchUserAssignment;
 use App\Domain\Branches\Models\MerchantBranch;
@@ -17,6 +19,7 @@ use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Scheduling\Enums\QueueAssignmentMode;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Models\User;
 use Carbon\CarbonImmutable;
@@ -227,6 +230,95 @@ function appointmentScenario(): array
 }
 
 /**
+ * A complete, valid Front-Office queue scenario (Phase 16B): an active merchant +
+ * branch with an OPEN Branch Day for TODAY and the queue open, a Front Office actor
+ * (branch-assigned), a Branch Manager, two eligible + currently-available Personnel
+ * members, an active 30-minute service, and a branch client. Availability covers the
+ * whole of today's weekday so "now" is always inside it (the queue validates the
+ * "now + duration" window). Individual tests tweak capacity/availability as needed.
+ *
+ * @return array{merchant: Merchant, branch: MerchantBranch, frontOffice: User, branchManager: User, staff: StaffProfile, staffUser: User, staff2: StaffProfile, staff2User: User, service: Service, client: Client, day: BranchDayRecord, weekday: int}
+ */
+function queueScenario(?int $capacity = null): array
+{
+    $merchant = Merchant::factory()->active()->create();
+    $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
+
+    $now = CarbonImmutable::now('Africa/Nairobi');
+    $weekday = $now->dayOfWeek;
+
+    BranchOperatingHour::query()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'weekday' => $weekday,
+        'opens_at' => '00:00:00',
+        'closes_at' => '23:59:00',
+        'is_closed' => false,
+    ]);
+
+    [$frontOffice] = branchStaff($merchant, $branch, MerchantUserRole::FrontOffice);
+    [$branchManager] = branchStaff($merchant, $branch, MerchantUserRole::BranchManager);
+    [$staffUser, , $staff] = branchStaff($merchant, $branch, MerchantUserRole::Personnel);
+    [$staff2User, , $staff2] = branchStaff($merchant, $branch, MerchantUserRole::Personnel);
+
+    $service = Service::factory()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'duration_minutes' => 30,
+    ]);
+
+    foreach ([$staff, $staff2] as $member) {
+        ServicePersonnelEligibility::query()->create([
+            'merchant_id' => $merchant->id,
+            'branch_id' => $branch->id,
+            'service_id' => $service->id,
+            'staff_profile_id' => $member->id,
+            'active' => true,
+        ]);
+        PersonnelAvailability::query()->create([
+            'merchant_id' => $merchant->id,
+            'branch_id' => $branch->id,
+            'staff_profile_id' => $member->id,
+            'type' => 'recurring',
+            'weekday' => $weekday,
+            'start_time' => '00:00:00',
+            'end_time' => '23:59:00',
+            'available' => true,
+        ]);
+    }
+
+    $client = Client::factory()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+    ]);
+
+    $day = BranchDayRecord::query()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'business_date' => $now->toDateString(),
+        'status' => BranchDayStatus::Open,
+        'queue_is_open' => true,
+        'queue_capacity' => $capacity,
+        'queue_default_assignment_mode' => QueueAssignmentMode::NextAvailable,
+    ]);
+
+    return [
+        'merchant' => $merchant,
+        'branch' => $branch,
+        'frontOffice' => $frontOffice,
+        'branchManager' => $branchManager,
+        'staff' => $staff,
+        'staffUser' => $staffUser,
+        'staff2' => $staff2,
+        'staff2User' => $staff2User,
+        'service' => $service,
+        'client' => $client,
+        'day' => $day,
+        'weekday' => $weekday,
+    ];
+}
+
+/**
  * A user holding one active membership of the given role in an active merchant
  * (R3 MFA tests). For a Finance member (mandatory MFA) this is the standard way
  * to get a privileged non-admin identity.
@@ -286,6 +378,22 @@ function idempotencyMeta(array $overrides = []): array
         'http_method' => 'POST',
         'request_content_type' => 'application/json',
     ], $overrides);
+}
+
+/*
+ | Shared queue API test helper. This lives in Pest.php so every queue
+ | test file and every parallel worker can access it without depending
+ | on QueueApiTest.php being loaded first.
+ */
+
+/** Create a walk-in over the API as the Front Office actor. */
+function createWalkIn(array $scn, array $overrides = []): TestResponse
+{
+    return test()->actingAs($scn['frontOffice'], 'sanctum')->postJson('/api/v1/walk-ins', array_merge([
+        'assignment_mode' => 'next_available',
+        'service' => $scn['service']->ulid,
+        'client' => $scn['client']->ulid,
+    ], $overrides));
 }
 
 /*

@@ -24,6 +24,8 @@ use App\Domain\Merchants\Models\MerchantStatusHistory;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
+use App\Domain\Scheduling\Models\QueueEntry;
+use App\Domain\Scheduling\Models\WalkIn;
 
 /**
  * Central tenant/branch ownership registry (Plan §2.1, §8.2, §13.1; ADR-002; R5).
@@ -64,6 +66,9 @@ final class TenantOwnership
         'personnel_availability',
         // Phase 16A — Appointments (Plan §13.7, §36, §80).
         'appointments',
+        // Phase 16B — Walk-ins & queues (Plan §13.7, §37, §80).
+        'walk_ins',
+        'queue_entries',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -144,6 +149,9 @@ final class TenantOwnership
         PersonnelAvailability::class => 'branch',
         // Phase 16A — branch-owned appointments (BelongsToMerchant + BelongsToBranch).
         Appointment::class => 'branch',
+        // Phase 16B — branch-owned walk-ins & queue entries (BelongsToMerchant + BelongsToBranch).
+        WalkIn::class => 'branch',
+        QueueEntry::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -165,5 +173,8 @@ final class TenantOwnership
         'personnel_availability' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         // Phase 16A — branch consistency via composite FK to merchant_branches.
         'appointments' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 16B — branch consistency via composite FK to merchant_branches.
+        'walk_ins' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'queue_entries' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }

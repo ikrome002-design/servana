@@ -8,7 +8,7 @@
 
 meta:
   generated: "2026-06-21"
-  last_updated: "2026-06-29 (Phase 15B verified_complete on PR #25 merge 02f4dc5; Phase 16A appointments started — no new remediation item; REM-PERM-001 remains open, Phase 19)"
+  last_updated: "2026-06-29 (Phase 16A appointments verified_complete on PR #26 merge 404fed9, final CI run 28378639377 all SUCCESS — no new remediation item; Phase 16B walk-ins & queues in progress on branch phase-16b-walk-ins-queues, base 404fed9 — no new remediation item for a feature phase; REM-PERM-001 remains open, Phase 19)"
   branch: docs/pre-feature-remediation-gate-closure
   base: 4f0d4f3   # merged main (PR #19, R7)
   # §5.4 — CLOSED decision: all PRE_FEATURE_REMEDIATION items are verified_complete

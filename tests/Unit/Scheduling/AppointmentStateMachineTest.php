@@ -19,6 +19,7 @@ function legalAppointmentTransitions(): array
         ['confirmed', 'cancelled'],
         ['confirmed', 'no_show'],
         ['checked_in', 'cancelled_with_reason'],
+        ['checked_in', 'queued'], // Phase 16B expand
         ['rescheduled', 'scheduled'],
         ['rescheduled', 'confirmed'],
     ];
@@ -42,8 +43,8 @@ it('throws the 422 invalid_state_transition envelope for an illegal transition',
     (new AppointmentStateMachine)->ensure(AppointmentStatus::Scheduled, AppointmentStatus::CheckedIn);
 })->throws(AppointmentStateException::class);
 
-it('treats cancelled, cancelled_with_reason and no_show as terminal (no outgoing transitions)', function (): void {
-    foreach ([AppointmentStatus::Cancelled, AppointmentStatus::CancelledWithReason, AppointmentStatus::NoShow] as $terminal) {
+it('treats cancelled, cancelled_with_reason, no_show and queued as terminal (no outgoing transitions)', function (): void {
+    foreach ([AppointmentStatus::Cancelled, AppointmentStatus::CancelledWithReason, AppointmentStatus::NoShow, AppointmentStatus::Queued] as $terminal) {
         expect($terminal->isTerminal())->toBeTrue()
             ->and($terminal->allowedTransitions())->toBe([]);
     }
@@ -59,10 +60,10 @@ it('marks scheduled, confirmed and checked_in as the personnel-reserving states'
         ->and(AppointmentStatus::NoShow->reservesTime())->toBeFalse();
 });
 
-it('does not define queued or in_service (deferred to 16B/16C)', function (): void {
+it('defines queued (16B expand) but not in_service or completed (deferred to 16C)', function (): void {
     $values = array_map(fn (AppointmentStatus $s): string => $s->value, AppointmentStatus::cases());
 
-    expect($values)->not->toContain('queued')
+    expect($values)->toContain('queued')
         ->and($values)->not->toContain('in_service')
         ->and($values)->not->toContain('completed');
 });
