@@ -129,6 +129,17 @@ enum AuditEvent: string
     case QueueEntryNoShow = 'queue_entry.no_show';
     case QueueEntryWaitEstimateOverridden = 'queue_entry.wait_estimate_overridden';
 
+    // --- Service sessions (Plan §25.2, §13.7; Phase 16C). Front Office operates;
+    // one coherent typed event per action. Context carries only safe ids
+    // (service-session/queue-entry/client/service/personnel ULIDs), prev/new state,
+    // the preferred-personnel honoured/overridden flag, and a SANITISED reason —
+    // never full contact, blind index, tokens, headers, full bodies, raw unsanitised
+    // notes, or sequential ids. Completion's NON-PAYABLE commission preview never
+    // writes a ledger.
+    case ServiceSessionStarted = 'service_session.started';
+    case ServiceSessionCompleted = 'service_session.completed';
+    case ServiceSessionCancelled = 'service_session.cancelled';
+
     // --- Tenant/branch isolation (Plan §8.4) — name preserved from Phase 9.
     case UnauthorizedAccess = 'unauthorized_access';
 
@@ -180,6 +191,8 @@ enum AuditEvent: string
             self::QueueEntryStarted,
             self::QueueEntryCompleted,
             self::QueueEntryWaitEstimateOverridden,
+            self::ServiceSessionStarted,
+            self::ServiceSessionCompleted,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
@@ -219,6 +232,7 @@ enum AuditEvent: string
             self::QueueEntryTransferred,
             self::QueueEntryCancelled,
             self::QueueEntryNoShow,
+            self::ServiceSessionCancelled,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,

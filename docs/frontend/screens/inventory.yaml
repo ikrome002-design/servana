@@ -445,6 +445,12 @@ screens:
     status: implemented
     phase: Phase 16B
     spec: front-office/front-office-queue-detail.md
+  - key: front-office-service-sessions
+    domain: front-office
+    route: front-office.sessions
+    status: implemented
+    phase: Phase 16C
+    spec: front-office/front-office-service-sessions.md
   - key: front-office-invoicing
     domain: front-office
     route: ~
@@ -465,10 +471,10 @@ screens:
     spec: personnel/personnel-queue.md
   - key: personnel-sessions
     domain: personnel
-    route: ~
-    status: planned
+    route: personnel.sessions
+    status: implemented
     phase: Phase 16C
-    spec: ~
+    spec: personnel/personnel-sessions.md
   - key: personnel-my-earnings
     domain: personnel
     route: ~

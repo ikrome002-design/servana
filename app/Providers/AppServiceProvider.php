@@ -23,6 +23,7 @@ use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Scheduling\Models\QueueEntry;
+use App\Domain\Scheduling\Models\ServiceSession;
 use App\Domain\Tenancy\TenantContext;
 use App\Policies\AppointmentPolicy;
 use App\Policies\AuditLogPolicy;
@@ -36,6 +37,7 @@ use App\Policies\QueueEntryPolicy;
 use App\Policies\ServiceCategoryPolicy;
 use App\Policies\ServicePersonnelEligibilityPolicy;
 use App\Policies\ServicePolicy;
+use App\Policies\ServiceSessionPolicy;
 use App\Policies\StaffInvitationPolicy;
 use App\Policies\StaffProfilePolicy;
 use App\Support\CorrelationId;
@@ -72,6 +74,8 @@ class AppServiceProvider extends ServiceProvider
         Appointment::class => AppointmentPolicy::class,
         // Phase 16B — walk-ins & queues.
         QueueEntry::class => QueueEntryPolicy::class,
+        // Phase 16C — service sessions.
+        ServiceSession::class => ServiceSessionPolicy::class,
     ];
 
     public function register(): void

@@ -9,7 +9,9 @@ use App\Domain\Branches\Enums\CashUpStatus;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Scheduling\Enums\AppointmentStatus;
 use App\Domain\Scheduling\Enums\QueueEntryStatus;
+use App\Domain\Scheduling\Enums\ServiceSessionStatus;
 use App\Domain\Scheduling\Models\QueueEntry;
+use App\Domain\Scheduling\Models\ServiceSession;
 use Carbon\CarbonImmutable;
 
 /**
@@ -18,7 +20,7 @@ use Carbon\CarbonImmutable;
  * records exist. Scope lists eight blocking conditions:
  *
  *   1 active queue entries          ─ ENFORCED (Phase 16B; queue_entries)
- *   2 in-progress service sessions  ─ Phase 16C (sessions) — explicit stub
+ *   2 in-progress service sessions  ─ ENFORCED (Phase 16C; service_sessions)
  *   3 unpaid invoices               ─ Phase 17 (invoicing) — explicit stub
  *   4 pending payment validations   ─ Phase 18 (payments) — explicit stub
  *   5 unissued receipts (validated) ─ Phase 18 (receipts) — explicit stub
@@ -103,6 +105,9 @@ final class BranchClosureGuard
         if ($this->hasActiveQueueEntries($branch)) {
             $blockers[] = 'active_queue_entries';
         }
+        if ($this->hasInProgressSessions($branch)) {
+            $blockers[] = 'in_progress_sessions';
+        }
 
         return $blockers;
     }
@@ -143,10 +148,16 @@ final class BranchClosureGuard
             ->exists();
     }
 
-    /** Phase 16C (service sessions). */
+    /**
+     * Phase 16C (service sessions): any active service session (pending/in_progress)
+     * blocks archival and day close. Terminal completed/cancelled never block.
+     */
     private function hasInProgressSessions(MerchantBranch $branch): bool
     {
-        return false;
+        return ServiceSession::query()
+            ->where('branch_id', $branch->id)
+            ->whereIn('status', ServiceSessionStatus::values(ServiceSessionStatus::activeStatuses()))
+            ->exists();
     }
 
     /** Phase 16A (appointments): any active (reserving) appointment blocks archival. */

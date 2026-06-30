@@ -1,10 +1,10 @@
 # Services, Clients & Scheduling — Data Dictionary
 
 Canonical DDL authority for the Phase 15A catalogue/clients tables, the Phase
-15B `personnel_availability` scheduling table, and the Phase 16A `appointments`
-table (Plan §13.2, §13.7, §35, §36, §39). The remaining scheduling tables
-(`walk_ins`, `queue_entries`, `service_sessions`) are listed in §13.7 but are
-**owned by later phases (16B–16C)** and are intentionally **not** created here.
+15B `personnel_availability` scheduling table, the Phase 16A `appointments`
+table, the Phase 16B `walk_ins`/`queue_entries` tables, and the Phase 16C
+`service_sessions` table (Plan §13.2, §13.7, §35, §36, §39). All §13.7 scheduling
+tables are now created in their owning phases (15A–16C).
 
 Structural rule (Plan §2.1, §13.1): tenant-owned → `merchant_id`; branch-owned →
 `merchant_id` + `branch_id` with a DB-level composite-FK consistency constraint
@@ -41,6 +41,11 @@ an uppercase ISO-4217 `char(3)` defaulting to `KES`.
 11. `…_create_queue_entries_table` (16B) — branch-owned; FKs to
     `walk_ins`/`appointments`/`clients`/`services`/`staff_profiles` (RESTRICT);
     one-entry-per-source uniqueness; partial-unique active position per branch.
+12. `…_create_service_sessions_table` (16C) — branch-owned; FKs to
+    `queue_entries`/`clients`/`services`/`staff_profiles` (RESTRICT); one-session-
+    per-queue-entry uniqueness; **partial-unique one active session per personnel**
+    `WHERE status IN ('pending','in_progress')` (duplicate-active protection);
+    `UNIQUE (id, merchant_id)` composite-FK target for Phase 17 `invoice_items`.
 
 Each migration: `Schema::create` → CHECK constraints + partial/unique indexes +
 composite-FK consistency constraint via raw `DB::statement` (mirrors the
@@ -677,6 +682,63 @@ from **exactly one** source: a walk-in (`walk_in_id`) or a checked-in appointmen
 
 ---
 
+## `service_sessions` (16C) — branch-owned
+
+The actual unit of service delivery (Plan §13.7, §25.2; Phase 16C). A service
+session always originates from a **queue entry** (`queue_entry_id`): the queue
+`called → in_service` transition creates and starts exactly one session, and
+`in_service → completed` completes it. **Session source (Gate A, resolved):** the
+canonical §13.7 summary names only `queue_entry_id` (no `appointment_id`); the
+authoritative appointment state machine (`docs/architecture/state-machines/appointment.md`)
+explicitly does **not** add `in_service`/`completed` to the appointment aggregate —
+a checked-in appointment reaches a session through `checked_in → queued` (16B,
+already sets `queue_entries.appointment_id`) and then the queue lifecycle. So
+appointment provenance is preserved through `queue_entries.appointment_id`; there
+is **no** `appointment_id` column on `service_sessions` and **no** direct
+appointment → session route in 16C. **Service identity (Gate B, resolved):** the
+performed `service_id` is snapshotted from the locked source queue entry inside the
+start transaction (the queue entry carries `service_id`), giving DB-safe
+merchant consistency, unambiguous eligibility validation, and clean audit ULIDs
+without a speculative service-item collection. Terminal records are retained (no
+hard-delete API).
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint PK identity | no | — | internal key (never exposed) |
+| `ulid` | char(26) | no | — | external id; `UNIQUE`; route key |
+| `merchant_id` | bigint FK→merchants | no | — | tenant owner; `ON DELETE CASCADE` |
+| `branch_id` | bigint FK→merchant_branches | no | — | branch owner; `ON DELETE CASCADE` |
+| `queue_entry_id` | bigint FK→queue_entries | yes | `null` | source; `UNIQUE` (one session per queue entry); `ON DELETE RESTRICT`. Always set in 16C; nullable per canonical §13.7 summary (forward-compatible with a future direct path) |
+| `client_id` | bigint FK→clients | no | — | derived from the source; `ON DELETE RESTRICT` |
+| `service_id` | bigint FK→services | no | — | performed service; snapshotted from the source (Gate B); `ON DELETE RESTRICT` |
+| `staff_profile_id` | bigint FK→staff_profiles | no | — | personnel performing the service; `ON DELETE RESTRICT` |
+| `status` | varchar(20) | no | `'pending'` | `CHECK IN ('pending','in_progress','completed','cancelled')` |
+| `started_at` | timestamptz | yes | `null` | required for in_progress/completed |
+| `completed_at` | timestamptz | yes | `null` | required only for completed |
+| `cancelled_at` | timestamptz | yes | `null` | required for cancelled |
+| `cancellation_reason` | text | yes | `null` | required for cancelled (sanitised) |
+| `notes` | text | yes | `null` | service notes (sanitised; never client contact) |
+| `preferred_personnel_honored` | boolean | yes | `null` | immutable execution evidence: `null` = no preferred request on the source; `true` = honoured; `false` = overridden to another person (the source carries the override reason). Carries **no fee** |
+| `created_by` | bigint FK→users | yes | `null` | Front Office actor; `ON DELETE SET NULL` |
+| `created_at` / `updated_at` | timestamptz | no | — | Eloquent timestamps |
+
+- **Status / state machine (§25.2; Phase 16C).** Four states: `pending` (created, not yet started — transient in the queue path: created and started atomically), `in_progress` (service being performed), `completed` (terminal), `cancelled` (terminal). Transitions: `pending → in_progress`, `pending → cancelled`, `in_progress → completed`, `in_progress → cancelled`. Every other pair is invalid → `422 invalid_state_transition` via `ServiceSessionStateMachine`. There is **no** generic `PATCH status`; status is never assigned directly. Terminal states cannot reopen. See `docs/architecture/state-machines/service-session.md`.
+- **Status/timestamp coherence (CHECK):** `started_at` not null when status ∈ {in_progress, completed}; `completed_at` not null **iff** completed; `cancelled_at` not null **iff** cancelled; `cancellation_reason` not null when cancelled; `completed_at IS NULL OR started_at IS NOT NULL` (a completed session was started).
+- **Duplicate-active protection:** **partial unique** index on `(staff_profile_id) WHERE status IN ('pending','in_progress')` — a personnel member can have at most one active (pending/in_progress) session at a time; PostgreSQL is the concurrency authority. A collision maps to a stable `409 duplicate_active_service_session` (no SQLSTATE / constraint name leaked). Plus `UNIQUE (queue_entry_id)` (nullable → only non-null enforced) — a queue entry produces at most one session (repeat queue-start is idempotently rejected at the DB).
+- **Indexes:** `(merchant_id, branch_id)`, `(branch_id, status)`, `(staff_profile_id, status)`, `(client_id)`; `UNIQUE (ulid)`; `UNIQUE (queue_entry_id)`; the active partial-unique above; `UNIQUE (id, merchant_id)` (composite-FK target for Phase 17 `invoice_items.service_session_id`).
+- **Composite FKs (same-merchant linkage):** `(branch_id, merchant_id)→merchant_branches` CASCADE; `(queue_entry_id, merchant_id)→queue_entries` RESTRICT; `(client_id, merchant_id)→clients` RESTRICT; `(service_id, merchant_id)→services` RESTRICT; `(staff_profile_id, merchant_id)→staff_profiles` RESTRICT. `client_id`/`service_id`/`branch_id` are derived from the locked source queue entry inside the start transaction, so source consistency is structurally guaranteed; the composite FKs make cross-merchant linkage impossible at the DB.
+- **Queue/session coupling (resolved):** start (`StartQueueEntry`) and complete (`CompleteQueueEntry`) are the transactional orchestration points — they lock the position + queue entry, run both state machines, revalidate eligibility/branch-assignment/preferred-personnel via the reused `QueuePersonnelAssignmentValidator`/`PersonnelSchedulingValidator` (no duplication), enforce duplicate-active, and write coherent timestamps + one audit event each. Any failure rolls back queue **and** session with no success audit.
+- **Cancellation coupling (Gate C, resolved conservatively):** the four-state machine defines and unit-tests `in_progress → cancelled`, but the 16C cancel **action/route** permits cancellation only where it does not strand a queue entry — i.e. from `pending` (and any future `queue_entry_id IS NULL` path). The Queue Entry machine defines **no** `in_service → cancelled`; exposing in-progress cancellation for a queue-linked session would strand the queue, mark it completed (semantically wrong for an aborted service), or require an undocumented queue transition — all forbidden. Workflow-level in-progress abort is **explicitly deferred** pending an authoritative Queue Entry `in_service → (cancelled|aborted)` extension (recommended product decision; future phase). No queue transition is invented.
+- **Commission preview (Gate D, resolved).** Completion returns a typed `CommissionPreviewResult` that is **preview only** — never earned, validated, or payable, and never writes a `commission_ledger`/`commission_rules`/compensation-plan row. No compensation configuration exists yet (Phases 20F/20G), so the preview is `preview_status: unavailable, reason: compensation_not_configured, earned: false, payable: false`. "Not configured" is never represented as a zero amount; salary-only personnel are `not_applicable`. Only validated payment in the later payment/compensation workflow may create earned commission.
+- **Route binding:** ULID inside tenant+branch scope; foreign id → 404; same-tenant wrong branch → 403 (established posture).
+- **Audit:** `service_session.started/completed/cancelled` — safe context only (merchant, branch, service-session ULID, source queue-entry ULID, client/service/personnel ULIDs, actor, prev/new state, preferred-personnel honoured/overridden flag, sanitised reason/notes, timestamp). Never full phone/email, blind index, tokens, session ids, headers, full bodies, raw unsanitised notes, or sequential ids. Failed/rolled-back actions write no success event.
+- **Masking:** Resources expose client ULID + name + approved masked contact summary only; Personnel own-scope (`personnel.my_sessions.view`) sees only sessions assigned to the authenticated personnel user and never another personnel member's data, full contact, contact export, or any earned/payable commission claim. **No contact export anywhere** (guardrail §6.8).
+- **Busy projection:** a personnel member with an `in_progress` session derives `busy` (read-only overlay on the availability state — `AvailabilityResolver` does not store it); completing or (resolved-path) cancelling the session clears it; frontend toggles cannot override an active session.
+- **Branch closure:** active (`pending`/`in_progress`) sessions block branch archival **and** day close (`BranchClosureGuard`); terminal `completed`/`cancelled` never block; no cross-branch / cross-tenant leak.
+- **Factory:** `ServiceSessionFactory` (per-state; queue-linked). **Tests:** schema/CHECK/partial-unique/duplicate-active; source/client/service/personnel consistency; full four-state machine provider; queue-coupling atomicity + concurrency; eligibility/branch-assignment enforcement; preferred-personnel execution; non-payable preview; authz/role-boundary/own-scope; branch-closure + busy; audit/redaction; isolation.
+
+---
+
 ## `appointments` Phase 16B addition — `queued` status
 
 Forward-only expand (`…_add_queued_status_to_appointments`): the appointments
@@ -690,10 +752,14 @@ reserves the interval.
 
 ---
 
-## Deferred (later phases — NOT created in 16B)
+## Deferred (later phases — NOT created in 16C)
 
-`service_sessions` (16C). Listed in §13.7; carries its own data-dictionary entry
-in its owning phase. Phase 16B must not create it, nor any service-session/
-queue-session coupling, duplicate-active-session protection, commission preview,
-preferred-personnel **fee** calculation, invoice/payment/receipt behaviour, report
-materialized view, notification delivery, or cross-domain search.
+`service_sessions` is created in Phase 16C (above). Still **not** created here:
+`invoices`/`invoice_items`/the invoice trigger (Phase 17), preferred-personnel
+**fee** rules/calculation/snapshot (Phase 20A/17), `commission_rules`/compensation
+plans (Phase 20F), the `commission_ledger` and earned commission (Phase 20G after
+validated payment), payouts (Phase 20H), merchant-client payments/receipts (Phases
+18A/18B), the full audit dashboard + permission-matrix closure (Phase 19),
+notification delivery/reports (Phase 21N), personnel SMS (Phase 21S), and
+cross-domain search (Phase 22). Phase 16C creates no future-phase table, ledger
+entry, invoice, fee rule, payment, receipt, or dead frontend action.

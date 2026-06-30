@@ -1,11 +1,23 @@
 # Phase 16B — Walk-Ins and Queues — Proof
 
 **Branch:** `phase-16b-walk-ins-queues` · **Base commit:** `404fed9` (verified
-Phase 16A merge, PR #26). **Status:** `local_complete` (in progress) — this file
-records the controlling decisions, conflict resolutions, and the gate evidence as
-each slice is verified. This is **not** `ci_passed`, `merged`, or
-`verified_complete`: CI is authoritative for the Linux browser/Docker/gitleaks
-gates; local Windows Playwright is not claimed as a pass (Phase 15B/16A precedent).
+Phase 16A merge, PR #26). **Status:** `verified_complete` — PR **#27**
+`Phase 16B: Implement walk-ins and queues` MERGED into `main` (squash merge commit
+`af79b56`, 2026-06-30; original implementation `6a9fbcc`, final pre-merge head
+`6272f080`). The **initial** CI run `28420643751` (head `6a9fbcc`) **FAILED**
+Backend — 8 failed / 4 skipped / 751 passed — with `Call to undefined function
+createWalkIn()`: the helper was defined file-locally inside `QueueApiTest.php` and
+was therefore not reliably available to the independent parallel Pest workers. The
+targeted correction moved `createWalkIn()` into `tests/Pest.php` (the shared
+helper file), removed the file-local definition and the now-unused `QueueApiTest`
+import, and preserved parallel execution. The final CI run `28425875550` (head
+`6272f080`) reported five required checks — Backend, Frontend, Docker, Security,
+E2E — Playwright — all **SUCCESS**. `reviewDecision` remained blank under the
+documented PR-specific solo-maintainer governance exception — **not** independent
+reviewer approval. **REM-PERM-001 remains open (Phase 19).** CI is authoritative
+for the Linux browser/Docker/gitleaks gates; local Windows Playwright was not
+claimed as a pass (Phase 15B/16A precedent). This file records the controlling
+decisions, conflict resolutions, and the gate evidence as each slice was verified.
 
 Times are branch business time in `Africa/Nairobi`; timestamps are UTC. Frontend
 visibility is UX only — the API (policies + `EnsureBranchScope` +

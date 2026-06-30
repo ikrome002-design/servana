@@ -69,6 +69,11 @@ export const frontOfficeRoutes: RouteRecordRaw[] = [
         name: 'front-office.queue.detail',
         component: () => import('@/pages/front-office/QueueEntryDetail.vue'),
       },
+      {
+        path: 'sessions',
+        name: 'front-office.sessions',
+        component: () => import('@/pages/front-office/ServiceSessionList.vue'),
+      },
     ],
   },
 ];

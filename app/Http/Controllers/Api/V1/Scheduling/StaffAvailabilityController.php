@@ -12,6 +12,7 @@ use App\Domain\Scheduling\Actions\ReplaceAvailability;
 use App\Domain\Scheduling\Enums\AvailabilityType;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Domain\Scheduling\Services\AvailabilityResolver;
+use App\Domain\Scheduling\Services\PersonnelStateProjector;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Scheduling\EmergencyUnavailableRequest;
 use App\Http\Requests\Scheduling\UpdateAvailabilityRequest;
@@ -33,7 +34,10 @@ use Illuminate\Support\Collection;
  */
 final class StaffAvailabilityController extends Controller
 {
-    public function __construct(private readonly AvailabilityResolver $resolver) {}
+    public function __construct(
+        private readonly AvailabilityResolver $resolver,
+        private readonly PersonnelStateProjector $stateProjector,
+    ) {}
 
     public function show(StaffProfile $staff): PersonnelAvailabilityScheduleResource
     {
@@ -112,7 +116,9 @@ final class StaffAvailabilityController extends Controller
                 'is_active' => $staff->is_active,
             ],
             'timezone' => (string) config('servana.scheduling.business_timezone', 'Africa/Nairobi'),
-            'current_state' => $this->resolver->currentState($staff, null, $rows)->value,
+            // Live state overlays `busy` (an in-progress service session) onto the
+            // schedule-derived state (Phase 16C; derived, never stored).
+            'current_state' => $this->stateProjector->currentState($staff, null, $rows)->value,
             'recurring' => $this->rowsToArray($rows->filter(fn (PersonnelAvailability $r) => $r->type === AvailabilityType::Recurring), 'recurring'),
             'exceptions' => $this->rowsToArray($rows->filter(fn (PersonnelAvailability $r) => $r->type === AvailabilityType::Exception), 'exception'),
             'eligible_services' => $this->eligibleServices($staff),

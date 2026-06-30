@@ -17,9 +17,12 @@ namespace App\Domain\Scheduling\Enums;
  *                  outside a working period.
  *   - Offline:     outside all effective available windows (e.g. day off, before/
  *                  after shift, no recurring schedule).
- *
- * `busy` is intentionally absent in 15B — it depends on live queue/service-session
- * aggregates owned by Phases 16B/16C.
+ *   - Busy:        DERIVED overlay (Phase 16C) — the personnel member has an
+ *                  in-progress service session right now. Projected by
+ *                  PersonnelStateProjector on top of the schedule-derived state
+ *                  (it outranks Available); cleared when the session completes or is
+ *                  resolved-cancelled. It is derived, never stored, and a frontend
+ *                  toggle cannot override an active session.
  */
 enum PersonnelAvailabilityState: string
 {
@@ -28,4 +31,5 @@ enum PersonnelAvailabilityState: string
     case OnBreak = 'on_break';
     case Unavailable = 'unavailable';
     case Offline = 'offline';
+    case Busy = 'busy';
 }

@@ -25,6 +25,7 @@ use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Domain\Scheduling\Models\QueueEntry;
+use App\Domain\Scheduling\Models\ServiceSession;
 use App\Domain\Scheduling\Models\WalkIn;
 
 /**
@@ -69,6 +70,8 @@ final class TenantOwnership
         // Phase 16B — Walk-ins & queues (Plan §13.7, §37, §80).
         'walk_ins',
         'queue_entries',
+        // Phase 16C — Service sessions (Plan §13.7, §25.2, §80).
+        'service_sessions',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -152,6 +155,8 @@ final class TenantOwnership
         // Phase 16B — branch-owned walk-ins & queue entries (BelongsToMerchant + BelongsToBranch).
         WalkIn::class => 'branch',
         QueueEntry::class => 'branch',
+        // Phase 16C — branch-owned service sessions (BelongsToMerchant + BelongsToBranch).
+        ServiceSession::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -176,5 +181,7 @@ final class TenantOwnership
         // Phase 16B — branch consistency via composite FK to merchant_branches.
         'walk_ins' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'queue_entries' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 16C — branch consistency via composite FK to merchant_branches.
+        'service_sessions' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }

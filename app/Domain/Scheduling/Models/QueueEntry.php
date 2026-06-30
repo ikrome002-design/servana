@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -230,5 +231,16 @@ class QueueEntry extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * The service session this entry produced (Phase 16C). At most one (the
+     * `UNIQUE (queue_entry_id)` index enforces it).
+     *
+     * @return HasOne<ServiceSession, $this>
+     */
+    public function serviceSession(): HasOne
+    {
+        return $this->hasOne(ServiceSession::class, 'queue_entry_id');
     }
 }

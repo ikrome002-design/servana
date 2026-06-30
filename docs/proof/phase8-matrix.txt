@@ -42,9 +42,13 @@ branches.manage_users_lifecycle       ✓           ·            ·            
 merchant.profile.manage               ✓           ·            ·            ·            ·            ·            ·            ·
 merchant.tier.update                  ✓           ·            ·            ·            ·            ·            ·            ·
 periods.lock                          ✓           ·            ·            ·            ·            ·            ·            ·
-sessions.manage                       ·            ✓           ·            ·            ✓           ·            ·            ·
+service_session.cancel                ·            ·            ·            ·            ✓           ·            ·            ·
+service_session.complete              ·            ·            ·            ·            ✓           ·            ·            ·
+service_session.start                 ·            ·            ·            ·            ✓           ·            ·            ·
+service_session.view                  ·            ·            ·            ·            ✓           ·            ·            ·
 personnel.my_appointments.view        ·            ·            ·            ·            ·            ✓           ·            ·
 personnel.my_queue.view               ·            ·            ·            ·            ·            ✓           ·            ·
+personnel.my_sessions.view            ·            ·            ·            ·            ·            ✓           ·            ·
 platform.audit.view                   ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing.configure            ·            ·            ·            ·            ·            ·            ·            ✓
 platform.fee_rules.manage             ·            ·            ·            ·            ·            ·            ·            ✓

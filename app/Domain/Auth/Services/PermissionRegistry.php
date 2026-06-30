@@ -142,8 +142,21 @@ final class PermissionRegistry
         // ONLY queue entries assigned to their own staff profile; no branch-wide
         // queue, no mutation, no contact export.
         'personnel.my_queue.view' => ['personnel', 'View own assigned queue entries (own scope).', false],
-        // Sessions & invoices.
-        'sessions.manage' => ['operations', 'Manage service sessions.', true],
+        // Service sessions (Plan §19.2/§19.3, §25.2; Phase 16C canonical keys —
+        // reconciled from the legacy `sessions.manage` baseline). Front Office owns
+        // service-session operations (branch scope): view + the start/complete/cancel
+        // lifecycle. The queue orchestration routes additionally require these on top
+        // of queue.assign. Branch Manager gets NONE of these (no session mutation
+        // authority; the legacy sessions.manage grant is removed, not retained).
+        'service_session.view' => ['operations', 'View service sessions (branch-scoped).', false],
+        'service_session.start' => ['operations', 'Start a service session (from a queue entry).', true],
+        'service_session.complete' => ['operations', 'Complete a service session (non-payable commission preview).', true],
+        'service_session.cancel' => ['operations', 'Cancel a service session.', true],
+        // Personnel own-scope session read (Plan §19.3, §25.2; Phase 16C). Personnel
+        // see ONLY sessions assigned to their own staff profile; no branch-wide
+        // sessions, no mutation, no contact export, no earned/payable claim.
+        'personnel.my_sessions.view' => ['personnel', 'View own assigned service sessions (own scope).', false],
+        // Invoices (Phase 17).
         'invoices.create' => ['finance', 'Create invoices.', true],
         'invoices.view' => ['finance', 'View invoices (scoped).', false],
         'invoices.void_unpaid' => ['finance', 'Void an unpaid invoice.', true],
@@ -205,7 +218,9 @@ final class PermissionRegistry
             'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
             'service.view', 'service.create', 'service.update', 'service.archive',
             'day.open_close', 'cashup.submit',
-            'sessions.manage', 'invoices.create', 'invoices.view',
+            // No service_session.* — Branch Manager has NO session mutation authority
+            // (Phase 16C; the legacy sessions.manage grant is removed, not retained).
+            'invoices.create', 'invoices.view',
             'receipts.view', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
@@ -232,11 +247,16 @@ final class PermissionRegistry
             'appointment.cancel', 'appointment.check_in', 'appointment.assign',
             'appointment.transfer',
             'client.view', 'client.create', 'client.update', 'front_office.search',
-            'sessions.manage', 'invoices.create', 'invoices.view',
+            // Service sessions (Phase 16C): Front Office owns the operational session
+            // lifecycle (replaces the legacy sessions.manage).
+            'service_session.view', 'service_session.start',
+            'service_session.complete', 'service_session.cancel',
+            'invoices.create', 'invoices.view',
             'payments.record', 'receipts.view', 'reports.view',
         ],
         self::ROLE_PERSONNEL => [
             'personnel.my_appointments.view', 'personnel.my_queue.view',
+            'personnel.my_sessions.view',
             'invoices.view', 'receipts.view',
             'commissions.view', 'reports.view',
         ],

@@ -358,7 +358,8 @@ merchant_front_office:
     phase: Phase 16B
   - key: front-office.service-sessions
     label: Service sessions
-    availability: planned
+    availability: live
+    route: front-office.sessions
     permission: service_session.view
     phase: Phase 16C
   - key: front-office.invoices
@@ -401,7 +402,8 @@ merchant_personnel:
     phase: Phase 16A
   - key: personnel.my-sessions
     label: My sessions
-    availability: planned
+    availability: live
+    route: personnel.sessions
     permission: personnel.my_sessions.view
     phase: Phase 16C
   - key: personnel.my-served-clients
