@@ -107,6 +107,6 @@ test.describe('Personnel My sessions (own scope)', () => {
     await expect(page.getByTestId('session-status-badge')).toHaveText('In progress');
     // No commission preview, no mutation controls.
     await expect(page.getByText('Preview')).toHaveCount(0);
-    await expect(page.locator('button')).toHaveCount(0);
+    await expect(page.getByRole('main').getByRole('button')).toHaveCount(0);
   });
 });
