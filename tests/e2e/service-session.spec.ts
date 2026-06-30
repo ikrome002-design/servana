@@ -72,7 +72,7 @@ test.describe('Front Office service sessions', () => {
     await stubMe(page, 'front_office', ['service_session.view']);
     await page.route('**/api/v1/service-sessions**', (r) => r.fulfill(ok({ data: [completedSession()] })));
     await page.goto('/front-office/sessions');
-    await expect(page.getByText('Service sessions')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Service sessions', exact: true })).toBeVisible();
 
     for (const theme of ['light', 'dark'] as const) {
       await page.emulateMedia({ colorScheme: theme });
@@ -102,7 +102,7 @@ test.describe('Personnel My sessions (own scope)', () => {
     );
     await page.goto('/personnel/sessions');
 
-    await expect(page.getByText('My sessions')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'My sessions', exact: true })).toBeVisible();
     await expect(page.getByText('Amina Yusuf')).toBeVisible();
     await expect(page.getByTestId('session-status-badge')).toHaveText('In progress');
     // No commission preview, no mutation controls.
