@@ -6,6 +6,7 @@ use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
 use App\Domain\Scheduling\Models\QueueEntry;
 use App\Domain\Scheduling\Models\ServiceSession;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 uses(RefreshDatabase::class)->group('scheduling', 'service-session', 'service-session-coupling');
@@ -102,8 +103,11 @@ it('completes both aggregates and returns a non-payable preview; no invoice or c
         ->assertJsonPath('data.service_session.commission_preview.amount_minor', null);
 
     expect(ServiceSession::query()->where('status', 'completed')->count())->toBe(1);
-    // Phase 16C creates no financial/compensation tables.
-    expect(Schema::hasTable('invoices'))->toBeFalse()
+    // Completing a session creates NO invoice or commission ledger. The `invoices`
+    // table now exists (Phase 17 owns it), so the invariant is asserted at the ROW
+    // level — session completion never auto-creates an invoice; invoicing is a
+    // separate Front Office action. `commission_ledger` has no table yet (Phase 20G).
+    expect(DB::table('invoices')->count())->toBe(0)
         ->and(Schema::hasTable('commission_ledger'))->toBeFalse();
 });
 

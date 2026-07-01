@@ -86,7 +86,7 @@ final class FilePurposeRegistry
             FilePurpose::FinanceExport, false, '18B/23', [], [], 0, true, false, false, 'exports.finance', false, $exportRetention, true,
         );
         $defs[] = new FilePurposeDefinition(
-            FilePurpose::InvoicePdf, false, '17', [], [], 0, true, true, false, 'invoices.view', false, null, true,
+            FilePurpose::InvoicePdf, false, '17', [], [], 0, true, true, false, 'invoice.view', false, null, true,
         );
         $defs[] = new FilePurposeDefinition(
             FilePurpose::ReceiptPdf, false, '18', [], [], 0, true, true, false, 'receipts.view', false, null, true,

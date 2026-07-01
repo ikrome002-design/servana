@@ -11,7 +11,7 @@ use App\Domain\Scheduling\Models\QueueEntry;
 use App\Domain\Scheduling\Models\WalkIn;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class)->group('scheduling', 'queue', 'queue-api');
@@ -98,8 +98,11 @@ it('runs the full lifecycle assign → call → start → complete', function ()
         ->assertJsonPath('data.service_session.commission_preview.earned', false)
         ->assertJsonPath('data.service_session.commission_preview.payable', false);
 
-    // No invoice exists yet (Phase 17).
-    expect(Schema::hasTable('invoices'))->toBeFalse();
+    // The queue lifecycle creates NO invoice. The `invoices` table now exists
+    // (Phase 17 owns it), so the invariant is asserted at the ROW level — completing
+    // a queue entry/session never auto-creates an invoice (invoicing is a separate
+    // Front Office action).
+    expect(DB::table('invoices')->count())->toBe(0);
 });
 
 it('cancels with a required reason and marks a separate entry no-show', function (): void {

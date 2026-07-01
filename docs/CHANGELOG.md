@@ -6,7 +6,67 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 16C — Service Sessions and Preferred Personnel (`phase-16c-service-sessions`) — local_complete
+### Phase 17 — Invoicing (`phase-17-invoicing`) — local_complete
+
+Merchant-client invoicing on merged Phase 16C (`ffe37cc`, PR #28): the branch-owned
+`invoices` + `invoice_items` tables and the tenant-owned gap-free `invoice_number_
+sequences` counter; the nine-state Merchant-Client Invoice machine (Plan §25.3); Front
+Office draft creation/update + deterministic finalization (gap-free per-merchant number
+`{branch.code}-INV-{padded}` allocated under a row lock, price/preferred-fee/percentage-
+config snapshots, `financial_mutation` idempotency); Finance's additive, non-destructive
+void (request → execute → reject) and adjustment workflow; and the invoice-side
+period-lock enforcement contract (`423`). Money is integer minor units via the `Money`
+value object. **No** payment, receipt, commission ledger, preferred-fee rule, or
+percentage-fee ledger is introduced (deferred to 18A/18B/20A/20E). See
+[docs/proof/phase-17.md](proof/phase-17.md).
+
+- **Specification gates (resolved):** (A) `invoice_items.service_session_id` NOT NULL
+  composite FK to `service_sessions(id,merchant_id)`; only `completed` sessions
+  invoiceable; multi-session invoices (same merchant/branch/client/currency);
+  `UNIQUE(service_session_id)` prevents duplicate invoicing. (B) additive `invoices`
+  void/adjust columns — no new table, snapshots/number never mutated, no deletion;
+  `paid → refund_pending|adjustment_required` defined+tested but Phase-18B-driven. (C)
+  `FinancialPeriodGuard` + `PeriodLockRepository` contract; Phase 17 binds
+  `UnlockedPeriodLockRepository`; `423` proven; Phase 18B swaps persistence. (D)
+  `PreferredPersonnelFeeResolver` — legacy `services.preferred_personnel_fee_minor` when
+  honoured, else none; immutable snapshot; Phase 20A replaces the binding. (E)
+  `percentage_fee_config_snapshot` jsonb = null until Phase 20E. (F) `tax_minor`/
+  `discount_minor` retained, integer, default 0, deferred.
+- **Schema:** three forward-only migrations; nine-state + currency + non-negative +
+  arithmetic + draft/finalization + void/adjust coherence CHECKs; composite-merchant
+  FKs; partial `UNIQUE(merchant_id,invoice_number)`; `UNIQUE(id,merchant_id)`;
+  `UNIQUE(service_session_id)`. Manifest + `TenantOwnership` updated.
+- **Domain:** `InvoiceStatus`/`InvoiceStateMachine`, `InvoiceTotalsCalculator`,
+  `InvoiceNumberAllocator`, `InvoiceDraftComposer`, `LegacyPreferredPersonnelFeeResolver`,
+  `FinancialPeriodGuard`; actions `CreateInvoiceDraft`/`UpdateInvoiceDraft`/
+  `FinalizeInvoice`/`RequestInvoiceVoid`/`ExecuteInvoiceVoid`/`RejectInvoiceVoid`/
+  `AdjustInvoice`; seven `invoice.*` audit events.
+- **Permissions:** reconciled the legacy placeholder `invoices.*` keys (which
+  mis-granted invoice creation to Branch Manager + Merchant Admin, violating Plan §10.2)
+  to the canonical `invoice.view`/`invoice.create`/`invoice.void.request_or_execute
+  _as_policy`/`invoice.adjustment.manage`. Front Office: view + create; Finance: view +
+  void + adjust. No other role holds an invoice key. `REM-PERM-001` stays open (Phase 19).
+- **HTTP:** `InvoicePolicy`, Form Requests, thin controllers, masked `InvoiceResource`/
+  `InvoiceItemResource`, `/api/v1/invoices` routes (index/store/show/update/finalize/
+  void/void.execute/void.reject/adjust) with idempotency (finalize) + billing +
+  period-lock + route classification; void request/execute require a fresh step-up
+  (`StepUpAction::InvoiceVoid`). No DELETE / mark-paid / payment / receipt route.
+- **Frontend:** Front Office `InvoiceList`/`InvoiceCreate`/`InvoiceDetail` + Finance
+  list/detail (shared `pages/invoicing`); `invoiceStore` (idempotent finalize);
+  navigation + get-started `Create an invoice` deep-link activated; screen inventory +
+  role-navigation YAML regenerated.
+
+### Phase 16C — Service Sessions and Preferred Personnel (`phase-16c-service-sessions`) — verified_complete
+
+Lifecycle: PR **#28** MERGED into `main` (squash merge `ffe37cc`, 2026-06-30; implementation
+`1d2aee5`; final governance head `79746bb`). Initial CI run `28445709595` FAILED E2E (ambiguous
+Playwright `My sessions` text locators → multiple elements; accessibility + own-scope cases failed
+with no backend/business-rule/accessibility-gate relaxation), remediated `81506da`; second CI run
+`28446579933` FAILED E2E (Personnel read-only assertion counted every page button rather than the
+session workflow controls), remediated `ac5751a`; corrected run `28448569188` SUCCESS; final run
+`28449140384` (head `79746bb`) all five required checks (Backend, Frontend, Docker, Security,
+E2E — Playwright) SUCCESS. reviewDecision blank under the solo-maintainer governance exception —
+not independent approval. REM-PERM-001 remains open (Phase 19).
 
 The service-delivery unit on merged Phase 16B (`af79b56`, PR #27): the branch-owned
 `service_sessions` table, the four-state Service Session machine (Plan §25.2), the

@@ -1,12 +1,16 @@
 # Phase 16C — Service Sessions and Preferred Personnel — Proof
 
 **Branch:** `phase-16c-service-sessions` · **Base commit:** `af79b56` (verified
-Phase 16B merge, PR #27). **Status:** `local_complete` (in progress) — this file
-records the controlling decisions, the four specification-gate resolutions, and the
-gate evidence as each slice is verified. This is **not** `ci_passed`, `merged`, or
-`verified_complete`: CI is authoritative for the Linux browser/Docker/gitleaks
-gates; local Windows Playwright is not claimed as a pass (Phase 15B/16A/16B
-precedent). Tests run against PostgreSQL 16 (never SQLite).
+Phase 16B merge, PR #27). **Status:** `verified_complete` — PR **#28** MERGED into
+`main` (squash merge `ffe37cc`, 2026-06-30; implementation `1d2aee5`; remediations
+`81506da` + `ac5751a`; final governance head `79746bb`; final CI run `28449140384`
+all five required checks SUCCESS; reviewDecision blank under the solo-maintainer
+governance exception — not independent approval; see the PR #28 section below).
+This file records the controlling decisions, the four specification-gate
+resolutions, and the gate evidence as each slice was verified. CI is authoritative
+for the Linux browser/Docker/gitleaks gates; local Windows Playwright was not
+claimed as a pass (Phase 15B/16A/16B precedent). Tests run against PostgreSQL 16
+(never SQLite).
 
 Times are branch business time in `Africa/Nairobi`; timestamps are UTC. Frontend
 visibility is UX only — the API (policies + `EnsureBranchScope` +

@@ -391,6 +391,18 @@ screens:
     status: planned
     phase: Phase 20H
     spec: ~
+  - key: finance-invoices
+    domain: finance
+    route: finance.invoices
+    status: implemented
+    phase: Phase 17
+    spec: finance/finance-invoices.md
+  - key: finance-invoice-detail
+    domain: finance
+    route: finance.invoices.detail
+    status: implemented
+    phase: Phase 17
+    spec: finance/finance-invoice-detail.md
   - key: front-office-clients
     domain: front-office
     route: front-office.clients
@@ -451,11 +463,29 @@ screens:
     status: implemented
     phase: Phase 16C
     spec: front-office/front-office-service-sessions.md
-  - key: front-office-invoicing
+  - key: front-office-invoices
+    domain: front-office
+    route: front-office.invoices
+    status: implemented
+    phase: Phase 17
+    spec: front-office/front-office-invoices.md
+  - key: front-office-invoice-create
+    domain: front-office
+    route: front-office.invoices.create
+    status: implemented
+    phase: Phase 17
+    spec: front-office/front-office-invoice-create.md
+  - key: front-office-invoice-detail
+    domain: front-office
+    route: front-office.invoices.detail
+    status: implemented
+    phase: Phase 17
+    spec: front-office/front-office-invoice-detail.md
+  - key: front-office-payment-recording
     domain: front-office
     route: ~
     status: planned
-    phase: Phase 17
+    phase: Phase 18A
     spec: ~
   - key: personnel-appointments
     domain: personnel

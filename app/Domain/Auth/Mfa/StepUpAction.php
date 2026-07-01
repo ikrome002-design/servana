@@ -32,6 +32,10 @@ enum StepUpAction: string
     // R3-owned MFA self-management action (a real, already-implemented route).
     case RecoveryCodeRegeneration = 'recovery_code_regeneration';
 
+    // Phase 17 — Finance invoice void (request/execute). A real, implemented route;
+    // excluded from the test-harness businessActions() like RecoveryCodeRegeneration.
+    case InvoiceVoid = 'invoice_void';
+
     /** The phase that owns the real route this classification protects. */
     public function owningPhase(): string
     {
@@ -44,6 +48,7 @@ enum StepUpAction: string
             self::ReconciliationResolution => 'Phase 20D',
             self::CompensationBackdatedChange => 'Phase 20F/20G',
             self::RecoveryCodeRegeneration => 'Phase R3 (implemented)',
+            self::InvoiceVoid => 'Phase 17 (implemented)',
         };
     }
 

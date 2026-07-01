@@ -140,6 +140,22 @@ enum AuditEvent: string
     case ServiceSessionCompleted = 'service_session.completed';
     case ServiceSessionCancelled = 'service_session.cancelled';
 
+    // --- Invoicing (Plan §40, §25.3; Phase 17). Front Office drafts/finalizes;
+    // Finance voids/adjusts. One coherent typed event per committed mutation;
+    // failed/rolled-back actions write NO success event. Context carries only safe
+    // ids (invoice/invoice-item/client/service-session ULIDs), the invoice number,
+    // prev/new state, integer minor-unit totals + currency, the preferred-fee
+    // snapshot amount + source classification, the actor, and a SANITISED reason —
+    // never full contact, blind index, tokens, raw idempotency keys, headers, full
+    // bodies, or sequential ids.
+    case InvoiceCreated = 'invoice.created';
+    case InvoiceUpdatedDraft = 'invoice.updated_draft';
+    case InvoiceFinalized = 'invoice.finalized';
+    case InvoiceVoidRequested = 'invoice.void_requested';
+    case InvoiceVoided = 'invoice.voided';
+    case InvoiceVoidRejected = 'invoice.void_rejected';
+    case InvoiceAdjusted = 'invoice.adjusted';
+
     // --- Tenant/branch isolation (Plan §8.4) — name preserved from Phase 9.
     case UnauthorizedAccess = 'unauthorized_access';
 
@@ -193,6 +209,8 @@ enum AuditEvent: string
             self::QueueEntryWaitEstimateOverridden,
             self::ServiceSessionStarted,
             self::ServiceSessionCompleted,
+            self::InvoiceCreated,
+            self::InvoiceUpdatedDraft,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
@@ -212,6 +230,7 @@ enum AuditEvent: string
             self::AppointmentRescheduled,
             self::QueueConfigurationUpdated,
             self::QueueEntryReordered,
+            self::InvoiceFinalized,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,
@@ -233,6 +252,7 @@ enum AuditEvent: string
             self::QueueEntryCancelled,
             self::QueueEntryNoShow,
             self::ServiceSessionCancelled,
+            self::InvoiceVoidRejected,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,
@@ -243,6 +263,9 @@ enum AuditEvent: string
             self::PermissionOverrideCreated,
             self::PermissionOverrideUpdated,
             self::PermissionOverrideRevoked,
+            self::InvoiceVoidRequested,
+            self::InvoiceVoided,
+            self::InvoiceAdjusted,
             self::UnauthorizedAccess => AuditSeverity::High,
         };
     }

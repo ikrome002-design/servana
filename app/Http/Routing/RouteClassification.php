@@ -57,6 +57,11 @@ final class RouteClassification
         'queue.start' => 'No request body; {queueEntry} binding + queue.assign + QueueEntryPolicy; revalidates personnel in the action.',
         'queue.complete' => 'No request body; {queueEntry} binding + queue.assign + QueueEntryPolicy; releases the active queue position.',
         'queue.no-show' => 'No request body; {queueEntry} binding + queue.assign + QueueEntryPolicy; distinct MarkQueueEntryNoShow action.',
+        // Phase 17 invoicing — bodiless mutations (all authoritative values derived
+        // server-side from the locked invoice/sources).
+        'invoices.finalize' => 'No request body; {invoice} binding + invoice.create + InvoicePolicy; financial_mutation idempotency; FinalizeInvoice derives number+snapshots under lock.',
+        'invoices.void.execute' => 'No request body; {invoice} binding + invoice.void.request_or_execute_as_policy + InvoicePolicy + RequireFreshMfa; ExecuteInvoiceVoid (void_pending → voided).',
+        'invoices.void.reject' => 'No request body; {invoice} binding + invoice.void.request_or_execute_as_policy + InvoicePolicy; RejectInvoiceVoid restores the prior payable state.',
     ];
 
     public static function of(Route $route): ?RouteClass

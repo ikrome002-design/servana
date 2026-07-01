@@ -17,8 +17,13 @@ use App\Domain\Clients\Models\Client;
 use App\Domain\Files\Contracts\FileScanner;
 use App\Domain\Files\Services\ClamAvScanner;
 use App\Domain\Files\Services\ImageSanitizer;
+use App\Domain\FinanceOps\Contracts\PeriodLockRepository;
+use App\Domain\FinanceOps\Support\UnlockedPeriodLockRepository;
 use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
+use App\Domain\Invoicing\Contracts\PreferredPersonnelFeeResolver;
+use App\Domain\Invoicing\Models\Invoice;
+use App\Domain\Invoicing\Services\LegacyPreferredPersonnelFeeResolver;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Scheduling\Models\Appointment;
@@ -30,6 +35,7 @@ use App\Policies\AuditLogPolicy;
 use App\Policies\BranchDayRecordPolicy;
 use App\Policies\BranchOperatingHourPolicy;
 use App\Policies\ClientPolicy;
+use App\Policies\InvoicePolicy;
 use App\Policies\MerchantBranchPolicy;
 use App\Policies\MerchantPolicy;
 use App\Policies\MerchantUserPolicy;
@@ -76,6 +82,8 @@ class AppServiceProvider extends ServiceProvider
         QueueEntry::class => QueueEntryPolicy::class,
         // Phase 16C — service sessions.
         ServiceSession::class => ServiceSessionPolicy::class,
+        // Phase 17 — invoicing.
+        Invoice::class => InvoicePolicy::class,
     ];
 
     public function register(): void
@@ -92,6 +100,17 @@ class AppServiceProvider extends ServiceProvider
         // Audit trail (Plan §22.2). Table-backed minimal recorder introduced in
         // Phase 8; full §5.18 coverage matures in Phase 19.
         $this->app->bind(AuditRecorder::class, DatabaseAuditRecorder::class);
+
+        // Period-lock enforcement seam (Plan §46; Gate C, Phase 17). Phase 17 binds
+        // an always-open repository — the financial_period_locks table + management
+        // workflow arrive in Phase 18B, which swaps this binding with no change to
+        // the invoice actions or the FinancialPeriodGuard.
+        $this->app->bind(PeriodLockRepository::class, UnlockedPeriodLockRepository::class);
+
+        // Preferred-personnel-fee resolution at invoice finalization (Gate D, Phase
+        // 17). Legacy fixed `services.preferred_personnel_fee_minor` until Phase 20A
+        // ships `preferred_personnel_fee_rules` and replaces this binding.
+        $this->app->bind(PreferredPersonnelFeeResolver::class, LegacyPreferredPersonnelFeeResolver::class);
 
         // Must run in register() — before dedoc/scramble's provider boots and
         // registers its default docs routes (Phase 10).
