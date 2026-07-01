@@ -586,7 +586,7 @@ business_migrations:
     domain: Invoicing
     owner_phase: "17"
     change_type: expand
-    data_dictionary: docs/architecture/data-dictionary/invoicing.md
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
     depends_on:
       - 2026_06_14_000101_create_merchants_table.php
     production_compatible: true
@@ -599,7 +599,7 @@ business_migrations:
     domain: Invoicing
     owner_phase: "17"
     change_type: expand
-    data_dictionary: docs/architecture/data-dictionary/invoicing.md
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
     depends_on:
       - 2026_06_30_000002_create_invoice_number_sequences_table.php
       - 2026_06_28_000004_create_clients_table.php
@@ -615,7 +615,7 @@ business_migrations:
     domain: Invoicing
     owner_phase: "17"
     change_type: expand
-    data_dictionary: docs/architecture/data-dictionary/invoicing.md
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
     depends_on:
       - 2026_06_30_000003_create_invoices_table.php
       - 2026_06_30_000001_create_service_sessions_table.php
@@ -626,3 +626,66 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-17.md
     notes: "Branch-owned; ulid public id. Gate A: service_session_id NOT NULL, composite FK (service_session_id,merchant_id)->service_sessions(id,merchant_id) — only completed sessions invoiceable; provenance derived under lock. UNIQUE (service_session_id) prevents duplicate invoicing (re-invoicing a voided session = documented correction workflow, deferred). quantity>0; unit_price_minor>=0; line_total_minor>=0 AND = unit_price_minor*quantity; currency uppercase ISO len-3; preferred_personnel_fee_minor null-or-nonneg (Gate D snapshot). eligible_for_commission boolean (evidence only — no ledger in 17). Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (invoice_id,merchant_id)->invoices RESTRICT; (service_session_id,merchant_id)->service_sessions RESTRICT; (service_id,merchant_id)->services RESTRICT; (staff_profile_id,merchant_id)->staff_profiles RESTRICT. Indexes (merchant_id,branch_id)/invoice_id/service_id/staff_profile_id; UNIQUE (ulid),(service_session_id). One invoice may carry multiple completed sessions (one item each; same merchant/branch/client/currency). Immutable once finalized."
+
+  - file: 2026_07_01_000001_create_payment_recording_groups_table.php
+    table: payment_recording_groups
+    domain: Payments
+    owner_phase: "18A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_06_22_000003_create_idempotency_keys_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18a.md
+    notes: "Branch-owned; ulid public id. The unit of Finance validation (18B); one group = one recording workflow. total_amount_minor>0 (=Σ components, enforced transactionally under the invoice row lock — not a CHECK); currency uppercase ISO len-3 (=invoice+components). idempotency_key_id nullable FK idempotency_keys nullOnDelete (R4 financial_mutation link). status CHECK in seven (draft,recorded,pending_validation,validated,rejected,correction_required,reversed); Phase 18A reaches only recorded/pending_validation (Gate B/C hold path); validated/rejected/correction_required/reversed are 18B. Timestamp coherence: recorded_at set for any non-draft; submitted_for_validation_at iff status in pending_validation..reversed; validated_at only with validated/reversed; rejected_at only with rejected (all 18B timestamps null in 18A). Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (invoice_id,merchant_id)->invoices RESTRICT. Indexes (merchant_id,branch_id)/(branch_id,status)/(invoice_id,status); UNIQUE (ulid),(id,merchant_id). No hard-delete. Never mutates invoice validated_paid/status."
+
+  - file: 2026_07_01_000002_create_payment_records_table.php
+    table: payment_records
+    domain: Payments
+    owner_phase: "18A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_07_01_000001_create_payment_recording_groups_table.php
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_06_28_000004_create_clients_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18a.md
+    notes: "Branch-owned; ulid public id. Concrete component of a group (every record belongs to exactly one group). method CHECK in seven (cash,mpesa_offline,bank_transfer,card_terminal,voucher,split_payment,other) — split_payment retained for fidelity but NEVER written as a component method in 18A (Gate B; app-enforced). amount_minor>0; currency uppercase ISO len-3; status CHECK in six (pending_validation,validated,rejected,correction_required,reversed,adjusted) — 18A always creates pending_validation. reference_normalized ($hidden) required for mpesa_offline/bank_transfer/card_terminal/voucher/other, optional for cash (method/reference coherence CHECK); reference_display_encrypted (Laravel encrypted, $hidden) masked to a suffix for display. validated_amount_minor null-or-nonneg (18B-written). Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (invoice_id,merchant_id)->invoices RESTRICT; (payment_recording_group_id,merchant_id)->payment_recording_groups RESTRICT; (payer_client_id,merchant_id)->clients RESTRICT. Indexes (invoice_id,status)/NON-UNIQUE (merchant_id,method,reference_normalized)/(payment_recording_group_id); UNIQUE (ulid),(id,merchant_id). Uniqueness lives on payment_reference_checks, not here (Gate C). No hard-delete."
+
+  - file: 2026_07_01_000003_create_payment_allocations_table.php
+    table: payment_allocations
+    domain: Payments
+    owner_phase: "18A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_07_01_000002_create_payment_records_table.php
+      - 2026_06_30_000004_create_invoice_items_table.php
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18a.md
+    notes: "Branch-owned; NO ulid (child evidence row). amount_minor>0. Cross-row sums (Σ per component = component amount; Σ per group = group total; group invoice only) enforced transactionally under the invoice row lock, proven with concurrency tests — not ordinary CHECKs. invoice_item_id nullable, null throughout 18A (invoice-level allocation); keeps only the simple FK to invoice_items(id) — invoice_items has no (id,merchant_id) composite-unique target and the shipped Phase 17 migration is not edited; item-level merchant consistency is 18B. Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (payment_record_id,merchant_id)->payment_records RESTRICT; (invoice_id,merchant_id)->invoices RESTRICT. Indexes (payment_record_id)/(invoice_id)/(merchant_id,branch_id). Never mutates invoice validated_paid. No hard-delete."
+
+  - file: 2026_07_01_000004_create_payment_reference_checks_table.php
+    table: payment_reference_checks
+    domain: Payments
+    owner_phase: "18A"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_07_01_000002_create_payment_records_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18a.md
+    notes: "Branch-owned; ulid public id (Finance override binds {paymentReferenceCheck}). Gate C durable duplicate detection: PARTIAL UNIQUE INDEX (merchant_id,method,reference_normalized) WHERE result='unique' AND reference_normalized IS NOT NULL — first accepted reference reserves the one 'unique' slot; duplicate_suspected/override_approved rows fall outside the predicate so every attempt persists and the reservation is race-safe. method CHECK in seven; result CHECK in three (unique,duplicate_suspected,override_approved). matched_payment_record_id required iff result<>unique (coherence CHECK); override_by+override_reason required iff result=override_approved (coherence CHECK). reference_normalized ($hidden) never surfaced. cash produces no check row. Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (payment_record_id,merchant_id)->payment_records RESTRICT; (matched_payment_record_id,merchant_id)->payment_records RESTRICT. Indexes (payment_record_id)/(matched_payment_record_id); UNIQUE (ulid). No hard-delete."

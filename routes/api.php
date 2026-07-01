@@ -27,6 +27,8 @@ use App\Http\Controllers\Api\V1\Invoicing\InvoiceVoidController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantDashboardController;
 use App\Http\Controllers\Api\V1\Onboarding\FirstTimeSetupController;
 use App\Http\Controllers\Api\V1\Onboarding\MerchantRegistrationController;
+use App\Http\Controllers\Api\V1\Payments\PaymentRecordingGroupController;
+use App\Http\Controllers\Api\V1\Payments\PaymentReferenceCheckController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Controllers\Api\V1\Scheduling\AppointmentController;
 use App\Http\Controllers\Api\V1\Scheduling\PersonnelAppointmentController;
@@ -531,6 +533,37 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 ->middleware([EnsureBranchScope::class, EnsurePermission::class.':invoice.adjustment.manage'])
                 ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                 ->name('invoices.adjust');
+
+            // Merchant-client payments (Plan §41; Phase 18A). Front Office is the default
+            // MAKER: it records a payment group (single/split) against an issued or
+            // partially-paid invoice (customer_payment.record). Finance reads the pending
+            // groups (customer_payment.view), overrides a suspected duplicate
+            // (customer_payment.duplicate_override — MFA + fresh step-up), and may record
+            // as a distinct maker exception (customer_payment.record_exception). Recording
+            // + override are financial_mutation (idempotency-keyed). NO validate/reject/
+            // reference-correct/receipt/refund/cash-up/status/delete route exists (Phase
+            // 18B+). A suspected duplicate returns 409 payment_reference_duplicate_suspected.
+            $paymentIdempotent = EnsureIdempotentRequest::class.':'.EnsureIdempotentRequest::RETENTION_RETRIABLE;
+            $paymentOverrideStepUp = RequireFreshMfa::class.':'.StepUpAction::PaymentDuplicateOverride->value;
+
+            Route::post('invoices/{invoice}/payment-recording-groups', [PaymentRecordingGroupController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':customer_payment.record', $paymentIdempotent])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('payment-recording-groups.store');
+            Route::post('invoices/{invoice}/payment-recording-groups/exception', [PaymentRecordingGroupController::class, 'storeException'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':customer_payment.record_exception', $paymentIdempotent])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('payment-recording-groups.exception');
+            Route::get('payment-recording-groups', [PaymentRecordingGroupController::class, 'index'])
+                ->middleware(EnsurePermission::class.':customer_payment.view')
+                ->name('payment-recording-groups.index');
+            Route::get('payment-recording-groups/{paymentRecordingGroup}', [PaymentRecordingGroupController::class, 'show'])
+                ->middleware(EnsurePermission::class.':customer_payment.view')
+                ->name('payment-recording-groups.show');
+            Route::post('payment-reference-checks/{paymentReferenceCheck}/override', [PaymentReferenceCheckController::class, 'override'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':customer_payment.duplicate_override', $paymentOverrideStepUp, $paymentIdempotent])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('payment-reference-checks.override');
 
             // Files & media (Plan §65; Phase 10F). Upload streams to private
             // quarantine then scans; downloads require auth + a valid temporary

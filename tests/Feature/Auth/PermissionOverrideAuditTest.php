@@ -63,14 +63,14 @@ it('makes a deny override beat the role default grant', function (): void {
     $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
     [, , $finance] = branchStaff($merchant, $branch, MerchantUserRole::Finance);
 
-    // payments.validate is a finance default grant; deny it via override.
+    // customer_payment.view is a finance default grant; deny it via override.
     $this->actingAs($admin, 'sanctum')
         ->postJson("/api/v1/staff/{$finance->ulid}/permissions", [
-            'permission' => 'payments.validate',
+            'permission' => 'customer_payment.view',
             'effect' => 'deny',
         ])
         ->assertStatus(200)
-        ->assertJsonPath('data.permissions', fn ($p): bool => ! in_array('payments.validate', $p, true));
+        ->assertJsonPath('data.permissions', fn ($p): bool => ! in_array('customer_payment.view', $p, true));
 });
 
 it('rejects granting a key that is not grantable for the target role', function (): void {

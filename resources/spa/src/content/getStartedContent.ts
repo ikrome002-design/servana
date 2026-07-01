@@ -86,7 +86,7 @@ const frontOffice: GetStartedItem[] = [
   { id: 'start-a-walk-in', label: 'Start a walk-in', routeName: 'front-office.walk-in', kind: 'action' },
   { id: 'assign-personnel', label: 'Assign personnel', phase: 'Phase 16B', kind: 'action' },
   { id: 'create-an-invoice', label: 'Create an invoice', routeName: 'front-office.invoices.create', kind: 'action' },
-  { id: 'record-a-payment', label: 'Record a payment', phase: 'Phase 18A', kind: 'action' },
+  { id: 'record-a-payment', label: 'Record a payment', routeName: 'front-office.payments', kind: 'action' },
   { id: 'confirm-receipt-issuance', label: 'Confirm receipt issuance', phase: 'Phase 18B', kind: 'action' },
   ACKNOWLEDGE,
 ];

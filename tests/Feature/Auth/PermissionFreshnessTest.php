@@ -32,24 +32,24 @@ it('reflects a deny override on the next request and restores it on revoke', fun
     $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
     [$financeUser, , $financeMembership] = branchStaff($merchant, $branch, MerchantUserRole::Finance);
 
-    // payments.validate is a Finance default grant.
-    expect(mePermissions($financeUser))->toContain('payments.validate');
+    // customer_payment.view is a Finance default grant.
+    expect(mePermissions($financeUser))->toContain('customer_payment.view');
 
     // Admin denies it.
     $this->actingAs($admin, 'sanctum')->postJson("/api/v1/staff/{$financeMembership->ulid}/permissions", [
-        'permission' => 'payments.validate', 'effect' => 'deny',
+        'permission' => 'customer_payment.view', 'effect' => 'deny',
     ])->assertStatus(200);
 
     // Next request: gone.
-    expect(mePermissions($financeUser))->not->toContain('payments.validate');
+    expect(mePermissions($financeUser))->not->toContain('customer_payment.view');
 
     // Admin revokes the override.
     $this->actingAs($admin, 'sanctum')
-        ->deleteJson("/api/v1/staff/{$financeMembership->ulid}/permissions/payments.validate")
+        ->deleteJson("/api/v1/staff/{$financeMembership->ulid}/permissions/customer_payment.view")
         ->assertStatus(200);
 
     // Next request: restored.
-    expect(mePermissions($financeUser))->toContain('payments.validate');
+    expect(mePermissions($financeUser))->toContain('customer_payment.view');
 });
 
 it('reflects a grant override on the next request', function (): void {

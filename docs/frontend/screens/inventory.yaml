@@ -483,10 +483,28 @@ screens:
     spec: front-office/front-office-invoice-detail.md
   - key: front-office-payment-recording
     domain: front-office
-    route: ~
-    status: planned
+    route: front-office.payments
+    status: implemented
     phase: Phase 18A
-    spec: ~
+    spec: front-office/front-office-payment-recording.md
+  - key: front-office-payment-record
+    domain: front-office
+    route: front-office.payments.record
+    status: implemented
+    phase: Phase 18A
+    spec: front-office/front-office-payment-record.md
+  - key: finance-payment-records
+    domain: finance
+    route: finance.payment-records
+    status: implemented
+    phase: Phase 18A
+    spec: finance/finance-payment-records.md
+  - key: finance-payment-records-detail
+    domain: finance
+    route: finance.payment-records.detail
+    status: implemented
+    phase: Phase 18A
+    spec: finance/finance-payment-records-detail.md
   - key: personnel-appointments
     domain: personnel
     route: personnel.appointments

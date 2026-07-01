@@ -26,6 +26,8 @@ use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Invoicing\Services\LegacyPreferredPersonnelFeeResolver;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Payments\Models\PaymentRecordingGroup;
+use App\Domain\Payments\Models\PaymentReferenceCheck;
 use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Scheduling\Models\QueueEntry;
 use App\Domain\Scheduling\Models\ServiceSession;
@@ -39,6 +41,7 @@ use App\Policies\InvoicePolicy;
 use App\Policies\MerchantBranchPolicy;
 use App\Policies\MerchantPolicy;
 use App\Policies\MerchantUserPolicy;
+use App\Policies\PaymentRecordingGroupPolicy;
 use App\Policies\QueueEntryPolicy;
 use App\Policies\ServiceCategoryPolicy;
 use App\Policies\ServicePersonnelEligibilityPolicy;
@@ -84,6 +87,10 @@ class AppServiceProvider extends ServiceProvider
         ServiceSession::class => ServiceSessionPolicy::class,
         // Phase 17 — invoicing.
         Invoice::class => InvoicePolicy::class,
+        // Phase 18A — merchant-client payment recording (group + reference-check
+        // override map to one payment policy).
+        PaymentRecordingGroup::class => PaymentRecordingGroupPolicy::class,
+        PaymentReferenceCheck::class => PaymentRecordingGroupPolicy::class,
     ];
 
     public function register(): void

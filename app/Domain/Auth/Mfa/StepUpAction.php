@@ -36,6 +36,11 @@ enum StepUpAction: string
     // excluded from the test-harness businessActions() like RecoveryCodeRegeneration.
     case InvoiceVoid = 'invoice_void';
 
+    // Phase 18A — Finance override of a suspected duplicate payment reference. A real,
+    // implemented route; excluded from the test-harness businessActions() (like
+    // InvoiceVoid) because it already has a live route.
+    case PaymentDuplicateOverride = 'payment_duplicate_override';
+
     /** The phase that owns the real route this classification protects. */
     public function owningPhase(): string
     {
@@ -49,6 +54,7 @@ enum StepUpAction: string
             self::CompensationBackdatedChange => 'Phase 20F/20G',
             self::RecoveryCodeRegeneration => 'Phase R3 (implemented)',
             self::InvoiceVoid => 'Phase 17 (implemented)',
+            self::PaymentDuplicateOverride => 'Phase 18A (implemented)',
         };
     }
 

@@ -1,12 +1,16 @@
 # Phase 17 — Invoicing — Proof
 
 **Branch:** `phase-17-invoicing` · **Base commit:** `ffe37cc` (verified Phase 16C
-merge, PR #28). **Status:** `local_complete` (in progress) — this file records the
-controlling decisions, the six specification-gate resolutions, and the gate evidence
-as each slice is verified. This is **not** `ci_passed`, `merged`, or
-`verified_complete`: CI is authoritative for the Linux browser/Docker/gitleaks gates;
-local Windows Playwright is not claimed as a pass (Phase 15B/16A/16B/16C precedent).
-Tests run against PostgreSQL 16 (never SQLite).
+merge, PR #28). **Status:** ✅ `verified_complete` — reconciled at Phase 18A start.
+PR **#29** `Phase 17: Implement invoicing` MERGED into `main` (squash merge commit
+`6557469`, 2026-07-01T12:29:08Z; implementation commit `c0fdd83`, governance commit /
+final PR head `3c4e309`). Initial CI run `28516753439` (head `c0fdd83`) — five required
+checks (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS; final CI run
+`28517236474` (head `3c4e309`) — same five required checks all SUCCESS. `reviewDecision`
+blank under the documented PR-specific solo-maintainer governance exception — **not**
+independent reviewer approval. Linux CI remained authoritative for the browser/Docker/
+gitleaks gates. Tests run against PostgreSQL 16 (never SQLite). All controlling
+decisions, the six specification-gate resolutions, and gate evidence below are preserved.
 
 Money is integer minor units (`Money` value object) — never float. Times are branch
 business time in `Africa/Nairobi`; timestamps UTC. Frontend visibility is UX only —
@@ -44,7 +48,7 @@ business-rule/accessibility-gate relaxation). `REM-PERM-001` stays open (Phase 1
 ## Specification-gate resolutions (controlling sources)
 
 Full reasoning + DDL in
-[docs/architecture/data-dictionary/invoicing.md](../architecture/data-dictionary/invoicing.md)
+[docs/architecture/data-dictionary/invoicing-and-payments.md](../architecture/data-dictionary/invoicing-and-payments.md)
 and the machine in
 [docs/architecture/state-machines/invoice.md](../architecture/state-machines/invoice.md).
 

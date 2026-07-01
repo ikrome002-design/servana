@@ -104,7 +104,7 @@ const finance: NavItem[] = [
   { key: 'finance.get-started', label: 'Get started', routeName: 'finance.get-started', phase: 'Phase 11', availability: 'live' },
   { key: 'finance.pending-validations', label: 'Pending validations', permission: 'customer_payment.validate', phase: 'Phase 18B', availability: 'planned' },
   { key: 'finance.invoices', label: 'Invoices', routeName: 'finance.invoices', permission: 'invoice.view', phase: 'Phase 17', availability: 'live' },
-  { key: 'finance.payment-records', label: 'Payment records', permission: 'customer_payment.view', phase: 'Phase 18A', availability: 'planned' },
+  { key: 'finance.payment-records', label: 'Payment records', routeName: 'finance.payment-records', permission: 'customer_payment.view', phase: 'Phase 18A', availability: 'live' },
   { key: 'finance.receipts', label: 'Receipts', permission: 'receipt.view', phase: 'Phase 18B', availability: 'planned' },
   { key: 'finance.disputes', label: 'Disputes', permission: 'finance_dispute.manage', phase: 'Phase 18B', availability: 'planned' },
   { key: 'finance.refunds', label: 'External refunds', permission: 'refund.create', phase: 'Phase 18B', availability: 'planned' },
@@ -127,7 +127,7 @@ const frontOffice: NavItem[] = [
   { key: 'front-office.queue', label: 'Queue', routeName: 'front-office.queue', permission: 'queue.view', phase: 'Phase 16B', availability: 'live' },
   { key: 'front-office.service-sessions', label: 'Service sessions', routeName: 'front-office.sessions', permission: 'service_session.view', phase: 'Phase 16C', availability: 'live' },
   { key: 'front-office.invoices', label: 'Invoices', routeName: 'front-office.invoices', permission: 'invoice.view', phase: 'Phase 17', availability: 'live' },
-  { key: 'front-office.payments', label: 'Payments', permission: 'customer_payment.record', phase: 'Phase 18A', availability: 'planned' },
+  { key: 'front-office.payments', label: 'Payments', routeName: 'front-office.payments', permission: 'customer_payment.record', phase: 'Phase 18A', availability: 'live' },
   { key: 'front-office.receipts', label: 'Receipts', permission: 'receipt.view', phase: 'Phase 18B', availability: 'planned' },
 ];
 

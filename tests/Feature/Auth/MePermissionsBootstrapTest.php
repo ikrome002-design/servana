@@ -33,9 +33,9 @@ it('returns a front office member their scoped permissions in /me', function ():
 
     $permissions = $this->actingAs($fo, 'sanctum')->getJson('/api/v1/me')->json('data.permissions');
 
-    expect($permissions)->toContain('payments.record')
+    expect($permissions)->toContain('customer_payment.record')
         ->and($permissions)->toContain('client.create')
-        ->and($permissions)->not->toContain('payments.validate')
+        ->and($permissions)->not->toContain('customer_payment.record_exception')
         ->and($permissions)->not->toContain('receipts.reissue');
 });
 

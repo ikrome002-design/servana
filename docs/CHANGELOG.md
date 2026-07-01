@@ -6,7 +6,48 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 17 — Invoicing (`phase-17-invoicing`) — local_complete
+### Phase 18A — Merchant-Client Payment Recording (`phase-18a-payment-recording`) — local_complete
+
+Merchant-client payment recording on merged Phase 17 (`6557469`, PR #29): the four
+branch-owned tables `payment_recording_groups` + `payment_records` +
+`payment_allocations` + `payment_reference_checks` (§13.8/§13.15/§41); the
+payment-recording-group state machine (recorded → pending_validation); Front Office as
+the default maker recording single and split/multi-method groups against an issued/
+partially-paid invoice under the invoice row lock; method-aware evidence rules;
+encrypted + masked references; durable, concurrency-safe duplicate detection (Gate C
+partial unique index) with a masked `409` and a Finance override (permission + MFA +
+fresh step-up + mandatory reason, original reference never edited, maker≠checker); an
+overpayment guard against `(total − validated_paid) − active_pending`; group-level
+idempotency (R4); period-lock (423) + billing gates reused; a masked, branch-scoped
+Finance mail-notification seam; four typed audit events; and the Front Office +
+Finance frontend. **No** validation, receipt, refund, dispute, cash-up, period-lock
+persistence, or commission is introduced (deferred to 18B/20G). The invoice
+`validated_paid_minor` and status are never changed. See
+[docs/proof/phase-18a.md](proof/phase-18a.md).
+
+- **Specification gates (resolved):** (A) record only against issued/partially_paid;
+  (B) group = the split, concrete component methods, `split_payment` never a component
+  method; (C) durable duplicate via partial unique index WHERE result='unique'; (D)
+  masked Finance mail-notification seam (no Phase 21N table); (E) reuse
+  `FinancialPeriodGuard`/`PeriodLockRepository` (no `financial_period_locks`); (F) cash
+  optional-ref/no-dup-check (no cash-up table).
+- **Permissions:** reconciled legacy `payments.*` → canonical `customer_payment.record`
+  (Front Office) + `.view`/`.duplicate_override`/`.record_exception` (Finance); 18B
+  checker keys not introduced; REM-PERM-001 stays open (Phase 19).
+- **Docs:** consolidated the data dictionary to the Plan-canonical
+  `invoicing-and-payments.md`; added the payment-recording-group state machine and
+  `docs/proof/phase-18a.md`. Phase 17 reconciled to `verified_complete`.
+- **Tests:** 62 payment backend tests (schema/api/duplicate/audit/notification); full
+  parallel suite 952 pass / 7 skip / 0 fail; Pint + Larastan L8 clean; OpenAPI (110
+  routes) + TS parity; Vitest `RecordPayment`; Playwright `payment.spec` (Linux CI).
+
+### Phase 17 — Invoicing (`phase-17-invoicing`) — verified_complete (PR #29, merge `6557469`)
+
+> Reconciled at Phase 18A start: PR **#29** MERGED into `main` (squash merge `6557469`,
+> 2026-07-01; implementation `c0fdd83`, initial CI `28516753439` five checks SUCCESS;
+> governance/final head `3c4e309`, final CI `28517236474` five checks SUCCESS).
+> `reviewDecision` blank under the solo-maintainer governance exception — not
+> independent approval. REM-PERM-001 remains open (Phase 19).
 
 Merchant-client invoicing on merged Phase 16C (`ffe37cc`, PR #28): the branch-owned
 `invoices` + `invoice_items` tables and the tenant-owned gap-free `invoice_number_
