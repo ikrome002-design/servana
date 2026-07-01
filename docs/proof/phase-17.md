@@ -189,3 +189,34 @@ browser/Docker/gitleaks gates.
 ### Local environmental limitations
 Docker Desktop available; full stack healthy. Linux CI remains authoritative for
 browser/Docker/gitleaks gates; local Windows Playwright is not claimed as a pass.
+
+## Solo-Maintainer Review Exception - PR #29
+
+An independent reviewer was unavailable because the repository currently has
+one eligible maintainer. The product owner authorized a PR-specific governance
+exception instead of fabricating approval.
+
+Evidence:
+
+- PR: #29
+- verified implementation head: c0fdd83ea539f1ccdaf9232ef9a1b8b5a027d45e
+- initial successful CI run: 28516753439
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record:
+  docs/governance/solo-maintainer-review-exception-pr-29.md
+
+Financial-integrity boundaries remain unchanged:
+
+- no payment recording or validation subsystem
+- no receipt or refund subsystem
+- no commission ledger
+- no fabricated percentage platform-fee configuration
+- no destructive rewriting of finalized invoice snapshots
+- no invoice-number reuse
+
+This exception applies only to PR #29 and is not independent reviewer approval.
