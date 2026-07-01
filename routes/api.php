@@ -21,6 +21,9 @@ use App\Http\Controllers\Api\V1\Hr\PermissionPreviewController;
 use App\Http\Controllers\Api\V1\Hr\StaffController;
 use App\Http\Controllers\Api\V1\Hr\StaffInvitationAcceptController;
 use App\Http\Controllers\Api\V1\Hr\StaffInvitationController;
+use App\Http\Controllers\Api\V1\Invoicing\InvoiceAdjustmentController;
+use App\Http\Controllers\Api\V1\Invoicing\InvoiceController;
+use App\Http\Controllers\Api\V1\Invoicing\InvoiceVoidController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantDashboardController;
 use App\Http\Controllers\Api\V1\Onboarding\FirstTimeSetupController;
 use App\Http\Controllers\Api\V1\Onboarding\MerchantRegistrationController;
@@ -480,6 +483,54 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             // the controller.
             Route::get('personnel/me/sessions', [PersonnelServiceSessionController::class, 'index'])
                 ->name('personnel.sessions.index');
+
+            // Invoices (Plan §40, §25.3; Phase 17). Front Office owns invoice.view +
+            // invoice.create (list/detail/draft/finalize); Finance owns the void/adjust
+            // workflow (invoice.void.request_or_execute_as_policy + invoice.adjustment
+            // .manage). Reads are branch-scoped; client contact is masked. Finalization
+            // is a financial_mutation (idempotency-keyed). Void request/execute require a
+            // fresh step-up (StepUpAction::InvoiceVoid); Finance MFA is enforced on the
+            // group. Branch Manager/Merchant Admin/HR/Personnel/Audit/Super Admin hold no
+            // invoice key. No DELETE / PATCH-status / mark-paid / payment / receipt route.
+            $invoiceIdempotent = EnsureIdempotentRequest::class.':'.EnsureIdempotentRequest::RETENTION_RETRIABLE;
+            $invoiceVoidStepUp = RequireFreshMfa::class.':'.StepUpAction::InvoiceVoid->value;
+
+            Route::get('invoices', [InvoiceController::class, 'index'])
+                ->middleware(EnsurePermission::class.':invoice.view')
+                ->name('invoices.index');
+            Route::post('invoices', [InvoiceController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':invoice.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('invoices.store');
+            Route::get('invoices/{invoice}', [InvoiceController::class, 'show'])
+                ->middleware(EnsurePermission::class.':invoice.view')
+                ->name('invoices.show');
+            Route::patch('invoices/{invoice}', [InvoiceController::class, 'update'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':invoice.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('invoices.update');
+            Route::post('invoices/{invoice}/finalize', [InvoiceController::class, 'finalize'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':invoice.create', $invoiceIdempotent])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('invoices.finalize');
+
+            Route::post('invoices/{invoice}/void', [InvoiceVoidController::class, 'request'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':invoice.void.request_or_execute_as_policy', $invoiceVoidStepUp])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('invoices.void');
+            Route::post('invoices/{invoice}/void/execute', [InvoiceVoidController::class, 'execute'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':invoice.void.request_or_execute_as_policy', $invoiceVoidStepUp])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('invoices.void.execute');
+            Route::post('invoices/{invoice}/void/reject', [InvoiceVoidController::class, 'reject'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':invoice.void.request_or_execute_as_policy'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('invoices.void.reject');
+
+            Route::post('invoices/{invoice}/adjust', [InvoiceAdjustmentController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':invoice.adjustment.manage'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('invoices.adjust');
 
             // Files & media (Plan §65; Phase 10F). Upload streams to private
             // quarantine then scans; downloads require auth + a valid temporary

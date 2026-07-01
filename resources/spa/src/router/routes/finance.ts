@@ -24,6 +24,16 @@ export const financeRoutes: RouteRecordRaw[] = [
         name: 'finance.dashboard',
         component: () => import('@/pages/finance/DashboardStub.vue'),
       },
+      {
+        path: 'invoices',
+        name: 'finance.invoices',
+        component: () => import('@/pages/invoicing/InvoiceList.vue'),
+      },
+      {
+        path: 'invoices/:id',
+        name: 'finance.invoices.detail',
+        component: () => import('@/pages/invoicing/InvoiceDetail.vue'),
+      },
     ],
   },
 ];

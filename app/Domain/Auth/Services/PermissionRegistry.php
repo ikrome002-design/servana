@@ -156,12 +156,18 @@ final class PermissionRegistry
         // see ONLY sessions assigned to their own staff profile; no branch-wide
         // sessions, no mutation, no contact export, no earned/payable claim.
         'personnel.my_sessions.view' => ['personnel', 'View own assigned service sessions (own scope).', false],
-        // Invoices (Phase 17).
-        'invoices.create' => ['finance', 'Create invoices.', true],
-        'invoices.view' => ['finance', 'View invoices (scoped).', false],
-        'invoices.void_unpaid' => ['finance', 'Void an unpaid invoice.', true],
-        'invoices.void_paid' => ['finance', 'Approve voiding a paid invoice.', true],
-        'invoices.adjust_paid' => ['finance', 'Request adjustment of a paid invoice.', true],
+        // Invoices (Plan §19.3, §40; Phase 17 canonical keys — reconciled from the
+        // legacy placeholder `invoices.create/view/void_unpaid/void_paid/adjust_paid`
+        // baseline, which mis-granted invoice creation to Branch Manager + Merchant
+        // Admin in violation of Plan §10.2). Front Office owns invoice.view +
+        // invoice.create (branch scope); Finance owns invoice.view + the void/adjust
+        // workflow (M/B scope, MFA, void requires step-up). No other role holds an
+        // invoice key — Merchant Admin/Branch Manager/Personnel/Audit read invoices
+        // through reports/dashboard/audit permissions, not a direct invoice key.
+        'invoice.view' => ['finance', 'View invoices (scoped, masked client).', false],
+        'invoice.create' => ['finance', 'Create and finalize merchant-client invoices.', true],
+        'invoice.void.request_or_execute_as_policy' => ['finance', 'Request/execute/reject an invoice void (Finance).', true],
+        'invoice.adjustment.manage' => ['finance', 'Adjust an invoice additively (Finance).', true],
         // Payments.
         'payments.record' => ['finance', 'Record an offline payment.', true],
         'payments.validate' => ['finance', 'Validate a recorded payment.', true],
@@ -205,7 +211,9 @@ final class PermissionRegistry
         self::ROLE_MERCHANT_ADMIN => [
             'merchant.profile.manage', 'merchant.tier.update',
             'branches.create', 'branches.manage_users_lifecycle',
-            'invoices.view', 'invoices.void_paid', 'receipts.view',
+            // No invoice key (Plan §10.2/§19.3): Merchant Admin is the account owner,
+            // not an operational invoicer; invoice visibility is via reports.view.
+            'receipts.view',
             'periods.lock', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
@@ -220,7 +228,9 @@ final class PermissionRegistry
             'day.open_close', 'cashup.submit',
             // No service_session.* — Branch Manager has NO session mutation authority
             // (Phase 16C; the legacy sessions.manage grant is removed, not retained).
-            'invoices.create', 'invoices.view',
+            // No invoice key (Plan §10.2/§19.3): Branch Manager must NOT receive invoice
+            // creation; the legacy placeholder grant of invoices.create is removed, not
+            // retained. Branch invoice visibility is via branch.dashboard.view/reports.
             'receipts.view', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
@@ -231,7 +241,7 @@ final class PermissionRegistry
             'exports.staff_roster',
         ],
         self::ROLE_FINANCE => [
-            'invoices.view', 'invoices.void_unpaid',
+            'invoice.view', 'invoice.void.request_or_execute_as_policy', 'invoice.adjustment.manage',
             'payments.record', 'payments.validate', 'payments.reject',
             'receipts.view', 'refunds.request', 'disputes.manage',
             'cashup.review_approve', 'platform_fees.dispute',
@@ -251,17 +261,24 @@ final class PermissionRegistry
             // lifecycle (replaces the legacy sessions.manage).
             'service_session.view', 'service_session.start',
             'service_session.complete', 'service_session.cancel',
-            'invoices.create', 'invoices.view',
+            // Invoices (Phase 17): Front Office owns invoice viewing + creation/
+            // finalization (canonical invoice.view/invoice.create; replaces the legacy
+            // invoices.view/invoices.create). No void/adjust — that is Finance only.
+            'invoice.view', 'invoice.create',
             'payments.record', 'receipts.view', 'reports.view',
         ],
         self::ROLE_PERSONNEL => [
             'personnel.my_appointments.view', 'personnel.my_queue.view',
             'personnel.my_sessions.view',
-            'invoices.view', 'receipts.view',
+            // No invoice key (Plan §19.3): Personnel are strict own-scope and receive
+            // no broad invoice browsing; the legacy invoices.view grant is removed.
+            'receipts.view',
             'commissions.view', 'reports.view',
         ],
         self::ROLE_AUDIT => [
-            'invoices.view', 'receipts.view',
+            // No invoice key (Plan §19.3): Audit reads invoices through audit.view_full/
+            // reports, not a direct invoice key; the legacy invoices.view grant is removed.
+            'receipts.view',
             'commissions.view', 'platform_fees.view', 'reports.view',
             'audit.view_full', 'audit.flag',
         ],
@@ -281,7 +298,9 @@ final class PermissionRegistry
     private const GRANTABLE = [
         self::ROLE_MERCHANT_ADMIN => ['exports.finance'],
         self::ROLE_FINANCE => [
-            'invoices.adjust_paid', 'payments.edit_reference', 'payments.override_duplicate',
+            // invoice.adjustment.manage is a Finance DEFAULT grant (Plan §19.3), not a
+            // grantable override; the legacy grantable invoices.adjust_paid is removed.
+            'payments.edit_reference', 'payments.override_duplicate',
             'receipts.reissue', 'refunds.approve', 'periods.reopen',
             'commissions.view', 'platform_fees.view', 'exports.finance',
         ],

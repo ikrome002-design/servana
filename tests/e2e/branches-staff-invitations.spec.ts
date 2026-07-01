@@ -72,8 +72,6 @@ const ADMIN_PERMISSIONS = [
     "merchant.tier.update",
     "branches.create",
     "branches.manage_users_lifecycle",
-    "invoices.view",
-    "invoices.void_paid",
     "receipts.view",
     "periods.lock",
     "commissions.view",

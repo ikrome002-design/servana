@@ -19,6 +19,9 @@ use App\Domain\Clients\Models\ClientConsent;
 use App\Domain\Hr\Models\StaffHistory;
 use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
+use App\Domain\Invoicing\Models\Invoice;
+use App\Domain\Invoicing\Models\InvoiceItem;
+use App\Domain\Invoicing\Models\InvoiceNumberSequence;
 use App\Domain\Merchants\Models\MerchantProfile;
 use App\Domain\Merchants\Models\MerchantStatusHistory;
 use App\Domain\Merchants\Models\MerchantUser;
@@ -72,6 +75,9 @@ final class TenantOwnership
         'queue_entries',
         // Phase 16C — Service sessions (Plan §13.7, §25.2, §80).
         'service_sessions',
+        // Phase 17 — Invoicing (Plan §13.8, §40, §80).
+        'invoices',
+        'invoice_items',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -83,6 +89,8 @@ final class TenantOwnership
         'staff_profiles',
         'staff_history',
         'merchant_user_permission_overrides',
+        // Phase 17 — merchant-wide invoice numbering counter (no branch_id).
+        'invoice_number_sequences',
     ];
 
     /**
@@ -157,6 +165,10 @@ final class TenantOwnership
         QueueEntry::class => 'branch',
         // Phase 16C — branch-owned service sessions (BelongsToMerchant + BelongsToBranch).
         ServiceSession::class => 'branch',
+        // Phase 17 — branch-owned invoices + items; merchant-wide numbering counter.
+        Invoice::class => 'branch',
+        InvoiceItem::class => 'branch',
+        InvoiceNumberSequence::class => 'tenant',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -183,5 +195,8 @@ final class TenantOwnership
         'queue_entries' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         // Phase 16C — branch consistency via composite FK to merchant_branches.
         'service_sessions' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 17 — branch consistency via composite FK to merchant_branches.
+        'invoices' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'invoice_items' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }

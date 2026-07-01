@@ -406,3 +406,74 @@ export interface Client {
   sms_consent?: SmsConsentState | null;
   can?: { view: boolean; update: boolean };
 }
+
+// --- Invoicing (Plan §40, §25.3; Phase 17) ---
+
+/** Money as the API serializes it (integer minor units + currency + formatted). */
+export interface Money {
+  amount: number;
+  currency: string;
+  formatted: string;
+}
+
+export type InvoiceStatus =
+  | 'draft'
+  | 'issued'
+  | 'partially_paid'
+  | 'paid'
+  | 'void_pending'
+  | 'voided'
+  | 'adjusted'
+  | 'refund_pending'
+  | 'adjustment_required';
+
+/** A snapshotted invoice line item sourced from a completed service session. */
+export interface InvoiceItem {
+  id: string;
+  service_session_id?: string | null;
+  service?: { id: string; name: string };
+  personnel?: { id: string; display_name: string } | null;
+  description: string;
+  quantity: number;
+  unit_price: Money;
+  line_total: Money;
+  preferred_personnel_fee: Money | null;
+  eligible_for_commission: boolean;
+  currency: string;
+}
+
+/** State-aware capability map from the backend policy (UX only). */
+export interface InvoiceCapabilities {
+  update: boolean;
+  finalize: boolean;
+  void: boolean;
+  void_execute: boolean;
+  void_reject: boolean;
+  adjust: boolean;
+}
+
+/** Merchant-client invoice — client contact is ALWAYS masked. */
+export interface Invoice {
+  id: string;
+  invoice_number: string | null;
+  status: InvoiceStatus;
+  is_draft: boolean;
+  currency: string;
+  client?: { id: string; full_name: string; phone_masked: string; phone_last_four: string };
+  subtotal: Money;
+  discount: Money;
+  tax: Money;
+  preferred_personnel_fee: Money | null;
+  total: Money;
+  validated_paid: Money;
+  balance: Money;
+  percentage_fee_config_snapshot: unknown | null;
+  finalized_at: string | null;
+  voided_at: string | null;
+  void_reason: string | null;
+  adjusted_at: string | null;
+  adjustment_reason: string | null;
+  created_at: string | null;
+  items?: InvoiceItem[];
+  can?: InvoiceCapabilities;
+}

@@ -74,6 +74,21 @@ export const frontOfficeRoutes: RouteRecordRaw[] = [
         name: 'front-office.sessions',
         component: () => import('@/pages/front-office/ServiceSessionList.vue'),
       },
+      {
+        path: 'invoices',
+        name: 'front-office.invoices',
+        component: () => import('@/pages/invoicing/InvoiceList.vue'),
+      },
+      {
+        path: 'invoices/create',
+        name: 'front-office.invoices.create',
+        component: () => import('@/pages/invoicing/InvoiceCreate.vue'),
+      },
+      {
+        path: 'invoices/:id',
+        name: 'front-office.invoices.detail',
+        component: () => import('@/pages/invoicing/InvoiceDetail.vue'),
+      },
     ],
   },
 ];

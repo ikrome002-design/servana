@@ -21,6 +21,7 @@ use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Scheduling\Enums\QueueAssignmentMode;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
+use App\Domain\Scheduling\Models\ServiceSession;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Storage;
@@ -470,4 +471,48 @@ function availableFile(int $merchantId, FilePurpose $purpose, ?int $ownerUserId 
     Storage::disk($disk)->put((string) $file->final_path, 'final-bytes');
 
     return $file;
+}
+
+/**
+ * Phase 17 invoicing scenario: a branch (code `KIL`) + a same-merchant client, a
+ * priced service (optionally with a legacy preferred-personnel fee), a staff member,
+ * and a Front Office actor. Action-level invoice tests build on this; HTTP tests use
+ * queueScenario() for real role permissions.
+ *
+ * @return array{branch: MerchantBranch, merchantId: int, client: Client, service: Service, staff: StaffProfile, actor: User}
+ */
+function invoiceScenario(int $servicePriceMinor = 500000, ?int $preferredFeeMinor = null): array
+{
+    $branch = MerchantBranch::factory()->create(['code' => 'KIL']);
+    $merchantId = $branch->merchant_id;
+    $client = Client::factory()->create(['merchant_id' => $merchantId, 'branch_id' => $branch->id]);
+    $service = Service::factory()->create([
+        'merchant_id' => $merchantId,
+        'branch_id' => $branch->id,
+        'price_minor' => $servicePriceMinor,
+        'preferred_personnel_fee_minor' => $preferredFeeMinor,
+        'currency' => 'KES',
+    ]);
+    $staff = StaffProfile::factory()->create(['merchant_id' => $merchantId, 'primary_branch_id' => $branch->id]);
+    $actor = User::factory()->create();
+
+    return compact('branch', 'merchantId', 'client', 'service', 'staff', 'actor');
+}
+
+/**
+ * A completed, un-invoiced service session for an {@see invoiceScenario()} client.
+ *
+ * @param  array{branch: MerchantBranch, merchantId: int, client: Client, service: Service, staff: StaffProfile, actor: User}  $scn
+ */
+function completedSessionFor(array $scn, ?bool $preferredHonored = null): ServiceSession
+{
+    return ServiceSession::factory()->completed()->create([
+        'merchant_id' => $scn['merchantId'],
+        'branch_id' => $scn['branch']->id,
+        'client_id' => $scn['client']->id,
+        'service_id' => $scn['service']->id,
+        'staff_profile_id' => $scn['staff']->id,
+        'queue_entry_id' => null,
+        'preferred_personnel_honored' => $preferredHonored,
+    ]);
 }

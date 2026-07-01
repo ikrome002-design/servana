@@ -41,7 +41,8 @@ function expectedMatrix(): array
         'merchant_admin' => [
             'merchant.profile.manage', 'merchant.tier.update',
             'branches.create', 'branches.manage_users_lifecycle',
-            'invoices.view', 'invoices.void_paid', 'receipts.view',
+            // Phase 17: no invoice key (Plan §10.2/§19.3) — invoice visibility via reports.
+            'receipts.view',
             'periods.lock', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
@@ -49,7 +50,8 @@ function expectedMatrix(): array
             'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
             'service.view', 'service.create', 'service.update', 'service.archive',
             'day.open_close', 'cashup.submit',
-            'invoices.create', 'invoices.view',
+            // Phase 17: NO invoice key — Branch Manager must not create invoices
+            // (Plan §10.2/§19.3); legacy invoices.create/view grants removed.
             'receipts.view', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
@@ -60,7 +62,7 @@ function expectedMatrix(): array
             'exports.staff_roster',
         ],
         'finance' => [
-            'invoices.view', 'invoices.void_unpaid',
+            'invoice.view', 'invoice.void.request_or_execute_as_policy', 'invoice.adjustment.manage',
             'payments.record', 'payments.validate', 'payments.reject',
             'receipts.view', 'refunds.request', 'disputes.manage',
             'cashup.review_approve', 'platform_fees.dispute',
@@ -75,17 +77,19 @@ function expectedMatrix(): array
             'client.view', 'client.create', 'client.update', 'front_office.search',
             'service_session.view', 'service_session.start',
             'service_session.complete', 'service_session.cancel',
-            'invoices.create', 'invoices.view',
+            'invoice.view', 'invoice.create',
             'payments.record', 'receipts.view', 'reports.view',
         ],
         'personnel' => [
             'personnel.my_appointments.view', 'personnel.my_queue.view',
             'personnel.my_sessions.view',
-            'invoices.view', 'receipts.view',
+            // Phase 17: no invoice key (strict own-scope; no broad browsing).
+            'receipts.view',
             'commissions.view', 'reports.view',
         ],
         'audit' => [
-            'invoices.view', 'receipts.view',
+            // Phase 17: no invoice key (Audit reads via audit.view_full/reports).
+            'receipts.view',
             'commissions.view', 'platform_fees.view', 'reports.view',
             'audit.view_full', 'audit.flag',
         ],
