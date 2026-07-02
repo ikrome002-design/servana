@@ -198,3 +198,26 @@ finance exports → **18B/23**. Preferred-personnel fee rules → 20A. Subscript
 20G. Payouts → 20H. Audit dashboard + REM-PERM-001 closure → 19. Notifications/reports →
 21N. Personnel SMS → 21S. Search → 22. Release audit → 23. Performance → 24. Deployment →
 25. Queue-linked in-progress session abort → unresolved scheduling correction.
+
+## Solo-Maintainer Review Exception - PR #30
+
+An independent reviewer was unavailable because the repository currently has
+one eligible maintainer. A PR-specific governance exception was recorded
+instead of fabricating approval.
+
+Evidence:
+
+- PR: #30
+- verified implementation head: aef8d5136f3dce0385cabd64e8d3edabe7ebf5ec
+- CI correction commit: aef8d5136f3dce0385cabd64e8d3edabe7ebf5ec
+- initial successful CI run: 28575564965
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record:
+  docs/governance/solo-maintainer-review-exception-pr-30.md
+
+This exception applies only to PR #30 and is not independent reviewer approval.
