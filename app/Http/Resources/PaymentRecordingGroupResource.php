@@ -6,6 +6,7 @@ namespace App\Http\Resources;
 
 use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Payments\Enums\PaymentRecordingGroupStatus;
+use App\Domain\Payments\Enums\PaymentReferenceCheckResult;
 use App\Domain\Payments\Models\PaymentRecordingGroup;
 use App\Enums\Currency;
 use App\Models\User;
@@ -59,7 +60,7 @@ final class PaymentRecordingGroupResource extends JsonResource
                 fn (): array => $this->records
                     ->flatMap(fn ($record): array => $record->relationLoaded('referenceChecks')
                         ? $record->referenceChecks
-                            ->where('result', \App\Domain\Payments\Enums\PaymentReferenceCheckResult::DuplicateSuspected)
+                            ->where('result', PaymentReferenceCheckResult::DuplicateSuspected)
                             ->map(fn ($check): array => [
                                 'id' => $check->ulid,
                                 'method' => $check->method->value,

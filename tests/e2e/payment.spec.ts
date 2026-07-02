@@ -81,7 +81,7 @@ test.describe('Front Office payment recording', () => {
     await expect(success).toContainText(/pending validation/i);
     const body = (await page.getByRole('main').textContent())?.toLowerCase() ?? '';
     expect(body).toContain('no receipt');
-    expect(body).not.toContain('validate');
+    await expect(page.getByRole('button', { name: /validate/i })).toHaveCount(0);
   });
 
   test('builds a split payment and reflects the running total', async ({ page }) => {
