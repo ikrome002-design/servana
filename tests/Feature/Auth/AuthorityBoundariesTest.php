@@ -29,8 +29,8 @@ it('forbids Merchant Admin from configuring services, commissions, personnel ass
         ->and($admin)->not->toContain('commissions.manage')
         ->and($admin)->not->toContain('staff.invite')
         ->and($admin)->not->toContain('personnel.availability.manage')
-        ->and($admin)->not->toContain('payments.validate')
-        ->and($admin)->not->toContain('payments.record');
+        ->and($admin)->not->toContain('customer_payment.record_exception')
+        ->and($admin)->not->toContain('customer_payment.record');
 });
 
 it('limits Merchant Admin invitations to branch_manager and hr', function (): void {
@@ -102,9 +102,9 @@ it('forbids Finance from bypassing branch scope', function (): void {
 it('forbids Front Office from validating payments or issuing receipts', function (): void {
     $fo = grants('front_office');
 
-    expect($fo)->toContain('payments.record')
-        ->and($fo)->not->toContain('payments.validate')
-        ->and($fo)->not->toContain('payments.reject')
+    expect($fo)->toContain('customer_payment.record')
+        ->and($fo)->not->toContain('customer_payment.view')
+        ->and($fo)->not->toContain('customer_payment.record_exception')
         ->and($fo)->not->toContain('receipts.reissue');
 });
 

@@ -265,7 +265,8 @@ merchant_finance:
     phase: Phase 17
   - key: finance.payment-records
     label: Payment records
-    availability: planned
+    availability: live
+    route: finance.payment-records
     permission: customer_payment.view
     phase: Phase 18A
   - key: finance.receipts
@@ -371,7 +372,8 @@ merchant_front_office:
     phase: Phase 17
   - key: front-office.payments
     label: Payments
-    availability: planned
+    availability: live
+    route: front-office.payments
     permission: customer_payment.record
     phase: Phase 18A
   - key: front-office.receipts

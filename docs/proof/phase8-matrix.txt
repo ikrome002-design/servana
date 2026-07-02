@@ -18,16 +18,15 @@ client.update                         ·            ·            ·            
 client.view                           ·            ·            ·            ·            ✓           ·            ·            ·
 cashup.review_approve                 ·            ·            ·            ✓           ·            ·            ·            ·
 commissions.view                      ✓           ✓           ✓           ·            ·            ✓           ✓           ·
+customer_payment.duplicate_override   ·            ·            ·            ✓           ·            ·            ·            ·
+customer_payment.record               ·            ·            ·            ·            ✓           ·            ·            ·
+customer_payment.record_exception     ·            ·            ·            ✓           ·            ·            ·            ·
+customer_payment.view                 ·            ·            ·            ✓           ·            ·            ·            ·
 disputes.manage                       ·            ·            ·            ✓           ·            ·            ·            ·
 invoice.adjustment.manage             ·            ·            ·            ✓           ·            ·            ·            ·
 invoice.create                        ·            ·            ·            ·            ✓           ·            ·            ·
 invoice.view                          ·            ·            ·            ✓           ✓           ·            ·            ·
 invoice.void.request_or_execute_as_policy·            ·            ·            ✓           ·            ·            ·            ·
-payments.edit_reference               ·            ·            ·            ·            ·            ·            ·            ·
-payments.override_duplicate           ·            ·            ·            ·            ·            ·            ·            ·
-payments.record                       ·            ·            ·            ✓           ✓           ·            ·            ·
-payments.reject                       ·            ·            ·            ✓           ·            ·            ·            ·
-payments.validate                     ·            ·            ·            ✓           ·            ·            ·            ·
 periods.reopen                        ·            ·            ·            ·            ·            ·            ·            ·
 platform_fees.dispute                 ·            ·            ·            ✓           ·            ·            ·            ·
 platform_fees.view                    ✓           ✓           ·            ·            ·            ·            ✓           ·

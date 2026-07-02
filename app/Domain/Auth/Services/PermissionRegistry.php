@@ -168,12 +168,18 @@ final class PermissionRegistry
         'invoice.create' => ['finance', 'Create and finalize merchant-client invoices.', true],
         'invoice.void.request_or_execute_as_policy' => ['finance', 'Request/execute/reject an invoice void (Finance).', true],
         'invoice.adjustment.manage' => ['finance', 'Adjust an invoice additively (Finance).', true],
-        // Payments.
-        'payments.record' => ['finance', 'Record an offline payment.', true],
-        'payments.validate' => ['finance', 'Validate a recorded payment.', true],
-        'payments.reject' => ['finance', 'Reject a recorded payment.', true],
-        'payments.edit_reference' => ['finance', 'Edit a payment reference.', true],
-        'payments.override_duplicate' => ['finance', 'Override a duplicate-reference block.', true],
+        // Merchant-client payments (Plan §19.3, §41; Phase 18A canonical keys —
+        // reconciled from the legacy placeholder `payments.record/validate/reject/
+        // edit_reference/override_duplicate` baseline). Front Office is the default
+        // MAKER (customer_payment.record); Finance holds view + the duplicate override
+        // (MFA + step-up) + the maker-exception capability. The Phase-18B checker keys
+        // (customer_payment.validate/reject/reference_correct) are NOT introduced here
+        // — their routes/actions and grants land in Phase 18B; REM-PERM-001 (full
+        // §19.3 matrix closure) stays open for Phase 19.
+        'customer_payment.record' => ['finance', 'Record a merchant-client payment recording group (Front Office maker).', true],
+        'customer_payment.view' => ['finance', 'View merchant-client payment recording groups (scoped, masked).', false],
+        'customer_payment.duplicate_override' => ['finance', 'Override a suspected duplicate payment reference (Finance; MFA + step-up).', true],
+        'customer_payment.record_exception' => ['finance', 'Record a merchant-client payment as a Finance maker exception.', true],
         // Receipts.
         'receipts.view' => ['finance', 'View receipts (scoped).', false],
         'receipts.reissue' => ['finance', 'Reissue a receipt.', true],
@@ -242,7 +248,12 @@ final class PermissionRegistry
         ],
         self::ROLE_FINANCE => [
             'invoice.view', 'invoice.void.request_or_execute_as_policy', 'invoice.adjustment.manage',
-            'payments.record', 'payments.validate', 'payments.reject',
+            // Merchant-client payments (Phase 18A): Finance is NEVER the default maker
+            // (no customer_payment.record). Finance holds read, the duplicate override
+            // (MFA + step-up on the route), and the maker-exception capability. The
+            // Phase-18B checker keys (customer_payment.validate/reject/reference_correct)
+            // are not granted here — they land with the Phase 18B validation workflow.
+            'customer_payment.view', 'customer_payment.duplicate_override', 'customer_payment.record_exception',
             'receipts.view', 'refunds.request', 'disputes.manage',
             'cashup.review_approve', 'platform_fees.dispute',
             'reports.view', 'audit.view_full',
@@ -265,7 +276,12 @@ final class PermissionRegistry
             // finalization (canonical invoice.view/invoice.create; replaces the legacy
             // invoices.view/invoices.create). No void/adjust — that is Finance only.
             'invoice.view', 'invoice.create',
-            'payments.record', 'receipts.view', 'reports.view',
+            // Merchant-client payments (Phase 18A): Front Office is the default MAKER
+            // only (customer_payment.record). The recording POST returns the created
+            // group resource directly, so no separate view grant is needed; the
+            // pending-group list/detail is a Finance surface (customer_payment.view).
+            'customer_payment.record',
+            'receipts.view', 'reports.view',
         ],
         self::ROLE_PERSONNEL => [
             'personnel.my_appointments.view', 'personnel.my_queue.view',
@@ -300,7 +316,9 @@ final class PermissionRegistry
         self::ROLE_FINANCE => [
             // invoice.adjustment.manage is a Finance DEFAULT grant (Plan §19.3), not a
             // grantable override; the legacy grantable invoices.adjust_paid is removed.
-            'payments.edit_reference', 'payments.override_duplicate',
+            // The legacy grantable payments.edit_reference/override_duplicate are removed:
+            // customer_payment.duplicate_override is now a Finance DEFAULT (Phase 18A),
+            // and the reference-correction key is a Phase-18B concern.
             'receipts.reissue', 'refunds.approve', 'periods.reopen',
             'commissions.view', 'platform_fees.view', 'exports.finance',
         ],

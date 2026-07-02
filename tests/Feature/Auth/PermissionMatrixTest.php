@@ -63,7 +63,7 @@ function expectedMatrix(): array
         ],
         'finance' => [
             'invoice.view', 'invoice.void.request_or_execute_as_policy', 'invoice.adjustment.manage',
-            'payments.record', 'payments.validate', 'payments.reject',
+            'customer_payment.view', 'customer_payment.duplicate_override', 'customer_payment.record_exception',
             'receipts.view', 'refunds.request', 'disputes.manage',
             'cashup.review_approve', 'platform_fees.dispute',
             'reports.view', 'audit.view_full',
@@ -78,7 +78,7 @@ function expectedMatrix(): array
             'service_session.view', 'service_session.start',
             'service_session.complete', 'service_session.cancel',
             'invoice.view', 'invoice.create',
-            'payments.record', 'receipts.view', 'reports.view',
+            'customer_payment.record', 'receipts.view', 'reports.view',
         ],
         'personnel' => [
             'personnel.my_appointments.view', 'personnel.my_queue.view',

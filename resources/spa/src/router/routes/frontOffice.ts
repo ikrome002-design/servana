@@ -89,6 +89,16 @@ export const frontOfficeRoutes: RouteRecordRaw[] = [
         name: 'front-office.invoices.detail',
         component: () => import('@/pages/invoicing/InvoiceDetail.vue'),
       },
+      {
+        path: 'payments',
+        name: 'front-office.payments',
+        component: () => import('@/pages/payments/RecordPaymentEntry.vue'),
+      },
+      {
+        path: 'payments/record/:id',
+        name: 'front-office.payments.record',
+        component: () => import('@/pages/payments/RecordPayment.vue'),
+      },
     ],
   },
 ];

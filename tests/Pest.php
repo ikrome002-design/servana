@@ -16,6 +16,7 @@ use App\Domain\Files\Enums\FilePurpose;
 use App\Domain\Files\Enums\FileScanStatus;
 use App\Domain\Files\Models\UploadedFile;
 use App\Domain\Hr\Models\StaffProfile;
+use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
@@ -515,4 +516,66 @@ function completedSessionFor(array $scn, ?bool $preferredHonored = null): Servic
         'queue_entry_id' => null,
         'preferred_personnel_honored' => $preferredHonored,
     ]);
+}
+
+/**
+ * An issued invoice + Front Office maker + Finance checker for Phase 18A payment
+ * recording. Built on {@see queueScenario()} (merchant/branch/frontOffice/client).
+ *
+ * @return array{merchant: Merchant, branch: MerchantBranch, client: Client, frontOffice: User, finance: User, invoice: Invoice}
+ */
+function paymentScenario(int $invoiceTotalMinor = 500000): array
+{
+    $scn = queueScenario();
+    [$finance] = branchStaff($scn['merchant'], $scn['branch'], MerchantUserRole::Finance);
+
+    $invoice = Invoice::factory()->issued($invoiceTotalMinor)->create([
+        'merchant_id' => $scn['merchant']->id,
+        'branch_id' => $scn['branch']->id,
+        'client_id' => $scn['client']->id,
+        'subtotal_minor' => $invoiceTotalMinor,
+        'total_minor' => $invoiceTotalMinor,
+    ]);
+
+    return [
+        'merchant' => $scn['merchant'],
+        'branch' => $scn['branch'],
+        'client' => $scn['client'],
+        'frontOffice' => $scn['frontOffice'],
+        'finance' => $finance,
+        'invoice' => $invoice,
+    ];
+}
+
+/**
+ * POST a payment recording group as $actor against $invoiceUlid with an
+ * Idempotency-Key (defaulted). $components is a list of component payloads.
+ *
+ * @param  list<array<string, mixed>>  $components
+ */
+function recordPaymentGroup(User $actor, string $invoiceUlid, array $components, ?string $key = null, string $suffix = ''): TestResponse
+{
+    return test()->actingAs($actor, 'sanctum')
+        ->withHeader('Idempotency-Key', $key ?? (string) Str::uuid())
+        ->postJson("/api/v1/invoices/{$invoiceUlid}/payment-recording-groups{$suffix}", ['components' => $components]);
+}
+
+/**
+ * A single cash payment component for the given amount.
+ *
+ * @return array<string, mixed>
+ */
+function cashComponent(int $amountMinor): array
+{
+    return ['method' => 'cash', 'amount_minor' => $amountMinor];
+}
+
+/**
+ * A referenced (non-cash) payment component.
+ *
+ * @return array<string, mixed>
+ */
+function referencedComponent(int $amountMinor, string $method = 'mpesa_offline', string $reference = 'QGX7YT1ABC'): array
+{
+    return ['method' => $method, 'amount_minor' => $amountMinor, 'reference' => $reference];
 }

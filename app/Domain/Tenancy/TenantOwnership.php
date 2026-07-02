@@ -25,6 +25,10 @@ use App\Domain\Invoicing\Models\InvoiceNumberSequence;
 use App\Domain\Merchants\Models\MerchantProfile;
 use App\Domain\Merchants\Models\MerchantStatusHistory;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Payments\Models\PaymentAllocation;
+use App\Domain\Payments\Models\PaymentRecord;
+use App\Domain\Payments\Models\PaymentRecordingGroup;
+use App\Domain\Payments\Models\PaymentReferenceCheck;
 use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Domain\Scheduling\Models\QueueEntry;
@@ -78,6 +82,11 @@ final class TenantOwnership
         // Phase 17 — Invoicing (Plan §13.8, §40, §80).
         'invoices',
         'invoice_items',
+        // Phase 18A — Merchant-client payment recording (Plan §13.8, §13.15, §41, §80).
+        'payment_recording_groups',
+        'payment_records',
+        'payment_allocations',
+        'payment_reference_checks',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -169,6 +178,11 @@ final class TenantOwnership
         Invoice::class => 'branch',
         InvoiceItem::class => 'branch',
         InvoiceNumberSequence::class => 'tenant',
+        // Phase 18A — branch-owned payment recording groups + components + evidence.
+        PaymentRecordingGroup::class => 'branch',
+        PaymentRecord::class => 'branch',
+        PaymentAllocation::class => 'branch',
+        PaymentReferenceCheck::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -198,5 +212,10 @@ final class TenantOwnership
         // Phase 17 — branch consistency via composite FK to merchant_branches.
         'invoices' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'invoice_items' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 18A — branch consistency via composite FK to merchant_branches.
+        'payment_recording_groups' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'payment_records' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'payment_allocations' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'payment_reference_checks' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }

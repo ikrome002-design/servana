@@ -34,6 +34,16 @@ export const financeRoutes: RouteRecordRaw[] = [
         name: 'finance.invoices.detail',
         component: () => import('@/pages/invoicing/InvoiceDetail.vue'),
       },
+      {
+        path: 'payment-records',
+        name: 'finance.payment-records',
+        component: () => import('@/pages/payments/PaymentGroupList.vue'),
+      },
+      {
+        path: 'payment-records/:id',
+        name: 'finance.payment-records.detail',
+        component: () => import('@/pages/payments/PaymentGroupDetail.vue'),
+      },
     ],
   },
 ];

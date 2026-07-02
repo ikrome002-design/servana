@@ -1015,6 +1015,10 @@
                                 "invoice.voided",
                                 "invoice.void_rejected",
                                 "invoice.adjusted",
+                                "customer_payment.recorded",
+                                "customer_payment.duplicate_suspected",
+                                "customer_payment.duplicate_override_approved",
+                                "customer_payment.recorded_exception",
                                 "unauthorized_access",
                                 "file.upload_accepted",
                                 "file.upload_rejected",
@@ -4509,6 +4513,306 @@
                 ]
             }
         },
+        "/api/v1/invoices/{invoice}/payment-recording-groups": {
+            "post": {
+                "operationId": "payment-recording-groups.store",
+                "tags": [
+                    "PaymentRecordingGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "invoice",
+                        "in": "path",
+                        "required": true,
+                        "description": "The invoice ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 16,
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RecordPaymentGroupRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`PaymentRecordingGroupResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PaymentRecordingGroupResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "409": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "const": "payment_reference_duplicate_suspected"
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "fields": {
+                                                    "type": "string"
+                                                },
+                                                "meta": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "string"
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "code",
+                                                "message",
+                                                "fields",
+                                                "meta"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "error"
+                                    ]
+                                }
+                            }
+                        },
+                        "headers": {
+                            "X-Correlation-ID": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "423": {
+                        "description": "Financial period locked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/invoices/{invoice}/payment-recording-groups/exception": {
+            "post": {
+                "operationId": "payment-recording-groups.exception",
+                "tags": [
+                    "PaymentRecordingGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "invoice",
+                        "in": "path",
+                        "required": true,
+                        "description": "The invoice ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 16,
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RecordPaymentGroupRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`PaymentRecordingGroupResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PaymentRecordingGroupResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "409": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "const": "payment_reference_duplicate_suspected"
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "fields": {
+                                                    "type": "string"
+                                                },
+                                                "meta": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "string"
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "code",
+                                                "message",
+                                                "fields",
+                                                "meta"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "error"
+                                    ]
+                                }
+                            }
+                        },
+                        "headers": {
+                            "X-Correlation-ID": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "423": {
+                        "description": "Financial period locked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/invoices/{invoice}/void": {
             "post": {
                 "operationId": "invoices.void",
@@ -5130,6 +5434,388 @@
                                     "required": [
                                         "message"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/payment-recording-groups": {
+            "get": {
+                "operationId": "payment-recording-groups.index",
+                "tags": [
+                    "PaymentRecordingGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at",
+                                "recorded_at",
+                                "-recorded_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "draft",
+                                "recorded",
+                                "pending_validation",
+                                "validated",
+                                "rejected",
+                                "correction_required",
+                                "reversed"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PaymentRecordingGroupResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PaymentRecordingGroupResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/payment-recording-groups/{paymentRecordingGroup}": {
+            "get": {
+                "operationId": "payment-recording-groups.show",
+                "tags": [
+                    "PaymentRecordingGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "paymentRecordingGroup",
+                        "in": "path",
+                        "required": true,
+                        "description": "The payment recording group ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PaymentRecordingGroupResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PaymentRecordingGroupResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/payment-reference-checks/{paymentReferenceCheck}/override": {
+            "post": {
+                "operationId": "payment-reference-checks.override",
+                "tags": [
+                    "PaymentReferenceCheck"
+                ],
+                "parameters": [
+                    {
+                        "name": "paymentReferenceCheck",
+                        "in": "path",
+                        "required": true,
+                        "description": "The payment reference check ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 16,
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApproveDuplicateReferenceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PaymentReferenceCheckResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PaymentReferenceCheckResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "409": {
+                        "description": "Idempotency conflict / request in progress",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "423": {
+                        "description": "Financial period locked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
                                 }
                             }
                         }
@@ -5971,6 +6657,10 @@
                                 "invoice.voided",
                                 "invoice.void_rejected",
                                 "invoice.adjusted",
+                                "customer_payment.recorded",
+                                "customer_payment.duplicate_suspected",
+                                "customer_payment.duplicate_override_approved",
+                                "customer_payment.recorded_exception",
                                 "unauthorized_access",
                                 "file.upload_accepted",
                                 "file.upload_rejected",
@@ -10955,6 +11645,21 @@
                 ],
                 "title": "AppointmentResource"
             },
+            "ApproveDuplicateReferenceRequest": {
+                "type": "object",
+                "description": "Finance duplicate-reference override validation (Plan §41, Gate C; Phase 18A). A\nnon-empty reason is mandatory and is sanitized + length-capped in the action. The\noverride actor is the authenticated Finance user (server-derived); the target\ncheck is the route-bound {paymentReferenceCheck}. Permission + MFA + fresh step-up\nare enforced by the route middleware, not the body.",
+                "properties": {
+                    "reason": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 480
+                    }
+                },
+                "required": [
+                    "reason"
+                ],
+                "title": "ApproveDuplicateReferenceRequest"
+            },
             "AssignAppointmentRequest": {
                 "type": "object",
                 "description": "Assign-personnel validation (Plan §36). The target personnel is a public staff\nULID resolved inside the appointment's branch; eligibility + availability are\nrevalidated by the shared PersonnelSchedulingValidator in the action.",
@@ -12282,6 +12987,273 @@
                 ],
                 "title": "MfaCodeRequest"
             },
+            "PaymentMethod": {
+                "type": "string",
+                "description": "Merchant-client payment methods (Plan §13.8, §41; Phase 18A). Mirrors the payment_records.method DB CHECK. Gate B: `split_payment` exists in the enum for canonical schema fidelity but is NEVER written as a component method — a split is represented by the group with multiple concrete components. {@see isConcreteComponentMethod()} rejects it.\n",
+                "enum": [
+                    "cash",
+                    "mpesa_offline",
+                    "bank_transfer",
+                    "card_terminal",
+                    "voucher",
+                    "split_payment",
+                    "other"
+                ],
+                "title": "PaymentMethod"
+            },
+            "PaymentRecordResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "method": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "object",
+                        "properties": {
+                            "amount": {
+                                "type": "integer"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "formatted": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "amount",
+                            "currency",
+                            "formatted"
+                        ]
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "reference_masked": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "paid_at": {
+                        "type": "string"
+                    },
+                    "allocations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "amount": {
+                                    "type": "object",
+                                    "properties": {
+                                        "amount": {
+                                            "type": "integer"
+                                        },
+                                        "currency": {
+                                            "type": "string"
+                                        },
+                                        "formatted": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "amount",
+                                        "currency",
+                                        "formatted"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "amount"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "method",
+                    "amount",
+                    "currency",
+                    "status",
+                    "reference_masked",
+                    "paid_at"
+                ],
+                "title": "PaymentRecordResource"
+            },
+            "PaymentRecordingGroupResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "is_pending_validation": {
+                        "type": "boolean"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "object",
+                        "properties": {
+                            "amount": {
+                                "type": "integer"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "formatted": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "amount",
+                            "currency",
+                            "formatted"
+                        ]
+                    },
+                    "recorded_at": {
+                        "type": "string"
+                    },
+                    "submitted_for_validation_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "maker": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name"
+                        ]
+                    },
+                    "invoice": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "invoice_number": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "invoice_number"
+                        ]
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PaymentRecordResource"
+                        }
+                    },
+                    "duplicate_checks": {
+                        "type": "array",
+                        "description": "Held duplicate-reference checks awaiting a Finance override (masked). Only\npresent when records + their reference checks are eager-loaded (detail view).",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "method": {
+                                    "type": "string"
+                                },
+                                "reference_masked": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "method",
+                                "reference_masked"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "is_pending_validation",
+                    "currency",
+                    "total",
+                    "recorded_at",
+                    "submitted_for_validation_at",
+                    "created_at"
+                ],
+                "title": "PaymentRecordingGroupResource"
+            },
+            "PaymentReferenceCheckResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "method": {
+                        "type": "string"
+                    },
+                    "result": {
+                        "type": "string"
+                    },
+                    "reference_masked": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "matched_payment_id": {
+                        "type": "string"
+                    },
+                    "is_override": {
+                        "type": "boolean"
+                    },
+                    "override_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "checked_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "method",
+                    "result",
+                    "is_override",
+                    "override_reason",
+                    "checked_at"
+                ],
+                "title": "PaymentReferenceCheckResource"
+            },
             "PersonnelAppointmentResource": {
                 "type": "object",
                 "properties": {
@@ -12994,6 +13966,60 @@
                     "can"
                 ],
                 "title": "QueueEntryResource"
+            },
+            "RecordPaymentGroupRequest": {
+                "type": "object",
+                "description": "Merchant-client payment recording validation (Plan §41; Phase 18A). Accepts ONLY\nthe components the maker legitimately supplies: per component a method, a positive\ninteger minor-unit amount, an optional reference/evidence, an optional paid_at\n(≤ now), and an optional currency (which must equal the invoice currency). All\nauthoritative values (merchant/branch/invoice/maker/group total/status/allocations/\nvalidated amount) are derived server-side and are NEVER accepted from the body.\n`split_payment` is a valid enum value but is rejected downstream as a component\nmethod (Gate B).",
+                "properties": {
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "method": {
+                                    "$ref": "#/components/schemas/PaymentMethod"
+                                },
+                                "amount_minor": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 1000000000000
+                                },
+                                "reference": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 190
+                                },
+                                "paid_at": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "format": "date-time"
+                                },
+                                "currency": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "minLength": 3,
+                                    "maxLength": 3
+                                }
+                            },
+                            "required": [
+                                "method",
+                                "amount_minor"
+                            ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 20
+                    }
+                },
+                "required": [
+                    "components"
+                ],
+                "title": "RecordPaymentGroupRequest"
             },
             "RegisterMerchantRequest": {
                 "type": "object",

@@ -156,6 +156,20 @@ enum AuditEvent: string
     case InvoiceVoidRejected = 'invoice.void_rejected';
     case InvoiceAdjusted = 'invoice.adjusted';
 
+    // --- Merchant-client payments (Plan §41, §25; Phase 18A). Front Office is the
+    // default maker; Finance overrides a suspected duplicate. One coherent typed
+    // event per committed action; rolled-back recordings write NO success event.
+    // Context carries only safe ids (group/invoice/client ULIDs + invoice number),
+    // component methods, integer minor-unit amounts + currency, a MASKED reference
+    // suffix, balance-before / pending-before / available-after, the actor, and a
+    // SANITISED override reason — never a full/normalized reference, the encrypted
+    // display value, full client contact, raw idempotency key, tokens, headers, full
+    // bodies, or sequential ids.
+    case CustomerPaymentRecorded = 'customer_payment.recorded';
+    case CustomerPaymentDuplicateSuspected = 'customer_payment.duplicate_suspected';
+    case CustomerPaymentDuplicateOverrideApproved = 'customer_payment.duplicate_override_approved';
+    case CustomerPaymentRecordedException = 'customer_payment.recorded_exception';
+
     // --- Tenant/branch isolation (Plan §8.4) — name preserved from Phase 9.
     case UnauthorizedAccess = 'unauthorized_access';
 
@@ -211,6 +225,7 @@ enum AuditEvent: string
             self::ServiceSessionCompleted,
             self::InvoiceCreated,
             self::InvoiceUpdatedDraft,
+            self::CustomerPaymentRecorded,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
@@ -253,6 +268,7 @@ enum AuditEvent: string
             self::QueueEntryNoShow,
             self::ServiceSessionCancelled,
             self::InvoiceVoidRejected,
+            self::CustomerPaymentDuplicateSuspected,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,
@@ -266,6 +282,8 @@ enum AuditEvent: string
             self::InvoiceVoidRequested,
             self::InvoiceVoided,
             self::InvoiceAdjusted,
+            self::CustomerPaymentDuplicateOverrideApproved,
+            self::CustomerPaymentRecordedException,
             self::UnauthorizedAccess => AuditSeverity::High,
         };
     }

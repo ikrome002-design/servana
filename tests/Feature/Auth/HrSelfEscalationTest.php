@@ -39,7 +39,7 @@ it('denies HR granting a subordinate a non-grantable capability and audits it', 
     // personnel has no grantable (◐) keys at all — escalation is impossible.
     $this->actingAs($hr, 'sanctum')
         ->postJson("/api/v1/staff/{$personnel->ulid}/permissions", [
-            'permission' => 'payments.validate',
+            'permission' => 'customer_payment.view',
             'effect' => 'grant',
         ])
         ->assertStatus(403)
