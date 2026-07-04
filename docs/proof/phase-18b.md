@@ -625,3 +625,24 @@ All local acceptance criteria pass on this tree. **Phase 18B → `local_complete
 merging with green CI and truthful governance evidence. REM-PERM-001 stays open
 (Phase 19); REM-ENT-001 / REM-SM-001 / REM-DDL-001 stay open where future
 entities / state machines / domain DDL remain.
+
+## Solo-Maintainer Review Exception - PR #31
+
+- PR: #31
+- Phase 18B implementation commit: ed07c8b090f74e9bb89457a7a00e99e939d72448
+- initial failed CI run: 28694148176
+- CI-correction commit and corrected initial-CI head: a0d4dede7ce62e5dbcb7a27467b15ba592ccf6d3
+- corrected-head successful CI run: 28695121157
+- CI/Backend: passed on corrected head
+- CI/Frontend: passed on corrected head
+- CI/Docker: passed on corrected head
+- CI/Security: passed on corrected head
+- CI/E2E - Playwright: passed on corrected head
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-31.md
+
+The initial CI failure is retained as part of the Phase 18B evidence trail. The
+corrective commit restored required receipt source files and the required CI
+suite subsequently passed against the corrected PR head.
+
+This PR-specific governance exception is not independent reviewer approval.
