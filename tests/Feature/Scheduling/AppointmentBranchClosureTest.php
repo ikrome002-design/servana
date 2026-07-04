@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Domain\Branches\Enums\CashUpStatus;
+use App\Domain\Branches\Models\BranchCashUp;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Branches\Services\BranchClosureGuard;
 use App\Domain\Catalogue\Models\Service;
@@ -90,6 +92,15 @@ it('blocks a branch day close while a same-day active appointment exists', funct
     // A same-day (today) active appointment.
     $today = CarbonImmutable::now('Africa/Nairobi')->setTime(10, 0);
     branchAppointment($merchant, $branch, AppointmentStatus::Confirmed, $today);
+
+    // Phase 18B: satisfy the financial day-close gate (approved cash-up) so the
+    // ONLY remaining blocker is the operational same-day appointment under test.
+    BranchCashUp::factory()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'business_date' => CarbonImmutable::now('Africa/Nairobi')->toDateString(),
+        'status' => CashUpStatus::Locked,
+    ]);
 
     $this->actingAs($bm, 'sanctum')->postJson("/api/v1/branches/{$branch->ulid}/day/close")
         ->assertStatus(422)

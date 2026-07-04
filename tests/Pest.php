@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Models\MerchantUserPermissionOverride;
 use App\Domain\Auth\Models\MfaCredential;
+use App\Domain\Auth\Models\Permission;
+use App\Domain\Auth\Seeders\PermissionSeeder;
 use App\Domain\Branches\Enums\BranchDayStatus;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
@@ -20,6 +23,11 @@ use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Payments\Enums\PaymentMethod;
+use App\Domain\Payments\Enums\PaymentRecordingGroupStatus;
+use App\Domain\Payments\Enums\PaymentRecordStatus;
+use App\Domain\Payments\Models\PaymentRecord;
+use App\Domain\Payments\Models\PaymentRecordingGroup;
 use App\Domain\Scheduling\Enums\QueueAssignmentMode;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Domain\Scheduling\Models\ServiceSession;
@@ -561,6 +569,50 @@ function recordPaymentGroup(User $actor, string $invoiceUlid, array $components,
 }
 
 /**
+ * Grant a permission override on a membership (Phase 18B helper). Used to give a
+ * DISTINCT Finance membership the grantable refund.approve / refund.finalize keys.
+ */
+function grantOverride(MerchantUser $membership, string $permissionKey): void
+{
+    // Default permissions resolve from the registry, so most feature tests never seed
+    // the permissions catalogue — but a DB override references permissions.id, so seed
+    // the catalogue on first use.
+    if (Permission::query()->count() === 0) {
+        test()->seed(PermissionSeeder::class);
+    }
+
+    $permission = Permission::query()->where('key', $permissionKey)->firstOrFail();
+
+    MerchantUserPermissionOverride::query()->updateOrCreate(
+        ['merchant_user_id' => $membership->id, 'permission_id' => $permission->id],
+        ['merchant_id' => $membership->merchant_id, 'effect' => 'grant'],
+    );
+}
+
+/**
+ * Record a group as Front Office (maker) and return its ULID (Phase 18B helper).
+ *
+ * @param  list<array<string, mixed>>  $components
+ */
+function recordPendingGroup(array $scn, array $components): string
+{
+    return (string) recordPaymentGroup($scn['frontOffice'], $scn['invoice']->ulid, $components)
+        ->assertCreated()
+        ->json('data.id');
+}
+
+/**
+ * POST a whole-group validation as $actor (Finance checker) with an Idempotency-Key
+ * (defaulted). Phase 18B `financial_mutation`.
+ */
+function validatePaymentGroup(User $actor, string $groupUlid, ?string $key = null): TestResponse
+{
+    return test()->actingAs($actor, 'sanctum')
+        ->withHeader('Idempotency-Key', $key ?? (string) Str::uuid())
+        ->postJson("/api/v1/payment-recording-groups/{$groupUlid}/validate");
+}
+
+/**
  * A single cash payment component for the given amount.
  *
  * @return array<string, mixed>
@@ -578,4 +630,96 @@ function cashComponent(int $amountMinor): array
 function referencedComponent(int $amountMinor, string $method = 'mpesa_offline', string $reference = 'QGX7YT1ABC'): array
 {
     return ['method' => $method, 'amount_minor' => $amountMinor, 'reference' => $reference];
+}
+
+/*
+ | Shared cash-up (Phase 18B) test helpers. Live in Pest.php so every cash-up /
+ | day-close test file and parallel worker can use them without a load-order
+ | dependency between test files.
+ */
+
+/** Today's Africa/Nairobi business date. */
+function cashUpBusinessDate(): string
+{
+    return CarbonImmutable::now('Africa/Nairobi')->toDateString();
+}
+
+/**
+ * A payment component of $method paid today anchored on a same-tenant group, for the
+ * cash-up scenario. Defaults to a VALIDATED component; pass a status for others.
+ *
+ * @param  array{merchant: Merchant, branch: MerchantBranch, invoice: Invoice}  $scn
+ */
+function cashUpComponent(
+    array $scn,
+    PaymentMethod $method,
+    int $amountMinor,
+    PaymentRecordStatus $status = PaymentRecordStatus::Validated,
+): PaymentRecord {
+    $validated = $status === PaymentRecordStatus::Validated;
+    $groupStatus = $validated
+        ? PaymentRecordingGroupStatus::Validated
+        : PaymentRecordingGroupStatus::PendingValidation;
+
+    $group = PaymentRecordingGroup::factory()->create([
+        'merchant_id' => $scn['merchant']->id,
+        'branch_id' => $scn['branch']->id,
+        'invoice_id' => $scn['invoice']->id,
+        'total_amount_minor' => $amountMinor,
+        'currency' => 'KES',
+        'status' => $groupStatus,
+        'submitted_for_validation_at' => CarbonImmutable::now(),
+        'validated_at' => $validated ? CarbonImmutable::now() : null,
+    ]);
+
+    $reference = $method->requiresReference() ? strtoupper(Str::random(10)) : null;
+
+    return PaymentRecord::factory()->create([
+        'payment_recording_group_id' => $group->id,
+        'merchant_id' => $scn['merchant']->id,
+        'branch_id' => $scn['branch']->id,
+        'invoice_id' => $scn['invoice']->id,
+        'method' => $method,
+        'amount_minor' => $amountMinor,
+        'reference_normalized' => $reference,
+        'reference_display_encrypted' => $reference,
+        'validated_amount_minor' => $validated ? $amountMinor : null,
+        'status' => $status,
+        'paid_at' => CarbonImmutable::now('Africa/Nairobi'),
+    ]);
+}
+
+/**
+ * A validated payment component of $method paid today, for the cash-up scenario.
+ *
+ * @param  array{merchant: Merchant, branch: MerchantBranch, invoice: Invoice}  $scn
+ */
+function cashUpValidatedComponent(array $scn, PaymentMethod $method, int $amountMinor): PaymentRecord
+{
+    return cashUpComponent($scn, $method, $amountMinor, PaymentRecordStatus::Validated);
+}
+
+/** A cash-up scenario adding a Branch Manager (maker) to {@see paymentScenario()}. */
+function cashUpScenario(): array
+{
+    $scn = paymentScenario(500000);
+    [$branchManager] = branchStaff($scn['merchant'], $scn['branch'], MerchantUserRole::BranchManager);
+    $scn['branchManager'] = $branchManager;
+
+    return $scn;
+}
+
+/** POST a cash-up state action with a defaulted Idempotency-Key. */
+function cashUpPost(User $actor, string $path, array $body = []): TestResponse
+{
+    return test()->actingAs($actor, 'sanctum')
+        ->withHeader('Idempotency-Key', (string) Str::uuid())
+        ->postJson($path, $body);
+}
+
+/** PUT the branch-day draft counts as the Branch Manager. */
+function putDraft(array $scn, array $counts): TestResponse
+{
+    return test()->actingAs($scn['branchManager'], 'sanctum')
+        ->putJson("/api/v1/branches/{$scn['branch']->ulid}/cash-ups/".cashUpBusinessDate(), ['counts' => $counts]);
 }

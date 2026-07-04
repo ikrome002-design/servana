@@ -10,6 +10,8 @@ use App\Domain\Branches\Actions\CloseBranchDay;
 use App\Domain\Branches\Actions\CreateBranch;
 use App\Domain\Branches\Actions\OpenBranchDay;
 use App\Domain\Branches\Actions\UpdateBranch;
+use App\Domain\Branches\Enums\CashUpStatus;
+use App\Domain\Branches\Models\BranchCashUp;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Hr\Actions\AcceptStaffInvitation;
 use App\Domain\Hr\Actions\CreateStaffInvitation;
@@ -55,6 +57,15 @@ it('audits the full branch lifecycle with merchant + branch attribution', functi
 
     app(OpenBranchDay::class)->handle($branch, $admin);
     expect(lastAudit('branch.day_opened')->branch_id)->toBe($branch->id);
+
+    // Phase 18B: a branch day cannot financially close without an approved/locked
+    // cash-up for the day (Plan §45). Seed one so the close (and its audit) proceeds.
+    BranchCashUp::factory()->create([
+        'merchant_id' => $branch->merchant_id,
+        'branch_id' => $branch->id,
+        'business_date' => now('Africa/Nairobi')->toDateString(),
+        'status' => CashUpStatus::Locked,
+    ]);
 
     app(CloseBranchDay::class)->handle($branch, $admin);
     expect(lastAudit('branch.day_closed')->branch_id)->toBe($branch->id);
@@ -156,7 +167,7 @@ it('audits permission overrides and unauthorized access via the HTTP boundary', 
     [, , $finance] = branchStaff($merchant, $branch, MerchantUserRole::Finance);
 
     $this->actingAs($admin, 'sanctum')->postJson("/api/v1/staff/{$finance->ulid}/permissions", [
-        'permission' => 'refunds.approve', 'effect' => 'grant',
+        'permission' => 'refund.approve', 'effect' => 'grant',
     ])->assertStatus(200);
     expect(lastAudit('permission.override.created')->severity)->toBe(AuditSeverity::High);
 

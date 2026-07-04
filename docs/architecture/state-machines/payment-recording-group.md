@@ -30,24 +30,42 @@
 recorded               -> pending_validation        [same txn when no duplicate suspected;
                                                       else ApproveDuplicatePaymentReference after Finance override]
 
-# ---- Phase 18B (defined, NOT reachable from any Phase 18A route) ----
-pending_validation     -> validated                 [ValidatePaymentGroup]           (18B)
-pending_validation     -> rejected                   [RejectPaymentGroup]             (18B)
-pending_validation     -> correction_required        [RequestPaymentGroupCorrection]  (18B)
-validated              -> reversed                   [ReversePaymentGroup]            (18B)
+# ---- Phase 18B (now reachable) ----
+pending_validation     -> validated                 [ValidatePaymentRecordingGroup]     (18B)
+pending_validation     -> rejected                   [RejectPaymentRecordingGroup]       (18B)
+pending_validation     -> correction_required        [RequestPaymentGroupCorrection]     (18B)
+correction_required    -> pending_validation         [ResubmitPaymentRecordingGroup]     (18B; after explicit correction)
+validated              -> reversed                   [finalized refund/reversal only]    (18B; whole-group reversal)
 ```
 
 Any transition not listed is invalid → `422 invalid_state_transition`. In Phase 18A
-the machine additionally refuses `pending_validation -> {validated,rejected,
-correction_required}` and `validated -> reversed` because those actions/routes do
-not exist yet (defence in depth against a mis-wired 18A caller).
+the stricter `ensurePhase18a()` guard refuses every 18B transition (defence in depth
+against a mis-wired 18A caller). Phase 18B actions call `ensure()` and reach the 18B
+transitions. **Phase 18B adds `correction_required -> pending_validation`** (via
+`ResubmitPaymentRecordingGroup`, only after an explicit reference/amount correction);
+the enum `allowedTransitions()` and the DB coherence are updated accordingly.
+
+`validated -> reversed` happens **only** when a finalized refund/reversal reverses
+the *entire* validated group; a partial-component refund leaves the group
+`validated` with additive refund evidence (see `refund.md`).
 
 ## Component (`payment_records`) states
 
-Phase 18A creates every component at `pending_validation` and never changes it (the
-duplicate hold is a **group**-level state). `validated`/`rejected`/
-`correction_required`/`reversed`/`adjusted` are Phase 18B, written atomically with
-the group validation/rejection/reversal.
+Phase 18A creates every component at `pending_validation`. Phase 18B transitions
+components **coherently with the group** — no component may diverge from the group's
+final decision:
+
+```text
+pending_validation  -> validated             (with group -> validated; validated_amount_minor set)
+pending_validation  -> rejected              (with group -> rejected)
+pending_validation  -> correction_required   (with group -> correction_required)
+correction_required -> pending_validation    (with group resubmit)
+validated           -> adjusted              (partial refund/reversal of the component)
+validated           -> reversed              (full refund/reversal of the component)
+```
+
+All component transitions are written atomically with the owning group action; a
+partial group validation (some components validated, others not) is impossible.
 
 ## Recording invariants (enforced by the composer + DB, under the invoice row lock)
 

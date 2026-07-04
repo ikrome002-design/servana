@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Domain\Payments\Models\PaymentRecord;
 use App\Domain\Payments\Models\PaymentRecordingGroup;
 use App\Domain\Payments\Models\PaymentReferenceCheck;
 use App\Domain\Tenancy\TenantContext;
@@ -43,6 +44,42 @@ final class PaymentRecordingGroupPolicy
     public function view(User $user, PaymentRecordingGroup $group): bool
     {
         return $this->context->can('customer_payment.view') && $this->ownsGroupBranch($group);
+    }
+
+    /**
+     * Finance checker validation of a whole pending group (Plan §42; Phase 18B). The
+     * per-row maker != checker separation is enforced in the action
+     * (PaymentMakerCheckerGuard); here we enforce the permission + branch access.
+     */
+    public function validate(User $user, PaymentRecordingGroup $group): bool
+    {
+        return $this->context->can('customer_payment.validate') && $this->ownsGroupBranch($group);
+    }
+
+    /** Finance checker rejects a whole pending group (Plan §42; Phase 18B). */
+    public function reject(User $user, PaymentRecordingGroup $group): bool
+    {
+        return $this->context->can('customer_payment.reject') && $this->ownsGroupBranch($group);
+    }
+
+    /** Finance checker returns a whole pending group for correction (Plan §42; Phase 18B). */
+    public function requestCorrection(User $user, PaymentRecordingGroup $group): bool
+    {
+        return $this->context->can('customer_payment.reject') && $this->ownsGroupBranch($group);
+    }
+
+    /** Resubmit a corrected group to pending_validation (Plan §42; Phase 18B). */
+    public function resubmit(User $user, PaymentRecordingGroup $group): bool
+    {
+        return $this->context->can('customer_payment.reference_correct') && $this->ownsGroupBranch($group);
+    }
+
+    /** Correct a component's reference on a correctable group (Plan §42; Phase 18B). */
+    public function correctReference(User $user, PaymentRecord $record): bool
+    {
+        return $this->context->can('customer_payment.reference_correct')
+            && $record->merchant_id === $this->context->merchantId()
+            && $this->context->canAccessBranch($record->branch_id);
     }
 
     /** Finance duplicate override (route also enforces MFA + fresh step-up). */

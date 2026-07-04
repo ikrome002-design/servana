@@ -22,7 +22,62 @@ export const financeRoutes: RouteRecordRaw[] = [
       {
         path: 'dashboard',
         name: 'finance.dashboard',
-        component: () => import('@/pages/finance/DashboardStub.vue'),
+        component: () => import('@/pages/finance/TaskInbox.vue'),
+      },
+      {
+        path: 'pending-validations',
+        name: 'finance.pending-validations',
+        component: () => import('@/pages/payments/PaymentGroupList.vue'),
+      },
+      {
+        path: 'receipts',
+        name: 'finance.receipts',
+        component: () => import('@/pages/finance/ReceiptList.vue'),
+      },
+      {
+        path: 'receipts/:id',
+        name: 'finance.receipts.detail',
+        component: () => import('@/pages/finance/ReceiptDetail.vue'),
+      },
+      {
+        path: 'refunds',
+        name: 'finance.refunds',
+        component: () => import('@/pages/finance/RefundList.vue'),
+      },
+      {
+        path: 'refunds/:id',
+        name: 'finance.refunds.detail',
+        component: () => import('@/pages/finance/RefundDetail.vue'),
+      },
+      {
+        path: 'disputes',
+        name: 'finance.disputes',
+        component: () => import('@/pages/finance/DisputeList.vue'),
+      },
+      {
+        path: 'disputes/:id',
+        name: 'finance.disputes.detail',
+        component: () => import('@/pages/finance/DisputeDetail.vue'),
+      },
+      {
+        path: 'cash-up',
+        name: 'finance.cash-up',
+        component: () => import('@/pages/finance/CashUpReviewList.vue'),
+      },
+      {
+        path: 'cash-up/:id',
+        name: 'finance.cash-up.detail',
+        component: () => import('@/pages/finance/CashUpDetail.vue'),
+      },
+      {
+        path: 'periods',
+        name: 'finance.periods',
+        component: () => import('@/pages/finance/PeriodLockList.vue'),
+      },
+      {
+        path: 'exports',
+        name: 'finance.exports',
+        component: () => import('@/pages/finance/FinanceExportList.vue'),
       },
       {
         path: 'invoices',

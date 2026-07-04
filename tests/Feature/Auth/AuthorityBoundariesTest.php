@@ -105,7 +105,7 @@ it('forbids Front Office from validating payments or issuing receipts', function
     expect($fo)->toContain('customer_payment.record')
         ->and($fo)->not->toContain('customer_payment.view')
         ->and($fo)->not->toContain('customer_payment.record_exception')
-        ->and($fo)->not->toContain('receipts.reissue');
+        ->and($fo)->not->toContain('receipt.reissue');
 });
 
 it('gives Personnel no export capability anywhere (no key, no route)', function (): void {

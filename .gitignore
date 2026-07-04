@@ -542,3 +542,11 @@ drafts/
 # ==============================================================================
 !/app/Domain/**/
 !/app/Domain/**
+
+# Receipt-named PHP source and tests must not be hidden by the runtime receipts/ rule.
+!/app/Http/**/Receipts/
+!/app/Http/**/Receipts/*.php
+!/app/Http/**/Receipts/**/*.php
+!/tests/**/Receipts/
+!/tests/**/Receipts/*.php
+!/tests/**/Receipts/**/*.php

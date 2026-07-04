@@ -219,13 +219,17 @@ it('returns 423 when the financial period is locked', function (): void {
         ->assertJsonPath('error.code', 'financial_period_locked');
 });
 
-it('exposes no validation, receipt, or destructive payment route', function (): void {
+it('exposes no manual receipt-issue or destructive payment route (Phase 18B)', function (): void {
+    // Phase 18B adds group validation/rejection routes (tested in PaymentGroupValidationTest
+    // / PaymentGroupRejectionCorrectionTest). This test guards the remaining invariants:
+    // receipts are issued AUTOMATICALLY on validation (no manual issue route — Gate J), and
+    // a recording group is never hard-deleted.
     $scn = paymentScenario(500000);
     $groupUlid = recordPaymentGroup($scn['frontOffice'], $scn['invoice']->ulid, [cashComponent(100000)])
         ->assertCreated()->json('data.id');
 
-    test()->actingAs($scn['finance'], 'sanctum')->postJson("/api/v1/payment-recording-groups/{$groupUlid}/validate")->assertNotFound();
-    test()->actingAs($scn['finance'], 'sanctum')->postJson("/api/v1/payment-recording-groups/{$groupUlid}/reject")->assertNotFound();
-    test()->actingAs($scn['finance'], 'sanctum')->postJson('/api/v1/receipts')->assertNotFound();
+    // No manual receipt-issue action: `receipts` is a GET-only collection (Slice 5),
+    // so POST is method-not-allowed (405), proving no issue handler is routable.
+    test()->actingAs($scn['finance'], 'sanctum')->postJson('/api/v1/receipts')->assertStatus(405);
     test()->actingAs($scn['finance'], 'sanctum')->deleteJson("/api/v1/payment-recording-groups/{$groupUlid}")->assertStatus(405);
 });

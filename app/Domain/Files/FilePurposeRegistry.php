@@ -73,7 +73,7 @@ final class FilePurposeRegistry
 
         // --- Evidence purposes: enum/schema supported, no upload exposure yet --
         $defs[] = new FilePurposeDefinition(
-            FilePurpose::DisputeEvidence, false, '18B/19', [], [], $imageMax, true, true, false, 'disputes.manage', false, null, false,
+            FilePurpose::DisputeEvidence, false, '18B/19', [], [], $imageMax, true, true, false, 'finance_dispute.manage', false, null, false,
         );
         $defs[] = new FilePurposeDefinition(
             FilePurpose::AuditEvidence, false, '19', [], [], $imageMax, true, false, false, 'audit.view_full', false, null, false,
@@ -83,13 +83,13 @@ final class FilePurposeRegistry
         // Client upload prohibited; the owning phase attaches the generator and
         // (where billing applies) the billing-read-only rule blocks NEW generation.
         $defs[] = new FilePurposeDefinition(
-            FilePurpose::FinanceExport, false, '18B/23', [], [], 0, true, false, false, 'exports.finance', false, $exportRetention, true,
+            FilePurpose::FinanceExport, false, '18B/23', [], [], 0, true, false, false, 'finance_export.download', false, $exportRetention, true,
         );
         $defs[] = new FilePurposeDefinition(
             FilePurpose::InvoicePdf, false, '17', [], [], 0, true, true, false, 'invoice.view', false, null, true,
         );
         $defs[] = new FilePurposeDefinition(
-            FilePurpose::ReceiptPdf, false, '18', [], [], 0, true, true, false, 'receipts.view', false, null, true,
+            FilePurpose::ReceiptPdf, false, '18', [], [], 0, true, true, false, 'receipt.view', false, null, true,
         );
         $defs[] = new FilePurposeDefinition(
             FilePurpose::BillingInvoicePdf, false, '20A/20B', [], [], 0, true, false, false, null, false, null, true,

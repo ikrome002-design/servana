@@ -22,17 +22,17 @@ it('records a high-severity audit row when an admin grants a finance override', 
 
     $this->actingAs($admin, 'sanctum')
         ->postJson("/api/v1/staff/{$finance->ulid}/permissions", [
-            'permission' => 'refunds.approve',
+            'permission' => 'refund.approve',
             'effect' => 'grant',
             'reason' => 'senior cashier',
         ])
         ->assertStatus(200)
-        ->assertJsonPath('data.permissions', fn ($p): bool => in_array('refunds.approve', $p, true));
+        ->assertJsonPath('data.permissions', fn ($p): bool => in_array('refund.approve', $p, true));
 
     $log = AuditLog::query()->where('action', 'permission.override.created')->firstOrFail();
     expect($log->severity)->toBe(AuditSeverity::High)
         ->and($log->actor_id)->toBe($admin->id)
-        ->and($log->context['permission'])->toBe('refunds.approve');
+        ->and($log->context['permission'])->toBe('refund.approve');
 });
 
 it('audits an update then a revoke of an override', function (): void {
@@ -42,15 +42,15 @@ it('audits an update then a revoke of an override', function (): void {
 
     // Create (grant), then update to deny, then revoke.
     $this->actingAs($admin, 'sanctum')->postJson("/api/v1/staff/{$finance->ulid}/permissions", [
-        'permission' => 'refunds.approve', 'effect' => 'grant',
+        'permission' => 'refund.approve', 'effect' => 'grant',
     ])->assertStatus(200);
 
     $this->actingAs($admin, 'sanctum')->postJson("/api/v1/staff/{$finance->ulid}/permissions", [
-        'permission' => 'refunds.approve', 'effect' => 'deny',
+        'permission' => 'refund.approve', 'effect' => 'deny',
     ])->assertStatus(200);
 
     $this->actingAs($admin, 'sanctum')
-        ->deleteJson("/api/v1/staff/{$finance->ulid}/permissions/refunds.approve")
+        ->deleteJson("/api/v1/staff/{$finance->ulid}/permissions/refund.approve")
         ->assertStatus(200);
 
     expect(AuditLog::query()->where('action', 'permission.override.created')->count())->toBe(1)

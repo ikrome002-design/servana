@@ -170,6 +170,48 @@ enum AuditEvent: string
     case CustomerPaymentDuplicateOverrideApproved = 'customer_payment.duplicate_override_approved';
     case CustomerPaymentRecordedException = 'customer_payment.recorded_exception';
 
+    // --- Financial validation controls (Plan §42–§46, §43, §44, §45, §46; Phase 18B).
+    // Group validation/rejection/correction; automatic receipts + reissue + download;
+    // external refunds; finance disputes; cash-up reconciliation; database period
+    // locks + exceptional reopen; scoped finance exports. Same redaction discipline:
+    // ULIDs, integer minor amounts, currency, safe statuses, masked reference suffix,
+    // and sanitised reasons only — never a full/normalized reference, external refund
+    // reference plaintext, full client contact, private file path, signed URL, export
+    // content, SQLSTATE, stack trace, internal id, MFA code, or authorization header.
+    case CustomerPaymentValidated = 'customer_payment.validated';
+    case CustomerPaymentRejected = 'customer_payment.rejected';
+    case CustomerPaymentCorrectionRequested = 'customer_payment.correction_requested';
+    case CustomerPaymentReferenceCorrected = 'customer_payment.reference_corrected';
+    case CustomerPaymentResubmitted = 'customer_payment.resubmitted';
+    case ReceiptIssued = 'receipt.issued';
+    case ReceiptReissued = 'receipt.reissued';
+    case ReceiptDownloaded = 'receipt.downloaded';
+    case RefundRequested = 'refund.requested';
+    case RefundApproved = 'refund.approved';
+    case RefundRejected = 'refund.rejected';
+    case RefundFinalized = 'refund.finalized';
+    case FinanceDisputeOpened = 'finance_dispute.opened';
+    case FinanceDisputeReviewStarted = 'finance_dispute.review_started';
+    case FinanceDisputeResolved = 'finance_dispute.resolved';
+    case FinanceDisputeRejected = 'finance_dispute.rejected';
+    case CashUpDraftUpdated = 'cash_up.draft_updated';
+    case CashUpSubmitted = 'cash_up.submitted';
+    case CashUpApproved = 'cash_up.approved';
+    case CashUpRejected = 'cash_up.rejected';
+    case CashUpCorrectionRequested = 'cash_up.correction_requested';
+    case CashUpResubmitted = 'cash_up.resubmitted';
+    case CashUpLocked = 'cash_up.locked';
+    case FinancialPeriodLocked = 'financial_period.locked';
+    case FinancialPeriodReopenRequested = 'financial_period.reopen_requested';
+    case FinancialPeriodReopenApproved = 'financial_period.reopen_approved';
+    case FinancialPeriodReopened = 'financial_period.reopened';
+    case FinanceExportRequested = 'finance_export.requested';
+    case FinanceExportGenerated = 'finance_export.generated';
+    case FinanceExportFailed = 'finance_export.failed';
+    case FinanceExportDownloaded = 'finance_export.downloaded';
+    case FinanceExportExpired = 'finance_export.expired';
+    case FinanceExportRevoked = 'finance_export.revoked';
+
     // --- Tenant/branch isolation (Plan §8.4) — name preserved from Phase 9.
     case UnauthorizedAccess = 'unauthorized_access';
 
@@ -226,6 +268,14 @@ enum AuditEvent: string
             self::InvoiceCreated,
             self::InvoiceUpdatedDraft,
             self::CustomerPaymentRecorded,
+            self::CustomerPaymentResubmitted,
+            self::ReceiptIssued,
+            self::ReceiptDownloaded,
+            self::FinanceDisputeReviewStarted,
+            self::CashUpDraftUpdated,
+            self::FinanceExportGenerated,
+            self::FinanceExportDownloaded,
+            self::FinanceExportExpired,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
@@ -246,6 +296,16 @@ enum AuditEvent: string
             self::QueueConfigurationUpdated,
             self::QueueEntryReordered,
             self::InvoiceFinalized,
+            self::CustomerPaymentValidated,
+            self::ReceiptReissued,
+            self::RefundRequested,
+            self::FinanceDisputeOpened,
+            self::FinanceDisputeResolved,
+            self::CashUpSubmitted,
+            self::CashUpApproved,
+            self::CashUpResubmitted,
+            self::CashUpLocked,
+            self::FinanceExportRequested,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,
@@ -269,6 +329,14 @@ enum AuditEvent: string
             self::ServiceSessionCancelled,
             self::InvoiceVoidRejected,
             self::CustomerPaymentDuplicateSuspected,
+            self::CustomerPaymentRejected,
+            self::CustomerPaymentCorrectionRequested,
+            self::RefundRejected,
+            self::FinanceDisputeRejected,
+            self::CashUpRejected,
+            self::CashUpCorrectionRequested,
+            self::FinanceExportFailed,
+            self::FinanceExportRevoked,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,
@@ -284,6 +352,13 @@ enum AuditEvent: string
             self::InvoiceAdjusted,
             self::CustomerPaymentDuplicateOverrideApproved,
             self::CustomerPaymentRecordedException,
+            self::CustomerPaymentReferenceCorrected,
+            self::RefundApproved,
+            self::RefundFinalized,
+            self::FinancialPeriodLocked,
+            self::FinancialPeriodReopenRequested,
+            self::FinancialPeriodReopenApproved,
+            self::FinancialPeriodReopened,
             self::UnauthorizedAccess => AuditSeverity::High,
         };
     }

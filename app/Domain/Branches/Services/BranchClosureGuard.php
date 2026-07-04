@@ -7,6 +7,9 @@ namespace App\Domain\Branches\Services;
 use App\Domain\Branches\Enums\BranchDayStatus;
 use App\Domain\Branches\Enums\CashUpStatus;
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Payments\Enums\PaymentRecordingGroupStatus;
+use App\Domain\Payments\Models\PaymentRecordingGroup;
+use App\Domain\Receipts\Models\Receipt;
 use App\Domain\Scheduling\Enums\AppointmentStatus;
 use App\Domain\Scheduling\Enums\QueueEntryStatus;
 use App\Domain\Scheduling\Enums\ServiceSessionStatus;
@@ -112,6 +115,32 @@ final class BranchClosureGuard
         return $blockers;
     }
 
+    /**
+     * Phase 18B financial day-close blockers (Plan §45; cash-up state machine). A
+     * branch day cannot financially close until its cash-up is approved/locked, no
+     * payment group awaits validation, and every issued receipt's generation is
+     * complete. Merged with {@see dayCloseBlockers()} by {@see CloseBranchDay}. Empty
+     * = financially closable. Terminal/settled records never block.
+     *
+     * @return list<string>
+     */
+    public function financialDayCloseBlockers(MerchantBranch $branch, string $businessDate): array
+    {
+        $blockers = [];
+
+        if ($this->cashUpNotApprovedFor($branch, $businessDate)) {
+            $blockers[] = 'cash_up_not_approved';
+        }
+        if ($this->hasPendingPaymentValidations($branch)) {
+            $blockers[] = 'pending_payment_validations';
+        }
+        if ($this->hasUnissuedReceipts($branch)) {
+            $blockers[] = 'unissued_receipts';
+        }
+
+        return $blockers;
+    }
+
     // ── Enforced now ────────────────────────────────────────────────────────
 
     private function hasUnclosedDay(MerchantBranch $branch): bool
@@ -127,9 +156,28 @@ final class BranchClosureGuard
 
     private function hasUnresolvedCashUp(MerchantBranch $branch): bool
     {
+        // Phase 18B: any cash-up still in a non-terminal review state (being counted,
+        // awaiting Finance review, or returned for correction) is unresolved and blocks
+        // archival. Approved/locked (resolved) and rejected (closed cycle) never block.
         return $branch->cashUps()
-            ->where('discrepancy_amount', '!=', 0)
-            ->whereIn('status', [CashUpStatus::Draft->value, CashUpStatus::Submitted->value])
+            ->whereIn('status', [
+                CashUpStatus::Draft->value,
+                CashUpStatus::Submitted->value,
+                CashUpStatus::CorrectionRequested->value,
+            ])
+            ->exists();
+    }
+
+    /**
+     * Phase 18B day-close gate (Plan §45): the branch-day cash-up must be approved or
+     * locked before the day can close. A missing cash-up, or one still in draft /
+     * submitted / correction_requested / rejected, blocks the close.
+     */
+    private function cashUpNotApprovedFor(MerchantBranch $branch, string $businessDate): bool
+    {
+        return ! $branch->cashUps()
+            ->where('business_date', $businessDate)
+            ->whereIn('status', [CashUpStatus::Approved->value, CashUpStatus::Locked->value])
             ->exists();
     }
 
@@ -200,15 +248,29 @@ final class BranchClosureGuard
         return false;
     }
 
-    /** Phase 18 (payments). */
+    /**
+     * Phase 18B (payments): any payment recording group still awaiting Finance
+     * validation blocks archival and day close. Validated/rejected/reversed groups
+     * never block.
+     */
     private function hasPendingPaymentValidations(MerchantBranch $branch): bool
     {
-        return false;
+        return PaymentRecordingGroup::query()
+            ->where('branch_id', $branch->id)
+            ->where('status', PaymentRecordingGroupStatus::PendingValidation->value)
+            ->exists();
     }
 
-    /** Phase 18 (receipts). */
+    /**
+     * Phase 18B (receipts): any issued receipt whose PDF generation is not yet
+     * complete (`file_generation_status` other than `ready`) blocks archival and day
+     * close — required receipt generation is incomplete.
+     */
     private function hasUnissuedReceipts(MerchantBranch $branch): bool
     {
-        return false;
+        return Receipt::query()
+            ->where('branch_id', $branch->id)
+            ->where('file_generation_status', '!=', 'ready')
+            ->exists();
     }
 }

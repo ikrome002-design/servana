@@ -89,6 +89,12 @@ merchant_administrator:
     route: branch.list
     permission: merchant.branch.view_all
     phase: Phase 7
+  - key: merchant.period-reopen-approvals
+    label: Period-reopen approvals
+    availability: live
+    route: merchant.period-reopen-approvals
+    permission: merchant.period_reopen.approve_exception
+    phase: Phase 18B
   - key: merchant.subscription
     label: Subscription and billing
     availability: planned
@@ -178,7 +184,8 @@ merchant_branch:
     phase: Phase 16B
   - key: branch.cash-up
     label: Cash-up and reconciliation
-    availability: planned
+    availability: live
+    route: branch.cash-up
     permission: branch.cash_up.submit
     phase: Phase 18B
   - key: branch.reports
@@ -254,7 +261,8 @@ merchant_finance:
     phase: Phase 11
   - key: finance.pending-validations
     label: Pending validations
-    availability: planned
+    availability: live
+    route: finance.pending-validations
     permission: customer_payment.validate
     phase: Phase 18B
   - key: finance.invoices
@@ -271,27 +279,32 @@ merchant_finance:
     phase: Phase 18A
   - key: finance.receipts
     label: Receipts
-    availability: planned
+    availability: live
+    route: finance.receipts
     permission: receipt.view
     phase: Phase 18B
   - key: finance.disputes
     label: Disputes
-    availability: planned
+    availability: live
+    route: finance.disputes
     permission: finance_dispute.manage
     phase: Phase 18B
   - key: finance.refunds
     label: External refunds
-    availability: planned
+    availability: live
+    route: finance.refunds
     permission: refund.create
     phase: Phase 18B
   - key: finance.cash-up
     label: Cash-up and reconciliation
-    availability: planned
+    availability: live
+    route: finance.cash-up
     permission: cash_up.view
     phase: Phase 18B
   - key: finance.periods
     label: Financial periods
-    availability: planned
+    availability: live
+    route: finance.periods
     permission: period_lock.create
     phase: Phase 18B
   - key: finance.payout-runs
@@ -315,7 +328,8 @@ merchant_finance:
     phase: Phase 21N
   - key: finance.exports
     label: Exports
-    availability: planned
+    availability: live
+    route: finance.exports
     permission: finance_export.create
     phase: Phase 18B
   - key: finance.audit
@@ -378,7 +392,8 @@ merchant_front_office:
     phase: Phase 18A
   - key: front-office.receipts
     label: Receipts
-    availability: planned
+    availability: live
+    route: front-office.receipts
     permission: receipt.view
     phase: Phase 18B
 merchant_personnel:

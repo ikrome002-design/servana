@@ -39,11 +39,12 @@ enum InvoiceStatus: string
         return [self::Issued, self::PartiallyPaid];
     }
 
-    /** Terminal/correction states with no Phase 17 onward transition. */
+    /** Terminal/correction states with no onward transition. */
     public function isTerminal(): bool
     {
         return match ($this) {
-            self::Voided, self::Adjusted, self::RefundPending, self::AdjustmentRequired => true,
+            self::Voided, self::Adjusted, self::AdjustmentRequired => true,
+            // refund_pending is NOT terminal in Phase 18B — it resolves on reject/finalize (§44).
             default => false,
         };
     }
@@ -65,10 +66,14 @@ enum InvoiceStatus: string
         return match ($this) {
             self::Draft => [self::Issued],
             self::Issued => [self::PartiallyPaid, self::Paid, self::VoidPending, self::Adjusted],
-            self::PartiallyPaid => [self::Paid, self::VoidPending, self::Adjusted],
+            // Phase 18B: a partially-paid invoice may also enter refund_pending (§44).
+            self::PartiallyPaid => [self::Paid, self::VoidPending, self::Adjusted, self::RefundPending],
             self::VoidPending => [self::Voided, self::Issued, self::PartiallyPaid],
             self::Paid => [self::RefundPending, self::AdjustmentRequired],
-            self::Voided, self::Adjusted, self::RefundPending, self::AdjustmentRequired => [],
+            // Phase 18B: refund_pending resolves back to a derived payable/paid state on
+            // rejection (restore) or finalization (derive from validated_paid) (§44).
+            self::RefundPending => [self::Issued, self::PartiallyPaid, self::Paid],
+            self::Voided, self::Adjusted, self::AdjustmentRequired => [],
         };
     }
 

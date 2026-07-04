@@ -32,6 +32,11 @@ export const merchantRoutes: RouteRecordRaw[] = [
         name: 'merchant.dashboard',
         component: () => import('@/pages/merchant/Dashboard.vue'),
       },
+      {
+        path: 'period-reopen-approvals',
+        name: 'merchant.period-reopen-approvals',
+        component: () => import('@/pages/merchant/PeriodReopenApprovals.vue'),
+      },
     ],
   },
 ];

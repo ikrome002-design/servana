@@ -689,3 +689,150 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-18a.md
     notes: "Branch-owned; ulid public id (Finance override binds {paymentReferenceCheck}). Gate C durable duplicate detection: PARTIAL UNIQUE INDEX (merchant_id,method,reference_normalized) WHERE result='unique' AND reference_normalized IS NOT NULL — first accepted reference reserves the one 'unique' slot; duplicate_suspected/override_approved rows fall outside the predicate so every attempt persists and the reservation is race-safe. method CHECK in seven; result CHECK in three (unique,duplicate_suspected,override_approved). matched_payment_record_id required iff result<>unique (coherence CHECK); override_by+override_reason required iff result=override_approved (coherence CHECK). reference_normalized ($hidden) never surfaced. cash produces no check row. Composite FKs (branch_id,merchant_id)->merchant_branches CASCADE; (payment_record_id,merchant_id)->payment_records RESTRICT; (matched_payment_record_id,merchant_id)->payment_records RESTRICT. Indexes (payment_record_id)/(matched_payment_record_id); UNIQUE (ulid). No hard-delete."
+
+  # ── Phase 18B — validation, receipts, refunds, disputes, cash-up, period locks, exports ──
+  - file: 2026_07_02_000001_create_payment_validation_events_table.php
+    table: payment_validation_events
+    domain: Payments
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_07_01_000001_create_payment_recording_groups_table.php
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Branch-owned; ulid public id. Immutable GROUP-LEVEL validation event (Gate A/B) parented by payment_recording_group_id (NOT per component). Append-only (created_at only; no update/delete route). decision CHECK (validated,rejected,correction_required); validated_amount_minor present+>=0 iff validated else null; reason required for non-validated. PARTIAL UNIQUE (payment_recording_group_id) WHERE decision='validated' — one final validated event per group. Composite FKs (branch_id,merchant_id)->merchant_branches; (invoice_id,merchant_id)->invoices RESTRICT; (payment_recording_group_id,merchant_id)->payment_recording_groups RESTRICT. UNIQUE (ulid),(id,merchant_id)."
+
+  - file: 2026_07_02_000002_create_receipt_number_sequences_table.php
+    table: receipt_number_sequences
+    domain: Receipts
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Tenant-owned (merchant-wide numbering). scope CHECK ('receipt'); next_value>=1. UNIQUE (merchant_id,scope). Allocated under SELECT..FOR UPDATE in the receipt-issuance txn; MAX()+1 never used; gap-free on committed issuance."
+
+  - file: 2026_07_02_000003_create_receipts_table.php
+    table: receipts
+    domain: Receipts
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_07_02_000001_create_payment_validation_events_table.php
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Branch-owned; ulid public id. One ORIGINAL per validated event (PARTIAL UNIQUE (payment_validation_event_id) WHERE reissue_of_receipt_id IS NULL). receipt_number UNIQUE per merchant (receipt_number_sequences). amount_minor>0; currency uppercase len-3; components jsonb SAFE snapshots only (method+amount_minor). reissue_of_receipt_id -> receipts (immutable original). file_id -> uploaded_files (receipt_pdf, Gate J); file_generation_status CHECK (pending,ready,failed) — not downloadable until ready. Composite FKs (branch_id/invoice_id/payment_validation_event_id/reissue_of_receipt_id, merchant_id). UNIQUE (ulid),(id,merchant_id),(merchant_id,receipt_number). No hard-delete."
+
+  - file: 2026_07_02_000004_create_refunds_table.php
+    table: refunds
+    domain: Refunds
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_07_01_000002_create_payment_records_table.php
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Branch-owned; ulid public id. EXTERNAL refund (Servana never moves funds). Mandatory component allocation payment_record_id (Gate D); refund_group_ulid correlates a multi-component refund. amount_minor>0 (<= remaining refundable, enforced under row lock); currency uppercase len-3; method CHECK (concrete methods). external_reference_encrypted ($hidden, masked). status CHECK (requested,approved,finalized,rejected); actor coherence CHECKs; maker/checker CHECK approved_by<>requested_by. Composite FKs (branch_id/invoice_id/payment_record_id, merchant_id). UNIQUE (ulid),(id,merchant_id). No hard-delete."
+
+  - file: 2026_07_02_000005_create_finance_disputes_table.php
+    table: finance_disputes
+    domain: FinanceOps
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_07_01_000002_create_payment_records_table.php
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Branch-owned; ulid public id. Finance-only investigation; NEVER mutates the disputed source. status CHECK (open,under_review,resolved,rejected) — authoritative Plan 4-state set. linkage CHECK (invoice_id OR payment_record_id). resolution_note+resolved_by required iff terminal. evidence_file_id -> uploaded_files (dispute_evidence). Composite FKs (branch_id/invoice_id/payment_record_id, merchant_id). UNIQUE (ulid),(id,merchant_id). No hard-delete."
+
+  - file: 2026_07_02_000006_evolve_branch_cash_ups_for_phase_18b.php
+    table: branch_cash_ups
+    domain: Branches
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_06_15_000108_create_branch_cash_ups_table.php
+      - 2026_06_23_000002_add_merchant_id_to_branch_owned_tables.php
+      - 2026_06_15_000107_create_branch_day_records_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Gate G forward-only evolution of the Phase 7 seam (shipped migration NOT edited). Adds business_date (backfilled from branch_day_records), expected_minor/counted_minor/variance_minor (backfilled from expected_total/cash_counted/discrepancy_amount), approved_by/approved_at, notes. Widens named status CHECK (drop+recreate) to add correction_requested,locked. Adds PARTIAL UNIQUE (branch_id,business_date) WHERE business_date IS NOT NULL and (id,merchant_id) composite-FK target for cash_up_lines. Reversible down()."
+
+  - file: 2026_07_02_000007_create_cash_up_lines_table.php
+    table: cash_up_lines
+    domain: Branches
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_07_02_000006_evolve_branch_cash_ups_for_phase_18b.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Branch-owned via cash-up parent; NO ulid (child evidence). One line per concrete method per cash-up (UNIQUE (cash_up_id,method)); method CHECK excludes split_payment. expected_minor server-derived (Gate H); counted_minor Branch Manager input; variance=counted-expected. Composite FKs (branch_id,merchant_id)->merchant_branches; (cash_up_id,merchant_id)->branch_cash_ups."
+
+  - file: 2026_07_02_000008_create_financial_period_locks_table.php
+    table: financial_period_locks
+    domain: FinanceOps
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Tenant-owned; optional nullable branch scope (merchant-wide when null). ulid public id. Replaces the Phase 17 always-open repository (DatabasePeriodLockRepository). status CHECK (open,locked,reopened); period_start<=period_end. btree_gist EXCLUDE (merchant_id=,COALESCE(branch_id,0)=,daterange[]&&) WHERE status='locked' — no overlapping active lock per scope. reopen maker/checker CHECK reopen_approved_by<>reopen_requested_by; reopened_* coherence CHECK. Gate F exception_required flag. UNIQUE (ulid),(id,merchant_id)."
+
+  - file: 2026_07_02_000009_create_finance_exports_table.php
+    table: finance_exports
+    domain: FinanceOps
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Tenant-owned; optional nullable branch scope. ulid public id. export_type CHECK enumerates all nine future types (Gate I) but request policy rejects compensation/payouts/billing. status CHECK (queued,processing,ready,failed,expired,revoked); download_count>=0. scope_json filters; reason required. file_id -> uploaded_files (finance_export). Async GenerateFinanceExport on reports-exports; expiry+revocation+atomic download counts. UNIQUE (ulid),(id,merchant_id)."
+
+  - file: 2026_07_02_000010_create_commission_handoff_events_table.php
+    table: commission_handoff_events
+    domain: Compensation
+    owner_phase: "18B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md
+    depends_on:
+      - 2026_07_02_000001_create_payment_validation_events_table.php
+      - 2026_07_02_000004_create_refunds_table.php
+      - 2026_07_01_000002_create_payment_records_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-18b.md
+    notes: "Branch-owned; ulid public id; append-only (created_at only). Durable per-component seam for Phase 20G (Gate C/E) — NOT a commission ledger; NO rate/earned/payable. kind CHECK (validated_allocation,reversal); source coherence CHECK. Idempotent PARTIAL UNIQUEs (payment_validation_event_id,payment_record_id) WHERE validated_allocation and (refund_id,payment_record_id) WHERE reversal. Composite FKs (branch_id,merchant_id)->merchant_branches; (payment_record_id,merchant_id)->payment_records RESTRICT."

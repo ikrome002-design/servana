@@ -57,6 +57,7 @@ const merchantAdministrator: NavItem[] = [
   { key: 'merchant.get-started', label: 'Get started', routeName: 'merchant.get-started', phase: 'Phase 11', availability: 'live' },
   { key: 'merchant.dashboard', label: 'Dashboard', routeName: 'merchant.dashboard', phase: 'Phase 6', availability: 'live' },
   { key: 'merchant.branches', label: 'Branches', routeName: 'branch.list', permission: 'merchant.branch.view_all', phase: 'Phase 7', availability: 'live' },
+  { key: 'merchant.period-reopen-approvals', label: 'Period-reopen approvals', routeName: 'merchant.period-reopen-approvals', permission: 'merchant.period_reopen.approve_exception', phase: 'Phase 18B', availability: 'live' },
   { key: 'merchant.subscription', label: 'Subscription and billing', permission: 'merchant.subscription.view', phase: 'Phase 20B', availability: 'planned' },
   { key: 'merchant.plan', label: 'Plan management', permission: 'merchant.subscription.plan_change', phase: 'Phase 20A', availability: 'planned' },
   { key: 'merchant.invoices', label: 'Subscription invoices', permission: 'merchant.subscription.invoice.view', phase: 'Phase 20B', availability: 'planned' },
@@ -81,7 +82,7 @@ const branchManager: NavItem[] = [
   { key: 'branch.payments', label: 'Payments', phase: 'Phase 18A', availability: 'planned' },
   { key: 'branch.receipts', label: 'Receipts', phase: 'Phase 18B', availability: 'planned' },
   { key: 'branch.day', label: 'Day opening and closing', permission: 'branch.day.open', phase: 'Phase 16B', availability: 'planned' },
-  { key: 'branch.cash-up', label: 'Cash-up and reconciliation', permission: 'branch.cash_up.submit', phase: 'Phase 18B', availability: 'planned' },
+  { key: 'branch.cash-up', label: 'Cash-up and reconciliation', routeName: 'branch.cash-up', permission: 'branch.cash_up.submit', phase: 'Phase 18B', availability: 'live' },
   { key: 'branch.reports', label: 'Reports', permission: 'branch.report.view', phase: 'Phase 21N', availability: 'planned' },
   { key: 'branch.audit-logs', label: 'Audit logs', phase: 'Phase 19', availability: 'planned' },
 ];
@@ -102,19 +103,19 @@ const humanResource: NavItem[] = [
 const finance: NavItem[] = [
   { key: 'finance.overview', label: 'Finance overview', routeName: 'finance.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'finance.get-started', label: 'Get started', routeName: 'finance.get-started', phase: 'Phase 11', availability: 'live' },
-  { key: 'finance.pending-validations', label: 'Pending validations', permission: 'customer_payment.validate', phase: 'Phase 18B', availability: 'planned' },
+  { key: 'finance.pending-validations', label: 'Pending validations', routeName: 'finance.pending-validations', permission: 'customer_payment.validate', phase: 'Phase 18B', availability: 'live' },
   { key: 'finance.invoices', label: 'Invoices', routeName: 'finance.invoices', permission: 'invoice.view', phase: 'Phase 17', availability: 'live' },
   { key: 'finance.payment-records', label: 'Payment records', routeName: 'finance.payment-records', permission: 'customer_payment.view', phase: 'Phase 18A', availability: 'live' },
-  { key: 'finance.receipts', label: 'Receipts', permission: 'receipt.view', phase: 'Phase 18B', availability: 'planned' },
-  { key: 'finance.disputes', label: 'Disputes', permission: 'finance_dispute.manage', phase: 'Phase 18B', availability: 'planned' },
-  { key: 'finance.refunds', label: 'External refunds', permission: 'refund.create', phase: 'Phase 18B', availability: 'planned' },
-  { key: 'finance.cash-up', label: 'Cash-up and reconciliation', permission: 'cash_up.view', phase: 'Phase 18B', availability: 'planned' },
-  { key: 'finance.periods', label: 'Financial periods', permission: 'period_lock.create', phase: 'Phase 18B', availability: 'planned' },
+  { key: 'finance.receipts', label: 'Receipts', routeName: 'finance.receipts', permission: 'receipt.view', phase: 'Phase 18B', availability: 'live' },
+  { key: 'finance.disputes', label: 'Disputes', routeName: 'finance.disputes', permission: 'finance_dispute.manage', phase: 'Phase 18B', availability: 'live' },
+  { key: 'finance.refunds', label: 'External refunds', routeName: 'finance.refunds', permission: 'refund.create', phase: 'Phase 18B', availability: 'live' },
+  { key: 'finance.cash-up', label: 'Cash-up and reconciliation', routeName: 'finance.cash-up', permission: 'cash_up.view', phase: 'Phase 18B', availability: 'live' },
+  { key: 'finance.periods', label: 'Financial periods', routeName: 'finance.periods', permission: 'period_lock.create', phase: 'Phase 18B', availability: 'live' },
   { key: 'finance.payout-runs', label: 'Payout runs', permission: 'payout_run.verify', phase: 'Phase 20H', availability: 'planned' },
   { key: 'finance.liabilities', label: 'Commission and salary liabilities', permission: 'compensation.liability.view', phase: 'Phase 20G', availability: 'planned' },
   { key: 'finance.subscription-billing', label: 'Subscription billing', permission: 'subscription.payment_attempts.view', phase: 'Phase 20B', availability: 'planned' },
   { key: 'finance.reports', label: 'Finance reports', phase: 'Phase 21N', availability: 'planned' },
-  { key: 'finance.exports', label: 'Exports', permission: 'finance_export.create', phase: 'Phase 18B', availability: 'planned' },
+  { key: 'finance.exports', label: 'Exports', routeName: 'finance.exports', permission: 'finance_export.create', phase: 'Phase 18B', availability: 'live' },
   { key: 'finance.audit', label: 'Audit activity', permission: 'finance.audit.view', phase: 'Phase 19', availability: 'planned' },
 ];
 
@@ -128,7 +129,7 @@ const frontOffice: NavItem[] = [
   { key: 'front-office.service-sessions', label: 'Service sessions', routeName: 'front-office.sessions', permission: 'service_session.view', phase: 'Phase 16C', availability: 'live' },
   { key: 'front-office.invoices', label: 'Invoices', routeName: 'front-office.invoices', permission: 'invoice.view', phase: 'Phase 17', availability: 'live' },
   { key: 'front-office.payments', label: 'Payments', routeName: 'front-office.payments', permission: 'customer_payment.record', phase: 'Phase 18A', availability: 'live' },
-  { key: 'front-office.receipts', label: 'Receipts', permission: 'receipt.view', phase: 'Phase 18B', availability: 'planned' },
+  { key: 'front-office.receipts', label: 'Receipts', routeName: 'front-office.receipts', permission: 'receipt.view', phase: 'Phase 18B', availability: 'live' },
 ];
 
 // Personnel own-scope navigation (Scope §4.7, §12.13 "My Earnings").

@@ -6,15 +6,18 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvModal from '@/components/ui/SvModal.vue';
 import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvInput from '@/components/ui/SvInput.vue';
 import { usePaymentStore, type PaymentRecordingGroupView } from '@/stores/paymentStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 
 /**
- * Finance payment-recording detail (Plan §41; Phase 18A). Shows the group, its
- * masked components, and — when the group is held for a duplicate-reference review —
- * a capability-gated override (customer_payment.duplicate_override; the server also
- * enforces MFA + a fresh step-up + a mandatory reason). There is NO validation,
- * rejection, or receipt control; the original reference is never edited.
+ * Finance payment-recording detail (Plan §41–§42; Phase 18A + 18B). Shows the group and
+ * its masked components. Phase 18B adds the Finance checker workflow — WHOLE-group
+ * validate (issues one original receipt), reject and request-correction (mandatory
+ * reason, NO receipt), per-component reference correction, and resubmit — plus the
+ * Phase-18A held-duplicate override. Every control is capability-gated (UX only; the
+ * server enforces maker/checker, period locks, idempotency and step-up). There is NO
+ * partial-component validation and NO manual receipt-issue.
  */
 interface DuplicateCheck {
   id: string;
@@ -31,7 +34,11 @@ const loadError = ref(false);
 const overriding = ref<DuplicateCheck | null>(null);
 const reason = ref('');
 const busy = ref(false);
-const overrideError = ref<string | null>(null);
+const actionError = ref<string | null>(null);
+const receiptIssued = ref(false);
+type Decision = 'validate' | 'reject' | 'request-correction' | 'resubmit';
+const deciding = ref<Decision | null>(null);
+const correcting = ref<{ id: string; reference: string } | null>(null);
 
 const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
   if (group.value === null && !loadError.value) return 'loading';
@@ -40,7 +47,20 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
 });
 
 const canOverride = computed(() => permissions.can('customer_payment.duplicate_override'));
+const canValidate = computed(() => permissions.can('customer_payment.validate'));
+const canReject = computed(() => permissions.can('customer_payment.reject'));
+const canCorrect = computed(() => permissions.can('customer_payment.reference_correct'));
 const duplicates = computed<DuplicateCheck[]>(() => group.value?.duplicate_checks ?? []);
+const isPending = computed(() => group.value?.status === 'pending_validation');
+const isCorrectable = computed(() => group.value?.status === 'correction_required');
+const needsReason = computed(() => deciding.value === 'reject' || deciding.value === 'request-correction');
+
+const decisionTitle: Record<Decision, string> = {
+  validate: 'Validate this payment group',
+  reject: 'Reject this payment group',
+  'request-correction': 'Request correction',
+  resubmit: 'Resubmit for validation',
+};
 
 async function load(): Promise<void> {
   try {
@@ -52,10 +72,61 @@ async function load(): Promise<void> {
   }
 }
 
+function openDecision(decision: Decision): void {
+  actionError.value = null;
+  reason.value = '';
+  receiptIssued.value = false;
+  deciding.value = decision;
+}
+
+async function confirmDecision(): Promise<void> {
+  if (group.value === null || deciding.value === null) return;
+  if (needsReason.value && reason.value.trim() === '') return;
+  busy.value = true;
+  actionError.value = null;
+  try {
+    const id = group.value.id;
+    if (deciding.value === 'validate') {
+      await store.validateGroup(id);
+      receiptIssued.value = true;
+    } else if (deciding.value === 'reject') {
+      await store.rejectGroup(id, reason.value.trim());
+    } else if (deciding.value === 'request-correction') {
+      await store.requestCorrection(id, reason.value.trim());
+    } else if (deciding.value === 'resubmit') {
+      await store.resubmitGroup(id);
+    }
+    deciding.value = null;
+    reason.value = '';
+    await load();
+  } catch (e: unknown) {
+    const err = e as { response?: { data?: { error?: { message?: string } } } };
+    actionError.value = err.response?.data?.error?.message ?? 'The action could not be completed.';
+  } finally {
+    busy.value = false;
+  }
+}
+
+async function confirmCorrectReference(): Promise<void> {
+  if (correcting.value === null || correcting.value.reference.trim() === '') return;
+  busy.value = true;
+  actionError.value = null;
+  try {
+    await store.correctReference(correcting.value.id, correcting.value.reference.trim());
+    correcting.value = null;
+    await load();
+  } catch (e: unknown) {
+    const err = e as { response?: { data?: { error?: { message?: string } } } };
+    actionError.value = err.response?.data?.error?.message ?? 'The reference could not be corrected.';
+  } finally {
+    busy.value = false;
+  }
+}
+
 async function confirmOverride(): Promise<void> {
   if (overriding.value === null || reason.value.trim() === '') return;
   busy.value = true;
-  overrideError.value = null;
+  actionError.value = null;
   try {
     await store.overrideDuplicate(overriding.value.id, reason.value.trim());
     overriding.value = null;
@@ -63,7 +134,7 @@ async function confirmOverride(): Promise<void> {
     await load();
   } catch (e: unknown) {
     const err = e as { response?: { data?: { error?: { message?: string } } } };
-    overrideError.value = err.response?.data?.error?.message ?? 'The override could not be completed.';
+    actionError.value = err.response?.data?.error?.message ?? 'The override could not be completed.';
   } finally {
     busy.value = false;
   }
@@ -84,6 +155,15 @@ onMounted(load);
       error-message="We couldn’t load this recording."
       empty-message="Recording not found."
     >
+      <p
+        v-if="receiptIssued"
+        class="mb-4 rounded-lg bg-surface-alt px-3 py-2 text-sm text-heading"
+        role="status"
+        data-testid="receipt-issued"
+      >
+        Validated. One original receipt has been issued for this group.
+      </p>
+
       <SvCard
         as="section"
         padding="md"
@@ -100,6 +180,48 @@ onMounted(load);
               Recorded by {{ group?.maker?.name ?? '—' }} · Status: {{ group?.status }}
             </p>
           </div>
+
+          <!-- Finance checker whole-group decisions (no partial component validation) -->
+          <div
+            v-if="isPending"
+            class="flex flex-wrap gap-2"
+            data-testid="validation-actions"
+          >
+            <SvButton
+              v-if="canValidate"
+              data-testid="validate-open"
+              @click="openDecision('validate')"
+            >
+              Validate group
+            </SvButton>
+            <SvButton
+              v-if="canReject"
+              variant="secondary"
+              data-testid="reject-open"
+              @click="openDecision('reject')"
+            >
+              Reject
+            </SvButton>
+            <SvButton
+              v-if="canReject"
+              variant="ghost"
+              data-testid="request-correction-open"
+              @click="openDecision('request-correction')"
+            >
+              Request correction
+            </SvButton>
+          </div>
+          <div
+            v-else-if="isCorrectable && canCorrect"
+            data-testid="resubmit-actions"
+          >
+            <SvButton
+              data-testid="resubmit-open"
+              @click="openDecision('resubmit')"
+            >
+              Resubmit for validation
+            </SvButton>
+          </div>
         </div>
 
         <ul
@@ -109,16 +231,24 @@ onMounted(load);
           <li
             v-for="component in group?.components ?? []"
             :key="component.id"
-            class="flex items-center justify-between rounded-lg bg-surface-alt px-3 py-2 text-sm"
+            class="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-surface-alt px-3 py-2 text-sm"
           >
             <span class="font-semibold text-heading">{{ component.method }}</span>
             <span class="text-text-muted">{{ component.reference_masked ?? 'No reference' }}</span>
             <span class="font-semibold text-heading">{{ component.amount.formatted }}</span>
+            <SvButton
+              v-if="isCorrectable && canCorrect"
+              variant="ghost"
+              data-testid="correct-reference-open"
+              @click="correcting = { id: component.id, reference: '' }"
+            >
+              Correct reference
+            </SvButton>
           </li>
         </ul>
       </SvCard>
 
-      <!-- Held duplicate references awaiting override -->
+      <!-- Held duplicate references awaiting override (Phase 18A) -->
       <SvCard
         v-if="duplicates.length > 0"
         as="section"
@@ -155,6 +285,85 @@ onMounted(load);
       </SvCard>
     </SvStateBoundary>
 
+    <!-- Whole-group decision confirmation -->
+    <SvModal
+      :open="deciding !== null"
+      :title="deciding ? decisionTitle[deciding] : ''"
+      description="This decision applies to the whole group. Rejection or a correction request issues NO receipt; validation issues exactly one original receipt."
+      @close="deciding = null"
+    >
+      <SvTextarea
+        v-if="needsReason"
+        id="decision-reason"
+        v-model="reason"
+        label="Reason"
+        class="mt-2"
+      />
+      <p
+        v-if="actionError"
+        class="mt-2 text-sm text-[color:var(--color-danger,#dc2626)]"
+        role="alert"
+      >
+        {{ actionError }}
+      </p>
+      <div class="mt-4 flex justify-end gap-2">
+        <SvButton
+          variant="ghost"
+          @click="deciding = null"
+        >
+          Cancel
+        </SvButton>
+        <SvButton
+          data-testid="decision-confirm"
+          :loading="busy"
+          :disabled="needsReason && reason.trim() === ''"
+          @click="confirmDecision"
+        >
+          Confirm
+        </SvButton>
+      </div>
+    </SvModal>
+
+    <!-- Per-component reference correction -->
+    <SvModal
+      :open="correcting !== null"
+      title="Correct payment reference"
+      description="Replace the recorded reference on this component before resubmitting for validation."
+      @close="correcting = null"
+    >
+      <SvInput
+        v-if="correcting"
+        id="corrected-reference"
+        v-model="correcting.reference"
+        label="Corrected reference"
+        class="mt-2"
+      />
+      <p
+        v-if="actionError"
+        class="mt-2 text-sm text-[color:var(--color-danger,#dc2626)]"
+        role="alert"
+      >
+        {{ actionError }}
+      </p>
+      <div class="mt-4 flex justify-end gap-2">
+        <SvButton
+          variant="ghost"
+          @click="correcting = null"
+        >
+          Cancel
+        </SvButton>
+        <SvButton
+          data-testid="correct-reference-confirm"
+          :loading="busy"
+          :disabled="!correcting || correcting.reference.trim() === ''"
+          @click="confirmCorrectReference"
+        >
+          Save reference
+        </SvButton>
+      </div>
+    </SvModal>
+
+    <!-- Held-duplicate override (Phase 18A) -->
     <SvModal
       :open="overriding !== null"
       title="Override duplicate reference"
@@ -168,11 +377,11 @@ onMounted(load);
         class="mt-2"
       />
       <p
-        v-if="overrideError"
+        v-if="actionError"
         class="mt-2 text-sm text-[color:var(--color-danger,#dc2626)]"
         role="alert"
       >
-        {{ overrideError }}
+        {{ actionError }}
       </p>
       <div class="mt-4 flex justify-end gap-2">
         <SvButton

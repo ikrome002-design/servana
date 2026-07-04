@@ -55,6 +55,11 @@ export const branchRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/branch/QueueConfiguration.vue'),
       },
       {
+        path: 'cash-up',
+        name: 'branch.cash-up',
+        component: () => import('@/pages/branch/CashUp.vue'),
+      },
+      {
         path: ':id',
         name: 'branch.detail',
         component: () => import('@/pages/branch/BranchDetail.vue'),

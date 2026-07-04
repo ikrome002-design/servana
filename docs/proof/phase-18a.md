@@ -1,12 +1,22 @@
 # Phase 18A — Merchant-Client Payment Recording — Proof
 
-**Branch:** `phase-18a-payment-recording` · **Base commit:** `6557469` (verified
-Phase 17 squash merge, PR #29). **Status:** `in_progress` — this file records the
-controlling decisions, the six specification-gate resolutions, and gate evidence as
-each slice is verified. It is **not** `local_complete`, `ci_passed`, `merged`, or
-`verified_complete`. CI is authoritative for the Linux browser/Docker/gitleaks gates;
-local Windows Playwright is not claimed as a pass (Phase 15B–17 precedent). Tests run
-against PostgreSQL 16 (never SQLite).
+**Branch:** `phase-18a-payment-recording` (merged) · **Base commit:** `6557469`
+(verified Phase 17 squash merge, PR #29). **Status:** `verified_complete` — PR
+**#30** MERGED into `main`, squash merge commit
+`4a489d04156aec8348eda9a968f830da31668c87` (`4a489d0`, 2026-07-02). Commit lineage:
+implementation `baa3678` → local-completion documentation `24ae7e8` → CI-correction
+`aef8d51` → governance / final PR head `0e36641`. CI lineage: initial run
+`28574550657` FAILED (Backend Pint + E2E body-copy assertion, corrected below);
+corrected-head run `28575564965` SUCCESS (Docker failed once on the same head with no
+product-code change, passed on rerun); final governance-head run `28576226830` — five
+required checks (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS.
+`reviewDecision` intentionally blank under the documented PR-specific solo-maintainer
+governance exception — **not** independent reviewer approval. **REM-PAY-001 remains
+truthfully open** because it spans Phase 18A recording and the Phase 18B
+validation/receipts/refunds/cash-up/period-locks lifecycle; Phase 18A is recorded as
+verified evidence and the item closes only when Phase 18B merges with green CI. CI is
+authoritative for the Linux browser/Docker/gitleaks gates. Tests run against
+PostgreSQL 16 (never SQLite).
 
 Money is integer minor units (`Money` value object) — never float. Full/normalized
 payment references and raw client contact are never returned by a Resource, audited,
@@ -207,17 +217,32 @@ instead of fabricating approval.
 
 Evidence:
 
-- PR: #30
-- verified implementation head: aef8d5136f3dce0385cabd64e8d3edabe7ebf5ec
-- CI correction commit: aef8d5136f3dce0385cabd64e8d3edabe7ebf5ec
-- initial successful CI run: 28575564965
-- CI/Backend: passed
-- CI/Frontend: passed
-- CI/Docker: passed
-- CI/Security: passed
-- CI/E2E - Playwright: passed
+- PR: #30 — MERGED, squash merge commit 4a489d04156aec8348eda9a968f830da31668c87
+- implementation commit: baa367874304d72ba4c3fffb4ee021ece800504d
+- local-completion documentation commit: 24ae7e8233038fa9341169ba3e21e363fe8c3b46
+- CI-correction commit: aef8d5136f3dce0385cabd64e8d3edabe7ebf5ec
+- governance / final PR head: 0e36641b7dd66d4a721d62db7b93823bb35ab023
+- initial CI run (FAILED): 28574550657
+    - Backend failure: Pint found one style issue in
+      app/Http/Resources/PaymentRecordingGroupResource.php. Correction: Pint
+      formatting only; no behavior or assertion was weakened.
+    - E2E failure: the payment test asserted the page body must not contain the
+      word "validate", but the correct pending-validation explanatory copy
+      truthfully says Finance must validate before a receipt exists. Correction:
+      retain the explanatory copy and assert that no Validate button/action is
+      available to Front Office. The validation explanation was not removed and
+      the role boundary was not weakened.
+- corrected-head CI run (SUCCESS): 28575564965 (Docker failed once on the same
+  head and passed on rerun without a product-code change)
+- final governance-head CI run (SUCCESS): 28576226830
+- CI/Backend: SUCCESS
+- CI/Frontend: SUCCESS
+- CI/Docker: SUCCESS
+- CI/Security: SUCCESS
+- CI/E2E - Playwright: SUCCESS
 - GitHub reviewDecision: intentionally blank
 - governance record:
   docs/governance/solo-maintainer-review-exception-pr-30.md
 
 This exception applies only to PR #30 and is not independent reviewer approval.
+It must not be described as independent review.

@@ -1,4 +1,4 @@
-# Invoicing and Merchant-Client Payments — Data Dictionary (Plan §13.8, §13.15, §40, §41, §25.3; Phases 17, 18A)
+# Invoicing and Merchant-Client Payments — Data Dictionary (Plan §13.8, §13.15, §40, §41–§46, §25.3; Phases 17, 18A, 18B)
 
 > Canonical per-table data dictionary for the Merchant-Client invoicing **and
 > payment-recording** substrate. This is the Plan §13.8 canonical path
@@ -682,3 +682,457 @@ checker. The `payment_records.validated_amount_minor` and the group
 `validated_at`/`rejected_at` timestamps, and the component
 `validated`/`rejected`/`correction_required`/`reversed` states, are written only
 then. Nothing in Phase 18A pre-creates those rows or states.
+
+---
+
+# Financial Validation Controls (Phase 18B) — Correction 18 (validation onward)
+
+Completes the auditable merchant-client money lifecycle after Phase 18A recording:
+group validation/rejection/correction, immutable validation events, invoice
+validated balance + payment state, one automatic gap-free receipt (+ reissue),
+external refunds, finance disputes, branch cash-up reconciliation, database-backed
+period locks (+ exceptional reopen), and scoped async finance exports. Controlling
+sources: Plan §13.8, §13.15, §13.16, §41–§46, §25, §65, §67, §70, §80; ADR-0007
+(maker/checker + period locks). Money is integer minor units. Full/normalized
+payment references, external refund references, raw client contact, private file
+paths and signed URLs are never returned by a Resource, audited, or logged.
+
+## Specification-gate resolutions (controlling decisions — Gates A–J)
+
+### Gate A — group-level validation-event schema: RESOLVED (`payment_recording_group_id` parent)
+The Plan §13.8 shorthand `payment_record_id` is superseded by the corrected §13.15,
+§42, §80 and the Phase 18A handoff, which are all group-level: **one** validation
+decision, **one** immutable event, **one** receipt per validated group, all
+component records updated atomically. Therefore `payment_validation_events` is
+parented by `payment_recording_group_id` (not per component). Component rows remain
+individually traceable through `payment_records.payment_recording_group_id`
+(component → group → validation event); each component also carries
+`validated_amount_minor` set atomically at validation. No per-component validation
+event is created.
+
+### Gate B — whole-group decision; no partial group validation: RESOLVED
+A group is validated as a unit. The only final decisions are `validated`,
+`rejected`, `correction_required`. It is impossible for some components to become
+`validated` while others remain `pending_validation`: the transactional action sets
+every component to the group's decision or rolls back. If any component fails a
+revalidation check the whole group is `rejected` or `correction_required` per the
+documented reason.
+
+### Gate C — commission handoff without inventing Phase 20G: RESOLVED (durable outbox seam)
+No durable domain-event outbox exists in the repository (only the R4
+`idempotency_keys` store and typed audit log). Phase 18B therefore adds the
+**smallest** Plan-compatible durable seam, `commission_handoff_events`, written in
+the same validation transaction — one immutable, idempotent **per-component**
+`validated_allocation` payload identifying invoice item, service, personnel,
+payment record, validated amount, currency, validation event and effective
+timestamp. It carries **no** commission rate, earned row, or payable liability;
+those belong to Phases 20F/20G. A `reversal` seam row is written on refund
+finalization (Gate E). The validation transaction cannot commit an invoice as
+`paid`/`partially_paid` while a required handoff row is missing. This is explicitly
+**not** a commission ledger; `commission_rules`/`commission_ledger`/earnings/payout
+tables are not created in Phase 18B.
+
+### Gate D — refund component allocation: RESOLVED (`refunds.payment_record_id` boundary)
+Servana records external refunds; it does not move funds. A refund is allocated to
+concrete validated payment **components** via `refunds.payment_record_id` (the
+existing Plan relationship). A refund spanning multiple components is persisted as
+**one coherent atomic workflow of multiple `refunds` rows** — one per allocated
+component, sharing a `refund_group_ulid` correlation — so each component allocation
+is individually traceable. No unallocated group-level refund amount is stored. A
+separate allocation table is not essential because the component grain is the
+`payment_record` and the correlation column links a multi-component refund.
+
+### Gate E — non-destructive refund accounting: RESOLVED
+Refund finalization preserves original payment records, receipt rows, and
+validation events; it **adds** the finalized refund row(s), reduces
+`invoices.validated_paid_minor` by the finalized allocated amount, and derives the
+resulting invoice payment state deterministically (0 → `issued`; 0<x<total →
+`partially_paid`; =total → `paid`; outside 0..total → fail + roll back). It writes
+a durable **per-component proportional** `commission_handoff_events` reversal seam
+(largest-remainder split by validated weight, ADR-0007 §Decision 4) and never
+recomputes or overwrites any future stored commission amount. Historical payment,
+receipt and audit rows are never deleted or rewritten.
+
+### Gate F — period reopen governance: RESOLVED (see ADR-0007 §Decision 3)
+Finance owns routine locking + routine reopen execution; a Merchant Administrator
+approves exceptional reopen only where the lock's `exception_required` flag is set;
+`period_lock.reopen ⟂ merchant.period_reopen.approve_exception`; the same user may
+not request and approve an exceptional reopen; reopen requires reason, fresh
+step-up and audit. The `exception_required` flag is sourced at lock creation from
+existing merchant configuration — no new policy engine is invented. Minimal schema:
+request/approval columns on `financial_period_locks` (no separate request table).
+
+### Gate G — existing `branch_cash_ups` seam: RESOLVED (forward-only evolution)
+`branch_cash_ups` already exists (Phase 7 seam migration
+`2026_06_15_000108_create_branch_cash_ups_table`, plus R5
+`2026_06_23_000002_add_merchant_id_to_branch_owned_tables` which added
+`merchant_id`). It is **not** recreated and its shipped migrations are **not**
+edited. A forward-only expand/backfill/constrain migration adds the canonical
+columns (`business_date`, `approved_by`, `approved_at`, `notes`), maps the existing
+money columns to the canonical model, and widens the status CHECK from
+(`draft`,`submitted`,`approved`,`rejected`) to add (`correction_requested`,
+`locked`). Existing rows (all `default`-seam, none in production) are backfilled
+(`business_date` from the linked `branch_day_records.business_date` where present).
+See the table entry below for the existing→canonical column mapping.
+
+### Gate H — cash-up expected-total formula: RESOLVED (server-derived)
+For a `(merchant, branch, business_date)` cash-up, each method line's
+`expected_minor` is the sum of **validated** payment-component `validated_amount_minor`
+for that method whose invoice's business date (Africa/Nairobi) equals the cash-up
+date, **minus** finalized refund allocations of that method on that date;
+pending/rejected/correction-required components are excluded. Header
+`expected_minor` = Σ line `expected_minor`. The server computes expected and
+variance (`variance = counted − expected`); the Branch Manager supplies only the
+counted amounts. No client-supplied expected amount is accepted as authoritative.
+
+### Gate I — finance-export launch types: RESOLVED
+The `finance_exports.export_type` CHECK enumerates all nine future types
+(`invoices`,`payments`,`receipts`,`cash_up`,`refunds`,`disputes`,`compensation`,
+`payouts`,`billing`) for forward compatibility, but the Phase 18B request policy
+**rejects** `compensation`,`payouts`,`billing` (owned by Phases 20E–20H / 20A–20B)
+with `422 unsupported_export_type`. Only the six implemented domains are requestable.
+
+### Gate J — receipt generation and PDF ownership: RESOLVED
+Receipt issuance is automatic after successful group validation — there is **no**
+manual issue route or button. The initial `receipts` row is durable in the same
+financial transaction; the PDF is generated through the Phase 10F file domain with
+purpose `receipt_pdf` via a durable outbox-guaranteed job (`GenerateReceiptPdf`,
+`TenantAwareJob`). A receipt is never surfaced as successfully issued while its
+required durable generation record (queued job + `receipts.file_generation_status`)
+is absent. Reissue creates a **new** `receipts` row referencing the original
+(`reissue_of_receipt_id`); the original is immutable and keeps its number; the
+reissue receives a new gap-free number.
+
+## Phase 18B boundary (what these tables do NOT do)
+
+No commission rate/earned/payable rows (20F/20G); no actual fund movement (external
+refunds only); no M-Pesa/Daraja provider workflow (20D); no notifications/inbox
+platform or report catalogue/materialized views (21N); no day-close/cash-up PDF or
+email (21N); no complete flagged-audit workflow or full permission-matrix closure
+(19); no platform-fee/subscription/payout tables (20A/20B/20E/20F–20H).
+
+## Table: `payment_validation_events` (18B, branch-owned) — immutable group decision
+
+One immutable event per group validation decision (Gate A/B). Append-only; no
+UPDATE/DELETE route.
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint identity | no | — | internal PK; never exposed |
+| `ulid` | char(26) | no | auto | public id + route key |
+| `merchant_id` | bigint | no | — | FK RESTRICT merchants; `BelongsToMerchant` |
+| `branch_id` | bigint | no | — | FK RESTRICT merchant_branches; `BelongsToBranch` |
+| `payment_recording_group_id` | bigint | no | — | FK RESTRICT payment_recording_groups; the validated group (Gate A) |
+| `invoice_id` | bigint | no | — | FK RESTRICT invoices; equals group.invoice_id |
+| `checker_user_id` | bigint | no | — | FK RESTRICT users; Finance actor; ≠ group.maker_user_id |
+| `decision` | varchar | no | — | CHECK in (`validated`,`rejected`,`correction_required`) |
+| `validated_amount_minor` | bigint | yes | null | equals group.total_amount_minor for `validated`; null for non-validated (documented contract) |
+| `reason` | varchar | yes | null | sanitized, length-capped; **required** for `rejected`/`correction_required`; never carries a reference |
+| `created_at` | timestamptz | no | — | append-only; no `updated_at` (immutable) |
+
+**Constraints / indexes.** `UNIQUE (ulid)`; `UNIQUE (id, merchant_id)`; composite
+FKs `(branch_id, merchant_id) → merchant_branches`, `(invoice_id, merchant_id) →
+invoices`, `(payment_recording_group_id, merchant_id) → payment_recording_groups`
+(group + invoice + branch tenant consistency). CHECK: `validated_amount_minor` is
+non-null and `>= 0` iff `decision='validated'`, else null; `reason` non-null iff
+decision in {rejected, correction_required}. **Partial unique index** `UNIQUE
+(payment_recording_group_id) WHERE decision='validated'` — at most one final
+validated event per group. Indexes `(payment_recording_group_id)`,
+`(invoice_id)`, `(branch_id, created_at)`, `(checker_user_id, created_at)`.
+No hard-delete API.
+
+## Table: `receipt_number_sequences` (18B, merchant-owned) — gap-free receipt numbering (§13.15)
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint identity | no | — | internal PK |
+| `merchant_id` | bigint | no | — | FK RESTRICT merchants |
+| `scope` | varchar | no | `receipt` | CHECK in (`receipt`) |
+| `next_value` | bigint | no | 1 | next number to allocate |
+| `prefix` | varchar | yes | null | optional per-merchant prefix |
+| `created_at`/`updated_at` | timestamptz | no | — | |
+
+**Constraints.** `UNIQUE (merchant_id, scope)`. Allocation is under `SELECT … FOR
+UPDATE` inside the receipt-issuance transaction; **never** `MAX(receipt_number)+1`.
+Numbers are per merchant, gap-free on committed issuance, never reused; a rolled-back
+issuance consumes no number (the `FOR UPDATE` increment rolls back with the txn).
+
+## Table: `receipts` (18B, branch-owned) — one original per validated group (+ reissue)
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint identity | no | — | internal PK |
+| `ulid` | char(26) | no | auto | public id + route key |
+| `merchant_id` | bigint | no | — | FK RESTRICT merchants |
+| `branch_id` | bigint | no | — | FK RESTRICT merchant_branches |
+| `invoice_id` | bigint | no | — | FK RESTRICT invoices |
+| `payment_validation_event_id` | bigint | yes | — | FK RESTRICT payment_validation_events; the validated event (nullable only for schema symmetry; always set for an original) |
+| `receipt_number` | bigint | no | — | unique per merchant; from `receipt_number_sequences` |
+| `amount_minor` | bigint | no | — | validated group total; CHECK `> 0` |
+| `currency` | char(3) | no | — | uppercase ISO; equals invoice.currency |
+| `components` | jsonb | no | — | safe snapshots only: per-component `{method, amount_minor}` — **no** full/normalized reference, no internal id, no path |
+| `reissue_of_receipt_id` | bigint | yes | null | FK RESTRICT receipts; set on a reissue; null on an original |
+| `reason` | varchar | yes | null | sanitized reissue reason; null on an original |
+| `file_id` | bigint | yes | null | FK RESTRICT uploaded_files; the `receipt_pdf` file (set when generation completes) |
+| `file_generation_status` | varchar | no | `pending` | CHECK in (`pending`,`ready`,`failed`); a receipt is not "issued for download" until `ready` |
+| `issued_by` | bigint | yes | null | FK RESTRICT users; Finance actor for a reissue; null for an automatic original |
+| `created_at`/`updated_at` | timestamptz | no | — | original row content is immutable after issue |
+
+**Constraints / indexes.** `UNIQUE (ulid)`; `UNIQUE (id, merchant_id)`; `UNIQUE
+(merchant_id, receipt_number)`; composite FKs `(branch_id, merchant_id)`,
+`(invoice_id, merchant_id)`, `(payment_validation_event_id, merchant_id)`,
+`(reissue_of_receipt_id, merchant_id)`. **Partial unique index** `UNIQUE
+(payment_validation_event_id) WHERE reissue_of_receipt_id IS NULL` — exactly one
+original receipt per validated event. CHECK: `amount_minor > 0`; currency
+uppercase-ISO. App/service invariants (not expressible as CHECK): a receipt row may
+not exist without a `validated` `payment_validation_events` row; an original's
+`components` sum equals `amount_minor`; a reissue references an immutable original
+and receives a new number. Indexes `(invoice_id)`, `(branch_id, created_at)`,
+`(merchant_id, receipt_number)`. No hard-delete API; the original is never mutated
+(reissue is additive).
+
+## Table: `refunds` (18B, branch-owned) — external refund, component-allocated (Gate D/E)
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint identity | no | — | internal PK |
+| `ulid` | char(26) | no | auto | public id + route key |
+| `merchant_id` | bigint | no | — | FK RESTRICT merchants |
+| `branch_id` | bigint | no | — | FK RESTRICT merchant_branches |
+| `invoice_id` | bigint | no | — | FK RESTRICT invoices |
+| `payment_record_id` | bigint | no | — | FK RESTRICT payment_records; the validated component being refunded (Gate D) — non-null (mandatory allocation) |
+| `refund_group_ulid` | char(26) | no | — | correlation for a multi-component refund workflow; single-component refund is its own group of one |
+| `amount_minor` | bigint | no | — | positive integer minor units; ≤ component remaining refundable validated amount |
+| `currency` | char(3) | no | — | uppercase ISO; equals invoice/payment currency |
+| `method` | varchar | no | — | CHECK = payment method set; the external refund method |
+| `external_reference_encrypted` | text | yes | null | Laravel `encrypted`; required per method rules; never returned raw (masked suffix only) |
+| `reason` | varchar | no | — | sanitized, length-capped |
+| `status` | varchar | no | `requested` | CHECK in (`requested`,`approved`,`finalized`,`rejected`) |
+| `requested_by` | bigint | no | — | FK RESTRICT users |
+| `approved_by` | bigint | yes | null | FK RESTRICT users; ≠ requested_by (maker/checker); required for approved/finalized |
+| `finalized_by` | bigint | yes | null | FK RESTRICT users; required for finalized |
+| `rejected_by` | bigint | yes | null | FK RESTRICT users; required for rejected |
+| `approved_at`/`finalized_at`/`rejected_at` | timestamptz | yes | null | set on the matching transition |
+| `created_at`/`updated_at` | timestamptz | no | — | |
+
+**Constraints / indexes.** `UNIQUE (ulid)`; `UNIQUE (id, merchant_id)`; composite
+FKs `(branch_id, merchant_id)`, `(invoice_id, merchant_id)`, `(payment_record_id,
+merchant_id) → payment_records`. CHECK: `amount_minor > 0`; currency uppercase-ISO;
+`approved_by` non-null iff status in {approved, finalized}; `finalized_by` non-null
+iff status=finalized; `rejected_by` non-null iff status=rejected; step/timestamp
+coherence. App invariants: `payment_record.status = validated`; Σ finalized+in-flight
+refund `amount_minor` for a component ≤ `component.validated_amount_minor`
+(remaining-refundable, enforced under the payment_record row lock);
+`approved_by ≠ requested_by`. Indexes `(invoice_id)`, `(payment_record_id)`,
+`(branch_id, status)`, `(refund_group_ulid)`. No hard-delete API.
+
+## Table: `finance_disputes` (18B, branch-owned) — investigation record
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint identity | no | — | internal PK |
+| `ulid` | char(26) | no | auto | public id + route key |
+| `merchant_id` | bigint | no | — | FK RESTRICT merchants |
+| `branch_id` | bigint | no | — | FK RESTRICT merchant_branches |
+| `invoice_id` | bigint | yes | null | FK RESTRICT invoices |
+| `payment_record_id` | bigint | yes | null | FK RESTRICT payment_records |
+| `status` | varchar | no | `open` | CHECK in (`open`,`under_review`,`resolved`,`rejected`) |
+| `reason` | varchar | no | — | sanitized, length-capped |
+| `resolution_note` | varchar | yes | null | required for resolved/rejected |
+| `evidence_file_id` | bigint | yes | null | FK RESTRICT uploaded_files; purpose `dispute_evidence`; path never exposed |
+| `created_by` | bigint | no | — | FK RESTRICT users |
+| `resolved_by` | bigint | yes | null | FK RESTRICT users; required for resolved/rejected |
+| `created_at`/`updated_at` | timestamptz | no | — | |
+
+**Constraints / indexes.** `UNIQUE (ulid)`; `UNIQUE (id, merchant_id)`; composite
+FKs `(branch_id, merchant_id)`, `(invoice_id, merchant_id)`, `(payment_record_id,
+merchant_id)`. CHECK: at least one of `invoice_id`/`payment_record_id` is non-null;
+`resolution_note` + `resolved_by` non-null iff status in {resolved, rejected}. The
+disputed source record is never mutated by the dispute workflow. Indexes
+`(branch_id, status)`, `(invoice_id)`, `(payment_record_id)`. No hard-delete API.
+(Phase 18B uses the authoritative 4-state Plan set; the broader Scope-only status
+list is not added unless the Plan is amended.)
+
+## Table: `branch_cash_ups` (evolved 18B, branch-owned) — one cash-up per branch-day
+
+Evolved forward-only from the Phase 7 seam (Gate G). **Existing→canonical mapping:**
+`expected_total`→ header `expected_minor`; `cash_counted` retained as the cash line;
+`discrepancy_amount`→ header `variance_minor`; `recorded_totals` (json) retained for
+back-compat but superseded by `cash_up_lines`; `reviewed_by`/`reviewed_at`/
+`review_note` retained; new `approved_by`/`approved_at`/`notes` added (approval
+distinct from generic review); `business_date` added (backfilled). Canonical columns:
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id`, `ulid`, `merchant_id`, `branch_id`, `branch_day_record_id` | | | | existing (merchant_id from R5; branch_day_record_id FK) |
+| `business_date` | date | yes→backfilled | null | Africa/Nairobi business date; one cash-up per (branch, business_date) |
+| `status` | varchar | no | `draft` | CHECK widened to (`draft`,`submitted`,`approved`,`rejected`,`correction_requested`,`locked`) |
+| `expected_minor` (was `expected_total`) | bigint | no | 0 | server-derived (Gate H) |
+| `counted_minor` | bigint | no | 0 | Σ line counted; Branch Manager input |
+| `variance_minor` (was `discrepancy_amount`) | bigint | no | 0 | `counted − expected` |
+| `submitted_by`/`submitted_at` | | | | existing |
+| `approved_by`/`approved_at` | bigint/timestamptz | yes | null | Finance checker; `approved_by ≠ submitted_by` |
+| `notes` | varchar | yes | null | sanitized |
+
+**Constraints.** Existing `UNIQUE(ulid)`; add **partial unique** `UNIQUE
+(branch_id, business_date) WHERE business_date IS NOT NULL` (one cash-up per
+branch-day); status CHECK widened (drop+recreate the named CHECK — forward-only, no
+edit to the shipped migration). App invariants: header totals equal Σ line totals;
+`variance = counted − expected`; expected is server-derived; maker (Branch Manager)
+≠ checker (Finance); submitted/approved values are not destructively overwritten
+(correction creates a new draft cycle, not a silent rewrite).
+
+## Table: `cash_up_lines` (18B, branch-owned via cash-up) — per-method line
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint identity | no | — | internal PK (child evidence row; no ulid) |
+| `merchant_id` | bigint | no | — | FK RESTRICT; equals cash_up.merchant_id |
+| `branch_id` | bigint | no | — | FK RESTRICT; equals cash_up.branch_id |
+| `cash_up_id` | bigint | no | — | FK RESTRICT branch_cash_ups |
+| `method` | varchar | no | — | CHECK = concrete payment methods only (never `split_payment`) |
+| `expected_minor` | bigint | no | 0 | server-derived for this method |
+| `counted_minor` | bigint | no | 0 | Branch Manager input |
+| `variance_minor` | bigint | no | 0 | `counted − expected` |
+| `created_at`/`updated_at` | timestamptz | no | — | |
+
+**Constraints / indexes.** composite FK `(cash_up_id, merchant_id) → branch_cash_ups`;
+`UNIQUE (cash_up_id, method)` (one line per method per cash-up); method CHECK
+excludes `split_payment`. Index `(cash_up_id)`.
+
+## Table: `financial_period_locks` (18B, merchant-owned; optional branch scope)
+
+Replaces the always-open repository (ADR-0007 §Decision 2/3).
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint identity | no | — | internal PK |
+| `ulid` | char(26) | no | auto | public id + route key |
+| `merchant_id` | bigint | no | — | FK RESTRICT merchants |
+| `branch_id` | bigint | yes | null | FK RESTRICT merchant_branches; null = merchant-wide |
+| `period_start` | date | no | — | CHECK `period_start <= period_end` |
+| `period_end` | date | no | — | |
+| `status` | varchar | no | `locked` | CHECK in (`open`,`locked`,`reopened`) |
+| `exception_required` | boolean | no | false | Gate F: reopen needs Merchant Admin approval |
+| `locked_by` | bigint | no | — | FK RESTRICT users; Finance |
+| `locked_at` | timestamptz | no | — | |
+| `reopen_requested_by` | bigint | yes | null | FK RESTRICT users; Finance requester |
+| `reopen_requested_at` | timestamptz | yes | null | |
+| `reopen_reason` | varchar | yes | null | required to reopen |
+| `reopen_approved_by` | bigint | yes | null | FK RESTRICT users; Merchant Admin ≠ requester (exception only) |
+| `reopen_approved_at` | timestamptz | yes | null | |
+| `reopened_by` | bigint | yes | null | FK RESTRICT users; Finance executor |
+| `reopened_at` | timestamptz | yes | null | |
+| `created_at`/`updated_at` | timestamptz | no | — | |
+
+**Constraints / indexes.** `UNIQUE (ulid)`; `UNIQUE (id, merchant_id)`; composite FK
+`(branch_id, merchant_id)` when branch-scoped; CHECK `period_start <= period_end`;
+status CHECK. **No overlapping active lock** for the same scope: enforced by a
+PostgreSQL exclusion constraint over `merchant_id`, a normalized branch key
+(`COALESCE(branch_id,0)`) and a `daterange(period_start, period_end, '[]')` WHERE
+`status='locked'` (`btree_gist`; matches the appointment-exclusion precedent).
+Reopen coherence CHECK: `reopen_approved_by ≠ reopen_requested_by`; `reopened_*`
+set only for status `reopened`. Indexes `(merchant_id, status)`,
+`(merchant_id, branch_id, period_start, period_end)`.
+
+## Table: `finance_exports` (18B, merchant-owned; optional branch scope) — §65/§67 async export
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint identity | no | — | internal PK |
+| `ulid` | char(26) | no | auto | public id + route key |
+| `merchant_id` | bigint | no | — | FK RESTRICT merchants |
+| `branch_id` | bigint | yes | null | FK RESTRICT merchant_branches; null = merchant-wide |
+| `requested_by` | bigint | no | — | FK RESTRICT users |
+| `export_type` | varchar | no | — | CHECK in (`invoices`,`payments`,`receipts`,`cash_up`,`refunds`,`disputes`,`compensation`,`payouts`,`billing`) — last three rejected by request policy (Gate I) |
+| `scope_json` | jsonb | no | — | validated filters (date range, branch, status…) |
+| `reason` | varchar | no | — | sanitized, length-capped |
+| `status` | varchar | no | `queued` | CHECK in (`queued`,`processing`,`ready`,`failed`,`expired`,`revoked`) |
+| `file_id` | bigint | yes | null | FK RESTRICT uploaded_files; purpose `finance_export`; set when ready |
+| `row_count` | integer | yes | null | rows written |
+| `expires_at` | timestamptz | yes | null | auto-expiry |
+| `first_downloaded_at` | timestamptz | yes | null | set once |
+| `last_downloaded_at` | timestamptz | yes | null | updated each successful download |
+| `download_count` | integer | no | 0 | incremented atomically |
+| `failure_code` | varchar | yes | null | redacted failure code |
+| `failure_message_redacted` | varchar | yes | null | redacted; never SQLSTATE/stack/PII |
+| `created_at`/`updated_at` | timestamptz | no | — | |
+
+**Constraints / indexes.** `UNIQUE (ulid)`; `UNIQUE (id, merchant_id)`; composite FK
+`(branch_id, merchant_id)` when branch-scoped; status + export_type CHECKs;
+`download_count >= 0`. Indexes `(merchant_id, status)`, `(requested_by, created_at)`,
+`(expires_at)`. Masked rows only; CSV at minimum (no PDF renderer added in 18B).
+Private storage via the Phase 10F file boundary; authorized signed download;
+`download_count` incremented atomically; `first_downloaded_at` set once;
+`last_downloaded_at` per download.
+
+## Table: `commission_handoff_events` (18B, branch-owned) — durable 20G seam (Gate C/E)
+
+Immutable, idempotent per-component seam consumed by Phase 20G. **Not** a commission
+ledger — carries no rate, earned row, or payable.
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | bigint identity | no | — | internal PK |
+| `ulid` | char(26) | no | auto | public id |
+| `merchant_id` | bigint | no | — | FK RESTRICT merchants |
+| `branch_id` | bigint | no | — | FK RESTRICT merchant_branches |
+| `kind` | varchar | no | — | CHECK in (`validated_allocation`,`reversal`) |
+| `payment_validation_event_id` | bigint | yes | null | FK RESTRICT; set for `validated_allocation` |
+| `refund_id` | bigint | yes | null | FK RESTRICT refunds; set for `reversal` |
+| `payment_record_id` | bigint | no | — | FK RESTRICT payment_records; the component |
+| `invoice_id` | bigint | no | — | FK RESTRICT invoices |
+| `invoice_item_id` | bigint | yes | null | FK RESTRICT invoice_items; when item-level known |
+| `service_id` | bigint | yes | null | FK RESTRICT services |
+| `personnel_id` | bigint | yes | null | FK RESTRICT merchant_users/personnel |
+| `amount_minor` | bigint | no | — | validated (or reversed, negative-signed via `kind`) component amount |
+| `currency` | char(3) | no | — | uppercase ISO |
+| `effective_at` | timestamptz | no | — | validation/finalization effective time |
+| `consumed_at` | timestamptz | yes | null | set by Phase 20G on consumption (never in 18B) |
+| `created_at` | timestamptz | no | — | append-only |
+
+**Constraints / indexes.** `UNIQUE (ulid)`; composite FKs for tenant consistency;
+CHECK: `payment_validation_event_id` non-null iff kind=`validated_allocation`;
+`refund_id` non-null iff kind=`reversal`. **Partial unique** `UNIQUE
+(payment_validation_event_id, payment_record_id) WHERE
+kind='validated_allocation'` and `UNIQUE (refund_id, payment_record_id) WHERE
+kind='reversal'` — idempotent per (event/refund, component). Indexes
+`(merchant_id, consumed_at)`, `(payment_record_id)`. No hard-delete API.
+
+## Audit events (18B, typed, safe context only)
+
+`customer_payment.validated`, `.rejected`, `.correction_requested`,
+`.reference_corrected`, `.resubmitted`; `receipt.issued`, `.reissued`,
+`.downloaded`; `refund.requested`, `.approved`, `.rejected`, `.finalized`;
+`finance_dispute.opened`, `.review_started`, `.resolved`, `.rejected`;
+`cash_up.draft_updated`, `.submitted`, `.approved`, `.rejected`,
+`.correction_requested`, `.resubmitted`, `.locked`; `financial_period.locked`,
+`.reopen_requested`, `.reopen_approved`, `.reopened`; `finance_export.requested`,
+`.generated`, `.failed`, `.downloaded`, `.expired`, `.revoked`. Context: ULIDs,
+integer minor amounts, currency, safe statuses, masked reference suffix, sanitized
+reasons only. **Never**: full/normalized reference, external refund reference
+plaintext, full client contact, private file path, signed URL/signature, export
+content, raw CSV/PDF, SQLSTATE, stack trace, internal bigint id, MFA code,
+authorization header. A rolled-back action emits no success event.
+
+## Models, factories, registration (18B)
+
+- Models in `app/Domain/Payments/Models`, `app/Domain/Receipts/Models`,
+  `app/Domain/Refunds/Models`, `app/Domain/FinanceOps/Models`,
+  `app/Domain/Compensation/Models`. Branch-owned tables use `BelongsToMerchant` +
+  `BelongsToBranch`; `receipt_number_sequences`, `financial_period_locks`,
+  `finance_exports` use `BelongsToMerchant` (merchant-owned; branch nullable).
+- Register in `app/Domain/Tenancy/TenantOwnership.php`: branch-owned tables to
+  `BRANCH_OWNED` + `COMPOSITE_CONSISTENCY` + `MODELS`; merchant-owned tables to
+  `MERCHANT_OWNED` + `MODELS`; `cash_up_lines` classified via its cash-up parent.
+- Factories for every new table (tenant-aware).
+- Migrations registered in `docs/architecture/migrations/manifest.yaml` with
+  `data_dictionary: docs/architecture/data-dictionary/invoicing-and-payments.md`.
+
+## Phase 20G handoff (commission)
+
+Phase 20G consumes `commission_handoff_events` (`validated_allocation` + `reversal`)
+to compute earned commission and reversals once `commission_rules` /
+`commission_ledger` exist. Phase 18B guarantees one immutable, idempotent
+per-component row per validation and per finalized refund component, with no
+invented rate.
