@@ -6,7 +6,85 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 18A — Merchant-Client Payment Recording (`phase-18a-payment-recording`) — local_complete
+### Phase 18B — Validation, Receipts, Refunds, Disputes, Cash-Up, Period Locks, Finance Exports (`phase-18b-financial-validation-controls`) — local_complete (base `4a489d0`, PR #30)
+
+Completes the auditable money lifecycle on merged Phase 18A: **whole-group payment
+validation** (one atomic decision → one gap-free original receipt; no partial-component
+validation; maker ≠ checker), **rejection / correction / component reference correction /
+resubmit** (mandatory reason, no receipt), **receipts** (immutable, automatic on
+validation, reissue = new gap-free number referencing the original, authorized signed
+Phase-10F download — no manual issue), **external refunds** (component-allocated,
+maker/checker + fresh step-up, non-destructive/irreversible finalize, per-component 20G
+reversal handoff), **finance disputes** (create/review/resolve/reject; disputed source
+never mutated; private evidence), **branch cash-up + day-close guards** (server-derived
+expected totals (Gate H), maker = Branch Manager / checker = Finance, day close blocked
+until the cash-up is approved/locked with no pending validations and complete receipt
+generation), **database-backed financial period locks + exceptional reopen**
+(`DatabasePeriodLockRepository` replaces the always-open stub → `423
+financial_period_locked` enforced everywhere; Finance creates + executes reopen with fresh
+MFA; Merchant Administrator approves an exceptional reopen only, requester ≠ approver), and
+**finance exports** (async `TenantAwareJob` on `reports-exports`, masked + scoped CSV via
+the Phase-10F file domain, atomic download accounting, only invoices/payments/receipts/
+cash_up/refunds/disputes; compensation/payouts/billing rejected `422
+unsupported_export_type`; `PL n/a`).
+
+Canonical permissions reconciled from the legacy placeholders (`periods.lock`,
+`cashup.submit`, `cashup.review_approve`, `periods.reopen`, `exports.finance`) to
+`branch.cash_up.submit`, `cash_up.view/approve/reject/request_correction`,
+`period_lock.create/reopen`, `merchant.period_reopen.approve_exception`,
+`finance_export.create/download`; incompatibilities `branch.cash_up.submit ⟂
+cash_up.approve` and `period_lock.reopen ⟂ merchant.period_reopen.approve_exception`
+enforced. `REM-PERM-001` stays open (Phase 19 owns full matrix closure).
+
+Frontend (Phase-11 shells, Pinia + generated TypeScript contract): Finance task inbox,
+pending-validations + whole-group decision detail, receipts list/detail (reissue gated),
+external refunds list/detail (approve/reject/finalize with an irreversible warning),
+disputes list/detail (source read-only), cash-up review list/detail (approve/reject/
+request-correction/lock), financial periods (create + reopen request/execute), exports
+(request/download/revoke, supported types only); Branch Manager cash-up (server expected
+read-only, counted entry, variance, submit/resubmit, no approve); Merchant Administrator
+exceptional-reopen approval only; Front Office receipts (view + download only). Navigation
+flipped 9 planned Phase-18B items → live + added Merchant-Admin period-reopen approvals;
+88 §27.1 screen specs + `role-navigation.yaml` + `inventory.yaml` regenerated.
+
+Local gates (recorded in `docs/proof/phase-18b.md`): backend **serial 1065 passed / 7
+skipped / 5175 assertions** and **parallel 1065 passed / 7 skipped / 5175 assertions** on
+PostgreSQL 16; Pint clean (877 files) + Larastan L8 **No errors** (667 files);
+`composer validate --strict` valid; `audit:verify-chain` clean (dev DB has no audit rows;
+append-only/hash-chain invariants proven by the feature suite); OpenAPI **152 operations /
+130 paths** + TypeScript regenerated + contract check OK; frontend **Vitest 222 / 54
+files**, ESLint 0 errors, vue-tsc clean, `npm run build` OK. Playwright: the four Phase 18B
+specs (`payment-validation-receipt`, `refund-dispute`, `cash-up-period-lock`,
+`finance-export`; 360/768/1280 + light/dark + keyboard + axe serious/critical = 0) pass
+**29/0**, and full `npm run e2e` is **227 passed / 0 failed**. Two defects fixed this
+checkpoint: **DEF-18B-003** (360px page-overflow on the branch cash-up table → stacked
+method cards ≤767px / table ≥768px) and **DEF-18B-004** (cash-up component test coupled to
+the real clock → derive the business date like the component). Security: composer audit no
+advisories, npm audit high-gate exit 0 (two moderate transitive `js-yaml` advisories below
+the gate), gitleaks no leaks; both Docker images (php `dev`, nginx `prod`) build. Linux CI
+remains the authoritative browser/Docker/gitleaks gate at merge. **REM-PAY-001** stays open
+until Phase 18B merges with green CI.
+
+### Phase 18A — Merchant-Client Payment Recording (`phase-18a-payment-recording`) — verified_complete (PR #30, merge `4a489d0`)
+
+Merged: PR **#30** `Phase 18A: Implement payment recording` squash-merged into `main`
+as `4a489d04156aec8348eda9a968f830da31668c87` (2026-07-02). Commit lineage:
+implementation `baa3678` → local-completion documentation `24ae7e8` → CI-correction
+`aef8d51` → governance / final PR head `0e36641`. CI: initial run `28574550657` FAILED
+(Backend Pint style in `app/Http/Resources/PaymentRecordingGroupResource.php` —
+formatting only, no behavior/assertion weakened; E2E payment test asserted the page
+body must not contain "validate" while the correct pending-validation copy truthfully
+states Finance must validate before a receipt exists — corrected to keep the copy and
+assert no Validate action is available to Front Office, preserving the role boundary);
+corrected-head run `28575564965` SUCCESS (Docker failed once on the same head with no
+product-code change, passed on rerun); final governance-head run `28576226830` — five
+required checks (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS.
+`reviewDecision` intentionally blank under the documented PR-specific solo-maintainer
+governance exception (`docs/governance/solo-maintainer-review-exception-pr-30.md`) — not
+independent reviewer approval. **REM-PAY-001 remains open** (it spans Phase 18A and
+Phase 18B; closes when Phase 18B merges).
+
+### Phase 18A — Merchant-Client Payment Recording (build detail)
 
 Merchant-client payment recording on merged Phase 17 (`6557469`, PR #29): the four
 branch-owned tables `payment_recording_groups` + `payment_records` +

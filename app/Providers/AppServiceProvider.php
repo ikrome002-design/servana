@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Audit\Services\DatabaseAuditRecorder;
+use App\Domain\Branches\Models\BranchCashUp;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
 use App\Domain\Branches\Models\MerchantBranch;
@@ -18,7 +19,10 @@ use App\Domain\Files\Contracts\FileScanner;
 use App\Domain\Files\Services\ClamAvScanner;
 use App\Domain\Files\Services\ImageSanitizer;
 use App\Domain\FinanceOps\Contracts\PeriodLockRepository;
-use App\Domain\FinanceOps\Support\UnlockedPeriodLockRepository;
+use App\Domain\FinanceOps\Models\FinanceDispute;
+use App\Domain\FinanceOps\Models\FinanceExport;
+use App\Domain\FinanceOps\Models\FinancialPeriodLock;
+use App\Domain\FinanceOps\Support\DatabasePeriodLockRepository;
 use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Invoicing\Contracts\PreferredPersonnelFeeResolver;
@@ -26,8 +30,11 @@ use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Invoicing\Services\LegacyPreferredPersonnelFeeResolver;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Payments\Models\PaymentRecord;
 use App\Domain\Payments\Models\PaymentRecordingGroup;
 use App\Domain\Payments\Models\PaymentReferenceCheck;
+use App\Domain\Receipts\Models\Receipt;
+use App\Domain\Refunds\Models\Refund;
 use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Scheduling\Models\QueueEntry;
 use App\Domain\Scheduling\Models\ServiceSession;
@@ -36,13 +43,19 @@ use App\Policies\AppointmentPolicy;
 use App\Policies\AuditLogPolicy;
 use App\Policies\BranchDayRecordPolicy;
 use App\Policies\BranchOperatingHourPolicy;
+use App\Policies\CashUpPolicy;
 use App\Policies\ClientPolicy;
+use App\Policies\FinanceDisputePolicy;
+use App\Policies\FinanceExportPolicy;
+use App\Policies\FinancialPeriodLockPolicy;
 use App\Policies\InvoicePolicy;
 use App\Policies\MerchantBranchPolicy;
 use App\Policies\MerchantPolicy;
 use App\Policies\MerchantUserPolicy;
 use App\Policies\PaymentRecordingGroupPolicy;
 use App\Policies\QueueEntryPolicy;
+use App\Policies\ReceiptPolicy;
+use App\Policies\RefundPolicy;
 use App\Policies\ServiceCategoryPolicy;
 use App\Policies\ServicePersonnelEligibilityPolicy;
 use App\Policies\ServicePolicy;
@@ -91,6 +104,20 @@ class AppServiceProvider extends ServiceProvider
         // override map to one payment policy).
         PaymentRecordingGroup::class => PaymentRecordingGroupPolicy::class,
         PaymentReferenceCheck::class => PaymentRecordingGroupPolicy::class,
+        // Phase 18B — component reference correction authorizes against the same policy.
+        PaymentRecord::class => PaymentRecordingGroupPolicy::class,
+        // Phase 18B — receipt read / reissue / authorized download.
+        Receipt::class => ReceiptPolicy::class,
+        // Phase 18B — external refund workflow.
+        Refund::class => RefundPolicy::class,
+        // Phase 18B — finance disputes.
+        FinanceDispute::class => FinanceDisputePolicy::class,
+        // Phase 18B — branch cash-up + day-close reconciliation.
+        BranchCashUp::class => CashUpPolicy::class,
+        // Phase 18B — financial period locks + controlled reopen.
+        FinancialPeriodLock::class => FinancialPeriodLockPolicy::class,
+        // Phase 18B — scoped, masked finance exports.
+        FinanceExport::class => FinanceExportPolicy::class,
     ];
 
     public function register(): void
@@ -108,11 +135,12 @@ class AppServiceProvider extends ServiceProvider
         // Phase 8; full §5.18 coverage matures in Phase 19.
         $this->app->bind(AuditRecorder::class, DatabaseAuditRecorder::class);
 
-        // Period-lock enforcement seam (Plan §46; Gate C, Phase 17). Phase 17 binds
-        // an always-open repository — the financial_period_locks table + management
-        // workflow arrive in Phase 18B, which swaps this binding with no change to
-        // the invoice actions or the FinancialPeriodGuard.
-        $this->app->bind(PeriodLockRepository::class, UnlockedPeriodLockRepository::class);
+        // Period-lock enforcement (Plan §46; ADR-0007 Decision 2; Gate F, Phase 18B).
+        // Phase 18B swaps the Phase 17 always-open stub for the database-backed
+        // repository reading `financial_period_locks` — activating the
+        // `423 financial_period_locked` contract everywhere with NO change to the
+        // financial actions or the FinancialPeriodGuard.
+        $this->app->bind(PeriodLockRepository::class, DatabasePeriodLockRepository::class);
 
         // Preferred-personnel-fee resolution at invoice finalization (Gate D, Phase
         // 17). Legacy fixed `services.preferred_personnel_fee_minor` until Phase 20A

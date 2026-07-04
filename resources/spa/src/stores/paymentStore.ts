@@ -133,6 +133,49 @@ export const usePaymentStore = defineStore('payment', () => {
     );
   }
 
+  /**
+   * Finance checker (Phase 18B): validate a WHOLE pending group — one atomic decision
+   * for all components (no partial validation), issuing one original receipt. The
+   * recording maker may never validate their own group (server-enforced maker/checker).
+   */
+  async function validateGroup(id: string): Promise<PaymentRecordingGroupView> {
+    const { data } = await apiClient.post<{ data: PaymentRecordingGroupView }>(
+      `/payment-recording-groups/${id}/validate`, {}, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+    );
+    return data.data;
+  }
+
+  /** Finance checker: reject a whole pending group with a mandatory reason (no receipt). */
+  async function rejectGroup(id: string, reason: string): Promise<PaymentRecordingGroupView> {
+    const { data } = await apiClient.post<{ data: PaymentRecordingGroupView }>(
+      `/payment-recording-groups/${id}/reject`, { reason }, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+    );
+    return data.data;
+  }
+
+  /** Finance checker: return a whole pending group for correction (mandatory reason; no receipt). */
+  async function requestCorrection(id: string, reason: string): Promise<PaymentRecordingGroupView> {
+    const { data } = await apiClient.post<{ data: PaymentRecordingGroupView }>(
+      `/payment-recording-groups/${id}/request-correction`, { reason }, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+    );
+    return data.data;
+  }
+
+  /** Finance: correct a component payment reference on a correctable group. */
+  async function correctReference(recordId: string, reference: string): Promise<void> {
+    await apiClient.post(
+      `/payment-records/${recordId}/correct-reference`, { reference }, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+    );
+  }
+
+  /** Finance: resubmit a corrected group back to pending_validation. */
+  async function resubmitGroup(id: string): Promise<PaymentRecordingGroupView> {
+    const { data } = await apiClient.post<{ data: PaymentRecordingGroupView }>(
+      `/payment-recording-groups/${id}/resubmit`, {}, { headers: { 'Idempotency-Key': crypto.randomUUID() } },
+    );
+    return data.data;
+  }
+
   return {
     groups,
     loading,
@@ -142,6 +185,11 @@ export const usePaymentStore = defineStore('payment', () => {
     fetchGroup,
     recordPayment,
     overrideDuplicate,
+    validateGroup,
+    rejectGroup,
+    requestCorrection,
+    correctReference,
+    resubmitGroup,
     $reset,
   };
 });

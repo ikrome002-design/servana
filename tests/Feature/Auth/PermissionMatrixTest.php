@@ -42,17 +42,20 @@ function expectedMatrix(): array
             'merchant.profile.manage', 'merchant.tier.update',
             'branches.create', 'branches.manage_users_lifecycle',
             // Phase 17: no invoice key (Plan §10.2/§19.3) — invoice visibility via reports.
-            'receipts.view',
-            'periods.lock', 'commissions.view', 'platform_fees.view',
+            'receipt.view',
+            // Phase 18B: routine period locking is Finance-owned (ADR-0007); the Merchant
+            // Administrator holds ONLY exceptional-reopen approval (was legacy `periods.lock`).
+            'merchant.period_reopen.approve_exception', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
         'branch_manager' => [
             'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
             'service.view', 'service.create', 'service.update', 'service.archive',
-            'day.open_close', 'cashup.submit',
+            // Phase 18B: canonical cash-up maker key (was legacy `cashup.submit`).
+            'day.open_close', 'branch.cash_up.submit',
             // Phase 17: NO invoice key — Branch Manager must not create invoices
             // (Plan §10.2/§19.3); legacy invoices.create/view grants removed.
-            'receipts.view', 'commissions.view', 'platform_fees.view',
+            'receipt.view', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
         'hr' => [
@@ -64,8 +67,15 @@ function expectedMatrix(): array
         'finance' => [
             'invoice.view', 'invoice.void.request_or_execute_as_policy', 'invoice.adjustment.manage',
             'customer_payment.view', 'customer_payment.duplicate_override', 'customer_payment.record_exception',
-            'receipts.view', 'refunds.request', 'disputes.manage',
-            'cashup.review_approve', 'platform_fees.dispute',
+            'customer_payment.validate', 'customer_payment.reject', 'customer_payment.reference_correct',
+            'receipt.view', 'receipt.reissue', 'refund.create', 'finance_dispute.manage',
+            // Phase 18B canonical cash-up checker + period-lock + finance-export keys
+            // (were legacy `cashup.review_approve`; period_lock.* reconciled from the
+            // legacy Finance-grantable `periods.reopen`; finance_export.* from `exports.finance`).
+            'cash_up.view', 'cash_up.approve', 'cash_up.reject', 'cash_up.request_correction',
+            'period_lock.create', 'period_lock.reopen',
+            'finance_export.create', 'finance_export.download',
+            'platform_fees.dispute',
             'reports.view', 'audit.view_full',
         ],
         'front_office' => [
@@ -78,18 +88,18 @@ function expectedMatrix(): array
             'service_session.view', 'service_session.start',
             'service_session.complete', 'service_session.cancel',
             'invoice.view', 'invoice.create',
-            'customer_payment.record', 'receipts.view', 'reports.view',
+            'customer_payment.record', 'receipt.view', 'reports.view',
         ],
         'personnel' => [
             'personnel.my_appointments.view', 'personnel.my_queue.view',
             'personnel.my_sessions.view',
             // Phase 17: no invoice key (strict own-scope; no broad browsing).
-            'receipts.view',
+            'receipt.view',
             'commissions.view', 'reports.view',
         ],
         'audit' => [
             // Phase 17: no invoice key (Audit reads via audit.view_full/reports).
-            'receipts.view',
+            'receipt.view',
             'commissions.view', 'platform_fees.view', 'reports.view',
             'audit.view_full', 'audit.flag',
         ],

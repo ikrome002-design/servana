@@ -51,8 +51,10 @@ enum PaymentRecordingGroupStatus: string
             self::Draft => [self::Recorded],
             self::Recorded => [self::PendingValidation],
             self::PendingValidation => [self::Validated, self::Rejected, self::CorrectionRequired],
+            // Phase 18B: an explicitly corrected group is resubmitted for validation.
+            self::CorrectionRequired => [self::PendingValidation],
             self::Validated => [self::Reversed],
-            self::Rejected, self::CorrectionRequired, self::Reversed => [],
+            self::Rejected, self::Reversed => [],
         };
     }
 

@@ -62,6 +62,32 @@ final class RouteClassification
         'invoices.finalize' => 'No request body; {invoice} binding + invoice.create + InvoicePolicy; financial_mutation idempotency; FinalizeInvoice derives number+snapshots under lock.',
         'invoices.void.execute' => 'No request body; {invoice} binding + invoice.void.request_or_execute_as_policy + InvoicePolicy + RequireFreshMfa; ExecuteInvoiceVoid (void_pending → voided).',
         'invoices.void.reject' => 'No request body; {invoice} binding + invoice.void.request_or_execute_as_policy + InvoicePolicy; RejectInvoiceVoid restores the prior payable state.',
+        // Phase 18B — bodiless whole-group validation (the group is the ULID route
+        // param; the decision + amounts are derived server-side under lock).
+        'payment-recording-groups.validate' => 'No request body; {paymentRecordingGroup} binding + customer_payment.validate + PaymentRecordingGroupPolicy + financial_mutation idempotency; ValidatePaymentRecordingGroup validates the whole group under lock (maker != checker in the action).',
+        'payment-recording-groups.resubmit' => 'No request body; {paymentRecordingGroup} binding + customer_payment.reference_correct + PaymentRecordingGroupPolicy + financial_mutation idempotency; ResubmitPaymentRecordingGroup returns a corrected group to pending_validation under lock.',
+        'receipts.download-link' => 'No request body; {receipt} binding + receipt.view + ReceiptPolicy; issues a short-lived signed Phase 10F download link (authorization re-checked at issuance and at the byte stream).',
+        'refunds.approve' => 'No request body; {refund} binding + refund.approve + RefundPolicy + RequireFreshMfa + financial_mutation idempotency; ApproveRefund enforces approver != requester under lock.',
+        'refunds.reject' => 'No request body; {refund} binding + refund.approve + RefundPolicy + financial_mutation idempotency; RejectRefund restores the prior paid state non-destructively.',
+        'refunds.finalize' => 'No request body; {refund} binding + refund.finalize + RefundPolicy + RequireFreshMfa + financial_mutation idempotency; FinalizeRefund reduces the recognised balance additively under lock.',
+        'finance-disputes.start-review' => 'No request body; {financeDispute} binding + finance_dispute.manage + FinanceDisputePolicy; StartFinanceDisputeReview transitions open → under_review without mutating the disputed source.',
+        // Phase 18B — bodiless cash-up state transitions (the cash-up is the ULID route
+        // param; expected totals are server-derived under lock; counted values are the
+        // Branch Manager's stored draft). reject / request-correction carry a reason
+        // (CashUpDecisionRequest) and are therefore NOT exempt.
+        'cash-ups.submit' => 'No request body; {cashUp} binding + branch.cash_up.submit + CashUpPolicy + financial_mutation idempotency; SubmitCashUp re-snapshots the server expected totals under lock (draft → submitted).',
+        'cash-ups.resubmit' => 'No request body; {cashUp} binding + branch.cash_up.submit + CashUpPolicy + financial_mutation idempotency; ResubmitCashUp re-snapshots under lock (correction_requested → submitted).',
+        'cash-ups.approve' => 'No request body; {cashUp} binding + cash_up.approve + CashUpPolicy + financial_mutation idempotency; ApproveCashUp enforces approver != submitter under lock (submitted → approved).',
+        'cash-ups.lock' => 'No request body; {cashUp} binding + cash_up.approve + CashUpPolicy + financial_mutation idempotency; LockApprovedCashUp transitions approved → locked under lock.',
+        // Phase 18B — bodiless period-reopen governance steps (the lock is the ULID route
+        // param; the reopen reason is captured at the request step). approve / execute
+        // carry no body; the request step DOES carry a reason and is therefore not exempt.
+        'period-locks.reopen.approve' => 'No request body; {periodLock} binding + merchant.period_reopen.approve_exception + FinancialPeriodLockPolicy + financial_mutation idempotency; ApprovePeriodReopenException records a distinct MA approval (approver != requester) under lock.',
+        'period-locks.reopen.execute' => 'No request body; {periodLock} binding + period_lock.reopen + FinancialPeriodLockPolicy + RequireFreshMfa + financial_mutation idempotency; ExecutePeriodReopen transitions locked → reopened under lock.',
+        // Phase 18B — bodiless finance-export actions (the export is the ULID route param;
+        // the request step carries type + reason and is therefore NOT exempt).
+        'finance-exports.download-link' => 'No request body; {financeExport} binding + finance_export.download + FinanceExportPolicy; issues a signed Phase 10F link (authorization re-checked at issuance and the byte stream) and records atomic download accounting.',
+        'finance-exports.revoke' => 'No request body; {financeExport} binding + finance_export.create + FinanceExportPolicy; RevokeFinanceExport transitions ready → revoked under lock.',
     ];
 
     public static function of(Route $route): ?RouteClass

@@ -21,7 +21,7 @@ it('lets an admin preview what a target role would hold', function (): void {
         ->assertStatus(200)
         ->assertJsonPath('data.role', 'finance')
         ->assertJsonPath('data.default_grants', fn ($g): bool => in_array('customer_payment.view', $g, true))
-        ->assertJsonPath('data.grantable', fn ($g): bool => in_array('refunds.approve', $g, true));
+        ->assertJsonPath('data.grantable', fn ($g): bool => in_array('refund.approve', $g, true));
 });
 
 it('lets HR preview a role', function (): void {
@@ -64,5 +64,5 @@ it('shows a specific staff members resolved permissions and overrides', function
         ->assertStatus(200)
         ->assertJsonPath('data.role', 'finance')
         ->assertJsonPath('data.permissions', fn ($p): bool => in_array('customer_payment.view', $p, true))
-        ->assertJsonPath('data.grantable', fn ($g): bool => in_array('refunds.approve', $g, true));
+        ->assertJsonPath('data.grantable', fn ($g): bool => in_array('refund.approve', $g, true));
 });

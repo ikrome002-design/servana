@@ -36,7 +36,7 @@ it('returns a front office member their scoped permissions in /me', function ():
     expect($permissions)->toContain('customer_payment.record')
         ->and($permissions)->toContain('client.create')
         ->and($permissions)->not->toContain('customer_payment.record_exception')
-        ->and($permissions)->not->toContain('receipts.reissue');
+        ->and($permissions)->not->toContain('receipt.reissue');
 });
 
 it('returns no permissions for a suspended membership', function (): void {

@@ -41,6 +41,17 @@ enum StepUpAction: string
     // InvoiceVoid) because it already has a live route.
     case PaymentDuplicateOverride = 'payment_duplicate_override';
 
+    // Phase 18B — Finance refund approval. A real, implemented route; excluded from the
+    // test-harness businessActions() (like PaymentDuplicateOverride) because it has a
+    // live route. RefundFinalization keeps its existing harness coverage AND its live
+    // route (both enforce fresh step-up); this new action does not weaken it.
+    case RefundApproval = 'refund_approval';
+
+    // Phase 18B — Finance export request. A real, implemented route (finance_export.create
+    // requires fresh step-up, §19.3); excluded from the test-harness businessActions()
+    // (like RefundApproval) because it has a live route.
+    case FinanceExportCreate = 'finance_export_create';
+
     /** The phase that owns the real route this classification protects. */
     public function owningPhase(): string
     {
@@ -55,6 +66,8 @@ enum StepUpAction: string
             self::RecoveryCodeRegeneration => 'Phase R3 (implemented)',
             self::InvoiceVoid => 'Phase 17 (implemented)',
             self::PaymentDuplicateOverride => 'Phase 18A (implemented)',
+            self::RefundApproval => 'Phase 18B (implemented)',
+            self::FinanceExportCreate => 'Phase 18B (implemented)',
         };
     }
 

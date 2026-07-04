@@ -17,11 +17,16 @@ dataset('valid invoice transitions', [
     'partially_paid → paid' => [InvoiceStatus::PartiallyPaid, InvoiceStatus::Paid],
     'partially_paid → void_pending' => [InvoiceStatus::PartiallyPaid, InvoiceStatus::VoidPending],
     'partially_paid → adjusted' => [InvoiceStatus::PartiallyPaid, InvoiceStatus::Adjusted],
+    'partially_paid → refund_pending' => [InvoiceStatus::PartiallyPaid, InvoiceStatus::RefundPending],
     'void_pending → voided' => [InvoiceStatus::VoidPending, InvoiceStatus::Voided],
     'void_pending → issued (reject)' => [InvoiceStatus::VoidPending, InvoiceStatus::Issued],
     'void_pending → partially_paid (reject)' => [InvoiceStatus::VoidPending, InvoiceStatus::PartiallyPaid],
     'paid → refund_pending' => [InvoiceStatus::Paid, InvoiceStatus::RefundPending],
     'paid → adjustment_required' => [InvoiceStatus::Paid, InvoiceStatus::AdjustmentRequired],
+    // Phase 18B §44 — refund_pending resolves to a derived state on reject/finalize.
+    'refund_pending → issued (finalize to zero)' => [InvoiceStatus::RefundPending, InvoiceStatus::Issued],
+    'refund_pending → partially_paid (finalize/restore)' => [InvoiceStatus::RefundPending, InvoiceStatus::PartiallyPaid],
+    'refund_pending → paid (reject/restore)' => [InvoiceStatus::RefundPending, InvoiceStatus::Paid],
 ]);
 
 dataset('invalid invoice transitions', [
@@ -42,7 +47,8 @@ dataset('invalid invoice transitions', [
     'adjusted → issued' => [InvoiceStatus::Adjusted, InvoiceStatus::Issued],
     'paid → paid' => [InvoiceStatus::Paid, InvoiceStatus::Paid],
     'paid → voided' => [InvoiceStatus::Paid, InvoiceStatus::Voided],
-    'refund_pending → paid' => [InvoiceStatus::RefundPending, InvoiceStatus::Paid],
+    'refund_pending → voided' => [InvoiceStatus::RefundPending, InvoiceStatus::Voided],
+    'refund_pending → draft' => [InvoiceStatus::RefundPending, InvoiceStatus::Draft],
     'adjustment_required → paid' => [InvoiceStatus::AdjustmentRequired, InvoiceStatus::Paid],
 ]);
 
@@ -60,11 +66,14 @@ it('rejects every illegal invoice transition with invalid_state_transition', fun
     expect(fn () => $machine->ensure($from, $to))->toThrow(InvoiceStateException::class);
 })->with('invalid invoice transitions');
 
-it('treats voided/adjusted/refund_pending/adjustment_required as terminal', function (): void {
+it('treats voided/adjusted/adjustment_required as terminal (refund_pending resolves in 18B)', function (): void {
     expect(InvoiceStatus::Voided->isTerminal())->toBeTrue()
         ->and(InvoiceStatus::Adjusted->isTerminal())->toBeTrue()
-        ->and(InvoiceStatus::RefundPending->isTerminal())->toBeTrue()
         ->and(InvoiceStatus::AdjustmentRequired->isTerminal())->toBeTrue()
+        // Phase 18B §44 — refund_pending is NOT terminal; it resolves on reject/finalize.
+        ->and(InvoiceStatus::RefundPending->isTerminal())->toBeFalse()
+        ->and(InvoiceStatus::RefundPending->allowedTransitions())
+        ->toBe([InvoiceStatus::Issued, InvoiceStatus::PartiallyPaid, InvoiceStatus::Paid])
         ->and(InvoiceStatus::Voided->allowedTransitions())->toBe([])
         ->and(InvoiceStatus::Adjusted->allowedTransitions())->toBe([]);
 });

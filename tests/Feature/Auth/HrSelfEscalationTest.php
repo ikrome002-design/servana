@@ -54,10 +54,10 @@ it('denies HR granting a finance member a key HR does not itself hold', function
     [$hr] = branchStaff($merchant, $branch, MerchantUserRole::Hr);
     [, , $finance] = branchStaff($merchant, $branch, MerchantUserRole::Finance);
 
-    // refunds.approve IS grantable for finance, but HR does not hold it → blocked.
+    // refund.approve IS grantable for finance, but HR does not hold it → blocked.
     $this->actingAs($hr, 'sanctum')
         ->postJson("/api/v1/staff/{$finance->ulid}/permissions", [
-            'permission' => 'refunds.approve',
+            'permission' => 'refund.approve',
             'effect' => 'grant',
         ])
         ->assertStatus(403);

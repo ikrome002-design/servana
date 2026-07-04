@@ -73,7 +73,13 @@ final class PermissionRegistry
         'merchant.tier.update' => ['merchant', 'Change the merchant service-fee tier.', true],
         'branches.create' => ['merchant', 'Create and archive branches (structural lifecycle).', true],
         'branches.manage_users_lifecycle' => ['merchant', 'Invite/suspend branch_manager + hr; branch-user lifecycle.', true],
-        'periods.lock' => ['merchant', 'Lock a financial period.', true],
+        // Financial period reopen — exceptional approval (Plan §46; ADR-0007 Decision 3;
+        // Phase 18B canonical key — reconciled from the legacy Merchant-Admin `periods.lock`
+        // placeholder, which mis-granted routine locking to the Merchant Administrator in
+        // violation of ADR-0007 "Finance owns period_lock.create"). The Merchant Administrator
+        // holds ONLY the exception-approval authority; it is `merchant.period_reopen
+        // .approve_exception ⟂ period_lock.reopen` and the same user may not request and approve.
+        'merchant.period_reopen.approve_exception' => ['merchant', 'Approve an exceptional financial-period reopen (Merchant Administrator; approver != requester).', true],
         // Branch operations.
         'branch.profile.manage' => ['branch', 'Edit own-branch profile and operating hours.', true],
         'branch.calendar.manage' => ['branch', 'Manage own-branch calendar exceptions.', true],
@@ -115,7 +121,10 @@ final class PermissionRegistry
         'appointment.assign' => ['scheduling', 'Assign personnel to appointments.', true],
         'appointment.transfer' => ['scheduling', 'Transfer appointments between personnel.', true],
         'day.open_close' => ['branch', 'Open and close the branch business day.', true],
-        'cashup.submit' => ['branch', 'Submit a branch cash-up.', true],
+        // Branch cash-up (Plan §45; ADR-0007; Phase 18B canonical key — reconciled from the
+        // legacy `cashup.submit`). Branch Manager is the maker; `branch.cash_up.submit ⟂
+        // cash_up.approve` (maker/checker separation).
+        'branch.cash_up.submit' => ['branch', 'Create/update and submit a branch cash-up (Branch Manager maker).', true],
         // Staff.
         'staff.invite' => ['staff', 'Invite operational staff (same branch).', true],
         'staff.edit' => ['staff', 'Edit staff profiles.', true],
@@ -173,29 +182,50 @@ final class PermissionRegistry
         // edit_reference/override_duplicate` baseline). Front Office is the default
         // MAKER (customer_payment.record); Finance holds view + the duplicate override
         // (MFA + step-up) + the maker-exception capability. The Phase-18B checker keys
-        // (customer_payment.validate/reject/reference_correct) are NOT introduced here
-        // — their routes/actions and grants land in Phase 18B; REM-PERM-001 (full
-        // §19.3 matrix closure) stays open for Phase 19.
+        // The Phase-18B checker key `customer_payment.validate` is activated here
+        // (Finance default); reject/reference_correct land with their Slice-4 routes.
+        // REM-PERM-001 (full §19.3 matrix closure) stays open for Phase 19. Maker/
+        // checker separation is structural: no role holds both a recording key
+        // (customer_payment.record / .record_exception) and .validate, and the
+        // per-transaction PaymentMakerCheckerGuard blocks a checker == the group maker.
         'customer_payment.record' => ['finance', 'Record a merchant-client payment recording group (Front Office maker).', true],
         'customer_payment.view' => ['finance', 'View merchant-client payment recording groups (scoped, masked).', false],
         'customer_payment.duplicate_override' => ['finance', 'Override a suspected duplicate payment reference (Finance; MFA + step-up).', true],
         'customer_payment.record_exception' => ['finance', 'Record a merchant-client payment as a Finance maker exception.', true],
+        'customer_payment.validate' => ['finance', 'Validate a whole pending payment recording group (Finance checker; maker != checker).', true],
+        'customer_payment.reject' => ['finance', 'Reject or request correction of a whole pending payment recording group (Finance checker).', true],
+        'customer_payment.reference_correct' => ['finance', 'Correct a component payment reference on a correctable group and resubmit (Finance).', true],
         // Receipts.
-        'receipts.view' => ['finance', 'View receipts (scoped).', false],
-        'receipts.reissue' => ['finance', 'Reissue a receipt.', true],
+        'receipt.view' => ['finance', 'View receipts (scoped).', false],
+        'receipt.reissue' => ['finance', 'Reissue a receipt.', true],
         // Refunds / disputes / cash-up.
-        'refunds.request' => ['finance', 'Request a refund.', true],
-        'refunds.approve' => ['finance', 'Approve a refund.', true],
-        'disputes.manage' => ['finance', 'Manage payment disputes.', true],
-        'cashup.review_approve' => ['finance', 'Review and approve cash-ups.', true],
-        'periods.reopen' => ['finance', 'Reopen a locked period (delegated).', true],
+        'refund.create' => ['finance', 'Request an external refund against a validated payment component (Finance maker).', true],
+        'refund.approve' => ['finance', 'Approve a refund (Finance checker; approver != requester; fresh step-up).', true],
+        'refund.finalize' => ['finance', 'Finalize an approved refund and reduce the recognised balance (fresh step-up).', true],
+        'finance_dispute.manage' => ['finance', 'Open, review, resolve, or reject a finance dispute (Finance).', true],
+        // Cash-up review (Plan §45; ADR-0007; Phase 18B canonical keys — reconciled from the
+        // legacy Finance `cashup.review_approve`). Finance is the checker; the approver/rejecter
+        // must be a DIFFERENT principal from the Branch Manager who submitted (actor guard).
+        'cash_up.view' => ['finance', 'View branch cash-ups (scoped).', false],
+        'cash_up.approve' => ['finance', 'Approve a submitted cash-up (Finance checker; approver != submitter).', true],
+        'cash_up.reject' => ['finance', 'Reject a submitted cash-up (Finance checker).', true],
+        'cash_up.request_correction' => ['finance', 'Return a submitted cash-up for correction (Finance checker).', true],
+        // Financial period locks (Plan §46; ADR-0007 Decision 2/3; Phase 18B canonical keys —
+        // reconciled from the legacy Finance-grantable `periods.reopen`). Finance owns lock
+        // creation + reopen execution (reopen requires fresh MFA + mandatory reason).
+        'period_lock.create' => ['finance', 'Create a financial period lock (Finance).', true],
+        'period_lock.reopen' => ['finance', 'Execute a controlled reopen of a locked financial period (Finance; fresh MFA).', true],
         // Commissions & platform fees.
         'commissions.view' => ['finance', 'View commissions (scoped).', false],
         'platform_fees.view' => ['finance', 'View Citrus platform fees (scoped).', false],
         'platform_fees.dispute' => ['finance', 'Dispute a Citrus platform fee.', true],
         // Reports & exports.
         'reports.view' => ['reports', 'View reports (scoped).', false],
-        'exports.finance' => ['reports', 'Export finance data.', false],
+        // Finance exports (Plan §65, §67; Phase 18B canonical keys — reconciled from the legacy
+        // grantable `exports.finance`). Finance requests a scoped, masked export (fresh step-up)
+        // and downloads it via an authorized signed link. `finance_export.*` is `PL n/a`.
+        'finance_export.create' => ['reports', 'Request a scoped, masked finance export (Finance; fresh step-up).', true],
+        'finance_export.download' => ['reports', 'Download a ready finance export via an authorized signed link (Finance).', false],
         'exports.staff_roster' => ['reports', 'Export the staff roster only.', false],
         // Audit.
         'audit.view_full' => ['audit', 'View the audit trail (scoped/masked).', false],
@@ -219,8 +249,11 @@ final class PermissionRegistry
             'branches.create', 'branches.manage_users_lifecycle',
             // No invoice key (Plan §10.2/§19.3): Merchant Admin is the account owner,
             // not an operational invoicer; invoice visibility is via reports.view.
-            'receipts.view',
-            'periods.lock', 'commissions.view', 'platform_fees.view',
+            'receipt.view',
+            // Financial period authority (ADR-0007 Decision 3): the Merchant Administrator
+            // holds ONLY exceptional-reopen approval — NOT routine locking/reopen (Finance).
+            'merchant.period_reopen.approve_exception',
+            'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
         self::ROLE_BRANCH_MANAGER => [
@@ -231,13 +264,13 @@ final class PermissionRegistry
             // removed, not retained).
             'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
             'service.view', 'service.create', 'service.update', 'service.archive',
-            'day.open_close', 'cashup.submit',
+            'day.open_close', 'branch.cash_up.submit',
             // No service_session.* — Branch Manager has NO session mutation authority
             // (Phase 16C; the legacy sessions.manage grant is removed, not retained).
             // No invoice key (Plan §10.2/§19.3): Branch Manager must NOT receive invoice
             // creation; the legacy placeholder grant of invoices.create is removed, not
             // retained. Branch invoice visibility is via branch.dashboard.view/reports.
-            'receipts.view', 'commissions.view', 'platform_fees.view',
+            'receipt.view', 'commissions.view', 'platform_fees.view',
             'reports.view', 'audit.view_full',
         ],
         self::ROLE_HR => [
@@ -254,8 +287,15 @@ final class PermissionRegistry
             // Phase-18B checker keys (customer_payment.validate/reject/reference_correct)
             // are not granted here — they land with the Phase 18B validation workflow.
             'customer_payment.view', 'customer_payment.duplicate_override', 'customer_payment.record_exception',
-            'receipts.view', 'refunds.request', 'disputes.manage',
-            'cashup.review_approve', 'platform_fees.dispute',
+            'customer_payment.validate', 'customer_payment.reject', 'customer_payment.reference_correct',
+            'receipt.view', 'receipt.reissue', 'refund.create', 'finance_dispute.manage',
+            // Cash-up review (checker), period locking + reopen execution, and finance
+            // exports are Finance defaults (ADR-0007; Plan §45/§46/§65). branch.cash_up
+            // .submit is NOT held here (maker/checker separation).
+            'cash_up.view', 'cash_up.approve', 'cash_up.reject', 'cash_up.request_correction',
+            'period_lock.create', 'period_lock.reopen',
+            'finance_export.create', 'finance_export.download',
+            'platform_fees.dispute',
             'reports.view', 'audit.view_full',
         ],
         self::ROLE_FRONT_OFFICE => [
@@ -281,20 +321,20 @@ final class PermissionRegistry
             // group resource directly, so no separate view grant is needed; the
             // pending-group list/detail is a Finance surface (customer_payment.view).
             'customer_payment.record',
-            'receipts.view', 'reports.view',
+            'receipt.view', 'reports.view',
         ],
         self::ROLE_PERSONNEL => [
             'personnel.my_appointments.view', 'personnel.my_queue.view',
             'personnel.my_sessions.view',
             // No invoice key (Plan §19.3): Personnel are strict own-scope and receive
             // no broad invoice browsing; the legacy invoices.view grant is removed.
-            'receipts.view',
+            'receipt.view',
             'commissions.view', 'reports.view',
         ],
         self::ROLE_AUDIT => [
             // No invoice key (Plan §19.3): Audit reads invoices through audit.view_full/
             // reports, not a direct invoice key; the legacy invoices.view grant is removed.
-            'receipts.view',
+            'receipt.view',
             'commissions.view', 'platform_fees.view', 'reports.view',
             'audit.view_full', 'audit.flag',
         ],
@@ -312,17 +352,20 @@ final class PermissionRegistry
      * @var array<string, list<string>>
      */
     private const GRANTABLE = [
-        self::ROLE_MERCHANT_ADMIN => ['exports.finance'],
         self::ROLE_FINANCE => [
             // invoice.adjustment.manage is a Finance DEFAULT grant (Plan §19.3), not a
             // grantable override; the legacy grantable invoices.adjust_paid is removed.
             // The legacy grantable payments.edit_reference/override_duplicate are removed:
             // customer_payment.duplicate_override is now a Finance DEFAULT (Phase 18A),
             // and the reference-correction key is a Phase-18B concern.
-            'receipts.reissue', 'refunds.approve', 'periods.reopen',
-            'commissions.view', 'platform_fees.view', 'exports.finance',
+            // receipt.reissue is now a Finance DEFAULT (Phase 18B), not a grantable override.
+            // refund.create ⟂ refund.approve ⟂ refund.finalize: approve + finalize are
+            // grantable overrides on a DISTINCT Finance membership from the requester;
+            // the per-transaction actor guard also enforces requester != approver !=
+            // finalizer. REM-PERM-001 owns registry-level incompatibility closure (Ph19).
+            'refund.approve', 'refund.finalize',
+            'commissions.view', 'platform_fees.view',
         ],
-        self::ROLE_AUDIT => ['exports.finance'],
     ];
 
     /** @return array<string, array{name: string, scope: string, read_only: bool, description: string}> */

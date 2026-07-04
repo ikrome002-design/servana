@@ -10,12 +10,17 @@ use App\Domain\Branches\Models\BranchCashUp;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
 use App\Domain\Branches\Models\BranchUserAssignment;
+use App\Domain\Branches\Models\CashUpLine;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServiceCategory;
 use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Clients\Models\ClientConsent;
+use App\Domain\Compensation\Models\CommissionHandoffEvent;
+use App\Domain\FinanceOps\Models\FinanceDispute;
+use App\Domain\FinanceOps\Models\FinanceExport;
+use App\Domain\FinanceOps\Models\FinancialPeriodLock;
 use App\Domain\Hr\Models\StaffHistory;
 use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
@@ -29,6 +34,10 @@ use App\Domain\Payments\Models\PaymentAllocation;
 use App\Domain\Payments\Models\PaymentRecord;
 use App\Domain\Payments\Models\PaymentRecordingGroup;
 use App\Domain\Payments\Models\PaymentReferenceCheck;
+use App\Domain\Payments\Models\PaymentValidationEvent;
+use App\Domain\Receipts\Models\Receipt;
+use App\Domain\Receipts\Models\ReceiptNumberSequence;
+use App\Domain\Refunds\Models\Refund;
 use App\Domain\Scheduling\Models\Appointment;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Domain\Scheduling\Models\QueueEntry;
@@ -87,6 +96,13 @@ final class TenantOwnership
         'payment_records',
         'payment_allocations',
         'payment_reference_checks',
+        // Phase 18B — Validation, receipts, refunds, disputes, cash-up, commission seam.
+        'payment_validation_events',
+        'receipts',
+        'refunds',
+        'finance_disputes',
+        'cash_up_lines',
+        'commission_handoff_events',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -100,6 +116,12 @@ final class TenantOwnership
         'merchant_user_permission_overrides',
         // Phase 17 — merchant-wide invoice numbering counter (no branch_id).
         'invoice_number_sequences',
+        // Phase 18B — merchant-wide receipt numbering; merchant-owned finance controls
+        // (financial_period_locks + finance_exports carry an OPTIONAL nullable branch_id
+        // scope, so they are BelongsToMerchant tenant-owned, not branch-owned).
+        'receipt_number_sequences',
+        'financial_period_locks',
+        'finance_exports',
     ];
 
     /**
@@ -183,6 +205,17 @@ final class TenantOwnership
         PaymentRecord::class => 'branch',
         PaymentAllocation::class => 'branch',
         PaymentReferenceCheck::class => 'branch',
+        // Phase 18B — branch-owned validation/receipt/refund/dispute/cash-up/commission.
+        PaymentValidationEvent::class => 'branch',
+        Receipt::class => 'branch',
+        Refund::class => 'branch',
+        FinanceDispute::class => 'branch',
+        CashUpLine::class => 'branch',
+        CommissionHandoffEvent::class => 'branch',
+        // Phase 18B — merchant-owned numbering + finance controls (nullable branch scope).
+        ReceiptNumberSequence::class => 'tenant',
+        FinancialPeriodLock::class => 'tenant',
+        FinanceExport::class => 'tenant',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -217,5 +250,12 @@ final class TenantOwnership
         'payment_records' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'payment_allocations' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'payment_reference_checks' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 18B — branch consistency via composite FK to merchant_branches.
+        'payment_validation_events' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'receipts' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'refunds' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'finance_disputes' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'cash_up_lines' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'commission_handoff_events' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }

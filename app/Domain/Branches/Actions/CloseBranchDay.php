@@ -32,7 +32,12 @@ final class CloseBranchDay
     {
         $date = $businessDate ?? Carbon::now('Africa/Nairobi')->toDateString();
 
-        $blockers = $this->guard->dayCloseBlockers($branch, $date);
+        // Operational (same-day appointments/queue/sessions) + Phase 18B financial
+        // (cash-up approved, no pending validations, receipts complete) day-close gates.
+        $blockers = array_merge(
+            $this->guard->dayCloseBlockers($branch, $date),
+            $this->guard->financialDayCloseBlockers($branch, $date),
+        );
         if ($blockers !== []) {
             throw BranchClosureBlockedException::because($blockers);
         }

@@ -7,6 +7,10 @@ namespace App\Http\Controllers\Api\V1\Payments;
 use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Payments\Actions\RecordCustomerPaymentException;
 use App\Domain\Payments\Actions\RecordCustomerPaymentGroup;
+use App\Domain\Payments\Actions\RejectPaymentRecordingGroup;
+use App\Domain\Payments\Actions\RequestPaymentGroupCorrection;
+use App\Domain\Payments\Actions\ResubmitPaymentRecordingGroup;
+use App\Domain\Payments\Actions\ValidatePaymentRecordingGroup;
 use App\Domain\Payments\Enums\PaymentMethod;
 use App\Domain\Payments\Exceptions\PaymentRecordingException;
 use App\Domain\Payments\Models\PaymentRecordingGroup;
@@ -16,9 +20,11 @@ use App\Domain\Tenancy\Exceptions\TenantAccessException;
 use App\Domain\Tenancy\TenantContext;
 use App\Http\Api\ApiPagination;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Payments\PaymentGroupDecisionRequest;
 use App\Http\Requests\Payments\PaymentGroupIndexRequest;
 use App\Http\Requests\Payments\RecordPaymentGroupRequest;
 use App\Http\Resources\PaymentRecordingGroupResource;
+use App\Http\Resources\PaymentValidationEventResource;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
@@ -84,6 +90,61 @@ final class PaymentRecordingGroupController extends Controller
         $actor = $request->user();
 
         return $this->respond($action->handle($invoice, $actor, $this->components($request)), $request);
+    }
+
+    /**
+     * Validate a WHOLE pending group as the Finance checker (Plan §42; Phase 18B).
+     * `financial_mutation` (route-level idempotency); maker != checker is enforced in
+     * the action. Returns the immutable validation event with the derived invoice
+     * state and the issued original receipt.
+     */
+    public function validateGroup(PaymentRecordingGroup $paymentRecordingGroup, ValidatePaymentRecordingGroup $action): JsonResponse
+    {
+        $this->authorize('validate', $paymentRecordingGroup);
+
+        /** @var User $actor */
+        $actor = request()->user();
+
+        $event = $action->handle($paymentRecordingGroup, $actor);
+
+        return PaymentValidationEventResource::make($event->load(['group', 'invoice', 'receipt.invoice']))
+            ->response()
+            ->setStatusCode(201);
+    }
+
+    /** Finance checker rejects a whole pending group (Plan §42; Phase 18B). */
+    public function reject(PaymentGroupDecisionRequest $request, PaymentRecordingGroup $paymentRecordingGroup, RejectPaymentRecordingGroup $action): JsonResponse
+    {
+        $this->authorize('reject', $paymentRecordingGroup);
+
+        /** @var User $actor */
+        $actor = $request->user();
+        $event = $action->handle($paymentRecordingGroup, $actor, (string) $request->validated('reason'));
+
+        return PaymentValidationEventResource::make($event->load(['group', 'invoice']))->response()->setStatusCode(201);
+    }
+
+    /** Finance checker returns a whole pending group for correction (Plan §42; Phase 18B). */
+    public function requestCorrection(PaymentGroupDecisionRequest $request, PaymentRecordingGroup $paymentRecordingGroup, RequestPaymentGroupCorrection $action): JsonResponse
+    {
+        $this->authorize('requestCorrection', $paymentRecordingGroup);
+
+        /** @var User $actor */
+        $actor = $request->user();
+        $event = $action->handle($paymentRecordingGroup, $actor, (string) $request->validated('reason'));
+
+        return PaymentValidationEventResource::make($event->load(['group', 'invoice']))->response()->setStatusCode(201);
+    }
+
+    /** Resubmit a corrected group back to pending_validation (Plan §42; Phase 18B). */
+    public function resubmit(PaymentRecordingGroup $paymentRecordingGroup, ResubmitPaymentRecordingGroup $action): PaymentRecordingGroupResource
+    {
+        $this->authorize('resubmit', $paymentRecordingGroup);
+
+        /** @var User $actor */
+        $actor = request()->user();
+
+        return PaymentRecordingGroupResource::make($action->handle($paymentRecordingGroup, $actor));
     }
 
     /** Success → 201 with the group; a durable duplicate hold → 409 (returned, never thrown, so idempotent replay caches it). */

@@ -193,12 +193,6 @@ screens:
     status: phase_11
     phase: Phase 11
     spec: finance/finance-get-started.md
-  - key: finance-dashboard
-    domain: finance
-    route: finance.dashboard
-    status: implemented
-    phase: Phase 4
-    spec: finance/finance-dashboard.md
   - key: front-office-landing
     domain: front-office
     route: front-office.landing
@@ -301,6 +295,12 @@ screens:
     status: planned
     phase: Phase 20F
     spec: ~
+  - key: merchant-period-reopen-approvals
+    domain: merchant
+    route: merchant.period-reopen-approvals
+    status: implemented
+    phase: Phase 18B
+    spec: merchant/merchant-period-reopen-approvals.md
   - key: service-catalogue
     domain: branch
     route: branch.services
@@ -351,10 +351,10 @@ screens:
     spec: ~
   - key: branch-cash-up
     domain: branch
-    route: ~
-    status: planned
+    route: branch.cash-up
+    status: implemented
     phase: Phase 18B
-    spec: ~
+    spec: branch/branch-cash-up.md
   - key: branch-reports
     domain: branch
     route: ~
@@ -379,12 +379,78 @@ screens:
     status: planned
     phase: Phase 20H
     spec: ~
-  - key: finance-validation
+  - key: finance-task-inbox
     domain: finance
-    route: ~
-    status: planned
+    route: finance.dashboard
+    status: implemented
     phase: Phase 18B
-    spec: ~
+    spec: finance/finance-task-inbox.md
+  - key: finance-pending-validations
+    domain: finance
+    route: finance.pending-validations
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-pending-validations.md
+  - key: finance-receipts
+    domain: finance
+    route: finance.receipts
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-receipts.md
+  - key: finance-receipt-detail
+    domain: finance
+    route: finance.receipts.detail
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-receipt-detail.md
+  - key: finance-refunds
+    domain: finance
+    route: finance.refunds
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-refunds.md
+  - key: finance-refund-detail
+    domain: finance
+    route: finance.refunds.detail
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-refund-detail.md
+  - key: finance-disputes
+    domain: finance
+    route: finance.disputes
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-disputes.md
+  - key: finance-dispute-detail
+    domain: finance
+    route: finance.disputes.detail
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-dispute-detail.md
+  - key: finance-cash-up
+    domain: finance
+    route: finance.cash-up
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-cash-up.md
+  - key: finance-cash-up-detail
+    domain: finance
+    route: finance.cash-up.detail
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-cash-up-detail.md
+  - key: finance-periods
+    domain: finance
+    route: finance.periods
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-periods.md
+  - key: finance-exports
+    domain: finance
+    route: finance.exports
+    status: implemented
+    phase: Phase 18B
+    spec: finance/finance-exports.md
   - key: finance-payouts
     domain: finance
     route: ~
@@ -493,6 +559,18 @@ screens:
     status: implemented
     phase: Phase 18A
     spec: front-office/front-office-payment-record.md
+  - key: front-office-receipts
+    domain: front-office
+    route: front-office.receipts
+    status: implemented
+    phase: Phase 18B
+    spec: front-office/front-office-receipts.md
+  - key: front-office-receipt-detail
+    domain: front-office
+    route: front-office.receipts.detail
+    status: implemented
+    phase: Phase 18B
+    spec: front-office/front-office-receipt-detail.md
   - key: finance-payment-records
     domain: finance
     route: finance.payment-records

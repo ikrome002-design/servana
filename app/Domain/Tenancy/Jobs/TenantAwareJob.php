@@ -33,10 +33,19 @@ abstract class TenantAwareJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(
-        public readonly ?int $tenantMerchantId,
-        public readonly ?int $tenantBranchId = null,
-    ) {}
+    // NOT readonly: PHP forbids a subclass constructor from initializing a parent's
+    // readonly promoted property, which blocks tenant-aware jobs that carry their own
+    // constructor arguments (e.g. GenerateReceiptPdf). These remain write-once — set
+    // only here at construction and never reassigned.
+    public ?int $tenantMerchantId;
+
+    public ?int $tenantBranchId;
+
+    public function __construct(?int $tenantMerchantId, ?int $tenantBranchId = null)
+    {
+        $this->tenantMerchantId = $tenantMerchantId;
+        $this->tenantBranchId = $tenantBranchId;
+    }
 
     final public function handle(): void
     {

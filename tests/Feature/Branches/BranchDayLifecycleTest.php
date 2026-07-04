@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Domain\Branches\Enums\BranchDayStatus;
+use App\Domain\Branches\Enums\CashUpStatus;
+use App\Domain\Branches\Models\BranchCashUp;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Enums\MerchantUserRole;
@@ -29,6 +31,16 @@ it('closes a branch day', function (): void {
     [, $merchant] = activeAdmin();
     $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
     [$manager] = branchStaff($merchant, $branch, MerchantUserRole::BranchManager);
+
+    // Phase 18B: a branch day cannot financially close without an approved/locked
+    // cash-up for the day (Plan §45). No payments were recorded, so an approved,
+    // zero-total cash-up satisfies the reconciliation gate.
+    BranchCashUp::factory()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'business_date' => now('Africa/Nairobi')->toDateString(),
+        'status' => CashUpStatus::Locked,
+    ]);
 
     $this->actingAs($manager, 'sanctum')->postJson("/api/v1/branches/{$branch->ulid}/day/open")->assertStatus(200);
     $this->actingAs($manager, 'sanctum')
