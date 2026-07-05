@@ -667,3 +667,20 @@ search → 22; release-wide security/a11y audit → 23; performance → 24; depl
 rows are flaggable — coherent with the branch-scoped Audit role (§10, §16 "Audit sees only
 assigned-branch events"). Merchant-level / platform audit rows are intentionally outside
 the Phase 19 flag workflow; documented in the data dictionary.
+
+## Solo-Maintainer Review Exception - PR #32
+
+- PR: #32
+- verified implementation head: 46087feef55f42b55cc4b17a6e8e0c18b14db237
+- initial successful CI run: 28736609390
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-32.md
+
+The exception applies only to Phase 19 and is not independent reviewer
+approval. Future-domain audit emissions remain owned by their documented
+future phases.
