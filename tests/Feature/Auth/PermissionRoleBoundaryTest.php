@@ -5,8 +5,11 @@ declare(strict_types=1);
 use App\Domain\Auth\Services\PermissionRegistry;
 use App\Domain\Auth\Services\PermissionResolver;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses()->group('auth', 'permissions', 'matrix', 'authority');
+
+uses(RefreshDatabase::class);
 
 /*
  | §5.6 / Plan §3.1 named role boundaries at the security boundary (registry +
