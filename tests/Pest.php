@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Audit\Jobs\GenerateAuditExport;
+use App\Domain\Audit\Models\AuditExport;
 use App\Domain\Auth\Models\MerchantUserPermissionOverride;
 use App\Domain\Auth\Models\MfaCredential;
 use App\Domain\Auth\Models\Permission;
@@ -34,6 +38,7 @@ use App\Domain\Scheduling\Models\ServiceSession;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use PragmaRX\Google2FA\Google2FA;
@@ -722,4 +727,49 @@ function putDraft(array $scn, array $counts): TestResponse
 {
     return test()->actingAs($scn['branchManager'], 'sanctum')
         ->putJson("/api/v1/branches/{$scn['branch']->ulid}/cash-ups/".cashUpBusinessDate(), ['counts' => $counts]);
+}
+
+/**
+ * Audit-export test helpers (Phase 19; ADR-010). Defined here — not in a single
+ * test file — so every parallel worker sees them (a file-local Pest function is
+ * invisible to workers running other audit-export files; cf. the Phase-16B
+ * createWalkIn relocation).
+ *
+ * Active merchant + branch + an assigned Audit user, with a few branch-scoped general
+ * audit rows recorded so an export has real content.
+ *
+ * @return array{admin: User, merchant: Merchant, branch: MerchantBranch, audit: User}
+ */
+function auditExportScenario(): array
+{
+    [$admin, $merchant] = activeAdmin();
+    $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
+    [$audit] = branchStaff($merchant, $branch, MerchantUserRole::Audit);
+
+    $recorder = app(AuditRecorder::class);
+    $recorder->record(AuditEvent::BranchDayOpened, $admin, $merchant->id, $branch->id, $branch);
+    $recorder->record(AuditEvent::BranchProfileUpdated, $admin, $merchant->id, $branch->id, $branch);
+
+    return compact('admin', 'merchant', 'branch', 'audit');
+}
+
+/** Request an audit export as the Audit user with a fresh step-up. */
+function requestAuditExport(User $audit, array $body): TestResponse
+{
+    return test()->statefulMfa(now()->getTimestamp())->actingAs($audit, 'sanctum')
+        ->postJson('/api/v1/audit-exports', $body);
+}
+
+/** Run the audit-export generation job synchronously (exercises the real job). */
+function runAuditExportJob(AuditExport $export): void
+{
+    (new GenerateAuditExport($export->id, $export->merchant_id, $export->branch_id))->handle();
+}
+
+/** Hit the signed audit-export download STREAM (the accounting point) as the Audit user. */
+function streamAuditExport(User $audit, string $ulid): TestResponse
+{
+    $url = URL::temporarySignedRoute('audit-exports.download', now()->addMinutes(5), ['auditExport' => $ulid]);
+
+    return test()->actingAs($audit, 'sanctum')->get($url);
 }

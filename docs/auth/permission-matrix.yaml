@@ -1,0 +1,4070 @@
+# Servana canonical permission matrix (Plan §19.2/§19.3; source-controlled security contract).
+# Plan-encoded fields (scope/entitlement_key/billing/period_lock/mfa/step_up/audit_severity/maker_checker/default_roles/override_policy)
+# are mechanically verified against Plan §19.3 by PermissionMatrixPlanMetadataParityTest.
+# audit_event is derived from live routes + AuditMutationCoverage (active) / 'pending' (planned, owned by owning_phase).
+# implementation_status: active = enforced at runtime now (matches PermissionRegistry); planned = canonical, owned by a future phase.
+version: 1
+keys:
+  appointment.assign:
+    key: appointment.assign
+    description: Assign personnel to appointments.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: appointment.assigned
+    audit_severity: info
+    backend_policy_or_service: eligibility/availability revalidated
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/appointment.assign_allows
+    negative_tests:
+      - PermissionMatrix/appointment.assign_denies
+  appointment.cancel:
+    key: appointment.cancel
+    description: "Cancel appointments and mark no-shows."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: appointment.cancelled; appointment.no_show
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/appointment.cancel_allows
+    negative_tests:
+      - PermissionMatrix/appointment.cancel_denies
+  appointment.check_in:
+    key: appointment.check_in
+    description: Check in appointment clients.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: appointment.checked_in
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/appointment.check_in_allows
+    negative_tests:
+      - PermissionMatrix/appointment.check_in_denies
+  appointment.create:
+    key: appointment.create
+    description: Create appointments.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: appointment.created
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/appointment.create_allows
+    negative_tests:
+      - PermissionMatrix/appointment.create_denies
+  appointment.reschedule:
+    key: appointment.reschedule
+    description: Reschedule appointments.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: appointment.rescheduled
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/appointment.reschedule_allows
+    negative_tests:
+      - PermissionMatrix/appointment.reschedule_denies
+  appointment.transfer:
+    key: appointment.transfer
+    description: Transfer appointments between personnel.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: appointment.transferred
+    audit_severity: info
+    backend_policy_or_service: Front Office only (not Branch Manager)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/appointment.transfer_allows
+    negative_tests:
+      - PermissionMatrix/appointment.transfer_denies
+  appointment.view:
+    key: appointment.view
+    description: "View appointments (branch-scoped)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/appointment.view_allows
+    negative_tests:
+      - PermissionMatrix/appointment.view_denies
+  audit.branch_events.view:
+    key: audit.branch_events.view
+    description: "View branch-scoped general audit events + the flagged-event queue (masked)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: "field-masked"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/audit.branch_events.view_allows
+    negative_tests:
+      - PermissionMatrix/audit.branch_events.view_denies
+  audit.compensation.view:
+    key: audit.compensation.view
+    description: "View branch-scoped compensation-domain audit events (Audit; masked)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/audit.compensation.view_allows
+    negative_tests:
+      - PermissionMatrix/audit.compensation.view_denies
+  audit.export:
+    key: audit.export
+    description: "Request + download a reason-gated, masked, signed audit export (Audit; fresh step-up)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: true
+    audit_event: audit_export.requested; audit_export.revoked
+    audit_severity: high
+    backend_policy_or_service: "signed/expiring; permission-masked"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/audit.export_allows
+    negative_tests:
+      - PermissionMatrix/audit.export_denies
+  audit.finance.view:
+    key: audit.finance.view
+    description: "View branch-scoped finance-domain audit events (Audit; masked)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/audit.finance.view_allows
+    negative_tests:
+      - PermissionMatrix/audit.finance.view_denies
+  audit.flagged_event.create:
+    key: audit.flagged_event.create
+    description: "Flag a branch-scoped audit event for review."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: audit.flagged_event.created
+    audit_severity: info
+    backend_policy_or_service: review metadata only
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/audit.flagged_event.create_allows
+    negative_tests:
+      - PermissionMatrix/audit.flagged_event.create_denies
+  audit.flagged_event.resolve_metadata:
+    key: audit.flagged_event.resolve_metadata
+    description: Resolve or dismiss a flagged audit event (records a review outcome).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: audit.flagged_event.dismissed; audit.flagged_event.resolved
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/audit.flagged_event.resolve_metadata_allows
+    negative_tests:
+      - PermissionMatrix/audit.flagged_event.resolve_metadata_denies
+  audit.flagged_event.update_status:
+    key: audit.flagged_event.update_status
+    description: Start review / reopen a flagged audit event.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: audit.flagged_event.reopened; audit.flagged_event.review_started
+    audit_severity: info
+    backend_policy_or_service: metadata only; source immutable
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/audit.flagged_event.update_status_allows
+    negative_tests:
+      - PermissionMatrix/audit.flagged_event.update_status_denies
+  branch.calendar.manage:
+    key: branch.calendar.manage
+    description: "Manage own-branch calendar exceptions."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.calendar.manage_allows
+    negative_tests:
+      - PermissionMatrix/branch.calendar.manage_denies
+  branch.cash_up.submit:
+    key: branch.cash_up.submit
+    description: "Create/update and submit a branch cash-up (Branch Manager maker)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: cash_up.draft_updated; cash_up.resubmitted; cash_up.submitted
+    audit_severity: warn
+    backend_policy_or_service: maker (Branch Manager)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities:
+      - cash_up.approve
+    positive_tests:
+      - PermissionMatrix/branch.cash_up.submit_allows
+    negative_tests:
+      - PermissionMatrix/branch.cash_up.submit_denies
+  branch.dashboard.view:
+    key: branch.dashboard.view
+    description: "View the branch operational dashboard (read-only)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.dashboard.view_allows
+    negative_tests:
+      - PermissionMatrix/branch.dashboard.view_denies
+  branch.day.close:
+    key: branch.day.close
+    description: BranchClosureGuard.
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: BranchClosureGuard
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.day.close_allows
+    negative_tests:
+      - PermissionMatrix/branch.day.close_denies
+  branch.day.open:
+    key: branch.day.open
+    description: Action OpenBranchDay.
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: action OpenBranchDay
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.day.open_allows
+    negative_tests:
+      - PermissionMatrix/branch.day.open_denies
+  branch.day.pause:
+    key: branch.day.pause
+    description: Pause (branch / day).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.day.pause_allows
+    negative_tests:
+      - PermissionMatrix/branch.day.pause_denies
+  branch.day.reopen:
+    key: branch.day.reopen
+    description: Reopen (branch / day).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.day.reopen_allows
+    negative_tests:
+      - PermissionMatrix/branch.day.reopen_denies
+  branch.profile.manage:
+    key: branch.profile.manage
+    description: "Edit own-branch profile and operating hours."
+    implementation_status: active
+    owning_phase: Phase 20A
+    canonical_successor: branch.profile.update
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: branch.operating_hours_updated; branch.profile_updated; queue.configuration.updated
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.profile.manage_allows
+    negative_tests:
+      - PermissionMatrix/branch.profile.manage_denies
+  branch.profile.update:
+    key: branch.profile.update
+    description: Update (branch / profile).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.profile.update_allows
+    negative_tests:
+      - PermissionMatrix/branch.profile.update_denies
+  branch.profile.view:
+    key: branch.profile.view
+    description: View (branch / profile).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.profile.view_allows
+    negative_tests:
+      - PermissionMatrix/branch.profile.view_denies
+  branch.report.view:
+    key: branch.report.view
+    description: View (branch / report).
+    implementation_status: planned
+    owning_phase: Phase 21N
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branch.report.view_allows
+    negative_tests:
+      - PermissionMatrix/branch.report.view_denies
+  branches.create:
+    key: branches.create
+    description: Create and archive branches (structural lifecycle).
+    implementation_status: active
+    owning_phase: Phase 20A
+    canonical_successor: merchant.branch.create
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: branch.archived; branch.created
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branches.create_allows
+    negative_tests:
+      - PermissionMatrix/branches.create_denies
+  branches.manage_users_lifecycle:
+    key: branches.manage_users_lifecycle
+    description: "Invite/suspend branch_manager + hr; branch-user lifecycle."
+    implementation_status: active
+    owning_phase: Phase 20A
+    canonical_successor: merchant.user.suspend
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/branches.manage_users_lifecycle_allows
+    negative_tests:
+      - PermissionMatrix/branches.manage_users_lifecycle_denies
+  cash_up.approve:
+    key: cash_up.approve
+    description: "Approve a submitted cash-up (Finance checker; approver != submitter)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: cash_up.approved; cash_up.locked
+    audit_severity: high
+    backend_policy_or_service: checker
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities:
+      - cash_up.submit
+    positive_tests:
+      - PermissionMatrix/cash_up.approve_allows
+    negative_tests:
+      - PermissionMatrix/cash_up.approve_denies
+  cash_up.reject:
+    key: cash_up.reject
+    description: "Reject a submitted cash-up (Finance checker)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: cash_up.rejected
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/cash_up.reject_allows
+    negative_tests:
+      - PermissionMatrix/cash_up.reject_denies
+  cash_up.request_correction:
+    key: cash_up.request_correction
+    description: "Return a submitted cash-up for correction (Finance checker)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: cash_up.correction_requested
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/cash_up.request_correction_allows
+    negative_tests:
+      - PermissionMatrix/cash_up.request_correction_denies
+  cash_up.view:
+    key: cash_up.view
+    description: "View branch cash-ups (scoped)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/cash_up.view_allows
+    negative_tests:
+      - PermissionMatrix/cash_up.view_denies
+  client.create:
+    key: client.create
+    description: Create client records.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: client.created
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/client.create_allows
+    negative_tests:
+      - PermissionMatrix/client.create_denies
+  client.update:
+    key: client.update
+    description: Update client records.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: client.updated; client_consent.opted_in; client_consent.opted_out
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/client.update_allows
+    negative_tests:
+      - PermissionMatrix/client.update_denies
+  client.view:
+    key: client.view
+    description: "View client records (scoped, masked)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/client.view_allows
+    negative_tests:
+      - PermissionMatrix/client.view_denies
+  commissions.manage:
+    key: commissions.manage
+    description: Set staff commissions.
+    implementation_status: active
+    owning_phase: Phase 20F
+    canonical_successor: compensation.plan.update_draft
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/commissions.manage_allows
+    negative_tests:
+      - PermissionMatrix/commissions.manage_denies
+  commissions.view:
+    key: commissions.view
+    description: View commissions (scoped).
+    implementation_status: active
+    owning_phase: Phase 20F
+    canonical_successor: compensation.history.view
+    override_policy: grantable
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+      - branch_manager
+      - hr
+      - personnel
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/commissions.view_allows
+    negative_tests:
+      - PermissionMatrix/commissions.view_denies
+  compensation.adjustment.create:
+    key: compensation.adjustment.create
+    description: Adjustment entry only.
+    implementation_status: planned
+    owning_phase: Phase 20G
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: adjustment entry only
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/compensation.adjustment.create_allows
+    negative_tests:
+      - PermissionMatrix/compensation.adjustment.create_denies
+  compensation.history.view:
+    key: compensation.history.view
+    description: View (compensation / history).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/compensation.history.view_allows
+    negative_tests:
+      - PermissionMatrix/compensation.history.view_denies
+  compensation.liability.view:
+    key: compensation.liability.view
+    description: View (compensation / liability).
+    implementation_status: planned
+    owning_phase: Phase 20G
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/compensation.liability.view_allows
+    negative_tests:
+      - PermissionMatrix/compensation.liability.view_denies
+  compensation.plan.approve:
+    key: compensation.plan.approve
+    description: Backdated change → crit audit.
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: backdated change → crit audit
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities:
+      - compensation.plan.submit
+    positive_tests:
+      - PermissionMatrix/compensation.plan.approve_allows
+    negative_tests:
+      - PermissionMatrix/compensation.plan.approve_denies
+  compensation.plan.cancel:
+    key: compensation.plan.cancel
+    description: Cancel (compensation / plan).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/compensation.plan.cancel_allows
+    negative_tests:
+      - PermissionMatrix/compensation.plan.cancel_denies
+  compensation.plan.create:
+    key: compensation.plan.create
+    description: Create (compensation / plan).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/compensation.plan.create_allows
+    negative_tests:
+      - PermissionMatrix/compensation.plan.create_denies
+  compensation.plan.reject:
+    key: compensation.plan.reject
+    description: Reject (compensation / plan).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/compensation.plan.reject_allows
+    negative_tests:
+      - PermissionMatrix/compensation.plan.reject_denies
+  compensation.plan.submit:
+    key: compensation.plan.submit
+    description: Submit (compensation / plan).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities:
+      - compensation.plan.approve
+    positive_tests:
+      - PermissionMatrix/compensation.plan.submit_allows
+    negative_tests:
+      - PermissionMatrix/compensation.plan.submit_denies
+  compensation.plan.update_draft:
+    key: compensation.plan.update_draft
+    description: Update draft (compensation / plan).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/compensation.plan.update_draft_allows
+    negative_tests:
+      - PermissionMatrix/compensation.plan.update_draft_denies
+  compensation.plan.view:
+    key: compensation.plan.view
+    description: View (compensation / plan).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/compensation.plan.view_allows
+    negative_tests:
+      - PermissionMatrix/compensation.plan.view_denies
+  customer_payment.duplicate_override:
+    key: customer_payment.duplicate_override
+    description: "Override a suspected duplicate payment reference (Finance; MFA + step-up)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: customer_payment.duplicate_override_approved
+    audit_severity: high
+    backend_policy_or_service: payment_reference_checks override
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/customer_payment.duplicate_override_allows
+    negative_tests:
+      - PermissionMatrix/customer_payment.duplicate_override_denies
+  customer_payment.record:
+    key: customer_payment.record
+    description: "Record a merchant-client payment recording group (Front Office maker)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: customer_payment.recorded
+    audit_severity: warn
+    backend_policy_or_service: "maker; group-based; idempotent"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities:
+      - customer_payment.validate
+    positive_tests:
+      - PermissionMatrix/customer_payment.record_allows
+    negative_tests:
+      - PermissionMatrix/customer_payment.record_denies
+  customer_payment.record_exception:
+    key: customer_payment.record_exception
+    description: "Record a merchant-client payment as a Finance maker exception."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: customer_payment.recorded_exception
+    audit_severity: high
+    backend_policy_or_service: maker exception; needs separate checker
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities:
+      - customer_payment.validate
+    positive_tests:
+      - PermissionMatrix/customer_payment.record_exception_allows
+    negative_tests:
+      - PermissionMatrix/customer_payment.record_exception_denies
+  customer_payment.reference_correct:
+    key: customer_payment.reference_correct
+    description: Correct a component payment reference on a correctable group and resubmit (Finance).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: customer_payment.reference_corrected; customer_payment.resubmitted
+    audit_severity: warn
+    backend_policy_or_service: original reference never silently edited
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/customer_payment.reference_correct_allows
+    negative_tests:
+      - PermissionMatrix/customer_payment.reference_correct_denies
+  customer_payment.reject:
+    key: customer_payment.reject
+    description: Reject or request correction of a whole pending payment recording group (Finance checker).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: customer_payment.correction_requested; customer_payment.rejected
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/customer_payment.reject_allows
+    negative_tests:
+      - PermissionMatrix/customer_payment.reject_denies
+  customer_payment.validate:
+    key: customer_payment.validate
+    description: "Validate a whole pending payment recording group (Finance checker; maker != checker)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: customer_payment.validated; receipt.issued
+    audit_severity: high
+    backend_policy_or_service: checker; validates whole recording group
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities:
+      - customer_payment.record
+    positive_tests:
+      - PermissionMatrix/customer_payment.validate_allows
+    negative_tests:
+      - PermissionMatrix/customer_payment.validate_denies
+  customer_payment.view:
+    key: customer_payment.view
+    description: "View merchant-client payment recording groups (scoped, masked)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/customer_payment.view_allows
+    negative_tests:
+      - PermissionMatrix/customer_payment.view_denies
+  day.open_close:
+    key: day.open_close
+    description: Open and close the branch business day.
+    implementation_status: active
+    owning_phase: Phase 20A
+    canonical_successor: branch.day.open
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: branch.day_closed; branch.day_opened; branch.day_reopened
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/day.open_close_allows
+    negative_tests:
+      - PermissionMatrix/day.open_close_denies
+  earnings_query.respond:
+    key: earnings_query.respond
+    description: Resolution via adjustment only.
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: resolution via adjustment only
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/earnings_query.respond_allows
+    negative_tests:
+      - PermissionMatrix/earnings_query.respond_denies
+  exports.staff_roster:
+    key: exports.staff_roster
+    description: Export the staff roster only.
+    implementation_status: active
+    owning_phase: Phase 21N
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/exports.staff_roster_allows
+    negative_tests:
+      - PermissionMatrix/exports.staff_roster_denies
+  finance.audit.view:
+    key: finance.audit.view
+    description: "View the branch-scoped finance-domain audit trail (Finance; masked)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/finance.audit.view_allows
+    negative_tests:
+      - PermissionMatrix/finance.audit.view_denies
+  finance_dispute.manage:
+    key: finance_dispute.manage
+    description: "Open, review, resolve, or reject a finance dispute (Finance)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: finance_dispute.opened; finance_dispute.rejected; finance_dispute.resolved; finance_dispute.review_started
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/finance_dispute.manage_allows
+    negative_tests:
+      - PermissionMatrix/finance_dispute.manage_denies
+  finance_export.create:
+    key: finance_export.create
+    description: "Request a scoped, masked finance export (Finance; fresh step-up)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: finance_export.requested; finance_export.revoked
+    audit_severity: high
+    backend_policy_or_service: async/scoped/masked/signed
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/finance_export.create_allows
+    negative_tests:
+      - PermissionMatrix/finance_export.create_denies
+  finance_export.download:
+    key: finance_export.download
+    description: Download a ready finance export via an authorized signed link (Finance).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: finance_export.downloaded
+    audit_severity: high
+    backend_policy_or_service: "download-counted"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/finance_export.download_allows
+    negative_tests:
+      - PermissionMatrix/finance_export.download_denies
+  front_office.search:
+    key: front_office.search
+    description: "Search clients (branch-scoped, masked)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/front_office.search_allows
+    negative_tests:
+      - PermissionMatrix/front_office.search_denies
+  invoice.adjustment.manage:
+    key: invoice.adjustment.manage
+    description: Adjust an invoice additively (Finance).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: invoice.adjusted
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/invoice.adjustment.manage_allows
+    negative_tests:
+      - PermissionMatrix/invoice.adjustment.manage_denies
+  invoice.create:
+    key: invoice.create
+    description: "Create and finalize merchant-client invoices."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: invoice.created; invoice.finalized; invoice.updated_draft
+    audit_severity: warn
+    backend_policy_or_service: "action FinalizeInvoice (number+snapshots, idempotent)"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/invoice.create_allows
+    negative_tests:
+      - PermissionMatrix/invoice.create_denies
+  invoice.view:
+    key: invoice.view
+    description: "View invoices (scoped, masked client)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: (also Finance)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/invoice.view_allows
+    negative_tests:
+      - PermissionMatrix/invoice.view_denies
+  invoice.void.request_or_execute_as_policy:
+    key: invoice.void.request_or_execute_as_policy
+    description: Request/execute/reject an invoice void (Finance).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: invoice.void_rejected; invoice.void_requested; invoice.voided
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/invoice.void.request_or_execute_as_policy_allows
+    negative_tests:
+      - PermissionMatrix/invoice.void.request_or_execute_as_policy_denies
+  merchant.billing_attempts.view_detailed:
+    key: merchant.billing_attempts.view_detailed
+    description: View detailed (merchant / billing_attempts).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.billing_attempts.view_detailed_allows
+    negative_tests:
+      - PermissionMatrix/merchant.billing_attempts.view_detailed_denies
+  merchant.branch.create:
+    key: merchant.branch.create
+    description: "Entitlement-gated."
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: plan.branch_limit
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: "entitlement-gated"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.branch.create_allows
+    negative_tests:
+      - PermissionMatrix/merchant.branch.create_denies
+  merchant.branch.view_all:
+    key: merchant.branch.view_all
+    description: View all (merchant / branch).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.branch.view_all_allows
+    negative_tests:
+      - PermissionMatrix/merchant.branch.view_all_denies
+  merchant.compensation_summary.view:
+    key: merchant.compensation_summary.view
+    description: View (merchant / compensation_summary).
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.compensation_summary.view_allows
+    negative_tests:
+      - PermissionMatrix/merchant.compensation_summary.view_denies
+  merchant.payout.approve_high_value:
+    key: merchant.payout.approve_high_value
+    description: "Action ApprovePayoutRun(high-value); threshold snapshot."
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: crit
+    backend_policy_or_service: "action ApprovePayoutRun(high-value); threshold snapshot"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities:
+      - payout_run.verify
+    positive_tests:
+      - PermissionMatrix/merchant.payout.approve_high_value_allows
+    negative_tests:
+      - PermissionMatrix/merchant.payout.approve_high_value_denies
+  merchant.period_reopen.approve_exception:
+    key: merchant.period_reopen.approve_exception
+    description: "Approve an exceptional financial-period reopen (Merchant Administrator; approver != requester)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: financial_period.reopen_approved
+    audit_severity: high
+    backend_policy_or_service: exceptional reopen approval only
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities:
+      - period_lock.reopen
+    positive_tests:
+      - PermissionMatrix/merchant.period_reopen.approve_exception_allows
+    negative_tests:
+      - PermissionMatrix/merchant.period_reopen.approve_exception_denies
+  merchant.profile.manage:
+    key: merchant.profile.manage
+    description: Edit merchant profile.
+    implementation_status: active
+    owning_phase: Phase 20A
+    canonical_successor: merchant.profile.update
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.profile.manage_allows
+    negative_tests:
+      - PermissionMatrix/merchant.profile.manage_denies
+  merchant.profile.update:
+    key: merchant.profile.update
+    description: Update (merchant / profile).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.profile.update_allows
+    negative_tests:
+      - PermissionMatrix/merchant.profile.update_denies
+  merchant.profile.view:
+    key: merchant.profile.view
+    description: View (merchant / profile).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.profile.view_allows
+    negative_tests:
+      - PermissionMatrix/merchant.profile.view_denies
+  merchant.report.view_all_branches:
+    key: merchant.report.view_all_branches
+    description: View all branches (merchant / report).
+    implementation_status: planned
+    owning_phase: Phase 21N
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.report.view_all_branches_allows
+    negative_tests:
+      - PermissionMatrix/merchant.report.view_all_branches_denies
+  merchant.subscription.invoice.download:
+    key: merchant.subscription.invoice.download
+    description: Download (merchant / subscription / invoice).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.subscription.invoice.download_allows
+    negative_tests:
+      - PermissionMatrix/merchant.subscription.invoice.download_denies
+  merchant.subscription.invoice.view:
+    key: merchant.subscription.invoice.view
+    description: View (merchant / subscription / invoice).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.subscription.invoice.view_allows
+    negative_tests:
+      - PermissionMatrix/merchant.subscription.invoice.view_denies
+  merchant.subscription.pay:
+    key: merchant.subscription.pay
+    description: Action InitiateSubscriptionStkPush (idempotent).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: action InitiateSubscriptionStkPush (idempotent)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.subscription.pay_allows
+    negative_tests:
+      - PermissionMatrix/merchant.subscription.pay_denies
+  merchant.subscription.pay_from_branch:
+    key: merchant.subscription.pay_from_branch
+    description: Pay from branch (merchant / subscription).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.subscription.pay_from_branch_allows
+    negative_tests:
+      - PermissionMatrix/merchant.subscription.pay_from_branch_denies
+  merchant.subscription.pay_simple:
+    key: merchant.subscription.pay_simple
+    description: Pay simple (merchant / subscription).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.subscription.pay_simple_allows
+    negative_tests:
+      - PermissionMatrix/merchant.subscription.pay_simple_denies
+  merchant.subscription.plan_change:
+    key: merchant.subscription.plan_change
+    description: Svc SchedulePlanChange (no proration).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: svc SchedulePlanChange (no proration)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.subscription.plan_change_allows
+    negative_tests:
+      - PermissionMatrix/merchant.subscription.plan_change_denies
+  merchant.subscription.view:
+    key: merchant.subscription.view
+    description: View (merchant / subscription).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.subscription.view_allows
+    negative_tests:
+      - PermissionMatrix/merchant.subscription.view_denies
+  merchant.tier.update:
+    key: merchant.tier.update
+    description: "Change the merchant service-fee tier."
+    implementation_status: active
+    owning_phase: Phase 20B
+    canonical_successor: merchant.subscription.plan_change
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.tier.update_allows
+    negative_tests:
+      - PermissionMatrix/merchant.tier.update_denies
+  merchant.user.deactivate:
+    key: merchant.user.deactivate
+    description: Deactivate (merchant / user).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: crit
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.user.deactivate_allows
+    negative_tests:
+      - PermissionMatrix/merchant.user.deactivate_denies
+  merchant.user.suspend:
+    key: merchant.user.suspend
+    description: Suspend (merchant / user).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.user.suspend_allows
+    negative_tests:
+      - PermissionMatrix/merchant.user.suspend_denies
+  merchant.user.view_all:
+    key: merchant.user.view_all
+    description: View all (merchant / user).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/merchant.user.view_all_allows
+    negative_tests:
+      - PermissionMatrix/merchant.user.view_all_denies
+  payout_run.approve_standard:
+    key: payout_run.approve_standard
+    description: "Ordinary-value approval (Finance)."
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: "ordinary-value approval (Finance)"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/payout_run.approve_standard_allows
+    negative_tests:
+      - PermissionMatrix/payout_run.approve_standard_denies
+  payout_run.cancel_draft:
+    key: payout_run.cancel_draft
+    description: Cancel draft (payout_run).
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/payout_run.cancel_draft_allows
+    negative_tests:
+      - PermissionMatrix/payout_run.cancel_draft_denies
+  payout_run.create:
+    key: payout_run.create
+    description: HR drafts.
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: HR drafts
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/payout_run.create_allows
+    negative_tests:
+      - PermissionMatrix/payout_run.create_denies
+  payout_run.mark_paid:
+    key: payout_run.mark_paid
+    description: "External ref+date; idempotent; row-lock."
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: crit
+    backend_policy_or_service: "external ref+date; idempotent; row-lock"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/payout_run.mark_paid_allows
+    negative_tests:
+      - PermissionMatrix/payout_run.mark_paid_denies
+  payout_run.reject:
+    key: payout_run.reject
+    description: Reject (payout_run).
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/payout_run.reject_allows
+    negative_tests:
+      - PermissionMatrix/payout_run.reject_denies
+  payout_run.submit:
+    key: payout_run.submit
+    description: Frozen on submit.
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: frozen on submit
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities:
+      - payout_run.verify
+    positive_tests:
+      - PermissionMatrix/payout_run.submit_allows
+    negative_tests:
+      - PermissionMatrix/payout_run.submit_denies
+  payout_run.update_draft:
+    key: payout_run.update_draft
+    description: Update draft (payout_run).
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/payout_run.update_draft_allows
+    negative_tests:
+      - PermissionMatrix/payout_run.update_draft_denies
+  payout_run.verify:
+    key: payout_run.verify
+    description: Verify (payout_run).
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities:
+      - payout_run.submit
+    positive_tests:
+      - PermissionMatrix/payout_run.verify_allows
+    negative_tests:
+      - PermissionMatrix/payout_run.verify_denies
+  period_lock.create:
+    key: period_lock.create
+    description: Create a financial period lock (Finance).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: financial_period.locked
+    audit_severity: high
+    backend_policy_or_service: Finance owns
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/period_lock.create_allows
+    negative_tests:
+      - PermissionMatrix/period_lock.create_denies
+  period_lock.reopen:
+    key: period_lock.reopen
+    description: Execute a controlled reopen of a locked financial period (Finance; fresh MFA).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: financial_period.reopen_requested; financial_period.reopened
+    audit_severity: crit
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities:
+      - merchant.period_reopen.approve_exception
+    positive_tests:
+      - PermissionMatrix/period_lock.reopen_allows
+    negative_tests:
+      - PermissionMatrix/period_lock.reopen_denies
+  personnel.availability.manage:
+    key: personnel.availability.manage
+    description: Manage personnel availability.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: personnel_availability.emergency_unavailable; personnel_availability.updated
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.availability.manage_allows
+    negative_tests:
+      - PermissionMatrix/personnel.availability.manage_denies
+  personnel.eligibility.manage:
+    key: personnel.eligibility.manage
+    description: Manage personnel service eligibility.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: personnel_eligibility.assigned; personnel_eligibility.revoked
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.eligibility.manage_allows
+    negative_tests:
+      - PermissionMatrix/personnel.eligibility.manage_denies
+  personnel.my_appointments.view:
+    key: personnel.my_appointments.view
+    description: View own assigned appointments (own scope).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_appointments.view_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_appointments.view_denies
+  personnel.my_compensation.view:
+    key: personnel.my_compensation.view
+    description: View (personnel / my_compensation).
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_compensation.view_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_compensation.view_denies
+  personnel.my_earnings.view:
+    key: personnel.my_earnings.view
+    description: View (personnel / my_earnings).
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_earnings.view_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_earnings.view_denies
+  personnel.my_earnings_query.create:
+    key: personnel.my_earnings_query.create
+    description: Create (personnel / my_earnings_query).
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_earnings_query.create_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_earnings_query.create_denies
+  personnel.my_payouts.view:
+    key: personnel.my_payouts.view
+    description: View (personnel / my_payouts).
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_payouts.view_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_payouts.view_denies
+  personnel.my_queue.view:
+    key: personnel.my_queue.view
+    description: View own assigned queue entries (own scope).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: staff_profile_id derived from membership
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_queue.view_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_queue.view_denies
+  personnel.my_served_clients.view:
+    key: personnel.my_served_clients.view
+    description: Masked contact; no export.
+    implementation_status: planned
+    owning_phase: Phase 21N
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: masked contact; no export
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_served_clients.view_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_served_clients.view_denies
+  personnel.my_sessions.view:
+    key: personnel.my_sessions.view
+    description: View own assigned service sessions (own scope).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_sessions.view_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_sessions.view_denies
+  personnel.my_sms.send:
+    key: personnel.my_sms.send
+    description: "Served-clients only; no contact export (ADR-010)."
+    implementation_status: planned
+    owning_phase: Phase 21S
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: sms
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: "served-clients only; no contact export (ADR-010)"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_sms.send_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_sms.send_denies
+  personnel.my_statements.download:
+    key: personnel.my_statements.download
+    description: Own statements only.
+    implementation_status: planned
+    owning_phase: Phase 20H
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: own
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: own statements only
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - personnel
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/personnel.my_statements.download_allows
+    negative_tests:
+      - PermissionMatrix/personnel.my_statements.download_denies
+  platform.audit.export:
+    key: platform.audit.export
+    description: Export controls (signed/expiring).
+    implementation_status: planned
+    owning_phase: Phase 23
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: export controls (signed/expiring)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.audit.export_allows
+    negative_tests:
+      - PermissionMatrix/platform.audit.export_denies
+  platform.audit.view:
+    key: platform.audit.view
+    description: View the platform audit trail.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.audit.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.audit.view_denies
+  platform.billing.configure:
+    key: platform.billing.configure
+    description: Configure platform billing.
+    implementation_status: active
+    owning_phase: Phase 20A
+    canonical_successor: platform.billing_settings.update
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.billing.configure_allows
+    negative_tests:
+      - PermissionMatrix/platform.billing.configure_denies
+  platform.billing_settings.update:
+    key: platform.billing_settings.update
+    description: "Svc UpdatePlatformBillingSettings (ADR-011 price rules)."
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: "svc UpdatePlatformBillingSettings (ADR-011 price rules)"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.billing_settings.update_allows
+    negative_tests:
+      - PermissionMatrix/platform.billing_settings.update_denies
+  platform.billing_settings.view:
+    key: platform.billing_settings.view
+    description: View (platform / billing_settings).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.billing_settings.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.billing_settings.view_denies
+  platform.fee_rules.manage:
+    key: platform.fee_rules.manage
+    description: Manage platform fee rules.
+    implementation_status: active
+    owning_phase: Phase 20A
+    canonical_successor: platform.plan_price.manage
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.fee_rules.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.fee_rules.manage_denies
+  platform.free_period_offer.manage:
+    key: platform.free_period_offer.manage
+    description: Manage (platform / free_period_offer).
+    implementation_status: planned
+    owning_phase: Phase 20C
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.free_period_offer.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.free_period_offer.manage_denies
+  platform.merchant.deactivate:
+    key: platform.merchant.deactivate
+    description: Deactivate (platform / merchant).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: crit
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.merchant.deactivate_allows
+    negative_tests:
+      - PermissionMatrix/platform.merchant.deactivate_denies
+  platform.merchant.reactivate:
+    key: platform.merchant.reactivate
+    description: Reactivate (platform / merchant).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.merchant.reactivate_allows
+    negative_tests:
+      - PermissionMatrix/platform.merchant.reactivate_denies
+  platform.merchant.suspend:
+    key: platform.merchant.suspend
+    description: Action SuspendMerchant (merchants.status; never billing recovery).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: action SuspendMerchant (merchants.status; never billing recovery)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.merchant.suspend_allows
+    negative_tests:
+      - PermissionMatrix/platform.merchant.suspend_denies
+  platform.merchant.view:
+    key: platform.merchant.view
+    description: View (platform / merchant).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.merchant.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.merchant.view_denies
+  platform.merchants.govern:
+    key: platform.merchants.govern
+    description: Govern merchant accounts.
+    implementation_status: active
+    owning_phase: Phase 20B
+    canonical_successor: platform.merchant.suspend
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.merchants.govern_allows
+    negative_tests:
+      - PermissionMatrix/platform.merchants.govern_denies
+  platform.mpesa_configuration.manage:
+    key: platform.mpesa_configuration.manage
+    description: Manage (platform / mpesa_configuration).
+    implementation_status: planned
+    owning_phase: Phase 20D
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: crit
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.mpesa_configuration.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.mpesa_configuration.manage_denies
+  platform.mpesa_exception.resolve:
+    key: platform.mpesa_exception.resolve
+    description: Action ResolveMpesaReconciliationException.
+    implementation_status: planned
+    owning_phase: Phase 20D
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: action ResolveMpesaReconciliationException
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities:
+      - "link-vs-dismiss separation"
+    positive_tests:
+      - PermissionMatrix/platform.mpesa_exception.resolve_allows
+    negative_tests:
+      - PermissionMatrix/platform.mpesa_exception.resolve_denies
+  platform.mpesa_exception.view:
+    key: platform.mpesa_exception.view
+    description: View (platform / mpesa_exception).
+    implementation_status: planned
+    owning_phase: Phase 20D
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.mpesa_exception.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.mpesa_exception.view_denies
+  platform.plan.manage:
+    key: platform.plan.manage
+    description: Manage (platform / plan).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.plan.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.plan.manage_denies
+  platform.plan.view:
+    key: platform.plan.view
+    description: View (platform / plan).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.plan.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.plan.view_denies
+  platform.plan_price.manage:
+    key: platform.plan_price.manage
+    description: Svc ManagePlanPrice (sole price source).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: svc ManagePlanPrice (sole price source)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.plan_price.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.plan_price.manage_denies
+  platform.preferred_personnel_fee.manage:
+    key: platform.preferred_personnel_fee.manage
+    description: Svc ManagePreferredPersonnelFeeRule (fixed+percentage).
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: svc ManagePreferredPersonnelFeeRule (fixed+percentage)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.preferred_personnel_fee.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.preferred_personnel_fee.manage_denies
+  platform.promotion.manage:
+    key: platform.promotion.manage
+    description: Manage (platform / promotion).
+    implementation_status: planned
+    owning_phase: Phase 20C
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.promotion.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.promotion.manage_denies
+  platform.registration_monitor.view:
+    key: platform.registration_monitor.view
+    description: View (platform / registration_monitor).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.registration_monitor.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.registration_monitor.view_denies
+  platform.settings.manage:
+    key: platform.settings.manage
+    description: Manage platform settings.
+    implementation_status: active
+    owning_phase: Phase 20A
+    canonical_successor: platform.settings.update
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.settings.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.settings.manage_denies
+  platform.settings.update:
+    key: platform.settings.update
+    description: Policy PlatformSettingsPolicy.
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: policy PlatformSettingsPolicy
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.settings.update_allows
+    negative_tests:
+      - PermissionMatrix/platform.settings.update_denies
+  platform.settings.view:
+    key: platform.settings.view
+    description: Policy PlatformSettingsPolicy.
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: policy PlatformSettingsPolicy
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.settings.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.settings.view_denies
+  platform_fees.dispute:
+    key: platform_fees.dispute
+    description: Dispute a Citrus platform fee.
+    implementation_status: active
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform_fees.dispute_allows
+    negative_tests:
+      - PermissionMatrix/platform_fees.dispute_denies
+  platform_fees.view:
+    key: platform_fees.view
+    description: View Citrus platform fees (scoped).
+    implementation_status: active
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: grantable
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+      - branch_manager
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform_fees.view_allows
+    negative_tests:
+      - PermissionMatrix/platform_fees.view_denies
+  preferred_personnel.select:
+    key: preferred_personnel.select
+    description: "Record a preferred-personnel request on a queue entry."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/preferred_personnel.select_allows
+    negative_tests:
+      - PermissionMatrix/preferred_personnel.select_denies
+  preferred_personnel_fee.view_branch_rule:
+    key: preferred_personnel_fee.view_branch_rule
+    description: "View-only (rule managed by Super Admin)."
+    implementation_status: planned
+    owning_phase: Phase 20A
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: "view-only (rule managed by Super Admin)"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/preferred_personnel_fee.view_branch_rule_allows
+    negative_tests:
+      - PermissionMatrix/preferred_personnel_fee.view_branch_rule_denies
+  queue.assign:
+    key: queue.assign
+    description: "Assign/call/start/complete/cancel/no-show queue entries."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: queue_entry.assigned; queue_entry.called; queue_entry.cancelled; queue_entry.completed; queue_entry.no_show; queue_entry.started; service_session.completed; service_session.started
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/queue.assign_allows
+    negative_tests:
+      - PermissionMatrix/queue.assign_denies
+  queue.create:
+    key: queue.create
+    description: "Create queue entries (walk-ins, appointment conversion)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: appointment.queued; queue_entry.created; walk_in.created
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/queue.create_allows
+    negative_tests:
+      - PermissionMatrix/queue.create_denies
+  queue.reorder:
+    key: queue.reorder
+    description: Reorder waiting queue entries.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: queue_entry.reordered
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/queue.reorder_allows
+    negative_tests:
+      - PermissionMatrix/queue.reorder_denies
+  queue.transfer:
+    key: queue.transfer
+    description: Transfer queue entries between personnel.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: queue_entry.transferred
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/queue.transfer_allows
+    negative_tests:
+      - PermissionMatrix/queue.transfer_denies
+  queue.view:
+    key: queue.view
+    description: "View the branch queue (branch-scoped)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/queue.view_allows
+    negative_tests:
+      - PermissionMatrix/queue.view_denies
+  receipt.reissue:
+    key: receipt.reissue
+    description: Reissue a receipt.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: receipt.reissued
+    audit_severity: warn
+    backend_policy_or_service: new receipts row referencing original
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/receipt.reissue_allows
+    negative_tests:
+      - PermissionMatrix/receipt.reissue_denies
+  receipt.view:
+    key: receipt.view
+    description: View receipts (scoped).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: receipt.downloaded
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+      - branch_manager
+      - finance
+      - front_office
+      - personnel
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/receipt.view_allows
+    negative_tests:
+      - PermissionMatrix/receipt.view_denies
+  refund.approve:
+    key: refund.approve
+    description: "Approve a refund (Finance checker; approver != requester; fresh step-up)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: grantable
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: refund.approved; refund.rejected
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles: []
+    maker_checker_incompatibilities:
+      - refund.create
+    positive_tests:
+      - PermissionMatrix/refund.approve_allows
+    negative_tests:
+      - PermissionMatrix/refund.approve_denies
+  refund.create:
+    key: refund.create
+    description: Request an external refund against a validated payment component (Finance maker).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: refund.requested
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities:
+      - refund.approve
+    positive_tests:
+      - PermissionMatrix/refund.create_allows
+    negative_tests:
+      - PermissionMatrix/refund.create_denies
+  refund.finalize:
+    key: refund.finalize
+    description: "Finalize an approved refund and reduce the recognised balance (fresh step-up)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: grantable
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: refund.finalized
+    audit_severity: crit
+    backend_policy_or_service: "component-allocated; commission reversal"
+    frontend_ux_usage: visibility_only
+    default_roles: []
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/refund.finalize_allows
+    negative_tests:
+      - PermissionMatrix/refund.finalize_denies
+  reports.view:
+    key: reports.view
+    description: View reports (scoped).
+    implementation_status: active
+    owning_phase: Phase 21N
+    canonical_successor: branch.report.view
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - merchant_admin
+      - branch_manager
+      - hr
+      - finance
+      - front_office
+      - personnel
+      - audit
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/reports.view_allows
+    negative_tests:
+      - PermissionMatrix/reports.view_denies
+  service.archive:
+    key: service.archive
+    description: Archive a service.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: service.archived
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/service.archive_allows
+    negative_tests:
+      - PermissionMatrix/service.archive_denies
+  service.create:
+    key: service.create
+    description: Create services.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: service.created; service_category.created
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/service.create_allows
+    negative_tests:
+      - PermissionMatrix/service.create_denies
+  service.update:
+    key: service.update
+    description: Update services.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: service.updated; service_category.updated
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/service.update_allows
+    negative_tests:
+      - PermissionMatrix/service.update_denies
+  service.view:
+    key: service.view
+    description: View services (scoped).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - branch_manager
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/service.view_allows
+    negative_tests:
+      - PermissionMatrix/service.view_denies
+  service_session.cancel:
+    key: service_session.cancel
+    description: Cancel a service session.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: service_session.cancelled
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/service_session.cancel_allows
+    negative_tests:
+      - PermissionMatrix/service_session.cancel_denies
+  service_session.complete:
+    key: service_session.complete
+    description: "Complete a service session (non-payable commission preview)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: queue_entry.completed; service_session.completed
+    audit_severity: info
+    backend_policy_or_service: "may create non-payable commission preview"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/service_session.complete_allows
+    negative_tests:
+      - PermissionMatrix/service_session.complete_denies
+  service_session.start:
+    key: service_session.start
+    description: Start a service session (from a queue entry).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: queue_entry.started; service_session.started
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/service_session.start_allows
+    negative_tests:
+      - PermissionMatrix/service_session.start_denies
+  service_session.view:
+    key: service_session.view
+    description: "View service sessions (branch-scoped)."
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - front_office
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/service_session.view_allows
+    negative_tests:
+      - PermissionMatrix/service_session.view_denies
+  staff.branch.assign:
+    key: staff.branch.assign
+    description: Assign (staff / branch).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.branch.assign_allows
+    negative_tests:
+      - PermissionMatrix/staff.branch.assign_denies
+  staff.deactivate:
+    key: staff.deactivate
+    description: Deactivate (staff).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: crit
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.deactivate_allows
+    negative_tests:
+      - PermissionMatrix/staff.deactivate_denies
+  staff.edit:
+    key: staff.edit
+    description: Edit staff profiles.
+    implementation_status: active
+    owning_phase: Phase 20F
+    canonical_successor: staff.profile.update
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.edit_allows
+    negative_tests:
+      - PermissionMatrix/staff.edit_denies
+  staff.history.view:
+    key: staff.history.view
+    description: View (staff / history).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.history.view_allows
+    negative_tests:
+      - PermissionMatrix/staff.history.view_denies
+  staff.invitation.resend:
+    key: staff.invitation.resend
+    description: Resend (staff / invitation).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.invitation.resend_allows
+    negative_tests:
+      - PermissionMatrix/staff.invitation.resend_denies
+  staff.invitation.revoke:
+    key: staff.invitation.revoke
+    description: Revoke (staff / invitation).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.invitation.revoke_allows
+    negative_tests:
+      - PermissionMatrix/staff.invitation.revoke_denies
+  staff.invite:
+    key: staff.invite
+    description: Invite operational staff (same branch).
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.invite_allows
+    negative_tests:
+      - PermissionMatrix/staff.invite_denies
+  staff.profile.create:
+    key: staff.profile.create
+    description: Create (staff / profile).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.profile.create_allows
+    negative_tests:
+      - PermissionMatrix/staff.profile.create_denies
+  staff.profile.update:
+    key: staff.profile.update
+    description: Update (staff / profile).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: warn
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.profile.update_allows
+    negative_tests:
+      - PermissionMatrix/staff.profile.update_denies
+  staff.role.assign:
+    key: staff.role.assign
+    description: "Cannot self-escalate."
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: "cannot self-escalate"
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.role.assign_allows
+    negative_tests:
+      - PermissionMatrix/staff.role.assign_denies
+  staff.suspend:
+    key: staff.suspend
+    description: Suspend/deactivate operational staff.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: block
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: none
+    audit_severity: high
+    backend_policy_or_service: revokes sessions/links
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.suspend_allows
+    negative_tests:
+      - PermissionMatrix/staff.suspend_denies
+  staff.view:
+    key: staff.view
+    description: View (staff).
+    implementation_status: planned
+    owning_phase: Phase 20F
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: branch
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: false
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - hr
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/staff.view_allows
+    negative_tests:
+      - PermissionMatrix/staff.view_denies
+  subscription.payment_attempts.view:
+    key: subscription.payment_attempts.view
+    description: View (subscription / payment_attempts).
+    implementation_status: planned
+    owning_phase: Phase 20B
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: allow_read
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/subscription.payment_attempts.view_allows
+    negative_tests:
+      - PermissionMatrix/subscription.payment_attempts.view_denies

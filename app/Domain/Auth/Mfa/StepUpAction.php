@@ -52,6 +52,11 @@ enum StepUpAction: string
     // (like RefundApproval) because it has a live route.
     case FinanceExportCreate = 'finance_export_create';
 
+    // Phase 19 — Audit export request. A real, implemented route (audit.export requires
+    // fresh step-up, §19.3; ADR-010); excluded from the test-harness businessActions()
+    // (like FinanceExportCreate) because it has a live route.
+    case AuditExportCreate = 'audit_export_create';
+
     /** The phase that owns the real route this classification protects. */
     public function owningPhase(): string
     {
@@ -68,6 +73,7 @@ enum StepUpAction: string
             self::PaymentDuplicateOverride => 'Phase 18A (implemented)',
             self::RefundApproval => 'Phase 18B (implemented)',
             self::FinanceExportCreate => 'Phase 18B (implemented)',
+            self::AuditExportCreate => 'Phase 19 (implemented)',
         };
     }
 

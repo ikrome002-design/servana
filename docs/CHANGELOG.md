@@ -6,7 +6,174 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 18B — Validation, Receipts, Refunds, Disputes, Cash-Up, Period Locks, Finance Exports (`phase-18b-financial-validation-controls`) — local_complete (base `4a489d0`, PR #30)
+### Phase 19 — Audit Logging Completion & Flagged Events (`phase-19-audit-flagged-events`) — local_complete pending PR (base `64bd0a1`, PR #31 merge)
+
+_Increments 8–9 landed and green (not committed/merged): the Finance-role finance-audit screen
+(`pages/finance/FinanceAuditView.vue`, route `finance.audit`, nav live, reusing the shared
+`AuditDomainEvents` panel with an MFA-required note; `finance.audit.view` + server MFA; no endpoint or
+transport-contract duplication; Audit keeps `audit.finance.view`), the Playwright suite
+`tests/e2e/audit.spec.ts` (25 tests — masked branch-scoped reads, immutable detail, flag→review→
+resolve/dismiss→reopen with invalid-transition + required-notes, finance-audit for both roles incl.
+MFA-denied, compensation empty state, and the export step-up/private-download/count-refresh/revoke/
+expiry/failed-redacted/no-leak flows) with axe serious+critical = 0 (light + dark) and no page-level
+overflow at 360/768/1280 plus keyboard reachability, and the full Increment-9 gate run. A link-contrast
+axe failure (DEF-19-002, `text-primary`→`text-heading`) was fixed. The first full backend run surfaced
+four latent failures — the audit controller signing its stream route outside the file domain (fixed via
+`FileAccessService::signDownloadRoute`, preserving ADR-010 stream accounting), a Files-migration-count
+assumption (updated for the Phase-19 uploaded_files ALTER), file-local audit-export test helpers invisible
+to parallel workers (moved to `tests/Pest.php`), and a globally-fragile merchant-count assertion (made a
+delta) — all fixed at root cause. Gates: **backend serial 1062 + parallel 1062 (0 fail)**, Vitest 60
+files/248 tests, full Playwright e2e 252, OpenAPI 167 ops + TS + permission-types + contract, Pint 953
+clean, Larastan L8 no errors, composer/npm audit + gitleaks clean, Docker php-dev + nginx-prod build.
+**REM-PERM-001** and **REM-AUDEXP-001** both `local_complete` pending Phase 19 PR CI/review/merge._
+
+_Increment 8 (Audit-role frontend) implementation landed and green (not committed/merged): the full
+Audit SPA on the existing shell/router/Pinia/generated-types/nav/design-system — 3 Pinia stores
+(`auditEventStore`, `flaggedEventStore`, `auditExportStore`) and 8 screens (branch event list +
+immutable detail, flagged-event queue + gated review, finance + compensation audit reads, export
+list/request + polling detail with private signed download and revoke) plus a shared
+`AuditDomainEvents` panel. Controls are gated by the server-derived `can` capability map; reads are
+masked and branch-scoped; source records are read-only; the export request enforces a server-side
+fresh step-up and blocks unassigned/merchant-level exports; `file_id`/paths/signatures are never
+exposed; compensation shows an honest empty state (no fabricated events). Eight routes added; the five
+Audit nav items flipped `planned`→`live` (parity fixture regenerated); eight `implemented` screen
+entries added to the inventory with regenerated §27.1 specs and `inventory.yaml`. Five new frontend
+specs (22 tests) cover store routing/filters/transitions/download-link-non-persistence/polling and
+component permission-denied-control-absence/no-branch/capability-and-state gating. Gates: vue-tsc
+clean, full Vitest 59 files / 244 tests pass, ESLint 0 errors, `vite build` succeeds. Playwright E2E +
+axe/responsive/dark/keyboard proof, the Finance-role finance-audit screen, and the Increment 9
+full-gate run remain._
+
+_Increment 7 landed and green (not committed/merged): the `audit:verify-chain` verifier is now a
+scheduled daily integrity check (`routes/console.php`: `->daily()->withoutOverlapping()->onOneServer()`
+— Plan §67/§1610 pin no sub-daily cadence, so the established daily cadence is used) with a bounded,
+redacted failure signal. New `App\Domain\Audit\Events\AuditChainVerificationFailed` carries only safe
+metadata (severity, category `broken_link`/`hash_mismatch`, safe chain identifier, correlation id,
+failed-chain count, timestamp); a failing run emits it **exactly once** plus a matching
+`Log::critical`, never a payload, context, full hash, PII, SQLSTATE, or stack trace. New
+`AuditChainScheduleTest` + `AuditChainFailureSignalTest` (11 tests / 27 assertions with the retained
+`AuditChainVerificationTest`); Pint + Larastan L8 clean. Centralized alert transport, paging,
+dashboards, and runbooks remain Phase 25._
+
+_Increment 6 landed and green (not committed/merged): the canonical permission matrix + four-way
+parity contract, closing **REM-PERM-001** to `local_complete`. New `docs/auth/permission-matrix.yaml`
+— the source-controlled security contract carrying **all 151 §19.2 canonical keys** (70 active +
+81 `planned`) **plus** the **17** runtime keys still under a pre-canonical name (168 rows; **87
+active**; each legacy row records its `canonical_successor` + `owning_phase`, reconciled in the
+owning phases per §19.1 — no prior-phase key is renamed). New dependency-free
+`app/Domain/Auth/Services/PermissionMatrix.php` loader (bespoke reader for the fixed YAML subset;
+`symfony/yaml` deliberately **not** added) and deterministic `servana:permission-types` command
+(composer `permission:types` / `permission:types:check`) generating
+`resources/spa/src/types/generated/permissions.ts` (the 87 active keys only — planned keys never
+reach the frontend). **Four-way parity is CI-enforced (zero mismatches):** YAML-active == PHP
+`PermissionRegistry` == DB `permissions` projection == TypeScript metadata = 87; the retired
+`audit.view_full` and legacy `audit.flag` are absent from every projection. **Deferred MFA/step-up
+enforcement proven at the backend boundary:** `finance.audit.view` (MFA Y) is blocked at the
+privileged-MFA gate for a Finance principal with no assertion (403 before the permission check) and
+carries no fresh step-up; `audit.export` (SU Y) is guarded by `RequireFreshMfa` on its request
+route while the audit reads are not; `platform.audit.export` stays metadata-only (planned, no
+route). New tests: PermissionMatrix Schema / CatalogueCompleteness / Parity / TypeScriptParity /
+DatabaseProjection / PerKeyAllow / PerKeyDeny / Override / NonOverridable / MakerChecker /
+RoleBoundary / MfaCoverage / StepUpCoverage. A follow-up §2 closure removed every best-effort
+placeholder: `PermissionMatrixPlanMetadataParityTest` parses Plan §19.3 independently and proves all
+**151** canonical keys match the Plan on every Plan-encoded field (scope, entitlement_key, billing,
+period-lock, mfa, step-up, audit_severity, maker/checker, default_roles, override_policy);
+`audit_event` is now derived from the live route table + `AuditMutationCoverage` for active keys
+(`none` for reads, honest `pending` for planned) and independently re-verified; `owning_phase` is
+assigned for all planned + legacy keys per §80; `PermissionLegacyKeyReconciliationTest` proves the 17
+legacy keys reconcile to planned successors (or null) with valid owning phases and no duplicate
+authority; `PermissionPlannedKeyIsolationTest` proves all 81 planned keys stay out of the registry,
+DB, TypeScript, routes, and grants. Full `tests/Feature/Auth` suite 192 passed / 1670 assertions
+(PG16); Pint clean; Larastan L8 No errors._
+
+_Increment 5 landed and green (not committed/merged): an enforced mutation→audit coverage guard.
+New first-class `app/Domain/Audit/Support/AuditMutationCoverage.php` maps every implemented
+mutating (non-GET) `/api/v1` route to the typed `AuditEvent`(s) it emits (100 routes, from the
+actual emission sites) or to an explicit EXEMPT reason (3 non-emitting mutations). New
+`AuditMutationCoverageTest` fails CI on any unmapped/stale/overlapping route or unknown event
+(completeness over the live route table = 504 assertions across all 103 non-GET routes); new
+`AuditSeverityCoverageTest` proves every `AuditEvent` case has a valid severity + read-segment
+domain, all tiers represented, registry↔enum consistent. 10 passed / 504 assertions; Pint clean
+(905 files); Larastan L8 No errors. Deferred domains (billing/compensation/notifications/SMS)
+fabricate nothing._
+
+_Increment 4 (audit export) landed and green (not committed/merged) — the prior Outcome-C blocker is
+**RESOLVED** by the 2026-07-04 product-owner decision authorizing a dedicated branch-scoped
+`audit_exports` table (**ADR-010**; REM-AUDEXP-001 `blocked` → `in_progress`). Plan amended narrowly
+(§13 launch-table inventory + §13.5 DDL + §80 Phase-19 DB scope; Phase 23 preserved as final
+release-wide export **hardening**). New forward-only migration `2026_07_04_000002_create_audit_exports_table`
++ expand/contract `..._000003` (adds `audit_export` to the `uploaded_files` purpose CHECK). New
+`FilePurpose::AuditExport`; `AuditExportStatus`; `AuditExport` model + factory; `AuditExportStateMachine`
++ exception; actions `RequestAuditExport`/`RevokeAuditExport`/`ExpireAuditExport`/`RecordAuditExportDownload`;
+`GenerateAuditExport` (TenantAwareJob, reports-exports, idempotent) + `AuditExportCsvBuilder` (masked via
+`AuditValueMasker`, branch-scoped, **never merchant-level rows**, bounded chunks); `AuditExportPolicy`;
+`RequestAuditExportRequest`+`AuditExportIndexRequest`; masked `AuditExportResource` (no `file_id`/path/
+signature/internal id); `AuditExportController` + 6 routes (store = `audit.export` + fresh step-up
+`StepUpAction::AuditExportCreate`; download accounting on the authorized `GET .../download` STREAM, not
+link issuance). The unused `audit.exported` event is retired in favour of the Finance-convention
+`audit_export.requested|generated|failed|downloaded|expired|revoked`. New `audit.export` permission
+(Audit default, in-domain write). audit-exports test group **31 passed / 122 assertions**; Pint clean
+(932 files); Larastan L8 No errors; OpenAPI **143 paths / 167 operations** + TS synchronized + contract
+check OK._
+
+_Increment 3 landed and green (not committed/merged): masked, domain-segmented merchant
+audit reads and the **retirement of the legacy catch-all `audit.view_full`** as a
+source-of-truth correction (Plan §19.1/§19.2/§19.3 controls; human-authorised — Q1 full
+canonical conformance, Q2 platform-governance-only for merchant-level rows). **As-built
+conflict recorded:** the legacy registry + R2 tests granted `audit.view_full` (and full
+merchant-trail read including `branch_id` null rows) to Merchant Admin / Branch Manager /
+HR / Finance / Audit; this conflicts with the canonical branch-scoped, domain-segmented
+matrix. **Correction:** `audit.view_full` removed everywhere — registry catalogue + every
+default grant, DB projection (new `PermissionSeeder::prunePermissions()`), `AuditLogPolicy`,
+routes, `FilePurposeRegistry` (`AuditEvidence` → `audit.branch_events.view`),
+`PermissionMatrixTest`, and the e2e admin fixture (no alias/compat/fallback). Canonical keys
+activated: `audit.finance.view` + `audit.compensation.view` (Audit), `finance.audit.view`
+(Finance). New `AuditDomain` enum + `AuditEvent::domain()`/`actionsIn()` classify events; new
+`GET /audit-logs` (General branch events), `/audit-logs/finance` (`finance.audit.view` OR
+`audit.finance.view`; `EnsurePermission` extended to a variadic OR of keys), and
+`/audit-logs/compensation` (empty until 20F–20H) — all branch-scoped, `branch_id NOT NULL`
+(merchant-level rows excluded), masked, ULID-only, allowlist-filtered, bounded-paginated.
+**Merchant Admin / Branch Manager / HR lose all direct raw audit read** (oversight via
+reports/dashboards). Merchant-level (`branch_id` null) rows have no merchant-tier surface — a
+deliberate, documented limitation (no permission/route invented). OpenAPI **138 paths / 161
+operations** + TS synchronized + contract check OK. Tests green on PG16: new
+`AuditReadSegmentationTest` (6) + `AuditRedactionTest` (2); rewritten `AuditMaskedReadTest`
+(5) + `AuditBranchScopeTest` (4); `PermissionMatrixTest` (3); audit+auth+permissions groups
+**224 passed / 844 assertions**; route-security/OpenAPI/route-binding/file-purpose guards and
+the flagged-event suite green; Pint clean (902), Larastan L8 No errors. `REM-PERM-001` stays
+open (Increment 6 owns full matrix closure, incl. per-key MFA enforcement deferred here)._
+
+_Increment 2 landed and green (not committed/merged): the state-machine-controlled
+flagged-event review workflow — `AuditFlaggedEventStateMachine` + exception + five actions
+(Flag/StartReview/Resolve/Dismiss/Reopen; `lockForUpdate`, review-metadata-only, typed
+`AuditEvent`s, the immutable `audit_logs` source never touched), `AuditFlaggedEventPolicy`,
+Form Requests, masked `AuditFlaggedEventResource`, thin controller, six branch-scoped
+routes. Permission reconciliation: legacy `audit.flag` → canonical
+`audit.flagged_event.create`/`update_status`/`resolve_metadata` + `audit.branch_events.view`.
+OpenAPI regenerated to 159 operations / 136 paths + TS synchronized. Tests green on PG16:
+`AuditFlaggedEventWorkflowTest` (9), `AuditFlaggedEventIsolationTest` (5),
+`AuditSourceMutationDenialTest` (9); audit group 75, auth suite 142, route-security/OpenAPI
+26 — all green; Pint (899) + Larastan L8 clean._
+
+_Increment 1 landed and green (not committed/merged): specification-first gate
+(`docs/architecture/data-dictionary/audit-files-notifications.md` created;
+`docs/architecture/state-machines/audit-flagged-event.md` created) and the
+`audit_flagged_events` schema slice — forward-only migration `2026_07_04_000001`
+(branch-owned; `audit_log_id` FK ON DELETE RESTRICT to the append-only, hash-chained
+`audit_logs`; status/resolution/assignment CHECKs; composite tenant FK; no soft-delete),
+`AuditFlaggedEventStatus` enum, `AuditFlaggedEvent` model, factories (+ test-only
+`AuditLogFactory`), `TenantOwnership` + migration-manifest wiring, and six severity-mapped
+`AuditEvent` catalogue cases for the flagged-event workflow + masked export. Green on
+PostgreSQL 16: `AuditFlaggedEventSchemaTest` (8), `AuditFlaggedEventStateMachineTest` (4);
+`AuditEventCoverageTest`/`MigrationManifestTest`/tenant-coverage still green; Pint + Larastan
+L8 clean on the new code. Remaining: flagged-event workflow HTTP, masked audit reads, async
+audit export, mutation→event coverage guard, permission-matrix closure (REM-PERM-001,
+`docs/auth/permission-matrix.yaml` absent), scheduled chain verification + failure signal,
+and the Audit frontend. REM-PERM-001 stays **open**._
+
+### Phase 18B — Validation, Receipts, Refunds, Disputes, Cash-Up, Period Locks, Finance Exports (`phase-18b-financial-validation-controls`) — verified_complete (PR #31 MERGED, merge `64bd0a1`)
+
+_PR **#31** MERGED into `main`, merge commit `64bd0a117dcdc819a8baf4b9bec3c3eb09635edc` (implementation `ed07c8b`, CI-correction `a0d4dede7ce62e5dbcb7a27467b15ba592ccf6d3`, governance `a8f988b68872eb3e352bc7f70dbb362bfb320cf3`). CI: initial run `28694148176` FAILED, corrected-head run `28695121157` SUCCESS, final governance-head run `28695314469` SUCCESS. `reviewDecision` blank under the documented PR-specific solo-maintainer exception (`docs/governance/solo-maintainer-review-exception-pr-31.md`) — not independent reviewer approval. **REM-PAY-001** closed `verified_complete` on this merge; **REM-PERM-001** stays open (Phase 19)._
 
 Completes the auditable money lifecycle on merged Phase 18A: **whole-group payment
 validation** (one atomic decision → one gap-free original receipt; no partial-component

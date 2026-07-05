@@ -81,9 +81,24 @@ final class FileAccessService
     /** @return array{url: string, expires_at: string} short-lived signed download link. */
     public function issueSignedUrl(UploadedFile $file): array
     {
+        return $this->signDownloadRoute('files.download', ['uploadedFile' => $file->ulid]);
+    }
+
+    /**
+     * Sign a short-lived link to an authorized download-STREAM route (Plan §65, §73).
+     * Route signing for private files is confined to the file domain by the storage-
+     * boundary guard; a domain that must account downloads on its own stream route
+     * (e.g. `audit-exports.download` for the stream-time accounting mandated by ADR-010)
+     * signs it here rather than issuing a `temporarySignedRoute` itself.
+     *
+     * @param  array<string, mixed>  $parameters
+     * @return array{url: string, expires_at: string}
+     */
+    public function signDownloadRoute(string $routeName, array $parameters): array
+    {
         $expires = now()->addMinutes((int) config('files.signed_url_ttl_minutes', 5));
 
-        $url = URL::temporarySignedRoute('files.download', $expires, ['uploadedFile' => $file->ulid]);
+        $url = URL::temporarySignedRoute($routeName, $expires, $parameters);
 
         return ['url' => $url, 'expires_at' => $expires->toIso8601String()];
     }

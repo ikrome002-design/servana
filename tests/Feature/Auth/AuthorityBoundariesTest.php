@@ -128,9 +128,21 @@ it('keeps the Audit role read-only (no mutating merchant capability)', function 
     $registry = app(PermissionRegistry::class);
     $audit = grants('audit');
 
+    // Phase 19 — the flagged-event review workflow is Audit's in-domain write set
+    // (reconciled from the single legacy `audit.flag`). It mutates review METADATA only —
+    // never an operational/financial/identity/audit-log source record. Every other audit
+    // grant must be a read.
+    $auditInDomainWrites = [
+        'audit.flagged_event.create',
+        'audit.flagged_event.update_status',
+        'audit.flagged_event.resolve_metadata',
+        // Phase 19 (ADR-010): the Audit export capability creates an export request +
+        // private file (Audit's in-domain write) but never mutates a source record.
+        'audit.export',
+    ];
+
     foreach ($audit as $key) {
-        // audit.flag is audit's one in-domain write; everything else must be a read.
-        if ($key === 'audit.flag') {
+        if (in_array($key, $auditInDomainWrites, true)) {
             continue;
         }
         expect($registry->isMutating($key))->toBeFalse("audit must not hold mutating key {$key}");

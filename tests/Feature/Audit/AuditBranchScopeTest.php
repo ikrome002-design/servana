@@ -11,9 +11,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class)->group('audit', 'isolation');
 
 /*
- | R2: a branch-scoped Audit user reads ONLY its assigned branch's audit rows
- | (Scope §4.8). Merchant-wide and other-branch rows are not visible; cross-branch
- | show() is denied; a Merchant Admin (non-branch-scoped) sees all merchant rows.
+ | Phase 19 (canonical §19.2/§19.3 closure): a branch-scoped Audit user reads ONLY
+ | its actively-assigned branch's audit rows via `audit.branch_events.view`. Other-
+ | branch rows and merchant-level (branch_id null) rows are never visible (Phase 19
+ | Q2 — merchant-level rows are governance-scoped only). The legacy `audit.view_full`
+ | key is retired: Merchant Admin has NO direct raw audit-log access.
  */
 
 function seedBranchRows(): array
@@ -48,19 +50,22 @@ it('denies an Audit user reading another branch row', function (): void {
     $this->actingAs($auditUser, 'sanctum')->getJson("/api/v1/audit-logs/{$rowB->ulid}")->assertStatus(403);
 });
 
-it('hides merchant-level rows from a branch-scoped Audit user', function (): void {
+it('excludes merchant-level (branch_id null) rows from a branch-scoped Audit user', function (): void {
     ['auditUser' => $auditUser, 'rowMerchant' => $rowMerchant] = seedBranchRows();
 
+    // Not present in the branch-events list…
+    $ids = $this->actingAs($auditUser, 'sanctum')->getJson('/api/v1/audit-logs')
+        ->assertStatus(200)->json('data.*.id');
+    expect($ids)->not->toContain($rowMerchant->ulid);
+
+    // …and not addressable directly (Phase 19 Q2 — governance-scoped only).
     $this->actingAs($auditUser, 'sanctum')->getJson("/api/v1/audit-logs/{$rowMerchant->ulid}")->assertStatus(403);
 });
 
-it('lets a merchant admin see all own-merchant rows including merchant-level', function (): void {
+it('denies a Merchant Admin any direct raw audit-log access (audit.view_full retired)', function (): void {
     ['admin' => $admin, 'rowMerchant' => $rowMerchant] = seedBranchRows();
 
-    $ids = $this->actingAs($admin, 'sanctum')->getJson('/api/v1/audit-logs')
-        ->assertStatus(200)->json('data.*.id');
-
-    expect($ids)->toContain($rowMerchant->ulid);
-
-    $this->actingAs($admin, 'sanctum')->getJson("/api/v1/audit-logs/{$rowMerchant->ulid}")->assertStatus(200);
+    // No canonical audit read key → 403 at the permission middleware on every surface.
+    $this->actingAs($admin, 'sanctum')->getJson('/api/v1/audit-logs')->assertStatus(403);
+    $this->actingAs($admin, 'sanctum')->getJson("/api/v1/audit-logs/{$rowMerchant->ulid}")->assertStatus(403);
 });

@@ -24,6 +24,48 @@ export const auditRoutes: RouteRecordRaw[] = [
         name: 'audit.dashboard',
         component: () => import('@/pages/audit/DashboardStub.vue'),
       },
+      // Phase 19 — Audit read + review + export surfaces. All read-only over source
+      // records; only flagged-review metadata + export request/revoke may mutate.
+      {
+        path: 'events',
+        name: 'audit.branch-events',
+        component: () => import('@/pages/audit/AuditEventList.vue'),
+      },
+      {
+        path: 'events/:id',
+        name: 'audit.event-detail',
+        component: () => import('@/pages/audit/AuditEventDetail.vue'),
+      },
+      {
+        path: 'flagged',
+        name: 'audit.flagged-events',
+        component: () => import('@/pages/audit/FlaggedEventQueue.vue'),
+      },
+      {
+        path: 'flagged/:id',
+        name: 'audit.flagged-detail',
+        component: () => import('@/pages/audit/FlaggedEventDetail.vue'),
+      },
+      {
+        path: 'finance',
+        name: 'audit.finance',
+        component: () => import('@/pages/audit/FinanceAudit.vue'),
+      },
+      {
+        path: 'compensation',
+        name: 'audit.compensation',
+        component: () => import('@/pages/audit/CompensationAudit.vue'),
+      },
+      {
+        path: 'exports',
+        name: 'audit.exports',
+        component: () => import('@/pages/audit/AuditExportList.vue'),
+      },
+      {
+        path: 'exports/:id',
+        name: 'audit.export-detail',
+        component: () => import('@/pages/audit/AuditExportDetail.vue'),
+      },
     ],
   },
 ];

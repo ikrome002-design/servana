@@ -46,7 +46,9 @@ function expectedMatrix(): array
             // Phase 18B: routine period locking is Finance-owned (ADR-0007); the Merchant
             // Administrator holds ONLY exceptional-reopen approval (was legacy `periods.lock`).
             'merchant.period_reopen.approve_exception', 'commissions.view', 'platform_fees.view',
-            'reports.view', 'audit.view_full',
+            // Phase 19: `audit.view_full` RETIRED — Merchant Admin holds NO direct raw
+            // audit-log key (canonical §19.3; oversight via reports/dashboards).
+            'reports.view',
         ],
         'branch_manager' => [
             'branch.profile.manage', 'branch.calendar.manage', 'branch.dashboard.view',
@@ -56,12 +58,14 @@ function expectedMatrix(): array
             // Phase 17: NO invoice key — Branch Manager must not create invoices
             // (Plan §10.2/§19.3); legacy invoices.create/view grants removed.
             'receipt.view', 'commissions.view', 'platform_fees.view',
-            'reports.view', 'audit.view_full',
+            // Phase 19: `audit.view_full` RETIRED — no direct raw audit-log key.
+            'reports.view',
         ],
         'hr' => [
             'staff.invite', 'staff.edit', 'staff.suspend',
             'personnel.eligibility.manage', 'personnel.availability.manage', 'commissions.manage',
-            'commissions.view', 'reports.view', 'audit.view_full',
+            // Phase 19: `audit.view_full` RETIRED — no direct raw audit-log key.
+            'commissions.view', 'reports.view',
             'exports.staff_roster',
         ],
         'finance' => [
@@ -76,7 +80,8 @@ function expectedMatrix(): array
             'period_lock.create', 'period_lock.reopen',
             'finance_export.create', 'finance_export.download',
             'platform_fees.dispute',
-            'reports.view', 'audit.view_full',
+            // Phase 19: canonical Finance audit surface (REPLACES legacy `audit.view_full`).
+            'reports.view', 'finance.audit.view',
         ],
         'front_office' => [
             'queue.view', 'queue.create', 'queue.assign', 'queue.transfer', 'queue.reorder',
@@ -98,10 +103,16 @@ function expectedMatrix(): array
             'commissions.view', 'reports.view',
         ],
         'audit' => [
-            // Phase 17: no invoice key (Audit reads via audit.view_full/reports).
+            // Phase 17: no invoice key (Audit reads finance activity via the finance-domain audit view).
             'receipt.view',
             'commissions.view', 'platform_fees.view', 'reports.view',
-            'audit.view_full', 'audit.flag',
+            // Phase 19 — canonical, domain-segmented, branch-scoped, masked Audit reads
+            // (REPLACE the retired catch-all `audit.view_full`) + the flagged-event review
+            // workflow (review metadata only; Audit stays read-only over source records).
+            'audit.branch_events.view', 'audit.finance.view', 'audit.compensation.view',
+            // Phase 19 (ADR-010): Audit's in-domain export capability (request + download; SU Y).
+            'audit.export',
+            'audit.flagged_event.create', 'audit.flagged_event.update_status', 'audit.flagged_event.resolve_metadata',
         ],
         'super_admin' => [
             'platform.settings.manage', 'platform.merchants.govern',

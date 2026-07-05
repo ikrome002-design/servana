@@ -227,6 +227,102 @@ enum AuditEvent: string
     case FileAccessDenied = 'file.access_denied';
     case FileExpiredOrDeleted = 'file.expired_or_deleted';
 
+    // --- Audit flagged-event review workflow (Plan §13.2, §80; Phase 19). Review
+    // metadata only — the source audit_logs row is never mutated.
+    case AuditEventFlagged = 'audit.flagged_event.created';
+    case AuditFlaggedReviewStarted = 'audit.flagged_event.review_started';
+    case AuditFlaggedResolved = 'audit.flagged_event.resolved';
+    case AuditFlaggedDismissed = 'audit.flagged_event.dismissed';
+    case AuditFlaggedReopened = 'audit.flagged_event.reopened';
+    // --- Permissioned, masked, signed/expiring, download-counted audit export
+    // (Plan §13.5, §80; Phase 19; ADR-010). Naming mirrors the Finance-export
+    // lifecycle; download accounting is on the authorized file stream. (Replaces the
+    // earlier unused `audit.exported` catalogue entry — no duplicate-meaning event.)
+    case AuditExportRequested = 'audit_export.requested';
+    case AuditExportGenerated = 'audit_export.generated';
+    case AuditExportFailed = 'audit_export.failed';
+    case AuditExportDownloaded = 'audit_export.downloaded';
+    case AuditExportExpired = 'audit_export.expired';
+    case AuditExportRevoked = 'audit_export.revoked';
+
+    /**
+     * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
+     *
+     * Drives the masked, domain-filtered audit read surfaces: the finance domain
+     * backs `audit.finance.view` / `finance.audit.view`; the (currently empty)
+     * compensation domain backs `audit.compensation.view` (populated by Phases
+     * 20F–20H); everything else is `General` and backs `audit.branch_events.view`.
+     */
+    public function domain(): AuditDomain
+    {
+        return match ($this) {
+            self::InvoiceCreated,
+            self::InvoiceUpdatedDraft,
+            self::InvoiceFinalized,
+            self::InvoiceVoidRequested,
+            self::InvoiceVoided,
+            self::InvoiceVoidRejected,
+            self::InvoiceAdjusted,
+            self::CustomerPaymentRecorded,
+            self::CustomerPaymentDuplicateSuspected,
+            self::CustomerPaymentDuplicateOverrideApproved,
+            self::CustomerPaymentRecordedException,
+            self::CustomerPaymentValidated,
+            self::CustomerPaymentRejected,
+            self::CustomerPaymentCorrectionRequested,
+            self::CustomerPaymentReferenceCorrected,
+            self::CustomerPaymentResubmitted,
+            self::ReceiptIssued,
+            self::ReceiptReissued,
+            self::ReceiptDownloaded,
+            self::RefundRequested,
+            self::RefundApproved,
+            self::RefundRejected,
+            self::RefundFinalized,
+            self::FinanceDisputeOpened,
+            self::FinanceDisputeReviewStarted,
+            self::FinanceDisputeResolved,
+            self::FinanceDisputeRejected,
+            self::CashUpDraftUpdated,
+            self::CashUpSubmitted,
+            self::CashUpApproved,
+            self::CashUpRejected,
+            self::CashUpCorrectionRequested,
+            self::CashUpResubmitted,
+            self::CashUpLocked,
+            self::FinancialPeriodLocked,
+            self::FinancialPeriodReopenRequested,
+            self::FinancialPeriodReopenApproved,
+            self::FinancialPeriodReopened,
+            self::FinanceExportRequested,
+            self::FinanceExportGenerated,
+            self::FinanceExportFailed,
+            self::FinanceExportDownloaded,
+            self::FinanceExportExpired,
+            self::FinanceExportRevoked => AuditDomain::Finance,
+
+            // Compensation events arrive with Phases 20F–20H; none exist yet.
+
+            default => AuditDomain::General,
+        };
+    }
+
+    /**
+     * The action strings of every event in a given read segment (Plan §19.2).
+     *
+     * Used server-side by the masked audit read endpoints to include/exclude a
+     * domain — never a client-supplied filter.
+     *
+     * @return list<string>
+     */
+    public static function actionsIn(AuditDomain $domain): array
+    {
+        return array_values(array_map(
+            static fn (self $event): string => $event->value,
+            array_filter(self::cases(), static fn (self $event): bool => $event->domain() === $domain),
+        ));
+    }
+
     /** Central severity for each event (mirrors audit_logs.severity CHECK). */
     public function severity(): AuditSeverity
     {
@@ -276,6 +372,9 @@ enum AuditEvent: string
             self::FinanceExportGenerated,
             self::FinanceExportDownloaded,
             self::FinanceExportExpired,
+            self::AuditExportGenerated,
+            self::AuditExportDownloaded,
+            self::AuditExportExpired,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
@@ -306,6 +405,10 @@ enum AuditEvent: string
             self::CashUpResubmitted,
             self::CashUpLocked,
             self::FinanceExportRequested,
+            self::AuditExportRequested,
+            self::AuditFlaggedReviewStarted,
+            self::AuditFlaggedResolved,
+            self::AuditFlaggedDismissed,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,
@@ -337,6 +440,10 @@ enum AuditEvent: string
             self::CashUpCorrectionRequested,
             self::FinanceExportFailed,
             self::FinanceExportRevoked,
+            self::AuditExportFailed,
+            self::AuditExportRevoked,
+            self::AuditEventFlagged,
+            self::AuditFlaggedReopened,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,

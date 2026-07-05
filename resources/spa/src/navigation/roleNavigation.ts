@@ -116,7 +116,7 @@ const finance: NavItem[] = [
   { key: 'finance.subscription-billing', label: 'Subscription billing', permission: 'subscription.payment_attempts.view', phase: 'Phase 20B', availability: 'planned' },
   { key: 'finance.reports', label: 'Finance reports', phase: 'Phase 21N', availability: 'planned' },
   { key: 'finance.exports', label: 'Exports', routeName: 'finance.exports', permission: 'finance_export.create', phase: 'Phase 18B', availability: 'live' },
-  { key: 'finance.audit', label: 'Audit activity', permission: 'finance.audit.view', phase: 'Phase 19', availability: 'planned' },
+  { key: 'finance.audit', label: 'Audit activity', routeName: 'finance.audit', permission: 'finance.audit.view', phase: 'Phase 19', availability: 'live' },
 ];
 
 const frontOffice: NavItem[] = [
@@ -147,11 +147,11 @@ const personnel: NavItem[] = [
 const audit: NavItem[] = [
   { key: 'audit.overview', label: 'Overview', routeName: 'audit.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'audit.get-started', label: 'Get started', routeName: 'audit.get-started', phase: 'Phase 11', availability: 'live' },
-  { key: 'audit.branch-events', label: 'Branch audit log', permission: 'audit.branch_events.view', phase: 'Phase 19', availability: 'planned' },
-  { key: 'audit.flagged-events', label: 'Flagged events', permission: 'audit.flagged_event.create', phase: 'Phase 19', availability: 'planned' },
-  { key: 'audit.compensation', label: 'Compensation audit', permission: 'audit.compensation.view', phase: 'Phase 19', availability: 'planned' },
-  { key: 'audit.finance', label: 'Finance audit', permission: 'audit.finance.view', phase: 'Phase 19', availability: 'planned' },
-  { key: 'audit.exports', label: 'Exports', permission: 'audit.export', phase: 'Phase 19', availability: 'planned' },
+  { key: 'audit.branch-events', label: 'Branch audit log', routeName: 'audit.branch-events', permission: 'audit.branch_events.view', phase: 'Phase 19', availability: 'live' },
+  { key: 'audit.flagged-events', label: 'Flagged events', routeName: 'audit.flagged-events', permission: 'audit.branch_events.view', phase: 'Phase 19', availability: 'live' },
+  { key: 'audit.compensation', label: 'Compensation audit', routeName: 'audit.compensation', permission: 'audit.compensation.view', phase: 'Phase 19', availability: 'live' },
+  { key: 'audit.finance', label: 'Finance audit', routeName: 'audit.finance', permission: 'audit.finance.view', phase: 'Phase 19', availability: 'live' },
+  { key: 'audit.exports', label: 'Exports', routeName: 'audit.exports', permission: 'audit.export', phase: 'Phase 19', availability: 'live' },
 ];
 
 /** The canonical per-role navigation registry. */

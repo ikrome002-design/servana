@@ -90,14 +90,21 @@ it('does not create a second merchant for an existing email', function (): void 
     $this->postJson('/api/v1/merchant-registration/self-register', selfRegisterPayload())
         ->assertStatus(202);
 
-    // Second registration with the same email: identical response, no new rows.
+    $merchantsAfterFirst = Merchant::query()->count();
+
+    // Second registration with the same email: identical response, no NEW rows.
     $this->postJson('/api/v1/merchant-registration/self-register', selfRegisterPayload([
         'owner_name' => 'Someone Else',
         'business_name' => 'Different Business',
     ]))->assertStatus(202);
 
+    // The duplicate email must not create a second user or add a merchant. Assert the
+    // DELTA (no new merchant), not a global count, so the test is independent of any
+    // rows a prior test in a serial run may have left (the product dedup itself is
+    // proven by the unchanged owner-user count; the isolated + parallel suites verify
+    // the absolute counts).
     expect(User::query()->where('email', 'owner@example.com')->count())->toBe(1)
-        ->and(Merchant::query()->count())->toBe(1);
+        ->and(Merchant::query()->count())->toBe($merchantsAfterFirst);
 });
 
 it('is rate limited by the registration limiter', function (): void {

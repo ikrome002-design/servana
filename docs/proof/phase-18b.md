@@ -2,13 +2,17 @@
 
 **Branch:** `phase-18b-financial-validation-controls` · **Base commit:** `4a489d0`
 (`4a489d04156aec8348eda9a968f830da31668c87`, verified PR #30 squash merge). **Status:**
-`local_complete` — all local acceptance gates pass on this tree (see §Quality gates);
-this file records controlling decisions, the specification-gate resolutions (A–J),
-per-slice evidence, the full browser-verification history, and final gate results. It
-is **not** `ci_passed`, `merged`, or `verified_complete` — those follow the Phase 18B
-PR merging with green CI and truthful governance evidence. Tests run against
-PostgreSQL 16 (never SQLite). CI is authoritative for the Linux browser/Docker/gitleaks
-gates.
+`verified_complete` — PR **#31** `Phase 18B: Implement validation receipts and finance
+controls` MERGED into `main`, merge commit `64bd0a117dcdc819a8baf4b9bec3c3eb09635edc`
+(implementation `ed07c8b`, CI-correction `a0d4dede7ce62e5dbcb7a27467b15ba592ccf6d3`,
+governance `a8f988b68872eb3e352bc7f70dbb362bfb320cf3`). CI: initial run `28694148176`
+FAILED, corrected-head run `28695121157` SUCCESS, final governance-head run
+`28695314469` SUCCESS. `reviewDecision` blank under the documented PR-specific
+solo-maintainer exception (`docs/governance/solo-maintainer-review-exception-pr-31.md`)
+— **not** independent reviewer approval. `REM-PAY-001` closed `verified_complete` on
+this merge. This file records controlling decisions, the specification-gate resolutions
+(A–J), per-slice evidence, the full browser-verification history, and final gate
+results. Tests run against PostgreSQL 16 (never SQLite).
 
 Money is integer minor units (`Money`) — never float. Full/normalized payment
 references, external refund references, raw client contact, private file paths and

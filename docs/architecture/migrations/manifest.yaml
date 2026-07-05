@@ -836,3 +836,46 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-18b.md
     notes: "Branch-owned; ulid public id; append-only (created_at only). Durable per-component seam for Phase 20G (Gate C/E) — NOT a commission ledger; NO rate/earned/payable. kind CHECK (validated_allocation,reversal); source coherence CHECK. Idempotent PARTIAL UNIQUEs (payment_validation_event_id,payment_record_id) WHERE validated_allocation and (refund_id,payment_record_id) WHERE reversal. Composite FKs (branch_id,merchant_id)->merchant_branches; (payment_record_id,merchant_id)->payment_records RESTRICT."
+
+  - file: 2026_07_04_000001_create_audit_flagged_events_table.php
+    table: audit_flagged_events
+    domain: Audit
+    owner_phase: "19"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/audit-files-notifications.md
+    depends_on:
+      - 2026_06_16_000005_create_audit_logs_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-19.md
+    notes: "Branch-owned; ulid public id + route key. Review record over ONE branch-scoped audit_logs row; NEVER mutates the source (audit_log_id FK ON DELETE RESTRICT; audit_logs append-only + trigger-blocked). status CHECK (open,under_review,resolved,dismissed,reopened) mirrors AuditFlaggedEventStatus; resolution CHECK ((resolved,dismissed) = resolved_by AND review_notes present); assignment CHECK (under_review => assigned_to present). No destructive/soft delete. Indexes (merchant_id,branch_id)/(branch_id,status)/(audit_log_id); UNIQUE(id,merchant_id); composite FK (branch_id,merchant_id)->merchant_branches. Tenant consistency to the audited row (merchant/branch copied from audit_logs) enforced by FlagAuditEvent + AuditFlaggedEventSchemaTest/IsolationTest."
+
+  - file: 2026_07_04_000002_create_audit_exports_table.php
+    table: audit_exports
+    domain: Audit
+    owner_phase: "19"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/audit-files-notifications.md
+    depends_on:
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_24_000001_create_uploaded_files_table.php
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-19.md
+    notes: "Branch-owned (branch_id NOT NULL); ulid public id + route key. Async, reason-gated, permission-masked, signed/expiring, download-counted Audit export request (ADR-010; product-owner decision resolving REM-AUDEXP-001). status CHECK (queued,processing,ready,failed,expired,revoked) mirrors AuditExportStatus; reason non-empty CHECK; scope_json jsonb-object CHECK; download_count>=0 + first/last_downloaded_at coherence CHECKs; row_count null-before-ready/>=0-after CHECK; ready=>file_id+generated_at+expires_at+row_count, failed=>failed_at+failure_code, revoked=>revoked_at, expired=>expired_at. file_id FK uploaded_files ON DELETE RESTRICT. No destructive/soft delete. Indexes (merchant_id,branch_id,status,created_at)/(expires_at)/(requested_by_user_id,created_at); UNIQUE(id,merchant_id); composite FK (branch_id,merchant_id)->merchant_branches. Merchant-level (branch_id null) audit rows never exported; download accounting on the authorized stream."
+
+  - file: 2026_07_04_000003_add_audit_export_to_uploaded_files_purpose_check.php
+    table: uploaded_files
+    domain: Files
+    owner_phase: "19"
+    change_type: alter
+    data_dictionary: docs/architecture/data-dictionary/files-and-media.md
+    depends_on:
+      - 2026_06_24_000001_create_uploaded_files_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-19.md
+    notes: "Expand/contract (ADR-004; ADR-010): drops + re-adds uploaded_files_purpose_check to add the generated-only 'audit_export' purpose so GenerateAuditExport can write a private CSV through the Phase 10F file domain. The shipped Phase-10F migration is never edited. Additive/backward-compatible."
