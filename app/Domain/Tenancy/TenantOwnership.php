@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Tenancy;
 
+use App\Domain\Audit\Models\AuditExport;
+use App\Domain\Audit\Models\AuditFlaggedEvent;
 use App\Domain\Auth\Models\MerchantUserPermissionOverride;
 use App\Domain\Branches\Models\BranchCalendarException;
 use App\Domain\Branches\Models\BranchCashUp;
@@ -103,6 +105,10 @@ final class TenantOwnership
         'finance_disputes',
         'cash_up_lines',
         'commission_handoff_events',
+        // Phase 19 — Audit flagged-event review record over a branch-scoped audit row.
+        'audit_flagged_events',
+        // Phase 19 — branch-scoped Audit export request (ADR-010).
+        'audit_exports',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -216,6 +222,10 @@ final class TenantOwnership
         ReceiptNumberSequence::class => 'tenant',
         FinancialPeriodLock::class => 'tenant',
         FinanceExport::class => 'tenant',
+        // Phase 19 — branch-owned audit flagged-event review record.
+        AuditFlaggedEvent::class => 'branch',
+        // Phase 19 — branch-owned Audit export request (ADR-010).
+        AuditExport::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -257,5 +267,7 @@ final class TenantOwnership
         'finance_disputes' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'cash_up_lines' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'commission_handoff_events' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'audit_flagged_events' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'audit_exports' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }

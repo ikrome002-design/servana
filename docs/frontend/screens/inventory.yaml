@@ -247,6 +247,54 @@ screens:
     status: implemented
     phase: Phase 4
     spec: audit/audit-dashboard.md
+  - key: audit-event-list
+    domain: audit
+    route: audit.branch-events
+    status: implemented
+    phase: Phase 19
+    spec: audit/audit-event-list.md
+  - key: audit-event-detail
+    domain: audit
+    route: audit.event-detail
+    status: implemented
+    phase: Phase 19
+    spec: audit/audit-event-detail.md
+  - key: audit-flagged-queue
+    domain: audit
+    route: audit.flagged-events
+    status: implemented
+    phase: Phase 19
+    spec: audit/audit-flagged-queue.md
+  - key: audit-flagged-detail
+    domain: audit
+    route: audit.flagged-detail
+    status: implemented
+    phase: Phase 19
+    spec: audit/audit-flagged-detail.md
+  - key: audit-finance
+    domain: audit
+    route: audit.finance
+    status: implemented
+    phase: Phase 19
+    spec: audit/audit-finance.md
+  - key: audit-compensation
+    domain: audit
+    route: audit.compensation
+    status: implemented
+    phase: Phase 19
+    spec: audit/audit-compensation.md
+  - key: audit-export-list
+    domain: audit
+    route: audit.exports
+    status: implemented
+    phase: Phase 19
+    spec: audit/audit-export-list.md
+  - key: audit-export-detail
+    domain: audit
+    route: audit.export-detail
+    status: implemented
+    phase: Phase 19
+    spec: audit/audit-export-detail.md
   - key: unsupported-role
     domain: access-state
     route: ~
@@ -583,6 +631,12 @@ screens:
     status: implemented
     phase: Phase 18A
     spec: finance/finance-payment-records-detail.md
+  - key: finance-audit
+    domain: finance
+    route: finance.audit
+    status: implemented
+    phase: Phase 19
+    spec: finance/finance-audit.md
   - key: personnel-appointments
     domain: personnel
     route: personnel.appointments
@@ -612,12 +666,6 @@ screens:
     route: ~
     status: planned
     phase: Phase 21S
-    spec: ~
-  - key: audit-branch-log
-    domain: audit
-    route: ~
-    status: planned
-    phase: Phase 19
     spec: ~
   - key: platform-billing-settings
     domain: platform

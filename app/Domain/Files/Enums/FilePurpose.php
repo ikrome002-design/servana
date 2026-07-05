@@ -19,6 +19,7 @@ enum FilePurpose: string
     case DisputeEvidence = 'dispute_evidence';
     case AuditEvidence = 'audit_evidence';
     case FinanceExport = 'finance_export';
+    case AuditExport = 'audit_export';
     case InvoicePdf = 'invoice_pdf';
     case ReceiptPdf = 'receipt_pdf';
     case BillingInvoicePdf = 'billing_invoice_pdf';

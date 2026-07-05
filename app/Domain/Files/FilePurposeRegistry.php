@@ -76,7 +76,7 @@ final class FilePurposeRegistry
             FilePurpose::DisputeEvidence, false, '18B/19', [], [], $imageMax, true, true, false, 'finance_dispute.manage', false, null, false,
         );
         $defs[] = new FilePurposeDefinition(
-            FilePurpose::AuditEvidence, false, '19', [], [], $imageMax, true, false, false, 'audit.view_full', false, null, false,
+            FilePurpose::AuditEvidence, false, '19', [], [], $imageMax, true, false, false, 'audit.branch_events.view', false, null, false,
         );
 
         // --- Generated-only export / PDF / report / statement purposes --------
@@ -84,6 +84,12 @@ final class FilePurposeRegistry
         // (where billing applies) the billing-read-only rule blocks NEW generation.
         $defs[] = new FilePurposeDefinition(
             FilePurpose::FinanceExport, false, '18B/23', [], [], 0, true, false, false, 'finance_export.download', false, $exportRetention, true,
+        );
+        // Audit export (Phase 19; ADR-010): generated-only, branch-scoped, permission
+        // `audit.export`. Download authority is the Audit read/export key; the private
+        // CSV is written by GenerateAuditExport through GeneratedFileWriter.
+        $defs[] = new FilePurposeDefinition(
+            FilePurpose::AuditExport, false, '19', [], [], 0, true, false, false, 'audit.export', false, $exportRetention, true,
         );
         $defs[] = new FilePurposeDefinition(
             FilePurpose::InvoicePdf, false, '17', [], [], 0, true, true, false, 'invoice.view', false, null, true,

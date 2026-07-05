@@ -2,8 +2,13 @@ Servana — Phase 8 permission matrix (seeded §10.3). ✓ = default grant.
 
 permission                            merchant_adm  branch_manag  hr  finance  front_office  personnel  audit  super_admin
 --------------------------------------------------------------------------------------------------------------------------
-audit.flag                            ·            ·            ·            ·            ·            ·            ✓           ·
-audit.view_full                       ✓           ✓           ✓           ✓           ·            ·            ✓           ·
+audit.branch_events.view              ·            ·            ·            ·            ·            ·            ✓           ·
+audit.compensation.view               ·            ·            ·            ·            ·            ·            ✓           ·
+audit.export                          ·            ·            ·            ·            ·            ·            ✓           ·
+audit.finance.view                    ·            ·            ·            ·            ·            ·            ✓           ·
+audit.flagged_event.create            ·            ·            ·            ·            ·            ·            ✓           ·
+audit.flagged_event.resolve_metadata  ·            ·            ·            ·            ·            ·            ✓           ·
+audit.flagged_event.update_status     ·            ·            ·            ·            ·            ·            ✓           ·
 branch.calendar.manage                ·            ✓           ·            ·            ·            ·            ·            ·
 branch.cash_up.submit                 ·            ✓           ·            ·            ·            ·            ·            ·
 branch.dashboard.view                 ·            ✓           ·            ·            ·            ·            ·            ·
@@ -28,6 +33,7 @@ customer_payment.reference_correct    ·            ·            ·            
 customer_payment.reject               ·            ·            ·            ✓           ·            ·            ·            ·
 customer_payment.validate             ·            ·            ·            ✓           ·            ·            ·            ·
 customer_payment.view                 ·            ·            ·            ✓           ·            ·            ·            ·
+finance.audit.view                    ·            ·            ·            ✓           ·            ·            ·            ·
 finance_dispute.manage                ·            ·            ·            ✓           ·            ·            ·            ·
 invoice.adjustment.manage             ·            ·            ·            ✓           ·            ·            ·            ·
 invoice.create                        ·            ·            ·            ·            ✓           ·            ·            ·

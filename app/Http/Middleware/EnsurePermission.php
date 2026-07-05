@@ -20,18 +20,24 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * EnsureBranchScope 404s a foreign branch — so reaching here means the resource
  * is visible to this tenant and only the capability is in question.
  *
- * Usage: `->middleware(EnsurePermission::class.':branches.create')`.
+ * Usage: `->middleware(EnsurePermission::class.':branches.create')`. One or more
+ * keys may be supplied (comma-separated) — the caller passes if it holds ANY of
+ * them (OR). This backs surfaces a Plan §19.2 shares across roles under distinct
+ * keys (e.g. finance audit via `finance.audit.view` OR `audit.finance.view`).
+ * Compose AND by chaining EnsurePermission middlewares, not by listing keys here.
  */
 final class EnsurePermission
 {
     public function __construct(private readonly TenantContext $context) {}
 
-    public function handle(Request $request, Closure $next, string $permission): Response
+    public function handle(Request $request, Closure $next, string ...$permissions): Response
     {
-        if (! $this->context->can($permission)) {
-            throw new AccessDeniedHttpException('This action is unauthorized.');
+        foreach ($permissions as $permission) {
+            if ($this->context->can($permission)) {
+                return $next($request);
+            }
         }
 
-        return $next($request);
+        throw new AccessDeniedHttpException('This action is unauthorized.');
     }
 }

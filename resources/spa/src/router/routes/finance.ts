@@ -99,6 +99,13 @@ export const financeRoutes: RouteRecordRaw[] = [
         name: 'finance.payment-records.detail',
         component: () => import('@/pages/payments/PaymentGroupDetail.vue'),
       },
+      // Phase 19 — the Finance role's own MFA-gated, branch-scoped, masked read of the
+      // finance-domain audit trail (finance.audit.view; distinct from Audit's audit.finance.view).
+      {
+        path: 'audit',
+        name: 'finance.audit',
+        component: () => import('@/pages/finance/FinanceAuditView.vue'),
+      },
     ],
   },
 ];

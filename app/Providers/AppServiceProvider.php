@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
+use App\Domain\Audit\Models\AuditExport;
+use App\Domain\Audit\Models\AuditFlaggedEvent;
 use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Audit\Services\DatabaseAuditRecorder;
 use App\Domain\Branches\Models\BranchCashUp;
@@ -40,6 +42,8 @@ use App\Domain\Scheduling\Models\QueueEntry;
 use App\Domain\Scheduling\Models\ServiceSession;
 use App\Domain\Tenancy\TenantContext;
 use App\Policies\AppointmentPolicy;
+use App\Policies\AuditExportPolicy;
+use App\Policies\AuditFlaggedEventPolicy;
 use App\Policies\AuditLogPolicy;
 use App\Policies\BranchDayRecordPolicy;
 use App\Policies\BranchOperatingHourPolicy;
@@ -87,6 +91,9 @@ class AppServiceProvider extends ServiceProvider
         BranchOperatingHour::class => BranchOperatingHourPolicy::class,
         BranchDayRecord::class => BranchDayRecordPolicy::class,
         AuditLog::class => AuditLogPolicy::class,
+        AuditFlaggedEvent::class => AuditFlaggedEventPolicy::class,
+        // Phase 19 — branch-scoped, reason-gated, masked audit exports (ADR-010).
+        AuditExport::class => AuditExportPolicy::class,
         // Phase 15A — catalogue & clients.
         Service::class => ServicePolicy::class,
         ServiceCategory::class => ServiceCategoryPolicy::class,

@@ -9,24 +9,47 @@ use App\Domain\Tenancy\TenantContext;
 use App\Models\User;
 
 /**
- * Audit-log read authorization (Scope §4.8, Plan §70, ADR-008).
+ * Audit-log read authorization (Scope §4.8, Plan §19.2/§19.3, §70, ADR-008).
  *
  * Audit logs are READ-ONLY for everyone — create/update/delete are always denied
- * (the rows are immutable at the database too). Read scope:
- *   - Merchant rows: visible to a user with `audit.view_full` in the SAME merchant.
- *     A branch-scoped viewer (e.g. the Audit role) sees ONLY rows for a branch it
- *     is assigned to; merchant-level rows (branch_id null) are visible only to a
- *     non-branch-scoped viewer (Merchant Admin).
+ * (the rows are immutable at the database too). Read scope (Phase 19 canonical
+ * closure — the legacy catch-all `audit.view_full` is RETIRED):
+ *   - Merchant rows with a branch: visible to a caller holding ANY canonical
+ *     merchant audit-read key (`audit.branch_events.view` / `audit.finance.view`
+ *     / `audit.compensation.view` / `finance.audit.view`) in the SAME merchant,
+ *     confined to its actively-assigned branch(es). The domain SEGMENT (branch /
+ *     finance / compensation) is enforced by the route + controller query; the
+ *     policy enforces tenant + branch scope.
+ *   - Merchant-level rows (branch_id null): NOT exposed to any merchant-tier
+ *     audit reader (Phase 19 decision Q2). They are governance-scoped only.
  *   - Platform rows (merchant_id null): visible only to platform staff with
  *     `platform.audit.view`. Platform staff never gain merchant operational reads.
  */
 final class AuditLogPolicy
 {
+    /** Canonical merchant-tier audit read keys (Plan §19.2 Audit + Finance audit). */
+    private const MERCHANT_READ_KEYS = [
+        'audit.branch_events.view',
+        'audit.finance.view',
+        'audit.compensation.view',
+        'finance.audit.view',
+    ];
+
     public function __construct(private readonly TenantContext $context) {}
 
     public function viewAny(User $user): bool
     {
-        return $this->context->can('audit.view_full') || $this->context->can('platform.audit.view');
+        if ($this->context->can('platform.audit.view')) {
+            return true;
+        }
+
+        foreach (self::MERCHANT_READ_KEYS as $key) {
+            if ($this->context->can($key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function view(User $user, AuditLog $log): bool
@@ -36,18 +59,25 @@ final class AuditLogPolicy
             return $this->context->isPlatformStaff() && $this->context->can('platform.audit.view');
         }
 
-        // Merchant chain — same merchant + the audit-read capability.
-        if ($log->merchant_id !== $this->context->merchantId() || ! $this->context->can('audit.view_full')) {
+        // Merchant chain — same merchant + a canonical merchant audit-read key.
+        if ($log->merchant_id !== $this->context->merchantId() || ! $this->hasMerchantReadKey()) {
             return false;
         }
 
-        // A branch-scoped viewer is confined to its assigned branch(es); it never
-        // sees merchant-level (branch_id null) or other-branch rows (Scope §4.8).
-        if ($this->context->isBranchScoped()) {
-            return $log->branch_id !== null && $this->context->canAccessBranch($log->branch_id);
+        // Merchant-level rows (branch_id null) are never exposed to a merchant-tier
+        // reader (Phase 19 Q2); branch rows are confined to assigned branch(es).
+        return $log->branch_id !== null && $this->context->canAccessBranch($log->branch_id);
+    }
+
+    private function hasMerchantReadKey(): bool
+    {
+        foreach (self::MERCHANT_READ_KEYS as $key) {
+            if ($this->context->can($key)) {
+                return true;
+            }
         }
 
-        return true;
+        return false;
     }
 
     public function create(User $user): bool

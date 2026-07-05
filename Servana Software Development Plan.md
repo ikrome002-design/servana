@@ -447,7 +447,7 @@ Core/identity/tenancy: users(as-built), magic_login_tokens(as-built), merchants(
   merchant_profiles(as-built), merchant_users(as-built), merchant_status_histories(as-built),
   permissions(as-built), roles(as-built), role_permission_assignments(as-built),
   merchant_user_permission_overrides(as-built), mfa_credentials(R3), mfa_recovery_codes(R3),
-  idempotency_keys(R4), audit_logs(as-built), audit_flagged_events(19)
+  idempotency_keys(R4), audit_logs(as-built), audit_flagged_events(19), audit_exports(19)
 Branches/staff: merchant_branches(as-built), branch_user_assignments(as-built),
   branch_operating_hours(as-built), branch_calendar_exceptions(as-built),
   branch_day_records(as-built), staff_invitations(as-built), staff_profiles(as-built),
@@ -553,6 +553,27 @@ audit_flagged_events (19)
 - id; ulid; merchant_id; branch_id; audit_log_id FK audit_logs RESTRICT; status varchar CHECK in ('open','under_review','resolved','dismissed','reopened')
 - review_notes text; assigned_to nullable; resolved_by nullable; created_at/updated_at
 - Only review metadata is mutable; source audit_logs row stays immutable.
+
+audit_exports (19) — async, reason-gated, permission-masked, signed/expiring, download-counted Audit export
+  (product-owner decision 2026-07-04 resolving REM-AUDEXP-001; the Plan's export-controls invariant requires
+  Audit exports to be async/reason-gated/masked/signed/expiring/download-counted/audited, and uploaded_files
+  cannot persist that request lifecycle while finance_exports is Finance-owned with an export_type CHECK that
+  excludes audit — see docs/proof/phase-19.md. Phase 23 remains final release-wide export hardening, not the
+  initial Audit-export build.)
+- id; ulid; merchant_id; branch_id NOT NULL (branch-owned; requested branch must be an assigned Audit branch);
+  requested_by_user_id FK users RESTRICT
+- reason varchar not null (non-empty CHECK); scope_json jsonb (validated filter snapshot only)
+- status varchar CHECK in ('queued','processing','ready','failed','expired','revoked') (state-machine only)
+- file_id FK uploaded_files RESTRICT nullable; row_count int nullable (null before ready, >=0 after);
+  download_count int default 0 (>=0); first_downloaded_at/last_downloaded_at nullable (coherent with count)
+- requested_at; processing_started_at; generated_at; failed_at; expires_at; revoked_at; expired_at
+- failure_code varchar nullable; failure_message_redacted varchar nullable; created_at/updated_at
+- Branch-scoped (audit.export, SU Y). Merchant-level (branch_id null) audit rows are NEVER exported.
+  ready requires file_id+generated_at+expires_at+row_count; failed requires failed_at+failure_code;
+  revoked requires revoked_at; expired requires expired_at. Composite (branch_id,merchant_id) FK; UNIQUE(id,merchant_id);
+  no soft delete; no destructive delete. Generated via GenerateAuditExport (reports-exports, TenantAwareJob) writing a
+  private CSV through the Phase 10F file domain (FilePurpose::AuditExport). Download accounting is on the authorized
+  file STREAM (not link issuance). No raw contents/paths/signatures/contacts/references/tokens/SQLSTATE/stack traces stored.
 ```
 
 ### 13.6 Schema Summary (canonical DDL: data dictionary) — Branches and Staff
@@ -1773,7 +1794,7 @@ Gate(V+R1..R7) → 10 → 10F → 11
 - **Acceptance/Exit:** money lifecycle is auditable, group-validated, locked-period-safe, maker/checker-separated, and never destructively edited.
 
 ### Phase 19 — Audit Logging Completion and Flagged Events (Corrections 16, 22)
-- **DB:** `audit_flagged_events`. **Backend:** complete audit coverage across all financial/billing/compensation/M-Pesa/SMS/file/export events; flagged-event workflow (open→under_review→resolved/dismissed→reopened; only review metadata mutable); branch-scoped, field-masked Audit reads; Audit role updates only review metadata; chain-verification scheduled (Section 67) + alert (Section 71).
+- **DB:** `audit_flagged_events`, `audit_exports` (async, reason-gated, permission-masked, signed/expiring, download-counted Audit export — product-owner decision 2026-07-04 resolving REM-AUDEXP-001; §13.5 DDL; the Phase 19 Audit-export build, with Phase 23 remaining final release-wide export **hardening**, not the initial implementation). **Backend:** complete audit coverage across all financial/billing/compensation/M-Pesa/SMS/file/export events; flagged-event workflow (open→under_review→resolved/dismissed→reopened; only review metadata mutable); branch-scoped, field-masked Audit reads; the branch-scoped, reason-gated, step-up, masked Audit export (never exporting merchant-level branch-null rows; download-counted on the authorized stream; files via 10F); Audit role updates only review/export-request metadata; chain-verification scheduled (Section 67) + alert (Section 71).
 - **Tests/proof:** event coverage for every mutating action, tamper-verification, masked-read enforcement, Audit cannot mutate source records, flagged-event lifecycle.
 - **Acceptance/Exit:** every mutating action emits a typed, severity-tagged, chain-verified event; Audit role is provably read-only except flagged-event metadata.
 

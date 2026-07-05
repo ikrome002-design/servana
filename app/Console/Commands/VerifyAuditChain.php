@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Domain\Audit\Events\AuditChainVerificationFailed;
 use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Audit\Services\AuditChainHasher;
+use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Verify the tamper-evident audit hash chains (Plan §70, ADR-008).
@@ -22,8 +26,12 @@ use Illuminate\Console\Command;
  * non-zero when any chain is invalid. Output is limited to safe chain ids and
  * the failing record ULID; never context, old/new values, PII, or secrets.
  *
- * Scheduled execution and alerting on failure are Phase 25 (Section 71); this
- * command is the verifier those build on.
+ * Scheduled daily (routes/console.php, withoutOverlapping + onOneServer). On any
+ * failure it emits ONE bounded, redacted {@see AuditChainVerificationFailed}
+ * signal (severity/category/safe chain id/correlation id/count/timestamp) and a
+ * matching structured Log::critical. Centralized transport, paging, dashboards,
+ * runbooks, and escalation remain Phase 25 (Section 71) — a listener there
+ * consumes the signal; this command only guarantees it fires exactly once.
  */
 final class VerifyAuditChain extends Command
 {
@@ -45,6 +53,8 @@ final class VerifyAuditChain extends Command
 
         $failures = 0;
         $verified = 0;
+        $firstFailureCategory = null;
+        $firstFailureChain = null;
 
         foreach ($chains as $merchantId) {
             $label = $merchantId === null ? 'platform' : "merchant:{$merchantId}";
@@ -65,14 +75,20 @@ final class VerifyAuditChain extends Command
                 $hashOk = hash_equals($hasher->hashOf($row, $previousHash), $row->hash);
 
                 if (! $linkOk || ! $hashOk) {
+                    $category = ! $linkOk
+                        ? AuditChainVerificationFailed::CATEGORY_BROKEN_LINK
+                        : AuditChainVerificationFailed::CATEGORY_HASH_MISMATCH;
+
                     $this->error(sprintf(
                         'INVALID chain %s at record %s (%s).',
                         $label,
                         $row->ulid,
-                        ! $linkOk ? 'broken link' : 'hash mismatch',
+                        $category,
                     ));
                     $failures++;
                     $chainOk = false;
+                    $firstFailureCategory ??= $category;
+                    $firstFailureChain ??= $label;
                     break; // a broken chain cannot be trusted past the first break
                 }
 
@@ -87,6 +103,7 @@ final class VerifyAuditChain extends Command
 
         if ($failures > 0) {
             $this->error(sprintf('Audit chain verification FAILED: %d chain(s) invalid.', $failures));
+            $this->emitFailureSignal((string) $firstFailureCategory, (string) $firstFailureChain, $failures);
 
             return self::FAILURE;
         }
@@ -94,6 +111,28 @@ final class VerifyAuditChain extends Command
         $this->info(sprintf('Audit chain verification passed: %d chain(s) valid.', $verified));
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Emit the single bounded, redacted failure signal for this run (Plan §71):
+     * a domain event a Phase-25 listener consumes + a matching structured
+     * Log::critical. Carries only safe metadata — no payload, context, hashes,
+     * PII, SQLSTATE, or stack trace.
+     */
+    private function emitFailureSignal(string $category, string $chainIdentifier, int $failedChainCount): void
+    {
+        $signal = new AuditChainVerificationFailed(
+            severity: 'critical',
+            category: $category,
+            chainIdentifier: $chainIdentifier,
+            correlationId: (string) Str::ulid(),
+            failedChainCount: $failedChainCount,
+            occurredAt: CarbonImmutable::now('UTC')->toIso8601String(),
+        );
+
+        Log::critical('audit_chain.verification_failed', $signal->toArray());
+
+        event($signal);
     }
 
     /**

@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Domain\Auth\Mfa\StepUpAction;
+use App\Http\Controllers\Api\V1\Audit\AuditExportController;
+use App\Http\Controllers\Api\V1\Audit\AuditFlaggedEventController;
 use App\Http\Controllers\Api\V1\Audit\AuditLogController;
 use App\Http\Controllers\Api\V1\Auth\MagicLinkController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
@@ -794,13 +796,84 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 ->middleware('signed')
                 ->name('files.download');
 
-            // Merchant audit-log reads (Scope §4.8, Plan §70). READ-ONLY, masked,
-            // merchant-scoped (branch-scoped for the Audit role via the policy).
-            // `audit.view_full` is the backend authorization boundary.
-            Route::middleware(EnsurePermission::class.':audit.view_full')->group(function (): void {
-                Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
-                Route::get('audit-logs/{auditLog}', [AuditLogController::class, 'show'])->name('audit-logs.show');
-            });
+            // Merchant audit-log reads (Scope §4.8, Plan §19.2/§19.3, §70; Phase 19).
+            // READ-ONLY, field-masked, branch-scoped and domain-SEGMENTED. The legacy
+            // catch-all `audit.view_full` is RETIRED — each segment carries its own
+            // canonical key. Merchant-level (branch_id null) rows are never exposed
+            // here (Phase 19 Q2). Literal segment routes precede the ULID show route.
+            Route::get('audit-logs', [AuditLogController::class, 'index'])
+                ->middleware(EnsurePermission::class.':audit.branch_events.view')
+                ->name('audit-logs.index');
+            Route::get('audit-logs/finance', [AuditLogController::class, 'finance'])
+                ->middleware(EnsurePermission::class.':finance.audit.view,audit.finance.view')
+                ->name('audit-logs.finance');
+            Route::get('audit-logs/compensation', [AuditLogController::class, 'compensation'])
+                ->middleware(EnsurePermission::class.':audit.compensation.view')
+                ->name('audit-logs.compensation');
+            Route::get('audit-logs/{auditLog}', [AuditLogController::class, 'show'])
+                ->middleware(EnsurePermission::class.':audit.branch_events.view')
+                ->name('audit-logs.show');
+
+            // Audit flagged-event review workflow (Plan §13.2, §25, §80; Phase 19). The
+            // Audit role flags a branch-scoped audit row and works it through the review
+            // lifecycle. Review metadata ONLY — the source audit_logs row is immutable.
+            // Reads via audit.branch_events.view; writes via the canonical flagged_event
+            // keys. Transitions are branch mutations (no money, no period lock).
+            Route::get('audit-flagged-events', [AuditFlaggedEventController::class, 'index'])
+                ->middleware(EnsurePermission::class.':audit.branch_events.view')
+                ->name('audit-flagged-events.index');
+            Route::get('audit-flagged-events/{auditFlaggedEvent}', [AuditFlaggedEventController::class, 'show'])
+                ->middleware(EnsurePermission::class.':audit.branch_events.view')
+                ->name('audit-flagged-events.show');
+            Route::post('audit-flagged-events', [AuditFlaggedEventController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':audit.flagged_event.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('audit-flagged-events.store');
+            Route::post('audit-flagged-events/{auditFlaggedEvent}/start-review', [AuditFlaggedEventController::class, 'startReview'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':audit.flagged_event.update_status'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('audit-flagged-events.start-review');
+            Route::post('audit-flagged-events/{auditFlaggedEvent}/resolve', [AuditFlaggedEventController::class, 'resolve'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':audit.flagged_event.resolve_metadata'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('audit-flagged-events.resolve');
+            Route::post('audit-flagged-events/{auditFlaggedEvent}/dismiss', [AuditFlaggedEventController::class, 'dismiss'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':audit.flagged_event.resolve_metadata'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('audit-flagged-events.dismiss');
+            Route::post('audit-flagged-events/{auditFlaggedEvent}/reopen', [AuditFlaggedEventController::class, 'reopen'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':audit.flagged_event.update_status'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('audit-flagged-events.reopen');
+
+            // Audit exports (Plan §13.5, §19.2/§19.3, §80; Phase 19; ADR-010). The Audit
+            // role requests a reason-gated, branch-scoped, masked export (audit.export +
+            // fresh step-up) generated async on reports-exports, then downloads it via an
+            // authorized signed Phase 10F link. Download accounting is recorded on the
+            // STREAM (not link issuance). Reads/writes are branch-scoped (branch model
+            // scope); merchant-level (branch_id null) rows are never exported.
+            $auditExportStepUp = RequireFreshMfa::class.':'.StepUpAction::AuditExportCreate->value;
+            Route::get('audit-exports', [AuditExportController::class, 'index'])
+                ->middleware(EnsurePermission::class.':audit.export')
+                ->name('audit-exports.index');
+            Route::post('audit-exports', [AuditExportController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':audit.export', $auditExportStepUp])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('audit-exports.store');
+            Route::get('audit-exports/{auditExport}', [AuditExportController::class, 'show'])
+                ->middleware(EnsurePermission::class.':audit.export')
+                ->name('audit-exports.show');
+            Route::post('audit-exports/{auditExport}/download-link', [AuditExportController::class, 'downloadLink'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':audit.export'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('audit-exports.download-link');
+            Route::get('audit-exports/{auditExport}/download', [AuditExportController::class, 'download'])
+                ->middleware('signed')
+                ->name('audit-exports.download');
+            Route::post('audit-exports/{auditExport}/revoke', [AuditExportController::class, 'revoke'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':audit.export'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('audit-exports.revoke');
         });
 
         // Platform / governance audit reads (Scope §4.8, Plan §70). OUTSIDE the

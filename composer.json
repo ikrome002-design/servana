@@ -65,6 +65,12 @@
         ],
         "api:openapi": [
             "@php artisan servana:openapi"
+        ],
+        "permission:types": [
+            "@php artisan servana:permission-types"
+        ],
+        "permission:types:check": [
+            "@php artisan servana:permission-types --check"
         ]
     },
     "extra": {

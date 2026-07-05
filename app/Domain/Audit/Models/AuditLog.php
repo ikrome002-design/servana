@@ -8,6 +8,9 @@ use App\Domain\Audit\Enums\AuditSeverity;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Models\Merchant;
 use App\Models\User;
+use Database\Factories\AuditLogFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -39,7 +42,16 @@ use Illuminate\Support\Carbon;
  */
 class AuditLog extends Model
 {
+    /** @use HasFactory<AuditLogFactory> */
+    use HasFactory;
+
     public const UPDATED_AT = null;
+
+    /** @return Factory<AuditLog> */
+    protected static function newFactory(): Factory
+    {
+        return AuditLogFactory::new();
+    }
 
     protected $fillable = [
         'ulid',

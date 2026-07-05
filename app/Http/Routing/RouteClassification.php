@@ -71,6 +71,12 @@ final class RouteClassification
         'refunds.reject' => 'No request body; {refund} binding + refund.approve + RefundPolicy + financial_mutation idempotency; RejectRefund restores the prior paid state non-destructively.',
         'refunds.finalize' => 'No request body; {refund} binding + refund.finalize + RefundPolicy + RequireFreshMfa + financial_mutation idempotency; FinalizeRefund reduces the recognised balance additively under lock.',
         'finance-disputes.start-review' => 'No request body; {financeDispute} binding + finance_dispute.manage + FinanceDisputePolicy; StartFinanceDisputeReview transitions open → under_review without mutating the disputed source.',
+        // Phase 19 — bodiless flagged-event review transitions (the flag is the ULID route
+        // param). start-review/reopen carry no body; resolve/dismiss DO carry a review note
+        // (FlaggedEventResolutionRequest) and are therefore NOT exempt. None mutates the
+        // immutable source audit_logs row.
+        'audit-flagged-events.start-review' => 'No request body; {auditFlaggedEvent} binding + audit.flagged_event.update_status + AuditFlaggedEventPolicy; StartFlaggedEventReview transitions open/reopened → under_review (review metadata only).',
+        'audit-flagged-events.reopen' => 'No request body; {auditFlaggedEvent} binding + audit.flagged_event.update_status + AuditFlaggedEventPolicy; ReopenFlaggedEvent transitions resolved/dismissed → reopened (review metadata only).',
         // Phase 18B — bodiless cash-up state transitions (the cash-up is the ULID route
         // param; expected totals are server-derived under lock; counted values are the
         // Branch Manager's stored draft). reject / request-correction carry a reason
@@ -88,6 +94,8 @@ final class RouteClassification
         // the request step carries type + reason and is therefore NOT exempt).
         'finance-exports.download-link' => 'No request body; {financeExport} binding + finance_export.download + FinanceExportPolicy; issues a signed Phase 10F link (authorization re-checked at issuance and the byte stream) and records atomic download accounting.',
         'finance-exports.revoke' => 'No request body; {financeExport} binding + finance_export.create + FinanceExportPolicy; RevokeFinanceExport transitions ready → revoked under lock.',
+        'audit-exports.download-link' => 'No request body; {auditExport} binding + audit.export + AuditExportPolicy; issues a signed Phase 10F link to the download stream (authorization re-checked at issuance and at the byte stream). Download accounting is recorded on the STREAM, not here.',
+        'audit-exports.revoke' => 'No request body; {auditExport} binding + audit.export + AuditExportPolicy; RevokeAuditExport transitions ready → revoked under lock.',
     ];
 
     public static function of(Route $route): ?RouteClass

@@ -334,7 +334,8 @@ merchant_finance:
     phase: Phase 18B
   - key: finance.audit
     label: Audit activity
-    availability: planned
+    availability: live
+    route: finance.audit
     permission: finance.audit.view
     phase: Phase 19
 merchant_front_office:
@@ -453,26 +454,31 @@ merchant_audit:
     phase: Phase 11
   - key: audit.branch-events
     label: Branch audit log
-    availability: planned
+    availability: live
+    route: audit.branch-events
     permission: audit.branch_events.view
     phase: Phase 19
   - key: audit.flagged-events
     label: Flagged events
-    availability: planned
-    permission: audit.flagged_event.create
+    availability: live
+    route: audit.flagged-events
+    permission: audit.branch_events.view
     phase: Phase 19
   - key: audit.compensation
     label: Compensation audit
-    availability: planned
+    availability: live
+    route: audit.compensation
     permission: audit.compensation.view
     phase: Phase 19
   - key: audit.finance
     label: Finance audit
-    availability: planned
+    availability: live
+    route: audit.finance
     permission: audit.finance.view
     phase: Phase 19
   - key: audit.exports
     label: Exports
-    availability: planned
+    availability: live
+    route: audit.exports
     permission: audit.export
     phase: Phase 19

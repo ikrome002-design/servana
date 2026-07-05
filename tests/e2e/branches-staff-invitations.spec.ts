@@ -77,7 +77,6 @@ const ADMIN_PERMISSIONS = [
     "commissions.view",
     "platform_fees.view",
     "reports.view",
-    "audit.view_full",
 ] as const;
 
 const OPERATING_HOURS = [

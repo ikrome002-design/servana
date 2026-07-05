@@ -23,6 +23,7 @@ final class PermissionSeeder extends Seeder
         $this->seedPermissions($registry);
         $this->seedRoles($registry);
         $this->seedAssignments($registry);
+        $this->prunePermissions($registry);
     }
 
     private function seedPermissions(PermissionRegistry $registry): void
@@ -73,5 +74,18 @@ final class PermissionSeeder extends Seeder
             // Sync default grants exactly so a removed cell is also removed on re-seed.
             $role->permissions()->sync($desired);
         }
+    }
+
+    /**
+     * Delete any DB permission no longer in the canonical registry (Plan §19.1
+     * source-of-truth reconciliation). Runs AFTER seedAssignments so every stale
+     * role_permission_assignment has already been unsynced — e.g. the retired
+     * `audit.view_full` leaves no orphan row in the DB projection.
+     */
+    private function prunePermissions(PermissionRegistry $registry): void
+    {
+        Permission::query()
+            ->whereNotIn('key', $registry->permissionKeys())
+            ->delete();
     }
 }

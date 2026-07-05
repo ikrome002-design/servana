@@ -227,9 +227,29 @@ final class PermissionRegistry
         'finance_export.create' => ['reports', 'Request a scoped, masked finance export (Finance; fresh step-up).', true],
         'finance_export.download' => ['reports', 'Download a ready finance export via an authorized signed link (Finance).', false],
         'exports.staff_roster' => ['reports', 'Export the staff roster only.', false],
-        // Audit.
-        'audit.view_full' => ['audit', 'View the audit trail (scoped/masked).', false],
-        'audit.flag' => ['audit', 'Flag an audit entry for review.', true],
+        // Finance audit surface (Plan §19.2/§19.3; Phase 19). The Finance role's own,
+        // branch-scoped, masked read of the finance-domain audit trail (distinct
+        // authority from the Audit role's `audit.finance.view`).
+        'finance.audit.view' => ['finance', 'View the branch-scoped finance-domain audit trail (Finance; masked).', false],
+        // Audit (Plan §19.2/§19.3; Phase 19 canonical closure — REPLACES the legacy
+        // catch-all `audit.view_full`, which is RETIRED entirely: it granted raw
+        // audit-log reads to Merchant Admin/Branch Manager/HR/Finance/Audit alike,
+        // in conflict with the branch-scoped, domain-segmented canonical matrix
+        // (Plan controls; source-of-truth correction recorded in docs/proof/phase-19.md).
+        // Reads are field-masked and branch-scoped; the flagged-event review workflow
+        // mutates review metadata only and never a source record.
+        'audit.branch_events.view' => ['audit', 'View branch-scoped general audit events + the flagged-event queue (masked).', false],
+        'audit.finance.view' => ['audit', 'View branch-scoped finance-domain audit events (Audit; masked).', false],
+        'audit.compensation.view' => ['audit', 'View branch-scoped compensation-domain audit events (Audit; masked).', false],
+        // Audit export (Plan §13.5, §19.2/§19.3, §80; Phase 19; ADR-010). Audit's in-domain
+        // export capability — requests + downloads a reason-gated, branch-scoped, masked,
+        // signed/expiring, download-counted audit CSV. Fresh step-up required (SU Y). It
+        // creates an audit_exports request row + a private file but never mutates a source
+        // record, so it is Audit's in-domain write (like the flagged-event review keys).
+        'audit.export' => ['audit', 'Request + download a reason-gated, masked, signed audit export (Audit; fresh step-up).', true],
+        'audit.flagged_event.create' => ['audit', 'Flag a branch-scoped audit event for review.', true],
+        'audit.flagged_event.update_status' => ['audit', 'Start review / reopen a flagged audit event.', true],
+        'audit.flagged_event.resolve_metadata' => ['audit', 'Resolve or dismiss a flagged audit event (records a review outcome).', true],
         // Platform (super_admin only).
         'platform.settings.manage' => ['platform', 'Manage platform settings.', true],
         'platform.merchants.govern' => ['platform', 'Govern merchant accounts.', true],
@@ -254,7 +274,10 @@ final class PermissionRegistry
             // holds ONLY exceptional-reopen approval — NOT routine locking/reopen (Finance).
             'merchant.period_reopen.approve_exception',
             'commissions.view', 'platform_fees.view',
-            'reports.view', 'audit.view_full',
+            // Phase 19: NO direct raw audit-log key (canonical §19.3 — the Merchant
+            // Administrator's oversight is via reports/dashboards, not the raw trail;
+            // the legacy `audit.view_full` grant is RETIRED, not retained).
+            'reports.view',
         ],
         self::ROLE_BRANCH_MANAGER => [
             // Queue: Branch Manager configures (open/close, capacity, default mode)
@@ -271,12 +294,16 @@ final class PermissionRegistry
             // creation; the legacy placeholder grant of invoices.create is removed, not
             // retained. Branch invoice visibility is via branch.dashboard.view/reports.
             'receipt.view', 'commissions.view', 'platform_fees.view',
-            'reports.view', 'audit.view_full',
+            // Phase 19: NO direct raw audit-log key (canonical §19.3 — Branch Manager
+            // oversight is via branch.dashboard.view/reports; legacy `audit.view_full` retired).
+            'reports.view',
         ],
         self::ROLE_HR => [
             'staff.invite', 'staff.edit', 'staff.suspend',
             'personnel.eligibility.manage', 'personnel.availability.manage', 'commissions.manage',
-            'commissions.view', 'reports.view', 'audit.view_full',
+            // Phase 19: NO direct raw audit-log key (canonical §19.3 — HR oversight is via
+            // staff.history/reports; legacy `audit.view_full` retired).
+            'commissions.view', 'reports.view',
             'exports.staff_roster',
         ],
         self::ROLE_FINANCE => [
@@ -296,7 +323,9 @@ final class PermissionRegistry
             'period_lock.create', 'period_lock.reopen',
             'finance_export.create', 'finance_export.download',
             'platform_fees.dispute',
-            'reports.view', 'audit.view_full',
+            // Phase 19: canonical Finance audit surface (branch-scoped, masked, finance
+            // domain only) — REPLACES the legacy catch-all `audit.view_full`.
+            'reports.view', 'finance.audit.view',
         ],
         self::ROLE_FRONT_OFFICE => [
             // Queue operations (Phase 16B): Front Office owns the operational queue
@@ -332,11 +361,20 @@ final class PermissionRegistry
             'commissions.view', 'reports.view',
         ],
         self::ROLE_AUDIT => [
-            // No invoice key (Plan §19.3): Audit reads invoices through audit.view_full/
-            // reports, not a direct invoice key; the legacy invoices.view grant is removed.
+            // No invoice key (Plan §19.3): Audit reads finance activity through the
+            // finance-domain audit view, not a direct invoice key.
             'receipt.view',
             'commissions.view', 'platform_fees.view', 'reports.view',
-            'audit.view_full', 'audit.flag',
+            // Phase 19 — canonical, domain-segmented, branch-scoped, masked Audit reads
+            // (REPLACE the retired catch-all `audit.view_full`).
+            'audit.branch_events.view', 'audit.finance.view', 'audit.compensation.view',
+            // Audit export (Phase 19; ADR-010) — Audit's in-domain export capability (request +
+            // download; SU Y). Creates an export request + private file, never a source record.
+            'audit.export',
+            // The flagged-event review workflow is Audit's in-domain write set (reconciled
+            // from the single legacy `audit.flag`). It mutates review metadata only; Audit
+            // remains read-only over every source record.
+            'audit.flagged_event.create', 'audit.flagged_event.update_status', 'audit.flagged_event.resolve_metadata',
         ],
         self::ROLE_SUPER_ADMIN => [
             'platform.settings.manage', 'platform.merchants.govern',
