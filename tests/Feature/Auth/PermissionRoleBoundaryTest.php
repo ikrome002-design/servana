@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use App\Domain\Auth\Services\PermissionRegistry;
 use App\Domain\Auth\Services\PermissionResolver;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 
 uses()->group('auth', 'permissions', 'matrix', 'authority');
 
