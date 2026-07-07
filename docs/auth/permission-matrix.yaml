@@ -2902,11 +2902,11 @@ keys:
       - PermissionMatrix/platform.merchants.govern_allows
     negative_tests:
       - PermissionMatrix/platform.merchants.govern_denies
-  platform.mpesa_configuration.manage:
-    key: platform.mpesa_configuration.manage
-    description: Manage (platform / mpesa_configuration).
+  platform.wallet_configuration.manage:
+    key: platform.wallet_configuration.manage
+    description: Manage Wallet webhook key-ID sets, circuit-breaker reset, and verified inbox replay (SUP-06; was platform.mpesa_configuration.manage).
     implementation_status: planned
-    owning_phase: Phase 20D
+    owning_phase: Phase 20D-W
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -2917,20 +2917,20 @@ keys:
     step_up_required: true
     audit_event: pending
     audit_severity: crit
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: svc Wallet integration configuration (webhook key-ID sets, breaker reset, inbox replay)
     frontend_ux_usage: visibility_only
     default_roles:
       - super_admin
     maker_checker_incompatibilities: []
     positive_tests:
-      - PermissionMatrix/platform.mpesa_configuration.manage_allows
+      - PermissionMatrix/platform.wallet_configuration.manage_allows
     negative_tests:
-      - PermissionMatrix/platform.mpesa_configuration.manage_denies
-  platform.mpesa_exception.resolve:
-    key: platform.mpesa_exception.resolve
-    description: Action ResolveMpesaReconciliationException.
+      - PermissionMatrix/platform.wallet_configuration.manage_denies
+  platform.billing_reconciliation.resolve:
+    key: platform.billing_reconciliation.resolve
+    description: Resolve billing reconciliation exceptions (link_to_invoice or dismiss; never manual payment recording; SUP-06).
     implementation_status: planned
-    owning_phase: Phase 20D
+    owning_phase: Phase 20D-W
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -2941,21 +2941,21 @@ keys:
     step_up_required: true
     audit_event: pending
     audit_severity: high
-    backend_policy_or_service: action ResolveMpesaReconciliationException
+    backend_policy_or_service: action ResolveBillingReconciliationException
     frontend_ux_usage: visibility_only
     default_roles:
       - super_admin
     maker_checker_incompatibilities:
-      - "link-vs-dismiss separation"
+      - "maker/checker when severity=critical"
     positive_tests:
-      - PermissionMatrix/platform.mpesa_exception.resolve_allows
+      - PermissionMatrix/platform.billing_reconciliation.resolve_allows
     negative_tests:
-      - PermissionMatrix/platform.mpesa_exception.resolve_denies
-  platform.mpesa_exception.view:
-    key: platform.mpesa_exception.view
-    description: View (platform / mpesa_exception).
+      - PermissionMatrix/platform.billing_reconciliation.resolve_denies
+  platform.billing_reconciliation.view:
+    key: platform.billing_reconciliation.view
+    description: View billing reconciliation exceptions with masked provider references (SUP-06; was platform.mpesa_exception.view).
     implementation_status: planned
-    owning_phase: Phase 20D
+    owning_phase: Phase 20D-W
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -2972,9 +2972,129 @@ keys:
       - super_admin
     maker_checker_incompatibilities: []
     positive_tests:
-      - PermissionMatrix/platform.mpesa_exception.view_allows
+      - PermissionMatrix/platform.billing_reconciliation.view_allows
     negative_tests:
-      - PermissionMatrix/platform.mpesa_exception.view_denies
+      - PermissionMatrix/platform.billing_reconciliation.view_denies
+  platform.integrations.wallet.manage:
+    key: platform.integrations.wallet.manage
+    description: Manage Wallet integration credentials metadata (webhook key-ID set changes, breaker manual reset, failed inbox replay).
+    implementation_status: planned
+    owning_phase: Phase 20D-W
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: svc Wallet integration management
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.integrations.wallet.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.integrations.wallet.manage_denies
+  platform.integrations.refer_earn.manage:
+    key: platform.integrations.refer_earn.manage
+    description: Manage R&E integration (prospective rule-version creation, outbox dead-letter replay, inbound key-ID set changes).
+    implementation_status: planned
+    owning_phase: Phase 21R-A
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: svc ReferEarn integration management
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.integrations.refer_earn.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.integrations.refer_earn.manage_denies
+  platform.integrations.health.view:
+    key: platform.integrations.health.view
+    description: Read-only integrations health dashboard (Wallet and R&E connectivity projections).
+    implementation_status: planned
+    owning_phase: Phase 20D-W
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.integrations.health.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.integrations.health.view_denies
+  platform.referral.qualification.view:
+    key: platform.referral.qualification.view
+    description: View referral qualification decisions and evidence summaries (no client PII in evidence tuples).
+    implementation_status: planned
+    owning_phase: Phase 21R-B
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: pending
+    audit_severity: info
+    backend_policy_or_service: enforced by policy/registry
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.referral.qualification.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.referral.qualification.view_denies
+  platform.referral.qualification.correct:
+    key: platform.referral.qualification.correct
+    description: Correct a qualification decision via documented engine re-run (never free-form decision entry).
+    implementation_status: planned
+    owning_phase: Phase 21R-B
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: pending
+    audit_severity: high
+    backend_policy_or_service: action CorrectQualificationDecision
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.referral.qualification.correct_allows
+    negative_tests:
+      - PermissionMatrix/platform.referral.qualification.correct_denies
   platform.plan.manage:
     key: platform.plan.manage
     description: Manage (platform / plan).

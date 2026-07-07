@@ -15,10 +15,18 @@ sections before every task and the complete active phase before implementation.
 - **Operator:** Citrus Labs Limited.
 - **Project root:** `C:\Users\nderu\Documents\Development\Product\Servana`
   (all paths below are relative to this root).
-- **Stack (pinned, Plan §7 A-09 / ADR-001):** Laravel 12 (installed 12.62.0) /
-  PHP 8.3 · Vue 3 + TypeScript + Pinia · Tailwind CSS · PostgreSQL 16 · Redis 7 ·
-  Meilisearch · S3-compatible storage · Docker · GitHub Actions. **No jQuery.
-  Ever.** (Upgraded from Laravel 11 in PR #11; do not call any version "LTS".)
+- **Stack (pinned, Plan §7 A-09 / ADR-001):** Laravel 12 (installed **12.62.0** per
+  `composer.lock`) / PHP **8.3** (Docker dev image) · Vue 3 + TypeScript + Pinia ·
+  Tailwind CSS · PostgreSQL 16 · Redis 7 · Meilisearch · S3-compatible storage · Docker ·
+  GitHub Actions. **No jQuery. Ever.**
+- **Integration ownership (Plan §2.2, ADR-012/013):** Servana owns business-billing truth
+  and referral-activity truth. **Wallet by Citrus** (separate product/repository) owns
+  money-movement truth. **Citrus Refer & Earn** (separate product/repository) owns
+  referral-reward truth. Servana implements **only its own side** of each integration
+  contract. **No direct Safaricom/Daraja/provider integration** in Servana — platform
+  billing collections are Wallet-orchestrated (Plan §9 rule 20; `NoDirectProviderIntegrationTest`).
+  Merchant-client **`mpesa_offline`** payment-method terminology (Phase 18A) is legitimate
+  and unrelated to platform billing provider integration.
 - **Auth model:** Magic Link only, for all users (Plan §9). No passwords exist.
 - **Currency/time:** KES as integer minor units; timestamps UTC; business-day
   logic in `Africa/Nairobi`.
@@ -51,8 +59,12 @@ document already defines — read the file.
 | Asset | Path |
 |---|---|
 | Agent instructions | `CLAUDE.md` (root) |
-| Development plan | `Servana Software Development Plan.md` (root) |
+| Development plan | `Servana Software Development Plan.md` (root) — v4 standalone plan of record |
 | Project scope | `Servana Project Scope.md` (root) |
+| Product authority (combined) | `SERVANA COMBINED.txt` — **not present in this repository**; Plan §2 cites it |
+| Wallet integration authority | `Wallet_by_Citrus_Platform_Project_Scope.md` — **not present in this repository** |
+| R&E integration authority | `Refer_and_Earn_Project_Scope.md` + `Citrus_Refer_and_Earn_Production_Software_Development_Plan.md` — **not present in this repository** |
+| Engineering corrections (historical) | `SERVANA_DEVELOPMENT_PLAN_CORRECTIONS.md` — **not present**; content folded into the v4 plan |
 | Brand identity | `docs/brand/Servana Brand Identity.md` |
 | Landing page copy (one file per account user) | `docs/landing page/{role}_landing_page_content.md` |
 | Data policies (per account user) | `docs/legal/data_policy/{role}_data_policy.md` |
@@ -105,13 +117,13 @@ Test result · Proof of resolution · Remaining risk.
 
 ## 5. Phase Workflow
 
-- Execute the active **v3 roadmap (Plan §§79–80) strictly in order**: Phase V
-  (as-built verification) → R1–R7 (pre-feature remediation, §79) → the feature
-  phases (10, 10F, 11, 15A…25, §80). The pre-feature gate (§5.4) must be closed
-  before any feature phase begins. (This supersedes the old §27 "Phases 1–25"
-  roadmap that earlier docs reference.) One phase = one reviewed branch/PR. Do
-  not start the next phase until the current phase's acceptance criteria are
-  demonstrably met and the human approves.
+- Execute the active **v4 roadmap (Plan §§79–80) strictly in order**: Phase V
+  (as-built verification) → R1–R7 (pre-feature remediation, §79) → the **§1.3 v4
+  plan-adoption PR** (mandatory before Phase 20) → feature phases (10, 10F, 11,
+  15A…25, §80). The pre-feature gate (§5.4) is **closed and satisfied** (all
+  PRE_FEATURE_REMEDIATION items `verified_complete`). One phase = one reviewed
+  branch/PR. Do not start Phase 20A until the v4 plan-adoption PR is reviewed and
+  merged. Do not start Phase 20D-W until External Gate W (§80.2) is open.
 - At phase start: restate the phase objective, list the Plan sections it
   implements, list files to create/modify, and the tests you will write.
 - At phase end: run the full suite, write `docs/proof/phase-{n}.md`, update

@@ -42,16 +42,16 @@ super_administrator:
     availability: planned
     permission: platform.preferred_personnel_fee.manage
     phase: Phase 20A
-  - key: platform.mpesa
-    label: M-Pesa configuration
+  - key: platform.wallet-config
+    label: Wallet configuration
     availability: planned
-    permission: platform.mpesa_configuration.manage
-    phase: Phase 20D
-  - key: platform.mpesa-exceptions
-    label: Reconciliation exceptions
+    permission: platform.wallet_configuration.manage
+    phase: Phase 20D-W
+  - key: platform.billing-reconciliation
+    label: Billing reconciliation
     availability: planned
-    permission: platform.mpesa_exception.view
-    phase: Phase 20D
+    permission: platform.billing_reconciliation.view
+    phase: Phase 20D-W
   - key: platform.audit
     label: Platform audit
     availability: planned

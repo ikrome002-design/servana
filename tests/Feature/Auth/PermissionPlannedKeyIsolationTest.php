@@ -18,13 +18,13 @@ uses(RefreshDatabase::class)->group('auth', 'permissions', 'matrix');
  | permission middleware.
  */
 
-it('keeps all 81 planned keys out of every runtime projection', function (): void {
+it('keeps all 86 planned keys out of every runtime projection', function (): void {
     $this->seed(PermissionSeeder::class);
     $matrix = app(PermissionMatrix::class);
     $registry = app(PermissionRegistry::class);
 
     $planned = $matrix->plannedKeys();
-    expect($planned)->toHaveCount(81);
+    expect($planned)->toHaveCount(86);
 
     $registryKeys = array_fill_keys($registry->permissionKeys(), true);
     $dbKeys = array_fill_keys(Permission::query()->pluck('key')->all(), true);

@@ -524,22 +524,57 @@ items:
     reviewer: "PR #22 merged; five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) all SUCCESS, genuine ClamAV EICAR CI test passed without skipping; solo-maintainer governance exception (docs/governance/solo-maintainer-review-exception-pr-22.md) — reviewDecision intentionally blank, not an independent approval."
     status: verified_complete
 
-  - id: REM-MPESA-001
+  - id: REM-WALLET-001
     classification: C0
     gating_category: FEATURE_DELIVERY_OBLIGATION
-    scope_requirement: "Complete M-Pesa stateful domain + provider-supported callback security; no manual Super-Admin payment recording (Corrections 14,15; ADR-006)."
-    repository_evidence: "No M-Pesa tables/routes exist."
-    root_cause: "Phase 20D not started."
-    affected_files_tables_routes: "mpesa_* tables; STK/callback routes."
-    security_data_business_impact: "n/a until built; C0 obligation at 20D exit."
-    precise_correction: "Build in 20D per §§55–58."
-    migration_impact: "additive."
-    test_plan: "full §58 list."
-    proof_artifact: "docs/proof/phase-20d.md"
-    owner: "20D"
+    scope_requirement: "Complete Wallet-orchestrated billing-payment domain (merchant-account sync, invoice registration, STK, verified webhooks, exactly-once application, reversals, reconciliation exceptions) + partner-webhook security; no manual Super-Admin payment recording; no direct provider integration (Corrections 14,15 as amended by ADR-012; supersedes v3 REM-MPESA-001)."
+    repository_evidence: "v4 plan-adoption PR landed ADR-012/014/015, billing-and-wallet data dictionary, permission renames, and NoDirectProviderIntegrationTest; no Wallet runtime tables/routes/clients exist."
+    root_cause: "Phase 20D-W not started; v3 REM-MPESA-001 described obsolete direct-Daraja scope."
+    affected_files_tables_routes: "wallet_* integration tables; billing.wallet.* routes; app/Domain/Integrations/Wallet/* (future)."
+    security_data_business_impact: "n/a until built; C0 obligation at 20D-W exit; direct provider integration forbidden by ADR-012 and architecture guard."
+    precise_correction: "Build in 20D-W per §§55–58 and ADR-012 after Gate W; never implement Daraja/STK/callbacks in Servana."
+    migration_impact: "additive in 20B (nullable projections) and 20D-W (integration tables)."
+    test_plan: "NoDirectProviderIntegrationTest (adoption); full §58 + webhook verification suite (20D-W)."
+    proof_artifact: "docs/proof/plan-adoption-v4.md (architecture); docs/proof/phase-20d-w.md (runtime, future)"
+    owner: "20D-W"
     completion_commit: null
     reviewer: "TBD"
     status: not_started
+
+  - id: REM-RE-001
+    classification: C0
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "Citrus R&E source-product integration: non-blocking referral capture, transactional outbox + signed delivery, subscription-fact emission, final-authority qualification engine, inbound reconciliation surface (ADR-013; R&E scope §11)."
+    repository_evidence: "v4 plan-adoption PR landed ADR-013, refer-earn-integration data dictionary, planned platform.integrations.refer_earn.* and platform.referral.* permissions; no R&E runtime tables/routes/jobs exist."
+    root_cause: "Phases 21R-A/21R-B not started."
+    affected_files_tables_routes: "referral_snapshots; re_outbound_events; re_event_deliveries; re_qualification_*; app/Domain/Integrations/ReferEarn/* (future)."
+    security_data_business_impact: "n/a until built; C0 obligation at 21R-A/21R-B exit."
+    precise_correction: "Implement per §58B and ADR-013 in 21R-A/21R-B; no reward ledger or payout tables in Servana."
+    migration_impact: "additive in 21R-A/21R-B."
+    test_plan: "outbox atomicity; signing; inbound verification; qualification engine (future)."
+    proof_artifact: "docs/proof/plan-adoption-v4.md (architecture); per-phase proofs (future)"
+    owner: "21R-A/21R-B"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  # Historical identifier — superseded by REM-WALLET-001 (v4 ADR-012). Retained for traceability only.
+  - id: REM-MPESA-001
+    classification: C0
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "[HISTORICAL — SUPERSEDED] v3 M-Pesa stateful domain + direct provider callbacks (ADR-006). Superseded by REM-WALLET-001 and Wallet-orchestrated billing (ADR-012)."
+    repository_evidence: "Never implemented; v4 adoption explicitly forbids direct provider integration."
+    root_cause: "v3 plan obsolete; superseded before implementation."
+    affected_files_tables_routes: "n/a — must not be built in Servana."
+    security_data_business_impact: "Building this scope would violate ADR-012."
+    precise_correction: "Do not implement. Follow REM-WALLET-001 / Phase 20D-W instead."
+    migration_impact: "none"
+    test_plan: "NoDirectProviderIntegrationTest guards against regression."
+    proof_artifact: "docs/proof/plan-adoption-v4.md"
+    owner: "superseded → REM-WALLET-001 (20D-W)"
+    completion_commit: null
+    reviewer: "n/a — superseded"
+    status: superseded
 
   - id: REM-PERM-001
     classification: C1
@@ -554,9 +589,9 @@ items:
     test_plan: "permission-matrix schema/completeness/parity; TypeScript parity; DB projection; per-key allow/deny; override; non-overridable; maker/checker; role-boundary; MFA coverage; step-up coverage — all green. §2 CLOSURE (placeholder removal): PermissionMatrixPlanMetadataParityTest (all 151 canonical keys vs an INDEPENDENT §19.3 parse on every Plan-encoded field + audit_event derived from live routes+AuditMutationCoverage), PermissionLegacyKeyReconciliationTest (17 legacy → planned successor|null + valid owning phase + no duplicate), PermissionPlannedKeyIsolationTest (81 planned absent from registry/DB/TS/routes/grants). Full tests/Feature/Auth 192 passed/1670 assertions; Pint + Larastan L8 clean."
     proof_artifact: "docs/proof/phase-19.md (Increment 6 section + §2 closure subsection)"
     owner: "Phase 19 Increment 6 + owning phases (planned-key activation)"
-    completion_commit: null
-    reviewer: "TBD"
-    status: local_complete   # pending Phase 19 PR CI/review/merge. §2 closure done: all 151 canonical Plan-encoded attributes mechanically verified against §19.3 (no placeholders); audit_event derived from repo evidence; owning_phase assigned; legacy reconciliation + planned isolation proven. Legacy→canonical key ACTIVATION continues in owning phases 20A–25 per §19.1.
+    completion_commit: "7ef259e28f51fc9bba24a16ef3945ff61ddef4ce (PR #32 merge; impl e8c70d8, CI fixes bfba53d + 46087fe, governance d6455f3)"
+    reviewer: "PR #32 merged 2026-07-05T11:48:45Z; five required checks (Backend/Frontend/Docker/Security/E2E—Playwright) all SUCCESS on run 28736716360; reviewDecision blank under the documented solo-maintainer governance exception (docs/governance/solo-maintainer-review-exception-pr-32.md) — not independent approval."
+    status: verified_complete   # promoted on the PR #32 merge with green CI. §2 closure history preserved: the 151-key canonical catalogue verified at Phase 19 grew to 156 keys in the v4 plan adoption (Wallet/R&E planned keys; see docs/proof/plan-adoption-v4.md). Legacy→canonical key ACTIVATION continues in owning phases 20A–25 per §19.1.
 
   - id: REM-AUDEXP-001
     classification: C1
@@ -571,9 +606,9 @@ items:
     test_plan: "AuditExportSchema/Workflow/Masking/Isolation/Authorization/StepUp/ExpiryDownloadCount/JobIdempotency/Audit — all green. Increment 8 Audit-export frontend (list/request/detail/download/revoke) + Playwright audit.spec.ts export scenarios (step-up, reason/branch validation, private on-demand signed link never rendered, download_count refresh, revoked/expired denied, failed redacted, no file_id/path/signature leak). Increment 9 full gates: serial 1062 + parallel 1062 (0 fail). §9 defect DEF: AuditExportController signed its stream route directly (§65 boundary) → fixed via FileAccessService::signDownloadRoute (signing stays in the file domain, stream-time accounting preserved); AuditExport parallel undefined-helper → helpers moved to tests/Pest.php; both re-green."
     proof_artifact: "docs/proof/phase-19.md (Increment 4 + Increment 8 export + Increment 9 gates)"
     owner: "Phase 19 (Increments 4 + 8)"
-    completion_commit: null
-    reviewer: "TBD"
-    status: local_complete   # pending Phase 19 PR CI/review/merge. Backend + Audit-export frontend + full gates green locally (serial 1062 / parallel 1062 / 0 fail). Merchant-level branch-null rows never exported; download accounting on the authorized stream; no path/signature/id leak — all test-proven.
+    completion_commit: "7ef259e28f51fc9bba24a16ef3945ff61ddef4ce (PR #32 merge; impl e8c70d8, CI fixes bfba53d + 46087fe, governance d6455f3)"
+    reviewer: "PR #32 merged 2026-07-05T11:48:45Z; five required checks (Backend/Frontend/Docker/Security/E2E—Playwright) all SUCCESS on run 28736716360; reviewDecision blank under the documented solo-maintainer governance exception (docs/governance/solo-maintainer-review-exception-pr-32.md) — not independent approval."
+    status: verified_complete
 
   - id: REM-SM-001
     classification: C1

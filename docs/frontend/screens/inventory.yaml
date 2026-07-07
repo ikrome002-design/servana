@@ -679,11 +679,17 @@ screens:
     status: planned
     phase: Phase 20C
     spec: ~
-  - key: platform-mpesa
+  - key: platform-wallet-config
     domain: platform
     route: ~
     status: planned
-    phase: Phase 20D
+    phase: Phase 20D-W
+    spec: ~
+  - key: platform-billing-reconciliation
+    domain: platform
+    route: ~
+    status: planned
+    phase: Phase 20D-W
     spec: ~
   - key: platform-registration-monitoring
     domain: platform

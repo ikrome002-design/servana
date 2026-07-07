@@ -2,13 +2,20 @@
 
 **Branch:** `phase-19-audit-flagged-events` · **Base commit:** `64bd0a1`
 (`64bd0a117dcdc819a8baf4b9bec3c3eb09635edc`, verified PR #31 squash merge). **Status:**
-`in_progress` — Increments 1–3 + 5 complete and green (specification/schema, flagged-event
-backend, masked domain-segmented reads + `audit.view_full` retirement, mutation-coverage guard).
-**Increment 4 (audit export) was BLOCKED (Outcome C) and is now UNBLOCKED + IMPLEMENTED** by the
-2026-07-04 product-owner decision authorizing a dedicated `audit_exports` table (ADR-010;
-REM-AUDEXP-001 → `in_progress`). The permission-matrix/scheduling/frontend increments remain. This file
-records controlling decisions and per-increment evidence. **Not** `local_complete`,
-`ci_passed`, `merged`, or `verified_complete`. Tests run on PostgreSQL 16 (never SQLite).
+✅ **`verified_complete`** — PR **#32** `Phase 19: Complete audit logging and flagged events`
+MERGED into `main`; merge commit `7ef259e28f51fc9bba24a16ef3945ff61ddef4ce`; merged at
+`2026-07-05T11:48:45Z`; head branch `phase-19-audit-flagged-events`; base `main`. Commit
+lineage: implementation `e8c70d8` → parallel-worker DB-state isolation fix `bfba53d` → Pint
+import-order fix `46087fe` → governance / final PR head `d6455f3`. Final CI run `28736716360`:
+five required checks (Backend — Pint/Larastan/Pest, Frontend — ESLint/vue-tsc/Vitest/build,
+Docker — build images, Security — gitleaks, E2E — Playwright) all **SUCCESS**. `reviewDecision`
+blank under the documented PR-specific solo-maintainer governance exception
+(`docs/governance/solo-maintainer-review-exception-pr-32.md`) — **not** independent reviewer
+approval. Local and remote Phase 19 branches deleted after merge. **REM-PERM-001** and
+**REM-AUDEXP-001** promoted to `verified_complete` on this merge.
+The narrative below preserves the historical in-progress/local-complete evidence as written
+during the phase (increment statuses, blockers, and defect records are unedited history).
+Tests run on PostgreSQL 16 (never SQLite).
 
 Controlling sources: Plan §0–§2.1, §5.3–§5.4a, §8, §9, §10, §13.1–§13.5, §14–§15,
 §19.1–§19.5, §22.2, §24, §25, §27.1, §27.3, §28–§30, §65, §67, §70, §71, §74–§76, §80,
@@ -684,3 +691,14 @@ the Phase 19 flag workflow; documented in the data dictionary.
 The exception applies only to Phase 19 and is not independent reviewer
 approval. Future-domain audit emissions remain owned by their documented
 future phases.
+
+## Final merge record (verified 2026-07-07)
+
+- PR #32 state: **MERGED**; merge commit `7ef259e28f51fc9bba24a16ef3945ff61ddef4ce`;
+  merged at `2026-07-05T11:48:45Z`; head `phase-19-audit-flagged-events` → base `main`.
+- Final PR head: `d6455f3ee85f2c8a2c541cc7f0d219eb81426f1a` (governance record commit).
+- Final-head CI run `28736716360`: Backend / Frontend / Docker / Security / E2E — Playwright
+  all COMPLETED + SUCCESS.
+- `reviewDecision`: blank (solo-maintainer exception above; **not** independent approval).
+- Local and remote `phase-19-audit-flagged-events` branches: deleted.
+- Phase 19, REM-PERM-001, and REM-AUDEXP-001: **`verified_complete`**.

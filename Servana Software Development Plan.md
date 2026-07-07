@@ -38,11 +38,11 @@
 
 | Field | Value |
 |---|---|
-| Document | `SERVANA_DEVELOPMENT_PLAN.md` |
+| Document | `Servana Software Development Plan.md` (the canonical active plan file in the repository root; earlier v4 drafts called this file `SERVANA_DEVELOPMENT_PLAN.md` — that name is retired and no file by that name exists) |
 | Version | v4 (standalone full merge: the v3 plan plus the Wallet by Citrus & Citrus Refer & Earn integration revision; every change from v3 is recorded in §1.2) |
 | Status | Active plan of record |
 | Product authority | `SERVANA COMBINED.txt` (Upgraded Platform Project Scope + PART B Contradiction-Resolution Amendment + Brand Identity) |
-| Engineering-correction authority | `SERVANA_DEVELOPMENT_PLAN_CORRECTIONS.md` (Corrections 1–25, Sections 0 and 26–27) |
+| Engineering-correction authority | `SERVANA_DEVELOPMENT_PLAN_CORRECTIONS.md` (Corrections 1–25, Sections 0 and 26–27) — historical source document, fully folded into this v4 plan; the file itself is **not** present in this repository |
 | Payment-orchestration authority | `Wallet_by_Citrus_Platform_Project_Scope.md` — the Servana↔Wallet integration contract: product API, signed webhooks, structured payment references, collection state machine, idempotency mandates |
 | Referral-integration authority | `Refer_and_Earn_Project_Scope.md` + `Citrus_Refer_and_Earn_Production_Software_Development_Plan.md` — the Servana↔R&E integration contract: event catalogue, `X-Citrus-*` signing contract, qualification authority, reconciliation surface |
 | As-built evidence | repository, migrations, `route:list`, policies, tests, lock files, CI, `PROGRESS.md`, `CHANGELOG.md` (claims, not proof) |
@@ -79,7 +79,7 @@
 |---|---|---|---|
 | SUP‑01 | v3 §55–§56: "create provider requests using server-held credentials … persist provider IDs (checkout/merchant request id)" | Servana holds **no** payment-provider credentials and persists **no** raw provider request identifiers; it persists Wallet public identifiers (`wallet_payment_id`, `wallet_attempt_id`) and a masked provider reference only. | Wallet scope §22.1 mandates products request STK through Wallet; Wallet §50 requires provider credentials to live only in Wallet. |
 | SUP‑02 | v3 §13.11 `mpesa_callback_inbox`, `mpesa_reconciliation_events` | Replaced by `wallet_webhook_inbox` and `billing_reconciliation_exceptions` (§13.11). Raw Daraja payloads never enter Servana. | Wallet §34 makes Wallet the sole raw-payload custodian; duplicating raw callbacks in Servana violates data minimization and creates dual financial truth. |
-| SUP‑03 | v3 §24.1 `provider_webhook_mutation` defined around Daraja controls ("no invented HMAC … ADR‑006") | Route class generalized to `partner_webhook_mutation` with **mandatory HMAC** verification, because Wallet outgoing webhooks are HMAC/asymmetric-signed by contract (Wallet §35). ADR‑006 remains historically valid for the abandoned direct-Daraja design and is marked superseded-by‑ADR‑015. | The "no invented HMAC" rule existed because Daraja doesn't sign callbacks. Wallet **does** sign. Not verifying an available signature would be a security defect. |
+| SUP‑03 | v3 §24.1 `provider_webhook_mutation` defined around Daraja controls ("no invented HMAC … ADR‑006") | Route class generalized to `partner_webhook_mutation` with **mandatory signature verification** (algorithm-aware per ADR‑015: HMAC or asymmetric, selected by algorithm identifier + key ID + contract version), because Wallet outgoing webhooks are signed by contract (Wallet §35). ADR‑006 remains historically valid for the abandoned direct-Daraja design and is marked superseded-by‑ADR‑015. | The "no invented HMAC" rule existed because Daraja doesn't sign callbacks. Wallet **does** sign. Not verifying an available signature would be a security defect. |
 | SUP‑04 | v3 §22/§58: "only a fully validated subscription payment moves `suspended_billing → active`" where "validated" meant Servana's own callback validation | "Validated" now means: a Wallet webhook event whose signature verified, whose `wallet_event_id` is first-seen, whose payment maps to the invoice's registered Wallet payment, and whose amount was applied under the invoice row lock. Semantics of billing-only recovery are otherwise unchanged. | Ownership boundary (§2.2): Wallet owns money-movement truth; Servana owns billing truth and the decision to restore access. |
 | SUP‑05 | v3 §13.9: `subscription_invoices.account_reference varchar (exact M-Pesa reference)` | `account_reference` is the **Wallet structured payment reference** (`SRV-PAY-<ULID26>`), issued by registering the invoice's payment resource with Wallet (ADR‑014); nullable until registration succeeds; PayBill/Till instructions and STK initiation are both gated on registration (§56.1 sequencing). | Wallet §21.1 requires product-prefixed structured references mapped to a registered payment reference, immutable after issuance. |
 | SUP‑06 | v3 permission keys `platform.mpesa_exception.view/resolve` and route names `mpesa.*` | Renamed to `platform.billing_reconciliation.view/resolve` and `billing.wallet.*` / `integrations.wallet.*` (§19, §56.1). Since Phase 20 is unbuilt, this is a plan rename, not a code migration. | Names must match the new boundary; keeping "mpesa" keys would imply provider ownership Servana no longer has. |
@@ -106,10 +106,10 @@ Adopting v4 in the repository is **one reviewed architecture-change PR** (per §
 Apply this precedence when any two sources appear to conflict. Do not silently choose between conflicting requirements: record the conflict, name the controlling source, state the decision, and update every affected section.
 
 1. **`SERVANA COMBINED.txt`** governs **product behavior**: roles, role boundaries, permissions intent, billing behavior, account lifecycles, workflows, UX, billing-payment behavior (as amended by the §1.2 supersessions), compensation rules, audit behavior, and acceptance requirements. PART B (Contradiction-Resolution Amendment) has higher precedence than the body of the scope and must reference the requirement it supersedes.
-2. **`SERVANA_DEVELOPMENT_PLAN_CORRECTIONS.md`** governs **implementation planning**: architecture, data model, API contracts, security controls, sequencing, decomposition, testing, migration strategy, and production readiness. Where the previous development plan conflicted with the corrections, the corrections win and are folded into this plan.
+2. **`SERVANA_DEVELOPMENT_PLAN_CORRECTIONS.md`** governed **implementation planning**: architecture, data model, API contracts, security controls, sequencing, decomposition, testing, migration strategy, and production readiness. Where the previous development plan conflicted with the corrections, the corrections won and are folded into this plan. (Historical: that corrections file is not kept in this repository — its content is fully absorbed here.)
 3. **`Wallet_by_Citrus_Platform_Project_Scope.md`** governs the **Servana↔Wallet integration contract**: product API shapes, signed-webhook contract, structured payment references, collection states, idempotency mandates, and the division of payment responsibilities. Where it conflicts with direct-M-Pesa statements in source 1, the recorded supersessions in §1.2 control.
 4. **`Refer_and_Earn_Project_Scope.md` + `Citrus_Refer_and_Earn_Production_Software_Development_Plan.md`** govern the **Servana↔R&E integration contract**: the required event catalogue, the `X-Citrus-*` signing contract, qualification-authority rules, decision precedence, and the reconciliation surface.
-5. **This plan (`SERVANA_DEVELOPMENT_PLAN.md` v4)** translates 1–4 into sequenced, executable engineering work. It reuses prior plan content only where that content is correct and compatible with 1–4.
+5. **This plan (`Servana Software Development Plan.md` v4)** translates 1–4 into sequenced, executable engineering work. It reuses prior plan content only where that content is correct and compatible with 1–4.
 6. **The repository** (migrations, routes, policies, services, components, tests, deployment files) is the authoritative evidence of what is actually built — but only after Phase V verifies it. `PROGRESS.md` and `CHANGELOG.md` are useful context, never proof.
 
 ### 2.1 Settled Cross-Cutting Rules (binding everywhere)
@@ -253,7 +253,9 @@ Statuses: `confirmed` / `partially_confirmed` / `contradicted` / `not_verifiable
 | 12 | Reported test counts; 1 ignored advisory | **confirmed** (238/4 BE, 72 FE, 27 e2e) — advisory sub-claim **contradicted** (0 advisories) | test-results.md | verified |
 | 13 | PROGRESS §27 roadmap (pre-correction) | **contradicted/superseded** | PROGRESS/CHANGELOG/CLAUDE.md | Phase V (REM-DOC-001) |
 
-**Gate:** the pre-feature remediation gate (§5.4) remains **closed-not-satisfied**; open C0 items (REM-DEP-001 partial, REM-AUD-001, REM-MFA-001, REM-IDEMP-001, REM-TEN-001, REM-SESS-001) and C1 REM-OPS-001 block every Section 80 feature phase.
+**Gate (historical Phase V finding, 2026-06-21):** at Phase V completion the pre-feature remediation gate (§5.4) was **closed-not-satisfied**; the then-open C0 items (REM-DEP-001 partial, REM-AUD-001, REM-MFA-001, REM-IDEMP-001, REM-TEN-001, REM-SESS-001) and C1 REM-OPS-001 blocked every Section 80 feature phase.
+
+**Gate (current status):** the pre-feature remediation gate is **closed-satisfied**. Phases R1–R7 completed and every `PRE_FEATURE_REMEDIATION` register item is `verified_complete`; the completion evidence is `docs/proof/pre-feature-remediation-gate-closure.md`, `docs/remediation/pre-feature-completion-report.md`, and the per-item entries in `docs/remediation/register.yaml`. The historical finding above is preserved as the Phase V evidence record and is not deleted; it no longer describes the current gate.
 
 ---
 
@@ -347,7 +349,7 @@ The **pre-feature** gate covers only `PRE_FEATURE_REMEDIATION` items (Phase V, R
 
 ### 5.4a Feature-Delivery Obligation Gate (per owning phase)
 
-Each `FEATURE_DELIVERY_OBLIGATION` (including C0 obligations such as REM-MPESA-001) is gated by its own owning phase, not by §5.4: it must be `verified_complete` with all required tests and proof **before its owning phase may exit and before any dependent phase may begin**, and it is never required to complete before its owning phase starts. A feature phase's exit criteria (Section 82) include every feature-delivery obligation mapped to that phase.
+Each `FEATURE_DELIVERY_OBLIGATION` (including C0 obligations such as REM-WALLET-001) is gated by its own owning phase, not by §5.4: it must be `verified_complete` with all required tests and proof **before its owning phase may exit and before any dependent phase may begin**, and it is never required to complete before its owning phase starts. A feature phase's exit criteria (Section 82) include every feature-delivery obligation mapped to that phase.
 
 ### 5.5 Automated Enforcement
 
@@ -422,7 +424,7 @@ ADRs live in `docs/architecture/adr/NNNN-title.md`. The following must exist and
 | ADR-012 | Wallet by Citrus payment-orchestration boundary | All merchant→Citrus collections flow through Wallet; Servana keeps billing truth, Wallet keeps money-movement truth; no provider logic in Servana. Full record in §8.1. | Plan-adoption PR / 20D‑W |
 | ADR-013 | Citrus R&E integration authority + event contract | Servana is a source product: referral capture, signed outbox event emission, reconciliation surface, final-authority qualification decisions; no reward logic in Servana. Full record in §8.1. | Plan-adoption PR / 21R‑A, 21R‑B |
 | ADR-014 | Structured payment reference + invoice→Wallet registration | Each issued subscription invoice registers a Wallet payment resource; Wallet issues the immutable `SRV-PAY-…` reference stored as `account_reference`; lazy-with-eager-preference registration. Full record in §8.1. | 20B / 20D‑W |
-| ADR-015 | Cross-platform machine identity + webhook signing | Four machine identities (Servana→Wallet, Wallet→Servana, Servana→R&E, R&E→Servana) with HMAC contracts, key IDs, dual-key rotation, disjoint per-environment secrets. Full record in §8.1. | 20D‑W / 21R‑A |
+| ADR-015 | Cross-platform machine identity + webhook signing | Four machine identities (Servana→Wallet, Wallet→Servana, Servana→R&E, R&E→Servana) with algorithm-aware signing contracts (verification selected by algorithm identifier + key ID + contract version; HMAC or asymmetric per each partner's authoritative contract), dual-key rotation, disjoint per-environment secrets. Full record in §8.1. | 20D‑W / 21R‑A |
 
 ### 8.1 ADR‑012 – ADR‑015 (full decision records)
 
@@ -439,12 +441,12 @@ ADRs live in `docs/architecture/adr/NNNN-title.md`. The following must exist and
 
 **ADR‑014 — Structured Payment Reference and Invoice→Wallet Registration Lifecycle.**
 - **Status:** Accepted.
-- **Decision:** Each issued `subscription_invoice` is registered with Wallet as a payment resource (`POST /api/v1/payments`) carrying `external_reference = invoice ULID` (unique within the Servana application per Wallet §20.2), expected amount = invoice `balance_minor` at registration, currency, and the owning Wallet merchant account. Wallet returns the immutable structured reference `SRV-PAY-<id>` (Wallet §21.1), which Servana stores as `subscription_invoices.account_reference` and displays in PayBill/Till instructions. Registration is **lazy-with-eager-preference**: attempted synchronously-after-commit at issuance via the outbox; guaranteed before any payment instruction or STK initiation is served (both endpoints trigger and await registration if missing, §56.1). Registration is idempotent (`Idempotency-Key = srv:pay-reg:{invoice_ulid}`). Amount changes from partial payments do **not** re-register (Wallet tracks received vs expected; partial receipt is a supported Wallet state).
+- **Decision:** Each issued `subscription_invoice` is registered with Wallet as a payment resource (`POST /api/v1/payments`) carrying `external_reference = invoice ULID` (unique within the Servana application per Wallet §20.2), expected amount = invoice `balance_minor` at registration, currency, and the owning Wallet merchant account. Wallet returns the immutable structured reference `SRV-PAY-<id>` (Wallet §21.1), which Servana stores as `subscription_invoices.account_reference` and displays in PayBill/Till instructions. Registration is **lazy-with-eager-preference**: in Phase 20D‑W, newly issued invoices are registered after commit and existing unregistered payable invoices are idempotently backfilled; registration is guaranteed before any payment instruction or STK initiation is served (both endpoints trigger and await registration if missing, §56.1). Phase 20B ships only the nullable projection columns and no registration mechanism (§49). Registration is idempotent (`Idempotency-Key = srv:pay-reg:{invoice_ulid}`). Amount changes from partial payments do **not** re-register (Wallet tracks received vs expected; partial receipt is a supported Wallet state).
 - **Rejected alternative:** registering at first payment intent only — rejected because C2B PayBill payment requires a valid reference the merchant may use without opening Servana; instructions must be printable on the issued invoice PDF once registered.
 
 **ADR‑015 — Cross-Platform Machine Identity and Webhook Signing.**
 - **Status:** Accepted. Supersedes ADR‑006 (Daraja-specific rationale no longer applies; both partner platforms support real signatures).
-- **Decision:** (a) Servana→Wallet calls authenticate with per-environment machine credentials issued by Wallet's application registry (Wallet §7.4, §14); transport is TLS with certificate verification; requests carry `Idempotency-Key` on every money-adjacent create. (b) Wallet→Servana webhooks are verified per §9 rule 21 using Wallet's HMAC contract (Wallet §35: signature, timestamp, replay window, per-application secret, rotation support). (c) Servana→R&E events use the `X-Citrus-*` header contract and canonical signing string verbatim from R&E dev plan §11.7. (d) R&E→Servana reconciliation requests use the same canonical construction with a distinct inbound secret. All secrets: secrets-manager custody, disjoint per environment, rotation with overlapping dual-key windows (old + new accepted during the rotation window; key ID selects the secret) per the runbooks in §77.1.
+- **Decision:** (a) Servana→Wallet calls authenticate with per-environment machine credentials issued by Wallet's application registry (Wallet §7.4, §14); transport is TLS with certificate verification; requests carry `Idempotency-Key` on every money-adjacent create. (b) Wallet→Servana webhooks are verified per §9 rule 21 using an **algorithm-aware** verifier: Wallet scope §35 permits HMAC **or** asymmetric signatures, so Servana selects the verification routine by the published algorithm identifier + key ID + contract version (pinned at Gate W, §80.2) and never hardcodes HMAC-SHA-256; the contract also supplies timestamp, replay window, per-application credentials, and rotation support. Constant-time comparison applies where the algorithm is secret-keyed; credentials and signatures are never logged. (c) Servana→R&E events use the `X-Citrus-*` header contract and canonical signing string verbatim from R&E dev plan §11.7. (d) R&E→Servana reconciliation requests use the same canonical construction with a distinct inbound secret. All secrets: secrets-manager custody, disjoint per environment, rotation with overlapping dual-key windows (old + new accepted during the rotation window; key ID selects the secret) per the runbooks in §77.1.
 
 ---
 
@@ -472,19 +474,19 @@ These rules are enforced server-side and tested. Frontend never substitutes for 
 18. **Dependency/secret/container scanning:** clean `composer audit`/`npm audit`, `gitleaks`, and image scans are required; suppressions require an approved, time-bound rationale and a guard test.
 19. **Incident response:** severities, escalation, runbooks; never repair financial/audit data through ad hoc SQL without a reviewed script and before/after evidence (Section 78).
 20. **No direct provider integration.** The Servana codebase must contain no Safaricom/Daraja/bank/card credentials, SDKs, OAuth token handling, callback routes, or provider-payload parsers. Enforced by static analysis (banned namespaces/strings: `daraja`, `safaricom`, `mpesa_consumer_key`, `oauth/v1/generate`, provider hostnames) and by `NoDirectProviderIntegrationTest`, which fails if any route matches `*/mpesa/*` callbacks or any config key under `services.mpesa.*` exists.
-21. **Inbound partner webhooks are verified before parse.** Every Wallet webhook and every R&E reconciliation request must pass, in order: HTTPS, strict content-type, body-size limit (64 KB default), key-ID resolution without key-inventory disclosure, timestamp tolerance (±300 s), nonce/event-ID replay check against durable storage, content-SHA‑256 match, constant-time HMAC verification — **before** any JSON field is trusted for routing or persistence beyond the encrypted raw-inbox row. A failed verification writes a high-severity security audit event and returns a uniform 401 with no detail about which check failed.
+21. **Inbound partner webhooks are verified before parse — and before any canonical storage.** Every Wallet webhook and every R&E reconciliation request must pass, in order: HTTPS/transport requirement, strict content-type, body-size limit (64 KB default), required-header syntax validation, key-ID resolution without key-inventory disclosure, timestamp tolerance (±300 s), content-SHA‑256 match, constant-time signature verification (selected by algorithm identifier + key ID + contract version, per ADR‑015), **then** JSON parsing, **then** event schema validation, **then** canonical first-seen `wallet_event_id` insertion into the verified inbox (the DB unique constraint is the replay decision), fast acknowledgement, and asynchronous processing. An unverified request must never occupy the canonical verified `wallet_event_id` uniqueness constraint — replay/first-seen insertion happens only **after** signature verification succeeds, so a forged request cannot squat a real event ID. A failed verification writes a high-severity security audit event carrying the body/request hash and minimal non-sensitive metadata, emits metrics/alerts, and returns a uniform 401 with no detail about which check failed; it creates **no** verified-inbox row.
 22. **Outbound event integrity.** Every event Servana sends to R&E is signed per the canonical string in R&E dev plan §11.7 (`METHOD\nPATH\nTIMESTAMP\nNONCE\nCONTENT_SHA256\nEVENT_ID\nEVENT_TYPE\nEVENT_VERSION`), carries a ULID `X-Citrus-Event-Id` generated once at outbox-insert time (stable across retries), and is retried with the **same** event ID and body hash. Mutating a queued outbox payload after insert is forbidden and prevented by an append-only trigger.
 23. **Cross-platform data minimization.** Servana never transmits to R&E: client names/phones, service-session content, staff PII, invoice line detail, or raw payment references. Events carry only the minimal facts defined in §58B.2. Servana never persists from Wallet: raw provider payloads, unmasked MSISDNs of counterparties other than the initiating merchant user's own submitted phone (which Servana already holds encrypted), provider credentials, or ledger internals. Servana never persists from R&E: referrer identity, payout methods, or reward amounts.
 24. **Machine-credential custody.** Wallet product-API credentials, Wallet webhook secrets, R&E service-account signing keys, and the R&E→Servana inbound verification secret live only in the secrets manager under per-environment paths (`servana/{env}/wallet/*`, `servana/{env}/refer-earn/*`); they are loaded at runtime, never cached to disk, never logged (§24.5), rotated per the runbooks in §77.1, and each rotation writes an `integration.credential_rotated` critical audit event. Sandbox, staging, and production use disjoint credentials; a startup guard refuses to boot production with a key ID carrying a `sandbox`/`staging` prefix.
 
 ### 9.1 Per-Workflow Attacker Model (applied in owning phases)
-For each sensitive workflow the owning phase documents what a malicious tenant user, over-privileged staff member, suspended user, compromised email account, replayed request, duplicated/forged partner webhook, or concurrent request would attempt and how the design prevents it. Representative cases: a suspended Finance user retaining a session (denied at request-time membership check); a duplicated/replayed Wallet webhook (unique `wallet_event_id` + HMAC verification + idempotent apply); two Front Office users recording against the same invoice balance concurrently (row lock + validated-amount check); a Personnel user enumerating served-client phones via crafted routes (own-scope derivation + masked display + 404+audit on export-shaped routes); a malicious tenant requesting a foreign file by ULID (tenant/branch/purpose checks + 404).
+For each sensitive workflow the owning phase documents what a malicious tenant user, over-privileged staff member, suspended user, compromised email account, replayed request, duplicated/forged partner webhook, or concurrent request would attempt and how the design prevents it. Representative cases: a suspended Finance user retaining a session (denied at request-time membership check); a duplicated/replayed Wallet webhook (signature verification first, then unique first-seen `wallet_event_id` + idempotent apply); two Front Office users recording against the same invoice balance concurrently (row lock + validated-amount check); a Personnel user enumerating served-client phones via crafted routes (own-scope derivation + masked display + 404+audit on export-shaped routes); a malicious tenant requesting a foreign file by ULID (tenant/branch/purpose checks + 404).
 
 Integration-specific attacker models (verified in Phases 20D‑W/21R‑A/21R‑B and re-verified at Phase 23):
 
 | Attacker scenario | Design that defeats it |
 |---|---|
-| Forged "payment succeeded" webhook POSTed to Servana | HMAC verification with per-application secret; unknown key ID → uniform 401 + high-severity audit; event not persisted beyond encrypted rejected-inbox row; no invoice mutation path exists without a verified, first-seen `wallet_event_id` that correlates to a registered Wallet payment for that exact invoice. |
+| Forged "payment succeeded" webhook POSTed to Servana | Algorithm-aware signature verification with per-application credentials (ADR‑015); unknown key ID → uniform 401 + high-severity security audit (body/request hash + minimal metadata; **no inbox row is created**, so a forged request can never squat a `wallet_event_id` — Correction 14.7); no invoice mutation path exists without a verified, first-seen `wallet_event_id` that correlates to a registered Wallet payment for that exact invoice. |
 | Replayed genuine Wallet webhook (captured and re-sent) | Timestamp tolerance + unique `wallet_event_id` in `wallet_webhook_inbox` (DB unique constraint is the final protection); replay returns 200 fast-ack, marks `duplicate`, causes zero domain effect (idempotent apply keyed on event ID). |
 | Malicious merchant user initiating STK against another merchant's invoice | Unchanged pipeline: tenant scope → 404 on foreign invoice; plus Wallet-side merchant-account binding — the Wallet payment is registered under the owning merchant's Wallet merchant account, so even a confused-deputy call cannot cross tenants at Wallet. |
 | Compromised Servana signing key used to fabricate R&E qualification events | Blast radius limited to Servana-scoped events (R&E binds product/environment/scope from the key, not the payload); rotation runbook §77.1; R&E's `409 EVENT_ID_PAYLOAD_MISMATCH` + critical security event on tamper; Servana emits qualification only from the deterministic engine with append-only decision rows, so internal fabrication requires code-path compromise, which reconciliation queries expose. |
@@ -579,8 +581,8 @@ All API errors use `{ error: { code, message, fields, meta } }`. 5xx responses c
        │   │     (X-Citrus-* HMAC contract)                │     (register payment, STK
        │   │  ③ R&E → Servana: signed reconciliation       │     attempt, status query)
        │   │     queries (replay-protected)                │  ④ Wallet → Servana: signed
-       │   │                                               │     webhooks (HMAC, replay
-       │   │                                               │     window, per-app secret)
+       │   │                                               │     webhooks (contract-signed,
+       │   │                                               │     replay window, per-app creds)
 ┌──────┴───┴───────────────────────────────────────────────▼───────────────┐
 │                            Servana by Citrus                             │
 │  Billing truth: plans, prices, entitlements, subscriptions, invoices,    │
@@ -593,7 +595,7 @@ All API errors use `{ error: { code, message, fields, meta } }`. 5xx responses c
 Four integration channels exist, all machine-to-machine, all authenticated, all idempotent, all replay-protected:
 
 1. **Servana → Wallet product API** (outbound HTTPS, per-environment machine credentials): register payments, initiate STK attempts, query status, list attempts (§56.2).
-2. **Wallet → Servana webhooks** (inbound HTTPS, HMAC-signed, per-application secret, timestamp + replay window): payment/attempt lifecycle events (§57).
+2. **Wallet → Servana webhooks** (inbound HTTPS, signed per the Wallet contract — HMAC or asymmetric, algorithm-aware verification per ADR‑015 — per-application credentials, timestamp + replay window): payment/attempt lifecycle events (§57).
 3. **Servana → R&E product event API** (outbound HTTPS, `X-Citrus-*` HMAC contract with nonce + content hash): merchant lifecycle, subscription financial facts, activity-qualification decisions — delivered through a transactional outbox (§58A).
 4. **R&E → Servana reconciliation API** (inbound HTTPS, HMAC-signed, replay-protected): read-only fact re-verification (§58B.4).
 
@@ -631,7 +633,7 @@ Ownership across the three systems is governed by the §2.2 matrix.
 
 No new top-level navigation. Changes are contained:
 
-1. **Subscription payment flow (Merchant Admin / Branch Manager / Finance / Front Office):** identical screen inventory and role exposure as §58, with state labels driven by the revised attempt machine (§25.4): `initiating → prompt_sent (polling) → confirmed → applied` plus `customer_cancelled | timeout | failed | provider_unavailable (retry)`. Polling reads `GET /api/v1/billing/payment-attempts/{attempt}` exactly as before; the payload shape is preserved except `provider_channel` values now come from Wallet `provider_method` and a `wallet_status` field is added for the Finance-detail view only. Front Office continues to see only simple amount-due + progress (no wallet_status, no masked phone).
+1. **Subscription payment flow (Merchant Admin / Branch Manager / Finance / Front Office):** identical screen inventory and role exposure as §58, with state labels driven by the revised attempt machine (§25.4): `initiating → prompt_sent (polling) → confirmed → applied` plus `customer_cancelled | timeout | failed | provider_unavailable (retry)`; `submitting_to_wallet`/`submitted_to_wallet`/`submission_unknown` all render as the same "initiating/awaiting prompt" polling label — the UI never invites a fresh attempt while `submission_unknown` is unresolved. Polling reads `GET /api/v1/billing/payment-attempts/{attempt}` exactly as before; the payload shape is preserved except `provider_channel` values now come from Wallet `provider_method` and a `wallet_status` field is added for the Finance-detail view only. Front Office continues to see only simple amount-due + progress (no wallet_status, no masked phone).
 2. **PayBill/Till instructions panel:** renders `paybill_or_till` + `account_reference` (now `SRV-PAY-…`) + amount from `GET …/payment-instructions`. New UI state: `instructions_pending` (registration not yet confirmed) with an explanatory message and auto-refresh; never shows a stale internal invoice number as a payable reference.
 3. **Platform → Billing Reconciliation screen (Super Admin):** lists `billing_reconciliation_exceptions` with reason/severity filters; resolve dialog offers `link_to_invoice` (choose invoice; shows a Wallet payment summary fetched read-only) or `dismiss`, requires reason + step-up, and shows a before/after audit preview. No manual "record payment" control exists anywhere (guard test).
 4. **Platform → Integrations Health screen (Super Admin, new, small):** Wallet webhook lag, inbox failure count, circuit-breaker state; R&E outbox depth, oldest undelivered event age, last delivery error, dead-letter count; last qualification run per period. Read-only; links to runbooks.
@@ -692,7 +694,7 @@ Billing/subscription/promotions: platform_billing_settings(20A), subscription_pl
 Percentage platform-fee engine: platform_fee_configurations(20E), platform_fee_ledger_entries(20E),
   platform_fee_adjustments(20E), platform_fee_disputes(20E), preferred_personnel_fee_rules(20A)
 Wallet billing payments: wallet_merchant_account_links(20D-W), subscription_payment_attempts(20D-W),
-  subscription_payments(20D-W), subscription_payment_reversals(20D-W), wallet_webhook_inbox(20D-W),
+  subscription_payments(20D-W), subscription_payment_receipts(20D-W), subscription_payment_reversals(20D-W), wallet_webhook_inbox(20D-W),
   billing_reconciliation_exceptions(20D-W), subscription_invoice_payment_locks(20D-W), merchant_billing_credits(20D-W)
 Refer & Earn integration: referral_snapshots(21R-A), re_outbound_events(21R-A), re_event_deliveries(21R-A),
   re_activity_rule_versions(21R-B), re_qualification_periods(21R-B), re_qualification_decisions(21R-B),
@@ -980,16 +982,29 @@ subscription_payment_attempts (20D-W) — id; ulid; merchant_id FK RESTRICT;
   on current role for historical reconstruction);
   initiated_from_branch_id FK merchant_branches RESTRICT nullable; initiated_ip_hashed char(64) nullable;
   initiated_user_agent_redacted varchar nullable;                    -- initiator snapshots as in v3
-  channel CHECK in ('stk_push','c2b_reference');                     -- c2b_reference rows are created by Wallet
-                                                                     -- confirmation events, not user initiation
+  channel CHECK in ('stk_push');                                     -- attempts are USER/PRODUCT-INITIATED only
+                                                                     -- (Correction 14.9): a direct PayBill/Till (C2B)
+                                                                     -- payment confirmed by Wallet has NO attempt row and
+                                                                     -- fabricates no initiator snapshot or Servana
+                                                                     -- idempotency key; it is recorded directly in
+                                                                     -- subscription_payments, and is linked to an attempt
+                                                                     -- ONLY when Wallet correlates the confirmation to an
+                                                                     -- existing product-created attempt
   phone_msisdn_encrypted nullable; amount_minor bigint; currency char(3);
   servana_idempotency_key char(64);                                  -- key sent to Wallet as Idempotency-Key
   wallet_payment_id varchar not null; wallet_attempt_id varchar nullable unique;
   provider_method varchar nullable;                                  -- projection from Wallet (e.g. 'mpesa_stk','mpesa_paybill')
   provider_reference_masked varchar nullable;                        -- masked receipt from Wallet events; never raw
-  status varchar CHECK in ('initiated','submitted_to_wallet','prompt_sent','confirmed','applied_to_invoice',
+  status varchar CHECK in ('initiated','submitting_to_wallet','submitted_to_wallet','submission_unknown',
+    'prompt_sent','confirmed','applied_to_invoice',
     'customer_cancelled','timeout','failed','provider_unavailable','duplicate','reconciliation_required',
     'reversed','refunded_externally');
+  -- submission_unknown (Correction 14.6): entered when the Wallet submission call times out or fails
+  -- ambiguously — an ambiguous transport failure is NOT proof the request was not accepted. The attempt
+  -- RETAINS its original servana_idempotency_key; no new attempt may be created for the same invoice under a
+  -- new key while one is in submission_unknown (bounded cooldown/lock via subscription_invoice_payment_locks);
+  -- retries/queries reuse the original identity; resolution comes only from authoritative Wallet status
+  -- (GET /payments/{p} or a verified webhook event).
   wallet_status_snapshot varchar nullable;                           -- last raw Wallet state string, for Finance detail
   last_wallet_event_id varchar nullable; last_event_at timestamptz nullable;
   expires_at; created_at/updated_at.
@@ -1000,19 +1015,27 @@ subscription_payment_attempts (20D-W) — id; ulid; merchant_id FK RESTRICT;
   NEVER success-from-initiation. `refunded_externally` records an attempt whose confirmed payment was later
   refunded outside Servana (Wallet-event-driven; not a fund movement by Servana).
 
-subscription_payments (20D-W) — id; ulid; merchant_id FK RESTRICT; subscription_invoice_id FK RESTRICT;
-  subscription_payment_attempt_id FK nullable;
-  wallet_payment_id varchar not null; confirming_wallet_event_id varchar not null unique;
+subscription_payments (20D-W; Correction 14.10 — ONE AGGREGATE ROW PER WALLET PAYMENT) — id; ulid;
+  merchant_id FK RESTRICT; subscription_invoice_id FK RESTRICT;
+  subscription_payment_attempt_id FK nullable;                       -- nullable: direct C2B has no attempt row (14.9)
+  wallet_payment_id varchar not null UNIQUE;                         -- unconditional uniqueness is now coherent:
+                                                                     -- exactly one aggregate per Wallet payment resource
   provider_reference_masked varchar nullable;                        -- replaces the v3 mpesa_receipt_number
   wallet_settlement_status varchar nullable;                         -- projection (e.g. SETTLEMENT_PENDING/SETTLED); feeds payment_cleared gating (§58B.1)
+  total_confirmed_minor bigint;                                      -- maintained sum of child receipt rows
+  currency char(3); first_confirmed_at timestamptz; last_confirmed_at timestamptz; created_at/updated_at.
+  Partial receipts NEVER create additional payment rows; each confirmed receipt appends a child row below.
+  Application invariant: sum(receipt rows) <= Wallet received amount, checked at apply time and by the
+  nightly reconciliation job. Corrections only via subscription_payment_reversals rows, never edits.
+
+subscription_payment_receipts (20D-W; Correction 14.10 — append-only child of subscription_payments) —
+  id; ulid; merchant_id FK RESTRICT; subscription_payment_id FK RESTRICT;
+  confirming_wallet_event_id varchar not null UNIQUE;                -- exactly-once application per Wallet event
+  wallet_receipt_sequence varchar nullable;                          -- Wallet's receipt sequence when published;
+  -- unique(wallet_payment_id, wallet_receipt_sequence) is added ONLY if the Gate W contract publishes it
   amount_minor bigint; currency char(3); paid_at timestamptz; created_at.
-  Unique (wallet_payment_id, confirming_wallet_event_id); partial-unique wallet_payment_id where a payment
-  is expected to confirm exactly once (multiple rows per wallet_payment_id allowed ONLY for
-  partial-receipt sequences, each with a distinct confirming event and non-overlapping amounts —
-  enforced by application invariant: sum(rows.amount) <= Wallet received amount, checked at apply time
-  and by the nightly reconciliation job).
-  Immutable confirmed-transaction projection (append-only; corrections via reversal rows in
-  subscription_payment_reversals, never edits).
+  Append-only (trigger); one row per confirming Wallet event; allocation to the invoice happens under the
+  invoice row lock in the same transaction that inserts the receipt row (§57).
 
 subscription_payment_reversals (20D-W) — id; ulid; merchant_id; subscription_invoice_id;
   subscription_payment_id FK RESTRICT; wallet_event_id varchar unique; kind CHECK in ('reversal','external_refund','chargeback');
@@ -1027,11 +1050,16 @@ wallet_webhook_inbox (20D-W) — id; ulid; wallet_event_id varchar not null uniq
   occurred_at timestamptz;                                            -- Wallet's creation timestamp
   payload_hash char(64); payload_encrypted text;                      -- verified payload, encrypted at rest
   signature_key_id varchar; signature_verified_at timestamptz;
-  received_at; processing_status CHECK in ('received','processed','duplicate','failed','ignored','rejected');
+  received_at; processing_status CHECK in ('received','processed','duplicate','failed','ignored');
   processed_at nullable; failure_code varchar nullable; attempt_count int default 0; next_retry_at nullable.
-  'rejected' rows (failed verification) store hash + minimal metadata + encrypted body for forensics, never
-  enter processing. Append-only on payload columns (trigger). Retention: 13 months, then archived per §74 policy.
-  Unique wallet_event_id is the FINAL replay protection (DB constraint, per Wallet §37 principle).
+  VERIFIED EVENTS ONLY (Correction 14.7): a row is inserted only AFTER constant-time signature verification
+  succeeds, so an unverified request can never occupy the canonical wallet_event_id uniqueness constraint
+  (no event-ID squatting). Failed verifications produce NO inbox row; they produce a high-severity security
+  audit event with the body/request hash + minimal non-sensitive metadata, plus metrics/alerts (§9 rule 21).
+  No separate runtime rejection table exists or is planned in the adoption PR.
+  Append-only on payload columns (trigger). Retention: 13 months, then archived per §74 policy.
+  Unique wallet_event_id (first-seen verified insertion) is the FINAL replay protection
+  (DB constraint, per Wallet §37 principle).
 
 billing_reconciliation_exceptions (20D-W; replaces the v3 mpesa_reconciliation_events) — id; ulid;
   merchant_id nullable; subscription_invoice_id nullable; wallet_payment_id varchar nullable;
@@ -1284,7 +1312,7 @@ Human authentication is unchanged (Magic Link + Sanctum, MFA per role). Four mac
 | Identity | Direction | Mechanism | Credential custody |
 |---|---|---|---|
 | Servana product application @ Wallet | Servana → Wallet | Wallet-issued per-environment machine credentials (Wallet §7.4/§14); TLS with cert verification; `Idempotency-Key` on money-adjacent creates | `servana/{env}/wallet/api_credentials` |
-| Wallet application webhook sender | Wallet → Servana | HMAC signature + timestamp + replay window + per-application secret + key ID (Wallet §35); dual-key rotation window | `servana/{env}/wallet/webhook_secret_{key_id}` |
+| Wallet application webhook sender | Wallet → Servana | Algorithm-aware signature (HMAC or asymmetric per Wallet §35; selected by algorithm identifier + key ID + contract version) + timestamp + replay window + per-application credentials; dual-key rotation window | `servana/{env}/wallet/webhook_secret_{key_id}` |
 | Servana service account @ R&E | Servana → R&E | `X-Citrus-*` header contract + canonical-string HMAC (R&E dev plan §11.7); key ID selects key; nonce per request | `servana/{env}/refer-earn/signing_key_{key_id}` |
 | R&E reconciliation caller @ Servana | R&E → Servana | Same canonical construction, distinct inbound secret; nonce stored in `re_inbound_requests` | `servana/{env}/refer-earn/inbound_secret_{key_id}` |
 
@@ -1621,10 +1649,12 @@ financial_mutation (payment record/validate, refund, payout, subscription paymen
 platform_mutation (billing settings, plan prices, promotion approval, merchant suspension):
   platform staff auth; platform role/permission; mandatory MFA; step-up for sensitive actions; reason field; audit; NO merchant tenant context or membership insertion.
 partner_webhook_mutation (Wallet webhooks; replaces the v3 provider_webhook_mutation — SUP-03):
-  no Sanctum; HMAC signature verification (key-ID + timestamp tolerance ±300s + replay window via unique
-  event id) BEFORE parse-for-routing; strict POST + content-type + 64KB body limit; exact schema per event
-  version; encrypted raw store; fast ack; async processing; endpoint/anomaly rate limiting that never blocks
-  legitimate retries; full redaction; security audit on verification failure.
+  no Sanctum; algorithm-aware signature verification (algorithm identifier + key-ID + contract version per
+  ADR-015; timestamp tolerance ±300s) BEFORE parse-for-routing AND before any canonical storage; strict POST +
+  content-type + 64KB body limit; exact schema per event version; first-seen unique event-id insertion into the
+  encrypted verified inbox only AFTER verification (Correction 14.7 — no event-ID squatting); fast ack; async
+  processing; endpoint/anomaly rate limiting that never blocks legitimate retries; full redaction; security
+  audit (no inbox row) on verification failure.
 partner_signed_query (R&E reconciliation):
   no Sanctum; X-Citrus-* canonical-string HMAC; nonce uniqueness (re_inbound_requests); bounded read-only
   query classes; response contains only §58B.2-grade facts; rate limited per key; audited.
@@ -1642,7 +1672,7 @@ liveness/readiness:
 | Tenant/branch mutation | Required | Permission + policy | Required | No | Required | When duplicate effect matters |
 | Financial mutation | Required | Financial policy | Required | No | Strict | Required |
 | Platform mutation | Required | Platform permission | Required | No | Strict | Where effect-sensitive |
-| Partner webhook | HMAC contract | Key-ID/correlation | Strict schema | No | Endpoint/anomaly | Unique event-ID replay protection |
+| Partner webhook | Signature contract (algorithm-aware, ADR-015) | Key-ID/correlation | Strict schema | No | Endpoint/anomaly | Unique first-seen event-ID replay protection (post-verification) |
 | Partner signed query | HMAC contract | Key + bounded query class | Strict schema | Cursor where lists | Per key | Nonce uniqueness |
 | Liveness/readiness | No user auth | Network/platform | No user input | No | Infra control | No |
 
@@ -1802,14 +1832,23 @@ Subscription Invoice — draft → issued → pending_payment → partially_paid
   Terminology: subscription invoices use **`void`** only (never `cancelled`); `cancelled` is reserved for non-invoice records (subscription, payout run, promotion, free-period offer). These are distinct documented transitions.
 
 Wallet Payment Attempt (subscription_payment_attempts.status; Correction 14.6 as amended by ADR-012) —
-  initiated ──────────────► submitted_to_wallet ───► prompt_sent ───► confirmed ───► applied_to_invoice
-      │                          │                       │  │             (terminal-success)
-      │ wallet 4xx/validation    │ wallet unreachable    │  ├─► customer_cancelled (terminal)
-      ├─► failed (terminal)      ├─► provider_unavailable│  ├─► timeout (NOT proof funds didn't move →
-      │                          │   (retryable; lock    │  │    QueryStaleWalletAttemptsJob may still
-      │                          │    released)          │  │    move timeout → confirmed later)
-      │                          │                       │  └─► failed (terminal)
-      └─► duplicate (idempotent replay resolution)       │
+  initiated ─► submitting_to_wallet ─► submitted_to_wallet ─► prompt_sent ─► confirmed ─► applied_to_invoice
+      │               │                      │                    │  │             (terminal-success)
+      │               │ pre-call failure     │ wallet unreachable │  ├─► customer_cancelled (terminal)
+      ├─► failed      ├─► failed (terminal)  ├─► provider_        │  ├─► timeout (NOT proof funds didn't
+      │  (terminal,   │                      │   unavailable      │  │    move → QueryStaleWalletAttemptsJob
+      │  wallet 4xx/  │ timeout/ambiguous    │   (definitive      │  │    may still move timeout →
+      │  validation)  │ transport failure    │   pre-acceptance   │  │    confirmed later)
+      │               ├─► submission_unknown │   failure only;    │  └─► failed (terminal)
+      │               │   (ambiguity is NOT  │   retryable; lock  │
+      │               │   proof of non-      │   released)        │
+      │               │   acceptance)        │                    │
+      └─► duplicate (idempotent replay resolution)
+  submission_unknown ─► submitted_to_wallet | prompt_sent | confirmed | failed | timeout
+      (resolved ONLY by authoritative Wallet status — GET /payments/{p} or a verified webhook event;
+       the attempt retains its ORIGINAL servana_idempotency_key; no duplicate attempt under a new key;
+       retries/queries reuse the original identity; a bounded cooldown/invoice payment lock holds
+       until resolution or lock expiry)
   confirmed ─► reconciliation_required (apply-time invariant breach → exception queue)
   applied_to_invoice ─► reversed | refunded_externally (Wallet reversal/refund events; §13.11 reversal rows)
   Per-transition contract (§25.1): actor (system/webhook/job), permission n/a for webhook-driven,
@@ -1967,7 +2006,7 @@ Super Admin manages plans (non-price metadata), prices (`subscription_plan_price
 `merchant_subscriptions` with billing-status machine (Section 25); trial starts at Merchant Admin creation with snapshotted days; read-only grace + suspension transitions; no-proration next-cycle plan changes via `scheduled_plan_changes`; shared overdue escalation events; recovery allowlist middleware. Price (and its `billing_interval`) captured at issuance. Audit: subscription lifecycle, plan-change scheduled/applied.
 
 ## 49. Subscription Invoices (Phase 20B)
-`subscription_invoices` (+ items) with the subscription-invoice machine; invoice number per merchant; `account_reference` is the Wallet structured payment reference `SRV-PAY-…` (ADR‑014; nullable until Wallet registration succeeds; immutable once set); issued invoices immutable; balance from confirmed payments (verified Wallet events only). Issuance enqueues a `RegisterInvoicePayment` outbox intent (a no-op until Phase 20D‑W lands the Wallet client; the intent row is simply consumed later), which removes any 20B→20D‑W ordering risk. Invoice PDFs render payment instructions only when registered; otherwise the PDF carries "Payment reference pending — see your billing dashboard" and is regenerated (new file version per 10F rules) after registration. Discounts/free periods snapshot at issuance and never mutate issued invoices. Invoice finalization (number/percentage-fee rollup) is a financial_mutation (idempotent). Billing-invoice PDFs are files (Section 65). Audit: issue/overdue/paid.
+`subscription_invoices` (+ items) with the subscription-invoice machine; invoice number per merchant; `account_reference` is the Wallet structured payment reference `SRV-PAY-…` (ADR‑014; nullable until Wallet registration succeeds; immutable once set); issued invoices immutable; balance from confirmed payments (verified Wallet events only). Phase 20B ships only the nullable, forward-compatible Wallet projection columns (`wallet_payment_id`, `wallet_registration_status` default `'unregistered'`, `wallet_registered_at`, and nullable-until-registered `account_reference`) — no outbox intent, table, or consumer exists in 20B. Phase 20D‑W then (1) idempotently backfills registration for every existing unregistered payable subscription invoice, (2) registers newly issued invoices after commit, (3) guarantees registration before payment instructions or STK initiation are served (§56.1), and (4) always uses the stable idempotency key `srv:pay-reg:{invoice_ulid}` — which removes any 20B→20D‑W ordering risk without an undefined intermediate mechanism. Invoice PDFs render payment instructions only when registered; otherwise the PDF carries "Payment reference pending — see your billing dashboard" and is regenerated (new file version per 10F rules) after registration. Discounts/free periods snapshot at issuance and never mutate issued invoices. Invoice finalization (number/percentage-fee rollup) is a financial_mutation (idempotent). Billing-invoice PDFs are files (Section 65). Audit: issue/overdue/paid.
 - **Interval date math (deterministic, `Africa/Nairobi`):** the next period and due/renewal dates are computed per `billing_interval`: `weekly` = +7 days; `bi_weekly` = +14 days; `monthly` = +1 calendar month with **end-of-month clamping** (e.g., Jan 31 → Feb 28/29); `quarterly` = +3 calendar months with the same clamp; `annual` = +1 calendar year with **leap-year clamping** (Feb 29 → Feb 28 in non-leap years). Anchor day is the subscription's billing anchor (issuance day-of-month), preserved across months and clamped to the shortest month. Reminder schedules and overdue/grace timers derive from these computed boundaries. Tests cover each interval plus the Jan-31, Feb-29, and year-boundary edge cases.
 
 ## 50. Fixed Billing Mode (Phase 20A/20B)
@@ -2013,9 +2052,14 @@ POST /api/v1/billing/subscription-invoices/{invoice}/wallet/stk      route: bill
     4 ensure wallet_merchant_account_links active (SyncMerchantWalletAccount; on failure 503 provider_unavailable)
     5 ensure invoice registered with Wallet (RegisterInvoicePayment; ADR-014; on failure 503 provider_unavailable)
     6 persist subscription_payment_attempt status='initiated' with servana_idempotency_key BEFORE any Wallet call
-    7 call Wallet POST /api/v1/payments/{wallet_payment_id}/attempts/stk with Idempotency-Key
+    7 set status='submitting_to_wallet'; call Wallet POST /api/v1/payments/{wallet_payment_id}/attempts/stk
+      with Idempotency-Key = servana_idempotency_key
     8 on 2xx: store wallet_attempt_id; status='submitted_to_wallet' (→'prompt_sent' on Wallet ack semantics)
-      on timeout/5xx: status='provider_unavailable'; release payment lock; return 503 with retry guidance
+      on timeout or ambiguous transport failure: status='submission_unknown' (Correction 14.6 — ambiguity is
+        NOT proof of non-acceptance); KEEP the payment lock bounded; retry/query with the ORIGINAL
+        servana_idempotency_key; resolve only via authoritative Wallet status; return 202 with polling guidance
+      on definitive pre-acceptance 5xx (Wallet rejected before accepting the submission):
+        status='provider_unavailable'; release payment lock; return 503 with retry guidance
       on Wallet 4xx (cooldown, invalid state): map to structured 422/409; release lock
   response { attempt_ulid, status } — NEVER success-from-initiation
   audit wallet.stk_initiated (info)
@@ -2040,7 +2084,7 @@ GET  /api/v1/billing/subscription-invoices/{invoice}/payment-instructions   rout
   tests: reference correctness; pending state; never exposes an internal invoice number as a payable reference
 
 POST /api/v1/integrations/wallet/webhooks                              route: integrations.wallet.webhook
-  class partner_webhook_mutation | auth NONE (HMAC contract §24.1)
+  class partner_webhook_mutation | auth NONE (signature contract §24.1, algorithm-aware per ADR-015)
   request: Wallet signed event envelope (event id/type/version, timestamps, product/application/environment,
   merchant account, resource ids, current/prior state, amount/currency, masked provider reference,
   correlation id — Wallet §35)
@@ -2071,7 +2115,7 @@ Eligible Merchant Admin/Branch Manager/Finance/Front Office opens the subscripti
 
 | Call | Wallet route (Wallet §36.1) | Idempotency-Key | Used by |
 |---|---|---|---|
-| Register payment | `POST /api/v1/payments` | `srv:pay-reg:{invoice_ulid}` | RegisterInvoicePayment (issuance outbox + lazy paths) |
+| Register payment | `POST /api/v1/payments` | `srv:pay-reg:{invoice_ulid}` | RegisterInvoicePayment (post-commit registration at issuance, idempotent backfill, + lazy guarantee paths; 20D‑W only) |
 | STK attempt | `POST /api/v1/payments/{p}/attempts/stk` | `srv:stk:{attempt_ulid}` | InitiateWalletStkAttempt |
 | Status query | `GET /api/v1/payments/{p}` | n/a (safe) | QueryStaleWalletAttemptsJob, NightlyWalletAllocationReconciliationJob, exception-resolve view |
 | List attempts | `GET /api/v1/payments/{p}/attempts` | n/a | Finance detail, reconciliation |
@@ -2081,16 +2125,16 @@ Eligible Merchant Admin/Branch Manager/Finance/Front Office opens the subscripti
 
 Merchants paying by PayBill/Till see official instructions + the exact `SRV-PAY-…` structured reference (§56.1 instructions endpoint); Wallet owns C2B validation/confirmation against that reference and webhooks the outcome. All settlement flows through one verified pipeline:
 
-**Verification (before parse — §9 rule 21):** HTTPS → strict content-type → 64 KB body limit → key-ID resolution → timestamp tolerance ±300 s → unique `wallet_event_id` replay check → content-SHA‑256 match → constant-time HMAC. Pass → encrypted `wallet_webhook_inbox` insert → 200 fast-ack → async processing. Fail → uniform 401 (413 for size), `rejected` forensic row, high-severity audit.
+**Verification (before parse and before any canonical storage — §9 rule 21):** HTTPS/transport → strict content-type → 64 KB body limit → required-header syntax → key-ID resolution → timestamp tolerance ±300 s → content-SHA‑256 match → constant-time signature verification (algorithm identifier + key ID + contract version, ADR‑015) → JSON parse → event schema validation → **canonical first-seen `wallet_event_id` insertion** into the encrypted verified `wallet_webhook_inbox` (unique constraint decides replay) → 200 fast-ack → async processing. Fail → uniform 401 (413 for size), **no inbox row** (an unverified request never occupies the canonical event-ID uniqueness), high-severity security audit event with body/request hash + minimal non-sensitive metadata, metrics/alerts.
 
 **Processing algorithm — `ProcessWalletWebhookJob` per inbox row, in one flow:**
 
 1. Load row `FOR UPDATE`; skip if not `received`.
 2. Resolve `wallet_payment_id → subscription_invoice` via the registration link; miss → exception `unknown_payment`, mark `processed` (the event is Wallet-valid, just not ours to apply), severity high.
-3. Order guard: if `occurred_at` is older than `last_event_at` on the attempt AND the event class is non-terminal → record snapshot only (`ignored`).
+3. Order guard (Correction 14.8): the Wallet contract must publish a **monotonic per-resource version field** (`resource_version` or `state_sequence` — exact name pinned at Gate W, §80.2). Servana applies an event's state only when its version is **strictly newer** than the last-applied version stored on the attempt/payment projection; an equal-or-older version → record snapshot only (`ignored`). `occurred_at` and the event ID are **not** sufficient ordering authority (wall clocks skew, IDs are not sequenced); they remain forensic metadata only. Until the field is pinned, no ordering logic may be implemented.
 4. Switch on `event_type` (names per Wallet OpenAPI at Gate W; mapping is 1:1 with Wallet collection states, Wallet §20.3):
    - attempt-progress (SUBMITTED/PROVIDER_ACCEPTED/PROCESSING/PENDING_CUSTOMER_ACTION) → project attempt status.
-   - `SUCCEEDED` / partial-receipt confirmation → **ApplyConfirmedWalletPayment**: open transaction; lock invoice row; verify event first-seen (insert `subscription_payments` with unique `confirming_wallet_event_id`); verify amount invariant (cumulative applied ≤ Wallet received; breach → `amount_mismatch` exception, no apply); allocate: `<balance → partially_paid`, `=balance → paid`, `>balance → paid + merchant_billing_credits (source='overpayment')` (unchanged §58 semantics; ADR‑005 rounding); run the billing-status projection (may perform billing-only recovery `suspended_billing→active`; never touches `merchants.status`); enqueue the R&E `subscription.payment_received` outbox row in the same transaction; commit; audit `wallet.event_applied`.
+   - `SUCCEEDED` / partial-receipt confirmation → **ApplyConfirmedWalletPayment**: open transaction; lock invoice row; upsert the one-per-Wallet-payment `subscription_payments` aggregate (unique `wallet_payment_id`) and verify event first-seen (insert a `subscription_payment_receipts` child row with unique `confirming_wallet_event_id` — Correction 14.10); verify amount invariant (cumulative applied ≤ Wallet received; breach → `amount_mismatch` exception, no apply); allocate: `<balance → partially_paid`, `=balance → paid`, `>balance → paid + merchant_billing_credits (source='overpayment')` (unchanged §58 semantics; ADR‑005 rounding); run the billing-status projection (may perform billing-only recovery `suspended_billing→active`; never touches `merchants.status`); enqueue the R&E `subscription.payment_received` outbox row in the same transaction; commit; audit `wallet.event_applied`.
    - `FAILED/REJECTED/CANCELLED/EXPIRED` → project attempt terminal state; release payment lock; notify initiator per §12.1 UX states.
    - `REVERSED / REFUNDED / PARTIALLY_REFUNDED` → **RecordWalletReversal/RecordExternalRefund**: insert `subscription_payment_reversals`; reduce allocation under lock (reversal > allocation → `reversal_exceeds_allocation` critical exception, no partial apply); re-project billing status; enqueue matching R&E event; audit high.
    - `RECONCILIATION_EXCEPTION` (Wallet-side) → open local exception `unmatched_reference`/`duplicate_confirmation` as mapped, for Super-Admin linkage.
@@ -2123,9 +2167,9 @@ Role-specific exposure (unchanged intent): Merchant Admin (plan/invoice/payment/
 | W‑12 | Wrong/unknown structured reference paid at PayBill | Wallet owns C2B validation; if Wallet still confirms and webhooks an unknown payment → `unknown_payment` exception; Super Admin links or dismisses |
 | W‑13 | Wallet API down at initiation | 503 `provider_unavailable`; attempt row records the failure; **payment lock released**; invoice remains payable; UX retry/support state |
 | W‑14 | Wallet down at issuance registration | `wallet_registration_status='failed'` + retry backoff; issuance itself unaffected; instructions endpoint returns `instructions_pending`; STK blocked until registered |
-| W‑15 | Webhook signature invalid / unknown key / stale timestamp / oversized | Uniform 401 (413 for size); `rejected` forensic row; high-severity audit; no parse-for-routing |
+| W‑15 | Webhook signature invalid / unknown key / stale timestamp / oversized | Uniform 401 (413 for size); **no inbox row** (no event-ID squatting); high-severity security audit with body/request hash; metrics/alert; no parse-for-routing |
 | W‑16 | Wallet sends a staging event to the production endpoint | Environment-claim check → rejected + audit (§77.1) |
-| W‑17 | Out-of-order events (PROCESSING after SUCCEEDED) | Ordering guard: non-terminal after terminal → snapshot-only `ignored` |
+| W‑17 | Out-of-order events (PROCESSING after SUCCEEDED) | Ordering guard: stale `resource_version`/`state_sequence` (or non-terminal after terminal) → snapshot-only `ignored`; never regress on `occurred_at` comparison alone |
 | W‑18 | Reversal after invoice paid & merchant recovered | Reversal row reduces allocation under lock; invoice may regress to `partially_paid`; billing projection re-runs (may re-escalate per grace); R&E `payment_reversed`; qualification correction if a decided period is affected |
 | W‑19 | Reversal amount exceeds the applied allocation | `reversal_exceeds_allocation` **critical** exception; no partial apply; manual resolution |
 | W‑20 | External refund recorded by Wallet | `refunded_externally` projection + reversal-row semantics; R&E `refund_issued`; audit high |
@@ -2277,7 +2321,7 @@ Scheduler (singleton/leader) runs: trial/grace/suspension transitions; shared ov
 
 | Job | Schedule | Purpose |
 |---|---|---|
-| `QueryStaleWalletAttemptsJob` | every 10 min | Attempts in `submitted_to_wallet`/`prompt_sent` older than expiry → `GET /payments/{p}`; project truth; timeout ≠ proof of no funds |
+| `QueryStaleWalletAttemptsJob` | every 10 min | Attempts in `submission_unknown`/`submitted_to_wallet`/`prompt_sent` older than expiry → `GET /payments/{p}` with the original attempt identity; project truth; timeout/ambiguity ≠ proof of no funds |
 | `NightlyWalletAllocationReconciliationJob` | daily 02:30 | For every invoice with activity in 45 days: compare Servana applied allocations vs Wallet received totals; drift → `allocation_drift` exception; also evaluates `payment_cleared` gating (§58B.1) |
 | `DeliverReOutboxJob` dispatcher sweep | every minute | Deliver `pending` where `next_attempt_at` is due (the normal path is event-driven dispatch at commit; the sweep is the safety net) |
 | `ReconcileReEventGapsJob` | hourly | Product-scoped cursor comparison against the R&E reconciliation API; missing acks → redeliver; unexplained gaps → alert |
@@ -2448,7 +2492,11 @@ Feature phases begin only after the pre-feature remediation gate (Section 5.4) i
 Gate(V+R1..R7) → 10 → 10F → 11                        [complete]
 10 + 11 → 15A → 15B → 16A → 16B → 16C                  [complete]
 16C → 17 → 18A → 18B → 19                              [complete]
-20A(preferred_personnel_fee_rules) → 17 (invoice preferred-personnel-fee resolution; legacy fixed field used until the rule table exists)
+17 (COMPLETE — invoices finalized using the legacy fixed `services.preferred_personnel_fee_minor` seam)
+20A(preferred_personnel_fee_rules): migrates the legacy service-level values into effective-dated
+  preferred_personnel_fee_rules via expand-and-contract, then changes FUTURE invoice finalization to
+  resolve the effective rule; finalized invoices are NEVER rewritten. Completed Phase 17 does not
+  depend on 20A; 20A supersedes the seam prospectively only.
 20A → 20B → 20C
 20B → [External Gate W: Wallet Servana Collections Slice] → 20D-W
 20A + 17/18 → 20E ; 20F + 18B(validated payments) → 20G → 20H     (20E/20F need not wait for Gate W)
@@ -2462,7 +2510,7 @@ Launch rule: 20D-W and 21R-B must be complete before Phase 25 exit; if Gate W st
 
 Servana must not stub, simulate-in-production, or partially implement any Wallet capability. Gate W opens when the Wallet platform demonstrates, in **sandbox** (and later re-verified in production before Phase 25 exit):
 
-1. **Foundation subset:** product + application registry with Servana sandbox/staging/production applications and disjoint machine credentials; merchant-account registration/sync API; product API authentication; Safaricom provider account configured; payment-route configuration; idempotency infrastructure; incoming provider webhook foundation; outgoing signed product webhooks (HMAC contract published: header names, canonical string, key-ID scheme, rotation procedure); audit, observability, secret management, environment separation.
+1. **Foundation subset:** product + application registry with Servana sandbox/staging/production applications and disjoint machine credentials; merchant-account registration/sync API; product API authentication; Safaricom provider account configured; payment-route configuration; idempotency infrastructure; incoming provider webhook foundation; outgoing signed product webhooks (**signing contract published and pinned**: algorithm identifier(s) — Wallet scope §35 allows HMAC or asymmetric signatures, so Servana must not assume HMAC-SHA-256 until pinned here — header names, canonical string, key-ID scheme, contract version, rotation procedure); **a monotonic per-resource ordering field (`resource_version` or `state_sequence`; exact field name pinned here — required by §57 step 3 / Correction 14.8)**; audit, observability, secret management, environment separation.
 2. **Collections subset:** payment resource (`POST/GET /api/v1/payments`) with `external_reference` uniqueness and structured `SRV-PAY-…` reference issuance; STK attempts (`POST /payments/{p}/attempts/stk`, `GET …/attempts`) with cooldown/idempotency controls; M‑Pesa STK callback processing; C2B validation/confirmation with structured Servana references; duplicate-callback + receipt-uniqueness protection; collection state machine incl. partial/overpaid; transaction-status reconciliation; exception queue; immutable ledger postings; basic settlement tracking; webhook delivery with retries/replay; published OpenAPI + event schema versions; a sandbox test harness able to simulate success, cancel, timeout, late callback, duplicate, reversal, and refund.
 3. **Explicitly NOT required for Gate W (do not wait for):** B2C/bulk payouts, PesaLink, direct-bank adapters, beneficiaries, multi-approver payouts, treasury transfers, liquidity routing, cross-provider fallback, enterprise compliance tooling.
 4. **Gate evidence + stall policy:** the agent records gate evidence (credential receipt, OpenAPI version hash, a passing contract-test run against sandbox, simulated end-to-end STK + C2B flows) in `docs/integrations/wallet/gate-w-evidence.md`. If Gate W is not open when 20C exits: proceed 20E→20F→(20G/20H prep), re-check weekly, and raise a blocking risk in the register if the stall is projected to threaten Phase 25 by more than two weeks.
@@ -2568,7 +2616,7 @@ Servana must not stub, simulate-in-production, or partially implement any Wallet
 - **Objective:** merchants pay Servana subscription invoices through Wallet (STK + PayBill/Till structured references) with verified webhook settlement, exactly-once application, overpayment credit, billing-only recovery, reversal handling, reconciliation exceptions, and full auditability — with zero provider logic in Servana.
 - **Refs:** §§8.1 (ADR‑012/014/015), 10.1, 13.11, 17.1, §§55–58 + 58.1, 12.1, 24.1, 67, 70–71, 75.1, 77.1; Wallet scope §§20–22, 34–37; superseded v3 §§55–58 (SUP‑01…06).
 - **Entry criteria:** 20B complete; the §1.3 plan-adoption PR merged; Gate W (§80.2) open in sandbox.
-- **DB:** `wallet_merchant_account_links`, `subscription_payment_attempts` (revised shape), `subscription_payments` (revised shape), `subscription_payment_reversals`, `wallet_webhook_inbox`, `billing_reconciliation_exceptions`, `subscription_invoice_payment_locks`, `merchant_billing_credits`; populate the 20B-shipped `subscription_invoices` Wallet columns (§13.11).
+- **DB:** `wallet_merchant_account_links`, `subscription_payment_attempts` (revised shape), `subscription_payments` (one aggregate per Wallet payment, Correction 14.10), `subscription_payment_receipts` (append-only receipt child rows), `subscription_payment_reversals`, `wallet_webhook_inbox`, `billing_reconciliation_exceptions`, `subscription_invoice_payment_locks`, `merchant_billing_credits`; populate the 20B-shipped `subscription_invoices` Wallet columns (§13.11).
 - **Backend/security:** data-dictionary entries → migrations → models/factories/seeders → Wallet client + DTOs + signature verifier (§10.1) → actions with the §56.1 sequencing and §57 algorithm → §67 jobs → routes/policies/permissions (§19) → OpenAPI + TS regeneration; §9 rules 20–24 implementation; redaction §24.5; static-analysis guards §11; environment boot guards §77.1.
 - **Frontend:** §12.1 items 1–4 (payment states, instructions panel with `instructions_pending`, Billing Reconciliation screen, Integrations Health screen).
 - **Tests/proof:** the entire §75.1 Wallet suite + contract tests against sandbox (run commands recorded); sandbox end-to-end evidence (STK success, cancel, timeout+late callback, duplicate event, partial, overpayment credit, reversal, unknown-payment exception, recovery) with correlation-ID traces; DB queries proving allocation invariants; audit-chain verifier pass; OpenAPI diff reviewed.
@@ -2703,7 +2751,7 @@ Launch requires, in addition to all phase exits:
 ## 84. Risk Register
 | ID | Risk | Likelihood | Impact | Mitigation | Owner |
 |---|---|---|---|---|---|
-| RK-01 | Forged/replayed Wallet webhooks | Low | High | Mandatory HMAC verification before parse (§9 rule 21, ADR-015); unique `wallet_event_id` replay protection; uniform 401 + audit | Backend/Security |
+| RK-01 | Forged/replayed Wallet webhooks | Low | High | Mandatory algorithm-aware signature verification before parse and before any canonical storage (§9 rule 21, ADR-015); unique first-seen `wallet_event_id` replay protection after verification; uniform 401 + audit | Backend/Security |
 | RK-02 | Unapplied confirmed Wallet payments / reconciliation backlog | Med | High | Exception queue + alerts + Super-Admin linking workflow; stale-attempt status queries; nightly allocation reconciliation | Backend |
 | RK-03 | Commission/payout double-count or destructive correction | Med | High | Idempotent ledger entries; reversal/adjustment-only; frozen-on-submit; maker/checker; audit | Finance/Backend |
 | RK-04 | Cross-tenant/branch leakage via new models | Med | Critical | Global scopes + scoped binding + coverage tests + static analysis | Backend |
@@ -2762,4 +2810,4 @@ Run as the launch gate; each item must produce evidence.
 
 ---
 
-*End of `SERVANA_DEVELOPMENT_PLAN.md` (v4). This standalone plan supersedes all prior versions, including v3 and the separate Wallet/R&E amendment document. Phases V, R1–R7, 10–19 are complete; the next work is the §1.3 plan-adoption PR, then Phase 20A. Do not start any feature phase until the pre-feature remediation gate (Section 5.4) is closed (already satisfied) and, for Phase 20D‑W, until External Gate W (§80.2) is open.*
+*End of `Servana Software Development Plan.md` (v4). This standalone plan supersedes all prior versions, including v3 and the separate Wallet/R&E amendment document. Phases V, R1–R7, 10–19 are complete; the next work is the §1.3 plan-adoption PR, then Phase 20A. Do not start any feature phase until the pre-feature remediation gate (Section 5.4) is closed (already satisfied) and, for Phase 20D‑W, until External Gate W (§80.2) is open.*
