@@ -6,7 +6,26 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 19 — Audit Logging Completion & Flagged Events (`phase-19-audit-flagged-events`) — local_complete pending PR (base `64bd0a1`, PR #31 merge)
+### v4 Plan Adoption — Architecture change (Plan §1.3; branch `docs/update-servana-development-plan`)
+
+_Lands ADR-012–015, `billing-and-wallet.md` and `refer-earn-integration.md`, SUP-06 permission
+renames (+ five Wallet/R&E planned keys → 156 canonical catalogue), `NoDirectProviderIntegrationTest`,
+CLAUDE.md v4 alignment, lifecycle reconciliation (REM-WALLET-001, REM-RE-001, REM-MPESA superseded,
+REM-AUDEXP-001 verified_complete), and traceability rows SRV-WAL-001 / SRV-RE-001
+(`architecture_adopted`). **No Phase 20 runtime code.** Proof: `docs/proof/plan-adoption-v4.md`._
+
+### Phase 19 — Audit Logging Completion & Flagged Events (`phase-19-audit-flagged-events`) — verified_complete (PR #32 MERGED, merge `7ef259e2`)
+
+_PR **#32** `Phase 19: Complete audit logging and flagged events` MERGED into `main`, merge commit
+`7ef259e28f51fc9bba24a16ef3945ff61ddef4ce`, merged at `2026-07-05T11:48:45Z` (head branch
+`phase-19-audit-flagged-events`, base `main`; implementation `e8c70d8`, parallel-worker DB-state
+isolation fix `bfba53d`, Pint import-order fix `46087fe`, governance / final PR head `d6455f3`).
+CI run `28736716360`: five required checks (Backend — Pint/Larastan/Pest, Frontend —
+ESLint/vue-tsc/Vitest/build, Docker — build images, Security — gitleaks, E2E — Playwright) all
+**SUCCESS**. `reviewDecision` blank under the documented PR-specific solo-maintainer governance
+exception (`docs/governance/solo-maintainer-review-exception-pr-32.md`) — **not** independent
+reviewer approval. Local and remote Phase 19 branches deleted after merge. **REM-PERM-001** and
+**REM-AUDEXP-001** promoted to `verified_complete` on this merge._
 
 _Increments 8–9 landed and green (not committed/merged): the Finance-role finance-audit screen
 (`pages/finance/FinanceAuditView.vue`, route `finance.audit`, nav live, reusing the shared
@@ -25,7 +44,7 @@ to parallel workers (moved to `tests/Pest.php`), and a globally-fragile merchant
 delta) — all fixed at root cause. Gates: **backend serial 1062 + parallel 1062 (0 fail)**, Vitest 60
 files/248 tests, full Playwright e2e 252, OpenAPI 167 ops + TS + permission-types + contract, Pint 953
 clean, Larastan L8 no errors, composer/npm audit + gitleaks clean, Docker php-dev + nginx-prod build.
-**REM-PERM-001** and **REM-AUDEXP-001** both `local_complete` pending Phase 19 PR CI/review/merge._
+**REM-PERM-001** and **REM-AUDEXP-001** were `local_complete` at this point; both were promoted to `verified_complete` when PR #32 merged (see the lifecycle entry above)._
 
 _Increment 8 (Audit-role frontend) implementation landed and green (not committed/merged): the full
 Audit SPA on the existing shell/router/Pinia/generated-types/nav/design-system — 3 Pinia stores
