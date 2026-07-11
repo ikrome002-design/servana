@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Billing\Models\PreferredPersonnelFeeRule;
 use App\Domain\Catalogue\Models\Service;
 use App\Domain\Invoicing\Actions\CreateInvoiceDraft;
 use App\Domain\Invoicing\Actions\FinalizeInvoice;
@@ -53,8 +54,18 @@ it('does not recalculate an issued invoice when the service price later changes'
         ->and($reloaded->items()->first()->unit_price_minor)->toBe(500000);
 });
 
-it('snapshots the legacy preferred-personnel fee only when the session honoured the request', function (): void {
-    $scn = invoiceScenario(500000, preferredFeeMinor: 20000);
+it('snapshots the effective preferred-personnel fee RULE only when the session honoured the request (Phase 20A seam)', function (): void {
+    // Phase 20A replaces the legacy `services.preferred_personnel_fee_minor` seam with the
+    // rule-backed resolver: finalization now resolves the effective preferred-fee rule. An
+    // active service-scoped fixed rule of 20000 applies to the honoured session.
+    $scn = invoiceScenario(500000);
+    PreferredPersonnelFeeRule::factory()->service($scn['service'])->create([
+        'fixed_amount_minor' => 20000,
+        'currency' => 'KES',
+        'effective_from' => '2026-01-01',
+        'effective_to' => null,
+        'status' => 'active',
+    ]);
     $session = completedSessionFor($scn, preferredHonored: true);
     $draft = app(CreateInvoiceDraft::class)->handle($scn['client'], [$session], $scn['actor']);
     $issued = app(FinalizeInvoice::class)->handle($draft, $scn['actor']);

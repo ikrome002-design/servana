@@ -47,10 +47,13 @@ function legacyActiveKeys(PermissionMatrix $matrix): array
     ));
 }
 
-it('carries exactly the 17 known legacy-active keys', function (): void {
+it('carries exactly the 14 known legacy-active keys', function (): void {
+    // Phase 20A retired 3 legacy platform keys (platform.settings.manage,
+    // platform.billing.configure, platform.fee_rules.manage) by activating their canonical
+    // successors and deleting the legacy rows — 17 → 14.
     $legacy = legacyActiveKeys(app(PermissionMatrix::class));
 
-    expect($legacy)->toHaveCount(17);
+    expect($legacy)->toHaveCount(14);
 });
 
 it('reconciles every legacy key to a PLANNED successor (or null) and a valid owning phase', function (): void {

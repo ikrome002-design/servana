@@ -245,6 +245,23 @@ enum AuditEvent: string
     case AuditExportExpired = 'audit_export.expired';
     case AuditExportRevoked = 'audit_export.revoked';
 
+    // --- Platform billing catalogue governance (Plan §13.9, §13.10, §47; Phase 20A).
+    // Super-Admin platform_mutation events; platform-scoped (null merchant/branch);
+    // redacted public-ULID context. No events for reads.
+    case PlatformSettingsUpdated = 'platform_settings.updated';
+    case PlatformBillingSettingsUpdated = 'platform_billing.settings_updated';
+    case SubscriptionPlanCreated = 'subscription_plan.created';
+    case SubscriptionPlanMetadataUpdated = 'subscription_plan.metadata_updated';
+    case SubscriptionPlanRetired = 'subscription_plan.retired';
+    case SubscriptionPlanPriceCreated = 'subscription_plan_price.created';
+    case SubscriptionPlanPriceScheduled = 'subscription_plan_price.scheduled';
+    case SubscriptionPlanPriceCancelled = 'subscription_plan_price.cancelled';
+    case PlanEntitlementsUpdated = 'plan_entitlement.updated';
+    case PreferredPersonnelFeeRuleCreated = 'preferred_personnel_fee_rule.created';
+    case PreferredPersonnelFeeRuleApproved = 'preferred_personnel_fee_rule.approved';
+    case PreferredPersonnelFeeRuleSuperseded = 'preferred_personnel_fee_rule.superseded';
+    case PreferredPersonnelFeeRuleCancelled = 'preferred_personnel_fee_rule.cancelled';
+
     /**
      * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
      *
@@ -409,6 +426,10 @@ enum AuditEvent: string
             self::AuditFlaggedReviewStarted,
             self::AuditFlaggedResolved,
             self::AuditFlaggedDismissed,
+            self::SubscriptionPlanCreated,
+            self::SubscriptionPlanMetadataUpdated,
+            self::PlanEntitlementsUpdated,
+            self::PreferredPersonnelFeeRuleCreated,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::LoginLinkDenied,
@@ -466,6 +487,15 @@ enum AuditEvent: string
             self::FinancialPeriodReopenRequested,
             self::FinancialPeriodReopenApproved,
             self::FinancialPeriodReopened,
+            self::PlatformSettingsUpdated,
+            self::PlatformBillingSettingsUpdated,
+            self::SubscriptionPlanRetired,
+            self::SubscriptionPlanPriceCreated,
+            self::SubscriptionPlanPriceScheduled,
+            self::SubscriptionPlanPriceCancelled,
+            self::PreferredPersonnelFeeRuleApproved,
+            self::PreferredPersonnelFeeRuleSuperseded,
+            self::PreferredPersonnelFeeRuleCancelled,
             self::UnauthorizedAccess => AuditSeverity::High,
         };
     }

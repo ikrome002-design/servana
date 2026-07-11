@@ -9,6 +9,12 @@ use App\Domain\Audit\Models\AuditExport;
 use App\Domain\Audit\Models\AuditFlaggedEvent;
 use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Audit\Services\DatabaseAuditRecorder;
+use App\Domain\Billing\Contracts\PlanContextResolver;
+use App\Domain\Billing\Models\PlatformBillingSettings;
+use App\Domain\Billing\Models\PreferredPersonnelFeeRule;
+use App\Domain\Billing\Models\SubscriptionPlan;
+use App\Domain\Billing\Models\SubscriptionPlanPrice;
+use App\Domain\Billing\Services\UnboundPlanContextResolver;
 use App\Domain\Branches\Models\BranchCashUp;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
@@ -29,7 +35,7 @@ use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Invoicing\Contracts\PreferredPersonnelFeeResolver;
 use App\Domain\Invoicing\Models\Invoice;
-use App\Domain\Invoicing\Services\LegacyPreferredPersonnelFeeResolver;
+use App\Domain\Invoicing\Services\RuleBasedPreferredPersonnelFeeResolver;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Payments\Models\PaymentRecord;
@@ -57,6 +63,8 @@ use App\Policies\MerchantBranchPolicy;
 use App\Policies\MerchantPolicy;
 use App\Policies\MerchantUserPolicy;
 use App\Policies\PaymentRecordingGroupPolicy;
+use App\Policies\PlatformBillingSettingsPolicy;
+use App\Policies\PreferredPersonnelFeeRulePolicy;
 use App\Policies\QueueEntryPolicy;
 use App\Policies\ReceiptPolicy;
 use App\Policies\RefundPolicy;
@@ -66,6 +74,8 @@ use App\Policies\ServicePolicy;
 use App\Policies\ServiceSessionPolicy;
 use App\Policies\StaffInvitationPolicy;
 use App\Policies\StaffProfilePolicy;
+use App\Policies\SubscriptionPlanPolicy;
+use App\Policies\SubscriptionPlanPricePolicy;
 use App\Support\CorrelationId;
 use Dedoc\Scramble\Scramble;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -125,6 +135,11 @@ class AppServiceProvider extends ServiceProvider
         FinancialPeriodLock::class => FinancialPeriodLockPolicy::class,
         // Phase 18B — scoped, masked finance exports.
         FinanceExport::class => FinanceExportPolicy::class,
+        // Phase 20A — platform billing catalogue governance (Super-Admin platform scope).
+        PlatformBillingSettings::class => PlatformBillingSettingsPolicy::class,
+        SubscriptionPlan::class => SubscriptionPlanPolicy::class,
+        SubscriptionPlanPrice::class => SubscriptionPlanPricePolicy::class,
+        PreferredPersonnelFeeRule::class => PreferredPersonnelFeeRulePolicy::class,
     ];
 
     public function register(): void
@@ -149,10 +164,18 @@ class AppServiceProvider extends ServiceProvider
         // financial actions or the FinancialPeriodGuard.
         $this->app->bind(PeriodLockRepository::class, DatabasePeriodLockRepository::class);
 
-        // Preferred-personnel-fee resolution at invoice finalization (Gate D, Phase
-        // 17). Legacy fixed `services.preferred_personnel_fee_minor` until Phase 20A
-        // ships `preferred_personnel_fee_rules` and replaces this binding.
-        $this->app->bind(PreferredPersonnelFeeResolver::class, LegacyPreferredPersonnelFeeResolver::class);
+        // Preferred-personnel-fee resolution at invoice finalization (Gate D). Phase 20A
+        // ships `preferred_personnel_fee_rules` and replaces the legacy fixed
+        // `services.preferred_personnel_fee_minor` seam with the rule-backed resolver
+        // (LegacyPreferredPersonnelFeeResolver is retained for reference/history only).
+        // Finalization semantics are unchanged; already-finalized invoices are never
+        // recalculated. The prospective cutover is DATE '2026-07-10' (backfill migration).
+        $this->app->bind(PreferredPersonnelFeeResolver::class, RuleBasedPreferredPersonnelFeeResolver::class);
+
+        // Merchant→plan binding for the Phase 20 entitlement gate. Phase 20A has no
+        // merchant_subscriptions (that is Phase 20B), so the default resolver is unbound
+        // (returns null → entitlement-dependent actions deny) and fabricates no subscription.
+        $this->app->bind(PlanContextResolver::class, UnboundPlanContextResolver::class);
 
         // Must run in register() — before dedoc/scramble's provider boots and
         // registers its default docs routes (Phase 10).

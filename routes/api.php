@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Audit\AuditLogController;
 use App\Http\Controllers\Api\V1\Auth\MagicLinkController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\MfaController;
+use App\Http\Controllers\Api\V1\Branch\PreferredPersonnelFeeRuleReadController;
 use App\Http\Controllers\Api\V1\Branches\BranchController;
 use App\Http\Controllers\Api\V1\Branches\BranchDayController;
 use App\Http\Controllers\Api\V1\Branches\BranchOperatingHoursController;
@@ -36,7 +37,13 @@ use App\Http\Controllers\Api\V1\Payments\PaymentRecordController;
 use App\Http\Controllers\Api\V1\Payments\PaymentRecordingGroupController;
 use App\Http\Controllers\Api\V1\Payments\PaymentReferenceCheckController;
 use App\Http\Controllers\Api\V1\PeriodLocks\FinancialPeriodLockController;
+use App\Http\Controllers\Api\V1\Platform\PlanEntitlementController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
+use App\Http\Controllers\Api\V1\Platform\PlatformBillingSettingsController;
+use App\Http\Controllers\Api\V1\Platform\PlatformSettingsController;
+use App\Http\Controllers\Api\V1\Platform\PreferredPersonnelFeeRuleController;
+use App\Http\Controllers\Api\V1\Platform\SubscriptionPlanController;
+use App\Http\Controllers\Api\V1\Platform\SubscriptionPlanPriceController;
 use App\Http\Controllers\Api\V1\Receipts\ReceiptController;
 use App\Http\Controllers\Api\V1\Refunds\RefundController;
 use App\Http\Controllers\Api\V1\Scheduling\AppointmentController;
@@ -56,6 +63,7 @@ use App\Http\Middleware\EnsureMerchantActive;
 use App\Http\Middleware\EnsurePermission;
 use App\Http\Middleware\EnsurePrivilegedMfa;
 use App\Http\Middleware\RequireFreshMfa;
+use App\Http\Middleware\ResolvePlatformContext;
 use App\Http\Middleware\ResolveTenantContext;
 use App\Http\Routing\RouteClass;
 use App\Http\Routing\RouteClassification;
@@ -203,6 +211,12 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
 
             Route::middleware(EnsureBranchScope::class)->group(function (): void {
                 Route::get('branches/{branch}', [BranchController::class, 'show'])->name('branches.show');
+
+                // Phase 20A — Branch Manager read-only view of the EFFECTIVE preferred-personnel
+                // fee rule (branch scope; no platform MFA/step-up). Management is Super-Admin only.
+                Route::get('branch/preferred-personnel-fee-rule', [PreferredPersonnelFeeRuleReadController::class, 'show'])
+                    ->middleware(EnsurePermission::class.':preferred_personnel_fee.view_branch_rule')
+                    ->name('branch.preferred-personnel-fee-rule.show');
                 Route::patch('branches/{branch}', [BranchController::class, 'update'])
                     ->middleware(EnsurePermission::class.':branch.profile.manage')
                     ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
@@ -885,6 +899,112 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 Route::get('audit-logs', [PlatformAuditLogController::class, 'index'])->name('platform.audit-logs.index');
                 Route::get('audit-logs/{auditLog}', [PlatformAuditLogController::class, 'show'])->name('platform.audit-logs.show');
             });
+    });
+
+/*
+ | Phase 20A — Platform billing catalogue governance (Plan §13.9, §13.10, §47; Super-Admin only).
+ | OUTSIDE the merchant tenant-context group: platform_mutation forbids ResolveTenantContext +
+ | EnsureMerchantActive (Plan §24.1), so this group uses ResolvePlatformContext (platform-staff
+ | grants only — never a merchant/branch). Mandatory MFA via EnsurePrivilegedMfa; fresh step-up
+ | (StepUpAction::BillingConfiguration) on sensitive mutations; idempotency on effective-dated
+ | version/price/fee creates. Reads carry EnsurePermission only. No DELETE, no generic status route.
+ */
+Route::prefix('platform')
+    ->middleware([
+        'auth:sanctum',
+        EnforceIdleTimeout::class,
+        EnsureActivePrincipal::class,
+        'throttle:api',
+        EnsurePrivilegedMfa::class,
+        ResolvePlatformContext::class,
+    ])
+    ->group(function (): void {
+        $stepUp = RequireFreshMfa::class.':'.StepUpAction::BillingConfiguration->value;
+        $platform = RouteClass::PlatformMutation->value;
+
+        // General platform settings.
+        Route::get('settings', [PlatformSettingsController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.settings.view')
+            ->name('platform.settings.show');
+        Route::put('settings', [PlatformSettingsController::class, 'update'])
+            ->middleware([EnsurePermission::class.':platform.settings.update', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.settings.update');
+
+        // Platform billing settings (effective-dated versions).
+        Route::get('billing-settings', [PlatformBillingSettingsController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.billing_settings.view')
+            ->name('platform.billing-settings.show');
+        Route::put('billing-settings', [PlatformBillingSettingsController::class, 'update'])
+            ->middleware([EnsurePermission::class.':platform.billing_settings.update', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.billing-settings.update');
+
+        // Subscription plans (non-price catalogue metadata).
+        Route::get('plans', [SubscriptionPlanController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.plan.view')
+            ->name('platform.plans.index');
+        Route::post('plans', [SubscriptionPlanController::class, 'store'])
+            ->middleware([EnsurePermission::class.':platform.plan.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.plans.store');
+        Route::get('plans/{plan}', [SubscriptionPlanController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.plan.view')
+            ->name('platform.plans.show');
+        Route::patch('plans/{plan}', [SubscriptionPlanController::class, 'update'])
+            ->middleware([EnsurePermission::class.':platform.plan.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.plans.update');
+        Route::post('plans/{plan}/retire', [SubscriptionPlanController::class, 'retire'])
+            ->middleware([EnsurePermission::class.':platform.plan.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.plans.retire');
+
+        // Plan prices (sole price source; future effective_from schedules).
+        Route::get('plans/{plan}/prices', [SubscriptionPlanPriceController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.plan.view')
+            ->name('platform.plans.prices.index');
+        Route::post('plans/{plan}/prices', [SubscriptionPlanPriceController::class, 'store'])
+            ->middleware([EnsurePermission::class.':platform.plan_price.manage', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.plans.prices.store');
+        Route::post('plan-prices/{planPrice}/cancel', [SubscriptionPlanPriceController::class, 'cancel'])
+            ->middleware([EnsurePermission::class.':platform.plan_price.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.plan-prices.cancel');
+
+        // Plan entitlements (managed under platform.plan.manage).
+        Route::get('plans/{plan}/entitlements', [PlanEntitlementController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.plan.view')
+            ->name('platform.plans.entitlements.index');
+        Route::put('plans/{plan}/entitlements', [PlanEntitlementController::class, 'update'])
+            ->middleware([EnsurePermission::class.':platform.plan.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.plans.entitlements.update');
+
+        // Preferred-personnel fee rules.
+        Route::get('preferred-personnel-fee-rules', [PreferredPersonnelFeeRuleController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.preferred_personnel_fee.manage')
+            ->name('platform.preferred-personnel-fee-rules.index');
+        Route::post('preferred-personnel-fee-rules', [PreferredPersonnelFeeRuleController::class, 'store'])
+            ->middleware([EnsurePermission::class.':platform.preferred_personnel_fee.manage', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.preferred-personnel-fee-rules.store');
+        Route::get('preferred-personnel-fee-rules/{preferredPersonnelFeeRule}', [PreferredPersonnelFeeRuleController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.preferred_personnel_fee.manage')
+            ->name('platform.preferred-personnel-fee-rules.show');
+        Route::post('preferred-personnel-fee-rules/{preferredPersonnelFeeRule}/approve', [PreferredPersonnelFeeRuleController::class, 'approve'])
+            ->middleware([EnsurePermission::class.':platform.preferred_personnel_fee.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.preferred-personnel-fee-rules.approve');
+        Route::post('preferred-personnel-fee-rules/{preferredPersonnelFeeRule}/supersede', [PreferredPersonnelFeeRuleController::class, 'supersede'])
+            ->middleware([EnsurePermission::class.':platform.preferred_personnel_fee.manage', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.preferred-personnel-fee-rules.supersede');
+        Route::post('preferred-personnel-fee-rules/{preferredPersonnelFeeRule}/cancel', [PreferredPersonnelFeeRuleController::class, 'cancel'])
+            ->middleware([EnsurePermission::class.':platform.preferred_personnel_fee.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.preferred-personnel-fee-rules.cancel');
     });
 
 /*

@@ -2228,7 +2228,20 @@
                                 "audit_export.failed",
                                 "audit_export.downloaded",
                                 "audit_export.expired",
-                                "audit_export.revoked"
+                                "audit_export.revoked",
+                                "platform_settings.updated",
+                                "platform_billing.settings_updated",
+                                "subscription_plan.created",
+                                "subscription_plan.metadata_updated",
+                                "subscription_plan.retired",
+                                "subscription_plan_price.created",
+                                "subscription_plan_price.scheduled",
+                                "subscription_plan_price.cancelled",
+                                "plan_entitlement.updated",
+                                "preferred_personnel_fee_rule.created",
+                                "preferred_personnel_fee_rule.approved",
+                                "preferred_personnel_fee_rule.superseded",
+                                "preferred_personnel_fee_rule.cancelled"
                             ]
                         }
                     },
@@ -2640,7 +2653,20 @@
                                 "audit_export.failed",
                                 "audit_export.downloaded",
                                 "audit_export.expired",
-                                "audit_export.revoked"
+                                "audit_export.revoked",
+                                "platform_settings.updated",
+                                "platform_billing.settings_updated",
+                                "subscription_plan.created",
+                                "subscription_plan.metadata_updated",
+                                "subscription_plan.retired",
+                                "subscription_plan_price.created",
+                                "subscription_plan_price.scheduled",
+                                "subscription_plan_price.cancelled",
+                                "plan_entitlement.updated",
+                                "preferred_personnel_fee_rule.created",
+                                "preferred_personnel_fee_rule.approved",
+                                "preferred_personnel_fee_rule.superseded",
+                                "preferred_personnel_fee_rule.cancelled"
                             ]
                         }
                     },
@@ -3052,7 +3078,20 @@
                                 "audit_export.failed",
                                 "audit_export.downloaded",
                                 "audit_export.expired",
-                                "audit_export.revoked"
+                                "audit_export.revoked",
+                                "platform_settings.updated",
+                                "platform_billing.settings_updated",
+                                "subscription_plan.created",
+                                "subscription_plan.metadata_updated",
+                                "subscription_plan.retired",
+                                "subscription_plan_price.created",
+                                "subscription_plan_price.scheduled",
+                                "subscription_plan_price.cancelled",
+                                "plan_entitlement.updated",
+                                "preferred_personnel_fee_rule.created",
+                                "preferred_personnel_fee_rule.approved",
+                                "preferred_personnel_fee_rule.superseded",
+                                "preferred_personnel_fee_rule.cancelled"
                             ]
                         }
                     },
@@ -4085,6 +4124,96 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/branch/preferred-personnel-fee-rule": {
+            "get": {
+                "operationId": "branch.preferred-personnel-fee-rule.show",
+                "tags": [
+                    "PreferredPersonnelFeeRuleRead"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": [
+                                                "array",
+                                                "null"
+                                            ],
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
                                 }
                             }
                         }
@@ -12164,7 +12293,20 @@
                                 "audit_export.failed",
                                 "audit_export.downloaded",
                                 "audit_export.expired",
-                                "audit_export.revoked"
+                                "audit_export.revoked",
+                                "platform_settings.updated",
+                                "platform_billing.settings_updated",
+                                "subscription_plan.created",
+                                "subscription_plan.metadata_updated",
+                                "subscription_plan.retired",
+                                "subscription_plan_price.created",
+                                "subscription_plan_price.scheduled",
+                                "subscription_plan_price.cancelled",
+                                "plan_entitlement.updated",
+                                "preferred_personnel_fee_rule.created",
+                                "preferred_personnel_fee_rule.approved",
+                                "preferred_personnel_fee_rule.superseded",
+                                "preferred_personnel_fee_rule.cancelled"
                             ]
                         }
                     },
@@ -12470,6 +12612,1777 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/billing-settings": {
+            "get": {
+                "operationId": "platform.billing-settings.show",
+                "tags": [
+                    "PlatformBillingSettings"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PlatformBillingSettingsResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformBillingSettingsResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "put": {
+                "operationId": "platform.billing-settings.update",
+                "tags": [
+                    "PlatformBillingSettings"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePlatformBillingSettingsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformBillingSettingsResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformBillingSettingsResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/plan-prices/{planPrice}/cancel": {
+            "post": {
+                "operationId": "platform.plan-prices.cancel",
+                "tags": [
+                    "SubscriptionPlanPrice"
+                ],
+                "parameters": [
+                    {
+                        "name": "planPrice",
+                        "in": "path",
+                        "required": true,
+                        "description": "The plan price ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {}
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/plans": {
+            "get": {
+                "operationId": "platform.plans.index",
+                "tags": [
+                    "SubscriptionPlan"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `SubscriptionPlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SubscriptionPlanResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "platform.plans.store",
+                "tags": [
+                    "SubscriptionPlan"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreSubscriptionPlanRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`SubscriptionPlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubscriptionPlanResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/plans/{plan}": {
+            "get": {
+                "operationId": "platform.plans.show",
+                "tags": [
+                    "SubscriptionPlan"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "description": "The plan ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`SubscriptionPlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubscriptionPlanResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "patch": {
+                "operationId": "platform.plans.update",
+                "tags": [
+                    "SubscriptionPlan"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "description": "The plan ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSubscriptionPlanRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`SubscriptionPlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubscriptionPlanResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/plans/{plan}/entitlements": {
+            "get": {
+                "operationId": "platform.plans.entitlements.index",
+                "tags": [
+                    "PlanEntitlement"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "description": "The plan ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `PlanEntitlementResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PlanEntitlementResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "put": {
+                "operationId": "platform.plans.entitlements.update",
+                "tags": [
+                    "PlanEntitlement"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "description": "The plan ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePlanEntitlementsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Array of `PlanEntitlementResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PlanEntitlementResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/plans/{plan}/prices": {
+            "get": {
+                "operationId": "platform.plans.prices.index",
+                "tags": [
+                    "SubscriptionPlanPrice"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "description": "The plan ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 25
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `SubscriptionPlanPriceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SubscriptionPlanPriceResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "platform.plans.prices.store",
+                "tags": [
+                    "SubscriptionPlanPrice"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "description": "The plan ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePlanPriceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`SubscriptionPlanPriceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubscriptionPlanPriceResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/plans/{plan}/retire": {
+            "post": {
+                "operationId": "platform.plans.retire",
+                "tags": [
+                    "SubscriptionPlan"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "description": "The plan ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`SubscriptionPlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubscriptionPlanResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/preferred-personnel-fee-rules": {
+            "get": {
+                "operationId": "platform.preferred-personnel-fee-rules.index",
+                "tags": [
+                    "PreferredPersonnelFeeRule"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 25
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PreferredPersonnelFeeRuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PreferredPersonnelFeeRuleResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "platform.preferred-personnel-fee-rules.store",
+                "tags": [
+                    "PreferredPersonnelFeeRule"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePreferredPersonnelFeeRuleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`PreferredPersonnelFeeRuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "calculation_type": {
+                                            "type": "string"
+                                        },
+                                        "fixed_amount_minor": {
+                                            "type": [
+                                                "integer",
+                                                "null"
+                                            ]
+                                        },
+                                        "percentage_basis_points": {
+                                            "type": [
+                                                "integer",
+                                                "null"
+                                            ]
+                                        },
+                                        "currency": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "calculation_basis": {
+                                            "type": "string"
+                                        },
+                                        "scope": {
+                                            "type": "string"
+                                        },
+                                        "service_id": {
+                                            "type": [
+                                                "integer",
+                                                "null"
+                                            ]
+                                        },
+                                        "effective_from": {
+                                            "type": "string"
+                                        },
+                                        "effective_to": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "change_reason": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "calculation_type",
+                                        "calculation_basis",
+                                        "scope",
+                                        "effective_from",
+                                        "change_reason"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/preferred-personnel-fee-rules/{preferredPersonnelFeeRule}": {
+            "get": {
+                "operationId": "platform.preferred-personnel-fee-rules.show",
+                "tags": [
+                    "PreferredPersonnelFeeRule"
+                ],
+                "parameters": [
+                    {
+                        "name": "preferredPersonnelFeeRule",
+                        "in": "path",
+                        "required": true,
+                        "description": "The preferred personnel fee rule ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PreferredPersonnelFeeRuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PreferredPersonnelFeeRuleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/preferred-personnel-fee-rules/{preferredPersonnelFeeRule}/approve": {
+            "post": {
+                "operationId": "platform.preferred-personnel-fee-rules.approve",
+                "tags": [
+                    "PreferredPersonnelFeeRule"
+                ],
+                "parameters": [
+                    {
+                        "name": "preferredPersonnelFeeRule",
+                        "in": "path",
+                        "required": true,
+                        "description": "The preferred personnel fee rule ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PreferredPersonnelFeeRuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PreferredPersonnelFeeRuleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/preferred-personnel-fee-rules/{preferredPersonnelFeeRule}/cancel": {
+            "post": {
+                "operationId": "platform.preferred-personnel-fee-rules.cancel",
+                "tags": [
+                    "PreferredPersonnelFeeRule"
+                ],
+                "parameters": [
+                    {
+                        "name": "preferredPersonnelFeeRule",
+                        "in": "path",
+                        "required": true,
+                        "description": "The preferred personnel fee rule ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PreferredPersonnelFeeRuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PreferredPersonnelFeeRuleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/preferred-personnel-fee-rules/{preferredPersonnelFeeRule}/supersede": {
+            "post": {
+                "operationId": "platform.preferred-personnel-fee-rules.supersede",
+                "tags": [
+                    "PreferredPersonnelFeeRule"
+                ],
+                "parameters": [
+                    {
+                        "name": "preferredPersonnelFeeRule",
+                        "in": "path",
+                        "required": true,
+                        "description": "The preferred personnel fee rule ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SupersedePreferredPersonnelFeeRuleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`PreferredPersonnelFeeRuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PreferredPersonnelFeeRuleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/settings": {
+            "get": {
+                "operationId": "platform.settings.show",
+                "tags": [
+                    "PlatformSettings"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PlatformBillingSettingsResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformBillingSettingsResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "put": {
+                "operationId": "platform.settings.update",
+                "tags": [
+                    "PlatformSettings"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePlatformSettingsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformBillingSettingsResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformBillingSettingsResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "429": {
                         "description": "Rate limited",
@@ -21139,6 +23052,143 @@
                 ],
                 "title": "PersonnelServiceSessionResource"
             },
+            "PlanEntitlementResource": {
+                "type": "object",
+                "properties": {
+                    "entitlement_key": {
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "limit_int": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "entitlement_key",
+                    "enabled",
+                    "limit_int"
+                ],
+                "title": "PlanEntitlementResource"
+            },
+            "PlatformBillingSettingsResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "billing_mode": {
+                        "type": "string"
+                    },
+                    "default_trial_days": {
+                        "type": "integer"
+                    },
+                    "grace_days": {
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "settings": {
+                        "type": "string"
+                    },
+                    "effective_from": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "billing_mode",
+                    "default_trial_days",
+                    "grace_days",
+                    "currency",
+                    "settings",
+                    "effective_from"
+                ],
+                "title": "PlatformBillingSettingsResource"
+            },
+            "PreferredPersonnelFeeRuleResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "calculation_type": {
+                        "type": "string"
+                    },
+                    "fixed_amount_minor": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "percentage_basis_points": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "currency": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "calculation_basis": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "type": "string"
+                    },
+                    "service_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "effective_from": {
+                        "type": "string"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "approved_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "change_reason": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "calculation_type",
+                    "fixed_amount_minor",
+                    "percentage_basis_points",
+                    "currency",
+                    "calculation_basis",
+                    "scope",
+                    "service_id",
+                    "effective_from",
+                    "effective_to",
+                    "status",
+                    "approved_at",
+                    "change_reason"
+                ],
+                "title": "PreferredPersonnelFeeRuleResource"
+            },
             "QueueConfigurationResource": {
                 "type": "object",
                 "properties": {
@@ -22684,6 +24734,119 @@
                 ],
                 "title": "StorePermissionOverrideRequest"
             },
+            "StorePlanPriceRequest": {
+                "type": "object",
+                "description": "Validate plan-price creation (Plan §13.9, §47; ADR-011; Phase 20A). Integer minor units,\nuppercase ISO currency, canonical billing interval, effective range ordering. The DB\n`EXCLUDE` constraint remains the authoritative overlap guard (→ 409). A future `effective_from`\nis a scheduled price. Authorization + MFA + fresh step-up are enforced by the route middleware.",
+                "properties": {
+                    "amount_minor": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                    },
+                    "billing_interval": {
+                        "type": "string",
+                        "enum": [
+                            "weekly",
+                            "bi_weekly",
+                            "monthly",
+                            "quarterly",
+                            "annual"
+                        ]
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    }
+                },
+                "required": [
+                    "amount_minor",
+                    "currency",
+                    "billing_interval",
+                    "effective_from"
+                ],
+                "title": "StorePlanPriceRequest"
+            },
+            "StorePreferredPersonnelFeeRuleRequest": {
+                "type": "object",
+                "description": "Validate preferred-personnel fee-rule creation (Plan §13.10, §47; ADR-005; Phase 20A). Mirrors\nthe DB value-shape + scope CHECKs at the API boundary: fixed ⇒ amount + currency (no basis\npoints); percentage ⇒ basis points 0..10000 (no fixed/currency); platform_default ⇒ no\nservice; service ⇒ a service ULID. `change_reason` is required. Authorization + MFA + fresh\nstep-up are enforced by the route middleware.",
+                "properties": {
+                    "calculation_type": {
+                        "type": "string",
+                        "enum": [
+                            "fixed_amount",
+                            "percentage"
+                        ]
+                    },
+                    "fixed_amount_minor": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                    },
+                    "percentage_basis_points": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000
+                    },
+                    "calculation_basis": {
+                        "type": "string",
+                        "enum": [
+                            "service_item_net_amount",
+                            "service_item_gross_amount"
+                        ]
+                    },
+                    "scope": {
+                        "type": "string",
+                        "enum": [
+                            "platform_default",
+                            "service"
+                        ]
+                    },
+                    "service_id": {
+                        "type": "string",
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    },
+                    "change_reason": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "calculation_type",
+                    "calculation_basis",
+                    "scope",
+                    "effective_from",
+                    "change_reason"
+                ],
+                "title": "StorePreferredPersonnelFeeRuleRequest"
+            },
             "StoreServiceCategoryRequest": {
                 "type": "object",
                 "description": "Create-service-category validation (Plan §39). Branch-scoped active-name\nuniqueness is a DB partial unique index; `branch_id` is an optional branch ULID\nresolved in the controller.",
@@ -22763,6 +24926,56 @@
                     "duration_minutes"
                 ],
                 "title": "StoreServiceRequest"
+            },
+            "StoreSubscriptionPlanRequest": {
+                "type": "object",
+                "description": "Validate subscription-plan creation — NON-PRICE metadata only (Plan §13.9, §47; ADR-011;\nPhase 20A). No price/amount field is accepted (price lives solely in subscription_plan_prices).\n`key` is a stable, unique machine key. Authorization + MFA are enforced by the route middleware.",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9_]+$",
+                        "minLength": 2,
+                        "maxLength": 60
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 160
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "tier": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 60
+                    },
+                    "metadata": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "sort_order": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 100000
+                    }
+                },
+                "required": [
+                    "key",
+                    "name"
+                ],
+                "title": "StoreSubscriptionPlanRequest"
             },
             "StoreWalkInRequest": {
                 "type": "object",
@@ -22863,6 +25076,165 @@
                     "service"
                 ],
                 "title": "StoreWalkInRequest"
+            },
+            "SubscriptionPlanPriceResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "amount_minor": {
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "billing_interval": {
+                        "type": "string"
+                    },
+                    "effective_from": {
+                        "type": "string"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "lifecycle": {
+                        "type": "string",
+                        "enum": [
+                            "future",
+                            "historical",
+                            "current"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "amount_minor",
+                    "currency",
+                    "billing_interval",
+                    "effective_from",
+                    "effective_to",
+                    "lifecycle"
+                ],
+                "title": "SubscriptionPlanPriceResource"
+            },
+            "SubscriptionPlanResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "key": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "tier": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "metadata": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "sort_order": {
+                        "type": "integer"
+                    },
+                    "prices": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SubscriptionPlanPriceResource"
+                        }
+                    },
+                    "entitlements": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PlanEntitlementResource"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "key",
+                    "name",
+                    "description",
+                    "tier",
+                    "metadata",
+                    "status",
+                    "sort_order"
+                ],
+                "title": "SubscriptionPlanResource"
+            },
+            "SupersedePreferredPersonnelFeeRuleRequest": {
+                "type": "object",
+                "description": "Validate superseding an active preferred-personnel fee rule with new terms (Plan §13.10, §47;\nPhase 20A). The scope/service is inherited from the superseded rule (not re-supplied). Same\nvalue-shape rules as creation; `change_reason` required. Authorization + MFA + fresh step-up are\nenforced by the route middleware.",
+                "properties": {
+                    "calculation_type": {
+                        "type": "string",
+                        "enum": [
+                            "fixed_amount",
+                            "percentage"
+                        ]
+                    },
+                    "fixed_amount_minor": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                    },
+                    "percentage_basis_points": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000
+                    },
+                    "calculation_basis": {
+                        "type": "string",
+                        "enum": [
+                            "service_item_net_amount",
+                            "service_item_gross_amount"
+                        ]
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    },
+                    "change_reason": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "calculation_type",
+                    "calculation_basis",
+                    "effective_from",
+                    "change_reason"
+                ],
+                "title": "SupersedePreferredPersonnelFeeRuleRequest"
             },
             "TransferAppointmentRequest": {
                 "type": "object",
@@ -23185,6 +25557,106 @@
                 ],
                 "title": "UpdateOperatingHoursRequest"
             },
+            "UpdatePlanEntitlementsRequest": {
+                "type": "object",
+                "description": "Validate a plan-entitlement replacement (Plan §13.9, §20, §47; Phase 20A). The full desired\nentitlement set is supplied; keys are unique within the payload; a null limit means unlimited\n(when enabled). Managed under `platform.plan.manage`. Authorization + MFA are enforced by the\nroute middleware.",
+                "properties": {
+                    "entitlements": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "entitlement_key": {
+                                    "type": "string",
+                                    "minLength": 2,
+                                    "maxLength": 120
+                                },
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "limit_int": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ],
+                                    "minimum": 0
+                                }
+                            },
+                            "required": [
+                                "entitlement_key",
+                                "enabled"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "entitlements"
+                ],
+                "title": "UpdatePlanEntitlementsRequest"
+            },
+            "UpdatePlatformBillingSettingsRequest": {
+                "type": "object",
+                "description": "Validate a platform billing-settings update (Plan §13.9, §47, §50; Phase 20A). Canonical\nbilling mode only; non-negative day counts; uppercase ISO currency; `settings` is a documented\nJSON object. Authorization + MFA + fresh step-up are enforced by the route middleware.",
+                "properties": {
+                    "billing_mode": {
+                        "type": "string",
+                        "enum": [
+                            "fixed_amount",
+                            "percentage_on_merchant_client_invoice",
+                            "fixed_amount_plus_percentage_on_merchant_client_invoice"
+                        ]
+                    },
+                    "default_trial_days": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3650
+                    },
+                    "grace_days": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3650
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                    },
+                    "settings": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "billing_mode",
+                    "default_trial_days",
+                    "grace_days",
+                    "currency"
+                ],
+                "title": "UpdatePlatformBillingSettingsRequest"
+            },
+            "UpdatePlatformSettingsRequest": {
+                "type": "object",
+                "description": "Validate a general platform-settings update (Plan §19.3 `PlatformSettingsPolicy`; Phase 20A).\n`settings` is a JSON object of documented keys only. Authorization + MFA + fresh step-up are\nenforced by the route middleware.",
+                "properties": {
+                    "settings": {
+                        "type": "array",
+                        "items": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 1000
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "settings"
+                ],
+                "title": "UpdatePlatformSettingsRequest"
+            },
             "UpdateQueueConfigurationRequest": {
                 "type": "object",
                 "description": "Queue configuration validation (Plan §37; Phase 16B). Branch Manager only\n(authorized upstream). All fields are optional (partial update); `queue_capacity`\nmay be null (no cap) or a positive integer; the default mode is next_available or\nmanual (preferred_personnel is a per-client request, never a branch default).\nCapacity-below-active is rejected in the action. `branch_id` disambiguates a\nmulti-branch operator.",
@@ -23289,6 +25761,43 @@
                     }
                 },
                 "title": "UpdateServiceRequest"
+            },
+            "UpdateSubscriptionPlanRequest": {
+                "type": "object",
+                "description": "Validate a subscription-plan metadata update (Plan §13.9, §47; ADR-011; Phase 20A). Non-price\nmetadata only; the machine `key` and `status` are immutable here (retirement is a separate named\naction). Authorization + MFA are enforced by the route middleware.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 160
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "tier": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 60
+                    },
+                    "metadata": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "sort_order": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100000
+                    }
+                },
+                "title": "UpdateSubscriptionPlanRequest"
             },
             "VerifyMagicLinkRequest": {
                 "type": "object",

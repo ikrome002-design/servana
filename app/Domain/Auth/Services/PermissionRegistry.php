@@ -251,11 +251,21 @@ final class PermissionRegistry
         'audit.flagged_event.update_status' => ['audit', 'Start review / reopen a flagged audit event.', true],
         'audit.flagged_event.resolve_metadata' => ['audit', 'Resolve or dismiss a flagged audit event (records a review outcome).', true],
         // Platform (super_admin only).
-        'platform.settings.manage' => ['platform', 'Manage platform settings.', true],
         'platform.merchants.govern' => ['platform', 'Govern merchant accounts.', true],
-        'platform.billing.configure' => ['platform', 'Configure platform billing.', true],
-        'platform.fee_rules.manage' => ['platform', 'Manage platform fee rules.', true],
         'platform.audit.view' => ['platform', 'View the platform audit trail.', false],
+        // Phase 20A — platform billing catalogue governance (canonical §19.2 keys; the legacy
+        // platform.settings.manage / platform.billing.configure / platform.fee_rules.manage keys
+        // are retired here — their authority is subsumed by these canonical keys, no consumers).
+        'platform.settings.view' => ['platform', 'View general platform settings.', false],
+        'platform.settings.update' => ['platform', 'Update general platform settings.', true],
+        'platform.billing_settings.view' => ['platform', 'View platform billing settings.', false],
+        'platform.billing_settings.update' => ['platform', 'Update platform billing settings (mode/trial/grace/currency).', true],
+        'platform.plan.view' => ['platform', 'View subscription plans, prices and entitlements.', false],
+        'platform.plan.manage' => ['platform', 'Create/update/retire plans and manage entitlements.', true],
+        'platform.plan_price.manage' => ['platform', 'Create/schedule/cancel effective-dated plan prices.', true],
+        'platform.preferred_personnel_fee.manage' => ['platform', 'Manage preferred-personnel fee rules (create/approve/supersede/cancel).', true],
+        // Phase 20A — branch-scoped read of the effective preferred-personnel fee rule (read-only).
+        'preferred_personnel_fee.view_branch_rule' => ['catalogue', 'View the effective preferred-personnel fee rule for a branch (read-only).', false],
     ];
 
     /**
@@ -297,6 +307,9 @@ final class PermissionRegistry
             // Phase 19: NO direct raw audit-log key (canonical §19.3 — Branch Manager
             // oversight is via branch.dashboard.view/reports; legacy `audit.view_full` retired).
             'reports.view',
+            // Phase 20A — read-only view of the effective preferred-personnel fee rule for the
+            // branch (no management authority; rules are Super-Admin-governed).
+            'preferred_personnel_fee.view_branch_rule',
         ],
         self::ROLE_HR => [
             'staff.invite', 'staff.edit', 'staff.suspend',
@@ -377,9 +390,15 @@ final class PermissionRegistry
             'audit.flagged_event.create', 'audit.flagged_event.update_status', 'audit.flagged_event.resolve_metadata',
         ],
         self::ROLE_SUPER_ADMIN => [
-            'platform.settings.manage', 'platform.merchants.govern',
-            'platform.billing.configure', 'platform.fee_rules.manage',
+            'platform.merchants.govern',
             'platform.audit.view',
+            // Phase 20A — platform billing catalogue governance (replaces the retired
+            // platform.settings.manage / platform.billing.configure / platform.fee_rules.manage).
+            'platform.settings.view', 'platform.settings.update',
+            'platform.billing_settings.view', 'platform.billing_settings.update',
+            'platform.plan.view', 'platform.plan.manage',
+            'platform.plan_price.manage',
+            'platform.preferred_personnel_fee.manage',
         ],
     ];
 

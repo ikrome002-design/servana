@@ -23,8 +23,9 @@ it('keeps all 86 planned keys out of every runtime projection', function (): voi
     $matrix = app(PermissionMatrix::class);
     $registry = app(PermissionRegistry::class);
 
+    // Phase 20A activated 9 previously-planned canonical keys (86 → 77).
     $planned = $matrix->plannedKeys();
-    expect($planned)->toHaveCount(86);
+    expect($planned)->toHaveCount(77);
 
     $registryKeys = array_fill_keys($registry->permissionKeys(), true);
     $dbKeys = array_fill_keys(Permission::query()->pluck('key')->all(), true);

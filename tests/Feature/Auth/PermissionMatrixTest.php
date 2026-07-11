@@ -60,6 +60,8 @@ function expectedMatrix(): array
             'receipt.view', 'commissions.view', 'platform_fees.view',
             // Phase 19: `audit.view_full` RETIRED — no direct raw audit-log key.
             'reports.view',
+            // Phase 20A: read-only effective preferred-personnel fee rule for the branch.
+            'preferred_personnel_fee.view_branch_rule',
         ],
         'hr' => [
             'staff.invite', 'staff.edit', 'staff.suspend',
@@ -115,9 +117,13 @@ function expectedMatrix(): array
             'audit.flagged_event.create', 'audit.flagged_event.update_status', 'audit.flagged_event.resolve_metadata',
         ],
         'super_admin' => [
-            'platform.settings.manage', 'platform.merchants.govern',
-            'platform.billing.configure', 'platform.fee_rules.manage',
-            'platform.audit.view',
+            'platform.merchants.govern', 'platform.audit.view',
+            // Phase 20A — platform billing catalogue governance (replaces the retired
+            // platform.settings.manage / platform.billing.configure / platform.fee_rules.manage).
+            'platform.settings.view', 'platform.settings.update',
+            'platform.billing_settings.view', 'platform.billing_settings.update',
+            'platform.plan.view', 'platform.plan.manage',
+            'platform.plan_price.manage', 'platform.preferred_personnel_fee.manage',
         ],
     ];
 }

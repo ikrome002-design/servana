@@ -180,6 +180,20 @@ final class AuditMutationCoverage
 
         // --- Merchant self-registration (Phase 6) --------------------------
         'merchant-registration.self-register' => ['membership.created'],
+
+        // --- Platform billing catalogue governance (Phase 20A) -------------
+        'platform.settings.update' => ['platform_settings.updated'],
+        'platform.billing-settings.update' => ['platform_billing.settings_updated'],
+        'platform.plans.store' => ['subscription_plan.created'],
+        'platform.plans.update' => ['subscription_plan.metadata_updated'],
+        'platform.plans.retire' => ['subscription_plan.retired'],
+        'platform.plans.prices.store' => ['subscription_plan_price.created', 'subscription_plan_price.scheduled'],
+        'platform.plan-prices.cancel' => ['subscription_plan_price.cancelled'],
+        'platform.plans.entitlements.update' => ['plan_entitlement.updated'],
+        'platform.preferred-personnel-fee-rules.store' => ['preferred_personnel_fee_rule.created'],
+        'platform.preferred-personnel-fee-rules.approve' => ['preferred_personnel_fee_rule.approved'],
+        'platform.preferred-personnel-fee-rules.supersede' => ['preferred_personnel_fee_rule.superseded'],
+        'platform.preferred-personnel-fee-rules.cancel' => ['preferred_personnel_fee_rule.cancelled'],
     ];
 
     /**

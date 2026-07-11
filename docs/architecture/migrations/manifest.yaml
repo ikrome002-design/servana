@@ -879,3 +879,81 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-19.md
     notes: "Expand/contract (ADR-004; ADR-010): drops + re-adds uploaded_files_purpose_check to add the generated-only 'audit_export' purpose so GenerateAuditExport can write a private CSV through the Phase 10F file domain. The shipped Phase-10F migration is never edited. Additive/backward-compatible."
+
+  # Phase 20A — Plan Catalogue, Prices, Entitlements, Billing Settings (Plan §13.9, §13.10, §47).
+  # All five tables are PLATFORM-OWNED (no merchant_id/branch_id; registered in
+  # TenantOwnership::EXEMPT). Data dictionary: billing-and-wallet.md.
+  - file: 2026_07_10_000001_create_platform_billing_settings_table.php
+    table: platform_billing_settings
+    domain: Billing
+    owner_phase: "20A"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20a.md
+    notes: "Platform-scoped (no merchant_id/branch_id; TenantOwnership::EXEMPT). Effective-dated version series; billing_mode CHECK mirrors BillingMode enum; default_trial_days/grace_days >= 0; uppercase char(3) currency; settings jsonb object CHECK; updated_by FK users RESTRICT; UNIQUE(effective_from) + index."
+  - file: 2026_07_10_000002_create_subscription_plans_table.php
+    table: subscription_plans
+    domain: Billing
+    owner_phase: "20A"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on: []
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20a.md
+    notes: "Platform-scoped plan catalogue, NON-PRICE metadata only (ADR-011 — no monetary column). ulid + key unique; status CHECK (active,retired); metadata jsonb object CHECK; retirement preserves prices/entitlements."
+  - file: 2026_07_10_000003_create_subscription_plan_prices_table.php
+    table: subscription_plan_prices
+    domain: Billing
+    owner_phase: "20A"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_10_000002_create_subscription_plans_table.php
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20a.md
+    notes: "SOLE plan-price source (ADR-011). plan_id FK RESTRICT; amount_minor >= 0; uppercase currency; billing_interval CHECK mirrors BillingInterval enum; effective_to > effective_from; btree_gist EXCLUDE prevents overlapping half-open dateranges per (plan_id, billing_interval, currency); adjacent ranges allowed."
+  - file: 2026_07_10_000004_create_plan_entitlements_table.php
+    table: plan_entitlements
+    domain: Billing
+    owner_phase: "20A"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_10_000002_create_subscription_plans_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20a.md
+    notes: "Plan §20 entitlement substrate. plan_id FK RESTRICT; unique(plan_id, entitlement_key); limit_int null=unlimited-when-enabled, CHECK >= 0; enabled default false. No merchant_subscriptions binding in 20A."
+  - file: 2026_07_10_000005_create_preferred_personnel_fee_rules_table.php
+    table: preferred_personnel_fee_rules
+    domain: Billing
+    owner_phase: "20A"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_28_000002_create_services_table.php
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20a.md
+    notes: "Launch-active effective-dated fixed/percentage rules (ADR-005 round-half-up). Value-shape + scope CHECKs; status CHECK (draft,scheduled,active,superseded,expired,cancelled); bp 0..10000; service_id FK services RESTRICT; created_by nullable (NULL=system backfill …000006); change_reason non-empty; partial btree_gist EXCLUDE over active+scheduled prevents overlap per scope(+service_id). Legacy expand-and-contract backfill is a separate forward migration …000006."
+  - file: 2026_07_10_000006_backfill_preferred_personnel_fee_rules_from_services.php
+    table: preferred_personnel_fee_rules
+    domain: Billing
+    owner_phase: "20A"
+    change_type: data
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_10_000005_create_preferred_personnel_fee_rules_table.php
+      - 2026_06_28_000002_create_services_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20a.md
+    notes: "Legacy expand-and-contract backfill: one fixed_amount/service/active rule per service with a non-null services.preferred_personnel_fee_minor; fixed_amount_minor == legacy value exactly; currency = service currency; immutable prospective cutover effective_from = DATE '2026-07-10' (never now()/today()/CURRENT_DATE); created_by NULL (system). Idempotent (skips an existing active service rule at the cutover). Legacy column retained read-only, NOT dropped (contract deferred). Finalized invoices never recalculated. down() removes only the marked backfill rows (local/CI convenience)."
