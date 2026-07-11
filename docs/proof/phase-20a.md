@@ -457,3 +457,20 @@ distinct deep-links — acceptable per §5.2 (no tab-param in the nav registry);
 fee-rule creation takes a service ULID as free text (no platform service-picker endpoint in 20A) —
 validated server-side (`exists:services,ulid`); (3) the OpenAPI generator still cannot infer
 nullability through `?->` — future nullable resource fields must use the explicit-ternary pattern.
+
+## Solo-Maintainer Review Exception - PR #35
+
+- PR: #35
+- verified implementation head: a31cd000f84a0a19f1d8b526a4fdf5d01aefc090
+- initial successful CI run: 29145005108
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-35.md
+
+This exception applies only to Phase 20A and is not independent reviewer
+approval. Phase 20B and all later billing, Wallet, compensation and payout
+domains remain deferred to their owning phases.
