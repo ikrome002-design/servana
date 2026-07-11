@@ -16,20 +16,22 @@ super_administrator:
     label: Merchant directory
     availability: planned
     permission: platform.merchant.view
-    phase: Phase 20A
+    phase: Phase 20B
   - key: platform.registration-monitoring
     label: Registration monitoring
     availability: planned
     permission: platform.registration_monitor.view
-    phase: Phase 20A
+    phase: Phase 20B
   - key: platform.billing-settings
     label: Billing settings
-    availability: planned
+    availability: live
+    route: platform.billing-settings
     permission: platform.billing_settings.view
     phase: Phase 20A
   - key: platform.plans
     label: Plans and entitlements
-    availability: planned
+    availability: live
+    route: platform.billing-settings
     permission: platform.plan.view
     phase: Phase 20A
   - key: platform.promotions
@@ -39,7 +41,8 @@ super_administrator:
     phase: Phase 20C
   - key: platform.preferred-personnel-fee
     label: Preferred-personnel fee rule
-    availability: planned
+    availability: live
+    route: platform.billing-settings
     permission: platform.preferred_personnel_fee.manage
     phase: Phase 20A
   - key: platform.wallet-config
@@ -64,7 +67,8 @@ super_administrator:
     phase: Phase 21N
   - key: platform.settings
     label: Platform settings
-    availability: planned
+    availability: live
+    route: platform.billing-settings
     permission: platform.settings.view
     phase: Phase 20A
 merchant_administrator:

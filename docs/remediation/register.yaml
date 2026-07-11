@@ -460,18 +460,18 @@ items:
     classification: C1
     gating_category: FEATURE_DELIVERY_OBLIGATION
     scope_requirement: "Canonical billing-mode enum across PHP/DB/API/TS/seed/audit/tests; expand-and-contract data migration (Correction 4)."
-    repository_evidence: "No billing-mode enum / billing tables yet."
-    root_cause: "Billing not yet built."
-    affected_files_tables_routes: "billing enums, subscription tables."
-    security_data_business_impact: "n/a until billing."
-    precise_correction: "Implement in 20A/20E."
-    migration_impact: "expand-and-contract."
+    repository_evidence: "Phase 20A: BillingMode (3 cases) + BillingInterval (5 cases) backed enums with DB CHECK parity on platform_billing_settings.billing_mode and subscription_plan_prices.billing_interval; BillingEnumParityTest asserts PHP<->DB<->API<->TS<->fixtures zero-mismatch; generated api.ts + permissions.ts current; legacy preferred-fee expand-and-contract migration (2026_07_10_000006) backfilled at DATE '2026-07-10' with value-equality proof."
+    root_cause: "Billing not yet built (now built for 20A scope; percentage platform-fee LEDGER remains 20E)."
+    affected_files_tables_routes: "app/Domain/Billing/Enums/BillingMode.php + BillingInterval.php; platform_billing_settings; subscription_plan_prices; preferred_personnel_fee_rules."
+    security_data_business_impact: "Canonical money-config vocabulary prevents split enum drift across the stack."
+    precise_correction: "20A: canonical BillingMode/BillingInterval enums + DB CHECKs + parity guard delivered. 20E: percentage platform-fee ledger/adjustments/disputes (separate obligation)."
+    migration_impact: "expand-and-contract (legacy services.preferred_personnel_fee_minor retained read-only during expand)."
     test_plan: "canonical-enum parity (mode + interval)."
-    proof_artifact: "per owning phase"
-    owner: "20A/20E"
-    completion_commit: null
-    reviewer: "TBD"
-    status: not_started
+    proof_artifact: "docs/proof/phase-20a.md"
+    owner: "20A (enum/parity delivered) / 20E (percentage-fee ledger)"
+    completion_commit: "pending single Phase-20A completion commit"
+    reviewer: "solo-maintainer (governance exception)"
+    status: local_complete_20a_scope_pending_pr
 
   - id: REM-ROUTE-001
     classification: C1

@@ -11,6 +11,7 @@ use App\Http\Middleware\CorrelationIdMiddleware;
 use App\Http\Middleware\EnsureActivePrincipal;
 use App\Http\Middleware\EnsureIdempotentRequest;
 use App\Http\Middleware\EnsurePrivilegedMfa;
+use App\Http\Middleware\ResolvePlatformContext;
 use App\Http\Middleware\ResolveTenantContext;
 use App\Http\Routing\RouteClass;
 use App\Http\Routing\RouteClassification;
@@ -88,6 +89,9 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureActivePrincipal::class,
             EnsurePrivilegedMfa::class,
             ResolveTenantContext::class,
+            // Platform-only context (Phase 20A): resolves platform-staff grants without a
+            // merchant, for the platform_mutation group that forbids ResolveTenantContext.
+            ResolvePlatformContext::class,
             SubstituteBindings::class,
             AuthenticatesSessions::class,
             Authorize::class,

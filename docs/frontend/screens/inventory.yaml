@@ -323,7 +323,7 @@ screens:
     domain: merchant
     route: ~
     status: planned
-    phase: Phase 20A
+    phase: Phase 20B
     spec: ~
   - key: subscription-invoices
     domain: merchant
@@ -669,10 +669,10 @@ screens:
     spec: ~
   - key: platform-billing-settings
     domain: platform
-    route: ~
-    status: planned
+    route: platform.billing-settings
+    status: implemented
     phase: Phase 20A
-    spec: ~
+    spec: platform/platform-billing-settings.md
   - key: platform-promotions
     domain: platform
     route: ~
@@ -695,7 +695,7 @@ screens:
     domain: platform
     route: ~
     status: planned
-    phase: Phase 20A
+    phase: Phase 20B
     spec: ~
   - key: platform-audit-reports
     domain: platform

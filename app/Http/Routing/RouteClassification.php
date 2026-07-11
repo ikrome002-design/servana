@@ -96,6 +96,12 @@ final class RouteClassification
         'finance-exports.revoke' => 'No request body; {financeExport} binding + finance_export.create + FinanceExportPolicy; RevokeFinanceExport transitions ready → revoked under lock.',
         'audit-exports.download-link' => 'No request body; {auditExport} binding + audit.export + AuditExportPolicy; issues a signed Phase 10F link to the download stream (authorization re-checked at issuance and at the byte stream). Download accounting is recorded on the STREAM, not here.',
         'audit-exports.revoke' => 'No request body; {auditExport} binding + audit.export + AuditExportPolicy; RevokeAuditExport transitions ready → revoked under lock.',
+        // Phase 20A — bodiless platform billing-catalogue transitions (the aggregate is the ULID
+        // route param; MFA + fresh BillingConfiguration step-up on the platform_mutation route).
+        'platform.plans.retire' => 'No request body; {plan} binding + platform.plan.manage + SubscriptionPlanPolicy + RequireFreshMfa(billing_configuration); RetireSubscriptionPlan transitions active → retired under lock (prices/entitlements preserved).',
+        'platform.plan-prices.cancel' => 'No request body; {planPrice} binding + platform.plan_price.manage + SubscriptionPlanPricePolicy + RequireFreshMfa(billing_configuration); CancelFuturePlanPrice withdraws a not-yet-effective price under lock (effective/historical rejected).',
+        'platform.preferred-personnel-fee-rules.approve' => 'No request body; {preferredPersonnelFeeRule} binding + platform.preferred_personnel_fee.manage + PreferredPersonnelFeeRulePolicy + RequireFreshMfa(billing_configuration); ApprovePreferredPersonnelFeeRule activates draft/scheduled under an advisory lock (DB EXCLUDE authoritative).',
+        'platform.preferred-personnel-fee-rules.cancel' => 'No request body; {preferredPersonnelFeeRule} binding + platform.preferred_personnel_fee.manage + PreferredPersonnelFeeRulePolicy + RequireFreshMfa(billing_configuration); CancelPreferredPersonnelFeeRule transitions draft/scheduled → cancelled under lock.',
     ];
 
     public static function of(Route $route): ?RouteClass

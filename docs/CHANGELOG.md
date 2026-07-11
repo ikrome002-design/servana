@@ -6,7 +6,60 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### v4 Plan Adoption — Architecture change (Plan §1.3; branch `docs/update-servana-development-plan`)
+### Phase 20A — Plan Catalogue, Prices, Entitlements, Billing Settings (`phase-20a-billing-catalogue-settings`) — local_complete pending PR CI/review/merge
+
+_**Increments 5–7 complete (frontend + E2E + full gates).** Delivered the single genuine platform
+screen `platform-billing-settings` (route `platform.billing-settings`, `PlatformAdminLayout`): one
+coherent accessible tabbed surface for general settings, billing settings (three canonical billing
+modes), subscription plans (non-price metadata; retire preserves history), effective-dated plan prices
+(five intervals; overlap-rejected; only future cancellable; current/historical read-only), plan
+entitlements (enable/disable/limit; no merchant-subscription binding), and preferred-personnel fee rules
+(fixed⇔percentage mutually exclusive; platform-default/service scope; supersede-not-edit; approve/cancel).
+Added 5 generated-type-backed Pinia stores, `Idempotency-Key` on effective-dated creates, server-enforced
+MFA/step-up UX, integer-minor-unit money. Branch-Manager **effective** fee shown read-only inside the
+existing `branch.services` catalogue (`BranchPreferredFeeCard`; no new top-level screen). Navigation
+reconciled (four platform labels → the one live route; `platform.merchants`/`registration-monitoring`
+retagged `20A→20B`, kept planned); inventory entry → `implemented` with route + full §27.1 spec
+`platform-billing-settings.md`. **Contract-truth fix:** `SubscriptionPlanPriceResource.effective_to`,
+`PreferredPersonnelFeeRuleResource.effective_to`/`approved_at` (+ branch resource) made explicitly
+nullable so the OpenAPI generator (which does not follow `?->`) emits `["string","null"]`; regenerated
+`openapi.json` + `api.ts`. **Tests:** Vitest **279** (+31: 5 store specs + host + fee-section);
+Playwright `tests/e2e/phase-20a-billing.spec.ts` **17/17** + full e2e **269** (axe serious/critical=0
+light+dark; no overflow 360/768/1280; keyboard tablist). **Gates:** backend serial **1164 pass / 7 skip
+/ 0 fail** + parallel 1164/7; Pint 1040 clean; Larastan L8 no errors (784); OpenAPI 188 routes / 157
+paths / 188 ops + TS + permission-types + contract all current; composer audit clean; npm audit 2
+moderate (below high gate); gitleaks clean; php-dev + nginx-prod images build. Lifecycle:
+`local_complete pending PR CI/review/merge` — **not** `verified_complete`._
+
+_Prior increments:_
+
+_Branch off `origin/main` `85bd3e5` (v4 adoption **PR #34** merged — Gate A satisfied). **Increment 1
+(spec-first gate) complete:** `billing-and-wallet.md` data dictionary expanded with full column-level
+DDL for `platform_billing_settings`, `subscription_plans`, `subscription_plan_prices`,
+`plan_entitlements`, `preferred_personnel_fee_rules` (CHECKs, `btree_gist` EXCLUDE ranges, FKs RESTRICT,
+ULIDs, immutability, locking, prospective legacy backfill, audit, retention, factories, tests); state
+machines `preferred-personnel-fee-rule.md`, `plan-price.md`, `platform-billing-settings.md`,
+`subscription-plan.md`; canonical enums `BillingMode`(3)/`BillingInterval`(5). **Source-of-truth
+reconciliation:** `inventory.json`/`inventory.yaml` entries `platform-registration-monitoring` and
+`plan-management` retagged **Phase 20A → 20B** to match Plan §47 + the permission matrix (their perms are
+`owning_phase: Phase 20B`; both depend on `merchant_subscriptions`). **Increment 4 (backend + API) complete:** 13 typed AuditEvent cases; 2 state machines; 12 named
+actions; 6 policies; 8 Form Requests; 6 masked Resources; 7 controllers; `ResolvePlatformContext`
+(platform-staff-only context — `platform_mutation` forbids `ResolveTenantContext`, Plan §24.1);
+`PlatformServiceLocator`; 21 platform routes + 1 branch read; `AuditMutationCoverage` +12;
+`StepUpAction::BillingConfiguration` promoted to a live platform-config step-up; permissions +9
+canonical −3 legacy (active 87→93, legacy-active 17→14, planned 86→77); `openapi.json` 188 ops +
+`api.ts` + `permissions.ts` regenerated; `Phase20APlatformApiTest` (13). Auth suite 192, billing+
+phase20a 96, RouteSecurityContract/AuditMutationCoverage/OpenApi green, Pint + Larastan clean.
+Frontend/E2E/final-gates (Increments 5–7) pending. The Increment-1-time Docker/PG16
+blocker (engine HTTP 500) was **resolved by a product-owner Docker Desktop + WSL restart** (external
+backup taken; no HEAD/branch change, no commit, no discard) and re-verified on resume: engine + PG16
+healthy, Laravel 12.62.0, `migrate:status` OK, all 11 Increment-1 paths preserved, `git diff --check`
+passes, Increment 1 re-verified (enums 3/5 values, Pint 956, vue-tsc clean, screenInventory 8/8). The
+fixed legacy preferred-fee cutover date is **`2026-07-10`** (product-owner decision — immutable
+`DATE '2026-07-10'`, never `now()`/`today()`/`CURRENT_DATE`). Increment 2 (migrations + parity) in
+progress. Nothing committed. Proof: `docs/proof/phase-20a.md`._
+
+### v4 Plan Adoption — Architecture change (Plan §1.3; branch `docs/update-servana-development-plan`) — verified_complete (PR #34 MERGED, merge `85bd3e5`)
 
 _Lands ADR-012–015, `billing-and-wallet.md` and `refer-earn-integration.md`, SUP-06 permission
 renames (+ five Wallet/R&E planned keys → 156 canonical catalogue), `NoDirectProviderIntegrationTest`,

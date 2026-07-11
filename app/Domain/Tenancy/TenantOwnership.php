@@ -147,6 +147,13 @@ final class TenantOwnership
         'permissions' => 'platform-global permission catalogue',
         'roles' => 'platform-global role catalogue',
         'role_permission_assignments' => 'platform-global role→permission map',
+        // Phase 20A — platform-scoped billing configuration (Plan §13.9/§13.10/§47).
+        // Super-Admin governed; no merchant/branch scope exists for platform config.
+        'platform_billing_settings' => 'platform-scoped billing configuration (effective-dated; no merchant scope)',
+        'subscription_plans' => 'platform-global plan catalogue (non-price metadata; no merchant scope)',
+        'subscription_plan_prices' => 'platform-global sole plan-price source (ADR-011; no merchant scope)',
+        'plan_entitlements' => 'platform-global per-plan entitlements (§20 substrate; no merchant scope)',
+        'preferred_personnel_fee_rules' => 'platform-governed preferred-personnel fee rules (§13.10; no merchant scope)',
         // Cross-cutting infrastructure with nullable/forensic merchant scope.
         'audit_logs' => 'cross-cutting: per-merchant AND platform chain (merchant_id nullable by design, R2)',
         'idempotency_keys' => 'cross-cutting: platform/webhook scopes have null merchant/branch forensic columns (R4)',

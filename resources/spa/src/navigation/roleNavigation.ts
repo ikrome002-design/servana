@@ -39,17 +39,22 @@ export interface NavItem {
 const platform: NavItem[] = [
   { key: 'platform.overview', label: 'Overview', routeName: 'platform.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'platform.get-started', label: 'Get started', routeName: 'platform.get-started', phase: 'Phase 11', availability: 'live' },
-  { key: 'platform.merchants', label: 'Merchant directory', permission: 'platform.merchant.view', phase: 'Phase 20A', availability: 'planned' },
-  { key: 'platform.registration-monitoring', label: 'Registration monitoring', permission: 'platform.registration_monitor.view', phase: 'Phase 20A', availability: 'planned' },
-  { key: 'platform.billing-settings', label: 'Billing settings', permission: 'platform.billing_settings.view', phase: 'Phase 20A', availability: 'planned' },
-  { key: 'platform.plans', label: 'Plans and entitlements', permission: 'platform.plan.view', phase: 'Phase 20A', availability: 'planned' },
+  // Registration monitoring / merchant governance is Phase 20B (Plan §47 excludes it from
+  // 20A; perms platform.registration_monitor.view + platform.merchant.* are owning_phase 20B).
+  { key: 'platform.merchants', label: 'Merchant directory', permission: 'platform.merchant.view', phase: 'Phase 20B', availability: 'planned' },
+  { key: 'platform.registration-monitoring', label: 'Registration monitoring', permission: 'platform.registration_monitor.view', phase: 'Phase 20B', availability: 'planned' },
+  // Phase 20A delivers billing settings, plans/prices/entitlements, general settings and the
+  // preferred-personnel fee rule as one coherent screen (accessible tabs). Each label routes to
+  // that consolidated surface — no dead links, no duplicate top-level screens.
+  { key: 'platform.billing-settings', label: 'Billing settings', routeName: 'platform.billing-settings', permission: 'platform.billing_settings.view', phase: 'Phase 20A', availability: 'live' },
+  { key: 'platform.plans', label: 'Plans and entitlements', routeName: 'platform.billing-settings', permission: 'platform.plan.view', phase: 'Phase 20A', availability: 'live' },
   { key: 'platform.promotions', label: 'Promotions and free periods', permission: 'platform.promotion.manage', phase: 'Phase 20C', availability: 'planned' },
-  { key: 'platform.preferred-personnel-fee', label: 'Preferred-personnel fee rule', permission: 'platform.preferred_personnel_fee.manage', phase: 'Phase 20A', availability: 'planned' },
+  { key: 'platform.preferred-personnel-fee', label: 'Preferred-personnel fee rule', routeName: 'platform.billing-settings', permission: 'platform.preferred_personnel_fee.manage', phase: 'Phase 20A', availability: 'live' },
   { key: 'platform.wallet-config', label: 'Wallet configuration', permission: 'platform.wallet_configuration.manage', phase: 'Phase 20D-W', availability: 'planned' },
   { key: 'platform.billing-reconciliation', label: 'Billing reconciliation', permission: 'platform.billing_reconciliation.view', phase: 'Phase 20D-W', availability: 'planned' },
   { key: 'platform.audit', label: 'Platform audit', permission: 'platform.audit.view', phase: 'Phase 19', availability: 'planned' },
   { key: 'platform.reports', label: 'Platform reports', permission: 'platform.audit.view', phase: 'Phase 21N', availability: 'planned' },
-  { key: 'platform.settings', label: 'Platform settings', permission: 'platform.settings.view', phase: 'Phase 20A', availability: 'planned' },
+  { key: 'platform.settings', label: 'Platform settings', routeName: 'platform.billing-settings', permission: 'platform.settings.view', phase: 'Phase 20A', availability: 'live' },
 ];
 
 const merchantAdministrator: NavItem[] = [

@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
+import BranchPreferredFeeCard from '@/pages/branch/BranchPreferredFeeCard.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvInput from '@/components/ui/SvInput.vue';
@@ -301,5 +302,11 @@ async function confirmArchive(): Promise<void> {
         </SvButton>
       </div>
     </SvModal>
+
+    <!-- Phase 20A — read-only effective preferred-personnel fee (Branch Manager). UX gate
+         only; the API enforces `preferred_personnel_fee.view_branch_rule`. No mutation. -->
+    <PermissionGate permission="preferred_personnel_fee.view_branch_rule">
+      <BranchPreferredFeeCard />
+    </PermissionGate>
   </section>
 </template>

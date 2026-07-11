@@ -61,7 +61,7 @@ enum StepUpAction: string
     public function owningPhase(): string
     {
         return match ($this) {
-            self::BillingConfiguration => 'Phase 20A',
+            self::BillingConfiguration => 'Phase 20A (implemented)',
             self::RefundFinalization => 'Phase 18B',
             self::PeriodReopen => 'Phase 18B',
             self::PayoutApproval => 'Phase 20H',
@@ -88,7 +88,10 @@ enum StepUpAction: string
     public static function businessActions(): array
     {
         return [
-            self::BillingConfiguration,
+            // BillingConfiguration is EXCLUDED here (like InvoiceVoid/AuditExportCreate): Phase 20A
+            // ships its real platform billing/configuration routes (settings/plans/prices/fee-rule
+            // mutations all carry RequireFreshMfa:billing_configuration), so it is a live platform
+            // configuration step-up, not a harness-only business action.
             self::RefundFinalization,
             self::PeriodReopen,
             self::PayoutApproval,

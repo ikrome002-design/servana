@@ -14,6 +14,7 @@ branch.cash_up.submit                 ·            ✓           ·            
 branch.dashboard.view                 ·            ✓           ·            ·            ·            ·            ·            ·
 branch.profile.manage                 ·            ✓           ·            ·            ·            ·            ·            ·
 day.open_close                        ·            ✓           ·            ·            ·            ·            ·            ·
+preferred_personnel_fee.view_branch_rule·            ✓           ·            ·            ·            ·            ·            ·
 service.archive                       ·            ✓           ·            ·            ·            ·            ·            ·
 service.create                        ·            ✓           ·            ·            ·            ·            ·            ·
 service.update                        ·            ✓           ·            ·            ·            ·            ·            ·
@@ -62,10 +63,15 @@ personnel.my_appointments.view        ·            ·            ·            
 personnel.my_queue.view               ·            ·            ·            ·            ·            ✓           ·            ·
 personnel.my_sessions.view            ·            ·            ·            ·            ·            ✓           ·            ·
 platform.audit.view                   ·            ·            ·            ·            ·            ·            ·            ✓
-platform.billing.configure            ·            ·            ·            ·            ·            ·            ·            ✓
-platform.fee_rules.manage             ·            ·            ·            ·            ·            ·            ·            ✓
+platform.billing_settings.update      ·            ·            ·            ·            ·            ·            ·            ✓
+platform.billing_settings.view        ·            ·            ·            ·            ·            ·            ·            ✓
 platform.merchants.govern             ·            ·            ·            ·            ·            ·            ·            ✓
-platform.settings.manage              ·            ·            ·            ·            ·            ·            ·            ✓
+platform.plan.manage                  ·            ·            ·            ·            ·            ·            ·            ✓
+platform.plan.view                    ·            ·            ·            ·            ·            ·            ·            ✓
+platform.plan_price.manage            ·            ·            ·            ·            ·            ·            ·            ✓
+platform.preferred_personnel_fee.manage·            ·            ·            ·            ·            ·            ·            ✓
+platform.settings.update              ·            ·            ·            ·            ·            ·            ·            ✓
+platform.settings.view                ·            ·            ·            ·            ·            ·            ·            ✓
 preferred_personnel.select            ·            ·            ·            ·            ✓           ·            ·            ·
 queue.assign                          ·            ·            ·            ·            ✓           ·            ·            ·
 queue.create                          ·            ·            ·            ·            ✓           ·            ·            ·

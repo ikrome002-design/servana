@@ -24,6 +24,16 @@ export const platformRoutes: RouteRecordRaw[] = [
         name: 'platform.dashboard',
         component: () => import('@/pages/platform/DashboardStub.vue'),
       },
+      {
+        // Phase 20A — the single genuine platform screen: billing settings, plans,
+        // prices, entitlements and the preferred-personnel fee rule. Backend remains
+        // authoritative (ResolvePlatformContext + EnsurePermission + policies + MFA/
+        // step-up); the tabs/controls here are UX-only permission gates.
+        path: 'billing-settings',
+        name: 'platform.billing-settings',
+        component: () => import('@/pages/platform/BillingSettings.vue'),
+        meta: { roleIdentity: 'super_administrator' },
+      },
     ],
   },
 ];
