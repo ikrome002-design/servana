@@ -34,6 +34,17 @@ export const platformRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/platform/BillingSettings.vue'),
         meta: { roleIdentity: 'super_administrator' },
       },
+      {
+        // Phase 20B — consolidated registration monitoring + merchant directory/detail +
+        // operational governance (suspend/reactivate/deactivate). Backend authoritative
+        // (ResolvePlatformContext + MFA + fresh merchant_governance step-up + mandatory reason).
+        // The "Merchant directory" nav label routes here too (one coherent screen). NO
+        // merchant-creation/first-admin/impersonation/payment path exists.
+        path: 'registration-monitoring',
+        name: 'platform.registration-monitoring',
+        component: () => import('@/pages/platform/RegistrationMonitoring.vue'),
+        meta: { roleIdentity: 'super_administrator' },
+      },
     ],
   },
 ];

@@ -315,22 +315,22 @@ screens:
     spec: ~
   - key: subscription-dashboard
     domain: merchant
-    route: ~
-    status: planned
+    route: merchant.subscription
+    status: implemented
     phase: Phase 20B
-    spec: ~
+    spec: merchant/subscription-dashboard.md
   - key: plan-management
     domain: merchant
-    route: ~
-    status: planned
+    route: merchant.plan
+    status: implemented
     phase: Phase 20B
-    spec: ~
+    spec: merchant/plan-management.md
   - key: subscription-invoices
     domain: merchant
-    route: ~
-    status: planned
+    route: merchant.invoices
+    status: implemented
     phase: Phase 20B
-    spec: ~
+    spec: merchant/subscription-invoices.md
   - key: merchant-reports
     domain: merchant
     route: ~
@@ -693,10 +693,10 @@ screens:
     spec: ~
   - key: platform-registration-monitoring
     domain: platform
-    route: ~
-    status: planned
+    route: platform.registration-monitoring
+    status: implemented
     phase: Phase 20B
-    spec: ~
+    spec: platform/platform-registration-monitoring.md
   - key: platform-audit-reports
     domain: platform
     route: ~

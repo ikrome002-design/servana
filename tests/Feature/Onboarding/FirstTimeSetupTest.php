@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Domain\Billing\Models\PlatformBillingSettings;
+use App\Domain\Billing\Models\SubscriptionPlan;
+use App\Domain\Billing\Models\SubscriptionPlanPrice;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Enums\MerchantStatus;
 use App\Domain\Merchants\Enums\MerchantUserRole;
@@ -30,10 +33,40 @@ function pendingOwner(string $email = 'owner@demo.co.ke'): array
     return [$user, $merchant];
 }
 
+/**
+ * Seed an active plan + its currently-effective price (+ platform settings) and return the
+ * public ULIDs the merchant selects during setup (Phase 20B).
+ *
+ * @return array{0:string,1:string}
+ */
+function setupPlanPriceUlids(int $trialDays = 14): array
+{
+    if (! PlatformBillingSettings::query()->exists()) {
+        PlatformBillingSettings::factory()->create([
+            'default_trial_days' => $trialDays,
+            'effective_from' => now()->subYear(),
+        ]);
+    }
+    $plan = SubscriptionPlan::factory()->create();
+    $price = SubscriptionPlanPrice::factory()->create([
+        'plan_id' => $plan->id,
+        'billing_interval' => 'monthly',
+        'currency' => 'KES',
+        'effective_from' => now()->subMonth()->toDateString(),
+        'effective_to' => null,
+    ]);
+
+    return [$plan->ulid, $price->ulid];
+}
+
 function setupPayload(array $overrides = []): array
 {
+    [$planUlid, $priceUlid] = setupPlanPriceUlids();
+
     return array_merge([
         'service_fee_tier' => 'split_tier',
+        'subscription_plan_ulid' => $planUlid,
+        'subscription_plan_price_ulid' => $priceUlid,
         'business_category' => 'Salon',
         'contact_phone' => '+254700000000',
         'contact_email' => 'info@demo.co.ke',

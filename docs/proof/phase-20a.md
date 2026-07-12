@@ -1,11 +1,33 @@
 # Phase 20A — Plan Catalogue, Prices, Entitlements, Billing Settings — Proof
 
-> Lifecycle: **in_progress** (branch `phase-20a-billing-catalogue-settings`, based on
-> `origin/main` = `85bd3e570db1436586d3d1ead17ab6b1701538d5`). One reviewed PR at the
-> end; not marked `verified_complete` until that PR merges with green CI. Proof is
-> appended per increment. Controlling sources: Plan §13.9, §13.10, §20, §47, §49,
+> Lifecycle: **verified_complete** (branch `phase-20a-billing-catalogue-settings`, based on
+> `origin/main` = `85bd3e570db1436586d3d1ead17ab6b1701538d5`). Reconciled from
+> `local_complete` on the PR #35 merge — see "Phase 20A merge reconciliation" below.
+> Proof is appended per increment. Controlling sources: Plan §13.9, §13.10, §20, §47, §49,
 > §50, §80 (Phase 20A); ADR-011 (price sole source), ADR-005 (round-half-up),
 > ADR-012 (no direct provider integration).
+
+## Phase 20A merge reconciliation (recorded — reconciled during Phase 20B Increment 1)
+
+- **PR #35** — "Phase 20A: Implement billing catalogue settings and fee rules" — **MERGED**
+  (https://github.com/ikrome002-design/servana/pull/35).
+- Base `main`; final PR head `56a81bd305aacf3a7fb2ffa976d9a089591e3f41`;
+  implementation completion commit `a31cd000f84a0a19f1d8b526a4fdf5d01aefc090`
+  (recorded exactly once in the PR); squash merge commit
+  `6813690ef5fa9f7d782532b49e2bca43c2afc112`; merged at **2026-07-11 07:56:09Z**.
+- CI (from PR metadata): Backend (Pint, Larastan, Pest) SUCCESS · Frontend (ESLint,
+  vue-tsc, Vitest, build) SUCCESS · Docker (build images) SUCCESS · Security (gitleaks)
+  SUCCESS · E2E (Playwright) SUCCESS.
+- `reviewDecision`: **blank** — the documented solo-maintainer governance condition,
+  **NOT** independent reviewer approval.
+- Local ancestry at Phase 20B resume: `origin/main` == HEAD ==
+  `merge-base(origin/main, HEAD)` == `6813690…`; `git fsck --full` clean. The fresh
+  clone need not contain the pre-squash PR commit objects (`a31cd00…`, `56a81bd…`);
+  their authoritative evidence is the merged PR metadata above.
+- Lifecycle reconciled `local_complete → verified_complete`; `SRV-BILLING-CAT-001`
+  (traceability) and `REM-ENUM-001` (register) promoted to `verified_complete`. The
+  Phase 20E percentage platform-fee **ledger** stays a separate 20E obligation. No
+  historical failure/checkpoint evidence was erased.
 
 ## Gate A — v4 adoption PR (verified merged before Phase 20A)
 
@@ -450,7 +472,11 @@ plans-LIST endpoint is now matched by a precise regex; a `branches.max` text mat
 asserted by `PermissionLegacyKeyReconciliationTest` + `PermissionPlannedKeyIsolationTest`. Nine
 Phase-20A canonical keys active; three legacy keys retired. YAML/PHP/DB/TS parity green.
 
-**Lifecycle:** Phase 20A = **local_complete pending PR CI/review/merge**. Not `verified_complete`.
+**Lifecycle:** Phase 20A = **verified_complete** — reconciled on the PR #35 merge
+(`6813690…`, merged 2026-07-11 07:56:09Z, five-gate CI SUCCESS, blank `reviewDecision`
+under the documented solo-maintainer governance exception, not independent approval).
+See "Phase 20A merge reconciliation" at the top of this file. (History preserved: this
+line previously read `local_complete pending PR CI/review/merge`.)
 
 **Residual risks:** (1) four platform nav labels route to the one consolidated screen (tabs), not
 distinct deep-links — acceptable per §5.2 (no tab-param in the nav registry); (2) service-scoped

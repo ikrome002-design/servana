@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Onboarding\Actions;
 
+use App\Domain\Billing\Actions\CreateTrialSubscription;
+use App\Domain\Billing\Services\ResolveSetupPlanPrice;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Enums\MerchantStatus;
 use App\Domain\Merchants\Enums\MerchantUserRole;
@@ -33,10 +35,23 @@ use Illuminate\Support\Facades\DB;
  */
 final class CompleteFirstTimeSetup
 {
+    public function __construct(
+        private readonly CreateTrialSubscription $createTrialSubscription,
+        private readonly ResolveSetupPlanPrice $resolveSetupPlanPrice,
+    ) {}
+
     public function handle(Merchant $merchant, User $actor, FirstTimeSetupData $data): Merchant
     {
         return DB::transaction(function () use ($merchant, $actor, $data): Merchant {
-            // Step 1 — service fee tier (required before completion).
+            // Phase 20B — resolve + validate the selected plan/price BEFORE any mutation, so an
+            // invalid selection rolls the whole completion back (422; no partial setup).
+            $price = $this->resolveSetupPlanPrice->resolve(
+                $data->subscriptionPlanUlid,
+                $data->subscriptionPlanPriceUlid,
+            );
+
+            // Step 1 — service fee tier (required before completion). Distinct from the subscription
+            // plan: service_fee_tier is the percentage-fee tier behavior (§51), not the plan.
             $merchant->service_fee_tier = $data->serviceFeeTier;
 
             // Step 2 — merchant profile.
@@ -82,6 +97,13 @@ final class CompleteFirstTimeSetup
                 'reason' => 'first_time_setup_completed',
                 'changed_by' => $actor->id,
             ]);
+
+            // Phase 20B — bind the trial subscription as part of completed onboarding (Gate B1).
+            // Idempotent (an existing current subscription short-circuits); anchored to the founding
+            // Merchant-Administrator membership; projects merchants.billing_status → trialing. A
+            // failure here rolls back the whole completion (no merchant marked set-up without a
+            // subscription).
+            $this->createTrialSubscription->handle($merchant, $price, $actor);
 
             return $merchant->refresh();
         });

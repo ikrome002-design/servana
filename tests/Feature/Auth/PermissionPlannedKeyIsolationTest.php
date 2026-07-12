@@ -18,14 +18,15 @@ uses(RefreshDatabase::class)->group('auth', 'permissions', 'matrix');
  | permission middleware.
  */
 
-it('keeps all 86 planned keys out of every runtime projection', function (): void {
+it('keeps all 68 planned keys out of every runtime projection', function (): void {
     $this->seed(PermissionSeeder::class);
     $matrix = app(PermissionMatrix::class);
     $registry = app(PermissionRegistry::class);
 
-    // Phase 20A activated 9 previously-planned canonical keys (86 → 77).
+    // Phase 20A activated 9 previously-planned canonical keys (86 → 77); Phase 20B activated the
+    // 9 subscription-lifecycle / merchant-governance canonical keys (77 → 68).
     $planned = $matrix->plannedKeys();
-    expect($planned)->toHaveCount(77);
+    expect($planned)->toHaveCount(68);
 
     $registryKeys = array_fill_keys($registry->permissionKeys(), true);
     $dbKeys = array_fill_keys(Permission::query()->pluck('key')->all(), true);

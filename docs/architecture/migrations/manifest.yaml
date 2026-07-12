@@ -957,3 +957,127 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-20a.md
     notes: "Legacy expand-and-contract backfill: one fixed_amount/service/active rule per service with a non-null services.preferred_personnel_fee_minor; fixed_amount_minor == legacy value exactly; currency = service currency; immutable prospective cutover effective_from = DATE '2026-07-10' (never now()/today()/CURRENT_DATE); created_by NULL (system). Idempotent (skips an existing active service rule at the cutover). Legacy column retained read-only, NOT dropped (contract deferred). Finalized invoices never recalculated. down() removes only the marked backfill rows (local/CI convenience)."
+
+  # ---------------------------------------------------------------------------
+  # Phase 20B — Subscription lifecycle and subscription invoices (§13.9, §22,
+  # §48, §49, §54; ADR-014). Five merchant-owned tables + two expands on shipped
+  # 20A/17 tables + merchants billing-status columns. No Wallet runtime.
+  # ---------------------------------------------------------------------------
+  - file: 2026_07_11_000001_add_id_plan_id_unique_to_subscription_plan_prices.php
+    table: subscription_plan_prices
+    domain: Billing
+    owner_phase: "20B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_10_000003_create_subscription_plan_prices_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20b.md
+    notes: "Additive UNIQUE(id, plan_id) so Phase 20B tables enforce price-belongs-to-plan via composite FK (price_id, plan_id) → subscription_plan_prices(id, plan_id). No shipped migration edited; no data change."
+  - file: 2026_07_11_000002_add_billing_status_to_merchants.php
+    table: merchants
+    domain: Billing
+    owner_phase: "20B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20b.md
+    notes: "Adds merchants.billing_status (NOT NULL default 'trialing', CHECK 5 values, indexed) + billing_status_reason (nullable text). billing_status is the SOLE billing-access authority (§22), distinct from operational merchants.status. Existing rows get the Plan-defined default (safe backfill). Deferred from Phase 17."
+  - file: 2026_07_11_000003_create_merchant_subscriptions_table.php
+    table: merchant_subscriptions
+    domain: Billing
+    owner_phase: "20B"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_07_10_000002_create_subscription_plans_table.php
+      - 2026_07_10_000003_create_subscription_plan_prices_table.php
+      - 2026_07_11_000001_add_id_plan_id_unique_to_subscription_plan_prices.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20b.md
+    notes: "Merchant-owned (merchant_id RESTRICT, no branch_id). status CHECK 7 values; billing_interval CHECK 5; trial_days_snapshot>=0; trial/period date-order CHECKs; high_value threshold null-or-non-negative; composite FK price↔plan; partial UNIQUE(merchant_id) WHERE status non-terminal = one current subscription; UNIQUE(id, merchant_id) composite-FK target. Gate B1 trial anchor = Merchant-Admin creation time."
+  - file: 2026_07_11_000004_create_scheduled_plan_changes_table.php
+    table: scheduled_plan_changes
+    domain: Billing
+    owner_phase: "20B"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_11_000003_create_merchant_subscriptions_table.php
+      - 2026_07_10_000002_create_subscription_plans_table.php
+      - 2026_07_11_000001_add_id_plan_id_unique_to_subscription_plan_prices.php
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20b.md
+    notes: "Merchant-owned. status CHECK (scheduled,applied,cancelled); composite FK subscription↔merchant + target price↔plan; partial UNIQUE(merchant_subscription_id, effective_at) WHERE status='scheduled' = one scheduled change per cycle. No proration; applied at next cycle only."
+  - file: 2026_07_11_000005_create_subscription_invoices_table.php
+    table: subscription_invoices
+    domain: Billing
+    owner_phase: "20B"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_07_10_000002_create_subscription_plans_table.php
+      - 2026_07_11_000001_add_id_plan_id_unique_to_subscription_plan_prices.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20b.md
+    notes: "Merchant-owned immutable issued invoice. status CHECK 9 values; wallet_registration_status CHECK 4 (default unregistered); money non-negative + discount<=subtotal + total=subtotal-discount + balance<=total; uppercase currency; period date-order; Wallet null/status coherence CHECK (proves 20B unregistered defaults, ADR-014); composite FK price↔plan; per-merchant partial UNIQUE(merchant_id, invoice_number) WHERE not null; UNIQUE(id, merchant_id). NO Wallet runtime/outbox. Gate B3 numbering, Gate B5 fixed-mode fail-closed."
+  - file: 2026_07_11_000006_create_subscription_invoice_items_table.php
+    table: subscription_invoice_items
+    domain: Billing
+    owner_phase: "20B"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_11_000005_create_subscription_invoices_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20b.md
+    notes: "Merchant-owned immutable line items. type CHECK (plan_fee,platform_fee_rollup,sms_rollup,adjustment); sign CHECK (only adjustment may be negative); non-blank description; composite FK (subscription_invoice_id, merchant_id) → subscription_invoices(id, merchant_id) tenant consistency. 20B issues plan_fee only."
+  - file: 2026_07_11_000007_create_billing_escalation_events_table.php
+    table: billing_escalation_events
+    domain: Billing
+    owner_phase: "20B"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_11_000003_create_merchant_subscriptions_table.php
+      - 2026_07_11_000005_create_subscription_invoices_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20b.md
+    notes: "Append-only (created_at only, no updated_at). event_type CHECK 5 values; period_boundary date NOT NULL; UNIQUE(merchant_subscription_id, event_type, period_boundary) = Gate B4 durable idempotency (NOT created_at); composite FKs to merchant_subscriptions + subscription_invoices (nullable) for tenant consistency."
+  - file: 2026_07_11_000008_expand_invoice_number_sequences_add_subscription_invoice_scope.php
+    table: invoice_number_sequences
+    domain: Billing
+    owner_phase: "20B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_30_000002_create_invoice_number_sequences_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20b.md
+    notes: "Gate B3 — widens scope CHECK to add 'subscription_invoice'. Independent per-merchant counter from merchant_client_invoice; unique(merchant_id, scope) retained; existing rows unchanged; shipped migration not edited. down() restores the single-value CHECK only when no subscription_invoice rows exist."
+  - file: 2026_07_11_000009_add_pdf_file_to_subscription_invoices.php
+    table: subscription_invoices
+    domain: Billing
+    owner_phase: "20B"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_11_000005_create_subscription_invoices_table.php
+      - 2026_06_24_000001_create_uploaded_files_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20b.md
+    notes: "Additive file_id (nullable FK uploaded_files RESTRICT) + pdf_version (int default 0) linking a subscription invoice to its current generated PDF in the Phase 10F private-file domain (purpose billing_invoice_pdf). Technical projection columns, not part of the immutable financial snapshot; each regeneration writes a new file version and revokes the prior one."

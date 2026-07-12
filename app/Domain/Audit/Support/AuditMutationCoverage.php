@@ -181,6 +181,16 @@ final class AuditMutationCoverage
         // --- Merchant self-registration (Phase 6) --------------------------
         'merchant-registration.self-register' => ['membership.created'],
 
+        // --- Merchant subscription self-service (Phase 20B) ----------------
+        'subscription.scheduled-plan-change.store' => ['subscription.plan_change_scheduled'],
+        'subscription.scheduled-plan-change.cancel' => ['subscription.plan_change_cancelled'],
+        'subscription-invoices.pdf.generate' => ['subscription_invoice.pdf_generated'],
+
+        // --- Platform merchant governance (Phase 20B) ----------------------
+        'platform.merchants.suspend' => ['merchant.suspended'],
+        'platform.merchants.reactivate' => ['merchant.reactivated'],
+        'platform.merchants.deactivate' => ['merchant.deactivated'],
+
         // --- Platform billing catalogue governance (Phase 20A) -------------
         'platform.settings.update' => ['platform_settings.updated'],
         'platform.billing-settings.update' => ['platform_billing.settings_updated'],

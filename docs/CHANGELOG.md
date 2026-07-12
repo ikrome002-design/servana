@@ -6,7 +6,125 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 20A — Plan Catalogue, Prices, Entitlements, Billing Settings (`phase-20a-billing-catalogue-settings`) — local_complete pending PR CI/review/merge
+### Phase 20B — Subscription Lifecycle and Subscription Invoices (`phase-20b-subscription-lifecycle-invoices`) — local_complete pending PR CI/review/merge
+
+_**Increment 7 (E2E + full local gates — green):** `tests/e2e/phase-20b.spec.ts` (23 tests) drives the
+real frontend against stubbed `/me` + `/api/v1` across the subscription/billing states, no-proration
+plan change + cancel, invoice detail + payment-reference-pending, new-PDF-blocked-in-read-only vs
+existing-PDF-downloadable, registration monitoring, merchant governance with mandatory reason + fresh
+step-up, reactivation that never clears a billing suspension, forbidden-UI absence, and the merchant
+role denied the platform route — with axe serious/critical = 0 (light + dark) on the dashboard and the
+governance dialog, no page-level horizontal overflow at 360/768/1280, and dialog focus management +
+restoration. Full local gate battery green: contracts (OpenAPI 203 operations, api.ts, permissions.ts,
+contract check) clean; `composer validate --strict` valid; Pint + Larastan L8 clean; backend
+`php artisan test` 1348 pass / 7 skip / 0 fail (serial and parallel); frontend ESLint 0 errors, vue-tsc
+clean, 308 Vitest tests, production build, full Playwright 292 pass; `composer audit` no advisories,
+`npm audit` clean at the high gate (two moderate dev-dependency advisories reported truthfully),
+gitleaks no leaks; Docker dev + prod images build. Phase 20B is local_complete pending PR CI/review/
+merge — not verified_complete._
+
+
+_**Increment 1 (specs):** Phase 20A reconciled to `verified_complete`; specification-gate decision table
+(B1–B5) with the Gate B2 product-owner decision (terminal `cancelled`/`expired` → `suspended_billing`,
+distinct reasons); column-level data-dictionary entries for the five 20B tables; five state-machine specs;
+traceability rows `SRV-SUBSCRIPTION-001` + `SRV-PLATFORM-GOVERNANCE-001`._
+
+_**Increment 6 (frontend — green):** four Phase 20B screens on the existing layouts/router/Pinia/
+design-system, driven by the regenerated generated API + permission types, server `can` maps and
+structured errors (UX only; the backend remains authoritative). Merchant Administrator:
+`SubscriptionDashboard` (subscription status + INDEPENDENT billing status, current plan/price, billing
+interval, trial + current-period dates, scheduled-change + latest-invoice summaries, billing read-only
+explanation); `PlanManagement` (available plans + effective prices, schedule/cancel a NO-PRORATION
+next-cycle change with a server-computed effective date — no client-supplied/immediate change; mutation
+controls removed in billing read-only; structured 409/422 surfaced); `SubscriptionInvoices` (list/detail
+with the exact payment-reference-pending copy, Generate PDF as a mutation blocked in billing read-only vs
+Download existing PDF as a read allowed in read-only; no Wallet/STK/PayBill-Till/provider/payment UI).
+Super Administrator: `RegistrationMonitoring` (consolidated tabs — registration monitoring + merchant
+directory/detail with operational and billing status shown separately + suspend/reactivate/deactivate via
+a mandatory-reason modal with confirmation, fresh-step-up surfacing, and focus restoration; governance
+controls gated by the server `can` map; no merchant-create/first-admin/impersonation/payment/Wallet UI).
+Three generated-typed Pinia stores; navigation (`roleNavigation.ts` + `role-navigation.yaml`) five items
+planned→live; inventory (`inventory.json` + `.yaml`) four screens planned→implemented + four regenerated
+§27.1 specs. Gates: ESLint 0 errors, vue-tsc clean, 308 Vitest tests pass (7 new specs), production
+build green._
+
+_**Increment 5 (permissions + merchant & platform-governance APIs, atomic — green):** activated the nine
+canonical §19.2 keys — merchant self-service `merchant.subscription.{view,plan_change,invoice.view,
+invoice.download}` (merchant_admin) and platform governance `platform.{registration_monitor.view,
+merchant.view,merchant.suspend,merchant.reactivate,merchant.deactivate}` (super_admin) — and RETIRED the
+two dead legacy keys: `merchant.tier.update` (successor `merchant.subscription.plan_change`; the unused
+`MerchantPolicy::updateTier()` deleted) and `platform.merchants.govern`, whose blunt single authority is
+**truthfully split** (no 1:1 successor) into suspend/reactivate/deactivate. Verified counts: active
+93→100, planned 77→68, legacy-active 14→12 (four-way YAML↔PHP↔DB↔TS parity re-proven). New merchant
+subscription API (subscription dashboard, plan options with effective prices, scheduled-change read +
+schedule/cancel with `EnsureBillingMutable` + server-computed `effective_at` + no proration, invoice
+list/detail, new-PDF generation blocked in billing read-only, existing-PDF download-link allowed in
+read-only via the Phase 10F `FileAccessService`). New platform merchant-governance API (registration
+monitoring, merchant list/detail, and `SuspendMerchant`/`ReactivateMerchant`/`DeactivateMerchant` under
+`ResolvePlatformContext` + mandatory MFA + fresh `merchant_governance` step-up + mandatory reason). The
+governance mutations change `merchants.status` only — never `merchants.billing_status`, never a
+subscription/payment row — and operational reactivation is not a billing-recovery path. Three typed audit
+events `merchant.{suspended,reactivated,deactivated}` (high/high/critical) with redacted platform-chain
+context; `AuditMutationCoverage`/`AuditSeverityCoverage`/`RouteSecurityContract`/`FinancialRouteIdempotency`
+guards extended and green. OpenAPI (203 operations) + `api.ts` + `permissions.ts` regenerated (contract
+checks clean; generated files never hand-edited). Full backend suite 1350 pass / 7 skip / 0 fail; Pint +
+Larastan L8 clean. No merchant-create/first-admin/impersonation/payment/Wallet route._
+
+_**Increment 3 (lifecycle domain core, green on PG16):** canonical `Africa/Nairobi` `BillingIntervalCalculator`
+(five intervals, drift-free end-of-month/leap clamping — the sole subscription date-math source); merchant-
+subscription state machine + `ProjectMerchantBillingStatus` (the sole transactional subscription→
+`merchants.billing_status` projection, Gate B2 terminal mapping to `suspended_billing` with distinct
+`subscription_cancelled`/`subscription_expired` reasons, atomic rollback); eleven named lifecycle/scheduled
+actions (`CreateTrialSubscription` with the Gate B1 founding-admin trial anchor + idempotent replay …
+`ApplyScheduledPlanChange` with exactly-once, no-proration cycle advance); `EnsureBillingMutable` gate
+(403 `billing_read_only`, reads only `merchants.billing_status`, replacing the temporary Phase 17/10F seam
+intent); thirteen typed subscription/billing audit events. 114 Phase 20B tests pass; Pint + Larastan L8 clean.
+First-time-setup now selects an active plan + effective price (`subscription_plan_ulid`/
+`subscription_plan_price_ulid`; `ResolveSetupPlanPrice` validates active/belongs/effective) and binds the
+trial subscription atomically as part of completed onboarding (rollback on failure; no completed merchant
+without a subscription). A daily `Africa/Nairobi` `billing:process-subscription-lifecycle` scheduler
+(withoutOverlapping/onOneServer; bounded scope-free scan + per-item tenant context + row lock + redacted
+failure) drives trial-expiry → read-only-grace/expiry, trial-grace expiry → suspension, and due scheduled
+plan-change application via the existing named actions. 245 onboarding+billing tests pass; Pint + Larastan
+L8 clean._
+
+_**Increment 2 (schema, green on PG16):** eight forward-only migrations — five merchant-owned tables
+(`merchant_subscriptions`, `scheduled_plan_changes`, `subscription_invoices`, `subscription_invoice_items`,
+`billing_escalation_events`) plus three additive expands (`subscription_plan_prices` composite-key unique
+for DB-level price↔plan consistency; `merchants.billing_status`/`billing_status_reason`; `invoice_number_
+sequences` scope `subscription_invoice`). Seven backed enums with DB-CHECK parity. Five models + factories;
+`TenantOwnership` registration (merchant-owned, not platform-exempt). Gate B3 numbering, Gate B4 escalation
+idempotency (`UNIQUE(merchant_subscription_id, event_type, period_boundary)`), Gate B5 fail-closed and
+ADR-014 Wallet-null coherence enforced in the schema. Ships nullable Wallet projection columns only — no
+Wallet runtime, outbox, client, or table. Tests: schema 46, enum-parity 9, coverage guards 18, no billing/
+phase20a regression (142). Disposable `migrate:fresh --seed` green; Pint + Larastan L8 clean._
+
+_**Increment 4 (invoice financial core, green on PG16):** subscription-invoice state machine (`void`-only
+terminal); `AllocateSubscriptionInvoiceNumber` (row-locked independent `subscription_invoice` sequence
+scope, Gate B3); `IssueSubscriptionInvoice` (Gate B5 fail-closed for non-fixed billing modes — no invoice/
+item/sequence/audit; single immutable `plan_fee` line = captured price; discount 0; Wallet columns null/
+unregistered — no Wallet runtime; idempotent per period); `VoidSubscriptionInvoice`,
+`MarkSubscriptionInvoiceOverdue`, and append-only `RecordBillingEscalationEvent` (idempotent per
+subscription/event/period-boundary, Gate B4). Invoice + line-item immutability guards; nine new
+invoice/escalation audit events. **Invoice PDF:** `GenerateSubscriptionInvoicePdf` renders via the
+dependency-free `MinimalPdf` writer (no library added to the pinned stack) into the Phase 10F private-file
+domain (purpose `billing_invoice_pdf`; migration adds `subscription_invoices.file_id`/`pdf_version`);
+new generation is blocked in `read_only_grace`/`suspended_billing` (403 `billing_read_only`, driven by
+`Merchant::billingBlocksMutations()`) while existing PDFs stay downloadable; unregistered invoices render
+exactly "Payment reference pending — see your billing dashboard" (no fabricated reference); regeneration
+writes a new file version and revokes the prior; one `subscription_invoice.pdf_generated` audit per
+version. Reaffirmed Plan §49 + ADR-014: Phase 20B ships only nullable Wallet projection columns — no
+Wallet outbox intent/table/consumer, `RegisterInvoicePayment` action, or Wallet API call. 253 billing
+tests pass; Pint + Larastan L8 clean; disposable PG16 fresh-build (82 migrations) green._
+
+### Phase 20A — Plan Catalogue, Prices, Entitlements, Billing Settings (`phase-20a-billing-catalogue-settings`) — verified_complete (PR #35 merged)
+
+_Reconciled to `verified_complete` during Phase 20B Increment 1: **PR #35** MERGED into `main` (squash
+merge `6813690ef5fa9f7d782532b49e2bca43c2afc112`, impl head `a31cd00…`, final PR head `56a81bd…`,
+merged 2026-07-11 07:56:09Z); five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) all
+SUCCESS; `reviewDecision` blank under the documented solo-maintainer governance exception, not
+independent approval._
+
 
 _**Increments 5–7 complete (frontend + E2E + full gates).** Delivered the single genuine platform
 screen `platform-billing-settings` (route `platform.billing-settings`, `PlatformAdminLayout`): one

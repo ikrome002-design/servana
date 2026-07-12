@@ -57,6 +57,11 @@ enum StepUpAction: string
     // (like FinanceExportCreate) because it has a live route.
     case AuditExportCreate = 'audit_export_create';
 
+    // Phase 20B — Platform merchant governance (suspend/reactivate/deactivate). ONE canonical
+    // action shared by the three platform-mutation routes (SU Y in the §19.3 matrix); excluded
+    // from the test-harness businessActions() (like AuditExportCreate) because it has live routes.
+    case MerchantGovernance = 'merchant_governance';
+
     /** The phase that owns the real route this classification protects. */
     public function owningPhase(): string
     {
@@ -74,6 +79,7 @@ enum StepUpAction: string
             self::RefundApproval => 'Phase 18B (implemented)',
             self::FinanceExportCreate => 'Phase 18B (implemented)',
             self::AuditExportCreate => 'Phase 19 (implemented)',
+            self::MerchantGovernance => 'Phase 20B (implemented)',
         };
     }
 

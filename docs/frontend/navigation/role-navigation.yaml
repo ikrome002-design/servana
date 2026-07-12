@@ -14,12 +14,14 @@ super_administrator:
     phase: Phase 11
   - key: platform.merchants
     label: Merchant directory
-    availability: planned
+    availability: live
+    route: platform.registration-monitoring
     permission: platform.merchant.view
     phase: Phase 20B
   - key: platform.registration-monitoring
     label: Registration monitoring
-    availability: planned
+    availability: live
+    route: platform.registration-monitoring
     permission: platform.registration_monitor.view
     phase: Phase 20B
   - key: platform.billing-settings
@@ -101,17 +103,20 @@ merchant_administrator:
     phase: Phase 18B
   - key: merchant.subscription
     label: Subscription and billing
-    availability: planned
+    availability: live
+    route: merchant.subscription
     permission: merchant.subscription.view
     phase: Phase 20B
   - key: merchant.plan
     label: Plan management
-    availability: planned
+    availability: live
+    route: merchant.plan
     permission: merchant.subscription.plan_change
-    phase: Phase 20A
+    phase: Phase 20B
   - key: merchant.invoices
     label: Subscription invoices
-    availability: planned
+    availability: live
+    route: merchant.invoices
     permission: merchant.subscription.invoice.view
     phase: Phase 20B
   - key: merchant.reports

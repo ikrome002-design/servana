@@ -2241,7 +2241,32 @@
                                 "preferred_personnel_fee_rule.created",
                                 "preferred_personnel_fee_rule.approved",
                                 "preferred_personnel_fee_rule.superseded",
-                                "preferred_personnel_fee_rule.cancelled"
+                                "preferred_personnel_fee_rule.cancelled",
+                                "subscription.created",
+                                "subscription.trial_started",
+                                "subscription.activated",
+                                "subscription.read_only_grace_entered",
+                                "subscription.overdue",
+                                "subscription.suspended_billing",
+                                "subscription.cancelled",
+                                "subscription.expired",
+                                "subscription.recovered",
+                                "merchant.billing_status_changed",
+                                "subscription.plan_change_scheduled",
+                                "subscription.plan_change_applied",
+                                "subscription.plan_change_cancelled",
+                                "merchant.suspended",
+                                "merchant.reactivated",
+                                "merchant.deactivated",
+                                "subscription_invoice.issued",
+                                "subscription_invoice.overdue",
+                                "subscription_invoice.voided",
+                                "subscription_invoice.pdf_generated",
+                                "billing_escalation.reminder",
+                                "billing_escalation.grace_entered",
+                                "billing_escalation.overdue",
+                                "billing_escalation.suspended",
+                                "billing_escalation.recovered"
                             ]
                         }
                     },
@@ -2666,7 +2691,32 @@
                                 "preferred_personnel_fee_rule.created",
                                 "preferred_personnel_fee_rule.approved",
                                 "preferred_personnel_fee_rule.superseded",
-                                "preferred_personnel_fee_rule.cancelled"
+                                "preferred_personnel_fee_rule.cancelled",
+                                "subscription.created",
+                                "subscription.trial_started",
+                                "subscription.activated",
+                                "subscription.read_only_grace_entered",
+                                "subscription.overdue",
+                                "subscription.suspended_billing",
+                                "subscription.cancelled",
+                                "subscription.expired",
+                                "subscription.recovered",
+                                "merchant.billing_status_changed",
+                                "subscription.plan_change_scheduled",
+                                "subscription.plan_change_applied",
+                                "subscription.plan_change_cancelled",
+                                "merchant.suspended",
+                                "merchant.reactivated",
+                                "merchant.deactivated",
+                                "subscription_invoice.issued",
+                                "subscription_invoice.overdue",
+                                "subscription_invoice.voided",
+                                "subscription_invoice.pdf_generated",
+                                "billing_escalation.reminder",
+                                "billing_escalation.grace_entered",
+                                "billing_escalation.overdue",
+                                "billing_escalation.suspended",
+                                "billing_escalation.recovered"
                             ]
                         }
                     },
@@ -3091,7 +3141,32 @@
                                 "preferred_personnel_fee_rule.created",
                                 "preferred_personnel_fee_rule.approved",
                                 "preferred_personnel_fee_rule.superseded",
-                                "preferred_personnel_fee_rule.cancelled"
+                                "preferred_personnel_fee_rule.cancelled",
+                                "subscription.created",
+                                "subscription.trial_started",
+                                "subscription.activated",
+                                "subscription.read_only_grace_entered",
+                                "subscription.overdue",
+                                "subscription.suspended_billing",
+                                "subscription.cancelled",
+                                "subscription.expired",
+                                "subscription.recovered",
+                                "merchant.billing_status_changed",
+                                "subscription.plan_change_scheduled",
+                                "subscription.plan_change_applied",
+                                "subscription.plan_change_cancelled",
+                                "merchant.suspended",
+                                "merchant.reactivated",
+                                "merchant.deactivated",
+                                "subscription_invoice.issued",
+                                "subscription_invoice.overdue",
+                                "subscription_invoice.voided",
+                                "subscription_invoice.pdf_generated",
+                                "billing_escalation.reminder",
+                                "billing_escalation.grace_entered",
+                                "billing_escalation.overdue",
+                                "billing_escalation.suspended",
+                                "billing_escalation.recovered"
                             ]
                         }
                     },
@@ -12306,7 +12381,32 @@
                                 "preferred_personnel_fee_rule.created",
                                 "preferred_personnel_fee_rule.approved",
                                 "preferred_personnel_fee_rule.superseded",
-                                "preferred_personnel_fee_rule.cancelled"
+                                "preferred_personnel_fee_rule.cancelled",
+                                "subscription.created",
+                                "subscription.trial_started",
+                                "subscription.activated",
+                                "subscription.read_only_grace_entered",
+                                "subscription.overdue",
+                                "subscription.suspended_billing",
+                                "subscription.cancelled",
+                                "subscription.expired",
+                                "subscription.recovered",
+                                "merchant.billing_status_changed",
+                                "subscription.plan_change_scheduled",
+                                "subscription.plan_change_applied",
+                                "subscription.plan_change_cancelled",
+                                "merchant.suspended",
+                                "merchant.reactivated",
+                                "merchant.deactivated",
+                                "subscription_invoice.issued",
+                                "subscription_invoice.overdue",
+                                "subscription_invoice.voided",
+                                "subscription_invoice.pdf_generated",
+                                "billing_escalation.reminder",
+                                "billing_escalation.grace_entered",
+                                "billing_escalation.overdue",
+                                "billing_escalation.suspended",
+                                "billing_escalation.recovered"
                             ]
                         }
                     },
@@ -12738,6 +12838,467 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/merchants": {
+            "get": {
+                "operationId": "platform.merchants.index",
+                "tags": [
+                    "PlatformMerchantGovernance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PlatformMerchantResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PlatformMerchantResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/merchants/{merchant}": {
+            "get": {
+                "operationId": "platform.merchants.show",
+                "tags": [
+                    "PlatformMerchantGovernance"
+                ],
+                "parameters": [
+                    {
+                        "name": "merchant",
+                        "in": "path",
+                        "required": true,
+                        "description": "The merchant ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PlatformMerchantResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformMerchantResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/merchants/{merchant}/deactivate": {
+            "post": {
+                "operationId": "platform.merchants.deactivate",
+                "tags": [
+                    "PlatformMerchantGovernance"
+                ],
+                "parameters": [
+                    {
+                        "name": "merchant",
+                        "in": "path",
+                        "required": true,
+                        "description": "The merchant ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MerchantGovernanceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformMerchantResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformMerchantResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/merchants/{merchant}/reactivate": {
+            "post": {
+                "operationId": "platform.merchants.reactivate",
+                "tags": [
+                    "PlatformMerchantGovernance"
+                ],
+                "parameters": [
+                    {
+                        "name": "merchant",
+                        "in": "path",
+                        "required": true,
+                        "description": "The merchant ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MerchantGovernanceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformMerchantResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformMerchantResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/merchants/{merchant}/suspend": {
+            "post": {
+                "operationId": "platform.merchants.suspend",
+                "tags": [
+                    "PlatformMerchantGovernance"
+                ],
+                "parameters": [
+                    {
+                        "name": "merchant",
+                        "in": "path",
+                        "required": true,
+                        "description": "The merchant ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MerchantGovernanceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformMerchantResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformMerchantResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -14240,6 +14801,176 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/registration-monitor": {
+            "get": {
+                "operationId": "platform.registration-monitor.index",
+                "tags": [
+                    "PlatformMerchantGovernance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `MerchantRegistrationMonitorResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/MerchantRegistrationMonitorResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
                     },
                     "429": {
                         "description": "Rate limited",
@@ -19792,6 +20523,709 @@
                 ]
             }
         },
+        "/api/v1/subscription": {
+            "get": {
+                "operationId": "subscription.show",
+                "tags": [
+                    "MerchantSubscription"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`MerchantSubscriptionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MerchantSubscriptionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription-invoices": {
+            "get": {
+                "operationId": "subscription-invoices.index",
+                "tags": [
+                    "SubscriptionInvoice"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `SubscriptionInvoiceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SubscriptionInvoiceResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription-invoices/{subscriptionInvoice}": {
+            "get": {
+                "operationId": "subscription-invoices.show",
+                "tags": [
+                    "SubscriptionInvoice"
+                ],
+                "parameters": [
+                    {
+                        "name": "subscriptionInvoice",
+                        "in": "path",
+                        "required": true,
+                        "description": "The subscription invoice ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`SubscriptionInvoiceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubscriptionInvoiceResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription-invoices/{subscriptionInvoice}/pdf": {
+            "post": {
+                "operationId": "subscription-invoices.pdf.generate",
+                "tags": [
+                    "SubscriptionInvoice"
+                ],
+                "parameters": [
+                    {
+                        "name": "subscriptionInvoice",
+                        "in": "path",
+                        "required": true,
+                        "description": "The subscription invoice ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`SubscriptionInvoiceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SubscriptionInvoiceResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription-invoices/{subscriptionInvoice}/pdf/download-link": {
+            "get": {
+                "operationId": "subscription-invoices.pdf.download-link",
+                "tags": [
+                    "SubscriptionInvoice"
+                ],
+                "parameters": [
+                    {
+                        "name": "subscriptionInvoice",
+                        "in": "path",
+                        "required": true,
+                        "description": "The subscription invoice ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "expires_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "url",
+                                                "expires_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription/plans": {
+            "get": {
+                "operationId": "subscription.plans.index",
+                "tags": [
+                    "MerchantSubscription"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `SubscriptionPlanOptionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SubscriptionPlanOptionResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription/scheduled-plan-change": {
+            "get": {
+                "operationId": "subscription.scheduled-plan-change.show",
+                "tags": [
+                    "MerchantSubscription"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "anyOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/ScheduledPlanChangeResource"
+                                                },
+                                                {
+                                                    "type": "null"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "subscription.scheduled-plan-change.store",
+                "tags": [
+                    "MerchantSubscription"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SchedulePlanChangeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`ScheduledPlanChangeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ScheduledPlanChangeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "409": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object",
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "const": "scheduled_plan_change_exists"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "A scheduled plan change is already pending; cancel it before scheduling another."
+                                                },
+                                                "fields": {
+                                                    "type": "string"
+                                                },
+                                                "meta": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "code",
+                                                "message",
+                                                "fields",
+                                                "meta"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription/scheduled-plan-change/cancel": {
+            "post": {
+                "operationId": "subscription.scheduled-plan-change.cancel",
+                "tags": [
+                    "MerchantSubscription"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`ScheduledPlanChangeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ScheduledPlanChangeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/walk-ins": {
             "post": {
                 "operationId": "walk-ins.store",
@@ -19970,8 +21404,8 @@
                     }
                 }
             },
-            "ModelNotFoundException": {
-                "description": "Not found",
+            "AuthorizationException": {
+                "description": "Authorization error",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -19989,8 +21423,8 @@
                     }
                 }
             },
-            "AuthorizationException": {
-                "description": "Authorization error",
+            "ModelNotFoundException": {
+                "description": "Not found",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -21078,6 +22512,17 @@
                             "business_centric"
                         ]
                     },
+                    "subscription_plan_ulid": {
+                        "type": "string",
+                        "description": "Phase 20B — the merchant selects an active plan + its effective price during\nfirst-time setup (public ULIDs only; semantic checks — plan active, price belongs\nto plan, price effective on the setup date — run in CompleteFirstTimeSetup).",
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "subscription_plan_price_ulid": {
+                        "type": "string",
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
                     "business_category": {
                         "type": "string",
                         "minLength": 2,
@@ -21185,6 +22630,8 @@
                 },
                 "required": [
                     "service_fee_tier",
+                    "subscription_plan_ulid",
+                    "subscription_plan_price_ulid",
                     "business_category",
                     "contact_phone",
                     "branch_manager_email",
@@ -22237,6 +23684,57 @@
                 ],
                 "title": "InvoiceResource"
             },
+            "MerchantGovernanceRequest": {
+                "type": "object",
+                "description": "Validate a platform merchant-governance mutation (suspend / reactivate / deactivate) (Plan §22,\n§24.1; Phase 20B). A governance reason is MANDATORY for every operational-status change — it is\nrecorded in the redacted audit context. Authorization + MFA + fresh step-up are enforced by route\nmiddleware. Shared by all three governance routes (identical contract).",
+                "properties": {
+                    "reason": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "reason"
+                ],
+                "title": "MerchantGovernanceRequest"
+            },
+            "MerchantRegistrationMonitorResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "operational_status": {
+                        "type": "string"
+                    },
+                    "billing_status": {
+                        "type": "string"
+                    },
+                    "pending_setup": {
+                        "type": "boolean"
+                    },
+                    "registered_at": {
+                        "type": "string"
+                    },
+                    "setup_completed_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "operational_status",
+                    "billing_status",
+                    "pending_setup",
+                    "registered_at",
+                    "setup_completed_at"
+                ],
+                "title": "MerchantRegistrationMonitorResource"
+            },
             "MerchantResource": {
                 "type": "object",
                 "properties": {
@@ -22268,6 +23766,136 @@
                     "setup_completed_at"
                 ],
                 "title": "MerchantResource"
+            },
+            "MerchantSubscriptionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "billing_status": {
+                        "type": "string"
+                    },
+                    "billing_status_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "billing_read_only": {
+                        "type": "boolean"
+                    },
+                    "billing_interval": {
+                        "type": "string"
+                    },
+                    "trial_started_at": {
+                        "type": "string"
+                    },
+                    "trial_ends_at": {
+                        "type": "string"
+                    },
+                    "current_period_start": {
+                        "type": "string"
+                    },
+                    "current_period_end": {
+                        "type": "string"
+                    },
+                    "plan": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "key": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "tier": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "key",
+                            "name",
+                            "tier"
+                        ]
+                    },
+                    "price": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "amount_minor": {
+                                "type": "integer"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "billing_interval": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "amount_minor",
+                            "currency",
+                            "billing_interval"
+                        ]
+                    },
+                    "scheduled_plan_change": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ScheduledPlanChangeResource"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "can": {
+                        "type": "object",
+                        "properties": {
+                            "schedule_plan_change": {
+                                "type": "string",
+                                "description": "Server-derived UX hints: a permitted plan-change is additionally blocked while\nbilling is read-only (grace/suspension). Reads/download are always permitted here."
+                            },
+                            "download_invoice": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "schedule_plan_change",
+                            "download_invoice"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "billing_status",
+                    "billing_status_reason",
+                    "billing_read_only",
+                    "billing_interval",
+                    "trial_started_at",
+                    "trial_ends_at",
+                    "current_period_start",
+                    "current_period_end",
+                    "plan",
+                    "price",
+                    "scheduled_plan_change",
+                    "can"
+                ],
+                "title": "MerchantSubscriptionResource"
             },
             "MfaCodeRequest": {
                 "type": "object",
@@ -23110,6 +24738,80 @@
                     "effective_from"
                 ],
                 "title": "PlatformBillingSettingsResource"
+            },
+            "PlatformMerchantResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "operational_status": {
+                        "type": "string"
+                    },
+                    "billing_status": {
+                        "type": "string"
+                    },
+                    "billing_status_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "suspension_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "suspended_at": {
+                        "type": "string"
+                    },
+                    "deactivated_at": {
+                        "type": "string"
+                    },
+                    "setup_completed_at": {
+                        "type": "string"
+                    },
+                    "registered_at": {
+                        "type": "string"
+                    },
+                    "can": {
+                        "type": "object",
+                        "properties": {
+                            "suspend": {
+                                "type": "string"
+                            },
+                            "reactivate": {
+                                "type": "string"
+                            },
+                            "deactivate": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "suspend",
+                            "reactivate",
+                            "deactivate"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "operational_status",
+                    "billing_status",
+                    "billing_status_reason",
+                    "suspension_reason",
+                    "suspended_at",
+                    "deactivated_at",
+                    "setup_completed_at",
+                    "registered_at",
+                    "can"
+                ],
+                "title": "PlatformMerchantResource"
             },
             "PreferredPersonnelFeeRuleResource": {
                 "type": "object",
@@ -24165,6 +25867,104 @@
                 ],
                 "title": "ResolveFinanceDisputeRequest"
             },
+            "SchedulePlanChangeRequest": {
+                "type": "object",
+                "description": "Validate a merchant no-proration next-cycle plan change (Plan §48; Phase 20B). Accepts the target\nplan + price as PUBLIC ULIDs only; the plan/price existence, plan membership, and current\neffectiveness are enforced by {@see ResolveSetupPlanPrice} (422 field\nerrors). `effective_at` is computed server-side (the current period end) — never client-supplied.\nAuthorization + billing-mutable gate are enforced by route middleware.",
+                "properties": {
+                    "subscription_plan_ulid": {
+                        "type": "string",
+                        "maxLength": 64
+                    },
+                    "subscription_plan_price_ulid": {
+                        "type": "string",
+                        "maxLength": 64
+                    }
+                },
+                "required": [
+                    "subscription_plan_ulid",
+                    "subscription_plan_price_ulid"
+                ],
+                "title": "SchedulePlanChangeRequest"
+            },
+            "ScheduledPlanChangeResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "effective_at": {
+                        "type": "string"
+                    },
+                    "applied_at": {
+                        "type": "string"
+                    },
+                    "cancelled_at": {
+                        "type": "string"
+                    },
+                    "target_plan": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "key": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "tier": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "key",
+                            "name",
+                            "tier"
+                        ]
+                    },
+                    "target_price": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "amount_minor": {
+                                "type": "integer"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "billing_interval": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "amount_minor",
+                            "currency",
+                            "billing_interval"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "effective_at",
+                    "applied_at",
+                    "cancelled_at",
+                    "target_plan",
+                    "target_price"
+                ],
+                "title": "ScheduledPlanChangeResource"
+            },
             "ServiceCategoryResource": {
                 "type": "object",
                 "properties": {
@@ -25076,6 +26876,149 @@
                     "service"
                 ],
                 "title": "StoreWalkInRequest"
+            },
+            "SubscriptionInvoiceResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "invoice_number": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "period_start": {
+                        "type": "string"
+                    },
+                    "period_end": {
+                        "type": "string"
+                    },
+                    "subtotal_minor": {
+                        "type": "integer"
+                    },
+                    "discount_minor": {
+                        "type": "integer"
+                    },
+                    "total_minor": {
+                        "type": "integer"
+                    },
+                    "balance_minor": {
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "issued_at": {
+                        "type": "string"
+                    },
+                    "due_at": {
+                        "type": "string"
+                    },
+                    "payment_reference_pending": {
+                        "type": "boolean"
+                    },
+                    "account_reference": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "has_pdf": {
+                        "type": "boolean"
+                    },
+                    "pdf_version": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "id",
+                    "invoice_number",
+                    "status",
+                    "period_start",
+                    "period_end",
+                    "subtotal_minor",
+                    "discount_minor",
+                    "total_minor",
+                    "balance_minor",
+                    "currency",
+                    "issued_at",
+                    "due_at",
+                    "payment_reference_pending",
+                    "account_reference",
+                    "has_pdf",
+                    "pdf_version"
+                ],
+                "title": "SubscriptionInvoiceResource"
+            },
+            "SubscriptionPlanOptionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "key": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "tier": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "is_current": {
+                        "type": "boolean"
+                    },
+                    "effective_price": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "amount_minor": {
+                                "type": "string"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "billing_interval": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "amount_minor",
+                            "currency",
+                            "billing_interval"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "key",
+                    "name",
+                    "description",
+                    "tier",
+                    "is_current",
+                    "effective_price"
+                ],
+                "title": "SubscriptionPlanOptionResource"
             },
             "SubscriptionPlanPriceResource": {
                 "type": "object",

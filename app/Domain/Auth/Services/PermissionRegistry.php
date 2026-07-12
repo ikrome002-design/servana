@@ -70,7 +70,16 @@ final class PermissionRegistry
     private const PERMISSIONS = [
         // Merchant.
         'merchant.profile.manage' => ['merchant', 'Edit merchant profile.', true],
-        'merchant.tier.update' => ['merchant', 'Change the merchant service-fee tier.', true],
+        // Merchant subscription self-service (Plan §22, §48, §49; Phase 20B canonical keys —
+        // reconciled from the retired legacy `merchant.tier.update`, which mis-modelled billing as a
+        // one-shot tier flag). The Merchant Administrator views the subscription/dashboard + invoices,
+        // schedules/cancels a no-proration next-cycle plan change, and generates/downloads invoice
+        // PDFs. Plan-change is a merchant mutation blocked in billing read-only; invoice reads +
+        // existing-PDF download stay available in read-only (allow_read); new PDF generation is blocked.
+        'merchant.subscription.view' => ['merchant', 'View the merchant subscription and billing status.', false],
+        'merchant.subscription.plan_change' => ['merchant', 'Schedule or cancel a no-proration next-cycle plan change.', true],
+        'merchant.subscription.invoice.view' => ['merchant', 'View subscription invoices (scoped).', false],
+        'merchant.subscription.invoice.download' => ['merchant', 'Generate and download a subscription invoice PDF.', true],
         'branches.create' => ['merchant', 'Create and archive branches (structural lifecycle).', true],
         'branches.manage_users_lifecycle' => ['merchant', 'Invite/suspend branch_manager + hr; branch-user lifecycle.', true],
         // Financial period reopen — exceptional approval (Plan §46; ADR-0007 Decision 3;
@@ -251,7 +260,16 @@ final class PermissionRegistry
         'audit.flagged_event.update_status' => ['audit', 'Start review / reopen a flagged audit event.', true],
         'audit.flagged_event.resolve_metadata' => ['audit', 'Resolve or dismiss a flagged audit event (records a review outcome).', true],
         // Platform (super_admin only).
-        'platform.merchants.govern' => ['platform', 'Govern merchant accounts.', true],
+        // Platform merchant governance (Plan §22, §24.1; Phase 20B canonical keys — reconciled from
+        // the retired legacy catch-all `platform.merchants.govern`, whose single blunt authority is
+        // truthfully split into a read surface + three operational-status mutations). These mutate
+        // `merchants.status` ONLY (never `merchants.billing_status`) and never create subscription or
+        // payment rows. Suspend/reactivate/deactivate require a mandatory reason + fresh step-up.
+        'platform.registration_monitor.view' => ['platform', 'View the merchant registration-monitoring surface.', false],
+        'platform.merchant.view' => ['platform', 'View a merchant governance record (operational + billing status).', false],
+        'platform.merchant.suspend' => ['platform', 'Suspend a merchant operationally (merchants.status; never billing recovery).', true],
+        'platform.merchant.reactivate' => ['platform', 'Reactivate an operationally-suspended merchant (never clears billing suspension).', true],
+        'platform.merchant.deactivate' => ['platform', 'Deactivate a merchant operationally (terminal governance state).', true],
         'platform.audit.view' => ['platform', 'View the platform audit trail.', false],
         // Phase 20A — platform billing catalogue governance (canonical §19.2 keys; the legacy
         // platform.settings.manage / platform.billing.configure / platform.fee_rules.manage keys
@@ -275,7 +293,10 @@ final class PermissionRegistry
      */
     private const DEFAULT_GRANTS = [
         self::ROLE_MERCHANT_ADMIN => [
-            'merchant.profile.manage', 'merchant.tier.update',
+            'merchant.profile.manage',
+            // Phase 20B — subscription self-service (replaces the retired `merchant.tier.update`).
+            'merchant.subscription.view', 'merchant.subscription.plan_change',
+            'merchant.subscription.invoice.view', 'merchant.subscription.invoice.download',
             'branches.create', 'branches.manage_users_lifecycle',
             // No invoice key (Plan §10.2/§19.3): Merchant Admin is the account owner,
             // not an operational invoicer; invoice visibility is via reports.view.
@@ -390,7 +411,9 @@ final class PermissionRegistry
             'audit.flagged_event.create', 'audit.flagged_event.update_status', 'audit.flagged_event.resolve_metadata',
         ],
         self::ROLE_SUPER_ADMIN => [
-            'platform.merchants.govern',
+            // Phase 20B — merchant governance (replaces the retired `platform.merchants.govern`).
+            'platform.registration_monitor.view', 'platform.merchant.view',
+            'platform.merchant.suspend', 'platform.merchant.reactivate', 'platform.merchant.deactivate',
             'platform.audit.view',
             // Phase 20A — platform billing catalogue governance (replaces the retired
             // platform.settings.manage / platform.billing.configure / platform.fee_rules.manage).

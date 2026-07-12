@@ -35,6 +35,12 @@ final class CompleteFirstTimeSetupRequest extends FormRequest
         return [
             'service_fee_tier' => ['required', 'string', Rule::in(array_column(ServiceFeeTier::cases(), 'value'))],
 
+            // Phase 20B — the merchant selects an active plan + its effective price during
+            // first-time setup (public ULIDs only; semantic checks — plan active, price belongs
+            // to plan, price effective on the setup date — run in CompleteFirstTimeSetup).
+            'subscription_plan_ulid' => ['required', 'string', 'size:26', 'exists:subscription_plans,ulid'],
+            'subscription_plan_price_ulid' => ['required', 'string', 'size:26', 'exists:subscription_plan_prices,ulid'],
+
             'business_category' => ['required', 'string', 'min:2', 'max:80'],
             'contact_phone' => ['required', 'string', 'min:7', 'max:32'],
             'contact_email' => ['nullable', 'string', 'email:rfc', 'max:255'],

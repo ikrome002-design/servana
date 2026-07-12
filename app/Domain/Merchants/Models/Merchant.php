@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Merchants\Models;
 
+use App\Domain\Billing\Enums\MerchantBillingStatus;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Enums\MerchantStatus;
 use App\Domain\Merchants\Enums\MerchantUserRole;
@@ -32,6 +33,8 @@ use Illuminate\Support\Str;
  * @property string $name
  * @property string $slug
  * @property MerchantStatus $status
+ * @property MerchantBillingStatus $billing_status
+ * @property string|null $billing_status_reason
  * @property ServiceFeeTier|null $service_fee_tier
  * @property Carbon|null $setup_completed_at
  * @property Carbon|null $suspended_at
@@ -39,6 +42,8 @@ use Illuminate\Support\Str;
  * @property Carbon|null $deactivated_at
  * @property Carbon|null $last_fee_payment_at
  * @property int|null $created_by
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class Merchant extends Model
 {
@@ -77,6 +82,7 @@ class Merchant extends Model
     {
         return [
             'status' => MerchantStatus::class,
+            'billing_status' => MerchantBillingStatus::class,
             'service_fee_tier' => ServiceFeeTier::class,
             'setup_completed_at' => 'datetime',
             'suspended_at' => 'datetime',
@@ -124,6 +130,17 @@ class Merchant extends Model
     protected function isPendingSetup(): Attribute
     {
         return Attribute::get(fn (): bool => $this->status === MerchantStatus::PendingSetup);
+    }
+
+    /**
+     * Whether the current BILLING access state blocks merchant mutations and new
+     * export/report/PDF generation (Plan §22; `read_only_grace` + `suspended_billing`).
+     * Reads only `billing_status` — never `merchant_subscriptions.status`. Operational
+     * `status` is a separate authority and is unaffected.
+     */
+    public function billingBlocksMutations(): bool
+    {
+        return $this->billing_status->blocksMutations();
     }
 
     /**
