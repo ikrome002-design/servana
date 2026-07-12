@@ -253,3 +253,23 @@ compensation (20F–20H), R&E (21R), notifications (21N), SMS (21S), search (22)
 performance (24), deployment (25). No Wallet/provider/payment runtime, no %-fee ledger, no
 merchant-create/first-admin/impersonation, no JSON target storage, no destructive edits to issued
 invoices or existing trials.
+
+## Solo-Maintainer Review Exception - PR #37
+
+- PR: #37
+- verified implementation head: 782c97313ea988d2263e35d44c325d2c7ccb25ec
+- initial successful CI run: 29191160816
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-37.md
+
+This exception applies only to Phase 20C and is not independent reviewer
+approval.
+
+Phase 20D-W and all later Wallet, payment, platform-fee ledger, compensation,
+payout and integration domains remain deferred to their documented owning
+phases.
