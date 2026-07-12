@@ -487,6 +487,225 @@ tables. Registration + all payment runtime is Phase 20D-W only (Correction 14.5)
 
 ---
 
+## Phase 20C — Promotions and free-period offers (platform; Plan §53)
+
+Platform-governed financial configuration. Four **platform-scoped** tables (no `merchant_id`/
+`branch_id` on the parents — `TenantOwnership::EXEMPT`; some *target rows* point at a merchant, but
+the offer itself is global configuration). Targets are **explicit normalized rows** — never JSON
+(§53). At most **one** promotional discount and **one** free-period offer apply per subscription
+issuance; a promotion and a free-period offer solve different concerns and may coexist. Selected
+terms are **snapshotted** onto the subscription/invoice and never recomputed (§53).
+
+**Gate decisions (recorded here + in `docs/proof/phase-20c.md`):**
+
+- **C1 (effective-date naming + target ULID):** the effective window uses **`effective_from` (date) /
+  `effective_to` (date, nullable)** — the established billing convention (`subscription_plan_prices`,
+  §53). No `starts_at` column is introduced; §53's `starts_at` shorthand ≡ `effective_from`. Both
+  target tables carry an **immutable unique `ulid`** so §53's target-ULID tie-break is executable.
+  Global (`all_new_merchants`) candidates have **no** target row — global ties break on parent
+  `effective_from` then parent `ulid`.
+- **C2 (normalized targets):** parent `target_scope ∈ {all_new_merchants, selected_merchants,
+  selected_plans, billing_mode}`; target `target_type ∈ {merchant, plan, billing_mode}`; exactly one
+  of `merchant_id`/`subscription_plan_id`/`billing_mode` set and matching `target_type`;
+  `all_new_merchants` has zero targets; duplicate parent/target rows forbidden.
+- **C3 (eligibility instant):** free-period/trial eligibility resolves at the Merchant-Administrator
+  creation anchor (Gate B1) with the setup-selected plan + effective platform billing mode; promotion
+  eligibility resolves at the invoice issuance business date against the invoice merchant/plan/billing
+  mode; issued invoices are never re-resolved.
+- **C4 (snapshot persistence):** forward-only expand columns (below) on the 20B tables; applied days
+  stay in `merchant_subscriptions.trial_days_snapshot`, applied discount stays in
+  `subscription_invoices.discount_minor`; no JSON target blob; no backfill onto existing
+  trials/invoices.
+- **C5 (fixed-discount cap — product-owner decision 2026-07-12):** a fixed promotional discount is
+  **capped at the invoice subtotal**: `applied_discount_minor = min(configured_fixed_minor,
+  subtotal_minor)`, `total_minor = subtotal_minor − applied_discount_minor` (may be 0, never
+  negative). No merchant credit / carry-forward / refund / residual value is created. **Both** the
+  configured value (`subscription_invoices.promotion_value_snapshot`) and the applied amount
+  (`subscription_invoices.discount_minor`) are snapshotted. The configured promotion is never mutated
+  — capping is invoice-specific. Currency must match before calculation. Percentage discounts use
+  basis points + ADR-005 round-half-up and can never exceed the subtotal. The existing
+  `subscription_invoices` CHECKs (`discount_minor <= subtotal_minor`, `total_minor = subtotal_minor −
+  discount_minor`, all `>= 0`) are the database backstop for this invariant.
+- **C6 (approval):** reuse the Phase 20A platform-configuration approval pattern — Super-Administrator,
+  MFA, fresh step-up, high-severity audit; **no** separate maker/checker role. Drafts + targets
+  editable only while `draft`; approval records `approved_by`/`approved_at`; approved financial terms
+  and targets are immutable (supersede via a new record); pause/resume changes availability only;
+  cancel only from documented pre-active states.
+
+### `promotional_discounts` (Plan §53; migration `2026_07_12_000001`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK (never external) |
+| `ulid` | char(26) | no | public id + route key; `UNIQUE` |
+| `name` | varchar(120) | no | `CHECK (char_length(btrim(name)) > 0)` |
+| `type` | varchar(16) | no | CHECK ∈ (`percentage`,`fixed_amount`); `PromotionalDiscountType` |
+| `value` | bigint | no | `CHECK (value > 0)`; **percentage** = basis points (`value <= 10000` ⇒ ≤100%); **fixed_amount** = minor units |
+| `currency` | char(3) | yes | percentage ⇒ NULL; fixed ⇒ uppercase ISO 3-char |
+| `target_scope` | varchar(24) | no | CHECK ∈ (`all_new_merchants`,`selected_merchants`,`selected_plans`,`billing_mode`); `PromotionTargetScope` |
+| `effective_from` | date | no | window start (Gate C1) |
+| `effective_to` | date | yes | `CHECK (effective_to IS NULL OR effective_to > effective_from)` |
+| `status` | varchar(16) | no | CHECK ∈ (`draft`,`scheduled`,`active`,`paused`,`expired`,`cancelled`); `PromotionStatus` |
+| `created_by` | bigint | no | FK `users(id)` ON DELETE RESTRICT |
+| `approved_by` | bigint | yes | FK `users(id)` ON DELETE RESTRICT |
+| `approved_at` | timestamptz | yes | |
+| `change_reason` | text | yes | sanitized reason for the latest state-changing action |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **Value/currency coherence CHECK:** `((type='percentage' AND currency IS NULL AND value <= 10000)
+  OR (type='fixed_amount' AND currency IS NOT NULL AND currency = upper(currency) AND
+  char_length(currency)=3))`.
+- **Approval/status coherence CHECKs:** (a) `((approved_by IS NULL AND approved_at IS NULL) OR
+  (approved_by IS NOT NULL AND approved_at IS NOT NULL))`; (b) `((status='draft' AND approved_by IS
+  NULL) OR (status IN ('scheduled','active','paused','expired') AND approved_by IS NOT NULL) OR
+  (status='cancelled'))` — `cancelled` may be reached from `draft` (unapproved) or `scheduled`
+  (approved).
+- **No hard delete:** no application DELETE path; retention permanent (financial configuration).
+- **Indexes:** `UNIQUE(ulid)`; index `(status, effective_from, effective_to)` (resolution/window);
+  index `(target_scope)`.
+- **Lifecycle spec:** `docs/architecture/state-machines/promotional-discount.md`.
+- **Audit:** `promotion.created`, `.draft_updated`, `.approved`, `.activated`, `.paused`, `.resumed`,
+  `.expired`, `.cancelled` (high severity on state changes). **Factory:** `PromotionalDiscountFactory`
+  (per-status + per-type).
+- **Positive:** percentage/fixed create; approve→scheduled(future)/active(current); pause/resume;
+  expiry; draft edit. **Negative:** value ≤ 0 rejected; percentage >100% rejected; percentage with
+  currency rejected; fixed without currency rejected; `effective_to <= effective_from` rejected;
+  editing approved terms rejected; invalid transition → 422; hard delete unavailable.
+
+### `promotional_discount_targets` (Plan §53; migration `2026_07_12_000002`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | **immutable** public id; `UNIQUE`; **Gate C1 tie-break key** |
+| `promotional_discount_id` | bigint | no | FK `promotional_discounts(id)` ON DELETE RESTRICT |
+| `target_type` | varchar(16) | no | CHECK ∈ (`merchant`,`plan`,`billing_mode`); `PromotionTargetType` |
+| `merchant_id` | bigint | yes | FK `merchants(id)` ON DELETE RESTRICT |
+| `subscription_plan_id` | bigint | yes | FK `subscription_plans(id)` ON DELETE RESTRICT |
+| `billing_mode` | varchar(56) | yes | CHECK ∈ (`fixed_amount`,`percentage_on_merchant_client_invoice`,`fixed_amount_plus_percentage_on_merchant_client_invoice`) when set; canonical `BillingMode` |
+| `created_at` | timestamptz | no | append-only (no `updated_at`; targets replaced, never edited) |
+
+- **Exactly-one-target CHECK:** `((target_type='merchant' AND merchant_id IS NOT NULL AND
+  subscription_plan_id IS NULL AND billing_mode IS NULL) OR (target_type='plan' AND
+  subscription_plan_id IS NOT NULL AND merchant_id IS NULL AND billing_mode IS NULL) OR
+  (target_type='billing_mode' AND billing_mode IS NOT NULL AND merchant_id IS NULL AND
+  subscription_plan_id IS NULL))`.
+- **Duplicate-target rejection:** three partial unique indexes (NULLs would otherwise defeat a single
+  composite unique): `UNIQUE(promotional_discount_id, merchant_id) WHERE target_type='merchant'`;
+  `UNIQUE(promotional_discount_id, subscription_plan_id) WHERE target_type='plan'`;
+  `UNIQUE(promotional_discount_id, billing_mode) WHERE target_type='billing_mode'`.
+- **Target mutability:** rows may be added/removed only while the parent is `draft` (action-enforced);
+  once the parent is approved they are immutable (supersede the parent with a new record).
+- **Indexes:** `UNIQUE(ulid)`; the three partial uniques; resolution indexes `(merchant_id)`,
+  `(subscription_plan_id)`, `(billing_mode)`, and `(promotional_discount_id)`.
+- **Factory:** `PromotionalDiscountTargetFactory`.
+- **Positive:** merchant/plan/billing_mode targets insert; billing_mode targets for all three canonical
+  modes. **Negative:** two target fields set → rejected; field≠type → rejected; duplicate
+  parent/target → rejected; raw-SQL cannot bypass the exactly-one CHECK.
+
+### `free_period_offers` (Plan §53; migration `2026_07_12_000003`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | public id + route key; `UNIQUE` |
+| `name` | varchar(120) | no | `CHECK (char_length(btrim(name)) > 0)` |
+| `free_period_days` | int | no | `CHECK (free_period_days BETWEEN 1 AND 365)` |
+| `target_scope` | varchar(24) | no | CHECK ∈ (`all_new_merchants`,`selected_merchants`,`selected_plans`,`billing_mode`); `PromotionTargetScope` |
+| `effective_from` | date | no | |
+| `effective_to` | date | yes | `CHECK (effective_to IS NULL OR effective_to > effective_from)` |
+| `status` | varchar(16) | no | CHECK ∈ (`draft`,`scheduled`,`active`,`paused`,`expired`,`cancelled`); `FreePeriodOfferStatus` |
+| `created_by` | bigint | no | FK `users(id)` ON DELETE RESTRICT |
+| `approved_by` | bigint | yes | FK `users(id)` ON DELETE RESTRICT |
+| `approved_at` | timestamptz | yes | |
+| `change_reason` | text | yes | sanitized reason for the latest state-changing action |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **Approval/status coherence CHECKs:** identical shape to `promotional_discounts` — approval moves
+  `draft → scheduled` only (the free-period machine has **no** direct `draft → active`; §12);
+  `scheduled → active` is a separate activation. `cancelled` reachable from `draft` or `scheduled`.
+- **No hard delete;** retention permanent.
+- **Indexes:** `UNIQUE(ulid)`; index `(status, effective_from, effective_to)`; index `(target_scope)`.
+- **Lifecycle spec:** `docs/architecture/state-machines/free-period-offer.md`.
+- **Audit:** `free_period_offer.created`, `.draft_updated`, `.approved`, `.activated`, `.paused`,
+  `.resumed`, `.expired`, `.cancelled` (high severity). **Factory:** `FreePeriodOfferFactory`.
+- **Positive:** create; approve→scheduled; activate→active; pause/resume; expiry. **Negative:** days
+  <1 or >365 rejected; `effective_to <= effective_from` rejected; `draft → active` rejected (422);
+  editing approved terms rejected; hard delete unavailable.
+
+### `free_period_offer_targets` (Plan §53; migration `2026_07_12_000004`)
+
+Identical structure and protections to `promotional_discount_targets`, parented by
+`free_period_offer_id` (FK `free_period_offers(id)` ON DELETE RESTRICT). Immutable `ulid` tie-break
+key; exactly-one-target CHECK; three partial unique indexes
+(`WHERE target_type='merchant'|'plan'|'billing_mode'`); resolution indexes on `merchant_id`,
+`subscription_plan_id`, `billing_mode`, `free_period_offer_id`. **Factory:**
+`FreePeriodOfferTargetFactory`.
+
+### Snapshot expands on 20B tables (Gate C4; forward-only — shipped 20B migrations never edited)
+
+**`subscription_invoices` promotion snapshot (migration `2026_07_12_000005`):** additive nullable
+columns capturing which promotion applied and its terms, alongside the existing `discount_minor`
+(the applied, capped amount). Existing issued invoices keep NULL (no backfill, no recalculation).
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `promotional_discount_id` | bigint | yes | FK `promotional_discounts(id)` ON DELETE RESTRICT; null ⇒ no promotion applied |
+| `promotion_type` | varchar(16) | yes | CHECK (`promotion_type IS NULL OR promotion_type IN ('percentage','fixed_amount')`); snapshotted type |
+| `promotion_value_snapshot` | bigint | yes | `CHECK (… IS NULL OR … > 0)`; **configured** value at resolution (bps for percentage, minor for fixed) |
+| `promotion_currency` | char(3) | yes | fixed-amount snapshot currency (uppercase); null for percentage/none |
+| `promotion_resolved_at` | timestamptz | yes | resolution instant |
+
+- The **applied** discount is `discount_minor` (existing; capped per C5); the **configured** value is
+  `promotion_value_snapshot`. For a fixed promotion both are minor units and `discount_minor =
+  min(promotion_value_snapshot, subtotal_minor)`. Snapshot coherence CHECK:
+  `((promotional_discount_id IS NULL AND promotion_type IS NULL AND promotion_value_snapshot IS NULL
+  AND promotion_currency IS NULL AND promotion_resolved_at IS NULL) OR (promotional_discount_id IS NOT
+  NULL AND promotion_type IS NOT NULL AND promotion_value_snapshot IS NOT NULL AND promotion_resolved_at
+  IS NOT NULL))`.
+- Immutability: these join the invoice's immutable financial snapshot once `status` leaves `draft`;
+  later promotion edits/pause/cancel/expiry never change an issued invoice (FK RESTRICT + no update
+  path). Index `(promotional_discount_id)`.
+
+**`merchant_subscriptions` free-period snapshot (migration `2026_07_12_000006`):** additive nullable
+columns capturing which free-period offer set the trial length. Applied days stay in
+`trial_days_snapshot`. Existing trials keep NULL (no backfill).
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `free_period_offer_id` | bigint | yes | FK `free_period_offers(id)` ON DELETE RESTRICT; null ⇒ platform default trial days |
+| `free_period_resolved_at` | timestamptz | yes | resolution instant |
+
+- Provenance is `free_period_offer_id` (which offer) + `trial_days_snapshot` (the applied days) +
+  `free_period_resolved_at`. Snapshot coherence CHECK: `((free_period_offer_id IS NULL AND
+  free_period_resolved_at IS NULL) OR (free_period_offer_id IS NOT NULL AND free_period_resolved_at IS
+  NOT NULL))`. Later offer edits/pause/cancel/expiry never change an existing trial (FK RESTRICT + no
+  rewrite). Index `(free_period_offer_id)`.
+
+### Target-resolution algorithm (both offer kinds; Plan §53)
+
+1. consider only `active` records whose effective window contains the business instant (C3);
+   exclude `draft`/`scheduled`/`paused`/`expired`/`cancelled`;
+2. collect candidates matching merchant / plan / billing_mode targets and the global
+   `all_new_merchants` scope (where applicable);
+3. choose the single winner by precedence **merchant > plan > billing_mode > global**;
+4. within the winning precedence class, break ties by **latest `effective_from`**, then **ascending
+   target `ulid`**; global ties break by parent `effective_from` then parent `ulid`;
+5. return a typed immutable resolution result, or explicit `none`;
+6. never stack two discounts or two free-period offers.
+
+### Ownership, retention, lifecycle
+
+- **Platform-scoped:** registered `EXEMPT` in `app/Domain/Tenancy/TenantOwnership.php`; no
+  `merchant_id`/`branch_id` on parents. Target rows referencing a merchant do **not** make the offer
+  merchant-owned.
+- **Retention:** permanent; no hard-delete path (append-only lifecycle via state machine).
+- **Lifecycle scheduler:** `ProcessPromotionLifecycle` (Nairobi business time; §67 conventions) —
+  activates due `scheduled` records, expires due `active` records; idempotent; row-locked; one audit
+  event per real transition; never edits snapshots.
+
+---
+
 ## Phase 20D-W — Wallet integration (requires Gate W)
 
 | Table | Owner phase | Purpose |

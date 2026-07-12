@@ -32,3 +32,15 @@ Schedule::command('billing:process-subscription-lifecycle')
     ->timezone('Africa/Nairobi')
     ->withoutOverlapping()
     ->onOneServer();
+
+// Drive the Phase 20C promotion / free-period-offer lifecycle daily in Africa/Nairobi (Plan §53, §67):
+// activate due scheduled offers (scheduled → active once effective_from is reached) and expire due
+// active offers (active → expired once effective_to is reached). Platform-scoped (no tenant context);
+// singleton (withoutOverlapping) + leader-only (onOneServer); per-item row-locked bounded transactions;
+// idempotent; one bounded redacted failure signal per bad item. Never touches existing subscription/
+// invoice snapshots.
+Schedule::command('billing:process-promotion-lifecycle')
+    ->daily()
+    ->timezone('Africa/Nairobi')
+    ->withoutOverlapping()
+    ->onOneServer();

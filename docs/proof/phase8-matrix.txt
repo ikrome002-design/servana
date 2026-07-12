@@ -68,6 +68,7 @@ personnel.my_sessions.view            ·            ·            ·            
 platform.audit.view                   ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing_settings.update      ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing_settings.view        ·            ·            ·            ·            ·            ·            ·            ✓
+platform.free_period_offer.manage     ·            ·            ·            ·            ·            ·            ·            ✓
 platform.merchant.deactivate          ·            ·            ·            ·            ·            ·            ·            ✓
 platform.merchant.reactivate          ·            ·            ·            ·            ·            ·            ·            ✓
 platform.merchant.suspend             ·            ·            ·            ·            ·            ·            ·            ✓
@@ -76,6 +77,7 @@ platform.plan.manage                  ·            ·            ·            
 platform.plan.view                    ·            ·            ·            ·            ·            ·            ·            ✓
 platform.plan_price.manage            ·            ·            ·            ·            ·            ·            ·            ✓
 platform.preferred_personnel_fee.manage·            ·            ·            ·            ·            ·            ·            ✓
+platform.promotion.manage             ·            ·            ·            ·            ·            ·            ·            ✓
 platform.registration_monitor.view    ·            ·            ·            ·            ·            ·            ·            ✓
 platform.settings.update              ·            ·            ·            ·            ·            ·            ·            ✓
 platform.settings.view                ·            ·            ·            ·            ·            ·            ·            ✓

@@ -6,7 +6,39 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 20B — Subscription Lifecycle and Subscription Invoices (`phase-20b-subscription-lifecycle-invoices`) — local_complete pending PR CI/review/merge
+### Phase 20C — Promotions and Free-Period Offers (`phase-20c-promotions-free-periods`) — local_complete pending PR CI/review/merge
+
+Platform-governed promotional discounts and free-period (trial-length) offers (Plan §53; Correction 2).
+Four platform-scoped tables (`promotional_discounts`, `promotional_discount_targets`,
+`free_period_offers`, `free_period_offer_targets`) with **explicit normalized target rows** (no JSON),
+immutable target ULIDs (deterministic tie-break), value/currency + scope↔target + approval/status DB
+CHECKs, and forward-only snapshot expands on the Phase 20B `subscription_invoices` +
+`merchant_subscriptions` tables (shipped 20B migrations untouched). Two backed state machines
+(promotion allows `draft→active`; free-period does not — approval yields `scheduled`), a daily
+`billing:process-promotion-lifecycle` scheduler (activate/expire, idempotent, row-locked), deterministic
+resolvers (precedence merchant > plan > billing_mode > global, ties by latest `effective_from` then
+target ULID), and `CalculatePromotionalDiscount` (percentage basis points + ADR-005 round-half-up;
+fixed **capped at subtotal** — Gate C5 product-owner decision — never negative, never a credit). The
+resolvers + calculator are wired into `CreateTrialSubscription` (free-period days snapshot at the
+founding-admin anchor) and `IssueSubscriptionInvoice` (promotion snapshot on new invoices only); existing
+trials and issued invoices are never re-resolved or recalculated. Super-Administrator platform API (16
+routes) under `ResolvePlatformContext` + MFA + fresh step-up + `platform_mutation`, activated
+`platform.promotion.manage` + `platform.free_period_offer.manage` (four-way parity), high-severity audit
+for every mutation, a consolidated Super-Administrator promotions screen, and merchant read-only applied
+snapshots. Gate decisions C1–C6 recorded in `docs/proof/phase-20c.md` (C5 by the narrow cap-vs-reject
+product-owner question). No Wallet/provider/payment runtime, no percentage-fee ledger, no destructive
+edits — those remain Phase 20D-W/20E and beyond.
+
+### Phase 20B — Subscription Lifecycle and Subscription Invoices (`phase-20b-subscription-lifecycle-invoices`) — verified_complete
+
+_Reconciled to `verified_complete` during Phase 20C Increment 1: **PR #36** "Phase 20B: Implement
+subscription lifecycle and invoices" MERGED into `main` (squash merge
+`3dd528a2779a44d13b9fe105ac9ee49e688e84c6`, implementation head
+`6790081bace7efb2a659ec8254e6eda53d3d5935`, governance/final PR head
+`4a998dc6e4c0f8259c8d6c179c076f8b8496aec9`, merged 2026-07-12T06:57:28Z); CI initial `29183137798`
++ final `29183286205` — five required jobs (Backend, Frontend, Docker, Security, E2E — Playwright)
+all SUCCESS; `reviewDecision` blank under the documented solo-maintainer governance exception — **not**
+independent approval; local + remote branches deleted after merge._
 
 _**Increment 7 (E2E + full local gates — green):** `tests/e2e/phase-20b.spec.ts` (23 tests) drives the
 real frontend against stubbed `/me` + `/api/v1` across the subscription/billing states, no-proration

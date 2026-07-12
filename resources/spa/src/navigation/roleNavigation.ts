@@ -48,7 +48,7 @@ const platform: NavItem[] = [
   // that consolidated surface — no dead links, no duplicate top-level screens.
   { key: 'platform.billing-settings', label: 'Billing settings', routeName: 'platform.billing-settings', permission: 'platform.billing_settings.view', phase: 'Phase 20A', availability: 'live' },
   { key: 'platform.plans', label: 'Plans and entitlements', routeName: 'platform.billing-settings', permission: 'platform.plan.view', phase: 'Phase 20A', availability: 'live' },
-  { key: 'platform.promotions', label: 'Promotions and free periods', permission: 'platform.promotion.manage', phase: 'Phase 20C', availability: 'planned' },
+  { key: 'platform.promotions', label: 'Promotions and free periods', routeName: 'platform.promotions', permission: 'platform.promotion.manage', phase: 'Phase 20C', availability: 'live' },
   { key: 'platform.preferred-personnel-fee', label: 'Preferred-personnel fee rule', routeName: 'platform.billing-settings', permission: 'platform.preferred_personnel_fee.manage', phase: 'Phase 20A', availability: 'live' },
   { key: 'platform.wallet-config', label: 'Wallet configuration', permission: 'platform.wallet_configuration.manage', phase: 'Phase 20D-W', availability: 'planned' },
   { key: 'platform.billing-reconciliation', label: 'Billing reconciliation', permission: 'platform.billing_reconciliation.view', phase: 'Phase 20D-W', availability: 'planned' },

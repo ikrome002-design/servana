@@ -6,12 +6,14 @@ namespace App\Domain\Billing\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Billing\Enums\BillingMode;
 use App\Domain\Billing\Enums\MerchantBillingStatus;
 use App\Domain\Billing\Enums\MerchantBillingStatusReason;
 use App\Domain\Billing\Enums\MerchantSubscriptionStatus;
 use App\Domain\Billing\Models\MerchantSubscription;
 use App\Domain\Billing\Models\SubscriptionPlanPrice;
 use App\Domain\Billing\Queries\ResolveEffectivePlatformBillingSettings;
+use App\Domain\Billing\Queries\ResolveFreePeriodOffer;
 use App\Domain\Billing\Services\BillingIntervalCalculator;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
@@ -39,6 +41,7 @@ final class CreateTrialSubscription
         private readonly AuditRecorder $audit,
         private readonly BillingIntervalCalculator $calculator,
         private readonly ResolveEffectivePlatformBillingSettings $settings,
+        private readonly ResolveFreePeriodOffer $freePeriodOffers,
     ) {}
 
     public function handle(Merchant $merchant, SubscriptionPlanPrice $price, ?User $actor = null): MerchantSubscription
@@ -58,12 +61,22 @@ final class CreateTrialSubscription
 
             $anchor = $this->trialAnchor($merchant); // raw instant (not tz-shifted)
             $effectiveSettings = $this->settings->current();
-            $trialDays = $effectiveSettings === null ? 0 : $effectiveSettings->default_trial_days;
-            $trialEnds = $this->calculator->trialEnd($anchor, $trialDays);
+            $defaultTrialDays = $effectiveSettings === null ? 0 : $effectiveSettings->default_trial_days;
+            $mode = $effectiveSettings === null ? BillingMode::default() : $effectiveSettings->billing_mode;
 
             // Period boundaries are DATE columns → use the Nairobi calendar date of the anchor.
             $periodStart = $this->calculator->nairobiDate($anchor);
             $periodEnd = $this->calculator->nextBoundary($periodStart, $price->billing_interval);
+
+            // Phase 20C — resolve at most one free-period offer at the founding-admin anchor date
+            // (Gate C3). Its days replace the platform default; snapshot the provenance once. No
+            // offer ⇒ platform default trial days. Later offer edits never rewrite this trial.
+            $offer = $this->freePeriodOffers->resolve($merchant->id, $price->plan_id, $mode, $periodStart);
+            $trialDays = $offer !== null ? $offer->free_period_days : $defaultTrialDays;
+            $freePeriodOfferId = $offer?->id;
+            $freePeriodResolvedAt = $offer !== null ? CarbonImmutable::now() : null;
+
+            $trialEnds = $this->calculator->trialEnd($anchor, $trialDays);
 
             $subscription = new MerchantSubscription;
             $subscription->merchant_id = $merchant->id;
@@ -72,6 +85,8 @@ final class CreateTrialSubscription
             $subscription->status = MerchantSubscriptionStatus::Trialing;
             $subscription->billing_interval = $price->billing_interval;
             $subscription->trial_days_snapshot = $trialDays;
+            $subscription->free_period_offer_id = $freePeriodOfferId;
+            $subscription->free_period_resolved_at = $freePeriodResolvedAt;
             $subscription->trial_started_at = $anchor;
             $subscription->trial_ends_at = $trialEnds;
             $subscription->current_period_start = $periodStart;
@@ -87,6 +102,7 @@ final class CreateTrialSubscription
                 'plan_id' => $subscription->plan_id,
                 'price_id' => $subscription->price_id,
                 'trial_days_snapshot' => $trialDays,
+                'free_period_offer_id' => $offer?->ulid,
             ];
             $this->audit->record(AuditEvent::SubscriptionCreated, $actor, $merchant->id, null, $subscription, $context);
             $this->audit->record(AuditEvent::SubscriptionTrialStarted, $actor, $merchant->id, null, $subscription, $context);

@@ -72,7 +72,9 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 19 | Audit logging completion & flagged events | ✅ `verified_complete` — PR **#32** `Phase 19: Complete audit logging and flagged events` MERGED into `main` (merge commit `7ef259e28f51fc9bba24a16ef3945ff61ddef4ce`, merged at `2026-07-05T11:48:45Z`; head branch `phase-19-audit-flagged-events`, base `main`; final PR head `d6455f3`). CI run `28736716360`: five required checks all **SUCCESS**. `reviewDecision` blank under solo-maintainer governance exception — **not** independent approval. Local + remote Phase 19 branches deleted. **REM-PERM-001** and **REM-AUDEXP-001** → `verified_complete`. See Phase 19 section. |
 | v4 adoption | Servana v4 plan-adoption architecture change (Plan §1.3) | ✅ `verified_complete` — **PR #34** "docs: update Servana software development plan" MERGED into `main` (merge commit `85bd3e570db1436586d3d1ead17ab6b1701538d5`, merged `2026-07-10T07:52:27Z`; head `docs/update-servana-development-plan`, base `main`). Five required CI checks all SUCCESS; `reviewDecision` blank under the solo-maintainer governance exception — **not** independent approval. Gate A (Phase 20A entry) satisfied. |
 | 20A | Plan catalogue, prices, entitlements, billing settings, preferred-personnel fee rules (platform) | ✅ `verified_complete` — **PR #35** "Phase 20A: Implement billing catalogue settings and fee rules" MERGED into `main` (squash merge `6813690ef5fa9f7d782532b49e2bca43c2afc112`, impl head `a31cd00…`, final PR head `56a81bd…`, merged `2026-07-11T07:56:09Z`); five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) all SUCCESS; `reviewDecision` blank under the documented solo-maintainer governance exception — **not** independent approval. (Reconciled from `local_complete` during Phase 20B Increment 1.) Increments 1–7 COMPLETE + green; branch `phase-20a-billing-catalogue-settings` off `85bd3e5`. **Frontend (Increment 5):** single `platform-billing-settings` screen (tabbed: settings/plans/prices/entitlements/preferred-fee), 5 Pinia stores, Branch-Manager read-only fee card in `branch.services`, nav/inventory/§27.1-spec reconciled, contract-truth nullability fix. **E2E (Increment 6):** `phase-20a-billing.spec.ts` 17/17 + full e2e 269 (axe 0 light/dark, 360/768/1280, keyboard). **Gates (Increment 7):** backend serial 1164/7-skip + parallel 1164/7; Pint 1040 clean; Larastan L8 clean; OpenAPI 188 routes/157 paths/188 ops + TS + permissions + contract OK; Vitest 279; composer audit clean; npm audit 2 moderate (below gate); gitleaks clean; php-dev + nginx-prod build. Single completion commit pending; then push + STOP (no PR/merge, no 20B). Older detail: Docker blocker RESOLVED. Increments 1–3 COMPLETE + green on PG16 (specs; 6 migrations; enums; models/factories; legacy backfill @ `DATE '2026-07-10'`; resolvers + resolver swap). **Increment 4 runtime layer done + green** (13 AuditEvent cases; 2 state machines + BillingStateException + BillingOverlapException; BillingStateMachineTest 36; **12 actions**; **6 policies** registered; **8 Form Requests**; **6 masked Resources**; **7 controllers**; `ResolvePlatformContext` middleware + `PlatformServiceLocator`). Larastan clean; RouteSecurityContract/AuditMutationCoverage/permission guards green with the unwired layer (37 + 89 targeted). **Increment 4 COMPLETE + green** (atomic flip done): 21 platform routes + 1 branch read wired (ResolvePlatformContext group; platform_mutation forbids ResolveTenantContext — solved); AuditMutationCoverage (12 routes); StepUpAction::BillingConfiguration moved to live; PermissionRegistry +9/−3; matrix flip (9 active, 3 legacy deleted); active 87→93, legacy 17→14, planned 86→77; OpenAPI 157 paths/188 ops + TS + permissions regenerated; `Phase20APlatformApiTest` 13 tests (context/plans/prices/overlap/fee-rule lifecycle/step-up/branch-read-masked). **Auth 192 pass; RouteSecurityContract/AuditMutationCoverage/OpenApi green; billing+phase20a 96 pass; Pint clean; Larastan clean.** **Increments 5 (frontend platform-billing-settings), 6 (E2E/a11y), 7 (full gates + single commit) pending.** **Branch-rule correction recorded:** `preferred_personnel_fee.view_branch_rule` = branch_manager/branch/read-only/no-MFA/no-step-up/info (not super-admin). See Phase 20A section + proof. |
-| 20B–20H | Subscriptions, promotions, Wallet billing (20D-W), %-fee engine, compensation, payouts | ⬜ Not started |
+| 20B | Subscription lifecycle & subscription invoices | ✅ `verified_complete` — **PR #36** "Phase 20B: Implement subscription lifecycle and invoices" MERGED into `main` (squash merge `3dd528a2779a44d13b9fe105ac9ee49e688e84c6`, implementation head `6790081bace7efb2a659ec8254e6eda53d3d5935`, governance/final PR head `4a998dc6e4c0f8259c8d6c179c076f8b8496aec9`, merged `2026-07-12T06:57:28Z`); CI initial `29183137798` + final `29183286205` — five required jobs (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS; `reviewDecision` blank under the documented solo-maintainer governance exception — **not** independent approval; local + remote branches deleted. (Reconciled from `local_complete` during Phase 20C Increment 1.) See Phase 20B section. |
+| 20C | Promotions & free-period offers (platform) | 🚧 `in_progress` — branch `phase-20c-promotions-free-periods` off `3dd528a…`. See Phase 20C section. |
+| 20D-W…20H | Wallet billing (20D-W), %-fee engine (20E), compensation (20F), commission/salary (20G), payouts (20H) | ⬜ Not started |
 | 21N / 21S | Queues/notifications/reports / personnel bulk SMS | ⬜ Not started |
 | 22 | Search | ⬜ Not started |
 | 23 | Security hardening + responsive/dark/a11y release audit + threat-model | ⬜ Not started |
@@ -174,13 +176,25 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
   payouts → 20H; R&E runtime → 21R; notifications/reports → 21N; SMS → 21S; search → 22; release-wide
   hardening → 23; performance → 24; deployment → 25.
 
-## Phase 20B — Subscription Lifecycle and Subscription Invoices (local_complete pending PR CI/review/merge)
+## Phase 20B — Subscription Lifecycle and Subscription Invoices (verified_complete)
 
-- **Lifecycle:** 🚧 `in_progress`. **Branch:** `phase-20b-subscription-lifecycle-invoices` off
-  `origin/main` = `6813690ef5fa9f7d782532b49e2bca43c2afc112` (the Phase 20A PR #35 squash merge).
-  HEAD == origin/main == merge-base == `6813690…`; working tree clean; `git fsck` clean. **Proof:**
-  [phase-20b.md](proof/phase-20b.md). Single completion commit `phase-20b: implement subscription
-  lifecycle and invoices` at local completion, then push + STOP (no PR/merge, no Phase 20C).
+- **Lifecycle:** ✅ `verified_complete` — reconciled from `local_complete pending PR CI/review/merge`
+  on the **PR #36** merge during Phase 20C Increment 1. **PR #36** "Phase 20B: Implement subscription
+  lifecycle and invoices" MERGED into `main` (base `main`, head branch
+  `phase-20b-subscription-lifecycle-invoices`, merged `2026-07-12T06:57:28Z`). **Implementation commit:**
+  `6790081bace7efb2a659ec8254e6eda53d3d5935`. **Governance / final PR head:**
+  `4a998dc6e4c0f8259c8d6c179c076f8b8496aec9`. **Squash merge commit:**
+  `3dd528a2779a44d13b9fe105ac9ee49e688e84c6` (= current `origin/main`). **CI:** initial run
+  `29183137798` (head `6790081…`) SUCCESS; final run `29183286205` (head `4a998dc…`) SUCCESS — five
+  required jobs all SUCCESS: Backend (Pint, Larastan, Pest), Frontend (ESLint, vue-tsc, Vitest, build),
+  Docker (build images), Security (gitleaks), E2E — Playwright. `reviewDecision` **blank** under the
+  documented PR-specific solo-maintainer governance exception — **not** independent reviewer approval.
+  Local and remote `phase-20b-subscription-lifecycle-invoices` branches were deleted after merge.
+  **Branch (pre-merge):** `phase-20b-subscription-lifecycle-invoices` off `origin/main` =
+  `6813690ef5fa9f7d782532b49e2bca43c2afc112` (the Phase 20A PR #35 squash merge). **Proof:**
+  [phase-20b.md](proof/phase-20b.md). (History preserved: the earlier "single completion commit / push
+  then STOP" plan is superseded by the merged PR #36. All Phase 20B implementation, test totals,
+  defects, corrections, deferrals and scope boundaries below are retained verbatim.)
 - **Phase 20A reconciliation (done):** PR #35 MERGED (squash `6813690…`, impl `a31cd00…`, head
   `56a81bd…`, merged 2026-07-11 07:56:09Z, five-gate CI SUCCESS, blank reviewDecision = solo-maintainer
   exception, not independent approval). Reconciled proof-20a/PROGRESS/CHANGELOG/register(REM-ENUM-001)/
@@ -335,9 +349,92 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
   serious/critical=0 + no page-level horizontal overflow; then the full local gate battery (regenerate
   contracts; backend validate/pint/stan/test/parallel + targeted guards; frontend lint/typecheck/test/
   build/e2e; security composer/npm audit + gitleaks; sequential docker dev+prod builds) and the SINGLE
-  completion commit `phase-20b: implement subscription lifecycle and invoices`. Phase 20B stays
-  **in_progress** until all gates pass, then **local_complete pending PR CI/review/merge** (never
-  `verified_complete`). Do NOT commit/push partial; do NOT start 20C.
+  completion commit `phase-20b: implement subscription lifecycle and invoices`. **(Historical planning
+  note — superseded.)** Phase 20B reached local completion, was committed (`6790081…`), opened as PR #36,
+  passed CI on both the implementation and governance heads, and was squash-merged (`3dd528a…`) on
+  2026-07-12; it is now **`verified_complete`** (see the reconciled lifecycle entry at the top of this
+  section). Phase 20C then began on branch `phase-20c-promotions-free-periods` off `3dd528a…`.
+
+## Phase 20C — Promotions and Free-Period Offers (in_progress)
+
+- **Branch / base / lifecycle:** 🚧 `in_progress` on `phase-20c-promotions-free-periods`, created off
+  `origin/main` = `3dd528a2779a44d13b9fe105ac9ee49e688e84c6` (the Phase 20B PR #36 squash merge).
+  HEAD == merge-base == `3dd528a…` at branch creation; `git fsck` clean. **Proof:**
+  [phase-20c.md](proof/phase-20c.md). Single completion commit `phase-20c: implement promotions and
+  free periods` at local completion, then push + STOP (no PR/merge, no Phase 20D-W).
+- **Phase 20B reconciliation (done, Increment 1):** PR #36 MERGED (squash `3dd528a…`, implementation
+  `6790081…`, governance/final head `4a998dc…`, merged 2026-07-12T06:57:28Z; CI initial `29183137798`
+  + final `29183286205` five required jobs all SUCCESS; blank reviewDecision = solo-maintainer
+  exception, not independent approval; branches deleted). Reconciled PROGRESS/CHANGELOG/proof-20b/
+  traceability(SRV-SUBSCRIPTION-001 + SRV-PLATFORM-GOVERNANCE-001)/register(REM-PERM-001 comment) →
+  `verified_complete`. No fabricated remediation item.
+- **Specification gates (full decision table in proof-20c.md):**
+  - **C1** — `effective_from`/`effective_to` (date), **no** `starts_at`; both target tables carry an
+    immutable unique `ulid` tie-break key; global candidates have no target row (parent
+    `effective_from` then parent `ulid`).
+  - **C2** — normalized targets: scopes `all_new_merchants`/`selected_merchants`/`selected_plans`/
+    `billing_mode`; types `merchant`/`plan`/`billing_mode`; exactly-one field matching type; no JSON;
+    duplicate parent/target forbidden.
+  - **C3** — free-period resolves at the Merchant-Admin creation anchor (Gate B1) + setup plan/billing
+    mode; promotion resolves at invoice issuance business date; issued invoices never re-resolved.
+  - **C4** — forward-only snapshot expands; applied days in `trial_days_snapshot`, applied discount in
+    `discount_minor`; no backfill.
+  - **C5** — **product-owner decision 2026-07-12: cap at subtotal.** `applied_discount_minor =
+    min(configured_fixed_minor, subtotal_minor)`; `total = subtotal − applied` (≥ 0); snapshot both
+    configured + applied; no credit/carry-forward/refund; currency matched; percentage uses bps +
+    ADR-005; server-side integer minor units inside the atomic `IssueSubscriptionInvoice` txn; issued
+    invoices never recalculated.
+  - **C6** — reuse Phase 20A platform-config approval (Super-Admin, MFA, fresh step-up, high-severity
+    audit); no maker/checker; drafts+targets editable only while draft; approved terms/targets
+    immutable; pause/resume = availability only; cancel from draft/scheduled only.
+- **Schema/migrations planned (Increment 2):** `2026_07_12_000001..000004` create
+  `promotional_discounts`, `promotional_discount_targets`, `free_period_offers`,
+  `free_period_offer_targets`; `_000005` adds promotion snapshot columns to `subscription_invoices`;
+  `_000006` adds free-period snapshot columns to `merchant_subscriptions`. Parents platform-scoped
+  (`TenantOwnership::EXEMPT`, no `merchant_id`/`branch_id`). Data dictionary entries complete in
+  `billing-and-wallet.md` (Phase 20C section, column-level).
+- **State machines (Increment 1, done):** `promotional-discount.md` (has `draft → active`) +
+  `free-period-offer.md` (no `draft → active`; approval → `scheduled` only). Backed enums +
+  named services planned for Increment 3.
+- **Permissions:** activate `platform.promotion.manage` + `platform.free_period_offer.manage`
+  (super_admin, platform scope, MFA + fresh step-up, high severity) with YAML/PHP/DB/TS parity
+  (Increment 4). Both exist in the matrix as `planned`.
+- **Screens (inventory phase == 20C):** `platform-promotions` (consolidated Super-Admin surface,
+  Promotional-discounts + Free-period-offers sections); merchant subscription/invoice surfaces show
+  read-only applied snapshots. §27.1 spec + inventory flip in Increment 5.
+- **Inherited-and-closed here:** the only prior deferral 20C owns — "promotions and free periods →
+  Phase 20C" (deferred by 20A + 20B).
+- **Exclusions (owner phases):** Wallet sync/payments → 20D-W (Gate W); %-fee ledger/adjustments/
+  disputes → 20E; compensation → 20F; commission/salary → 20G; payouts → 20H; R&E → 21R;
+  notifications/reports → 21N; SMS → 21S; search → 22; hardening → 23; performance → 24; deployment →
+  25.
+- **Increments:** 1 (reconciliation + gates + data dictionary + state machines + traceability) —
+  **DONE**; 2 (migrations + enums + models/factories + schema/constraint/parity tests + PG16 fresh
+  build) — **DONE + green** (40 schema/parity pass; coverage guards 15 pass; Pint/Larastan clean;
+  disposable migrate:fresh --seed green on PG16); 3 (state machines + lifecycle scheduler + resolvers +
+  discount calculator + unit/concurrency tests) — **DONE + green** (86 phase20c pass; 2 state machines +
+  2 resolvers + calculator + 12 actions + `billing:process-promotion-lifecycle` scheduler + 16 audit
+  events; Larastan/Pint clean); 4 (subscription + invoice snapshot integration + permissions/policies/
+  requests/resources/controllers/routes + audit + OpenAPI/TS) — **DONE + green** (12 snapshot tests + 12
+  API tests; billing regression 362 pass; permissions 92 pass; route-security + audit-coverage green;
+  OpenAPI 219 ops + api.ts + contract:check OK; Larastan/Pint clean); 5 (platform frontend + merchant
+  read-only snapshot + navigation/inventory/specs + Vitest) — **DONE + green** (Promotions.vue +
+  2 stores + 3 specs; nav/inventory live+implemented + §27.1 spec; invoice/subscription resources expose
+  read-only snapshots; vue-tsc clean, ESLint 0 err, Vitest 317 pass); 6 (Playwright + responsive/dark/
+  keyboard/axe + full local gates + single completion commit + push) — **DONE + green** (Playwright
+  phase-20c 18/18 incl. axe light+dark 0, overflow 360/768/1280, 200% zoom, keyboard+focus; backend
+  serial 1458/7-skip + parallel 1458/7; Pint 1189 clean; Larastan L8 no errors; composer validate valid;
+  OpenAPI 219 ops byte-identical ×2 + api.ts + contract:check + permission-types --check OK; Vitest 317;
+  production build ✓; composer audit clean; npm audit 2 moderate below gate; gitleaks no leaks; php
+  dev+prod + nginx prod images build). DEF-20C-001 (E2E role-boundary assumption) fixed. Single
+  completion commit + push next; then STOP (no PR/merge, no Phase 20D-W).
+- **Exact next action:** Increment 6 — author `tests/e2e/phase-20c.spec.ts` (16-point matrix: create
+  percentage/fixed promo + free-period offer; merchant/plan/billing-mode targets; approval reason + MFA
+  + step-up; scheduled/active/paused rendering; merchant users cannot access platform mgmt; existing
+  trial + issued invoice unchanged; new invoice shows applied discount; no Wallet/payment control; no
+  overflow 360/768/1280; 200% zoom; keyboard + focus restore; light+dark; axe serious/critical=0), then
+  the full local gate battery (contracts determinism, backend serial+parallel, Pint/Larastan,
+  composer/npm audit, gitleaks, Docker dev+prod) and the SINGLE completion commit + push (no PR/merge).
 
 ## Phase 19 — Audit Logging Completion & Flagged Events (verified_complete)
 

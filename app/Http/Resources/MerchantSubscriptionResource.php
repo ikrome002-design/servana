@@ -45,6 +45,10 @@ final class MerchantSubscriptionResource extends JsonResource
             'billing_interval' => $this->billing_interval->value,
             'trial_started_at' => $this->trial_started_at->toIso8601String(),
             'trial_ends_at' => $this->trial_ends_at->toIso8601String(),
+            // Phase 20C — read-only free-period snapshot (immutable; the snapshotted trial length and
+            // whether a free-period offer set it — never the internal/offer id).
+            'trial_days_snapshot' => $this->trial_days_snapshot,
+            'free_period_offer_applied' => $this->free_period_offer_id !== null,
             'current_period_start' => $this->current_period_start->toDateString(),
             'current_period_end' => $this->current_period_end->toDateString(),
             'plan' => [

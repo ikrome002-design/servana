@@ -284,6 +284,10 @@ final class PermissionRegistry
         'platform.preferred_personnel_fee.manage' => ['platform', 'Manage preferred-personnel fee rules (create/approve/supersede/cancel).', true],
         // Phase 20A — branch-scoped read of the effective preferred-personnel fee rule (read-only).
         'preferred_personnel_fee.view_branch_rule' => ['catalogue', 'View the effective preferred-personnel fee rule for a branch (read-only).', false],
+        // Phase 20C — platform-governed promotions & free-period offers (Plan §53). Super-Admin only,
+        // platform scope, MFA + fresh step-up + high-severity audit. No merchant role receives these.
+        'platform.promotion.manage' => ['platform', 'Manage promotional discounts (create/approve/pause/resume/cancel).', true],
+        'platform.free_period_offer.manage' => ['platform', 'Manage free-period (trial-length) offers (create/approve/pause/resume/cancel).', true],
     ];
 
     /**
@@ -422,6 +426,8 @@ final class PermissionRegistry
             'platform.plan.view', 'platform.plan.manage',
             'platform.plan_price.manage',
             'platform.preferred_personnel_fee.manage',
+            // Phase 20C — promotions & free-period offers (Plan §53).
+            'platform.promotion.manage', 'platform.free_period_offer.manage',
         ],
     ];
 

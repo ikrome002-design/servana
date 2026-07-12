@@ -675,10 +675,10 @@ screens:
     spec: platform/platform-billing-settings.md
   - key: platform-promotions
     domain: platform
-    route: ~
-    status: planned
+    route: platform.promotions
+    status: implemented
     phase: Phase 20C
-    spec: ~
+    spec: platform/platform-promotions.md
   - key: platform-wallet-config
     domain: platform
     route: ~

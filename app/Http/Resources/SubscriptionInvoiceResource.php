@@ -33,6 +33,11 @@ final class SubscriptionInvoiceResource extends JsonResource
             'total_minor' => $this->total_minor,
             'balance_minor' => $this->balance_minor,
             'currency' => $this->currency,
+            // Phase 20C — read-only applied promotion snapshot (immutable; no internal/promotion id leaked).
+            'promotion_applied' => $this->promotional_discount_id !== null,
+            'promotion_type' => $this->promotion_type?->value,
+            'promotion_value_snapshot' => $this->promotion_value_snapshot,
+            'promotion_currency' => $this->promotion_currency,
             'issued_at' => $this->issued_at?->toIso8601String(),
             'due_at' => $this->due_at?->toIso8601String(),
             'payment_reference_pending' => ! $this->hasWalletReference(),

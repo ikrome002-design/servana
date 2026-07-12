@@ -1,9 +1,19 @@
 # Phase 20B — Subscription Lifecycle and Subscription Invoices — Proof
 
-> Lifecycle: **in_progress** (branch `phase-20b-subscription-lifecycle-invoices`, based on
-> `origin/main` = `6813690ef5fa9f7d782532b49e2bca43c2afc112` = the Phase 20A PR #35 squash
-> merge). One reviewed PR at the end; **not** `verified_complete` until that PR merges with
-> green CI and truthful governance evidence. Proof appended per increment. Controlling
+> Lifecycle: **verified_complete** — reconciled from `in_progress`/`local_complete` on the
+> **PR #36** merge during Phase 20C Increment 1. PR #36 "Phase 20B: Implement subscription
+> lifecycle and invoices" MERGED into `main` (base `main`, head branch
+> `phase-20b-subscription-lifecycle-invoices`, merged **2026-07-12T06:57:28Z**);
+> implementation commit `6790081bace7efb2a659ec8254e6eda53d3d5935`; governance/final PR head
+> `4a998dc6e4c0f8259c8d6c179c076f8b8496aec9`; squash merge commit
+> `3dd528a2779a44d13b9fe105ac9ee49e688e84c6` (= `origin/main`). CI: initial `29183137798`
+> (head `6790081…`) SUCCESS + final `29183286205` (head `4a998dc…`) SUCCESS — five required
+> jobs (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS. `reviewDecision`
+> **blank** under the documented PR-specific solo-maintainer governance exception — **not**
+> independent reviewer approval. Local + remote `phase-20b-subscription-lifecycle-invoices`
+> branches deleted after merge. Pre-merge branch based on `origin/main` =
+> `6813690ef5fa9f7d782532b49e2bca43c2afc112` (the Phase 20A PR #35 squash merge). Proof
+> appended per increment; all point-in-time increment narration retained. Controlling
 > sources: Plan §§13.9, 13.14–13.16, 20, 21, 22, 25 (§25.2/§25.4), 47, 48, 49, 50, 54, 65,
 > 67, 70–71, 80 (Phase 20B), 81–82, 85; ADR-005 (round-half-up), ADR-011 (price sole
 > source), ADR-014 (Wallet reference nullable/immutable). Exclusions per §9 assignment.

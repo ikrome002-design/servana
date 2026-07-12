@@ -7,6 +7,7 @@ namespace App\Domain\Billing\Actions;
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Billing\Enums\BillingMode;
+use App\Domain\Billing\Enums\PromotionalDiscountType;
 use App\Domain\Billing\Enums\SubscriptionInvoiceItemType;
 use App\Domain\Billing\Enums\SubscriptionInvoiceStatus;
 use App\Domain\Billing\Enums\WalletRegistrationStatus;
@@ -16,7 +17,10 @@ use App\Domain\Billing\Models\SubscriptionInvoice;
 use App\Domain\Billing\Models\SubscriptionInvoiceItem;
 use App\Domain\Billing\Models\SubscriptionPlanPrice;
 use App\Domain\Billing\Queries\ResolveEffectivePlatformBillingSettings;
+use App\Domain\Billing\Queries\ResolvePromotionalDiscount;
 use App\Domain\Billing\Services\AllocateSubscriptionInvoiceNumber;
+use App\Domain\Billing\Services\BillingIntervalCalculator;
+use App\Domain\Billing\Services\CalculatePromotionalDiscount;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +46,8 @@ final class IssueSubscriptionInvoice
         private readonly AuditRecorder $audit,
         private readonly AllocateSubscriptionInvoiceNumber $allocator,
         private readonly ResolveEffectivePlatformBillingSettings $settings,
+        private readonly ResolvePromotionalDiscount $promotions,
+        private readonly CalculatePromotionalDiscount $calculator,
     ) {}
 
     public function handle(MerchantSubscription $subscription, ?User $actor = null): SubscriptionInvoice
@@ -71,6 +77,18 @@ final class IssueSubscriptionInvoice
             $price = SubscriptionPlanPrice::query()->whereKey($locked->price_id)->firstOrFail();
             $subtotal = (int) $price->amount_minor;
 
+            // Phase 20C — resolve at most one promotional discount at the issuance business date
+            // (Gate C3) against this invoice's merchant/plan/effective (fixed) mode. Snapshot both the
+            // configured value and the applied (capped) amount (Gate C4/C5); percentage uses bps +
+            // ADR-005; fixed is capped at the subtotal so the total never goes negative. No promotion
+            // ⇒ zero discount. Later promotion edits never re-resolve this issued invoice.
+            $issuanceDate = CarbonImmutable::now(BillingIntervalCalculator::TIMEZONE);
+            $promotion = $this->promotions->resolve($locked->merchant_id, $locked->plan_id, $mode, $issuanceDate);
+            $discount = $promotion !== null
+                ? $this->calculator->calculate($promotion, $subtotal, $price->currency)
+                : 0;
+            $total = $subtotal - $discount;
+
             $number = $this->allocator->allocate($locked->merchant_id);
             $now = CarbonImmutable::now();
 
@@ -82,10 +100,19 @@ final class IssueSubscriptionInvoice
             $invoice->period_start = $locked->current_period_start;
             $invoice->period_end = $locked->current_period_end;
             $invoice->subtotal_minor = $subtotal;
-            $invoice->discount_minor = 0; // no promotions until Phase 20C
-            $invoice->total_minor = $subtotal;
+            $invoice->discount_minor = $discount;
+            $invoice->total_minor = $total;
             $invoice->currency = $price->currency;
-            $invoice->balance_minor = $subtotal;
+            $invoice->balance_minor = $total;
+            if ($promotion !== null) {
+                $invoice->promotional_discount_id = $promotion->id;
+                $invoice->promotion_type = $promotion->type;
+                $invoice->promotion_value_snapshot = $promotion->value;
+                $invoice->promotion_currency = $promotion->type === PromotionalDiscountType::FixedAmount
+                    ? $promotion->currency
+                    : null;
+                $invoice->promotion_resolved_at = $now;
+            }
             $invoice->status = SubscriptionInvoiceStatus::Issued;
             // Phase 20B Wallet defaults (ADR-014) — no Wallet runtime writes these.
             $invoice->account_reference = null;
@@ -108,8 +135,11 @@ final class IssueSubscriptionInvoice
             $this->audit->record(AuditEvent::SubscriptionInvoiceIssued, $actor, $locked->merchant_id, null, $invoice, [
                 'invoice_id' => $invoice->ulid,
                 'invoice_number' => $number,
+                'subtotal_minor' => $invoice->subtotal_minor,
+                'discount_minor' => $invoice->discount_minor,
                 'total_minor' => $invoice->total_minor,
                 'currency' => $invoice->currency,
+                'promotion_id' => $promotion?->ulid,
             ]);
 
             return $invoice;
