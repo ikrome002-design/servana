@@ -607,3 +607,23 @@ All local gates pass → **Phase 20B = local_complete pending PR CI / review / m
 `verified_complete`). Single completion commit `phase-20b: implement subscription lifecycle and
 invoices` on branch `phase-20b-subscription-lifecycle-invoices`; no PR opened, no merge, Phase 20C not
 started.
+
+## Solo-Maintainer Review Exception - PR #36
+
+- PR: #36
+- verified implementation head: 6790081bace7efb2a659ec8254e6eda53d3d5935
+- initial successful CI run: 29183137798
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-36.md
+
+This exception applies only to Phase 20B and is not independent reviewer
+approval.
+
+Phase 20C and all later promotion, Wallet, percentage-fee, compensation,
+payout and integration domains remain deferred to their documented owning
+phases.
