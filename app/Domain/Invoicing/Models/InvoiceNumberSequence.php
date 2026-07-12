@@ -34,6 +34,9 @@ class InvoiceNumberSequence extends Model
 
     public const SCOPE_MERCHANT_CLIENT_INVOICE = 'merchant_client_invoice';
 
+    /** Phase 20B — the independent per-merchant subscription-invoice counter (Gate B3). */
+    public const SCOPE_SUBSCRIPTION_INVOICE = 'subscription_invoice';
+
     protected $fillable = [
         'merchant_id',
         'scope',

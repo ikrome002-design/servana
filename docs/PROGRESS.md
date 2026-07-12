@@ -71,7 +71,7 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 18B | Payment validation, receipts, refunds, cash-up, period locks | ✅ `verified_complete` — PR **#31** `Phase 18B: Implement validation receipts and finance controls` MERGED into `main` (merge commit `64bd0a117dcdc819a8baf4b9bec3c3eb09635edc`; implementation `ed07c8b`, CI-correction `a0d4dede7ce62e5dbcb7a27467b15ba592ccf6d3`, governance `a8f988b68872eb3e352bc7f70dbb362bfb320cf3`). CI: initial run `28694148176` FAILED, corrected-head `28695121157` SUCCESS, final governance-head `28695314469` SUCCESS. `reviewDecision` blank under the documented PR-specific solo-maintainer exception (`docs/governance/solo-maintainer-review-exception-pr-31.md`) — **not** independent reviewer approval. **REM-PAY-001** closed `verified_complete` on this merge. **REM-PERM-001** stays open (Phase 19). Merge-time local gates (see `docs/proof/phase-18b.md` §Quality gates): backend serial 1065 pass / 7 skip / 5175 assertions + parallel 1065 pass / 7 skip / 5175 assertions (PG16); Pint 877 clean + Larastan L8 no-errors (667); OpenAPI 152 ops / 130 paths + TS + contract OK; frontend Vitest 222 / 54 files, ESLint 0 errors, vue-tsc clean, build OK; Playwright four 18B specs 29/0 + full e2e 227/0 (360/768/1280 + light/dark + keyboard + axe serious/critical = 0); composer audit no advisories, npm audit high-gate exit 0 (2 moderate js-yaml below gate), gitleaks no leaks; php dev + nginx prod images build. Defects fixed pre-merge: DEF-18B-003 (360px branch-cash-up overflow → responsive method cards) + DEF-18B-004 (cash-up component-test clock-coupling). All 11 slices implemented; full slice detail in `docs/proof/phase-18b.md`. |
 | 19 | Audit logging completion & flagged events | ✅ `verified_complete` — PR **#32** `Phase 19: Complete audit logging and flagged events` MERGED into `main` (merge commit `7ef259e28f51fc9bba24a16ef3945ff61ddef4ce`, merged at `2026-07-05T11:48:45Z`; head branch `phase-19-audit-flagged-events`, base `main`; final PR head `d6455f3`). CI run `28736716360`: five required checks all **SUCCESS**. `reviewDecision` blank under solo-maintainer governance exception — **not** independent approval. Local + remote Phase 19 branches deleted. **REM-PERM-001** and **REM-AUDEXP-001** → `verified_complete`. See Phase 19 section. |
 | v4 adoption | Servana v4 plan-adoption architecture change (Plan §1.3) | ✅ `verified_complete` — **PR #34** "docs: update Servana software development plan" MERGED into `main` (merge commit `85bd3e570db1436586d3d1ead17ab6b1701538d5`, merged `2026-07-10T07:52:27Z`; head `docs/update-servana-development-plan`, base `main`). Five required CI checks all SUCCESS; `reviewDecision` blank under the solo-maintainer governance exception — **not** independent approval. Gate A (Phase 20A entry) satisfied. |
-| 20A | Plan catalogue, prices, entitlements, billing settings, preferred-personnel fee rules (platform) | ✅ `local_complete pending PR CI/review/merge` — Increments 1–7 COMPLETE + green; branch `phase-20a-billing-catalogue-settings` off `85bd3e5`. **Frontend (Increment 5):** single `platform-billing-settings` screen (tabbed: settings/plans/prices/entitlements/preferred-fee), 5 Pinia stores, Branch-Manager read-only fee card in `branch.services`, nav/inventory/§27.1-spec reconciled, contract-truth nullability fix. **E2E (Increment 6):** `phase-20a-billing.spec.ts` 17/17 + full e2e 269 (axe 0 light/dark, 360/768/1280, keyboard). **Gates (Increment 7):** backend serial 1164/7-skip + parallel 1164/7; Pint 1040 clean; Larastan L8 clean; OpenAPI 188 routes/157 paths/188 ops + TS + permissions + contract OK; Vitest 279; composer audit clean; npm audit 2 moderate (below gate); gitleaks clean; php-dev + nginx-prod build. Single completion commit pending; then push + STOP (no PR/merge, no 20B). Older detail: Docker blocker RESOLVED. Increments 1–3 COMPLETE + green on PG16 (specs; 6 migrations; enums; models/factories; legacy backfill @ `DATE '2026-07-10'`; resolvers + resolver swap). **Increment 4 runtime layer done + green** (13 AuditEvent cases; 2 state machines + BillingStateException + BillingOverlapException; BillingStateMachineTest 36; **12 actions**; **6 policies** registered; **8 Form Requests**; **6 masked Resources**; **7 controllers**; `ResolvePlatformContext` middleware + `PlatformServiceLocator`). Larastan clean; RouteSecurityContract/AuditMutationCoverage/permission guards green with the unwired layer (37 + 89 targeted). **Increment 4 COMPLETE + green** (atomic flip done): 21 platform routes + 1 branch read wired (ResolvePlatformContext group; platform_mutation forbids ResolveTenantContext — solved); AuditMutationCoverage (12 routes); StepUpAction::BillingConfiguration moved to live; PermissionRegistry +9/−3; matrix flip (9 active, 3 legacy deleted); active 87→93, legacy 17→14, planned 86→77; OpenAPI 157 paths/188 ops + TS + permissions regenerated; `Phase20APlatformApiTest` 13 tests (context/plans/prices/overlap/fee-rule lifecycle/step-up/branch-read-masked). **Auth 192 pass; RouteSecurityContract/AuditMutationCoverage/OpenApi green; billing+phase20a 96 pass; Pint clean; Larastan clean.** **Increments 5 (frontend platform-billing-settings), 6 (E2E/a11y), 7 (full gates + single commit) pending.** **Branch-rule correction recorded:** `preferred_personnel_fee.view_branch_rule` = branch_manager/branch/read-only/no-MFA/no-step-up/info (not super-admin). See Phase 20A section + proof. |
+| 20A | Plan catalogue, prices, entitlements, billing settings, preferred-personnel fee rules (platform) | ✅ `verified_complete` — **PR #35** "Phase 20A: Implement billing catalogue settings and fee rules" MERGED into `main` (squash merge `6813690ef5fa9f7d782532b49e2bca43c2afc112`, impl head `a31cd00…`, final PR head `56a81bd…`, merged `2026-07-11T07:56:09Z`); five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) all SUCCESS; `reviewDecision` blank under the documented solo-maintainer governance exception — **not** independent approval. (Reconciled from `local_complete` during Phase 20B Increment 1.) Increments 1–7 COMPLETE + green; branch `phase-20a-billing-catalogue-settings` off `85bd3e5`. **Frontend (Increment 5):** single `platform-billing-settings` screen (tabbed: settings/plans/prices/entitlements/preferred-fee), 5 Pinia stores, Branch-Manager read-only fee card in `branch.services`, nav/inventory/§27.1-spec reconciled, contract-truth nullability fix. **E2E (Increment 6):** `phase-20a-billing.spec.ts` 17/17 + full e2e 269 (axe 0 light/dark, 360/768/1280, keyboard). **Gates (Increment 7):** backend serial 1164/7-skip + parallel 1164/7; Pint 1040 clean; Larastan L8 clean; OpenAPI 188 routes/157 paths/188 ops + TS + permissions + contract OK; Vitest 279; composer audit clean; npm audit 2 moderate (below gate); gitleaks clean; php-dev + nginx-prod build. Single completion commit pending; then push + STOP (no PR/merge, no 20B). Older detail: Docker blocker RESOLVED. Increments 1–3 COMPLETE + green on PG16 (specs; 6 migrations; enums; models/factories; legacy backfill @ `DATE '2026-07-10'`; resolvers + resolver swap). **Increment 4 runtime layer done + green** (13 AuditEvent cases; 2 state machines + BillingStateException + BillingOverlapException; BillingStateMachineTest 36; **12 actions**; **6 policies** registered; **8 Form Requests**; **6 masked Resources**; **7 controllers**; `ResolvePlatformContext` middleware + `PlatformServiceLocator`). Larastan clean; RouteSecurityContract/AuditMutationCoverage/permission guards green with the unwired layer (37 + 89 targeted). **Increment 4 COMPLETE + green** (atomic flip done): 21 platform routes + 1 branch read wired (ResolvePlatformContext group; platform_mutation forbids ResolveTenantContext — solved); AuditMutationCoverage (12 routes); StepUpAction::BillingConfiguration moved to live; PermissionRegistry +9/−3; matrix flip (9 active, 3 legacy deleted); active 87→93, legacy 17→14, planned 86→77; OpenAPI 157 paths/188 ops + TS + permissions regenerated; `Phase20APlatformApiTest` 13 tests (context/plans/prices/overlap/fee-rule lifecycle/step-up/branch-read-masked). **Auth 192 pass; RouteSecurityContract/AuditMutationCoverage/OpenApi green; billing+phase20a 96 pass; Pint clean; Larastan clean.** **Increments 5 (frontend platform-billing-settings), 6 (E2E/a11y), 7 (full gates + single commit) pending.** **Branch-rule correction recorded:** `preferred_personnel_fee.view_branch_rule` = branch_manager/branch/read-only/no-MFA/no-step-up/info (not super-admin). See Phase 20A section + proof. |
 | 20B–20H | Subscriptions, promotions, Wallet billing (20D-W), %-fee engine, compensation, payouts | ⬜ Not started |
 | 21N / 21S | Queues/notifications/reports / personnel bulk SMS | ⬜ Not started |
 | 22 | Search | ⬜ Not started |
@@ -79,15 +79,19 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
-## Phase 20A — Plan Catalogue, Prices, Entitlements, Billing Settings (local_complete pending PR CI/review/merge)
+## Phase 20A — Plan Catalogue, Prices, Entitlements, Billing Settings (verified_complete)
 
-- **Lifecycle:** ✅ `local_complete pending PR CI/review/merge` (all local criteria pass;
-  **not** `verified_complete`). Increments 1–7 COMPLETE + green. **Branch:** `phase-20a-billing-catalogue-settings` created from
-  `origin/main` = `85bd3e570db1436586d3d1ead17ab6b1701538d5` (`git merge-base origin/main HEAD ==
-  origin/main`; working tree carries only Phase-20A changes). Never worked on `main`. **Proof:**
-  [phase-20a.md](proof/phase-20a.md). Single completion commit (deferred until all local criteria pass):
-  `phase-20a: implement billing catalogue settings and fee rules` — then push, then STOP (no PR/merge,
-  no Phase 20B).
+- **Lifecycle:** ✅ `verified_complete` — reconciled from `local_complete` on the **PR #35** merge
+  during Phase 20B Increment 1. PR #35 "Phase 20A: Implement billing catalogue settings and fee rules"
+  MERGED into `main`: squash merge `6813690ef5fa9f7d782532b49e2bca43c2afc112`, implementation head
+  `a31cd000f84a0a19f1d8b526a4fdf5d01aefc090`, final PR head `56a81bd305aacf3a7fb2ffa976d9a089591e3f41`,
+  merged `2026-07-11T07:56:09Z`; five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) all
+  SUCCESS; `reviewDecision` blank — documented solo-maintainer governance exception, **not** independent
+  reviewer approval. Increments 1–7 COMPLETE + green. **Branch:** `phase-20a-billing-catalogue-settings`
+  created from `origin/main` = `85bd3e570db1436586d3d1ead17ab6b1701538d5`; never worked on `main`.
+  **Proof:** [phase-20a.md](proof/phase-20a.md). (History preserved: the Phase 20A completion commit
+  `a31cd00…` landed via PR #35; the earlier "single completion commit deferred / push then STOP" plan
+  is superseded by the merged PR.)
 - **Gate A (v4 adoption PR) — PASSED and verified:** PR **#34** MERGED, merge commit `85bd3e5…`,
   five CI checks SUCCESS, `reviewDecision` blank (solo-maintainer exception, not independent approval),
   merge contained in `origin/main`; Phase 19 merge `7ef259e2` contained; `git fsck` clean.
@@ -169,6 +173,171 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
   %-fee ledger/adjustments/disputes → 20E; compensation → 20F; commission/salary ledgers → 20G;
   payouts → 20H; R&E runtime → 21R; notifications/reports → 21N; SMS → 21S; search → 22; release-wide
   hardening → 23; performance → 24; deployment → 25.
+
+## Phase 20B — Subscription Lifecycle and Subscription Invoices (local_complete pending PR CI/review/merge)
+
+- **Lifecycle:** 🚧 `in_progress`. **Branch:** `phase-20b-subscription-lifecycle-invoices` off
+  `origin/main` = `6813690ef5fa9f7d782532b49e2bca43c2afc112` (the Phase 20A PR #35 squash merge).
+  HEAD == origin/main == merge-base == `6813690…`; working tree clean; `git fsck` clean. **Proof:**
+  [phase-20b.md](proof/phase-20b.md). Single completion commit `phase-20b: implement subscription
+  lifecycle and invoices` at local completion, then push + STOP (no PR/merge, no Phase 20C).
+- **Phase 20A reconciliation (done):** PR #35 MERGED (squash `6813690…`, impl `a31cd00…`, head
+  `56a81bd…`, merged 2026-07-11 07:56:09Z, five-gate CI SUCCESS, blank reviewDecision = solo-maintainer
+  exception, not independent approval). Reconciled proof-20a/PROGRESS/CHANGELOG/register(REM-ENUM-001)/
+  traceability(SRV-BILLING-CAT-001) → `verified_complete`. 20E percentage ledger stays a separate 20E item.
+- **Specification gates (decision table in proof-20b.md):**
+  - **B1 (trial anchor)** — RESOLVED from evidence: `trial_started_at` = Merchant-Admin creation time;
+    subscription bound at first-time setup; `trial_days_snapshot` from effective `default_trial_days`;
+    idempotent; settings changes never rewrite an existing trial. (§48, §13.9 l.907, §25.2)
+  - **B2 (terminal projection)** — RESOLVED by product-owner decision: `cancelled`/`expired` →
+    `merchants.billing_status = suspended_billing`, distinct reasons `subscription_cancelled`/
+    `subscription_expired`, projected only at the effective terminal boundary; no auto terminal→active.
+    (`merchants.billing_status` CHECK has 5 values, no cancelled/expired.)
+  - **B3 (invoice numbering)** — RESOLVED (owned): expand `invoice_number_sequences.scope` to add
+    `subscription_invoice`; independent per-merchant gap-free counter; shipped migration not edited.
+  - **B4 (escalation idempotency)** — RESOLVED (owned): `billing_escalation_events.period_boundary date
+    NOT NULL` + `UNIQUE(merchant_subscription_id, event_type, period_boundary)`; never `created_at`.
+  - **B5 (non-fixed mode)** — RESOLVED (derived): `IssueSubscriptionInvoice` fails closed on a
+    percentage-requiring mode (`billing_mode_not_supported` 422); never a silent undercharge. (§50/§51/§52)
+- **Schema/migrations planned (Increment 2):** `2026_07_11_000001..000005` create
+  `merchant_subscriptions`, `scheduled_plan_changes`, `subscription_invoices`,
+  `subscription_invoice_items`, `billing_escalation_events`; `_000006` expands
+  `invoice_number_sequences.scope`. All merchant-owned (`merchant_id`, no `branch_id`). Data dictionary
+  entries complete in `billing-and-wallet.md` (§20B section, column-level).
+- **State machines (Increment 1, done):** `merchant-subscription.md`, `merchant-billing-status.md`
+  (projection), `scheduled-plan-change.md`, `subscription-invoice.md`, `billing-escalation.md`.
+- **Enums planned:** `MerchantSubscriptionStatus`(7), `MerchantBillingStatus`(5),
+  `ScheduledPlanChangeStatus`(3), `SubscriptionInvoiceStatus`(9), `BillingEscalationEventType`(5),
+  `WalletRegistrationStatus`(4); reuse Phase 20A `BillingInterval`(5)/`BillingMode`(3).
+- **Permissions:** activate `merchant.subscription.{view,plan_change,invoice.view,invoice.download}`,
+  `platform.registration_monitor.view`, `platform.merchant.{view,suspend,reactivate,deactivate}`;
+  reconcile legacy `merchant.tier.update`→`merchant.subscription.plan_change` and
+  `platform.merchants.govern`→`platform.merchant.suspend`. Do NOT activate the 20D-W pay/attempt keys.
+- **Screens (inventory phase == 20B):** `subscription-dashboard`, `plan-management`,
+  `subscription-invoices` (merchant), `platform-registration-monitoring` (platform). Each needs a §27.1 spec.
+- **Inherited-and-owned closed here:** the five 20A-created-but-20B-owned tables + billing-status
+  projection; `plan-management`/`platform-registration-monitoring` inventory (retagged 20A→20B); Phase 17
+  billing read-only seam → real `merchants.billing_status`; Phase 10F boolean seam → real billing status;
+  Phase 19 typed audit + `AuditMutationCoverage` for every 20B mutation.
+- **Exclusions (owner phases):** promotions/free-periods → 20C; Wallet runtime/outbox/STK/PayBill/
+  webhooks/payments/reconciliation/credits → 20D-W (Gate W); percentage & fixed-plus-% ledger/
+  adjustments/disputes → 20E; compensation → 20F; commission/salary → 20G; payouts → 20H; R&E → 21R;
+  notifications/reports → 21N; SMS → 21S; search → 22; hardening → 23; performance → 24; deployment → 25.
+  `mpesa_offline` merchant-client terminology preserved. 20B ships nullable Wallet projection columns only.
+- **Increments:** 1 (reconciliation + gates + data dictionary + state machines + traceability) — **DONE**;
+  2 (migrations + enums + schema tests + PG fresh-build) — **DONE + green**; 3 (calculator + lifecycle +
+  projection + gate + scheduled changes + onboarding trial-wiring + scheduler) — **DONE + green** (245
+  onboarding+billing tests); 4 (invoice issuance + numbering + items + PDF/10F + escalation) — **DONE + green**
+  (253 billing tests); 5 (permissions + policies + requests/resources/controllers/routes + audit + OpenAPI/TS) — next;
+  6 (frontend + nav + inventory + §27.1 specs + Vitest); 7 (Playwright + a11y + full gates + single commit + push).
+- **Increment 7 (COMPLETE + green — E2E + full local gates):** `tests/e2e/phase-20b.spec.ts` (23 tests,
+  all pass) drives the real frontend against stubbed `/me` + `/api/v1`: dashboard across trialing/active/
+  read_only_grace/overdue/suspended + terminal cancelled/expired + MFA-challenge redirect; no-proration
+  schedule/cancel; billing-read-only control removal; structured 409; invoice detail + exact
+  payment-reference-pending; new-PDF blocked in read-only vs existing-PDF downloadable; registration
+  monitoring; merchant directory/detail with operational vs billing separated; suspend with mandatory
+  reason + fresh-step-up 403 guidance; reactivate not clearing billing suspension; forbidden-UI absence;
+  merchant role denied platform route; axe serious/critical=0 (light+dark) on dashboard + governance
+  dialog; no overflow at 360/768/1280; dialog focus management + restoration. Two initial failures fixed
+  (membership role enum value `merchant_admin`; `text-primary`→`text-heading` AA-contrast links).
+  **Full local gate battery green:** contracts (openapi 203 ops / api.ts / permission-types --check /
+  contract:check) clean; `composer validate --strict` valid; Pint PASS (1129); Larastan L8 clean;
+  backend `php artisan test` 1348 pass / 7 skip / 0 fail + `--parallel` 1348 / 0 fail; frontend ESLint 0
+  errors, vue-tsc clean, Vitest 308 pass, build ✓, full Playwright 292 pass; security composer audit no
+  advisories, npm audit clean at high (2 moderate dev-dep advisories reported truthfully), gitleaks no
+  leaks; Docker dev + prod images built (sequential, not during Playwright). Phase 20B →
+  **local_complete pending PR CI/review/merge** (NOT verified_complete).
+- **Increment 6 (COMPLETE + green — frontend):** four Phase 20B screens on the existing layouts/router/
+  Pinia/design-system, driven by the regenerated generated API + permission types, server `can` maps and
+  structured errors (UX only; backend authoritative). Stores: `subscriptionStore` (dashboard/plans/
+  scheduled-change + schedule/cancel), `subscriptionInvoiceStore` (list/detail + generatePdf mutation +
+  downloadLink read + exact payment-reference copy), `platformMerchantStore` (registration-monitor/
+  merchants/detail + suspend/reactivate/deactivate). Screens: `SubscriptionDashboard` (status + separate
+  billing status + plan/price/dates + scheduled/latest-invoice summaries + read-only explanation),
+  `PlanManagement` (plans + effective prices; schedule/cancel no-proration next-cycle change; server
+  effective date; controls removed in read-only; 409/422 surfaced), `SubscriptionInvoices` (list/detail;
+  payment-reference-pending; Generate PDF mutation blocked in read-only vs Download existing PDF read),
+  `RegistrationMonitoring` (consolidated tabs: monitoring + merchant directory/detail with operational/
+  billing separated + suspend/reactivate/deactivate via reason modal + confirmation + step-up surfacing +
+  focus restoration). Navigation (`roleNavigation.ts` + `role-navigation.yaml`) 5 items planned→live;
+  inventory (`inventory.json` + `.yaml`) 4 screens planned→implemented + 4 regenerated §27.1 specs.
+  Gates: lint 0 errors, typecheck clean, **308 vitest pass** (7 new specs), build ✓. No merchant-create/
+  first-admin/impersonation/payment/Wallet UI.
+- **Increment 5 (COMPLETE + green — atomic permission/API/security/contract flip):** activated the nine
+  canonical §19.2 keys (`merchant.subscription.{view,plan_change,invoice.view,invoice.download}` →
+  merchant_admin; `platform.{registration_monitor.view,merchant.view,merchant.suspend,merchant.reactivate,
+  merchant.deactivate}` → super_admin) and RETIRED the two dead legacy keys (`merchant.tier.update` →
+  successor `merchant.subscription.plan_change`, dead `MerchantPolicy::updateTier()` deleted;
+  `platform.merchants.govern` **truthfully split** into suspend/reactivate/deactivate — no 1:1 successor).
+  **Counts (computed):** active 93→100, planned 77→68, legacy-active 14→12. Merchant API (existing tenant
+  group; `TenantMutation`): subscription dashboard/plans/scheduled-change reads + schedule/cancel plan
+  change (`merchant.subscription.plan_change` + `EnsureBillingMutable`, server-computed `effective_at`, no
+  proration) + invoice list/detail + PDF generate (mutation, billing-read-only-blocked) + existing-PDF
+  download-link (read, allowed in read-only, reuses `FileAccessService`). Platform API (existing platform
+  group; `ResolvePlatformContext` + `EnsurePrivilegedMfa`; `PlatformMutation`): registration-monitor +
+  merchant list/detail + `SuspendMerchant`/`ReactivateMerchant`/`DeactivateMerchant` (mandatory reason +
+  `RequireFreshMfa:merchant_governance`; mutate `merchants.status` only, never `billing_status`; validate
+  transition → 422; reactivate never clears a billing suspension). Three typed audit events
+  `merchant.{suspended:high,reactivated:high,deactivated:critical}` + six routes mapped in
+  `AuditMutationCoverage`. Contracts regenerated: OpenAPI 203 ops, `api.ts` (contract:check OK),
+  `permissions.ts` (`--check` clean). Tests: `Phase20BPermissionActivationTest` (4),
+  `MerchantSubscriptionApiTest` (13), `PlatformMerchantGovernanceApiTest` (10); updated matrix/legacy/
+  planned/no-creation guards. Atomic guard battery (62) green; **full backend 1350 pass / 7 skip / 0 fail**;
+  Pint clean (1129); Larastan L8 clean. `merchants.status` (operational) ⟂ `merchants.billing_status`.
+- **Increment 4 (COMPLETE + green):** `SubscriptionInvoiceStateMachine` (`void`-only terminal);
+  `AllocateSubscriptionInvoiceNumber` (row-locked independent `subscription_invoice` scope, `SUB-000001…`,
+  Gate B3); `IssueSubscriptionInvoice` (Gate B5 fail-closed for non-fixed mode — no rows/audit; immutable
+  `plan_fee` item = captured price; Wallet nulls; idempotent per period); `VoidSubscriptionInvoice`,
+  `MarkSubscriptionInvoiceOverdue`; `RecordBillingEscalationEvent` (append-only per
+  `(subscription,event_type,period_boundary)`, Gate B4). Invoice + item immutability guards. **PDF:**
+  `GenerateSubscriptionInvoicePdf` via Phase 10F (`GeneratedFileWriter`, purpose `billing_invoice_pdf`,
+  dependency-free `MinimalPdf` renderer), migration `2026_07_11_000009` (`file_id`/`pdf_version`);
+  billing-status gate (403 `billing_read_only`, blocked in read_only_grace/suspended, existing
+  downloadable); exact "Payment reference pending — see your billing dashboard"; versioned regeneration
+  (prior revoked); `subscription_invoice.pdf_generated` audit. 9 new invoice/escalation audit events.
+  Tests: `SubscriptionInvoiceTest` (11), `BillingEscalationTest` (4), `SubscriptionInvoicePdfTest` (8),
+  `SubscriptionInvoicePdfDownloadTest` (4); `--group=billing` 253 pass / 539 assertions; disposable PG16
+  fresh-build (82 migrations) green; Pint + Larastan clean.
+- **Increment 3 onboarding+scheduler (green):** first-time setup now selects an active plan + effective
+  price (`subscription_plan_ulid`/`subscription_plan_price_ulid`; `ResolveSetupPlanPrice` validates
+  active/belongs/effective) and binds the trial via `CreateTrialSubscription` atomically (rollback on
+  failure; §7.4 — no existing completed merchants, only PermissionSeeder; guard test added).
+  `ProcessSubscriptionLifecycle` command registered daily/Nairobi/withoutOverlapping/onOneServer, driving
+  trial-expiry→grace/expire, grace→suspend, and due scheduled-change application via existing actions
+  (scope-free bounded scan + per-item tenant context + row lock + redacted failure). Tests:
+  `CompleteFirstTimeSetupSubscriptionTest` (7), `Phase20BSchedulerRegistrationTest` (2),
+  `ProcessSubscriptionLifecycleTest` (7), `FirstTimeSetupTest` (7 updated) — 245 onboarding+billing pass;
+  Pint + Larastan clean.
+- **Increment 3 result (domain core, green on PG16):** `BillingIntervalCalculator` (Nairobi, 5 intervals,
+  drift-free clamps; 14 tests); `MerchantSubscriptionStateMachine` + `MerchantBillingStatusReason` enum +
+  `projectedBillingStatus()` (Gate B2); `ProjectMerchantBillingStatus` (sole transactional projection,
+  atomic rollback); 11 lifecycle/scheduled actions (`CreateTrialSubscription` [B1 anchor = founding admin
+  membership, idempotent] … `ApplyScheduledPlanChange` [exactly-once, no proration]); `EnsureBillingMutable`
+  gate (403 `billing_read_only`, reads only `merchants.billing_status`); Merchant `billing_status` cast +
+  `billingBlocksMutations()`; 13 typed AuditEvent cases + severities. Tests: state-machine, lifecycle (14),
+  scheduled (7), gate (6), calculator (14) — **full Phase 20B suite 114 pass / 227 assertions**; Pint +
+  Larastan L8 clean. Dev DB: all 8 migrations `Ran` (verified via migrate:status; no migrate:fresh on dev).
+- **Increment 2 result (green on PG16):** 8 forward-only migrations (5 create + 3 expand:
+  `subscription_plan_prices` composite-key unique, `merchants.billing_status`/`billing_status_reason`,
+  `invoice_number_sequences` scope); 7 backed enums (6 canonical + `SubscriptionInvoiceItemType`);
+  5 models + 5 factories; `TenantOwnership` TENANT_OWNED + MODELS registration; 8 manifest entries.
+  Tests: `Phase20BSchemaTest` 46, `Phase20BEnumParityTest` 9, coverage guards 18, billing/phase20a 142 —
+  all green. Disposable `servana_p20b_check` `migrate:fresh --seed` (81 migrations) green, dropped, dev
+  untouched. Pint clean (1067); Larastan L8 clean; `git diff --check` clean. Failures fixed: Pint FQCN
+  docblocks; Larastan `rawSqlConcat` (hardcoded literal CHECKs, parity-guarded); Larastan `missingType`
+  (added `@return list<string>`).
+- **Exact next action:** Increment 7 — Phase 20B Playwright E2E (dashboard across trialing/active/
+  read_only_grace/overdue/suspended + terminal cancelled/expired; next-cycle plan change + cancel +
+  no-proration; invoice list/detail + payment-reference-pending; new PDF blocked in read-only vs existing
+  downloadable; registration monitoring + governance with reason + fresh step-up; merchant roles denied
+  platform routes; no merchant-create/impersonation/payment-Wallet UI) across 360/768/1280 × light/dark +
+  keyboard + visible focus + dialog focus restoration + error summaries + status announcements + axe
+  serious/critical=0 + no page-level horizontal overflow; then the full local gate battery (regenerate
+  contracts; backend validate/pint/stan/test/parallel + targeted guards; frontend lint/typecheck/test/
+  build/e2e; security composer/npm audit + gitleaks; sequential docker dev+prod builds) and the SINGLE
+  completion commit `phase-20b: implement subscription lifecycle and invoices`. Phase 20B stays
+  **in_progress** until all gates pass, then **local_complete pending PR CI/review/merge** (never
+  `verified_complete`). Do NOT commit/push partial; do NOT start 20C.
 
 ## Phase 19 — Audit Logging Completion & Flagged Events (verified_complete)
 

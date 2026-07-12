@@ -47,13 +47,15 @@ function legacyActiveKeys(PermissionMatrix $matrix): array
     ));
 }
 
-it('carries exactly the 14 known legacy-active keys', function (): void {
+it('carries exactly the 12 known legacy-active keys', function (): void {
     // Phase 20A retired 3 legacy platform keys (platform.settings.manage,
     // platform.billing.configure, platform.fee_rules.manage) by activating their canonical
-    // successors and deleting the legacy rows — 17 → 14.
+    // successors and deleting the legacy rows — 17 → 14. Phase 20B retired 2 more
+    // (merchant.tier.update → merchant.subscription.plan_change; platform.merchants.govern,
+    // truthfully SPLIT into platform.merchant.suspend/reactivate/deactivate) — 14 → 12.
     $legacy = legacyActiveKeys(app(PermissionMatrix::class));
 
-    expect($legacy)->toHaveCount(14);
+    expect($legacy)->toHaveCount(12);
 });
 
 it('reconciles every legacy key to a PLANNED successor (or null) and a valid owning phase', function (): void {

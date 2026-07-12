@@ -18,6 +18,8 @@ final class FirstTimeSetupData
 {
     public function __construct(
         public readonly ServiceFeeTier $serviceFeeTier,
+        public readonly string $subscriptionPlanUlid,
+        public readonly string $subscriptionPlanPriceUlid,
         public readonly string $businessCategory,
         public readonly string $contactPhone,
         public readonly ?string $contactEmail,
@@ -42,6 +44,8 @@ final class FirstTimeSetupData
     {
         return new self(
             serviceFeeTier: ServiceFeeTier::from((string) $v['service_fee_tier']),
+            subscriptionPlanUlid: (string) $v['subscription_plan_ulid'],
+            subscriptionPlanPriceUlid: (string) $v['subscription_plan_price_ulid'],
             businessCategory: (string) $v['business_category'],
             contactPhone: (string) $v['contact_phone'],
             contactEmail: self::nullableString($v['contact_email'] ?? null),

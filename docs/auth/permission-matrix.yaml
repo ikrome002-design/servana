@@ -1822,8 +1822,8 @@ keys:
   merchant.subscription.invoice.download:
     key: merchant.subscription.invoice.download
     description: Download (merchant / subscription / invoice).
-    implementation_status: planned
-    owning_phase: Phase 20B
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -1832,7 +1832,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: subscription_invoice.pdf_generated
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -1846,8 +1846,8 @@ keys:
   merchant.subscription.invoice.view:
     key: merchant.subscription.invoice.view
     description: View (merchant / subscription / invoice).
-    implementation_status: planned
-    owning_phase: Phase 20B
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -1856,7 +1856,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -1942,8 +1942,8 @@ keys:
   merchant.subscription.plan_change:
     key: merchant.subscription.plan_change
     description: Svc SchedulePlanChange (no proration).
-    implementation_status: planned
-    owning_phase: Phase 20B
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -1952,7 +1952,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: subscription.plan_change_cancelled; subscription.plan_change_scheduled
     audit_severity: high
     backend_policy_or_service: svc SchedulePlanChange (no proration)
     frontend_ux_usage: visibility_only
@@ -1966,8 +1966,8 @@ keys:
   merchant.subscription.view:
     key: merchant.subscription.view
     description: View (merchant / subscription).
-    implementation_status: planned
-    owning_phase: Phase 20B
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -1976,7 +1976,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -1987,30 +1987,6 @@ keys:
       - PermissionMatrix/merchant.subscription.view_allows
     negative_tests:
       - PermissionMatrix/merchant.subscription.view_denies
-  merchant.tier.update:
-    key: merchant.tier.update
-    description: "Change the merchant service-fee tier."
-    implementation_status: active
-    owning_phase: Phase 20B
-    canonical_successor: merchant.subscription.plan_change
-    override_policy: revocable_only
-    scope: merchant
-    billing_read_only_behavior: block
-    period_lock_behavior: n/a
-    entitlement_key: null
-    mfa_required: false
-    step_up_required: false
-    audit_event: none
-    audit_severity: warn
-    backend_policy_or_service: legacy runtime key pending §19 reconciliation
-    frontend_ux_usage: visibility_only
-    default_roles:
-      - merchant_admin
-    maker_checker_incompatibilities: []
-    positive_tests:
-      - PermissionMatrix/merchant.tier.update_allows
-    negative_tests:
-      - PermissionMatrix/merchant.tier.update_denies
   merchant.user.deactivate:
     key: merchant.user.deactivate
     description: Deactivate (merchant / user).
@@ -2737,8 +2713,8 @@ keys:
   platform.merchant.deactivate:
     key: platform.merchant.deactivate
     description: Deactivate (platform / merchant).
-    implementation_status: planned
-    owning_phase: Phase 20B
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -2747,7 +2723,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: merchant.deactivated
     audit_severity: crit
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2761,8 +2737,8 @@ keys:
   platform.merchant.reactivate:
     key: platform.merchant.reactivate
     description: Reactivate (platform / merchant).
-    implementation_status: planned
-    owning_phase: Phase 20B
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -2771,7 +2747,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: merchant.reactivated
     audit_severity: high
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2785,8 +2761,8 @@ keys:
   platform.merchant.suspend:
     key: platform.merchant.suspend
     description: Action SuspendMerchant (merchants.status; never billing recovery).
-    implementation_status: planned
-    owning_phase: Phase 20B
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -2795,7 +2771,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: merchant.suspended
     audit_severity: high
     backend_policy_or_service: action SuspendMerchant (merchants.status; never billing recovery)
     frontend_ux_usage: visibility_only
@@ -2809,8 +2785,8 @@ keys:
   platform.merchant.view:
     key: platform.merchant.view
     description: View (platform / merchant).
-    implementation_status: planned
-    owning_phase: Phase 20B
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -2819,7 +2795,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2830,30 +2806,6 @@ keys:
       - PermissionMatrix/platform.merchant.view_allows
     negative_tests:
       - PermissionMatrix/platform.merchant.view_denies
-  platform.merchants.govern:
-    key: platform.merchants.govern
-    description: Govern merchant accounts.
-    implementation_status: active
-    owning_phase: Phase 20B
-    canonical_successor: platform.merchant.suspend
-    override_policy: non_overridable
-    scope: platform
-    billing_read_only_behavior: block
-    period_lock_behavior: n/a
-    entitlement_key: null
-    mfa_required: true
-    step_up_required: false
-    audit_event: none
-    audit_severity: warn
-    backend_policy_or_service: legacy runtime key pending §19 reconciliation
-    frontend_ux_usage: visibility_only
-    default_roles:
-      - super_admin
-    maker_checker_incompatibilities: []
-    positive_tests:
-      - PermissionMatrix/platform.merchants.govern_allows
-    negative_tests:
-      - PermissionMatrix/platform.merchants.govern_denies
   platform.wallet_configuration.manage:
     key: platform.wallet_configuration.manage
     description: Manage Wallet webhook key-ID sets, circuit-breaker reset, and verified inbox replay (SUP-06; was platform.mpesa_configuration.manage).
@@ -3170,8 +3122,8 @@ keys:
   platform.registration_monitor.view:
     key: platform.registration_monitor.view
     description: View (platform / registration_monitor).
-    implementation_status: planned
-    owning_phase: Phase 20B
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -3180,7 +3132,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only

@@ -75,6 +75,20 @@ final class TenantAccessException extends Exception
         );
     }
 
+    /**
+     * Billing access is read-only (Plan §22; `read_only_grace` / `suspended_billing`). Reads and
+     * existing-file downloads continue; merchant mutations and new export/report/PDF generation are
+     * blocked until billing is restored. Reads only `merchants.billing_status`.
+     */
+    public static function billingReadOnly(): self
+    {
+        return new self(
+            'billing_read_only',
+            'Your billing access is read-only. Restore billing to make changes.',
+            403,
+        );
+    }
+
     public function render(Request $request): JsonResponse
     {
         $correlationId = (string) app(CorrelationId::class)->get();

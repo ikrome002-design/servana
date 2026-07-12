@@ -37,6 +37,23 @@ export const merchantRoutes: RouteRecordRaw[] = [
         name: 'merchant.period-reopen-approvals',
         component: () => import('@/pages/merchant/PeriodReopenApprovals.vue'),
       },
+      // Phase 20B — subscription self-service (Merchant Administrator). Backend remains
+      // authoritative (MerchantSubscriptionPolicy + EnsureBillingMutable); these are UX surfaces.
+      {
+        path: 'subscription',
+        name: 'merchant.subscription',
+        component: () => import('@/pages/merchant/SubscriptionDashboard.vue'),
+      },
+      {
+        path: 'plan',
+        name: 'merchant.plan',
+        component: () => import('@/pages/merchant/PlanManagement.vue'),
+      },
+      {
+        path: 'subscription-invoices',
+        name: 'merchant.invoices',
+        component: () => import('@/pages/merchant/SubscriptionInvoices.vue'),
+      },
     ],
   },
 ];

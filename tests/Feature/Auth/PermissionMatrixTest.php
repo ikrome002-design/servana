@@ -39,7 +39,10 @@ function expectedMatrix(): array
 {
     return [
         'merchant_admin' => [
-            'merchant.profile.manage', 'merchant.tier.update',
+            'merchant.profile.manage',
+            // Phase 20B: subscription self-service (replaces the retired `merchant.tier.update`).
+            'merchant.subscription.view', 'merchant.subscription.plan_change',
+            'merchant.subscription.invoice.view', 'merchant.subscription.invoice.download',
             'branches.create', 'branches.manage_users_lifecycle',
             // Phase 17: no invoice key (Plan §10.2/§19.3) — invoice visibility via reports.
             'receipt.view',
@@ -117,7 +120,11 @@ function expectedMatrix(): array
             'audit.flagged_event.create', 'audit.flagged_event.update_status', 'audit.flagged_event.resolve_metadata',
         ],
         'super_admin' => [
-            'platform.merchants.govern', 'platform.audit.view',
+            // Phase 20B — merchant governance (replaces the retired `platform.merchants.govern`,
+            // truthfully split into a read surface + three operational-status mutations).
+            'platform.registration_monitor.view', 'platform.merchant.view',
+            'platform.merchant.suspend', 'platform.merchant.reactivate', 'platform.merchant.deactivate',
+            'platform.audit.view',
             // Phase 20A — platform billing catalogue governance (replaces the retired
             // platform.settings.manage / platform.billing.configure / platform.fee_rules.manage).
             'platform.settings.view', 'platform.settings.update',

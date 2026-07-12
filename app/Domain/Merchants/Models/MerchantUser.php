@@ -38,6 +38,8 @@ use Illuminate\Support\Str;
  * @property Carbon|null $activated_at
  * @property Carbon|null $suspended_at
  * @property Carbon|null $deactivated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class MerchantUser extends Model
 {

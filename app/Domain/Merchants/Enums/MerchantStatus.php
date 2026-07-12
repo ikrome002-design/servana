@@ -28,4 +28,24 @@ enum MerchantStatus: string
     {
         return $this === self::PendingSetup;
     }
+
+    /**
+     * Operational-status governance transitions (Plan §22, §24.1; Phase 20B). Super-Admin
+     * governance mutates `merchants.status` ONLY (billing status is an orthogonal authority):
+     *
+     *   - suspend:    active → suspended
+     *   - reactivate: suspended → active (never clears a billing suspension)
+     *   - deactivate: active | suspended → deactivated (terminal)
+     *
+     * `pending_setup` is not a governable operational state; `deactivated` is terminal.
+     */
+    public function canTransitionTo(self $to): bool
+    {
+        return match ($to) {
+            self::Suspended => $this === self::Active,
+            self::Active => $this === self::Suspended,
+            self::Deactivated => $this === self::Active || $this === self::Suspended,
+            self::PendingSetup => false,
+        };
+    }
 }

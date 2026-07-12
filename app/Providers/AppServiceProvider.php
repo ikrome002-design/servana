@@ -10,8 +10,10 @@ use App\Domain\Audit\Models\AuditFlaggedEvent;
 use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Audit\Services\DatabaseAuditRecorder;
 use App\Domain\Billing\Contracts\PlanContextResolver;
+use App\Domain\Billing\Models\MerchantSubscription;
 use App\Domain\Billing\Models\PlatformBillingSettings;
 use App\Domain\Billing\Models\PreferredPersonnelFeeRule;
+use App\Domain\Billing\Models\SubscriptionInvoice;
 use App\Domain\Billing\Models\SubscriptionPlan;
 use App\Domain\Billing\Models\SubscriptionPlanPrice;
 use App\Domain\Billing\Services\UnboundPlanContextResolver;
@@ -61,6 +63,7 @@ use App\Policies\FinancialPeriodLockPolicy;
 use App\Policies\InvoicePolicy;
 use App\Policies\MerchantBranchPolicy;
 use App\Policies\MerchantPolicy;
+use App\Policies\MerchantSubscriptionPolicy;
 use App\Policies\MerchantUserPolicy;
 use App\Policies\PaymentRecordingGroupPolicy;
 use App\Policies\PlatformBillingSettingsPolicy;
@@ -74,6 +77,7 @@ use App\Policies\ServicePolicy;
 use App\Policies\ServiceSessionPolicy;
 use App\Policies\StaffInvitationPolicy;
 use App\Policies\StaffProfilePolicy;
+use App\Policies\SubscriptionInvoicePolicy;
 use App\Policies\SubscriptionPlanPolicy;
 use App\Policies\SubscriptionPlanPricePolicy;
 use App\Support\CorrelationId;
@@ -139,6 +143,8 @@ class AppServiceProvider extends ServiceProvider
         PlatformBillingSettings::class => PlatformBillingSettingsPolicy::class,
         SubscriptionPlan::class => SubscriptionPlanPolicy::class,
         SubscriptionPlanPrice::class => SubscriptionPlanPricePolicy::class,
+        MerchantSubscription::class => MerchantSubscriptionPolicy::class,
+        SubscriptionInvoice::class => SubscriptionInvoicePolicy::class,
         PreferredPersonnelFeeRule::class => PreferredPersonnelFeeRulePolicy::class,
     ];
 

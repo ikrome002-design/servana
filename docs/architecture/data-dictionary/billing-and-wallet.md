@@ -266,19 +266,224 @@ finalized invoice snapshot is unchanged.
 
 ## Phase 20B — Subscriptions and invoices (nullable Wallet projections only)
 
-| Table / column | Owner phase | Purpose |
-|---|---|---|
-| `merchant_subscriptions` | 20B | Subscription lifecycle; `merchants.billing_status` is access authority |
-| `scheduled_plan_changes` | 20B | Next-cycle plan changes (no proration) |
-| `subscription_invoices` | 20B | Issued invoice financial snapshot |
-| `subscription_invoice_items` | 20B | Line items (plan fee, rollups, adjustments) |
-| `subscription_invoices.wallet_payment_id` | 20B | Nullable; Wallet payment resource ID (populated 20D-W) |
-| `subscription_invoices.wallet_registration_status` | 20B | `unregistered` \| `pending` \| `registered` \| `failed` |
-| `subscription_invoices.wallet_registered_at` | 20B | Nullable timestamp |
-| `subscription_invoices.account_reference` | 20B | Nullable until Wallet registration; immutable `SRV-PAY-*` once set (ADR-014) |
+All five Phase 20B tables are **merchant-owned** (`merchant_id` present, `BelongsToMerchant`) but
+carry **no `branch_id`** (subscriptions/billing are merchant-level, not branch-level). ULIDs are the
+external route keys; foreign IDs 404 across tenants. Money is integer minor units. Statuses are
+backed enums + PostgreSQL CHECKs; transitions go through the state machines in
+`docs/architecture/state-machines/`.
+
+Migration files (forward-only; added to `docs/architecture/migrations/manifest.yaml`):
+`2026_07_11_000001_create_merchant_subscriptions_table`,
+`_000002_create_scheduled_plan_changes_table`,
+`_000003_create_subscription_invoices_table`,
+`_000004_create_subscription_invoice_items_table`,
+`_000005_create_billing_escalation_events_table`,
+`_000006_expand_invoice_number_sequences_add_subscription_invoice_scope` (expand).
+
+### `merchant_subscriptions` (Plan §13.9, §22, §48; migration `2026_07_11_000001`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | public id + route key; `UNIQUE` |
+| `merchant_id` | bigint | no | FK `merchants(id)` ON DELETE RESTRICT; `BelongsToMerchant` |
+| `plan_id` | bigint | no | FK `subscription_plans(id)` ON DELETE RESTRICT |
+| `price_id` | bigint | no | FK `subscription_plan_prices(id)` ON DELETE RESTRICT; **captured at binding** (ADR-011 sole price source) |
+| `status` | varchar | no | CHECK ∈ (`trialing`,`active`,`read_only_grace`,`overdue`,`suspended_billing`,`cancelled`,`expired`); `MerchantSubscriptionStatus` |
+| `billing_interval` | varchar | no | CHECK ∈ (`weekly`,`bi_weekly`,`monthly`,`quarterly`,`annual`); `BillingInterval`; must equal `price.billing_interval` at binding |
+| `trial_days_snapshot` | int | no | `CHECK (trial_days_snapshot >= 0)`; snapshot of effective `platform_billing_settings.default_trial_days` at binding — later settings changes never rewrite it |
+| `trial_started_at` | timestamptz | no | **= Merchant-Administrator creation timestamp** (Gate B1 anchor) |
+| `trial_ends_at` | timestamptz | no | `= trial_started_at + trial_days_snapshot` (Nairobi day math); `CHECK (trial_ends_at >= trial_started_at)` |
+| `current_period_start` | date | no | |
+| `current_period_end` | date | no | `CHECK (current_period_end > current_period_start)` |
+| `high_value_payout_threshold_minor` | bigint | yes | `CHECK (… IS NULL OR … >= 0)` |
+| `cancelled_at` | timestamptz | yes | effective terminal boundary for `cancelled` (B2: projection to `suspended_billing` only at/after this) |
+| `expired_at` | timestamptz | yes | effective terminal boundary for `expired` |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **One current non-terminal subscription per merchant:** partial unique index
+  `UNIQUE(merchant_id) WHERE status NOT IN ('cancelled','expired')`. Terminal history is retained
+  (no destructive delete).
+- **Plan↔price consistency:** enforced in the binding action (price belongs to plan; interval
+  matches) — proven by tests; FK RESTRICT prevents plan/price deletion while referenced.
+- **Access authority is `merchants.billing_status`**, projected transactionally from this record by
+  the billing-status projection service (§22); request authorization never reads
+  `merchant_subscriptions.status` directly.
+- **Trial anchor (Gate B1):** `trial_started_at` preserves the Merchant-Administrator creation time
+  even though the row is created during first-time setup once plan+price are chosen. Binding is
+  idempotent (no duplicate active subscription under replay/concurrency).
+- **Indexes:** `UNIQUE(ulid)`; index `(merchant_id)`, `(status)`; partial unique (above).
+- **Lifecycle spec:** `docs/architecture/state-machines/merchant-subscription.md` +
+  `docs/architecture/state-machines/merchant-billing-status.md`.
+- **Audit:** `subscription.created`, `subscription.trial_started`, `subscription.activated`,
+  `subscription.read_only_grace_entered`, `subscription.overdue`, `subscription.suspended_billing`,
+  `subscription.cancelled`, `subscription.expired`, `subscription.recovered`,
+  `merchant.billing_status_changed` (final canonical names confirmed against `AuditEvent` in
+  Increment 5). **Retention:** permanent. **Factory:** `MerchantSubscriptionFactory` (per-status).
+- **Positive:** trial anchor = MA creation time; trial-days snapshot; each valid transition;
+  transactional projection incl. terminal→`suspended_billing`; one-current-subscription. **Negative:**
+  duplicate active subscription rejected; interval≠price rejected; invalid transition → 422; settings
+  change does not rewrite an existing trial; subscription status alone never grants access.
+
+### `scheduled_plan_changes` (Plan §13.9, §48; migration `2026_07_11_000002`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | `UNIQUE` |
+| `merchant_id` | bigint | no | FK `merchants(id)` ON DELETE RESTRICT; `BelongsToMerchant` |
+| `merchant_subscription_id` | bigint | no | FK `merchant_subscriptions(id)` ON DELETE RESTRICT |
+| `target_plan_id` | bigint | no | FK `subscription_plans(id)` ON DELETE RESTRICT |
+| `target_price_id` | bigint | no | FK `subscription_plan_prices(id)` ON DELETE RESTRICT; target price must belong to target plan (action-enforced) |
+| `effective_at` | date | no | next-cycle boundary (no proration) |
+| `status` | varchar | no | CHECK ∈ (`scheduled`,`applied`,`cancelled`); `ScheduledPlanChangeStatus` |
+| `applied_at` | timestamptz | yes | set when `applied` |
+| `cancelled_at` | timestamptz | yes | set when `cancelled` |
+| `created_by` | bigint | no | FK `users(id)` ON DELETE RESTRICT |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **One applicable scheduled change per subscription/cycle:** partial unique index
+  `UNIQUE(merchant_subscription_id, effective_at) WHERE status = 'scheduled'`.
+- **No proration; applied only at next cycle.** `applied`/`cancelled` rows are immutable
+  (transitions only via the state machine; no in-place edit of a terminal row).
+- **Indexes:** `UNIQUE(ulid)`; index `(merchant_id)`, `(merchant_subscription_id, status)`; partial
+  unique (above).
+- **Lifecycle spec:** `docs/architecture/state-machines/scheduled-plan-change.md`.
+- **Audit:** `subscription.plan_change_scheduled`, `.plan_change_applied`, `.plan_change_cancelled`.
+  **Retention:** permanent. **Factory:** `ScheduledPlanChangeFactory`.
+- **Positive:** schedule at next cycle; cancel scheduled; apply exactly once (concurrent-apply
+  protected by row lock); target plan/price consistency; history retained. **Negative:** second
+  scheduled change for the same cycle rejected; target price not on target plan rejected; applying an
+  already-applied change is a no-op/422.
+
+### `subscription_invoices` (Plan §13.9, §49, ADR-014; migration `2026_07_11_000003`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | `UNIQUE` |
+| `merchant_id` | bigint | no | FK `merchants(id)` ON DELETE RESTRICT; `BelongsToMerchant` |
+| `plan_id` | bigint | no | FK `subscription_plans(id)` ON DELETE RESTRICT (snapshot) |
+| `price_id` | bigint | no | FK `subscription_plan_prices(id)` ON DELETE RESTRICT (captured price) |
+| `invoice_number` | varchar | no | per-merchant unique; allocated from `invoice_number_sequences` scope `subscription_invoice` (Gate B3) |
+| `period_start` | date | no | |
+| `period_end` | date | no | `CHECK (period_end > period_start)` |
+| `subtotal_minor` | bigint | no | `CHECK (subtotal_minor >= 0)` |
+| `discount_minor` | bigint | no | default 0; `CHECK (discount_minor >= 0)`; 0 in 20B (no promotions until 20C) |
+| `total_minor` | bigint | no | `CHECK (total_minor >= 0)`; `CHECK (total_minor = subtotal_minor - discount_minor)` |
+| `currency` | char(3) | no | `CHECK (currency = upper(currency))` |
+| `balance_minor` | bigint | no | `CHECK (balance_minor >= 0)`; at issuance = `total_minor`; driven only by verified Wallet events in 20D-W |
+| `status` | varchar | no | CHECK ∈ (`draft`,`issued`,`pending_payment`,`partially_paid`,`paid`,`overdue`,`payment_failed`,`reconciliation_required`,`void`); `SubscriptionInvoiceStatus` |
+| `account_reference` | varchar | yes | Wallet `SRV-PAY-<ULID26>`; **null until 20D-W**; immutable once set (ADR-014) |
+| `wallet_payment_id` | varchar | yes | `UNIQUE`; **null in 20B** |
+| `wallet_registration_status` | varchar | no | CHECK ∈ (`unregistered`,`pending`,`registered`,`failed`) default `unregistered`; `WalletRegistrationStatus`; **`unregistered` in 20B** |
+| `wallet_registered_at` | timestamptz | yes | **null in 20B** |
+| `issued_at` | timestamptz | yes | set at `issued` |
+| `due_at` | timestamptz | yes | computed from interval math (§49) |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **Numbering (Gate B3):** `invoice_number` allocated gap-free per merchant under
+  `SELECT … FOR UPDATE` on `invoice_number_sequences (merchant_id, scope='subscription_invoice')` —
+  an independent counter from merchant-client invoices. `UNIQUE(merchant_id, invoice_number)`.
+- **Issued immutability:** once `status` leaves `draft` the financial fields
+  (`plan_id, price_id, invoice_number, period_*, subtotal_minor, discount_minor, total_minor,
+  currency, issued_at, due_at`) are immutable. The Wallet registration fields are an **orthogonal
+  technical projection**, not part of the financial snapshot, and never block issuance (ADR-014).
+- **Cancellation terminology:** subscription invoices use **`void`** only (never `cancelled`).
+- **Wallet forward-compatibility (20B):** ships the four nullable projection columns at their
+  defaults; **no** registration call, outbox intent, table, or consumer. PDF renders "Payment
+  reference pending — see your billing dashboard" while `account_reference` is null.
+- **Fail-closed mode (Gate B5):** issuance asserts effective `billing_mode = fixed_amount`; a
+  percentage-requiring mode raises `billing_mode_not_supported` (422) and issues nothing.
+- **PDF (Phase 10F; migration `2026_07_11_000009`):** additive `file_id` (nullable FK
+  `uploaded_files` RESTRICT) + `pdf_version` (int default 0) link the invoice to its current generated
+  PDF (purpose `billing_invoice_pdf`). Technical projection columns — **not** part of the immutable
+  financial snapshot (so `GenerateSubscriptionInvoicePdf` may update them post-issue). Each
+  regeneration writes a new `uploaded_files` version and revokes the prior one. Generation is blocked
+  in `read_only_grace`/`suspended_billing` (billing-status gate); existing PDFs stay downloadable.
+- **Indexes:** `UNIQUE(ulid)`; `UNIQUE(merchant_id, invoice_number)`; `UNIQUE(wallet_payment_id)`;
+  index `(merchant_id, status)`.
+- **Lifecycle spec:** `docs/architecture/state-machines/subscription-invoice.md`.
+- **Audit:** `subscription_invoice.issued`, `.overdue`, `.voided`, `.pdf_generated`.
+  **Retention:** permanent (financial). **Factory:** `SubscriptionInvoiceFactory`.
+- **Positive:** fixed-mode total = captured plan price; per-merchant number allocation; idempotent
+  issuance; Wallet columns default/null; issued fields immutable; PDF placeholder when unregistered;
+  overdue transition; void terminology; tenant isolation. **Negative:** editing issued financial
+  fields not available; percentage-mode issuance fails closed; cross-tenant read 404; no percentage
+  ledger row created; no Wallet call.
+
+### `subscription_invoice_items` (Plan §13.9, §49; migration `2026_07_11_000004`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `subscription_invoice_id` | bigint | no | FK `subscription_invoices(id)` ON DELETE RESTRICT |
+| `description` | varchar | no | non-empty |
+| `amount_minor` | bigint | no | `CHECK (amount_minor >= 0)` |
+| `type` | varchar | no | CHECK ∈ (`plan_fee`,`platform_fee_rollup`,`sms_rollup`,`adjustment`) |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **Immutable line items:** created at issuance, never edited/deleted (append-only via the invoice
+  workflow). 20B fixed mode issues a single `plan_fee` line equal to the captured price; it fabricates
+  **no** `platform_fee_rollup` (20E), `sms_rollup` (21S), promotion, or Wallet amounts.
+- **Indexes:** index `(subscription_invoice_id)`.
+- **Positive:** one `plan_fee` line = captured price; sum(items) = `subtotal_minor`. **Negative:**
+  item mutation not available; no non-plan_fee lines fabricated in 20B.
+
+### `billing_escalation_events` (Plan §13.15, §54; migration `2026_07_11_000005`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | `UNIQUE` |
+| `merchant_id` | bigint | no | FK `merchants(id)` ON DELETE RESTRICT; `BelongsToMerchant` |
+| `subscription_invoice_id` | bigint | yes | FK `subscription_invoices(id)` ON DELETE RESTRICT |
+| `merchant_subscription_id` | bigint | no | FK `merchant_subscriptions(id)` ON DELETE RESTRICT |
+| `event_type` | varchar | no | CHECK ∈ (`reminder`,`grace_entered`,`overdue`,`suspended_billing`,`recovered`); `BillingEscalationEventType` |
+| `from_billing_status` | varchar | yes | prior `merchants.billing_status` |
+| `to_billing_status` | varchar | yes | new `merchants.billing_status` |
+| `reason` | text | yes | redacted human reason |
+| `period_boundary` | date | no | **Gate B4** — the current-period boundary the event pertains to |
+| `created_at` | timestamptz | no | **append-only** (no `updated_at`; no UPDATE/DELETE) |
+
+- **Durable idempotency (Gate B4):** `UNIQUE(merchant_subscription_id, event_type, period_boundary)`
+  — idempotency is enforced by the constraint, **never** by `created_at`. A replayed escalation for
+  the same subscription/event/period is a no-op (ON CONFLICT DO NOTHING within the action).
+- **Append-only:** no application UPDATE/DELETE path; history preserved.
+- **Indexes:** `UNIQUE(ulid)`; `UNIQUE(merchant_subscription_id, event_type, period_boundary)`; index
+  `(merchant_id)`, `(merchant_subscription_id)`.
+- **Lifecycle spec:** `docs/architecture/state-machines/billing-escalation.md`.
+- **Audit:** `billing_escalation.reminder`, `.grace_entered`, `.overdue`, `.suspended`, `.recovered`.
+  **Retention:** permanent. **Factory:** `BillingEscalationEventFactory`.
+- **Positive:** one row per `(subscription, event_type, period_boundary)`; append-only; feeds
+  Super-Admin overdue-escalation reporting. **Negative:** duplicate `(subscription, event, period)`
+  rejected by PG; UPDATE/DELETE not available.
+
+### `invoice_number_sequences` scope expand (Gate B3; migration `2026_07_11_000006`)
+
+Forward-only **expand**: drop and recreate the shipped scope CHECK to add `'subscription_invoice'`:
+
+```text
+scope CHECK in ('merchant_client_invoice','subscription_invoice')
+```
+
+The shipped `2026_..._invoice_number_sequences` migration is **not edited** (guardrail 12). Merchant-
+client invoice allocation is unchanged. Subscription invoices allocate under a **separate** counter
+row `(merchant_id, scope='subscription_invoice')` — gap-free, row-locked, never reused, never
+crossing merchant-client numbers. No new sequence table is invented. `unique(merchant_id, scope)`
+already scopes the counters.
+
+### `merchants.billing_status_reason` (Gate B2)
+
+`merchants.billing_status_reason` already exists (Plan §13 merchants DDL, `text` nullable). The
+billing-status projection service writes the distinct terminal reasons `subscription_cancelled` /
+`subscription_expired` (and other billing reasons) here + in audit context. No schema change unless
+Increment 2 finds the column absent, in which case an additive expand migration adds it (documented
+here before migration).
 
 **Explicit non-deliverable in 20B:** no `RegisterInvoicePayment` outbox table, no registration
-consumer, no Wallet HTTP client routes. Registration runtime is Phase 20D-W only (Correction 14.5).
+consumer, no Wallet HTTP client routes, no payment/attempt/receipt/reversal/reconciliation/credit
+tables. Registration + all payment runtime is Phase 20D-W only (Correction 14.5).
 
 ---
 

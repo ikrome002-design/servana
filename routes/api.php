@@ -31,6 +31,8 @@ use App\Http\Controllers\Api\V1\Invoicing\InvoiceAdjustmentController;
 use App\Http\Controllers\Api\V1\Invoicing\InvoiceController;
 use App\Http\Controllers\Api\V1\Invoicing\InvoiceVoidController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantDashboardController;
+use App\Http\Controllers\Api\V1\Merchant\MerchantSubscriptionController;
+use App\Http\Controllers\Api\V1\Merchant\SubscriptionInvoiceController;
 use App\Http\Controllers\Api\V1\Onboarding\FirstTimeSetupController;
 use App\Http\Controllers\Api\V1\Onboarding\MerchantRegistrationController;
 use App\Http\Controllers\Api\V1\Payments\PaymentRecordController;
@@ -40,6 +42,7 @@ use App\Http\Controllers\Api\V1\PeriodLocks\FinancialPeriodLockController;
 use App\Http\Controllers\Api\V1\Platform\PlanEntitlementController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Controllers\Api\V1\Platform\PlatformBillingSettingsController;
+use App\Http\Controllers\Api\V1\Platform\PlatformMerchantGovernanceController;
 use App\Http\Controllers\Api\V1\Platform\PlatformSettingsController;
 use App\Http\Controllers\Api\V1\Platform\PreferredPersonnelFeeRuleController;
 use App\Http\Controllers\Api\V1\Platform\SubscriptionPlanController;
@@ -56,6 +59,7 @@ use App\Http\Controllers\Api\V1\Scheduling\ServiceSessionController;
 use App\Http\Controllers\Api\V1\Scheduling\StaffAvailabilityController;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureActivePrincipal;
+use App\Http\Middleware\EnsureBillingMutable;
 use App\Http\Middleware\EnsureBranchScope;
 use App\Http\Middleware\EnsureFirstTimeSetupAccess;
 use App\Http\Middleware\EnsureIdempotentRequest;
@@ -197,6 +201,49 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
         Route::middleware(EnsureMerchantActive::class)->group(function (): void {
             Route::get('merchant/dashboard', [MerchantDashboardController::class, 'show'])
                 ->name('merchant.dashboard');
+
+            // Merchant subscription self-service (Plan §22, §48, §49; Phase 20B). Merchant
+            // Administrator, merchant scope. Reads (subscription/dashboard, plan options with
+            // effective prices, pending scheduled change, invoices) carry `merchant.subscription
+            // .view` / `.invoice.view`. No-proration plan-change mutations carry `merchant
+            // .subscription.plan_change` + EnsureBillingMutable (blocked in read_only_grace /
+            // suspended_billing); effective_at is server-computed (the period end). NEW PDF
+            // generation is a mutation blocked in billing read-only (EnsureBillingMutable + the
+            // action's file-generation policy); the EXISTING-PDF download link is a read allowed
+            // in billing read-only (never consults the billing gate). All bindings resolve inside
+            // the merchant (BelongsToMerchant scope → foreign tenant 404). NO trial / activation /
+            // issue / void / payment / Wallet route (Plan §48/§49; those are 20D-W / system-driven).
+            Route::get('subscription', [MerchantSubscriptionController::class, 'show'])
+                ->middleware(EnsurePermission::class.':merchant.subscription.view')
+                ->name('subscription.show');
+            Route::get('subscription/plans', [MerchantSubscriptionController::class, 'plans'])
+                ->middleware(EnsurePermission::class.':merchant.subscription.view')
+                ->name('subscription.plans.index');
+            Route::get('subscription/scheduled-plan-change', [MerchantSubscriptionController::class, 'scheduledChange'])
+                ->middleware(EnsurePermission::class.':merchant.subscription.view')
+                ->name('subscription.scheduled-plan-change.show');
+            Route::post('subscription/scheduled-plan-change', [MerchantSubscriptionController::class, 'scheduleChange'])
+                ->middleware([EnsureBillingMutable::class, EnsurePermission::class.':merchant.subscription.plan_change'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('subscription.scheduled-plan-change.store');
+            Route::post('subscription/scheduled-plan-change/cancel', [MerchantSubscriptionController::class, 'cancelScheduledChange'])
+                ->middleware([EnsureBillingMutable::class, EnsurePermission::class.':merchant.subscription.plan_change'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('subscription.scheduled-plan-change.cancel');
+
+            Route::get('subscription-invoices', [SubscriptionInvoiceController::class, 'index'])
+                ->middleware(EnsurePermission::class.':merchant.subscription.invoice.view')
+                ->name('subscription-invoices.index');
+            Route::get('subscription-invoices/{subscriptionInvoice}', [SubscriptionInvoiceController::class, 'show'])
+                ->middleware(EnsurePermission::class.':merchant.subscription.invoice.view')
+                ->name('subscription-invoices.show');
+            Route::post('subscription-invoices/{subscriptionInvoice}/pdf', [SubscriptionInvoiceController::class, 'generatePdf'])
+                ->middleware([EnsureBillingMutable::class, EnsurePermission::class.':merchant.subscription.invoice.download'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('subscription-invoices.pdf.generate');
+            Route::get('subscription-invoices/{subscriptionInvoice}/pdf/download-link', [SubscriptionInvoiceController::class, 'downloadLink'])
+                ->middleware(EnsurePermission::class.':merchant.subscription.invoice.download')
+                ->name('subscription-invoices.pdf.download-link');
 
             // Branches (Scope §3.3, Plan §10.3). Index/show are scoped reads.
             // Mutating routes carry EnsurePermission (the backend authorization
@@ -1005,6 +1052,36 @@ Route::prefix('platform')
             ->middleware([EnsurePermission::class.':platform.preferred_personnel_fee.manage', $stepUp])
             ->defaults(RouteClassification::KEY, $platform)
             ->name('platform.preferred-personnel-fee-rules.cancel');
+
+        // Platform merchant governance (Plan §22, §24.1; Phase 20B). Super-Admin platform scope
+        // (no merchant tenant context). Registration monitoring + merchant list/detail are reads;
+        // suspend/reactivate/deactivate are platform_mutation with a MANDATORY reason and a fresh
+        // step-up (StepUpAction::MerchantGovernance). Each mutation mutates `merchants.status` ONLY
+        // — never `merchants.billing_status`, and never creates a subscription/payment row. There is
+        // NO merchant-creation, first-admin, impersonation, manual-payment, or billing-recovery route.
+        $governanceStepUp = RequireFreshMfa::class.':'.StepUpAction::MerchantGovernance->value;
+
+        Route::get('registration-monitor', [PlatformMerchantGovernanceController::class, 'registrationMonitor'])
+            ->middleware(EnsurePermission::class.':platform.registration_monitor.view')
+            ->name('platform.registration-monitor.index');
+        Route::get('merchants', [PlatformMerchantGovernanceController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.merchants.index');
+        Route::get('merchants/{merchant}', [PlatformMerchantGovernanceController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.merchants.show');
+        Route::post('merchants/{merchant}/suspend', [PlatformMerchantGovernanceController::class, 'suspend'])
+            ->middleware([EnsurePermission::class.':platform.merchant.suspend', $governanceStepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.merchants.suspend');
+        Route::post('merchants/{merchant}/reactivate', [PlatformMerchantGovernanceController::class, 'reactivate'])
+            ->middleware([EnsurePermission::class.':platform.merchant.reactivate', $governanceStepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.merchants.reactivate');
+        Route::post('merchants/{merchant}/deactivate', [PlatformMerchantGovernanceController::class, 'deactivate'])
+            ->middleware([EnsurePermission::class.':platform.merchant.deactivate', $governanceStepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.merchants.deactivate');
     });
 
 /*

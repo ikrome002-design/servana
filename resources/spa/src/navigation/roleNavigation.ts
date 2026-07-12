@@ -41,8 +41,8 @@ const platform: NavItem[] = [
   { key: 'platform.get-started', label: 'Get started', routeName: 'platform.get-started', phase: 'Phase 11', availability: 'live' },
   // Registration monitoring / merchant governance is Phase 20B (Plan §47 excludes it from
   // 20A; perms platform.registration_monitor.view + platform.merchant.* are owning_phase 20B).
-  { key: 'platform.merchants', label: 'Merchant directory', permission: 'platform.merchant.view', phase: 'Phase 20B', availability: 'planned' },
-  { key: 'platform.registration-monitoring', label: 'Registration monitoring', permission: 'platform.registration_monitor.view', phase: 'Phase 20B', availability: 'planned' },
+  { key: 'platform.merchants', label: 'Merchant directory', routeName: 'platform.registration-monitoring', permission: 'platform.merchant.view', phase: 'Phase 20B', availability: 'live' },
+  { key: 'platform.registration-monitoring', label: 'Registration monitoring', routeName: 'platform.registration-monitoring', permission: 'platform.registration_monitor.view', phase: 'Phase 20B', availability: 'live' },
   // Phase 20A delivers billing settings, plans/prices/entitlements, general settings and the
   // preferred-personnel fee rule as one coherent screen (accessible tabs). Each label routes to
   // that consolidated surface — no dead links, no duplicate top-level screens.
@@ -63,9 +63,9 @@ const merchantAdministrator: NavItem[] = [
   { key: 'merchant.dashboard', label: 'Dashboard', routeName: 'merchant.dashboard', phase: 'Phase 6', availability: 'live' },
   { key: 'merchant.branches', label: 'Branches', routeName: 'branch.list', permission: 'merchant.branch.view_all', phase: 'Phase 7', availability: 'live' },
   { key: 'merchant.period-reopen-approvals', label: 'Period-reopen approvals', routeName: 'merchant.period-reopen-approvals', permission: 'merchant.period_reopen.approve_exception', phase: 'Phase 18B', availability: 'live' },
-  { key: 'merchant.subscription', label: 'Subscription and billing', permission: 'merchant.subscription.view', phase: 'Phase 20B', availability: 'planned' },
-  { key: 'merchant.plan', label: 'Plan management', permission: 'merchant.subscription.plan_change', phase: 'Phase 20A', availability: 'planned' },
-  { key: 'merchant.invoices', label: 'Subscription invoices', permission: 'merchant.subscription.invoice.view', phase: 'Phase 20B', availability: 'planned' },
+  { key: 'merchant.subscription', label: 'Subscription and billing', routeName: 'merchant.subscription', permission: 'merchant.subscription.view', phase: 'Phase 20B', availability: 'live' },
+  { key: 'merchant.plan', label: 'Plan management', routeName: 'merchant.plan', permission: 'merchant.subscription.plan_change', phase: 'Phase 20B', availability: 'live' },
+  { key: 'merchant.invoices', label: 'Subscription invoices', routeName: 'merchant.invoices', permission: 'merchant.subscription.invoice.view', phase: 'Phase 20B', availability: 'live' },
   { key: 'merchant.reports', label: 'Reports', permission: 'merchant.report.view_all_branches', phase: 'Phase 21N', availability: 'planned' },
   { key: 'merchant.compensation-summary', label: 'Compensation summary', permission: 'merchant.compensation_summary.view', phase: 'Phase 20F', availability: 'planned' },
 ];

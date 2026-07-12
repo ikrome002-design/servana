@@ -21,3 +21,14 @@ Schedule::command('idempotency:prune')->daily()->withoutOverlapping();
 // (matching idempotency:prune). A failing run exits non-zero and emits ONE bounded,
 // redacted AuditChainVerificationFailed signal; centralized transport is Phase 25.
 Schedule::command('audit:verify-chain')->daily()->withoutOverlapping()->onOneServer();
+
+// Drive the Phase 20B subscription lifecycle daily in Africa/Nairobi (Plan §22, §54, §67): trial
+// expiry → read-only grace / expiry, trial-grace expiry → billing suspension, and due scheduled
+// plan-change application. Orchestrates existing named actions only; singleton (withoutOverlapping)
+// + leader-only (onOneServer); per-item bounded transactions with row locks; idempotent; one bounded
+// redacted failure signal per bad item. Invoice-due-driven overdue/suspension lands with Increment 4.
+Schedule::command('billing:process-subscription-lifecycle')
+    ->daily()
+    ->timezone('Africa/Nairobi')
+    ->withoutOverlapping()
+    ->onOneServer();

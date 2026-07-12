@@ -262,6 +262,40 @@ enum AuditEvent: string
     case PreferredPersonnelFeeRuleSuperseded = 'preferred_personnel_fee_rule.superseded';
     case PreferredPersonnelFeeRuleCancelled = 'preferred_personnel_fee_rule.cancelled';
 
+    // --- Merchant subscription lifecycle + billing-status projection (Plan §22, §25.4, §48; Phase 20B).
+    case SubscriptionCreated = 'subscription.created';
+    case SubscriptionTrialStarted = 'subscription.trial_started';
+    case SubscriptionActivated = 'subscription.activated';
+    case SubscriptionReadOnlyGraceEntered = 'subscription.read_only_grace_entered';
+    case SubscriptionOverdue = 'subscription.overdue';
+    case SubscriptionSuspendedBilling = 'subscription.suspended_billing';
+    case SubscriptionCancelled = 'subscription.cancelled';
+    case SubscriptionExpired = 'subscription.expired';
+    case SubscriptionRecovered = 'subscription.recovered';
+    case MerchantBillingStatusChanged = 'merchant.billing_status_changed';
+    case SubscriptionPlanChangeScheduled = 'subscription.plan_change_scheduled';
+    case SubscriptionPlanChangeApplied = 'subscription.plan_change_applied';
+    case SubscriptionPlanChangeCancelled = 'subscription.plan_change_cancelled';
+
+    // --- Platform merchant governance (Plan §22, §24.1; Phase 20B). Super-Admin platform_mutation
+    // events on the platform/governance chain (null merchant/branch). Each mutates `merchants.status`
+    // only (never billing) and carries a redacted context (merchant ULID + prev/new status + reason);
+    // never a raw reason beyond the sanitised governance note, internal id, or session detail.
+    case MerchantSuspended = 'merchant.suspended';
+    case MerchantReactivated = 'merchant.reactivated';
+    case MerchantDeactivated = 'merchant.deactivated';
+
+    // --- Subscription invoices + billing escalation (Plan §49, §54; Phase 20B).
+    case SubscriptionInvoiceIssued = 'subscription_invoice.issued';
+    case SubscriptionInvoiceOverdue = 'subscription_invoice.overdue';
+    case SubscriptionInvoiceVoided = 'subscription_invoice.voided';
+    case SubscriptionInvoicePdfGenerated = 'subscription_invoice.pdf_generated';
+    case BillingEscalationReminder = 'billing_escalation.reminder';
+    case BillingEscalationGraceEntered = 'billing_escalation.grace_entered';
+    case BillingEscalationOverdue = 'billing_escalation.overdue';
+    case BillingEscalationSuspended = 'billing_escalation.suspended';
+    case BillingEscalationRecovered = 'billing_escalation.recovered';
+
     /**
      * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
      *
@@ -430,7 +464,20 @@ enum AuditEvent: string
             self::SubscriptionPlanMetadataUpdated,
             self::PlanEntitlementsUpdated,
             self::PreferredPersonnelFeeRuleCreated,
+            self::SubscriptionCreated,
+            self::SubscriptionTrialStarted,
+            self::SubscriptionActivated,
+            self::SubscriptionRecovered,
+            self::MerchantBillingStatusChanged,
+            self::SubscriptionPlanChangeScheduled,
+            self::SubscriptionPlanChangeApplied,
+            self::SubscriptionPlanChangeCancelled,
+            self::SubscriptionInvoiceIssued,
+            self::BillingEscalationRecovered,
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
+
+            self::SubscriptionInvoicePdfGenerated,
+            self::BillingEscalationReminder => AuditSeverity::Info,
 
             self::LoginLinkDenied,
             self::LoginLinkFailed,
@@ -465,6 +512,11 @@ enum AuditEvent: string
             self::AuditExportRevoked,
             self::AuditEventFlagged,
             self::AuditFlaggedReopened,
+            self::SubscriptionReadOnlyGraceEntered,
+            self::SubscriptionOverdue,
+            self::SubscriptionInvoiceOverdue,
+            self::BillingEscalationGraceEntered,
+            self::BillingEscalationOverdue,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,
@@ -496,7 +548,18 @@ enum AuditEvent: string
             self::PreferredPersonnelFeeRuleApproved,
             self::PreferredPersonnelFeeRuleSuperseded,
             self::PreferredPersonnelFeeRuleCancelled,
+            self::SubscriptionSuspendedBilling,
+            self::SubscriptionCancelled,
+            self::SubscriptionExpired,
+            self::SubscriptionInvoiceVoided,
+            self::BillingEscalationSuspended,
+            // Platform merchant governance (Phase 20B): operational suspension/reactivation are
+            // high-severity governance actions; deactivation is the terminal state (Critical below).
+            self::MerchantSuspended,
+            self::MerchantReactivated,
             self::UnauthorizedAccess => AuditSeverity::High,
+
+            self::MerchantDeactivated => AuditSeverity::Critical,
         };
     }
 }

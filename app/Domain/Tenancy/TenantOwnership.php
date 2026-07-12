@@ -7,6 +7,11 @@ namespace App\Domain\Tenancy;
 use App\Domain\Audit\Models\AuditExport;
 use App\Domain\Audit\Models\AuditFlaggedEvent;
 use App\Domain\Auth\Models\MerchantUserPermissionOverride;
+use App\Domain\Billing\Models\BillingEscalationEvent;
+use App\Domain\Billing\Models\MerchantSubscription;
+use App\Domain\Billing\Models\ScheduledPlanChange;
+use App\Domain\Billing\Models\SubscriptionInvoice;
+use App\Domain\Billing\Models\SubscriptionInvoiceItem;
 use App\Domain\Branches\Models\BranchCalendarException;
 use App\Domain\Branches\Models\BranchCashUp;
 use App\Domain\Branches\Models\BranchDayRecord;
@@ -128,6 +133,14 @@ final class TenantOwnership
         'receipt_number_sequences',
         'financial_period_locks',
         'finance_exports',
+        // Phase 20B — merchant-owned subscription lifecycle + billing (no branch_id;
+        // subscriptions/billing are merchant-level). merchants.billing_status is the
+        // request-authorization authority projected from merchant_subscriptions (§22).
+        'merchant_subscriptions',
+        'scheduled_plan_changes',
+        'subscription_invoices',
+        'subscription_invoice_items',
+        'billing_escalation_events',
     ];
 
     /**
@@ -233,6 +246,12 @@ final class TenantOwnership
         AuditFlaggedEvent::class => 'branch',
         // Phase 19 — branch-owned Audit export request (ADR-010).
         AuditExport::class => 'branch',
+        // Phase 20B — merchant-owned subscription lifecycle + billing (BelongsToMerchant only).
+        MerchantSubscription::class => 'tenant',
+        ScheduledPlanChange::class => 'tenant',
+        SubscriptionInvoice::class => 'tenant',
+        SubscriptionInvoiceItem::class => 'tenant',
+        BillingEscalationEvent::class => 'tenant',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */

@@ -54,7 +54,10 @@ branches.create                       ✓           ·            ·            
 branches.manage_users_lifecycle       ✓           ·            ·            ·            ·            ·            ·            ·
 merchant.period_reopen.approve_exception✓           ·            ·            ·            ·            ·            ·            ·
 merchant.profile.manage               ✓           ·            ·            ·            ·            ·            ·            ·
-merchant.tier.update                  ✓           ·            ·            ·            ·            ·            ·            ·
+merchant.subscription.invoice.download✓           ·            ·            ·            ·            ·            ·            ·
+merchant.subscription.invoice.view    ✓           ·            ·            ·            ·            ·            ·            ·
+merchant.subscription.plan_change     ✓           ·            ·            ·            ·            ·            ·            ·
+merchant.subscription.view            ✓           ·            ·            ·            ·            ·            ·            ·
 service_session.cancel                ·            ·            ·            ·            ✓           ·            ·            ·
 service_session.complete              ·            ·            ·            ·            ✓           ·            ·            ·
 service_session.start                 ·            ·            ·            ·            ✓           ·            ·            ·
@@ -65,11 +68,15 @@ personnel.my_sessions.view            ·            ·            ·            
 platform.audit.view                   ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing_settings.update      ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing_settings.view        ·            ·            ·            ·            ·            ·            ·            ✓
-platform.merchants.govern             ·            ·            ·            ·            ·            ·            ·            ✓
+platform.merchant.deactivate          ·            ·            ·            ·            ·            ·            ·            ✓
+platform.merchant.reactivate          ·            ·            ·            ·            ·            ·            ·            ✓
+platform.merchant.suspend             ·            ·            ·            ·            ·            ·            ·            ✓
+platform.merchant.view                ·            ·            ·            ·            ·            ·            ·            ✓
 platform.plan.manage                  ·            ·            ·            ·            ·            ·            ·            ✓
 platform.plan.view                    ·            ·            ·            ·            ·            ·            ·            ✓
 platform.plan_price.manage            ·            ·            ·            ·            ·            ·            ·            ✓
 platform.preferred_personnel_fee.manage·            ·            ·            ·            ·            ·            ·            ✓
+platform.registration_monitor.view    ·            ·            ·            ·            ·            ·            ·            ✓
 platform.settings.update              ·            ·            ·            ·            ·            ·            ·            ✓
 platform.settings.view                ·            ·            ·            ·            ·            ·            ·            ✓
 preferred_personnel.select            ·            ·            ·            ·            ✓           ·            ·            ·

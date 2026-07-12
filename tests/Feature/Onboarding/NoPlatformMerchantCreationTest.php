@@ -33,9 +33,13 @@ it('exposes the self-registration route', function (): void {
 it('has no platform or super-admin merchant-creation route', function (): void {
     $signatures = routeSignatures();
 
+    // Phase 20B (Plan §22, §24.1) adds platform GOVERNANCE writes on an EXISTING merchant
+    // (…/platform/merchants/{merchant}/suspend|reactivate|deactivate) — operational-status
+    // changes only, never creation. What stays structurally forbidden (Scope §3.1) is a write to
+    // the merchants COLLECTION (a create) and any first-admin / user creation path.
     foreach ($signatures as $signature) {
-        // No write route under a platform/super-admin namespace that creates merchants.
-        expect($signature)->not->toMatch('#^(POST|PUT|PATCH) api/v1/platform/merchants#');
+        expect($signature)->not->toMatch('#^(POST|PUT|PATCH) api/v1/platform/merchants$#'); // no collection create
+        expect($signature)->not->toMatch('#^(POST|PUT|PATCH) api/v1/platform/merchants/\{merchant\}/(admins|first-admin|users|owner)#'); // no first-admin/user creation
         expect($signature)->not->toContain('super-admin/merchants');
     }
 });
