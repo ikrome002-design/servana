@@ -167,6 +167,13 @@ final class TenantOwnership
         'subscription_plan_prices' => 'platform-global sole plan-price source (ADR-011; no merchant scope)',
         'plan_entitlements' => 'platform-global per-plan entitlements (§20 substrate; no merchant scope)',
         'preferred_personnel_fee_rules' => 'platform-governed preferred-personnel fee rules (§13.10; no merchant scope)',
+        // Phase 20C — platform-governed promotions & free-period offers (Plan §53).
+        // Super-Admin governed configuration; a target row may point at a merchant, but the
+        // offer itself is platform config and carries no merchant ownership.
+        'promotional_discounts' => 'platform-scoped promotional discount configuration (§53; no merchant scope)',
+        'promotional_discount_targets' => 'platform-scoped promotion target rows (a target may reference a merchant; the offer is platform config; no merchant ownership)',
+        'free_period_offers' => 'platform-scoped free-period (trial-length) offer configuration (§53; no merchant scope)',
+        'free_period_offer_targets' => 'platform-scoped free-period target rows (a target may reference a merchant; the offer is platform config; no merchant ownership)',
         // Cross-cutting infrastructure with nullable/forensic merchant scope.
         'audit_logs' => 'cross-cutting: per-merchant AND platform chain (merchant_id nullable by design, R2)',
         'idempotency_keys' => 'cross-cutting: platform/webhook scopes have null merchant/branch forensic columns (R4)',

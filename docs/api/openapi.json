@@ -2266,7 +2266,23 @@
                                 "billing_escalation.grace_entered",
                                 "billing_escalation.overdue",
                                 "billing_escalation.suspended",
-                                "billing_escalation.recovered"
+                                "billing_escalation.recovered",
+                                "promotion.created",
+                                "promotion.draft_updated",
+                                "promotion.approved",
+                                "promotion.activated",
+                                "promotion.paused",
+                                "promotion.resumed",
+                                "promotion.expired",
+                                "promotion.cancelled",
+                                "free_period_offer.created",
+                                "free_period_offer.draft_updated",
+                                "free_period_offer.approved",
+                                "free_period_offer.activated",
+                                "free_period_offer.paused",
+                                "free_period_offer.resumed",
+                                "free_period_offer.expired",
+                                "free_period_offer.cancelled"
                             ]
                         }
                     },
@@ -2716,7 +2732,23 @@
                                 "billing_escalation.grace_entered",
                                 "billing_escalation.overdue",
                                 "billing_escalation.suspended",
-                                "billing_escalation.recovered"
+                                "billing_escalation.recovered",
+                                "promotion.created",
+                                "promotion.draft_updated",
+                                "promotion.approved",
+                                "promotion.activated",
+                                "promotion.paused",
+                                "promotion.resumed",
+                                "promotion.expired",
+                                "promotion.cancelled",
+                                "free_period_offer.created",
+                                "free_period_offer.draft_updated",
+                                "free_period_offer.approved",
+                                "free_period_offer.activated",
+                                "free_period_offer.paused",
+                                "free_period_offer.resumed",
+                                "free_period_offer.expired",
+                                "free_period_offer.cancelled"
                             ]
                         }
                     },
@@ -3166,7 +3198,23 @@
                                 "billing_escalation.grace_entered",
                                 "billing_escalation.overdue",
                                 "billing_escalation.suspended",
-                                "billing_escalation.recovered"
+                                "billing_escalation.recovered",
+                                "promotion.created",
+                                "promotion.draft_updated",
+                                "promotion.approved",
+                                "promotion.activated",
+                                "promotion.paused",
+                                "promotion.resumed",
+                                "promotion.expired",
+                                "promotion.cancelled",
+                                "free_period_offer.created",
+                                "free_period_offer.draft_updated",
+                                "free_period_offer.approved",
+                                "free_period_offer.activated",
+                                "free_period_offer.paused",
+                                "free_period_offer.resumed",
+                                "free_period_offer.expired",
+                                "free_period_offer.cancelled"
                             ]
                         }
                     },
@@ -12406,7 +12454,23 @@
                                 "billing_escalation.grace_entered",
                                 "billing_escalation.overdue",
                                 "billing_escalation.suspended",
-                                "billing_escalation.recovered"
+                                "billing_escalation.recovered",
+                                "promotion.created",
+                                "promotion.draft_updated",
+                                "promotion.approved",
+                                "promotion.activated",
+                                "promotion.paused",
+                                "promotion.resumed",
+                                "promotion.expired",
+                                "promotion.cancelled",
+                                "free_period_offer.created",
+                                "free_period_offer.draft_updated",
+                                "free_period_offer.approved",
+                                "free_period_offer.activated",
+                                "free_period_offer.paused",
+                                "free_period_offer.resumed",
+                                "free_period_offer.expired",
+                                "free_period_offer.cancelled"
                             ]
                         }
                     },
@@ -12838,6 +12902,687 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/free-period-offers": {
+            "get": {
+                "operationId": "platform.free-period-offers.index",
+                "tags": [
+                    "FreePeriodOffer"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 25
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `FreePeriodOfferResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FreePeriodOfferResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "platform.free-period-offers.store",
+                "tags": [
+                    "FreePeriodOffer"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreFreePeriodOfferRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`FreePeriodOfferResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FreePeriodOfferResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/free-period-offers/{freePeriodOffer}": {
+            "get": {
+                "operationId": "platform.free-period-offers.show",
+                "tags": [
+                    "FreePeriodOffer"
+                ],
+                "parameters": [
+                    {
+                        "name": "freePeriodOffer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The free period offer ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`FreePeriodOfferResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FreePeriodOfferResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "patch": {
+                "operationId": "platform.free-period-offers.update",
+                "tags": [
+                    "FreePeriodOffer"
+                ],
+                "parameters": [
+                    {
+                        "name": "freePeriodOffer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The free period offer ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateFreePeriodOfferRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`FreePeriodOfferResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FreePeriodOfferResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/free-period-offers/{freePeriodOffer}/approve": {
+            "post": {
+                "operationId": "platform.free-period-offers.approve",
+                "tags": [
+                    "FreePeriodOffer"
+                ],
+                "parameters": [
+                    {
+                        "name": "freePeriodOffer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The free period offer ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`FreePeriodOfferResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FreePeriodOfferResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/free-period-offers/{freePeriodOffer}/cancel": {
+            "post": {
+                "operationId": "platform.free-period-offers.cancel",
+                "tags": [
+                    "FreePeriodOffer"
+                ],
+                "parameters": [
+                    {
+                        "name": "freePeriodOffer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The free period offer ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`FreePeriodOfferResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FreePeriodOfferResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/free-period-offers/{freePeriodOffer}/pause": {
+            "post": {
+                "operationId": "platform.free-period-offers.pause",
+                "tags": [
+                    "FreePeriodOffer"
+                ],
+                "parameters": [
+                    {
+                        "name": "freePeriodOffer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The free period offer ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`FreePeriodOfferResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FreePeriodOfferResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/free-period-offers/{freePeriodOffer}/resume": {
+            "post": {
+                "operationId": "platform.free-period-offers.resume",
+                "tags": [
+                    "FreePeriodOffer"
+                ],
+                "parameters": [
+                    {
+                        "name": "freePeriodOffer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The free period offer ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`FreePeriodOfferResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FreePeriodOfferResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -14781,6 +15526,687 @@
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/PreferredPersonnelFeeRuleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/promotional-discounts": {
+            "get": {
+                "operationId": "platform.promotional-discounts.index",
+                "tags": [
+                    "PromotionalDiscount"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 25
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PromotionalDiscountResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PromotionalDiscountResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "platform.promotional-discounts.store",
+                "tags": [
+                    "PromotionalDiscount"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePromotionalDiscountRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`PromotionalDiscountResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PromotionalDiscountResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/promotional-discounts/{promotionalDiscount}": {
+            "get": {
+                "operationId": "platform.promotional-discounts.show",
+                "tags": [
+                    "PromotionalDiscount"
+                ],
+                "parameters": [
+                    {
+                        "name": "promotionalDiscount",
+                        "in": "path",
+                        "required": true,
+                        "description": "The promotional discount ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PromotionalDiscountResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PromotionalDiscountResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "patch": {
+                "operationId": "platform.promotional-discounts.update",
+                "tags": [
+                    "PromotionalDiscount"
+                ],
+                "parameters": [
+                    {
+                        "name": "promotionalDiscount",
+                        "in": "path",
+                        "required": true,
+                        "description": "The promotional discount ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePromotionalDiscountRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PromotionalDiscountResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PromotionalDiscountResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/promotional-discounts/{promotionalDiscount}/approve": {
+            "post": {
+                "operationId": "platform.promotional-discounts.approve",
+                "tags": [
+                    "PromotionalDiscount"
+                ],
+                "parameters": [
+                    {
+                        "name": "promotionalDiscount",
+                        "in": "path",
+                        "required": true,
+                        "description": "The promotional discount ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PromotionalDiscountResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PromotionalDiscountResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/promotional-discounts/{promotionalDiscount}/cancel": {
+            "post": {
+                "operationId": "platform.promotional-discounts.cancel",
+                "tags": [
+                    "PromotionalDiscount"
+                ],
+                "parameters": [
+                    {
+                        "name": "promotionalDiscount",
+                        "in": "path",
+                        "required": true,
+                        "description": "The promotional discount ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PromotionalDiscountResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PromotionalDiscountResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/promotional-discounts/{promotionalDiscount}/pause": {
+            "post": {
+                "operationId": "platform.promotional-discounts.pause",
+                "tags": [
+                    "PromotionalDiscount"
+                ],
+                "parameters": [
+                    {
+                        "name": "promotionalDiscount",
+                        "in": "path",
+                        "required": true,
+                        "description": "The promotional discount ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PromotionalDiscountResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PromotionalDiscountResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/promotional-discounts/{promotionalDiscount}/resume": {
+            "post": {
+                "operationId": "platform.promotional-discounts.resume",
+                "tags": [
+                    "PromotionalDiscount"
+                ],
+                "parameters": [
+                    {
+                        "name": "promotionalDiscount",
+                        "in": "path",
+                        "required": true,
+                        "description": "The promotional discount ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PromotionalDiscountResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PromotionalDiscountResource"
                                         }
                                     },
                                     "required": [
@@ -22420,6 +23846,21 @@
                 ],
                 "title": "ChangeConsentRequest"
             },
+            "ChangeReasonRequest": {
+                "type": "object",
+                "description": "Shared reason payload for a state-changing promotion / free-period action (Plan §53; Gate C6;\nPhase 20C). Approve / pause / resume / cancel all require a sanitized, mandatory `change_reason`.\nAuthorization + MFA + fresh step-up are enforced by the route middleware; the controller authorizes\nvia the policy. The request never accepts `status`, `approved_by`, or any authoritative field.",
+                "properties": {
+                    "change_reason": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "change_reason"
+                ],
+                "title": "ChangeReasonRequest"
+            },
             "ClientConsentResource": {
                 "type": "object",
                 "properties": {
@@ -23263,6 +24704,84 @@
                 ],
                 "title": "FlaggedEventResolutionRequest"
             },
+            "FreePeriodOfferResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "free_period_days": {
+                        "type": "integer"
+                    },
+                    "target_scope": {
+                        "type": "string"
+                    },
+                    "effective_from": {
+                        "type": "string"
+                    },
+                    "effective_to": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "approved_at": {
+                        "type": "string"
+                    },
+                    "change_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "targets": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "target_type": {
+                                    "type": "string"
+                                },
+                                "merchant_id": {
+                                    "type": "string"
+                                },
+                                "subscription_plan_id": {
+                                    "type": "string"
+                                },
+                                "billing_mode": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "target_type",
+                                "merchant_id",
+                                "subscription_plan_id",
+                                "billing_mode"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "free_period_days",
+                    "target_scope",
+                    "effective_from",
+                    "effective_to",
+                    "status",
+                    "approved_at",
+                    "change_reason",
+                    "targets"
+                ],
+                "title": "FreePeriodOfferResource"
+            },
             "InvoiceItemResource": {
                 "type": "object",
                 "properties": {
@@ -23797,6 +25316,13 @@
                     "trial_ends_at": {
                         "type": "string"
                     },
+                    "trial_days_snapshot": {
+                        "type": "integer",
+                        "description": "Phase 20C — read-only free-period snapshot (immutable; the snapshotted trial length and\nwhether a free-period offer set it — never the internal/offer id)."
+                    },
+                    "free_period_offer_applied": {
+                        "type": "boolean"
+                    },
                     "current_period_start": {
                         "type": "string"
                     },
@@ -23888,6 +25414,8 @@
                     "billing_interval",
                     "trial_started_at",
                     "trial_ends_at",
+                    "trial_days_snapshot",
+                    "free_period_offer_applied",
                     "current_period_start",
                     "current_period_end",
                     "plan",
@@ -24890,6 +26418,95 @@
                     "change_reason"
                 ],
                 "title": "PreferredPersonnelFeeRuleResource"
+            },
+            "PromotionalDiscountResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "target_scope": {
+                        "type": "string"
+                    },
+                    "effective_from": {
+                        "type": "string"
+                    },
+                    "effective_to": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "approved_at": {
+                        "type": "string"
+                    },
+                    "change_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "targets": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "target_type": {
+                                    "type": "string"
+                                },
+                                "merchant_id": {
+                                    "type": "string"
+                                },
+                                "subscription_plan_id": {
+                                    "type": "string"
+                                },
+                                "billing_mode": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "target_type",
+                                "merchant_id",
+                                "subscription_plan_id",
+                                "billing_mode"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "type",
+                    "value",
+                    "currency",
+                    "target_scope",
+                    "effective_from",
+                    "effective_to",
+                    "status",
+                    "approved_at",
+                    "change_reason",
+                    "targets"
+                ],
+                "title": "PromotionalDiscountResource"
             },
             "QueueConfigurationResource": {
                 "type": "object",
@@ -26480,6 +28097,92 @@
                 ],
                 "title": "StoreFileRequest"
             },
+            "StoreFreePeriodOfferRequest": {
+                "type": "object",
+                "description": "Validate free-period-offer draft creation (Plan §53; Gate C2; Phase 20C). `free_period_days` is\n1..365; targets are explicit rows referencing merchants/plans by ULID, coherent with the scope. The\nrequest NEVER accepts status/approved_by/approved_at. Authorization + MFA + fresh step-up are\nenforced by the route middleware.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                    },
+                    "free_period_days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 365
+                    },
+                    "target_scope": {
+                        "type": "string",
+                        "enum": [
+                            "all_new_merchants",
+                            "selected_merchants",
+                            "selected_plans",
+                            "billing_mode"
+                        ]
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    },
+                    "targets": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "target_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "merchant",
+                                        "plan",
+                                        "billing_mode"
+                                    ]
+                                },
+                                "merchant_id": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "minLength": 26,
+                                    "maxLength": 26
+                                },
+                                "subscription_plan_id": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "minLength": 26,
+                                    "maxLength": 26
+                                },
+                                "billing_mode": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "enum": [
+                                        "fixed_amount",
+                                        "percentage_on_merchant_client_invoice",
+                                        "fixed_amount_plus_percentage_on_merchant_client_invoice"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "free_period_days",
+                    "target_scope",
+                    "effective_from"
+                ],
+                "title": "StoreFreePeriodOfferRequest"
+            },
             "StoreInvoiceRequest": {
                 "type": "object",
                 "description": "Invoice draft creation validation (Plan §40; Phase 17). Accepts ONLY the client\nULID and one-or-more completed service-session ULIDs. All authoritative values\n(merchant/branch/status/invoice_number/totals/prices/personnel/currency/preferred\nfee/finalized_at/created_by/validated_paid) are derived server-side from the locked\nsources and are NEVER accepted from the body.",
@@ -26646,6 +28349,104 @@
                     "change_reason"
                 ],
                 "title": "StorePreferredPersonnelFeeRuleRequest"
+            },
+            "StorePromotionalDiscountRequest": {
+                "type": "object",
+                "description": "Validate promotional-discount draft creation (Plan §53; Gate C2/C5; Phase 20C). Mirrors the DB\nvalue/currency + scope↔target CHECKs at the API boundary: percentage ⇒ basis points 1..10000, no\ncurrency; fixed_amount ⇒ positive minor units + uppercase 3-char currency. Targets are explicit rows\nreferencing merchants/plans by ULID. The request NEVER accepts status/approved_by/approved_at.\nAuthorization + MFA + fresh step-up are enforced by the route middleware.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "percentage",
+                            "fixed_amount"
+                        ]
+                    },
+                    "value": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                    },
+                    "target_scope": {
+                        "type": "string",
+                        "enum": [
+                            "all_new_merchants",
+                            "selected_merchants",
+                            "selected_plans",
+                            "billing_mode"
+                        ]
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    },
+                    "targets": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "target_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "merchant",
+                                        "plan",
+                                        "billing_mode"
+                                    ]
+                                },
+                                "merchant_id": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "minLength": 26,
+                                    "maxLength": 26
+                                },
+                                "subscription_plan_id": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "minLength": 26,
+                                    "maxLength": 26
+                                },
+                                "billing_mode": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "enum": [
+                                        "fixed_amount",
+                                        "percentage_on_merchant_client_invoice",
+                                        "fixed_amount_plus_percentage_on_merchant_client_invoice"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "type",
+                    "value",
+                    "target_scope",
+                    "effective_from"
+                ],
+                "title": "StorePromotionalDiscountRequest"
             },
             "StoreServiceCategoryRequest": {
                 "type": "object",
@@ -26913,6 +28714,25 @@
                     "currency": {
                         "type": "string"
                     },
+                    "promotion_applied": {
+                        "type": "boolean",
+                        "description": "Phase 20C — read-only applied promotion snapshot (immutable; no internal/promotion id leaked)."
+                    },
+                    "promotion_type": {
+                        "type": "string"
+                    },
+                    "promotion_value_snapshot": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "promotion_currency": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "issued_at": {
                         "type": "string"
                     },
@@ -26946,6 +28766,10 @@
                     "total_minor",
                     "balance_minor",
                     "currency",
+                    "promotion_applied",
+                    "promotion_type",
+                    "promotion_value_snapshot",
+                    "promotion_currency",
                     "issued_at",
                     "due_at",
                     "payment_reference_pending",
@@ -27424,6 +29248,92 @@
                 },
                 "title": "UpdateClientRequest"
             },
+            "UpdateFreePeriodOfferRequest": {
+                "type": "object",
+                "description": "Validate a free-period-offer DRAFT edit (Plan §53; Gate C6; Phase 20C). A full re-statement of the\ndraft definition; approved records are immutable and reject the update at the action layer. Targets\nare replaced wholesale. Reuses the creation rules.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                    },
+                    "free_period_days": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 365
+                    },
+                    "target_scope": {
+                        "type": "string",
+                        "enum": [
+                            "all_new_merchants",
+                            "selected_merchants",
+                            "selected_plans",
+                            "billing_mode"
+                        ]
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    },
+                    "targets": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "target_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "merchant",
+                                        "plan",
+                                        "billing_mode"
+                                    ]
+                                },
+                                "merchant_id": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "minLength": 26,
+                                    "maxLength": 26
+                                },
+                                "subscription_plan_id": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "minLength": 26,
+                                    "maxLength": 26
+                                },
+                                "billing_mode": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "enum": [
+                                        "fixed_amount",
+                                        "percentage_on_merchant_client_invoice",
+                                        "fixed_amount_plus_percentage_on_merchant_client_invoice"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "free_period_days",
+                    "target_scope",
+                    "effective_from"
+                ],
+                "title": "UpdateFreePeriodOfferRequest"
+            },
             "UpdateInvoiceRequest": {
                 "type": "object",
                 "description": "Invoice draft update validation (Plan §40; Phase 17). Accepts ONLY the replacement\nset of completed service-session ULIDs (the client is fixed by the draft). All\nauthoritative money/price/personnel/currency/status values are derived server-side\nfrom the locked sources and are NEVER accepted from the body.",
@@ -27599,6 +29509,104 @@
                     "settings"
                 ],
                 "title": "UpdatePlatformSettingsRequest"
+            },
+            "UpdatePromotionalDiscountRequest": {
+                "type": "object",
+                "description": "Validate a promotional-discount DRAFT edit (Plan §53; Gate C6; Phase 20C). A draft edit is a full\nre-statement of the draft definition (same shape as creation) — approved records are immutable and\nreject the update at the action layer. Targets are replaced wholesale. Reuses the creation rules.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "percentage",
+                            "fixed_amount"
+                        ]
+                    },
+                    "value": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                    },
+                    "target_scope": {
+                        "type": "string",
+                        "enum": [
+                            "all_new_merchants",
+                            "selected_merchants",
+                            "selected_plans",
+                            "billing_mode"
+                        ]
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    },
+                    "targets": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "target_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "merchant",
+                                        "plan",
+                                        "billing_mode"
+                                    ]
+                                },
+                                "merchant_id": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "minLength": 26,
+                                    "maxLength": 26
+                                },
+                                "subscription_plan_id": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "minLength": 26,
+                                    "maxLength": 26
+                                },
+                                "billing_mode": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "enum": [
+                                        "fixed_amount",
+                                        "percentage_on_merchant_client_invoice",
+                                        "fixed_amount_plus_percentage_on_merchant_client_invoice"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "type",
+                    "value",
+                    "target_scope",
+                    "effective_from"
+                ],
+                "title": "UpdatePromotionalDiscountRequest"
             },
             "UpdateQueueConfigurationRequest": {
                 "type": "object",

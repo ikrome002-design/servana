@@ -296,6 +296,26 @@ enum AuditEvent: string
     case BillingEscalationSuspended = 'billing_escalation.suspended';
     case BillingEscalationRecovered = 'billing_escalation.recovered';
 
+    // Phase 20C — platform-governed promotional discounts (Plan §53). High severity.
+    case PromotionCreated = 'promotion.created';
+    case PromotionDraftUpdated = 'promotion.draft_updated';
+    case PromotionApproved = 'promotion.approved';
+    case PromotionActivated = 'promotion.activated';
+    case PromotionPaused = 'promotion.paused';
+    case PromotionResumed = 'promotion.resumed';
+    case PromotionExpired = 'promotion.expired';
+    case PromotionCancelled = 'promotion.cancelled';
+
+    // Phase 20C — platform-governed free-period (trial-length) offers (Plan §53). High severity.
+    case FreePeriodOfferCreated = 'free_period_offer.created';
+    case FreePeriodOfferDraftUpdated = 'free_period_offer.draft_updated';
+    case FreePeriodOfferApproved = 'free_period_offer.approved';
+    case FreePeriodOfferActivated = 'free_period_offer.activated';
+    case FreePeriodOfferPaused = 'free_period_offer.paused';
+    case FreePeriodOfferResumed = 'free_period_offer.resumed';
+    case FreePeriodOfferExpired = 'free_period_offer.expired';
+    case FreePeriodOfferCancelled = 'free_period_offer.cancelled';
+
     /**
      * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
      *
@@ -557,6 +577,23 @@ enum AuditEvent: string
             // high-severity governance actions; deactivation is the terminal state (Critical below).
             self::MerchantSuspended,
             self::MerchantReactivated,
+            // Phase 20C — platform-governed promotion + free-period offer management (Plan §53).
+            self::PromotionCreated,
+            self::PromotionDraftUpdated,
+            self::PromotionApproved,
+            self::PromotionActivated,
+            self::PromotionPaused,
+            self::PromotionResumed,
+            self::PromotionExpired,
+            self::PromotionCancelled,
+            self::FreePeriodOfferCreated,
+            self::FreePeriodOfferDraftUpdated,
+            self::FreePeriodOfferApproved,
+            self::FreePeriodOfferActivated,
+            self::FreePeriodOfferPaused,
+            self::FreePeriodOfferResumed,
+            self::FreePeriodOfferExpired,
+            self::FreePeriodOfferCancelled,
             self::UnauthorizedAccess => AuditSeverity::High,
 
             self::MerchantDeactivated => AuditSeverity::Critical,

@@ -32,6 +32,8 @@ use Illuminate\Support\Str;
  * @property MerchantSubscriptionStatus $status
  * @property BillingInterval $billing_interval
  * @property int $trial_days_snapshot
+ * @property int|null $free_period_offer_id
+ * @property CarbonImmutable|null $free_period_resolved_at
  * @property CarbonImmutable $trial_started_at
  * @property CarbonImmutable $trial_ends_at
  * @property CarbonImmutable $current_period_start
@@ -56,6 +58,8 @@ class MerchantSubscription extends Model
         'status',
         'billing_interval',
         'trial_days_snapshot',
+        'free_period_offer_id',
+        'free_period_resolved_at',
         'trial_started_at',
         'trial_ends_at',
         'current_period_start',
@@ -87,6 +91,8 @@ class MerchantSubscription extends Model
             'status' => MerchantSubscriptionStatus::class,
             'billing_interval' => BillingInterval::class,
             'trial_days_snapshot' => 'integer',
+            'free_period_offer_id' => 'integer',
+            'free_period_resolved_at' => 'immutable_datetime',
             'trial_started_at' => 'immutable_datetime',
             'trial_ends_at' => 'immutable_datetime',
             'current_period_start' => 'immutable_date',

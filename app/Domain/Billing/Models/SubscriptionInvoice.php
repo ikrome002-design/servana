@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Billing\Models;
 
+use App\Domain\Billing\Enums\PromotionalDiscountType;
 use App\Domain\Billing\Enums\SubscriptionInvoiceStatus;
 use App\Domain\Billing\Enums\WalletRegistrationStatus;
 use App\Domain\Files\Models\UploadedFile;
@@ -37,6 +38,11 @@ use Illuminate\Support\Str;
  * @property int $total_minor
  * @property string $currency
  * @property int $balance_minor
+ * @property int|null $promotional_discount_id
+ * @property PromotionalDiscountType|null $promotion_type
+ * @property int|null $promotion_value_snapshot
+ * @property string|null $promotion_currency
+ * @property CarbonImmutable|null $promotion_resolved_at
  * @property SubscriptionInvoiceStatus $status
  * @property string|null $account_reference
  * @property string|null $wallet_payment_id
@@ -68,6 +74,11 @@ class SubscriptionInvoice extends Model
         'total_minor',
         'currency',
         'balance_minor',
+        'promotional_discount_id',
+        'promotion_type',
+        'promotion_value_snapshot',
+        'promotion_currency',
+        'promotion_resolved_at',
         'status',
         'account_reference',
         'wallet_payment_id',
@@ -95,6 +106,9 @@ class SubscriptionInvoice extends Model
     private const IMMUTABLE_AFTER_ISSUE = [
         'plan_id', 'price_id', 'invoice_number', 'period_start', 'period_end',
         'subtotal_minor', 'discount_minor', 'total_minor', 'currency', 'issued_at', 'due_at',
+        // Phase 20C — the promotion snapshot joins the immutable financial snapshot (Gate C4/C5).
+        'promotional_discount_id', 'promotion_type', 'promotion_value_snapshot', 'promotion_currency',
+        'promotion_resolved_at',
     ];
 
     protected static function booted(): void
@@ -135,6 +149,10 @@ class SubscriptionInvoice extends Model
             'discount_minor' => 'integer',
             'total_minor' => 'integer',
             'balance_minor' => 'integer',
+            'promotional_discount_id' => 'integer',
+            'promotion_type' => PromotionalDiscountType::class,
+            'promotion_value_snapshot' => 'integer',
+            'promotion_resolved_at' => 'immutable_datetime',
             'status' => SubscriptionInvoiceStatus::class,
             'wallet_registration_status' => WalletRegistrationStatus::class,
             'wallet_registered_at' => 'immutable_datetime',

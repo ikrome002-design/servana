@@ -1081,3 +1081,81 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-20b.md
     notes: "Additive file_id (nullable FK uploaded_files RESTRICT) + pdf_version (int default 0) linking a subscription invoice to its current generated PDF in the Phase 10F private-file domain (purpose billing_invoice_pdf). Technical projection columns, not part of the immutable financial snapshot; each regeneration writes a new file version and revokes the prior one."
+  - file: 2026_07_12_000001_create_promotional_discounts_table.php
+    table: promotional_discounts
+    domain: Billing
+    owner_phase: "20C"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20c.md
+    notes: "Platform-owned (TenantOwnership::EXEMPT; no merchant_id/branch_id). type CHECK (percentage,fixed_amount); status CHECK 6 values; target_scope CHECK 4 values; value>0; value/currency coherence (percentage⇒null currency+≤10000 bps; fixed⇒uppercase 3-char currency); effective_from/effective_to date-order (Gate C1, no starts_at); approved_by/approved_at both-null-or-both-set; approval/status coherence (draft unapproved; scheduled/active/paused/expired approved; cancelled either). No hard-delete. Resolution + target_scope indexes."
+  - file: 2026_07_12_000002_create_promotional_discount_targets_table.php
+    table: promotional_discount_targets
+    domain: Billing
+    owner_phase: "20C"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_12_000001_create_promotional_discounts_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_07_10_000002_create_subscription_plans_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20c.md
+    notes: "Platform-owned explicit normalized targets (no JSON). target_type CHECK (merchant,plan,billing_mode); billing_mode CHECK 3 canonical BillingMode values; exactly-one-target CHECK (one of merchant_id/subscription_plan_id/billing_mode set, matching target_type); immutable unique ulid = resolver tie-break (Gate C1); three partial unique indexes reject duplicate parent/target (NULLS-safe); FKs RESTRICT; resolution indexes on merchant/plan/billing_mode/parent. Append-only (created_at only)."
+  - file: 2026_07_12_000003_create_free_period_offers_table.php
+    table: free_period_offers
+    domain: Billing
+    owner_phase: "20C"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20c.md
+    notes: "Platform-owned (EXEMPT). free_period_days CHECK 1..365; status CHECK 6 values; target_scope CHECK 4 values; effective_from/effective_to date-order; approval-pair + approval/status coherence CHECKs. Approval yields scheduled only (no draft→active; §12). No hard-delete. Resolution + target_scope indexes."
+  - file: 2026_07_12_000004_create_free_period_offer_targets_table.php
+    table: free_period_offer_targets
+    domain: Billing
+    owner_phase: "20C"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_12_000003_create_free_period_offers_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_07_10_000002_create_subscription_plans_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20c.md
+    notes: "Platform-owned explicit normalized targets (no JSON). Same structure/protections as promotional_discount_targets, parented by free_period_offer_id: target_type CHECK; billing_mode CHECK; exactly-one-target CHECK; immutable ulid tie-break; three partial unique indexes; RESTRICT FKs; resolution indexes."
+  - file: 2026_07_12_000005_add_promotion_snapshot_to_subscription_invoices.php
+    table: subscription_invoices
+    domain: Billing
+    owner_phase: "20C"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_11_000005_create_subscription_invoices_table.php
+      - 2026_07_12_000001_create_promotional_discounts_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20c.md
+    notes: "Gate C4 forward-only expand (shipped 20B migration NOT edited). Additive nullable promotional_discount_id (FK RESTRICT) + promotion_type + promotion_value_snapshot (configured) + promotion_currency + promotion_resolved_at; applied discount stays in existing discount_minor (Gate C5 cap). promotion_type CHECK; value>0; snapshot coherence CHECK (all-null or complete). Existing issued invoices keep NULL (no backfill/recalculation)."
+  - file: 2026_07_12_000006_add_free_period_snapshot_to_merchant_subscriptions.php
+    table: merchant_subscriptions
+    domain: Billing
+    owner_phase: "20C"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_11_000003_create_merchant_subscriptions_table.php
+      - 2026_07_12_000003_create_free_period_offers_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20c.md
+    notes: "Gate C4 forward-only expand (shipped 20B migration NOT edited). Additive nullable free_period_offer_id (FK RESTRICT) + free_period_resolved_at; applied days stay in existing trial_days_snapshot (null offer ⇒ platform default). Snapshot coherence CHECK (both-null or both-set). Existing trials keep NULL (no backfill)."

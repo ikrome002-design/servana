@@ -10,9 +10,11 @@ use App\Domain\Audit\Models\AuditFlaggedEvent;
 use App\Domain\Audit\Models\AuditLog;
 use App\Domain\Audit\Services\DatabaseAuditRecorder;
 use App\Domain\Billing\Contracts\PlanContextResolver;
+use App\Domain\Billing\Models\FreePeriodOffer;
 use App\Domain\Billing\Models\MerchantSubscription;
 use App\Domain\Billing\Models\PlatformBillingSettings;
 use App\Domain\Billing\Models\PreferredPersonnelFeeRule;
+use App\Domain\Billing\Models\PromotionalDiscount;
 use App\Domain\Billing\Models\SubscriptionInvoice;
 use App\Domain\Billing\Models\SubscriptionPlan;
 use App\Domain\Billing\Models\SubscriptionPlanPrice;
@@ -60,6 +62,7 @@ use App\Policies\ClientPolicy;
 use App\Policies\FinanceDisputePolicy;
 use App\Policies\FinanceExportPolicy;
 use App\Policies\FinancialPeriodLockPolicy;
+use App\Policies\FreePeriodOfferPolicy;
 use App\Policies\InvoicePolicy;
 use App\Policies\MerchantBranchPolicy;
 use App\Policies\MerchantPolicy;
@@ -68,6 +71,7 @@ use App\Policies\MerchantUserPolicy;
 use App\Policies\PaymentRecordingGroupPolicy;
 use App\Policies\PlatformBillingSettingsPolicy;
 use App\Policies\PreferredPersonnelFeeRulePolicy;
+use App\Policies\PromotionalDiscountPolicy;
 use App\Policies\QueueEntryPolicy;
 use App\Policies\ReceiptPolicy;
 use App\Policies\RefundPolicy;
@@ -146,6 +150,9 @@ class AppServiceProvider extends ServiceProvider
         MerchantSubscription::class => MerchantSubscriptionPolicy::class,
         SubscriptionInvoice::class => SubscriptionInvoicePolicy::class,
         PreferredPersonnelFeeRule::class => PreferredPersonnelFeeRulePolicy::class,
+        // Phase 20C — platform-governed promotions & free-period offers (Super-Admin platform scope).
+        PromotionalDiscount::class => PromotionalDiscountPolicy::class,
+        FreePeriodOffer::class => FreePeriodOfferPolicy::class,
     ];
 
     public function register(): void

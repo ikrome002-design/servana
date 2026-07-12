@@ -2689,8 +2689,8 @@ keys:
   platform.free_period_offer.manage:
     key: platform.free_period_offer.manage
     description: Manage (platform / free_period_offer).
-    implementation_status: planned
-    owning_phase: Phase 20C
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -2699,7 +2699,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: free_period_offer.approved; free_period_offer.cancelled; free_period_offer.created; free_period_offer.draft_updated; free_period_offer.paused; free_period_offer.resumed
     audit_severity: high
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -3098,8 +3098,8 @@ keys:
   platform.promotion.manage:
     key: platform.promotion.manage
     description: Manage (platform / promotion).
-    implementation_status: planned
-    owning_phase: Phase 20C
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: platform
@@ -3108,7 +3108,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: promotion.activated; promotion.approved; promotion.cancelled; promotion.created; promotion.draft_updated; promotion.paused; promotion.resumed
     audit_severity: high
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only

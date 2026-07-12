@@ -39,12 +39,14 @@ use App\Http\Controllers\Api\V1\Payments\PaymentRecordController;
 use App\Http\Controllers\Api\V1\Payments\PaymentRecordingGroupController;
 use App\Http\Controllers\Api\V1\Payments\PaymentReferenceCheckController;
 use App\Http\Controllers\Api\V1\PeriodLocks\FinancialPeriodLockController;
+use App\Http\Controllers\Api\V1\Platform\FreePeriodOfferController;
 use App\Http\Controllers\Api\V1\Platform\PlanEntitlementController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Controllers\Api\V1\Platform\PlatformBillingSettingsController;
 use App\Http\Controllers\Api\V1\Platform\PlatformMerchantGovernanceController;
 use App\Http\Controllers\Api\V1\Platform\PlatformSettingsController;
 use App\Http\Controllers\Api\V1\Platform\PreferredPersonnelFeeRuleController;
+use App\Http\Controllers\Api\V1\Platform\PromotionalDiscountController;
 use App\Http\Controllers\Api\V1\Platform\SubscriptionPlanController;
 use App\Http\Controllers\Api\V1\Platform\SubscriptionPlanPriceController;
 use App\Http\Controllers\Api\V1\Receipts\ReceiptController;
@@ -1052,6 +1054,72 @@ Route::prefix('platform')
             ->middleware([EnsurePermission::class.':platform.preferred_personnel_fee.manage', $stepUp])
             ->defaults(RouteClassification::KEY, $platform)
             ->name('platform.preferred-personnel-fee-rules.cancel');
+
+        // Phase 20C — promotional discounts (platform-governed; Plan §53). Super-Admin only, MFA (group)
+        // + fresh step-up (BillingConfiguration) on every mutation + idempotency on create. Named
+        // actions per transition; no generic status route; request bodies never accept status/approver.
+        Route::get('promotional-discounts', [PromotionalDiscountController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.promotion.manage')
+            ->name('platform.promotional-discounts.index');
+        Route::post('promotional-discounts', [PromotionalDiscountController::class, 'store'])
+            ->middleware([EnsurePermission::class.':platform.promotion.manage', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.promotional-discounts.store');
+        Route::get('promotional-discounts/{promotionalDiscount}', [PromotionalDiscountController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.promotion.manage')
+            ->name('platform.promotional-discounts.show');
+        Route::patch('promotional-discounts/{promotionalDiscount}', [PromotionalDiscountController::class, 'update'])
+            ->middleware([EnsurePermission::class.':platform.promotion.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.promotional-discounts.update');
+        Route::post('promotional-discounts/{promotionalDiscount}/approve', [PromotionalDiscountController::class, 'approve'])
+            ->middleware([EnsurePermission::class.':platform.promotion.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.promotional-discounts.approve');
+        Route::post('promotional-discounts/{promotionalDiscount}/pause', [PromotionalDiscountController::class, 'pause'])
+            ->middleware([EnsurePermission::class.':platform.promotion.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.promotional-discounts.pause');
+        Route::post('promotional-discounts/{promotionalDiscount}/resume', [PromotionalDiscountController::class, 'resume'])
+            ->middleware([EnsurePermission::class.':platform.promotion.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.promotional-discounts.resume');
+        Route::post('promotional-discounts/{promotionalDiscount}/cancel', [PromotionalDiscountController::class, 'cancel'])
+            ->middleware([EnsurePermission::class.':platform.promotion.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.promotional-discounts.cancel');
+
+        // Phase 20C — free-period (trial-length) offers (platform-governed; Plan §53). Same controls.
+        Route::get('free-period-offers', [FreePeriodOfferController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.free_period_offer.manage')
+            ->name('platform.free-period-offers.index');
+        Route::post('free-period-offers', [FreePeriodOfferController::class, 'store'])
+            ->middleware([EnsurePermission::class.':platform.free_period_offer.manage', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.free-period-offers.store');
+        Route::get('free-period-offers/{freePeriodOffer}', [FreePeriodOfferController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.free_period_offer.manage')
+            ->name('platform.free-period-offers.show');
+        Route::patch('free-period-offers/{freePeriodOffer}', [FreePeriodOfferController::class, 'update'])
+            ->middleware([EnsurePermission::class.':platform.free_period_offer.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.free-period-offers.update');
+        Route::post('free-period-offers/{freePeriodOffer}/approve', [FreePeriodOfferController::class, 'approve'])
+            ->middleware([EnsurePermission::class.':platform.free_period_offer.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.free-period-offers.approve');
+        Route::post('free-period-offers/{freePeriodOffer}/pause', [FreePeriodOfferController::class, 'pause'])
+            ->middleware([EnsurePermission::class.':platform.free_period_offer.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.free-period-offers.pause');
+        Route::post('free-period-offers/{freePeriodOffer}/resume', [FreePeriodOfferController::class, 'resume'])
+            ->middleware([EnsurePermission::class.':platform.free_period_offer.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.free-period-offers.resume');
+        Route::post('free-period-offers/{freePeriodOffer}/cancel', [FreePeriodOfferController::class, 'cancel'])
+            ->middleware([EnsurePermission::class.':platform.free_period_offer.manage', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.free-period-offers.cancel');
 
         // Platform merchant governance (Plan §22, §24.1; Phase 20B). Super-Admin platform scope
         // (no merchant tenant context). Registration monitoring + merchant list/detail are reads;

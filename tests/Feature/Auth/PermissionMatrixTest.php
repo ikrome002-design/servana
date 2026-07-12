@@ -131,6 +131,8 @@ function expectedMatrix(): array
             'platform.billing_settings.view', 'platform.billing_settings.update',
             'platform.plan.view', 'platform.plan.manage',
             'platform.plan_price.manage', 'platform.preferred_personnel_fee.manage',
+            // Phase 20C — promotions & free-period offers (Plan §53).
+            'platform.promotion.manage', 'platform.free_period_offer.manage',
         ],
     ];
 }

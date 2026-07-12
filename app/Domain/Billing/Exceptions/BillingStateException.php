@@ -34,6 +34,11 @@ final class BillingStateException extends Exception
         return new self('Active monetary terms are immutable; supersede with a new version.');
     }
 
+    public static function windowEnded(): self
+    {
+        return new self('The offer effective window has ended; this action is no longer allowed.');
+    }
+
     public function render(Request $request): JsonResponse
     {
         $correlationId = (string) app(CorrelationId::class)->get();

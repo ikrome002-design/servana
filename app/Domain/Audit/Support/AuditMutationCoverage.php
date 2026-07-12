@@ -204,6 +204,20 @@ final class AuditMutationCoverage
         'platform.preferred-personnel-fee-rules.approve' => ['preferred_personnel_fee_rule.approved'],
         'platform.preferred-personnel-fee-rules.supersede' => ['preferred_personnel_fee_rule.superseded'],
         'platform.preferred-personnel-fee-rules.cancel' => ['preferred_personnel_fee_rule.cancelled'],
+        // Phase 20C — promotional discounts (approve of a current window also activates).
+        'platform.promotional-discounts.store' => ['promotion.created'],
+        'platform.promotional-discounts.update' => ['promotion.draft_updated'],
+        'platform.promotional-discounts.approve' => ['promotion.approved', 'promotion.activated'],
+        'platform.promotional-discounts.pause' => ['promotion.paused'],
+        'platform.promotional-discounts.resume' => ['promotion.resumed'],
+        'platform.promotional-discounts.cancel' => ['promotion.cancelled'],
+        // Phase 20C — free-period offers (approval always yields scheduled; activation is scheduler-driven).
+        'platform.free-period-offers.store' => ['free_period_offer.created'],
+        'platform.free-period-offers.update' => ['free_period_offer.draft_updated'],
+        'platform.free-period-offers.approve' => ['free_period_offer.approved'],
+        'platform.free-period-offers.pause' => ['free_period_offer.paused'],
+        'platform.free-period-offers.resume' => ['free_period_offer.resumed'],
+        'platform.free-period-offers.cancel' => ['free_period_offer.cancelled'],
     ];
 
     /**

@@ -45,6 +45,15 @@ export const platformRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/platform/RegistrationMonitoring.vue'),
         meta: { roleIdentity: 'super_administrator' },
       },
+      {
+        // Phase 20C — consolidated promotions surface: promotional discounts + free-period
+        // offers (Plan §53). Backend authoritative (ResolvePlatformContext + EnsurePermission +
+        // policies + MFA + fresh step-up); the sections/controls here are UX-only permission gates.
+        path: 'promotions',
+        name: 'platform.promotions',
+        component: () => import('@/pages/platform/Promotions.vue'),
+        meta: { roleIdentity: 'super_administrator' },
+      },
     ],
   },
 ];
