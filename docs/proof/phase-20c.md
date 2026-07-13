@@ -1,13 +1,30 @@
 # Phase 20C — Promotions and Free-Period Offers — Proof
 
-> Lifecycle: **local_complete pending PR CI/review/merge** (branch `phase-20c-promotions-free-periods`,
-> based on `origin/main` = `3dd528a2779a44d13b9fe105ac9ee49e688e84c6` = the Phase 20B PR #36 squash
-> merge). All six increments are complete and every local gate is green (see Increment 6); the phase is
-> **not** `verified_complete` until a reviewed PR merges with green CI and truthful governance evidence
-> — no PR is opened by this work. Proof appended per increment. Controlling sources: Plan §53
-> (promotions/free-period offers), §§13.9, 22, 47, 48, 49, 65, 67, 80 (Phase 20C); ADR-005
-> (round-half-up), ADR-011 (price sole source). Exclusions per §7 assignment (Wallet 20D-W, %-fee ledger
-> 20E, compensation 20F–20H).
+> Lifecycle: **verified_complete** (reconciled from `local_complete` during Phase 20E Increment 1 on the
+> **PR #37** merge). Branch `phase-20c-promotions-free-periods` (deleted local + remote after merge) was
+> based on `origin/main` = `3dd528a2779a44d13b9fe105ac9ee49e688e84c6` = the Phase 20B PR #36 squash merge.
+> All six increments are complete and every local gate was green (see Increment 6). Proof appended per
+> increment. Controlling sources: Plan §53 (promotions/free-period offers), §§13.9, 22, 47, 48, 49, 65,
+> 67, 80 (Phase 20C); ADR-005 (round-half-up), ADR-011 (price sole source). Exclusions per §7 assignment
+> (Wallet 20D-W, %-fee ledger 20E, compensation 20F–20H).
+
+## Phase 20C merge reconciliation (recorded — PR #37)
+
+- **PR #37** "Phase 20C: Implement promotions and free periods" — **MERGED** into `main`. Implementation
+  commit `782c97313ea988d2263e35d44c325d2c7ccb25ec`; governance/final PR head
+  `efe0f74afe23fa8f3d3acfdd363c1328520cade8`; squash merge
+  `735f419bf72fdd9be3f95c4507e8925c1ed0859e` (= `origin/main`); merged **2026-07-12T11:50:45Z**.
+- CI: initial run `29191160816` (head `782c973…`) SUCCESS + final run `29191381748` (head `efe0f74…`)
+  SUCCESS — five required jobs (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS.
+- `reviewDecision`: **blank** — documented PR-specific solo-maintainer governance exception, **not**
+  independent reviewer approval. Local + remote `phase-20c-promotions-free-periods` branches deleted
+  after merge.
+- Reconciled `docs/PROGRESS.md`, `docs/CHANGELOG.md`, this proof, and
+  `docs/traceability/servana-requirements.csv` (SRV-PROMOTION-001 + SRV-FREE-PERIOD-001) from
+  `local_complete → verified_complete`. All Phase 20C implementation/test/defect detail retained (gates
+  C1–C6, the C5 cap-at-subtotal product-owner decision, DEF-20C-001, generated-specification
+  restoration); history not rewritten as though independent review occurred. No open remediation item is
+  Phase 20C-owned.
 
 ## Phase 20B merge reconciliation (recorded)
 

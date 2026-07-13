@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\V1\Audit\AuditLogController;
 use App\Http\Controllers\Api\V1\Auth\MagicLinkController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\MfaController;
+use App\Http\Controllers\Api\V1\Billing\PlatformFeeDisputeController;
+use App\Http\Controllers\Api\V1\Billing\PlatformFeeLedgerController;
 use App\Http\Controllers\Api\V1\Branch\PreferredPersonnelFeeRuleReadController;
 use App\Http\Controllers\Api\V1\Branches\BranchController;
 use App\Http\Controllers\Api\V1\Branches\BranchDayController;
@@ -43,6 +45,7 @@ use App\Http\Controllers\Api\V1\Platform\FreePeriodOfferController;
 use App\Http\Controllers\Api\V1\Platform\PlanEntitlementController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Controllers\Api\V1\Platform\PlatformBillingSettingsController;
+use App\Http\Controllers\Api\V1\Platform\PlatformFeeConfigurationController;
 use App\Http\Controllers\Api\V1\Platform\PlatformMerchantGovernanceController;
 use App\Http\Controllers\Api\V1\Platform\PlatformSettingsController;
 use App\Http\Controllers\Api\V1\Platform\PreferredPersonnelFeeRuleController;
@@ -246,6 +249,49 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('subscription-invoices/{subscriptionInvoice}/pdf/download-link', [SubscriptionInvoiceController::class, 'downloadLink'])
                 ->middleware(EnsurePermission::class.':merchant.subscription.invoice.download')
                 ->name('subscription-invoices.pdf.download-link');
+
+            // Phase 20E — fresh step-up for a dispute resolution/rejection (Finance).
+            $financeStepUp = RequireFreshMfa::class.':'.StepUpAction::PlatformFeeDisputeResolution->value;
+
+            // Phase 20E — percentage platform-fee merchant surface (Plan §51; Correction 3). Masked
+            // scoped reads (`platform_fee.view`; server-side merchant-wide vs branch-attributable);
+            // the dispute workflow (create = `platform_fee.dispute`; review/resolve/reject =
+            // `platform_fee.dispute.review`, fresh step-up on resolve/reject; resolve is a
+            // financial_mutation with idempotency + period lock; a money change creates an additive
+            // adjustment, never a ledger edit). NO reversal/adjustment/aggregation route (owned by
+            // void/refund/dispute-resolution/issuance); NO generic status route; NO DELETE.
+            Route::get('platform-fees', [PlatformFeeLedgerController::class, 'index'])
+                ->middleware(EnsurePermission::class.':platform_fee.view')
+                ->name('platform-fees.index');
+            Route::get('platform-fees/summary', [PlatformFeeLedgerController::class, 'summary'])
+                ->middleware(EnsurePermission::class.':platform_fee.view')
+                ->name('platform-fees.summary');
+            Route::get('platform-fees/{platformFeeLedgerEntry}', [PlatformFeeLedgerController::class, 'show'])
+                ->middleware(EnsurePermission::class.':platform_fee.view')
+                ->name('platform-fees.show');
+
+            Route::get('platform-fee-disputes', [PlatformFeeDisputeController::class, 'index'])
+                ->middleware(EnsurePermission::class.':platform_fee.view')
+                ->name('platform-fee-disputes.index');
+            Route::post('platform-fee-disputes', [PlatformFeeDisputeController::class, 'store'])
+                ->middleware([EnsurePermission::class.':platform_fee.dispute', EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('platform-fee-disputes.store');
+            Route::get('platform-fee-disputes/{platformFeeDispute}', [PlatformFeeDisputeController::class, 'show'])
+                ->middleware(EnsurePermission::class.':platform_fee.view')
+                ->name('platform-fee-disputes.show');
+            Route::post('platform-fee-disputes/{platformFeeDispute}/review', [PlatformFeeDisputeController::class, 'review'])
+                ->middleware(EnsurePermission::class.':platform_fee.dispute.review')
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('platform-fee-disputes.review');
+            Route::post('platform-fee-disputes/{platformFeeDispute}/resolve', [PlatformFeeDisputeController::class, 'resolve'])
+                ->middleware([EnsurePermission::class.':platform_fee.dispute.review', $financeStepUp, EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('platform-fee-disputes.resolve');
+            Route::post('platform-fee-disputes/{platformFeeDispute}/reject', [PlatformFeeDisputeController::class, 'reject'])
+                ->middleware([EnsurePermission::class.':platform_fee.dispute.review', $financeStepUp])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('platform-fee-disputes.reject');
 
             // Branches (Scope §3.3, Plan §10.3). Index/show are scoped reads.
             // Mutating routes carry EnsurePermission (the backend authorization
@@ -1088,6 +1134,36 @@ Route::prefix('platform')
             ->middleware([EnsurePermission::class.':platform.promotion.manage', $stepUp])
             ->defaults(RouteClassification::KEY, $platform)
             ->name('platform.promotional-discounts.cancel');
+
+        // Phase 20E — percentage platform-fee configurations (platform-governed; Plan §51/§52). Super-Admin
+        // only, MFA (group) + fresh BillingConfiguration step-up on mutations + idempotency on
+        // create/approve/supersede/cancel. Named actions per transition — NO generic status route.
+        Route::get('billing/platform-fee-configurations', [PlatformFeeConfigurationController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.platform_fee.configure')
+            ->name('platform.platform-fee-configurations.index');
+        Route::post('billing/platform-fee-configurations', [PlatformFeeConfigurationController::class, 'store'])
+            ->middleware([EnsurePermission::class.':platform.platform_fee.configure', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.platform-fee-configurations.store');
+        Route::get('billing/platform-fee-configurations/{platformFeeConfiguration}', [PlatformFeeConfigurationController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.platform_fee.configure')
+            ->name('platform.platform-fee-configurations.show');
+        Route::patch('billing/platform-fee-configurations/{platformFeeConfiguration}', [PlatformFeeConfigurationController::class, 'update'])
+            ->middleware([EnsurePermission::class.':platform.platform_fee.configure', $stepUp])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.platform-fee-configurations.update');
+        Route::post('billing/platform-fee-configurations/{platformFeeConfiguration}/approve', [PlatformFeeConfigurationController::class, 'approve'])
+            ->middleware([EnsurePermission::class.':platform.platform_fee.configure', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.platform-fee-configurations.approve');
+        Route::post('billing/platform-fee-configurations/{platformFeeConfiguration}/supersede', [PlatformFeeConfigurationController::class, 'supersede'])
+            ->middleware([EnsurePermission::class.':platform.platform_fee.configure', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.platform-fee-configurations.supersede');
+        Route::post('billing/platform-fee-configurations/{platformFeeConfiguration}/cancel', [PlatformFeeConfigurationController::class, 'cancel'])
+            ->middleware([EnsurePermission::class.':platform.platform_fee.configure', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.platform-fee-configurations.cancel');
 
         // Phase 20C — free-period (trial-length) offers (platform-governed; Plan §53). Same controls.
         Route::get('free-period-offers', [FreePeriodOfferController::class, 'index'])

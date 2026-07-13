@@ -199,6 +199,21 @@ onMounted(() => {
                 {{ invoice.tax.formatted }}
               </dd>
             </div>
+            <!-- Phase 20E — client-facing platform-fee line: the portion of the Servana platform fee
+                 shifted onto this invoice (shared / business-centric tiers). Absent for customer-centric
+                 and fixed-only invoices, where the server returns null. -->
+            <div
+              v-if="invoice.platform_fee_client_shifted"
+              class="flex justify-between"
+              data-testid="invoice-platform-fee-line"
+            >
+              <dt class="text-text-muted">
+                Platform fee
+              </dt>
+              <dd class="text-text">
+                {{ invoice.platform_fee_client_shifted.formatted }}
+              </dd>
+            </div>
             <div class="flex justify-between border-t border-border pt-1.5 font-display text-base font-bold">
               <dt class="text-heading">
                 Total

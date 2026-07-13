@@ -1339,7 +1339,7 @@ Grouped by domain (Correction 16.2). Sensitive platform mutations require mandat
 # Platform Governance (Super Administrator only)
 platform.settings.view | platform.settings.update | platform.billing_settings.view | platform.billing_settings.update
 platform.plan.view | platform.plan.manage | platform.plan_price.manage | platform.promotion.manage
-platform.free_period_offer.manage | platform.preferred_personnel_fee.manage | platform.wallet_configuration.manage
+platform.free_period_offer.manage | platform.preferred_personnel_fee.manage | platform.wallet_configuration.manage | platform.platform_fee.configure
 platform.billing_reconciliation.view | platform.billing_reconciliation.resolve | platform.integrations.wallet.manage
 platform.integrations.refer_earn.manage | platform.integrations.health.view
 platform.referral.qualification.view | platform.referral.qualification.correct | platform.merchant.view | platform.merchant.suspend
@@ -1380,6 +1380,14 @@ period_lock.reopen | finance_export.create | finance_export.download | subscript
 merchant.subscription.pay | compensation.liability.view | compensation.adjustment.create | payout_run.verify
 payout_run.approve_standard | payout_run.reject | payout_run.mark_paid | earnings_query.respond | finance.audit.view
 
+# Percentage Platform Fees — merchant surface (Phase 20E; §13.10 Correction 3, §51). Masked, scoped reads
+# (platform_fee.view: Merchant Administrator merchant-wide; Branch Manager branch-attributable; Finance
+# reconciliation view; Audit masked branch-scoped) and the merchant-side dispute workflow (platform_fee.dispute
+# = creation, Merchant Administrator/Finance; platform_fee.dispute.review = Finance review/resolve/reject with
+# fresh step-up, a money change creates an additive platform_fee_adjustment, never a ledger edit). Platform-fee
+# CONFIGURATION governance is the Super-Administrator platform key platform.platform_fee.configure above.
+platform_fee.view | platform_fee.dispute | platform_fee.dispute.review
+
 # Personnel Own-Scope
 personnel.my_queue.view | personnel.my_appointments.view | personnel.my_sessions.view | personnel.my_served_clients.view
 personnel.my_compensation.view | personnel.my_earnings.view | personnel.my_statements.download | personnel.my_payouts.view
@@ -1415,6 +1423,7 @@ platform.plan_price.manage        P|-|-|n/a|Y|SU Y|high|-                       
 platform.promotion.manage         P|-|-|n/a|Y|SU Y|high|-
 platform.free_period_offer.manage P|-|-|n/a|Y|SU Y|high|-
 platform.preferred_personnel_fee.manage P|-|-|n/a|Y|SU Y|high|-                          svc ManagePreferredPersonnelFeeRule (fixed+percentage)
+platform.platform_fee.configure   P|-|-|n/a|Y|SU Y|high|configuration approver should differ from its creator   svc Create/Update/Approve/Supersede/Cancel PlatformFeeConfiguration (§51/§52; percentage platform-fee governance)
 platform.wallet_configuration.manage P|-|-|n/a|Y|SU Y|crit|-                             svc: webhook key-ID sets, breaker reset, inbox replay (was platform.mpesa_configuration.manage; SUP-06)
 platform.billing_reconciliation.view P|-|-|n/a|Y|-|info|-                                 (was platform.mpesa_exception.view; SUP-06) masked provider references
 platform.billing_reconciliation.resolve P|-|-|n/a|Y|SU Y|high|maker/checker when severity=critical  action ResolveBillingReconciliationException (link_to_invoice | dismiss; never manual payment recording)
@@ -1554,6 +1563,9 @@ payout_run.reject                 M/B|-|R|n/a|Y|-|warn|-
 payout_run.mark_paid              M/B|-|R|n/a|Y|SU Y|crit|-                              external ref+date; idempotent; row-lock
 earnings_query.respond            M/B|-|R|n/a|Y|-|info|-                                 resolution via adjustment only
 finance.audit.view                B|-|A|n/a|Y|-|info|-
+platform_fee.view                 M|-|A|n/a|-|-|info|-                                    masked scoped read (merchant-wide Merchant Admin/Finance; branch-attributable Branch Manager/Audit)
+platform_fee.dispute              M|-|R|n/a|-|-|warn|-                                    merchant-side dispute creation (Merchant Admin/Finance)
+platform_fee.dispute.review       M|-|R|enforced|Y|SU Y|warn|dispute creator may not resolve/reject their own dispute   Finance review/resolve/reject; money change = additive platform_fee_adjustment
 
 # Personnel Own-Scope (default_roles: personnel; non_overridable: never contact export)
 personnel.my_queue.view           O|-|A|n/a|-|-|info|-                                    staff_profile_id derived from membership

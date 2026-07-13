@@ -60,6 +60,15 @@ export const branchRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/branch/CashUp.vue'),
       },
       {
+        // Phase 20E — Branch Manager branch-attributable, read-only platform-fee visibility. Backend
+        // server-scopes to the actor's assigned branches (`platform_fee.view`); no mutation controls.
+        // Declared before the `:id` catch-all so `/branch/platform-fees` resolves here.
+        path: 'platform-fees',
+        name: 'branch.platform-fees',
+        component: () => import('@/pages/billing/PlatformFees.vue'),
+        meta: { roleIdentity: 'merchant_branch' },
+      },
+      {
         path: ':id',
         name: 'branch.detail',
         component: () => import('@/pages/branch/BranchDetail.vue'),

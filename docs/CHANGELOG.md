@@ -1,12 +1,110 @@
 # Changelog
 
 All notable changes to Servana by Citrus. Format loosely follows
-[Keep a Changelog](https://keepachangelog.com/); phases now map to the active v3
+[Keep a Changelog](https://keepachangelog.com/); phases now map to the active v4
 roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 20C — Promotions and Free-Period Offers (`phase-20c-promotions-free-periods`) — local_complete pending PR CI/review/merge
+### Phase 20E — Percentage Platform-Fee Engine (`phase-20e-percentage-platform-fees`) — local_complete pending PR CI/review/merge
+
+Started off `main` = `735f419…` (Phase 20C PR #37 squash merge); Gate W CLOSED (evidence absent) ⇒ 20E
+is the next executable phase per the v4 dependency graph. Increment 1 (specification-first): Phase 20C
+reconciled to `verified_complete`; Gate W status recorded; specification gates E1–E9 resolved in
+`docs/proof/phase-20e.md` (ledger lifecycle = Plan §13.10 canonical `earned`/`pending`→`aggregated`→
+`invoiced` with additive reversal/adjustment and `settled` excluded to 20D-W; fee created at Finance
+validation; fee-basis vocabulary fixed; `split_tier→shared` tier mapping; legacy `platform_fees.*`
+reconciliation planned). Increments 2–4 delivered the four tables + enums/models/factories/DB guards,
+the config state machine + resolvers + integer arithmetic engine, and the P17 finalization + P18B
+validation-billability integration. **Increment 5** adds: (5A) `AggregatePlatformFeesIntoSubscriptionInvoice`
+folding the earned/pending rollup into the P20B `IssueSubscriptionInvoice` transaction as a single
+`platform_fee_rollup` line (no second invoice aggregate; folded at issuance because the subscription
+invoice requires a plan/price and is immutable once issued), with a forward-only DB cycle guard
+(`2026_07_13_000008` partial-unique rollup-per-invoice), Africa/Nairobi period `[start,end)`, deterministic
+`billable_at,ulid` order, and `pending→aggregated→invoiced` via a new `PlatformFeeLedgerEntryStateMachine`;
+(5B) additive `RecordPlatformFeeReversal` / `RecordPlatformFeeAdjustment` hooked into `ExecuteInvoiceVoid`
+and `FinalizeRefund` — append-only ledger + signed `platform_fee_adjustments` evidence, the original
+earned amount never edited, 409 over-reversal, source-event idempotency, period-lock + maker/checker
+inherited from the host actions; (5C) the canonical dispute workflow (`Create/Start/Resolve/Reject`
+actions on `open→under_review→resolved|rejected`; a money-changing resolution creates a
+`dispute_resolution` adjustment and never rewrites the ledger amount or the issued subscription invoice);
+and 8 Finance audit events (`platform_fee.aggregated/invoiced/reversed/adjusted/dispute_*`). No
+Wallet/provider/payment runtime is introduced. **Increment 6** adds the HTTP surface + canonical permission
+reconciliation (recovered without file loss after a 2026-07-13 desktop reboot — 104 recovery files
+hash-match the external backup): 16 routes (7 Super-Admin platform-fee configuration actions
+`create/update-draft/approve/supersede/cancel/list/show`; 3 merchant masked scoped reads
+`platform-fees[/summary/{entry}]`; 6 disputes `create/list/show/review/resolve/reject`) — each thin
+controller → Form Request → policy → platform/tenant context → MFA/fresh step-up/period-lock/idempotency →
+existing transactional action → masked ULID-only Resource; no reversal/adjustment/aggregation/status/DELETE
+or Wallet/provider routes. Five configuration audit events
+(`platform_fee.configuration_created/updated/approved/superseded/cancelled`, High severity). **Permission
+reconciliation (Gate E9; product-owner decision Option A, 2026-07-13):** the legacy plural
+`platform_fees.view`/`platform_fees.dispute` are retired and their canonical successors —
+`platform_fee.view`, `platform_fee.dispute`, `platform_fee.dispute.review`, `platform.platform_fee.configure`
+— are authorized into the Plan §19.2 canonical catalogue **and** §19.3 populated matrix (156→160 keys),
+reconciled atomically across YAML/`PermissionRegistry`/DB projection/generated `permissions.ts`/policies/
+routes/`PermissionMatrixTest`/`phase8-matrix.txt`. The merchant-side dispute model is retained (NOT moved to
+the Phase 20D-W `platform.billing_reconciliation.*` Wallet domain). Legacy-active ratchet 12→**10**
+(`PermissionLegacyKeyReconciliationTest`, not weakened). OpenAPI (235 operations) + generated TypeScript API
++ permission metadata regenerated deterministically. `REM-PERM-001` remains open (Phase 19-owned). Gates:
+Increment-6 API 30, full Billing 455, auth/matrix 19, security/audit/tenancy/boundary 53, affected
+regression 167, frontend vue-tsc/ESLint(0 err)/Vitest 321/build ✓, Pint + Larastan L8 clean. Frontend
+screens + E2E are Increment 7.
+
+**Backend closure — future-cycle correction aggregation** completes the one remaining Phase 20E financial
+gap after Increment 6: a pending `reversal`/`adjustment` correction of an already-billed platform fee is now
+swept into a single signed `subscription_invoice_items.type='adjustment'` line on the merchant's next issued
+subscription invoice, so the append-only ledger and the subscription-billing projection stay consistent.
+`AggregatePlatformFeesIntoSubscriptionInvoice` gains `collectApplicableCorrections()` + `writeCorrectionLine()`
+(new value object `PlatformFeeCorrectionSelection`), wired into the existing `IssueSubscriptionInvoice`
+transaction. Each correction's signed contribution is its paired `platform_fee_adjustments.amount_minor`
+(never recomputed); consumed corrections transition `pending → aggregated → invoiced`. A correction is swept
+only when its ORIGINAL earned entry was already invoiced (a correction of a never-invoiced original is
+skipped — no spurious credit). The applied negative net is capped so the invoice total can never go negative
+(DB `subscription_invoices.total_minor >= 0`); any un-applied correction stays `pending` and carries to a
+later cycle (whole-entry carry-forward — an immutable row is never split; no Wallet credit — that is Phase
+20D-W). No migration, no route or OpenAPI change; audit reuses `platform_fee.aggregated`/`platform_fee.invoiced`.
+Gates: `PlatformFeeCorrectionAggregationTest` 8/46; full Billing 463; Invoicing+Refunds+Audit+NoDirectProvider+
+Tenancy 83; Pint clean; Larastan L8 clean; `composer validate --strict` valid.
+
+**Increment 7** delivers the Vue 3 + Pinia frontend for all six roles (backend stays authoritative — every
+control is UX-gated by `useCan()` only; amounts are server-formatted, never recomputed in the browser; the
+canonical `shared` tier label is shown, never `split_tier`; no Wallet/settlement UI). Three typed stores
+(`platformFeeConfigStore`, `platformFeeStore`, `platformFeeDisputeStore`). Super-Administrator configuration
+is a new **Platform fees** tab in `BillingSettings.vue` (`PlatformFeeConfigSection.vue`): list + create /
+edit-draft / approve / supersede / cancel, with approved terms rendered read-only (supersede offered, no
+edit control) and client validation mirroring the server (integer basis points, shared-split-required,
+`validated_paid_amount` customer-centric-only, effective coherence, required change reason). Merchant
+Administrator, Branch Manager, Finance and Audit share one server-scoped `pages/billing/PlatformFees.vue`
+(summary cards, fee-entry list/detail, disputes): Merchant/Finance raise disputes, Finance-only start-review
+/ resolve (optional signed money change → additive adjustment) / reject, Branch/Audit read-only. Front
+Office sees a client-facing platform-fee line in `InvoiceDetail.vue` when the server returns a positive
+`platform_fee_client_shifted`. A §23 contract fix added that masked field to the merchant-client
+`InvoiceResource` (OpenAPI + `api.ts` regenerated; Invoicing Feature tests green); the shared `SvModal`
+gained internal scrolling for tall dialogs. Screen inventory + navigation updated and regenerated. Gates:
+Vitest 352 (18 new specs); Playwright `phase-20e` 14 (responsive 360/768/1280, 200% zoom, keyboard/focus,
+axe serious/critical = 0 in light and dark); vue-tsc clean; ESLint 0 errors; production build ✓;
+`api:contract:check` OK; `permission-types --check` clean; backend platform-fee API 30. Frontend only — no
+backend financial logic or migration changed beyond the read-only Resource field.
+
+**Increment 8** is the whole-phase local acceptance sweep and the single completion commit `phase-20e:
+implement percentage platform fee engine` (on top of `735f419…`; pushed, **not** PR'd/merged). All gates
+green on PostgreSQL 16 / PHP 8.3.32 / Laravel 12.62.0: `composer validate` valid, Pint 1266 files, Larastan
+**level 8** no errors; isolated disposable-DB `migrate:fresh --seed` (96 migrations, 8 Phase 20E, 4 tables,
+dropped after verification); backend serial **1181 pass / 7 skip / 7396 assertions** and parallel identical
+(4 processes); Phase 20E targeted 138; permission catalogue **§19.2 = 160 / §19.3 = 160 / legacy-active =
+10** (plural `platform_fees.*` retired, four canonical singular keys authorized); OpenAPI/`api.ts`/
+`permissions.ts` deterministic (identical SHA-256 across two regen runs, no git diff), `api:contract:check`
+OK — **196 paths / 235 operations**; ESLint 0 errors, vue-tsc clean, Vitest **352 / 82 files**, production
+build ✓; Playwright affected 77 + full **324 / 0 fail** (Phase 20E 360/768/1280 + 200% zoom + keyboard/focus
++ axe serious/critical = 0 light and dark); `composer audit --locked` no advisories, `npm audit
+--audit-level=high` exit 0 (2 moderate dev-only `js-yaml`@`@redocly/openapi-core`, disclosed), gitleaks no
+leaks; Docker `servana-app:dev` + `servana-app:prod` + `servana-nginx:prod` all built. Scope-purity clean —
+no Wallet/provider runtime introduced. No gate failed on first execution; nothing disabled, loosened, or
+suppressed. Lifecycle: `local_complete pending PR CI/review/merge` — the PR/CI/review/merge is a separate,
+product-owner-authorized step.
+
+### Phase 20C — Promotions and Free-Period Offers (`phase-20c-promotions-free-periods`) — verified_complete (PR #37 merged `735f419…`, 2026-07-12)
 
 Platform-governed promotional discounts and free-period (trial-length) offers (Plan §53; Correction 2).
 Four platform-scoped tables (`promotional_discounts`, `promotional_discount_targets`,

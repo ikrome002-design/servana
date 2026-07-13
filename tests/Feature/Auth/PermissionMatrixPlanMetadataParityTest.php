@@ -15,7 +15,7 @@ uses()->group('auth', 'permissions', 'matrix');
  | path from the matrix generator) so this is a genuine mechanical cross-check,
  | not a self-referential assertion.
  |
- | Plan-encoded fields checked for all 156 canonical keys:
+ | Plan-encoded fields checked for all 160 canonical keys:
  |   scope · entitlement_key · billing_read_only_behavior · period_lock_behavior
  |   · mfa_required · step_up_required · audit_severity
  |   · maker_checker_incompatibilities · default_roles · override_policy
@@ -115,11 +115,11 @@ function billToken(string $b): string
     return str_starts_with($b, 'A') ? 'allow_read' : 'block';
 }
 
-it('matches the Plan §19.3 matrix on every Plan-encoded field for all 156 canonical keys', function (): void {
+it('matches the Plan §19.3 matrix on every Plan-encoded field for all 160 canonical keys', function (): void {
     $matrix = app(PermissionMatrix::class);
     $planRows = planMatrixRows();
 
-    expect($planRows)->toHaveCount(156);
+    expect($planRows)->toHaveCount(160);
 
     $problems = [];
     foreach ($planRows as $key => $plan) {

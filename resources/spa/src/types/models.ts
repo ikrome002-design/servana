@@ -464,6 +464,9 @@ export interface Invoice {
   discount: Money;
   tax: Money;
   preferred_personnel_fee: Money | null;
+  // Phase 20E — client-facing platform-fee line (shared / business-centric tiers); null when the tier
+  // shifts nothing (customer-centric) or the invoice is fixed-only.
+  platform_fee_client_shifted: Money | null;
   total: Money;
   validated_paid: Money;
   balance: Money;

@@ -6,6 +6,12 @@ namespace App\Domain\Refunds\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Billing\Enums\PlatformFeeAdjustmentType;
+use App\Domain\Billing\Enums\PlatformFeeEntryType;
+use App\Domain\Billing\Models\PlatformFeeLedgerEntry;
+use App\Domain\Billing\Services\AllocatePlatformFeeByLargestRemainder;
+use App\Domain\Billing\Services\RecordPlatformFeeAdjustment;
+use App\Domain\Billing\Services\RecordPlatformFeeReversal;
 use App\Domain\Compensation\Services\CommissionHandoffWriter;
 use App\Domain\FinanceOps\Services\FinancialPeriodGuard;
 use App\Domain\Invoicing\Enums\InvoiceStatus;
@@ -22,6 +28,7 @@ use App\Domain\Refunds\Models\Refund;
 use App\Domain\Refunds\Services\RefundStateMachine;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -41,6 +48,9 @@ final class FinalizeRefund
         private readonly PaymentRecordingGroupStateMachine $groupMachine,
         private readonly RefundStateMachine $machine,
         private readonly CommissionHandoffWriter $commission,
+        private readonly RecordPlatformFeeReversal $platformFeeReversal,
+        private readonly RecordPlatformFeeAdjustment $platformFeeAdjustment,
+        private readonly AllocatePlatformFeeByLargestRemainder $allocator,
         private readonly AuditRecorder $audit,
     ) {}
 
@@ -72,6 +82,7 @@ final class FinalizeRefund
             ])->save();
 
             // 2) Reduce the invoice recognised balance (must stay within 0..total).
+            $validatedPaidBefore = (int) $invoice->validated_paid_minor;
             $newValidatedPaid = $invoice->validated_paid_minor - $locked->amount_minor;
             if ($newValidatedPaid < 0 || $newValidatedPaid > $invoice->total_minor) {
                 throw RefundException::balanceOutOfRange();
@@ -97,6 +108,12 @@ final class FinalizeRefund
 
             // 6) Derive the invoice payment state when no in-flight refund remains.
             $this->deriveInvoiceState($invoice);
+
+            // 6b) Phase 20E — additively correct the earned platform-fee liability for the refunded
+            // amount (full reversal when the invoice becomes fully unpaid; else a proportional
+            // partial_refund adjustment). The original earned rows are never rewritten; corrections are
+            // eligible for the next authorized billing cycle. Any failure rolls back the whole refund.
+            $this->correctPlatformFees($invoice, $locked, $validatedPaidBefore, $finalizer, $now);
 
             $this->audit->record(AuditEvent::RefundFinalized, $finalizer, $locked->merchant_id, $locked->branch_id, $locked, [
                 'refund_id' => $locked->ulid,
@@ -157,5 +174,94 @@ final class FinalizeRefund
             $invoice->status = $target;
         }
         $invoice->save();
+    }
+
+    /**
+     * Additively correct the earned platform-fee liability for a finalized refund. A full refund (the
+     * invoice becomes fully unpaid) reverses every earned entry; a partial refund creates a
+     * `partial_refund` adjustment proportional to the refunded share of the previously-validated amount,
+     * distributed across the entries' remaining reversible balances by largest remainder. Idempotent per
+     * refund (the source key includes the refund id). The original earned rows are never edited.
+     */
+    private function correctPlatformFees(Invoice $invoice, Refund $refund, int $validatedPaidBefore, User $finalizer, CarbonImmutable $now): void
+    {
+        $businessDate = CarbonImmutable::now('Africa/Nairobi');
+
+        /** @var Collection<int, PlatformFeeLedgerEntry> $entries */
+        $entries = PlatformFeeLedgerEntry::query()
+            ->where('merchant_id', $invoice->merchant_id)
+            ->where('source_invoice_id', $invoice->id)
+            ->where('entry_type', PlatformFeeEntryType::Earned->value)
+            ->orderBy('id')
+            ->lockForUpdate()
+            ->get();
+
+        if ($entries->isEmpty()) {
+            return;
+        }
+
+        $reason = 'Refund '.$refund->ulid;
+
+        // Full refund → the invoice is fully unpaid again → reverse each earned entry in full.
+        if ((int) $invoice->validated_paid_minor === 0) {
+            foreach ($entries as $entry) {
+                $this->platformFeeReversal->record(
+                    $entry,
+                    $reason,
+                    $refund->ulid,
+                    'reversal:refund:'.$refund->id.':'.$entry->id,
+                    $finalizer,
+                    $businessDate,
+                );
+            }
+
+            return;
+        }
+
+        // Partial refund → proportional partial_refund adjustment across remaining reversible balances.
+        $remainingByUlid = [];
+        $entryByUlid = [];
+        $totalRemaining = 0;
+        foreach ($entries as $entry) {
+            $remaining = $this->platformFeeAdjustment->remainingReversible($entry);
+            if ($remaining <= 0) {
+                continue;
+            }
+            $remainingByUlid[$entry->ulid] = $remaining;
+            $entryByUlid[$entry->ulid] = $entry;
+            $totalRemaining += $remaining;
+        }
+
+        if ($totalRemaining <= 0 || $validatedPaidBefore <= 0) {
+            return;
+        }
+
+        $reduceBy = min($totalRemaining, $this->roundHalfUp($totalRemaining * (int) $refund->amount_minor, $validatedPaidBefore));
+        if ($reduceBy <= 0) {
+            return;
+        }
+
+        foreach ($this->allocator->allocate($reduceBy, $remainingByUlid) as $ulid => $share) {
+            if ($share <= 0) {
+                continue;
+            }
+            $entry = $entryByUlid[$ulid];
+            $this->platformFeeAdjustment->record(
+                $entry,
+                PlatformFeeAdjustmentType::PartialRefund,
+                -$share,
+                $reason,
+                $refund->ulid,
+                'adjustment:refund:'.$refund->id.':'.$entry->id,
+                $finalizer,
+                $businessDate,
+            );
+        }
+    }
+
+    /** Round-half-up of numerator / denominator to integer minor units (ADR-005; denominator > 0). */
+    private function roundHalfUp(int $numerator, int $denominator): int
+    {
+        return intdiv($numerator * 2 + $denominator, $denominator * 2);
     }
 }

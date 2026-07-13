@@ -54,6 +54,14 @@ final class InvoiceResource extends JsonResource
             'preferred_personnel_fee' => $this->preferred_personnel_fee_snapshot_minor === null
                 ? null
                 : Money::ofMinor($this->preferred_personnel_fee_snapshot_minor, $currency)->toArray(),
+            // Phase 20E — the client-facing platform-fee line: the portion of the percentage platform fee
+            // shifted onto THIS merchant-client invoice (already included in `total`). Present only when
+            // there is a positive shifted amount (shared / business-centric tiers); customer-centric shifts
+            // nothing and fixed-only invoices have no percentage fee, so both render no line. Merchant
+            // liability and internal rate configuration are never exposed on this client-facing payload.
+            'platform_fee_client_shifted' => ($this->platform_fee_client_shifted_minor === null || $this->platform_fee_client_shifted_minor <= 0)
+                ? null
+                : Money::ofMinor($this->platform_fee_client_shifted_minor, $currency)->toArray(),
             'total' => Money::ofMinor($this->total_minor, $currency)->toArray(),
             'validated_paid' => Money::ofMinor($this->validated_paid_minor, $currency)->toArray(),
             'balance' => Money::ofMinor($this->balanceMinor(), $currency)->toArray(),

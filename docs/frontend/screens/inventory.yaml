@@ -703,3 +703,27 @@ screens:
     status: planned
     phase: Phase 19
     spec: ~
+  - key: merchant-platform-fees
+    domain: merchant
+    route: merchant.platform-fees
+    status: implemented
+    phase: Phase 20E
+    spec: merchant/merchant-platform-fees.md
+  - key: branch-platform-fees
+    domain: branch
+    route: branch.platform-fees
+    status: implemented
+    phase: Phase 20E
+    spec: branch/branch-platform-fees.md
+  - key: finance-platform-fees
+    domain: finance
+    route: finance.platform-fees
+    status: implemented
+    phase: Phase 20E
+    spec: finance/finance-platform-fees.md
+  - key: audit-platform-fees
+    domain: audit
+    route: audit.platform-fees
+    status: implemented
+    phase: Phase 20E
+    spec: audit/audit-platform-fees.md

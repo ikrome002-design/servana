@@ -18,6 +18,7 @@ use App\Domain\Billing\Models\SubscriptionInvoiceItem;
 use App\Domain\Billing\Models\SubscriptionPlanPrice;
 use App\Domain\Billing\Queries\ResolveEffectivePlatformBillingSettings;
 use App\Domain\Billing\Queries\ResolvePromotionalDiscount;
+use App\Domain\Billing\Services\AggregatePlatformFeesIntoSubscriptionInvoice;
 use App\Domain\Billing\Services\AllocateSubscriptionInvoiceNumber;
 use App\Domain\Billing\Services\BillingIntervalCalculator;
 use App\Domain\Billing\Services\CalculatePromotionalDiscount;
@@ -48,6 +49,7 @@ final class IssueSubscriptionInvoice
         private readonly ResolveEffectivePlatformBillingSettings $settings,
         private readonly ResolvePromotionalDiscount $promotions,
         private readonly CalculatePromotionalDiscount $calculator,
+        private readonly AggregatePlatformFeesIntoSubscriptionInvoice $platformFees,
     ) {}
 
     public function handle(MerchantSubscription $subscription, ?User $actor = null): SubscriptionInvoice
@@ -75,18 +77,46 @@ final class IssueSubscriptionInvoice
 
             /** @var SubscriptionPlanPrice $price */
             $price = SubscriptionPlanPrice::query()->whereKey($locked->price_id)->firstOrFail();
-            $subtotal = (int) $price->amount_minor;
+            $planSubtotal = (int) $price->amount_minor;
 
             // Phase 20C — resolve at most one promotional discount at the issuance business date
             // (Gate C3) against this invoice's merchant/plan/effective (fixed) mode. Snapshot both the
             // configured value and the applied (capped) amount (Gate C4/C5); percentage uses bps +
-            // ADR-005; fixed is capped at the subtotal so the total never goes negative. No promotion
-            // ⇒ zero discount. Later promotion edits never re-resolve this issued invoice.
+            // ADR-005; fixed is capped at the PLAN subtotal so the total never goes negative. No
+            // promotion ⇒ zero discount. Later promotion edits never re-resolve this issued invoice.
+            // The promotion applies to the subscription plan fee only — the platform-fee rollup is a
+            // pass-through liability and is never discounted.
             $issuanceDate = CarbonImmutable::now(BillingIntervalCalculator::TIMEZONE);
             $promotion = $this->promotions->resolve($locked->merchant_id, $locked->plan_id, $mode, $issuanceDate);
             $discount = $promotion !== null
-                ? $this->calculator->calculate($promotion, $subtotal, $price->currency)
+                ? $this->calculator->calculate($promotion, $planSubtotal, $price->currency)
                 : 0;
+
+            // Phase 20E — collect + FOR UPDATE-lock the eligible earned/pending platform-fee liabilities
+            // for this merchant + currency + Africa/Nairobi billing period, and fold their integer total
+            // into the (immutable) subtotal before issuance. Zero eligible entries ⇒ zero rollup ⇒ the
+            // invoice is exactly the Phase 20B plan-fee invoice (backward compatible). No Wallet runtime.
+            $feeSelection = $this->platformFees->collectEligible(
+                $locked->merchant_id,
+                $price->currency,
+                CarbonImmutable::parse((string) $locked->current_period_start),
+                CarbonImmutable::parse((string) $locked->current_period_end),
+            );
+
+            // Phase 20E future-cycle closure — sweep the pending platform-fee CORRECTIONS (reversals /
+            // adjustments of already-invoiced fees) into one signed `adjustment` line. The applied net is
+            // capped at the invoice's positive charges (headroom = plan + rollup − discount) so the total
+            // can never go negative (DB-enforced); corrections that do not fit stay pending and carry to a
+            // later cycle. Never a Wallet credit (that is Phase 20D-W).
+            $base = $planSubtotal + $feeSelection->totalMinor;
+            $correctionSelection = $this->platformFees->collectApplicableCorrections(
+                $locked->merchant_id,
+                $price->currency,
+                CarbonImmutable::parse((string) $locked->current_period_end),
+                $base - $discount,
+            );
+
+            $subtotal = $base + $correctionSelection->netMinor;
             $total = $subtotal - $discount;
 
             $number = $this->allocator->allocate($locked->merchant_id);
@@ -123,14 +153,24 @@ final class IssueSubscriptionInvoice
             $invoice->due_at = CarbonImmutable::parse($locked->current_period_end)->endOfDay();
             $invoice->save();
 
-            // Single immutable plan_fee line = captured price (fixed mode). No percentage/SMS/promotion.
+            // Immutable plan_fee line = captured plan price. No percentage/SMS/promotion on this line.
             $item = new SubscriptionInvoiceItem;
             $item->merchant_id = $locked->merchant_id;
             $item->subscription_invoice_id = $invoice->id;
             $item->description = 'Subscription plan fee';
-            $item->amount_minor = $subtotal;
+            $item->amount_minor = $planSubtotal;
             $item->type = SubscriptionInvoiceItemType::PlanFee;
             $item->save();
+
+            // Phase 20E — write the single platform_fee_rollup line (if any) and transition the linked
+            // earned entries pending → aggregated → invoiced, inside this same issuance transaction. A
+            // rollback (e.g. a duplicate-rollup guard violation) undoes the invoice, number, and links.
+            $rollupItem = $this->platformFees->writeRollup($invoice, $feeSelection, $actor);
+
+            // Phase 20E future-cycle closure — write the signed correction `adjustment` line (if any) and
+            // transition the consumed correction entries pending → aggregated → invoiced, inside this same
+            // transaction. A rollback undoes the invoice, number, rollup, and every correction link.
+            $correctionItem = $this->platformFees->writeCorrectionLine($invoice, $correctionSelection, $actor);
 
             $this->audit->record(AuditEvent::SubscriptionInvoiceIssued, $actor, $locked->merchant_id, null, $invoice, [
                 'invoice_id' => $invoice->ulid,
@@ -140,6 +180,13 @@ final class IssueSubscriptionInvoice
                 'total_minor' => $invoice->total_minor,
                 'currency' => $invoice->currency,
                 'promotion_id' => $promotion?->ulid,
+                'platform_fee_rollup_minor' => $feeSelection->totalMinor,
+                'platform_fee_entry_count' => $feeSelection->count(),
+                'platform_fee_rollup_item_id' => $rollupItem?->ulid,
+                'platform_fee_correction_net_minor' => $correctionSelection->netMinor,
+                'platform_fee_correction_entry_count' => $correctionSelection->count(),
+                'platform_fee_correction_item_id' => $correctionItem?->ulid,
+                'platform_fee_correction_residual_count' => $correctionSelection->residualEntryCount,
             ]);
 
             return $invoice;

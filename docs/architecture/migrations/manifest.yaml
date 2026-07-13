@@ -1159,3 +1159,109 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-20c.md
     notes: "Gate C4 forward-only expand (shipped 20B migration NOT edited). Additive nullable free_period_offer_id (FK RESTRICT) + free_period_resolved_at; applied days stay in existing trial_days_snapshot (null offer ⇒ platform default). Snapshot coherence CHECK (both-null or both-set). Existing trials keep NULL (no backfill)."
+  - file: 2026_07_13_000001_create_platform_fee_configurations_table.php
+    table: platform_fee_configurations
+    domain: Billing
+    owner_phase: "20E"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_10_000001_create_platform_billing_settings_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20e.md
+    notes: "Platform-scoped effective-dated percentage-fee configuration (no merchant_id/branch_id; TenantOwnership::EXEMPT). billing_mode/tier_behavior/fee_basis_type/status CHECKs; percentage_basis_points + shared_split_basis_points 0..10000; mode-shape + shared-split coherence CHECKs; uppercase currency; approval/status coherence; btree_gist EXCLUDE over (billing_mode, currency, daterange) for active+scheduled. No backfill (engine inert until configured)."
+  - file: 2026_07_13_000002_create_platform_fee_ledger_entries_table.php
+    table: platform_fee_ledger_entries
+    domain: Billing
+    owner_phase: "20E"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_13_000001_create_platform_fee_configurations_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_06_30_000004_create_invoice_items_table.php
+      - 2026_07_11_000006_create_subscription_invoice_items_table.php
+      - 2026_07_02_000001_create_payment_validation_events_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20e.md
+    notes: "Append-only tenant-owned ledger (merchant_id FK RESTRICT; nullable branch_id). entry_type/status/tier/fee_basis CHECKs; split_sum (client_shifted+absorbed=gross) + liability=gross CHECKs; rate/split 0..10000; provenance CHECK (earned⇒no reversed_entry_id; reversal/adjustment⇒reversed_entry_id); source_validation_event_id FK RESTRICT → payment_validation_events (immutable validation-source identity for earned rows); partial-unique idempotency_key index; structural partial-unique (source_validation_event_id, source_invoice_item_id) NULLS NOT DISTINCT WHERE earned+event (one earned entry per validation event/item — DB replay invariant); BEFORE UPDATE trigger blocks monetary/snapshot edits incl. source_validation_event_id (only status + subscription_invoice_item_id transition) + BEFORE DELETE trigger. No backfill."
+  - file: 2026_07_13_000003_create_platform_fee_adjustments_table.php
+    table: platform_fee_adjustments
+    domain: Billing
+    owner_phase: "20E"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_13_000002_create_platform_fee_ledger_entries_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20e.md
+    notes: "Append-only adjustments (merchant_id FK RESTRICT; nullable branch_id). adjustment_type CHECK; amount<>0; sign coherence (reversal/partial_refund<0); uppercase currency; reason non-empty; partial-unique idempotency_key; fully immutable after insert (BEFORE UPDATE/DELETE trigger). No backfill."
+  - file: 2026_07_13_000004_create_platform_fee_disputes_table.php
+    table: platform_fee_disputes
+    domain: Billing
+    owner_phase: "20E"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_13_000002_create_platform_fee_ledger_entries_table.php
+      - 2026_07_11_000005_create_subscription_invoices_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20e.md
+    notes: "Tenant-owned dispute (merchant_id FK RESTRICT; nullable branch_id). status CHECK in (open,under_review,resolved,rejected) — no escalated; at-least-one-target CHECK (ledger entry OR subscription invoice); resolution coherence CHECK; evidence_file_id → uploaded_files; BEFORE DELETE trigger (no destructive deletion). Money-changing resolution creates platform_fee_adjustments, never edits a ledger row."
+  - file: 2026_07_13_000005_add_platform_fee_snapshot_to_invoices.php
+    table: invoices
+    domain: Billing
+    owner_phase: "20E"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_07_13_000001_create_platform_fee_configurations_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20e.md
+    notes: "Forward-only expand (shipped P17 migration NOT edited). Additive nullable percentage-fee header snapshot (config FK RESTRICT + mode/rate/tier/basis/split/currency/gross/client_shifted/resolved_at); tier/basis/rate/split/currency CHECKs; snapshot-coherence CHECK (all-null or complete). Existing finalized invoices keep NULL; fixed-only leaves NULL (no backfill)."
+  - file: 2026_07_13_000006_add_platform_fee_snapshot_to_invoice_items.php
+    table: invoice_items
+    domain: Billing
+    owner_phase: "20E"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_30_000004_create_invoice_items_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20e.md
+    notes: "Forward-only expand. Additive nullable per-item largest-remainder provenance (gross/client_shifted/absorbed); non-negative + per-item split (shifted+absorbed=gross when present) CHECKs. Existing items keep NULL."
+  - file: 2026_07_13_000007_expand_invoices_total_arithmetic_for_platform_fee.php
+    table: invoices
+    domain: Billing
+    owner_phase: "20E"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_07_13_000005_add_platform_fee_snapshot_to_invoices.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20e.md
+    notes: "Forward-only expand of the shipped invoices_total_arithmetic_check (shipped P17 migration NOT edited): drop + recreate to add + COALESCE(platform_fee_client_shifted_minor, 0). Backward-compatible (existing/fixed-only rows have NULL → 0). Lets shared/business_centric percentage invoices include the client-shifted amount in total_minor so payments validate against it."
+  - file: 2026_07_13_000008_add_platform_fee_rollup_cycle_guard_to_subscription_invoice_items.php
+    table: subscription_invoice_items
+    domain: Billing
+    owner_phase: "20E"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_11_000006_create_subscription_invoice_items_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20e.md
+    notes: "Forward-only expand (Increment 5A; shipped P20B migration NOT edited). Partial UNIQUE index on subscription_invoice_items(subscription_invoice_id) WHERE type='platform_fee_rollup' — at most one platform_fee_rollup line per subscription invoice. Combined with the one-invoice-per-(merchant, period) idempotency (serialized on the MerchantSubscription row lock in IssueSubscriptionInvoice) this is the DB-level cycle guard preventing two concurrent workers from issuing two platform-fee rollups for the same merchant/subscription/currency/period. Non-rollup line types unconstrained. No backfill."

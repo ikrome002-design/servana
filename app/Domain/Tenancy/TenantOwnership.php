@@ -9,6 +9,9 @@ use App\Domain\Audit\Models\AuditFlaggedEvent;
 use App\Domain\Auth\Models\MerchantUserPermissionOverride;
 use App\Domain\Billing\Models\BillingEscalationEvent;
 use App\Domain\Billing\Models\MerchantSubscription;
+use App\Domain\Billing\Models\PlatformFeeAdjustment;
+use App\Domain\Billing\Models\PlatformFeeDispute;
+use App\Domain\Billing\Models\PlatformFeeLedgerEntry;
 use App\Domain\Billing\Models\ScheduledPlanChange;
 use App\Domain\Billing\Models\SubscriptionInvoice;
 use App\Domain\Billing\Models\SubscriptionInvoiceItem;
@@ -141,6 +144,13 @@ final class TenantOwnership
         'subscription_invoices',
         'subscription_invoice_items',
         'billing_escalation_events',
+        // Phase 20E — merchant-owned percentage platform-fee ledger, adjustments, and disputes
+        // (merchant_id required; branch_id OPTIONAL nullable, like financial_period_locks →
+        // BelongsToMerchant tenant-owned, not branch-owned). platform_fee_configurations is
+        // platform-scoped (EXEMPT).
+        'platform_fee_ledger_entries',
+        'platform_fee_adjustments',
+        'platform_fee_disputes',
     ];
 
     /**
@@ -174,6 +184,9 @@ final class TenantOwnership
         'promotional_discount_targets' => 'platform-scoped promotion target rows (a target may reference a merchant; the offer is platform config; no merchant ownership)',
         'free_period_offers' => 'platform-scoped free-period (trial-length) offer configuration (§53; no merchant scope)',
         'free_period_offer_targets' => 'platform-scoped free-period target rows (a target may reference a merchant; the offer is platform config; no merchant ownership)',
+        // Phase 20E — platform-scoped percentage platform-fee configuration (Plan §13.10/§51).
+        // Super-Admin governed; effective-dated; no merchant/branch scope exists for platform config.
+        'platform_fee_configurations' => 'platform-scoped percentage platform-fee configuration (§13.10; effective-dated; no merchant scope)',
         // Cross-cutting infrastructure with nullable/forensic merchant scope.
         'audit_logs' => 'cross-cutting: per-merchant AND platform chain (merchant_id nullable by design, R2)',
         'idempotency_keys' => 'cross-cutting: platform/webhook scopes have null merchant/branch forensic columns (R4)',
@@ -259,6 +272,11 @@ final class TenantOwnership
         SubscriptionInvoice::class => 'tenant',
         SubscriptionInvoiceItem::class => 'tenant',
         BillingEscalationEvent::class => 'tenant',
+        // Phase 20E — merchant-owned percentage platform-fee ledger/adjustments/disputes
+        // (BelongsToMerchant only; branch_id is an optional nullable scope).
+        PlatformFeeLedgerEntry::class => 'tenant',
+        PlatformFeeAdjustment::class => 'tenant',
+        PlatformFeeDispute::class => 'tenant',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */

@@ -2282,7 +2282,21 @@
                                 "free_period_offer.paused",
                                 "free_period_offer.resumed",
                                 "free_period_offer.expired",
-                                "free_period_offer.cancelled"
+                                "free_period_offer.cancelled",
+                                "platform_fee.original_recorded",
+                                "platform_fee.aggregated",
+                                "platform_fee.invoiced",
+                                "platform_fee.reversed",
+                                "platform_fee.adjusted",
+                                "platform_fee.dispute_created",
+                                "platform_fee.dispute_review_started",
+                                "platform_fee.dispute_resolved",
+                                "platform_fee.dispute_rejected",
+                                "platform_fee.configuration_created",
+                                "platform_fee.configuration_updated",
+                                "platform_fee.configuration_approved",
+                                "platform_fee.configuration_superseded",
+                                "platform_fee.configuration_cancelled"
                             ]
                         }
                     },
@@ -2748,7 +2762,21 @@
                                 "free_period_offer.paused",
                                 "free_period_offer.resumed",
                                 "free_period_offer.expired",
-                                "free_period_offer.cancelled"
+                                "free_period_offer.cancelled",
+                                "platform_fee.original_recorded",
+                                "platform_fee.aggregated",
+                                "platform_fee.invoiced",
+                                "platform_fee.reversed",
+                                "platform_fee.adjusted",
+                                "platform_fee.dispute_created",
+                                "platform_fee.dispute_review_started",
+                                "platform_fee.dispute_resolved",
+                                "platform_fee.dispute_rejected",
+                                "platform_fee.configuration_created",
+                                "platform_fee.configuration_updated",
+                                "platform_fee.configuration_approved",
+                                "platform_fee.configuration_superseded",
+                                "platform_fee.configuration_cancelled"
                             ]
                         }
                     },
@@ -3214,7 +3242,21 @@
                                 "free_period_offer.paused",
                                 "free_period_offer.resumed",
                                 "free_period_offer.expired",
-                                "free_period_offer.cancelled"
+                                "free_period_offer.cancelled",
+                                "platform_fee.original_recorded",
+                                "platform_fee.aggregated",
+                                "platform_fee.invoiced",
+                                "platform_fee.reversed",
+                                "platform_fee.adjusted",
+                                "platform_fee.dispute_created",
+                                "platform_fee.dispute_review_started",
+                                "platform_fee.dispute_resolved",
+                                "platform_fee.dispute_rejected",
+                                "platform_fee.configuration_created",
+                                "platform_fee.configuration_updated",
+                                "platform_fee.configuration_approved",
+                                "platform_fee.configuration_superseded",
+                                "platform_fee.configuration_cancelled"
                             ]
                         }
                     },
@@ -12267,6 +12309,883 @@
                 ]
             }
         },
+        "/api/v1/platform-fee-disputes": {
+            "get": {
+                "operationId": "platform-fee-disputes.index",
+                "tags": [
+                    "PlatformFeeDispute"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 25
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PlatformFeeDisputeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PlatformFeeDisputeResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "platform-fee-disputes.store",
+                "tags": [
+                    "PlatformFeeDispute"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePlatformFeeDisputeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`PlatformFeeDisputeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeDisputeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform-fee-disputes/{platformFeeDispute}": {
+            "get": {
+                "operationId": "platform-fee-disputes.show",
+                "tags": [
+                    "PlatformFeeDispute"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeDispute",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee dispute ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PlatformFeeDisputeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeDisputeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform-fee-disputes/{platformFeeDispute}/reject": {
+            "post": {
+                "operationId": "platform-fee-disputes.reject",
+                "tags": [
+                    "PlatformFeeDispute"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeDispute",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee dispute ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RejectPlatformFeeDisputeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformFeeDisputeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeDisputeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform-fee-disputes/{platformFeeDispute}/resolve": {
+            "post": {
+                "operationId": "platform-fee-disputes.resolve",
+                "tags": [
+                    "PlatformFeeDispute"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeDispute",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee dispute ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 16,
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResolvePlatformFeeDisputeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformFeeDisputeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeDisputeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "409": {
+                        "description": "Idempotency conflict / request in progress",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "423": {
+                        "description": "Financial period locked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform-fee-disputes/{platformFeeDispute}/review": {
+            "post": {
+                "operationId": "platform-fee-disputes.review",
+                "tags": [
+                    "PlatformFeeDispute"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeDispute",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee dispute ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PlatformFeeDisputeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeDisputeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform-fees": {
+            "get": {
+                "operationId": "platform-fees.index",
+                "tags": [
+                    "PlatformFeeLedger"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 25
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PlatformFeeLedgerEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PlatformFeeLedgerEntryResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform-fees/summary": {
+            "get": {
+                "operationId": "platform-fees.summary",
+                "tags": [
+                    "PlatformFeeLedger"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "currency": {
+                                                        "type": "string"
+                                                    },
+                                                    "entry_count": {
+                                                        "type": "integer"
+                                                    },
+                                                    "gross_platform_fee_minor": {
+                                                        "type": "integer"
+                                                    },
+                                                    "client_shifted_amount_minor": {
+                                                        "type": "integer"
+                                                    },
+                                                    "merchant_absorbed_amount_minor": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "currency",
+                                                    "entry_count",
+                                                    "gross_platform_fee_minor",
+                                                    "client_shifted_amount_minor",
+                                                    "merchant_absorbed_amount_minor"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform-fees/{platformFeeLedgerEntry}": {
+            "get": {
+                "operationId": "platform-fees.show",
+                "tags": [
+                    "PlatformFeeLedger"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeLedgerEntry",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee ledger entry ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PlatformFeeLedgerEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeLedgerEntryResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/platform/audit-logs": {
             "get": {
                 "operationId": "platform.audit-logs.index",
@@ -12470,7 +13389,21 @@
                                 "free_period_offer.paused",
                                 "free_period_offer.resumed",
                                 "free_period_offer.expired",
-                                "free_period_offer.cancelled"
+                                "free_period_offer.cancelled",
+                                "platform_fee.original_recorded",
+                                "platform_fee.aggregated",
+                                "platform_fee.invoiced",
+                                "platform_fee.reversed",
+                                "platform_fee.adjusted",
+                                "platform_fee.dispute_created",
+                                "platform_fee.dispute_review_started",
+                                "platform_fee.dispute_resolved",
+                                "platform_fee.dispute_rejected",
+                                "platform_fee.configuration_created",
+                                "platform_fee.configuration_updated",
+                                "platform_fee.configuration_approved",
+                                "platform_fee.configuration_superseded",
+                                "platform_fee.configuration_cancelled"
                             ]
                         }
                     },
@@ -12902,6 +13835,611 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/billing/platform-fee-configurations": {
+            "get": {
+                "operationId": "platform.platform-fee-configurations.index",
+                "tags": [
+                    "PlatformFeeConfiguration"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 25
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PlatformFeeConfigurationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PlatformFeeConfigurationResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "platform.platform-fee-configurations.store",
+                "tags": [
+                    "PlatformFeeConfiguration"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePlatformFeeConfigurationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`PlatformFeeConfigurationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeConfigurationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/billing/platform-fee-configurations/{platformFeeConfiguration}": {
+            "get": {
+                "operationId": "platform.platform-fee-configurations.show",
+                "tags": [
+                    "PlatformFeeConfiguration"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeConfiguration",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee configuration ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PlatformFeeConfigurationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeConfigurationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "patch": {
+                "operationId": "platform.platform-fee-configurations.update",
+                "tags": [
+                    "PlatformFeeConfiguration"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeConfiguration",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee configuration ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePlatformFeeConfigurationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformFeeConfigurationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeConfigurationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/billing/platform-fee-configurations/{platformFeeConfiguration}/approve": {
+            "post": {
+                "operationId": "platform.platform-fee-configurations.approve",
+                "tags": [
+                    "PlatformFeeConfiguration"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeConfiguration",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee configuration ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformFeeConfigurationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeConfigurationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/billing/platform-fee-configurations/{platformFeeConfiguration}/cancel": {
+            "post": {
+                "operationId": "platform.platform-fee-configurations.cancel",
+                "tags": [
+                    "PlatformFeeConfiguration"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeConfiguration",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee configuration ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeReasonRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PlatformFeeConfigurationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeConfigurationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/platform/billing/platform-fee-configurations/{platformFeeConfiguration}/supersede": {
+            "post": {
+                "operationId": "platform.platform-fee-configurations.supersede",
+                "tags": [
+                    "PlatformFeeConfiguration"
+                ],
+                "parameters": [
+                    {
+                        "name": "platformFeeConfiguration",
+                        "in": "path",
+                        "required": true,
+                        "description": "The platform fee configuration ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePlatformFeeConfigurationRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`PlatformFeeConfigurationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PlatformFeeConfigurationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -25053,6 +26591,32 @@
                             "formatted"
                         ]
                     },
+                    "platform_fee_client_shifted": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "Phase 20E — the client-facing platform-fee line: the portion of the percentage platform fee\nshifted onto THIS merchant-client invoice (already included in `total`). Present only when\nthere is a positive shifted amount (shared / business-centric tiers); customer-centric shifts\nnothing and fixed-only invoices have no percentage fee, so both render no line. Merchant\nliability and internal rate configuration are never exposed on this client-facing payload.",
+                        "properties": {
+                            "amount": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ]
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "formatted": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "amount",
+                            "currency",
+                            "formatted"
+                        ]
+                    },
                     "total": {
                         "type": "object",
                         "properties": {
@@ -25189,6 +26753,7 @@
                     "discount",
                     "tax",
                     "preferred_personnel_fee",
+                    "platform_fee_client_shifted",
                     "total",
                     "validated_paid",
                     "balance",
@@ -26267,6 +27832,269 @@
                 ],
                 "title": "PlatformBillingSettingsResource"
             },
+            "PlatformFeeConfigurationResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "billing_mode": {
+                        "type": "string"
+                    },
+                    "percentage_basis_points": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "fixed_component_minor": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "tier_behavior": {
+                        "type": "string"
+                    },
+                    "shared_split_basis_points": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "fee_basis_type": {
+                        "type": "string"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "effective_from": {
+                        "type": "string"
+                    },
+                    "effective_to": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "approved_at": {
+                        "type": "string"
+                    },
+                    "change_reason": {
+                        "type": "string"
+                    },
+                    "capabilities": {
+                        "type": "object",
+                        "properties": {
+                            "editable": {
+                                "type": "boolean"
+                            },
+                            "approvable": {
+                                "type": "boolean"
+                            },
+                            "supersedable": {
+                                "type": "boolean"
+                            },
+                            "cancellable": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "editable",
+                            "approvable",
+                            "supersedable",
+                            "cancellable"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "billing_mode",
+                    "percentage_basis_points",
+                    "fixed_component_minor",
+                    "tier_behavior",
+                    "shared_split_basis_points",
+                    "fee_basis_type",
+                    "currency",
+                    "effective_from",
+                    "effective_to",
+                    "status",
+                    "approved_at",
+                    "change_reason",
+                    "capabilities"
+                ],
+                "title": "PlatformFeeConfigurationResource"
+            },
+            "PlatformFeeDisputeResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "platform_fee_ledger_entry_id": {
+                        "type": "string"
+                    },
+                    "subscription_invoice_id": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "assigned_reviewer": {
+                        "type": "string"
+                    },
+                    "resolution_note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "has_evidence": {
+                        "type": "boolean"
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
+                    "resolved_by": {
+                        "type": "string"
+                    },
+                    "resolved_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "capabilities": {
+                        "type": "object",
+                        "properties": {
+                            "reviewable": {
+                                "type": "boolean"
+                            },
+                            "resolvable": {
+                                "type": "boolean"
+                            },
+                            "rejectable": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "reviewable",
+                            "resolvable",
+                            "rejectable"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "platform_fee_ledger_entry_id",
+                    "subscription_invoice_id",
+                    "reason",
+                    "status",
+                    "assigned_reviewer",
+                    "resolution_note",
+                    "has_evidence",
+                    "created_by",
+                    "resolved_by",
+                    "resolved_at",
+                    "created_at",
+                    "capabilities"
+                ],
+                "title": "PlatformFeeDisputeResource"
+            },
+            "PlatformFeeLedgerEntryResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "merchant_id": {
+                        "type": "string"
+                    },
+                    "branch_id": {
+                        "type": "string"
+                    },
+                    "source_invoice_id": {
+                        "type": "string"
+                    },
+                    "source_invoice_item_id": {
+                        "type": "string"
+                    },
+                    "entry_type": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "billing_mode": {
+                        "type": "string"
+                    },
+                    "service_fee_tier": {
+                        "type": "string"
+                    },
+                    "fee_basis_type": {
+                        "type": "string"
+                    },
+                    "fee_basis_amount_minor": {
+                        "type": "integer"
+                    },
+                    "percentage_rate_basis_points": {
+                        "type": "integer"
+                    },
+                    "shared_split_basis_points": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "gross_platform_fee_minor": {
+                        "type": "integer"
+                    },
+                    "client_shifted_amount_minor": {
+                        "type": "integer"
+                    },
+                    "merchant_absorbed_amount_minor": {
+                        "type": "integer"
+                    },
+                    "merchant_liability_minor": {
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "subscription_invoice_item_id": {
+                        "type": "string"
+                    },
+                    "billable_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "merchant_id",
+                    "branch_id",
+                    "source_invoice_id",
+                    "source_invoice_item_id",
+                    "entry_type",
+                    "status",
+                    "billing_mode",
+                    "service_fee_tier",
+                    "fee_basis_type",
+                    "fee_basis_amount_minor",
+                    "percentage_rate_basis_points",
+                    "shared_split_basis_points",
+                    "gross_platform_fee_minor",
+                    "client_shifted_amount_minor",
+                    "merchant_absorbed_amount_minor",
+                    "merchant_liability_minor",
+                    "currency",
+                    "subscription_invoice_item_id",
+                    "billable_at"
+                ],
+                "title": "PlatformFeeLedgerEntryResource"
+            },
             "PlatformMerchantResource": {
                 "type": "object",
                 "properties": {
@@ -27270,6 +29098,21 @@
                 ],
                 "title": "ReissueReceiptRequest"
             },
+            "RejectPlatformFeeDisputeRequest": {
+                "type": "object",
+                "description": "Reject a percentage platform-fee dispute (Plan §13.10 [Correction 3]; Phase 20E, Increment 6). A\nmandatory rejection note is required; no money changes. Authorization + fresh step-up + maker/checker\nare enforced by the route middleware + the action. The request NEVER accepts `status` or `resolved_by`.",
+                "properties": {
+                    "resolution_note": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 2000
+                    }
+                },
+                "required": [
+                    "resolution_note"
+                ],
+                "title": "RejectPlatformFeeDisputeRequest"
+            },
             "ReorderQueueEntriesRequest": {
                 "type": "object",
                 "description": "Queue reorder validation (Plan §37; Phase 16B). `order` is the COMPLETE ordered\nlist of active waiting queue-entry ULIDs for one branch. Completeness, duplicates,\nforeign/terminal entries, and stale snapshots are enforced in the action /\nQueuePositionService (deterministic 409 on a stale set). `branch_id` is an\noptional branch ULID used only to disambiguate a multi-branch operator.",
@@ -27483,6 +29326,27 @@
                     "resolution_note"
                 ],
                 "title": "ResolveFinanceDisputeRequest"
+            },
+            "ResolvePlatformFeeDisputeRequest": {
+                "type": "object",
+                "description": "Resolve a percentage platform-fee dispute (Plan §13.10 [Correction 3], §953; Phase 20E, Increment 6).\nA mandatory resolution note is required; an OPTIONAL server-validated integer `money_change_amount_minor`\n(non-zero when present) drives an additive `platform_fee_adjustments` row — it never edits the ledger\namount. Authorization + fresh step-up + period-lock + maker/checker are enforced by the route\nmiddleware + the action. The request NEVER accepts `status`, `resolved_by`, or a calculated amount for\nthe ledger.",
+                "properties": {
+                    "resolution_note": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 2000
+                    },
+                    "money_change_amount_minor": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "resolution_note"
+                ],
+                "title": "ResolvePlatformFeeDisputeRequest"
             },
             "SchedulePlanChangeRequest": {
                 "type": "object",
@@ -28279,6 +30143,129 @@
                     "effective_from"
                 ],
                 "title": "StorePlanPriceRequest"
+            },
+            "StorePlatformFeeConfigurationRequest": {
+                "type": "object",
+                "description": "Percentage platform-fee configuration payload (Plan §51, §52; Phase 20E, Increment 6). Used by\ncreate / update-draft / supersede. Authorization + MFA + fresh step-up are enforced by the route\nmiddleware; the controller authorizes via the policy. The request NEVER accepts an authoritative\n`status`, `created_by`, `approved_by`, `approved_at`, or any server-owned field — those are set only\nby the domain actions. Value-shape coherence is enforced here at the surface and by the DB CHECKs\n(the authoritative guard; the resolved-tier gate for `validated_paid_amount` is DB-enforced).",
+                "properties": {
+                    "billing_mode": {
+                        "type": "string",
+                        "enum": [
+                            "fixed_amount",
+                            "percentage_on_merchant_client_invoice",
+                            "fixed_amount_plus_percentage_on_merchant_client_invoice"
+                        ]
+                    },
+                    "percentage_basis_points": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 10000
+                    },
+                    "fixed_component_minor": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 0
+                    },
+                    "tier_behavior": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "customer_centric",
+                            "shared",
+                            "business_centric"
+                        ]
+                    },
+                    "shared_split_basis_points": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 10000
+                    },
+                    "fee_basis_type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "merchant_client_invoice_service_subtotal",
+                            "merchant_client_invoice_total",
+                            "net_after_discount",
+                            "invoice_item_subtotal",
+                            "validated_paid_amount"
+                        ]
+                    },
+                    "currency": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z]{3}$",
+                        "minLength": 3,
+                        "maxLength": 3
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "effective_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "change_reason": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "billing_mode",
+                    "currency",
+                    "effective_from",
+                    "change_reason"
+                ],
+                "title": "StorePlatformFeeConfigurationRequest"
+            },
+            "StorePlatformFeeDisputeRequest": {
+                "type": "object",
+                "description": "Raise a percentage platform-fee dispute (Plan §13.10 [Correction 3]; Phase 20E, Increment 6).\nTargets a platform-fee ledger entry and/or a subscription invoice by PUBLIC ULID (at least one),\nwith a mandatory sanitized reason and an optional private evidence file (Phase 10F ULID). The\ncontroller resolves the ULIDs within the tenant scope (a foreign-tenant ULID → 404); the request\nNEVER accepts `merchant_id`, `branch_id`, `status`, `created_by`, or any server-owned field.",
+                "properties": {
+                    "platform_fee_ledger_entry": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "subscription_invoice": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "reason": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 2000
+                    },
+                    "evidence_file": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "reason"
+                ],
+                "title": "StorePlatformFeeDisputeRequest"
             },
             "StorePreferredPersonnelFeeRuleRequest": {
                 "type": "object",

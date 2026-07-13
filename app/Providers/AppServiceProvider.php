@@ -13,6 +13,9 @@ use App\Domain\Billing\Contracts\PlanContextResolver;
 use App\Domain\Billing\Models\FreePeriodOffer;
 use App\Domain\Billing\Models\MerchantSubscription;
 use App\Domain\Billing\Models\PlatformBillingSettings;
+use App\Domain\Billing\Models\PlatformFeeConfiguration;
+use App\Domain\Billing\Models\PlatformFeeDispute;
+use App\Domain\Billing\Models\PlatformFeeLedgerEntry;
 use App\Domain\Billing\Models\PreferredPersonnelFeeRule;
 use App\Domain\Billing\Models\PromotionalDiscount;
 use App\Domain\Billing\Models\SubscriptionInvoice;
@@ -70,6 +73,9 @@ use App\Policies\MerchantSubscriptionPolicy;
 use App\Policies\MerchantUserPolicy;
 use App\Policies\PaymentRecordingGroupPolicy;
 use App\Policies\PlatformBillingSettingsPolicy;
+use App\Policies\PlatformFeeConfigurationPolicy;
+use App\Policies\PlatformFeeDisputePolicy;
+use App\Policies\PlatformFeeLedgerEntryPolicy;
 use App\Policies\PreferredPersonnelFeeRulePolicy;
 use App\Policies\PromotionalDiscountPolicy;
 use App\Policies\QueueEntryPolicy;
@@ -153,6 +159,11 @@ class AppServiceProvider extends ServiceProvider
         // Phase 20C — platform-governed promotions & free-period offers (Super-Admin platform scope).
         PromotionalDiscount::class => PromotionalDiscountPolicy::class,
         FreePeriodOffer::class => FreePeriodOfferPolicy::class,
+        // Phase 20E — percentage platform-fee: configuration (Super-Admin platform scope), merchant-scoped
+        // masked ledger read, and the dispute workflow.
+        PlatformFeeConfiguration::class => PlatformFeeConfigurationPolicy::class,
+        PlatformFeeLedgerEntry::class => PlatformFeeLedgerEntryPolicy::class,
+        PlatformFeeDispute::class => PlatformFeeDisputePolicy::class,
     ];
 
     public function register(): void

@@ -21,8 +21,9 @@ namespace App\Domain\Auth\Services;
  *
  * Two §10.3 cells are ambiguous in the source table; both are resolved by the
  * §10.2 hard rules (which outrank an ambiguous matrix glyph):
- *   - `platform_fees.* | … | ✓ (audit)` → audit is read-only everywhere, so the
- *     single ✓ is the READ key `platform_fees.view`, not `…dispute`.
+ *   - `platform_fee.* | … | ✓ (audit)` → audit is read-only everywhere, so the
+ *     single ✓ is the masked READ key `platform_fee.view`, not `…dispute`/`…dispute.review`
+ *     (Phase 20E canonical, reconciled from the legacy plural `platform_fees.*`).
  *   - `audit.flag` is audit's one in-domain write (explicitly granted to audit);
  *     it is NOT a merchant-resource write, so the read-only audit role keeps it.
  */
@@ -226,8 +227,16 @@ final class PermissionRegistry
         'period_lock.reopen' => ['finance', 'Execute a controlled reopen of a locked financial period (Finance; fresh MFA).', true],
         // Commissions & platform fees.
         'commissions.view' => ['finance', 'View commissions (scoped).', false],
-        'platform_fees.view' => ['finance', 'View Citrus platform fees (scoped).', false],
-        'platform_fees.dispute' => ['finance', 'Dispute a Citrus platform fee.', true],
+        // Phase 20E — percentage platform-fee merchant surface (canonical §19.2 keys; RECONCILED from
+        // the legacy plural `platform_fees.view` / `platform_fees.dispute`, whose singular canonical
+        // successors match the Phase 20E `platform_fee_*` domain naming and are wired to real policies
+        // + audit events here). Merchant-scoped (no `platform.` prefix). Read is masked + server-side
+        // role-scoped (merchant-wide vs branch-attributable); dispute create is a tenant mutation;
+        // dispute review/resolve/reject is Finance-only (fresh step-up on resolve/reject; a money change
+        // creates an additive platform_fee_adjustment — never a ledger edit).
+        'platform_fee.view' => ['finance', 'View Citrus percentage platform fees (scoped, masked).', false],
+        'platform_fee.dispute' => ['finance', 'Raise a dispute against a Citrus percentage platform fee.', true],
+        'platform_fee.dispute.review' => ['finance', 'Review, resolve, or reject a platform-fee dispute (Finance; fresh step-up on resolve/reject).', true],
         // Reports & exports.
         'reports.view' => ['reports', 'View reports (scoped).', false],
         // Finance exports (Plan §65, §67; Phase 18B canonical keys — reconciled from the legacy
@@ -288,6 +297,12 @@ final class PermissionRegistry
         // platform scope, MFA + fresh step-up + high-severity audit. No merchant role receives these.
         'platform.promotion.manage' => ['platform', 'Manage promotional discounts (create/approve/pause/resume/cancel).', true],
         'platform.free_period_offer.manage' => ['platform', 'Manage free-period (trial-length) offers (create/approve/pause/resume/cancel).', true],
+        // Phase 20E — percentage platform-fee CONFIGURATION governance (Plan §51, §52). Super-Admin only,
+        // platform scope, MFA + fresh BillingConfiguration step-up + high-severity audit. Approved
+        // monetary terms are immutable — a change is a supersede (new version), never an in-place edit.
+        // No merchant role receives this key; it never validates payments, fabricates ledger rows, or
+        // settles liabilities.
+        'platform.platform_fee.configure' => ['platform', 'Manage percentage platform-fee configurations (create/update-draft/approve/supersede/cancel).', true],
     ];
 
     /**
@@ -308,7 +323,8 @@ final class PermissionRegistry
             // Financial period authority (ADR-0007 Decision 3): the Merchant Administrator
             // holds ONLY exceptional-reopen approval — NOT routine locking/reopen (Finance).
             'merchant.period_reopen.approve_exception',
-            'commissions.view', 'platform_fees.view',
+            // Phase 20E — merchant-wide masked platform-fee read + dispute creation (§5 role boundary).
+            'commissions.view', 'platform_fee.view', 'platform_fee.dispute',
             // Phase 19: NO direct raw audit-log key (canonical §19.3 — the Merchant
             // Administrator's oversight is via reports/dashboards, not the raw trail;
             // the legacy `audit.view_full` grant is RETIRED, not retained).
@@ -328,7 +344,8 @@ final class PermissionRegistry
             // No invoice key (Plan §10.2/§19.3): Branch Manager must NOT receive invoice
             // creation; the legacy placeholder grant of invoices.create is removed, not
             // retained. Branch invoice visibility is via branch.dashboard.view/reports.
-            'receipt.view', 'commissions.view', 'platform_fees.view',
+            // Phase 20E — branch-attributable masked platform-fee read only (server-side branch scope).
+            'receipt.view', 'commissions.view', 'platform_fee.view',
             // Phase 19: NO direct raw audit-log key (canonical §19.3 — Branch Manager
             // oversight is via branch.dashboard.view/reports; legacy `audit.view_full` retired).
             'reports.view',
@@ -360,7 +377,9 @@ final class PermissionRegistry
             'cash_up.view', 'cash_up.approve', 'cash_up.reject', 'cash_up.request_correction',
             'period_lock.create', 'period_lock.reopen',
             'finance_export.create', 'finance_export.download',
-            'platform_fees.dispute',
+            // Phase 20E — Finance holds the settled/reconciliation read, dispute creation, and the
+            // dispute review/resolve/reject authority (fresh step-up on resolve/reject; §5 role boundary).
+            'platform_fee.view', 'platform_fee.dispute', 'platform_fee.dispute.review',
             // Phase 19: canonical Finance audit surface (branch-scoped, masked, finance
             // domain only) — REPLACES the legacy catch-all `audit.view_full`.
             'reports.view', 'finance.audit.view',
@@ -402,7 +421,8 @@ final class PermissionRegistry
             // No invoice key (Plan §19.3): Audit reads finance activity through the
             // finance-domain audit view, not a direct invoice key.
             'receipt.view',
-            'commissions.view', 'platform_fees.view', 'reports.view',
+            // Phase 20E — masked branch-scoped platform-fee read only (Audit is read-only everywhere).
+            'commissions.view', 'platform_fee.view', 'reports.view',
             // Phase 19 — canonical, domain-segmented, branch-scoped, masked Audit reads
             // (REPLACE the retired catch-all `audit.view_full`).
             'audit.branch_events.view', 'audit.finance.view', 'audit.compensation.view',
@@ -428,6 +448,8 @@ final class PermissionRegistry
             'platform.preferred_personnel_fee.manage',
             // Phase 20C — promotions & free-period offers (Plan §53).
             'platform.promotion.manage', 'platform.free_period_offer.manage',
+            // Phase 20E — percentage platform-fee configuration governance (Plan §51/§52).
+            'platform.platform_fee.configure',
         ],
     ];
 
@@ -450,7 +472,9 @@ final class PermissionRegistry
             // the per-transaction actor guard also enforces requester != approver !=
             // finalizer. REM-PERM-001 owns registry-level incompatibility closure (Ph19).
             'refund.approve', 'refund.finalize',
-            'commissions.view', 'platform_fees.view',
+            // platform_fee.view is now a Finance DEFAULT (Phase 20E settled/reconciliation read), so it
+            // is no longer a grantable-only override here.
+            'commissions.view',
         ],
     ];
 

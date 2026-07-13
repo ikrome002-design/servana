@@ -191,11 +191,14 @@ it('rejects an invalid invoice transition (422 invalid_state_transition)', funct
         ->toThrow(BillingStateException::class);
 });
 
-it('creates no percentage-ledger row for a fixed-mode invoice', function (): void {
+it('creates no percentage-ledger row or rollup line for a fixed-mode invoice', function (): void {
     p20biMode(BillingMode::FixedAmount);
-    [, $sub] = p20biSub();
-    app(IssueSubscriptionInvoice::class)->handle($sub, p20biActor());
+    [$merchant, $sub] = p20biSub();
+    $invoice = app(IssueSubscriptionInvoice::class)->handle($sub, p20biActor());
 
-    // platform_fee_ledger_entries is Phase 20E — it must not even exist yet.
-    expect(Schema::hasTable('platform_fee_ledger_entries'))->toBeFalse();
+    // Phase 20E: the ledger table now exists, but a fixed-mode invoice earns no percentage fee — no
+    // ledger rows and no platform_fee_rollup line (the invoice is exactly the Phase 20B plan-fee one).
+    expect(DB::table('platform_fee_ledger_entries')->where('merchant_id', $merchant->id)->count())->toBe(0)
+        ->and($invoice->items()->where('type', SubscriptionInvoiceItemType::PlatformFeeRollup->value)->count())->toBe(0)
+        ->and($invoice->subtotal_minor)->toBe(500000);
 });

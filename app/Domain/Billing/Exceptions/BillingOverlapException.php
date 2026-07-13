@@ -33,6 +33,11 @@ final class BillingOverlapException extends Exception
         return new self('preferred_personnel_fee_rule_overlap', 'An active or scheduled rule already covers this scope and effective range.');
     }
 
+    public static function platformFeeConfiguration(): self
+    {
+        return new self('platform_fee_configuration_overlap', 'An active or scheduled configuration already covers this billing mode, currency and effective range.');
+    }
+
     public function render(Request $request): JsonResponse
     {
         $correlationId = (string) app(CorrelationId::class)->get();

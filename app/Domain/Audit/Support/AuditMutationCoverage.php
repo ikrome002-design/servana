@@ -218,6 +218,17 @@ final class AuditMutationCoverage
         'platform.free-period-offers.pause' => ['free_period_offer.paused'],
         'platform.free-period-offers.resume' => ['free_period_offer.resumed'],
         'platform.free-period-offers.cancel' => ['free_period_offer.cancelled'],
+        // Phase 20E — percentage platform-fee configuration governance (Super-Admin platform mutations).
+        'platform.platform-fee-configurations.store' => ['platform_fee.configuration_created'],
+        'platform.platform-fee-configurations.update' => ['platform_fee.configuration_updated'],
+        'platform.platform-fee-configurations.approve' => ['platform_fee.configuration_approved'],
+        'platform.platform-fee-configurations.supersede' => ['platform_fee.configuration_superseded'],
+        'platform.platform-fee-configurations.cancel' => ['platform_fee.configuration_cancelled'],
+        // Phase 20E — percentage platform-fee dispute workflow (merchant scope).
+        'platform-fee-disputes.store' => ['platform_fee.dispute_created'],
+        'platform-fee-disputes.review' => ['platform_fee.dispute_review_started'],
+        'platform-fee-disputes.resolve' => ['platform_fee.dispute_resolved'],
+        'platform-fee-disputes.reject' => ['platform_fee.dispute_rejected'],
     ];
 
     /**

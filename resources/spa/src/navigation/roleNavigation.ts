@@ -50,6 +50,7 @@ const platform: NavItem[] = [
   { key: 'platform.plans', label: 'Plans and entitlements', routeName: 'platform.billing-settings', permission: 'platform.plan.view', phase: 'Phase 20A', availability: 'live' },
   { key: 'platform.promotions', label: 'Promotions and free periods', routeName: 'platform.promotions', permission: 'platform.promotion.manage', phase: 'Phase 20C', availability: 'live' },
   { key: 'platform.preferred-personnel-fee', label: 'Preferred-personnel fee rule', routeName: 'platform.billing-settings', permission: 'platform.preferred_personnel_fee.manage', phase: 'Phase 20A', availability: 'live' },
+  { key: 'platform.platform-fees', label: 'Platform fees', routeName: 'platform.billing-settings', permission: 'platform.platform_fee.configure', phase: 'Phase 20E', availability: 'live' },
   { key: 'platform.wallet-config', label: 'Wallet configuration', permission: 'platform.wallet_configuration.manage', phase: 'Phase 20D-W', availability: 'planned' },
   { key: 'platform.billing-reconciliation', label: 'Billing reconciliation', permission: 'platform.billing_reconciliation.view', phase: 'Phase 20D-W', availability: 'planned' },
   { key: 'platform.audit', label: 'Platform audit', permission: 'platform.audit.view', phase: 'Phase 19', availability: 'planned' },
@@ -66,6 +67,7 @@ const merchantAdministrator: NavItem[] = [
   { key: 'merchant.subscription', label: 'Subscription and billing', routeName: 'merchant.subscription', permission: 'merchant.subscription.view', phase: 'Phase 20B', availability: 'live' },
   { key: 'merchant.plan', label: 'Plan management', routeName: 'merchant.plan', permission: 'merchant.subscription.plan_change', phase: 'Phase 20B', availability: 'live' },
   { key: 'merchant.invoices', label: 'Subscription invoices', routeName: 'merchant.invoices', permission: 'merchant.subscription.invoice.view', phase: 'Phase 20B', availability: 'live' },
+  { key: 'merchant.platform-fees', label: 'Platform fees', routeName: 'merchant.platform-fees', permission: 'platform_fee.view', phase: 'Phase 20E', availability: 'live' },
   { key: 'merchant.reports', label: 'Reports', permission: 'merchant.report.view_all_branches', phase: 'Phase 21N', availability: 'planned' },
   { key: 'merchant.compensation-summary', label: 'Compensation summary', permission: 'merchant.compensation_summary.view', phase: 'Phase 20F', availability: 'planned' },
 ];
@@ -88,6 +90,7 @@ const branchManager: NavItem[] = [
   { key: 'branch.receipts', label: 'Receipts', phase: 'Phase 18B', availability: 'planned' },
   { key: 'branch.day', label: 'Day opening and closing', permission: 'branch.day.open', phase: 'Phase 16B', availability: 'planned' },
   { key: 'branch.cash-up', label: 'Cash-up and reconciliation', routeName: 'branch.cash-up', permission: 'branch.cash_up.submit', phase: 'Phase 18B', availability: 'live' },
+  { key: 'branch.platform-fees', label: 'Platform fees', routeName: 'branch.platform-fees', permission: 'platform_fee.view', phase: 'Phase 20E', availability: 'live' },
   { key: 'branch.reports', label: 'Reports', permission: 'branch.report.view', phase: 'Phase 21N', availability: 'planned' },
   { key: 'branch.audit-logs', label: 'Audit logs', phase: 'Phase 19', availability: 'planned' },
 ];
@@ -122,6 +125,7 @@ const finance: NavItem[] = [
   { key: 'finance.reports', label: 'Finance reports', phase: 'Phase 21N', availability: 'planned' },
   { key: 'finance.exports', label: 'Exports', routeName: 'finance.exports', permission: 'finance_export.create', phase: 'Phase 18B', availability: 'live' },
   { key: 'finance.audit', label: 'Audit activity', routeName: 'finance.audit', permission: 'finance.audit.view', phase: 'Phase 19', availability: 'live' },
+  { key: 'finance.platform-fees', label: 'Platform fees', routeName: 'finance.platform-fees', permission: 'platform_fee.view', phase: 'Phase 20E', availability: 'live' },
 ];
 
 const frontOffice: NavItem[] = [
@@ -157,6 +161,7 @@ const audit: NavItem[] = [
   { key: 'audit.compensation', label: 'Compensation audit', routeName: 'audit.compensation', permission: 'audit.compensation.view', phase: 'Phase 19', availability: 'live' },
   { key: 'audit.finance', label: 'Finance audit', routeName: 'audit.finance', permission: 'audit.finance.view', phase: 'Phase 19', availability: 'live' },
   { key: 'audit.exports', label: 'Exports', routeName: 'audit.exports', permission: 'audit.export', phase: 'Phase 19', availability: 'live' },
+  { key: 'audit.platform-fees', label: 'Platform fees', routeName: 'audit.platform-fees', permission: 'platform_fee.view', phase: 'Phase 20E', availability: 'live' },
 ];
 
 /** The canonical per-role navigation registry. */
