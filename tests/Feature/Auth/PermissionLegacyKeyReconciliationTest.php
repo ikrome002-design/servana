@@ -47,15 +47,20 @@ function legacyActiveKeys(PermissionMatrix $matrix): array
     ));
 }
 
-it('carries exactly the 12 known legacy-active keys', function (): void {
+it('carries exactly the 10 known legacy-active keys', function (): void {
     // Phase 20A retired 3 legacy platform keys (platform.settings.manage,
     // platform.billing.configure, platform.fee_rules.manage) by activating their canonical
     // successors and deleting the legacy rows — 17 → 14. Phase 20B retired 2 more
     // (merchant.tier.update → merchant.subscription.plan_change; platform.merchants.govern,
     // truthfully SPLIT into platform.merchant.suspend/reactivate/deactivate) — 14 → 12.
+    // Phase 20E retired the 2 legacy plural platform-fee keys (platform_fees.view,
+    // platform_fees.dispute); their singular canonical successors — platform_fee.view,
+    // platform_fee.dispute, platform_fee.dispute.review, platform.platform_fee.configure — were
+    // authorized into the §19.2 canonical catalogue (product-owner correction 2026-07-13), so they
+    // are CANONICAL (not legacy) and are not counted here — 12 → 10.
     $legacy = legacyActiveKeys(app(PermissionMatrix::class));
 
-    expect($legacy)->toHaveCount(12);
+    expect($legacy)->toHaveCount(10);
 });
 
 it('reconciles every legacy key to a PLANNED successor (or null) and a valid owning phase', function (): void {

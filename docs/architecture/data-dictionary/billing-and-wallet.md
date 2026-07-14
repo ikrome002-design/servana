@@ -426,7 +426,28 @@ Migration files (forward-only; added to `docs/architecture/migrations/manifest.y
 - **Immutable line items:** created at issuance, never edited/deleted (append-only via the invoice
   workflow). 20B fixed mode issues a single `plan_fee` line equal to the captured price; it fabricates
   **no** `platform_fee_rollup` (20E), `sms_rollup` (21S), promotion, or Wallet amounts.
-- **Indexes:** index `(subscription_invoice_id)`.
+- **Phase 20E — platform-fee rollup cycle guard (expand `2026_07_13_000008`):** a partial
+  `UNIQUE (subscription_invoice_id) WHERE type='platform_fee_rollup'` guarantees **at most one**
+  `platform_fee_rollup` line per subscription invoice. Combined with the one-invoice-per-`(merchant,
+  period)` idempotency in `IssueSubscriptionInvoice` (serialized on the `MerchantSubscription` row lock),
+  this is the DB-level cycle guard that prevents two concurrent workers from issuing two platform-fee
+  rollups for the same merchant/subscription/currency/period (Increment 5A; not an application-only
+  pre-check). The rollup amount = Σ of the eligible earned/pending
+  `platform_fee_ledger_entries.merchant_liability_minor` for the period; it is non-negative (so the
+  `type≠'adjustment' ⇒ amount_minor ≥ 0` CHECK holds). The shipped 20B migration is not edited.
+- **Phase 20E — future-cycle correction `adjustment` line (backend closure; no migration):** pending
+  `reversal`/`adjustment` ledger rows whose ORIGINAL earned entry was already invoiced
+  (`original.subscription_invoice_item_id IS NOT NULL`) are swept into **one signed `type='adjustment'`
+  line per cycle** = Σ of the consumed corrections' paired `platform_fee_adjustments.amount_minor` (the
+  canonical signed source; `adjustment` is the only line type the sign CHECK lets be negative). Selection is
+  `status='pending' AND subscription_invoice_item_id IS NULL AND (billable_at Nairobi date) < period_end`
+  under `FOR UPDATE`; consumed rows transition `pending → aggregated → invoiced`. The applied negative net is
+  capped so `subscription_invoices.total_minor ≥ 0` can never be breached; an un-applied correction stays
+  `pending` and carries to a later cycle (whole-entry — an immutable row is never split). No Wallet credit
+  (Phase 20D-W). No per-invoice unique guard is added for the correction line (a broad `type='adjustment'`
+  unique would block unrelated adjustments); double-consumption is prevented by the `FOR UPDATE` selection +
+  single FK + terminal `invoiced` state + one-invoice-per-`(merchant,period)`.
+- **Indexes:** index `(subscription_invoice_id)`; partial-unique rollup guard (above).
 - **Positive:** one `plan_fee` line = captured price; sum(items) = `subtotal_minor`. **Negative:**
   item mutation not available; no non-plan_fee lines fabricated in 20B.
 
@@ -757,6 +778,195 @@ Unverified requests must not insert into the canonical verified `wallet_event_id
 constraint. Failed verification → security audit + metrics; no ad-hoc rejection table in adoption PR.
 
 ---
+
+## Phase 20E — Percentage Platform-Fee Engine (Plan §§13.10, 51, 52; Corrections 2/4/8)
+
+> Launch-capable, **inert until a percentage component is configured**. Money is integer minor units;
+> currency `char(3)` uppercase; percentage rates integer basis points (0–10000); rounding ADR-005
+> round-half-up + largest-remainder residual. Ledger entries are created at **Finance validation**
+> (billability authority), never at recording; `settled` is **not** a Phase 20E state (Wallet/20D-W).
+> See gate decisions E1–E9 in `docs/proof/phase-20e.md`.
+>
+> **Fee-basis amounts are server-owned, computed from the locked Phase 17 finalization data** (never the
+> browser). Definitions:
+> - `merchant_client_invoice_service_subtotal` = Σ service line nets (`invoices.subtotal_minor`; excludes
+>   the preferred-personnel fee line and the Phase 20E client-shifted amount).
+> - `merchant_client_invoice_total` = the **pre-platform-fee** invoice total, i.e. the Phase 17
+>   `InvoiceTotalsCalculator` result (subtotal + tax − discount + preferred-personnel fee) **immediately
+>   before** the Phase 20E client-shifted amount is added. The percentage fee is therefore **never**
+>   computed on a total that already contains that same fee — no circular calculation.
+> - `net_after_discount` = `subtotal_minor − discount_minor`.
+> - `invoice_item_subtotal` = per-item `line_total_minor` (item-level basis → largest-remainder provenance).
+> - `validated_paid_amount` = the newly validated amount on each `PaymentValidationEvent` (liability
+>   recognition per event); see the tier-compatibility rule below.
+
+### `platform_fee_configurations` (Plan §13.10; migration `2026_07_13_000001`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | `UNIQUE`; public ref |
+| `billing_mode` | varchar | no | CHECK ∈ (`fixed_amount`,`percentage_on_merchant_client_invoice`,`fixed_amount_plus_percentage_on_merchant_client_invoice`) |
+| `percentage_basis_points` | int | yes | `CHECK (percentage_basis_points BETWEEN 0 AND 10000)`; required in percentage modes |
+| `fixed_component_minor` | bigint | yes | `CHECK (>=0)`; present for `fixed_amount_plus_percentage…` |
+| `tier_behavior` | varchar | yes | CHECK ∈ (`customer_centric`,`shared`,`business_centric`); required in percentage modes |
+| `shared_split_basis_points` | int | yes | `CHECK (BETWEEN 0 AND 10000)`; `CHECK (tier_behavior <> 'shared' OR shared_split_basis_points IS NOT NULL)` |
+| `fee_basis_type` | varchar | yes | CHECK ∈ (`merchant_client_invoice_service_subtotal`,`merchant_client_invoice_total`,`net_after_discount`,`invoice_item_subtotal`,`validated_paid_amount`); required in percentage modes |
+| `currency` | char(3) | no | `CHECK (currency = upper(currency))` |
+| `effective_from` | date | no | business date (`Africa/Nairobi`) |
+| `effective_to` | date | yes | `CHECK (effective_to IS NULL OR effective_to > effective_from)` |
+| `status` | varchar | no | CHECK ∈ (`draft`,`scheduled`,`active`,`superseded`,`cancelled`); `PlatformFeeConfigurationStatus` |
+| `created_by` | bigint | no | FK `users(id)` RESTRICT |
+| `approved_by` | bigint | yes | FK `users(id)` RESTRICT |
+| `approved_at` | timestamptz | yes | |
+| `change_reason` | text | no | non-empty |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **Scope:** platform (no `merchant_id`/`branch_id`) — `withoutTenancy()` service context only. Reuses the
+  Phase 20A effective-dated platform-configuration conventions; the **active billing mode** remains
+  `platform_billing_settings.billing_mode` (no duplicate source of truth).
+- **Immutability:** approved monetary terms (`percentage_basis_points`, `fixed_component_minor`,
+  `tier_behavior`, `shared_split_basis_points`, `fee_basis_type`, `currency`) immutable once `active`;
+  changes **supersede** (new version). Draft terms editable in place.
+- **Overlap:** `EXCLUDE USING gist` over `(billing_mode, currency, daterange(effective_from, effective_to))`
+  for `active`+`scheduled` — the authoritative overlap guard.
+- **Lifecycle spec:** `docs/architecture/state-machines/platform-fee-configuration.md`.
+- **Audit:** `platform_fee.configuration_created/_updated/_approved/_superseded/_cancelled`.
+  **Retention:** permanent. **Factory:** `PlatformFeeConfigurationFactory` (draft/scheduled/active/
+  superseded states). **Backfill:** none (engine inert until configured).
+- **Positive:** percentage valid; fixed-plus-percentage valid; supersede-not-edit; effective resolution by
+  date. **Negative:** shared without split rejected; over-range bps rejected; missing tier in percentage
+  mode rejected; overlapping windows rejected by PG; non-Super-Admin denied.
+
+### `platform_fee_ledger_entries` (Plan §13.10, §51; migration `2026_07_13_000002`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | `UNIQUE`; public ref |
+| `merchant_id` | bigint | no | FK `merchants(id)` RESTRICT; `BelongsToMerchant` |
+| `branch_id` | bigint | yes | FK `branches(id)` RESTRICT; `BelongsToBranch` when set |
+| `source_invoice_id` | bigint | no | FK `invoices(id)` RESTRICT (merchant-client invoice) |
+| `source_invoice_item_id` | bigint | yes | FK `invoice_items(id)` RESTRICT (item-level provenance) |
+| `entry_type` | varchar | no | CHECK ∈ (`earned`,`reversal`,`adjustment`); `PlatformFeeEntryType` |
+| `status` | varchar | no | CHECK ∈ (`pending`,`aggregated`,`invoiced`,`reversed`,`adjusted`); `PlatformFeeLedgerStatus` |
+| `billing_mode_snapshot` | varchar | no | mode at finalization |
+| `service_fee_tier_snapshot` | varchar | no | CHECK ∈ (`customer_centric`,`shared`,`business_centric`) — mapped from `split_tier` |
+| `fee_basis_type` | varchar | no | CHECK ∈ E2 vocabulary |
+| `fee_basis_amount_minor` | bigint | no | `CHECK (>=0)` |
+| `percentage_rate_snapshot` | int | no | basis points 0–10000 |
+| `shared_split_snapshot` | int | yes | basis points when tier=shared |
+| `gross_platform_fee_minor` | bigint | no | `CHECK (>=0)` |
+| `client_shifted_amount_minor` | bigint | no | `CHECK (>=0)` |
+| `merchant_absorbed_amount_minor` | bigint | no | `CHECK (>=0)` |
+| `merchant_liability_minor` | bigint | no | `CHECK (merchant_liability_minor = gross_platform_fee_minor)` |
+| `currency` | char(3) | no | uppercase; matches source + config |
+| `effective_configuration_id` | bigint | no | FK `platform_fee_configurations(id)` RESTRICT |
+| `subscription_invoice_item_id` | bigint | yes | FK `subscription_invoice_items(id)` RESTRICT (aggregation link) |
+| `reversed_entry_id` | bigint | yes | self-FK RESTRICT (reversal/adjustment → original) |
+| `source_validation_event_id` | bigint | yes | FK `payment_validation_events(id)` RESTRICT — the Phase 18B group validation event that made an `earned` liability billable (immutable validation-source identity; NULL for reversal/adjustment) |
+| `idempotency_key` | varchar(191) | yes | replay guard (partial-unique). Earned: `earned:{invoice}:{event}[:{item}]`. Correction rows carry `ledger:` + the source correction event's key (`ledger:reversal:…` / `ledger:adjustment:…`), which pairs 1:1 with the signed `platform_fee_adjustments.idempotency_key` used by the future-cycle correction sweep. |
+| `billable_at` | timestamptz | yes | `earned`: stamped at validation. `reversal`/`adjustment`: the correction's business date — the eligibility date for the future-cycle correction sweep. |
+| `created_at` | timestamptz | no | append-only (no `updated_at`) |
+
+- **Append-only:** BEFORE UPDATE trigger blocks changes to monetary/snapshot columns (permits only
+  `status` + `subscription_invoice_item_id`); BEFORE DELETE trigger blocks all deletes. Reversal/adjustment
+  are **additive** rows referencing the original via `reversed_entry_id`.
+- **Future-cycle correction sweep (backend closure):** a `reversal`/`adjustment` row whose original was
+  invoiced follows the same billing lifecycle as an earned row — `pending → aggregated → invoiced` — when it
+  is swept into a later invoice's signed `type='adjustment'` line (its signed contribution = the paired
+  `platform_fee_adjustments.amount_minor`). The applied negative net is capped so the invoice total stays
+  non-negative; un-applied corrections stay `pending` for a later cycle. A correction of a never-invoiced
+  original is never swept (its original was already dropped from the rollup by the `reversed`/`adjusted`
+  marker).
+- **Invariants:** `client_shifted + merchant_absorbed = gross` (DB CHECK); `merchant_liability = gross`
+  (DB CHECK); currency coherence across source/config.
+- **Idempotency:** partial-unique index on `(source_invoice_id, source_invoice_item_id, validation
+  allocation)` for `earned` rows so a replayed validation creates no duplicate; one entry cannot be
+  aggregated twice (a partial-unique/guard on `subscription_invoice_item_id`).
+- **Indexes:** `UNIQUE(ulid)`; `(merchant_id, status)`; `(source_invoice_id)`; `(subscription_invoice_item_id)`.
+- **Lifecycle spec:** `docs/architecture/state-machines/platform-fee-ledger-entry.md`.
+- **Audit:** `platform_fee.original_recorded/_became_billable/_aggregated/_reversed/_adjusted`.
+  **Retention:** permanent (financial). **Factory:** `PlatformFeeLedgerEntryFactory`. **Backfill:** none.
+- **Positive:** created at validation; correct tier allocation; largest-remainder item sums reconcile;
+  aggregated once. **Negative:** recording-only creates nothing; fixed-only creates nothing; monetary
+  UPDATE/DELETE blocked; cross-tenant source 404; over-reversal rejected.
+
+### `platform_fee_adjustments` (Plan §13.10; migration `2026_07_13_000003`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | `UNIQUE` |
+| `merchant_id` | bigint | no | FK `merchants(id)` RESTRICT; `BelongsToMerchant` |
+| `branch_id` | bigint | yes | FK `branches(id)` RESTRICT |
+| `platform_fee_ledger_entry_id` | bigint | no | FK `platform_fee_ledger_entries(id)` RESTRICT |
+| `adjustment_type` | varchar | no | CHECK ∈ (`reversal`,`partial_refund`,`correction`,`dispute_resolution`); `PlatformFeeAdjustmentType` |
+| `amount_minor` | bigint | no | signed additive amount (integer minor units) |
+| `currency` | char(3) | no | uppercase; matches the entry |
+| `reason` | text | no | non-empty (sanitized) |
+| `source_reference` | varchar | yes | void/refund/correction/dispute reference |
+| `effective_date` | date | no | business date (`Africa/Nairobi`); period-lock enforced |
+| `created_by` | bigint | no | FK `users(id)` RESTRICT |
+| `approved_by` | bigint | yes | FK `users(id)` RESTRICT (maker/checker) |
+| `created_at` | timestamptz | no | append-only |
+
+- **Append-only:** fully immutable after insert (BEFORE UPDATE/DELETE trigger). Cannot exceed the remaining
+  reversible balance of the target entry unless a separately approved correction. Idempotent per source
+  correction event (partial-unique index). Period-lock enforced; no self-approval where maker/checker.
+- **Retention:** permanent. **Factory:** `PlatformFeeAdjustmentFactory`. **Backfill:** none.
+- **Positive:** reversal on void = full offset; partial refund = proportional. **Negative:** over-adjust
+  rejected; locked period blocks; self-approval blocked.
+
+### `platform_fee_disputes` (Plan §13.10 [Correction 3]; migration `2026_07_13_000004`)
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | `UNIQUE` |
+| `merchant_id` | bigint | no | FK `merchants(id)` RESTRICT; `BelongsToMerchant` |
+| `branch_id` | bigint | yes | FK `branches(id)` RESTRICT |
+| `platform_fee_ledger_entry_id` | bigint | yes | FK `platform_fee_ledger_entries(id)` RESTRICT |
+| `subscription_invoice_id` | bigint | yes | FK `subscription_invoices(id)` RESTRICT |
+| `reason` | text | no | non-empty (sanitized); `CHECK (ledger entry OR subscription invoice present)` |
+| `status` | varchar | no | CHECK ∈ (`open`,`under_review`,`resolved`,`rejected`); `PlatformFeeDisputeStatus` (**no** `escalated`) |
+| `assigned_reviewer` | bigint | yes | FK `users(id)` RESTRICT |
+| `evidence_file_id` | bigint | yes | FK `uploaded_files(id)` RESTRICT (private file domain) |
+| `resolution_note` | text | yes | required on resolve/reject |
+| `created_by` | bigint | no | FK `users(id)` RESTRICT |
+| `resolved_by` | bigint | yes | FK `users(id)` RESTRICT |
+| `resolved_at` | timestamptz | yes | |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **Scope:** tenant/branch. Money-changing resolution creates a `platform_fee_adjustments` row and
+  **never** edits the original ledger amount. Evidence uses the existing private file domain.
+- **Lifecycle spec:** `docs/architecture/state-machines/platform-fee-dispute.md`.
+- **Audit:** `platform_fee.dispute_created/_review_started/_resolved/_rejected`. **Retention:** permanent.
+  **Factory:** `PlatformFeeDisputeFactory`.
+- **Positive:** permitted actor creates; valid transitions; money-change resolution → adjustment.
+  **Negative:** cross-tenant source 404; invalid skip rejected; Audit/Front-Office/Personnel denied.
+
+### Additive percentage-fee snapshot columns on existing tables (expand)
+
+- **`invoices` total-arithmetic CHECK (P17; migration `2026_07_13_000007`, expand):** the shipped
+  `invoices_total_arithmetic_check` is dropped/recreated (shipped migration untouched) to add
+  `+ COALESCE(platform_fee_client_shifted_minor, 0)`, so shared/business_centric percentage invoices may
+  include the client-shifted amount in `total_minor` (the client pays it; payments validate against it).
+  Backward-compatible — existing/fixed-only rows have NULL → 0.
+- **`invoices` (P17; migration `2026_07_13_000005`, expand):** nullable
+  `platform_fee_configuration_id` (FK RESTRICT), `platform_fee_billing_mode_snapshot`,
+  `platform_fee_rate_bps_snapshot`, `platform_fee_tier_snapshot`, `platform_fee_basis_type_snapshot`,
+  `platform_fee_shared_split_snapshot`, `platform_fee_currency`, `platform_fee_gross_minor`,
+  `platform_fee_client_shifted_minor`, `platform_fee_resolved_at`. Snapshot-coherence CHECK (all-null or
+  complete). Existing finalized invoices keep NULL; fixed-only leaves NULL. **No shipped P17 migration
+  edited.**
+- **`invoice_items` (P17; migration `2026_07_13_000006`, expand):** nullable
+  `platform_fee_item_gross_minor`, `platform_fee_item_client_shifted_minor`,
+  `platform_fee_item_absorbed_minor` (largest-remainder provenance). Item shares reconcile to the header
+  snapshot (test-enforced).
+- **`platform_fee_ledger_entries → subscription_invoice_items`:** the aggregation link lives on the ledger
+  (`subscription_invoice_item_id`); the existing `platform_fee_rollup` line `type` (§13.10, shipped 20B)
+  is reused — **no** schema change to `subscription_invoice_items`.
 
 ## Forbidden in Servana (never assign to Servana schema)
 

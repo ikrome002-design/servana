@@ -1,6 +1,6 @@
 # Servana — Build Progress
 
-Tracks the **active v3 roadmap (Plan §§79–80)**: Phase V (as-built verification)
+Tracks the **active v4 roadmap (Plan §§79–80)**: Phase V (as-built verification)
 → R1–R7 (pre-feature remediation) → feature phases (10…25). The old §27
 "Phases 1–25" roadmap is superseded (see Plan §4 / `docs/verification/`). One
 phase = one reviewed PR. A phase is not "Done" until its acceptance criteria are
@@ -26,7 +26,7 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | — | Laravel 11→12.62 security upgrade | **#11 (merged)** | `cbcf50c` | — | partial R1 (REM-DEP-001) — ADR/proof missing |
 | — | v3 Plan/Scope documentation | **#10 (merged)** | `e8681f6` | — | confirmed |
 
-## Active v3 roadmap
+## Active v4 roadmap
 
 ### Pre-feature remediation (Plan §79) — gate §5.4 **CLOSED and effective** (gate-closure PR #20 merged `7ac20a5`)
 | Phase | Title | Status | Register item |
@@ -73,13 +73,178 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | v4 adoption | Servana v4 plan-adoption architecture change (Plan §1.3) | ✅ `verified_complete` — **PR #34** "docs: update Servana software development plan" MERGED into `main` (merge commit `85bd3e570db1436586d3d1ead17ab6b1701538d5`, merged `2026-07-10T07:52:27Z`; head `docs/update-servana-development-plan`, base `main`). Five required CI checks all SUCCESS; `reviewDecision` blank under the solo-maintainer governance exception — **not** independent approval. Gate A (Phase 20A entry) satisfied. |
 | 20A | Plan catalogue, prices, entitlements, billing settings, preferred-personnel fee rules (platform) | ✅ `verified_complete` — **PR #35** "Phase 20A: Implement billing catalogue settings and fee rules" MERGED into `main` (squash merge `6813690ef5fa9f7d782532b49e2bca43c2afc112`, impl head `a31cd00…`, final PR head `56a81bd…`, merged `2026-07-11T07:56:09Z`); five-gate CI (Backend/Frontend/Docker/Security/E2E—Playwright) all SUCCESS; `reviewDecision` blank under the documented solo-maintainer governance exception — **not** independent approval. (Reconciled from `local_complete` during Phase 20B Increment 1.) Increments 1–7 COMPLETE + green; branch `phase-20a-billing-catalogue-settings` off `85bd3e5`. **Frontend (Increment 5):** single `platform-billing-settings` screen (tabbed: settings/plans/prices/entitlements/preferred-fee), 5 Pinia stores, Branch-Manager read-only fee card in `branch.services`, nav/inventory/§27.1-spec reconciled, contract-truth nullability fix. **E2E (Increment 6):** `phase-20a-billing.spec.ts` 17/17 + full e2e 269 (axe 0 light/dark, 360/768/1280, keyboard). **Gates (Increment 7):** backend serial 1164/7-skip + parallel 1164/7; Pint 1040 clean; Larastan L8 clean; OpenAPI 188 routes/157 paths/188 ops + TS + permissions + contract OK; Vitest 279; composer audit clean; npm audit 2 moderate (below gate); gitleaks clean; php-dev + nginx-prod build. Single completion commit pending; then push + STOP (no PR/merge, no 20B). Older detail: Docker blocker RESOLVED. Increments 1–3 COMPLETE + green on PG16 (specs; 6 migrations; enums; models/factories; legacy backfill @ `DATE '2026-07-10'`; resolvers + resolver swap). **Increment 4 runtime layer done + green** (13 AuditEvent cases; 2 state machines + BillingStateException + BillingOverlapException; BillingStateMachineTest 36; **12 actions**; **6 policies** registered; **8 Form Requests**; **6 masked Resources**; **7 controllers**; `ResolvePlatformContext` middleware + `PlatformServiceLocator`). Larastan clean; RouteSecurityContract/AuditMutationCoverage/permission guards green with the unwired layer (37 + 89 targeted). **Increment 4 COMPLETE + green** (atomic flip done): 21 platform routes + 1 branch read wired (ResolvePlatformContext group; platform_mutation forbids ResolveTenantContext — solved); AuditMutationCoverage (12 routes); StepUpAction::BillingConfiguration moved to live; PermissionRegistry +9/−3; matrix flip (9 active, 3 legacy deleted); active 87→93, legacy 17→14, planned 86→77; OpenAPI 157 paths/188 ops + TS + permissions regenerated; `Phase20APlatformApiTest` 13 tests (context/plans/prices/overlap/fee-rule lifecycle/step-up/branch-read-masked). **Auth 192 pass; RouteSecurityContract/AuditMutationCoverage/OpenApi green; billing+phase20a 96 pass; Pint clean; Larastan clean.** **Increments 5 (frontend platform-billing-settings), 6 (E2E/a11y), 7 (full gates + single commit) pending.** **Branch-rule correction recorded:** `preferred_personnel_fee.view_branch_rule` = branch_manager/branch/read-only/no-MFA/no-step-up/info (not super-admin). See Phase 20A section + proof. |
 | 20B | Subscription lifecycle & subscription invoices | ✅ `verified_complete` — **PR #36** "Phase 20B: Implement subscription lifecycle and invoices" MERGED into `main` (squash merge `3dd528a2779a44d13b9fe105ac9ee49e688e84c6`, implementation head `6790081bace7efb2a659ec8254e6eda53d3d5935`, governance/final PR head `4a998dc6e4c0f8259c8d6c179c076f8b8496aec9`, merged `2026-07-12T06:57:28Z`); CI initial `29183137798` + final `29183286205` — five required jobs (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS; `reviewDecision` blank under the documented solo-maintainer governance exception — **not** independent approval; local + remote branches deleted. (Reconciled from `local_complete` during Phase 20C Increment 1.) See Phase 20B section. |
-| 20C | Promotions & free-period offers (platform) | 🚧 `in_progress` — branch `phase-20c-promotions-free-periods` off `3dd528a…`. See Phase 20C section. |
-| 20D-W…20H | Wallet billing (20D-W), %-fee engine (20E), compensation (20F), commission/salary (20G), payouts (20H) | ⬜ Not started |
+| 20C | Promotions & free-period offers (platform) | ✅ `verified_complete` — **PR #37** "Phase 20C: Implement promotions and free periods" MERGED into `main` (squash merge `735f419bf72fdd9be3f95c4507e8925c1ed0859e`, implementation commit `782c97313ea988d2263e35d44c325d2c7ccb25ec`, governance/final PR head `efe0f74afe23fa8f3d3acfdd363c1328520cade8`, merged `2026-07-12T11:50:45Z`); CI initial `29191160816` (head `782c973…`) + final `29191381748` (head `efe0f74…`) — five required jobs (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS; `reviewDecision` blank under the documented PR-specific solo-maintainer governance exception — **not** independent approval; local + remote branches deleted. (Reconciled from `local_complete` during Phase 20E Increment 1.) See Phase 20C section + `docs/proof/phase-20c.md`. |
+| 20E | Percentage platform-fee engine (financial; Corrections 2/4/8) | 🧪 `local_complete pending PR CI/review/merge` — branch `phase-20e-percentage-platform-fees` off `735f419…`; single completion commit `phase-20e: implement percentage platform fee engine` pushed. All local gates green (Increment 8): backend serial+parallel 1181/7-skip/7396; Larastan L8 + Pint + composer validate clean; catalogue 160/160/10; OpenAPI 196 paths/235 ops deterministic; Vitest 352; Playwright full 324 (axe 0, 200% zoom, 360/768/1280, light/dark); composer audit clean; npm high gate exit 0; gitleaks clean; docker dev+prod+nginx built. **No PR/merge yet** (product-owner-authorized). Gate W CLOSED (evidence absent) ⇒ 20E was the next executable phase per the v4 dependency graph. See Phase 20E section. |
+| 20D-W / 20F–20H | Wallet billing (20D-W, blocked on Gate W), compensation (20F), commission/salary (20G), payouts (20H) | ⬜ Not started |
 | 21N / 21S | Queues/notifications/reports / personnel bulk SMS | ⬜ Not started |
 | 22 | Search | ⬜ Not started |
 | 23 | Security hardening + responsive/dark/a11y release audit + threat-model | ⬜ Not started |
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
+
+## Phase 20E — Percentage Platform-Fee Engine (in_progress)
+
+- **Lifecycle:** 🧪 `local_complete pending PR CI/review/merge` (Increment 8 gates all green; single completion
+  commit pushed; NOT `verified_complete`/`ci_passed`/`merged`/independently reviewed). **Branch:**
+  `phase-20e-percentage-platform-fees` off `origin/main` = `735f419bf72fdd9be3f95c4507e8925c1ed0859e`
+  (= the Phase 20C PR #37 squash merge); never worked on `main`. **Base verified:** HEAD before commit =
+  merge-base = `735f419…`; `git fsck` clean; old `phase-20c*` local + remote branches absent.
+- **Phase 20C reconciliation:** PR #37 MERGED (squash `735f419…`, impl `782c973…`, final head
+  `efe0f74…`, merged `2026-07-12T11:50:45Z`); CI initial `29191160816` + final `29191381748` — five
+  required jobs SUCCESS; `reviewDecision` blank (solo-maintainer exception, **not** independent
+  approval). Reconciled `docs/proof/phase-20c.md`, this file, `docs/CHANGELOG.md`,
+  `docs/traceability/servana-requirements.csv` (SRV-PROMOTION-001 + SRV-FREE-PERIOD-001) →
+  `verified_complete`. No open remediation item is 20C-owned.
+- **Gate W status:** **CLOSED** — `docs/integrations/wallet/gate-w-evidence.md` and the
+  `docs/integrations/wallet/` directory are **absent**; no credentials / pinned OpenAPI hash / contract
+  suite / sandbox STK/C2B transcript. Per the v4 graph (`20A + 17/18 → 20E`), Phase 20E is independently
+  eligible. **No pivot to 20D-W.**
+- **Specification gates (E1–E9):** resolved before any migration — see `docs/proof/phase-20e.md`
+  decision table. E1 ledger lifecycle = Plan §13.10 canonical (`earned`/`pending`→`aggregated`→`invoiced`;
+  additive `reversal`/`adjustment`; `settled` excluded = 20D-W); created at **Finance validation**
+  (billability authority), config snapshot at P17 finalization. E2 fee-basis vocabulary =
+  `{merchant_client_invoice_service_subtotal, merchant_client_invoice_total, net_after_discount,
+  invoice_item_subtotal, validated_paid_amount}`. E4 tier = `customer_centric/shared/business_centric`
+  with deterministic `split_tier→shared` mapping of the shipped `merchants.service_fee_tier` seam;
+  fail-closed when missing in a percentage mode. E9 reconciles legacy `platform_fees.view` /
+  `platform_fees.dispute`.
+- **Increment 1 (specs + reconciliation) — COMPLETE:** 20C reconciliation, Gate W record, E1–E9 decision
+  table (`docs/proof/phase-20e.md`), data-dictionary entries (4 tables + invoice/item expands), 3 state
+  machines, traceability row `SRV-PLATFORM-FEE-001`. Migration **plan** recorded in the proof; the 7
+  manifest entries are registered in Increment 2 with the migration files (repo `MigrationManifestTest`
+  forbids entries without on-disk files). **No migration until Increment 2.**
+- **Tests:** `MigrationManifestTest` **9 passed** (validates the doc edits left the manifest lint green);
+  no product code this increment.
+- **Increment 2 (migrations/enums/models/factories/guards) — COMPLETE + green:** 6 forward-only migrations
+  (4 tables + 2 invoice expands; inline immutability triggers; gist overlap exclusion), 7 enums, 4 models,
+  4 factories, `TenantOwnership` registration (config EXEMPT; ledger/adjustment/dispute TENANT_OWNED). Gates:
+  `Phase20ESchemaTest` 24 pass, `Phase20EEnumParityTest` 12 pass, `TenantColumnCoverageTest`+
+  `ModelTenancyTraitCoverageTest` 21 pass, `MigrationManifestTest` 9 pass, Pint clean, Larastan L8 clean.
+  Disposable PG16 `servana_p20e_proof` migrate:fresh --seed = 94 migrations + seed clean, 4 tables + 5
+  triggers, 0/0/0/0 fee rows (no backfill), dropped. Fixed DEF-20E-001 (test-defect: escalated CHECK via
+  raw UPDATE). **Manifest now registered (94 entries).**
+- **Increment 3 (resolvers + arithmetic engine) — COMPLETE + green:** `CalculatePlatformFee` (+
+  `CalculatedPlatformFee` VO), `AllocatePlatformFeeByLargestRemainder` (+ `AllocatedPlatformFeeItem` VO),
+  `ResolveMerchantServiceFeeTier` (split_tier→shared, fail-closed), `ResolveEffectivePlatformFeeConfiguration`
+  (find/require), `PlatformFeeConfigurationStateMachine` + `PlatformFeeDisputeStateMachine`,
+  `PlatformFeeException`. Gates: `PlatformFeeCalculationTest` 21 pass, `PlatformFeeConfigurationResolutionTest`
+  6 pass, Pint clean, Larastan L8 clean. Fixed DEF-20E-002 (allocator deterministic output ordering).
+- **Increment 4 pre-work — COMPLETE + green:** partial-payment billability reconciled against the actual
+  `ValidatePaymentRecordingGroup` (group-level atomic validation → `PaymentValidationEvent` is the
+  validation-source identity). Rule: snapshot bases release proportionally per event (residual on final
+  validation); `validated_paid_amount` per event. **Migration correction** (uncommitted
+  `2026_07_13_000002`): added `source_validation_event_id` FK → `payment_validation_events` (+ index, in
+  the immutable tuple); data dictionary/model/manifest updated. Gates: `Phase20ESchemaTest` 25 pass;
+  enum/manifest/tenancy 50 pass combined; Pint clean. No product-owner question needed.
+- **Increment 4A (finalization integration) — COMPLETE + green:** Gate 4.2 (validated_paid_amount →
+  customer_centric only; DB CHECK + resolved-tier guard), Gate 4.1 (non-circular total), Gate 3.7
+  (structural unique on validation source). `RecordPlatformFeeAtFinalization` + `ResolvePlatformFeeBasis` +
+  `PlatformFeeFinalizationResult` wired into `FinalizeInvoice` (fee before number alloc; client-shifted
+  added to total; fixed-only inert). Constraint-expand migration `2026_07_13_000007` widened
+  `invoices_total_arithmetic_check` (DEF-20E-003). `PlatformFeeFinalizationTest` 9 pass; Phase 17
+  regression (FinalizeInvoice + InvoiceCorrection) + schema + manifest = 47 pass combined; Pint + Larastan
+  L8 clean. Manifest now 7 migrations (95 entries).
+- **Increment 4B (validation billability) — COMPLETE + green:** `RecordOriginalPlatformFeeLiability`
+  hooked into `ValidatePaymentRecordingGroup` step 4b (inside the txn, after `validated_paid_minor`).
+  Invoice-level earned entries (one per `PaymentValidationEvent`); snapshot bases release proportionally
+  with residual capture; `validated_paid_amount` per-event; zero-total fail-closed; idempotent.
+  `CalculatePlatformFee::splitByTier`; `AuditEvent::PlatformFeeOriginalRecorded` (Info/Finance).
+  `PlatformFeeBillabilityTest` 6 pass; phase20e group **80 pass / 210 assertions**; Phase 18B regression
+  17 pass; Pint + Larastan L8 clean. **Increment 4 (finalization + billability) fully integrated.**
+- **Increment 5 (aggregation + reversals/adjustments + disputes) — COMPLETE + green:**
+  - *5A* `AggregatePlatformFeesIntoSubscriptionInvoice` folds the earned/pending rollup into the P20B
+    `IssueSubscriptionInvoice` transaction (no second aggregate; schema forces at-issuance folding —
+    plan/price NOT NULL, immutable snapshot). Eligibility earned+pending+in-period+same merchant/currency,
+    not-linked; period `[start,end)` Africa/Nairobi; order `billable_at ASC, ulid ASC`; DB cycle guard
+    migration `2026_07_13_000008` (partial-unique rollup-per-invoice); `pending→aggregated→invoiced`;
+    rollback-safe numbering. `PlatformFeeLedgerEntryStateMachine` added.
+  - *5B* `RecordPlatformFeeReversal` + `RecordPlatformFeeAdjustment` hook inside `ExecuteInvoiceVoid`
+    (full reversal) and `FinalizeRefund` (full/partial proportional); append-only ledger + signed
+    `platform_fee_adjustments` row; original never edited; 409 over-reversal; source idempotency; period
+    lock + maker/checker inherited.
+  - *5C* dispute actions `Create/Start/Resolve/Reject` on `PlatformFeeDisputeStateMachine`
+    (`open→under_review→resolved|rejected`); money-changing resolve → `dispute_resolution` adjustment,
+    ledger + issued subscription invoice untouched; 422 invalid transition; self-resolution blocked.
+  - 8 new audit events (`platform_fee.aggregated/invoiced/reversed/adjusted/dispute_*`).
+  - Tests: aggregation 10, reversal/adjustment 10, dispute 9 (+ ledger SM). Full `tests/Feature/Billing`
+    **433 pass**; regression Invoicing+Refunds+validation **62 pass**; gates (manifest 95, tenancy,
+    NoDirectProvider, audit coverage) **31 pass**; Pint clean; Larastan L8 clean. Fixed DEF-20E-004
+    (test TZ round-trip) + DEF-20E-005 (stale `SubscriptionInvoiceTest` table-absence assertion).
+- **Increment 6 (canonical permissions + HTTP API + audit/route-security + OpenAPI/TS) — COMPLETE + green;
+  recovered after 2026-07-13 desktop reboot (no file loss — 104 recovery files hash-match backup):**
+  16 routes (7 platform config `create/update-draft/approve/supersede/cancel/list/show`; 3 merchant masked
+  reads `platform-fees[/summary/{entry}]`; 6 disputes `create/list/show/review/resolve/reject`) — thin
+  controllers → Form Request → policy → context → MFA/step-up/period/idempotency → transactional action →
+  masked ULID-only Resource; no reversal/adjustment/aggregation/status/DELETE/Wallet routes. **Permission
+  reconciliation (Gate E9) — product-owner decision Option A (2026-07-13):** legacy plural `platform_fees.view`
+  /`platform_fees.dispute` retired; four canonical keys `platform_fee.view`, `platform_fee.dispute`,
+  `platform_fee.dispute.review`, `platform.platform_fee.configure` **authorized into the Plan §19.2 catalogue
+  + §19.3 populated matrix** (156→160), `owning_phase` cleared to null in YAML. Merchant-side dispute model
+  kept (NOT moved to Phase 20D-W `platform.billing_reconciliation.*`). Legacy-ratchet 12→**10**; all four
+  parity layers (YAML/PHP/DB/TS) atomic; `permissions.ts` regenerated (byte-identical), OpenAPI 235 ops +
+  `api.ts` regenerated (deterministic; recovered `openapi.json`/`api.ts` were stale — regenerated).
+  **Gates:** Increment-6 API 30; full Billing 455; auth/matrix 19 (catalogue/parity 160, ratchet 10);
+  security/audit/tenancy/boundary 53; regression Invoicing+Refunds+Audit 167; frontend vue-tsc clean +
+  ESLint 0 errors + Vitest 321 + build ✓; composer validate valid; Pint clean; Larastan L8 clean.
+  `REM-PERM-001` stays OPEN (Phase 19-owned). Proof: `docs/proof/phase-20e.md` (Increment 6 + Recovery
+  incident). **NOT committed/pushed/PR'd (Increment 6 boundary).**
+- **Backend closure — future-cycle correction aggregation — COMPLETE + green (post-Increment 6):** closes the
+  one Phase 20E-owned financial gap. Pending `reversal`/`adjustment` corrections of ALREADY-INVOICED fees are
+  swept into one signed `subscription_invoice_items.type='adjustment'` line on the next issued invoice
+  (`AggregatePlatformFeesIntoSubscriptionInvoice::collectApplicableCorrections()`/`writeCorrectionLine()` +
+  `IssueSubscriptionInvoice`; new VO `PlatformFeeCorrectionSelection`). Signed source = paired
+  `platform_fee_adjustments.amount_minor` (idempotency linkage); consumed `pending→aggregated→invoiced`;
+  negative net capped so the invoice total can never go negative (DB `total>=0`), residual carries forward
+  (whole-entry, no split, no new concept); a correction of a never-invoiced original is skipped (no spurious
+  credit). No migration; no route/OpenAPI change; audit reuses `platform_fee.aggregated`/`.invoiced`. Gates:
+  `PlatformFeeCorrectionAggregationTest` 8/46; Billing 463; Invoicing+Refunds+Audit+NoDirectProvider+Tenancy 83;
+  Pint clean; Larastan L8 clean; composer validate valid. No Wallet/provider/credit runtime. Proof:
+  `docs/proof/phase-20e.md` (Backend closure). **NOT committed/pushed/PR'd.**
+- **Increment 7 (frontend platform-fee surfaces) — COMPLETE + green:** Vue 3 + Pinia UI for all six roles,
+  UX-gated by `useCan()` (backend authoritative). 3 stores (`platformFeeConfigStore`/`platformFeeStore`/
+  `platformFeeDisputeStore`). 7B: Super-Admin **Platform fees** tab in `BillingSettings.vue`
+  (`PlatformFeeConfigSection.vue`; create/edit-draft/approve/supersede/cancel; approved terms read-only;
+  client validation mirrors server incl. shared-split + validated_paid/customer-centric). 7C: one shared
+  `pages/billing/PlatformFees.vue` mounted per role (`{merchant,branch,finance,audit}.platform-fees`;
+  server-scoped summary + entries + disputes; merchant/Finance create, Finance-only review/resolve/reject,
+  Branch/Audit read-only); Front Office client-shifted **Platform fee** line in `InvoiceDetail.vue`. Backend
+  contract fix (§23): added masked `platform_fee_client_shifted` to `InvoiceResource` (regenerated OpenAPI/
+  api.ts; Invoicing 42 pass). Shared `SvModal` given internal scroll (§16). Screen inventory (4 entries +
+  regen yaml/specs; 8/8 guard) + nav items added/synced. Gates: Vitest 352 (18 new specs); Playwright
+  `phase-20e` 14 (responsive 360/768/1280, 200% zoom, keyboard/focus, axe 0 serious/critical light+dark);
+  modal/nav e2e 32 (no regression); vue-tsc clean; ESLint 0 err; build ✓; api:contract:check OK;
+  permission-types --check clean; backend platform-fee API 30. No Wallet/provider/settlement UI. Proof:
+  `docs/proof/phase-20e.md` (Increment 7). **NOT committed/pushed/PR'd.**
+- **Increment 8 (full local gate sweep + single completion commit) — COMPLETE + green (2026-07-13):** whole-phase
+  local acceptance run on PG16 / PHP 8.3.32 / Laravel 12.62.0. **Backend quality:** `composer validate` valid;
+  Pint 1266 files PASS; Larastan **L8** No errors (971). **Isolated fresh build:** disposable DB `servana_fresh_proof`
+  (never the dev DB), `migrate:fresh --seed` green, 96 migrations (8 Phase 20E), all 4 tables present, DB dropped.
+  **Backend serial** 1181 pass / 7 skip / 0 fail / 7396 assertions (578.78s); **parallel** 1181 / 7 skip / 0 fail /
+  7396 (4 procs, 338.53s). **Phase 20E targeted** 138 / 431. **Contract gates** (perm/route/idempotency/audit/arch/
+  no-direct-provider) 52 / 1121. **Catalogue:** §19.2 = **160**, §19.3 = **160**, legacy-active = **10** (plural
+  `platform_fees.*` retired). **Determinism:** OpenAPI/api.ts/permissions.ts SHA-256 identical across baseline + 2
+  regen runs, no git diff; `permission:types --check` up to date; `api:contract:check` OK — **196 paths / 235 ops**.
+  **Frontend:** ESLint 0 errors (138 pre-existing warnings, no Phase 20E file); vue-tsc clean; Vitest **352 / 82
+  files**; build ✓ (10.33s). **Playwright:** affected 77; full **324 / 0 fail** (Phase 20E 360/768/1280 + 200% zoom +
+  keyboard/focus + axe serious/critical = 0 light+dark). **Security:** composer audit no advisories; npm audit high
+  gate exit 0 (2 moderate dev-only `js-yaml`@`@redocly/openapi-core`, disclosed); gitleaks no leaks. **Docker:**
+  `servana-app:dev` + `servana-app:prod` + `servana-nginx:prod` all Built. **Scope purity** clean (47 modified + 97
+  untracked, all Phase 20E / 20C-reconciliation / integration seams; no Wallet/provider runtime). No gate failed on
+  first run; nothing disabled/loosened/suppressed. Proof: `docs/proof/phase-20e.md` (Increment 8).
+- **Next action:** product-owner-authorized Phase 20E **PR creation + CI/observe + review/governance + merge**
+  workflow (then reconcile to `verified_complete`). Increment 8 stops at the pushed branch — **no PR created, no
+  merge, branch not deleted, no next phase started**.
+- **Inherited (to close in 20E):** P17 finalize %-fee seam; P18B validation billability hook; P19 audit +
+  parity for 20E mutations; P20A config/MFA reuse; P20B `platform_fee_rollup` aggregation; P20C snapshot
+  reuse.
+- **Skipped (owner phases):** Wallet sync/registration/STK/PayBill/webhooks/apply/reconciliation →
+  **20D-W**; compensation → **20F**; salary/commission ledgers → **20G**; payouts/earnings → **20H**;
+  R&E → **21R-A/B**; notifications/reports → **21N**; personnel SMS → **21S**; search → **22**; release
+  hardening → **23**; perf → **24**; deploy → **25**.
+- **Next action:** complete Increment 1 docs (data dictionary + 3 state machines + migration manifest +
+  traceability 20E rows), then Increment 2 (migrations/enums/models/factories/constraints + schema tests).
+- **Residual risk:** partial-payment billability rule for fixed-at-finalization bases is a derived
+  decision (documented E7); to be validated by aggregation + validation tests in Increments 4–5.
 
 ## Phase 20A — Plan Catalogue, Prices, Entitlements, Billing Settings (verified_complete)
 

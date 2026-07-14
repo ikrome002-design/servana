@@ -42,8 +42,9 @@ invoice.view                          ·            ·            ·            
 invoice.void.request_or_execute_as_policy·            ·            ·            ✓           ·            ·            ·            ·
 period_lock.create                    ·            ·            ·            ✓           ·            ·            ·            ·
 period_lock.reopen                    ·            ·            ·            ✓           ·            ·            ·            ·
-platform_fees.dispute                 ·            ·            ·            ✓           ·            ·            ·            ·
-platform_fees.view                    ✓           ✓           ·            ·            ·            ·            ✓           ·
+platform_fee.dispute                  ✓           ·            ·            ✓           ·            ·            ·            ·
+platform_fee.dispute.review           ·            ·            ·            ✓           ·            ·            ·            ·
+platform_fee.view                     ✓           ✓           ·            ✓           ·            ·            ✓           ·
 receipt.reissue                       ·            ·            ·            ✓           ·            ·            ·            ·
 receipt.view                          ✓           ✓           ·            ✓           ✓           ✓           ✓           ·
 refund.approve                        ·            ·            ·            ·            ·            ·            ·            ·
@@ -76,6 +77,7 @@ platform.merchant.view                ·            ·            ·            
 platform.plan.manage                  ·            ·            ·            ·            ·            ·            ·            ✓
 platform.plan.view                    ·            ·            ·            ·            ·            ·            ·            ✓
 platform.plan_price.manage            ·            ·            ·            ·            ·            ·            ·            ✓
+platform.platform_fee.configure       ·            ·            ·            ·            ·            ·            ·            ✓
 platform.preferred_personnel_fee.manage·            ·            ·            ·            ·            ·            ·            ✓
 platform.promotion.manage             ·            ·            ·            ·            ·            ·            ·            ✓
 platform.registration_monitor.view    ·            ·            ·            ·            ·            ·            ·            ✓

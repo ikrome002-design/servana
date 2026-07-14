@@ -48,6 +48,12 @@ super_administrator:
     route: platform.billing-settings
     permission: platform.preferred_personnel_fee.manage
     phase: Phase 20A
+  - key: platform.platform-fees
+    label: Platform fees
+    availability: live
+    route: platform.billing-settings
+    permission: platform.platform_fee.configure
+    phase: Phase 20E
   - key: platform.wallet-config
     label: Wallet configuration
     availability: planned
@@ -120,6 +126,12 @@ merchant_administrator:
     route: merchant.invoices
     permission: merchant.subscription.invoice.view
     phase: Phase 20B
+  - key: merchant.platform-fees
+    label: Platform fees
+    availability: live
+    route: merchant.platform-fees
+    permission: platform_fee.view
+    phase: Phase 20E
   - key: merchant.reports
     label: Reports
     availability: planned
@@ -198,6 +210,12 @@ merchant_branch:
     route: branch.cash-up
     permission: branch.cash_up.submit
     phase: Phase 18B
+  - key: branch.platform-fees
+    label: Platform fees
+    availability: live
+    route: branch.platform-fees
+    permission: platform_fee.view
+    phase: Phase 20E
   - key: branch.reports
     label: Reports
     availability: planned
@@ -348,6 +366,12 @@ merchant_finance:
     route: finance.audit
     permission: finance.audit.view
     phase: Phase 19
+  - key: finance.platform-fees
+    label: Platform fees
+    availability: live
+    route: finance.platform-fees
+    permission: platform_fee.view
+    phase: Phase 20E
 merchant_front_office:
   - key: front-office.overview
     label: Overview
@@ -492,3 +516,9 @@ merchant_audit:
     route: audit.exports
     permission: audit.export
     phase: Phase 19
+  - key: audit.platform-fees
+    label: Platform fees
+    availability: live
+    route: audit.platform-fees
+    permission: platform_fee.view
+    phase: Phase 20E

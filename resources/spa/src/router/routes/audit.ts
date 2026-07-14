@@ -66,6 +66,14 @@ export const auditRoutes: RouteRecordRaw[] = [
         name: 'audit.export-detail',
         component: () => import('@/pages/audit/AuditExportDetail.vue'),
       },
+      {
+        // Phase 20E — Audit masked, branch-scoped, READ-ONLY platform-fee visibility (`platform_fee.view`;
+        // Audit holds no dispute-create/review permission, so the UI shows no mutation controls).
+        path: 'platform-fees',
+        name: 'audit.platform-fees',
+        component: () => import('@/pages/billing/PlatformFees.vue'),
+        meta: { roleIdentity: 'merchant_audit' },
+      },
     ],
   },
 ];

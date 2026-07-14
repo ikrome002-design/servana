@@ -102,6 +102,10 @@ final class RouteClassification
         'platform.plan-prices.cancel' => 'No request body; {planPrice} binding + platform.plan_price.manage + SubscriptionPlanPricePolicy + RequireFreshMfa(billing_configuration); CancelFuturePlanPrice withdraws a not-yet-effective price under lock (effective/historical rejected).',
         'platform.preferred-personnel-fee-rules.approve' => 'No request body; {preferredPersonnelFeeRule} binding + platform.preferred_personnel_fee.manage + PreferredPersonnelFeeRulePolicy + RequireFreshMfa(billing_configuration); ApprovePreferredPersonnelFeeRule activates draft/scheduled under an advisory lock (DB EXCLUDE authoritative).',
         'platform.preferred-personnel-fee-rules.cancel' => 'No request body; {preferredPersonnelFeeRule} binding + platform.preferred_personnel_fee.manage + PreferredPersonnelFeeRulePolicy + RequireFreshMfa(billing_configuration); CancelPreferredPersonnelFeeRule transitions draft/scheduled → cancelled under lock.',
+        // Phase 20E — bodiless dispute review handoff (the dispute is the ULID route param; open →
+        // under_review assigns the reviewer, no body). resolve/reject DO carry a note (Resolve/Reject
+        // PlatformFeeDisputeRequest) and are therefore NOT exempt.
+        'platform-fee-disputes.review' => 'No request body; {platformFeeDispute} binding + platform_fee.dispute.review + PlatformFeeDisputePolicy; StartPlatformFeeDisputeReview transitions open → under_review (assigns the reviewer; no money change).',
     ];
 
     public static function of(Route $route): ?RouteClass

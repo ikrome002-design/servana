@@ -6,6 +6,7 @@ namespace App\Domain\Payments\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Billing\Services\RecordOriginalPlatformFeeLiability;
 use App\Domain\Compensation\Services\CommissionHandoffWriter;
 use App\Domain\FinanceOps\Services\FinancialPeriodGuard;
 use App\Domain\Invoicing\Enums\InvoiceStatus;
@@ -51,6 +52,7 @@ final class ValidatePaymentRecordingGroup
         private readonly InvoiceStateMachine $invoiceMachine,
         private readonly ReceiptIssuer $receipts,
         private readonly CommissionHandoffWriter $commission,
+        private readonly RecordOriginalPlatformFeeLiability $platformFee,
         private readonly AuditRecorder $audit,
     ) {}
 
@@ -140,6 +142,34 @@ final class ValidatePaymentRecordingGroup
             }
             $invoice->validated_paid_minor = $newValidatedPaid;
             $invoice->save();
+
+            // 4b) Phase 20E — create the original earned/pending platform-fee liability for the amount
+            // this validation made billable (invoice-level; idempotent per validation event; proportional
+            // release against the finalization snapshot). Inert for fixed-only invoices. Any failure here
+            // rolls back the WHOLE validation (no event, receipt, projection, ledger, or success audit).
+            $feeEntry = $this->platformFee->record($invoice, $event, $now);
+            if ($feeEntry !== null) {
+                $this->audit->record(
+                    AuditEvent::PlatformFeeOriginalRecorded,
+                    $checker,
+                    $invoice->merchant_id,
+                    $invoice->branch_id,
+                    $feeEntry,
+                    [
+                        'platform_fee_entry_id' => $feeEntry->ulid,
+                        'invoice_id' => $invoice->ulid,
+                        'payment_validation_event_id' => $event->ulid,
+                        'fee_basis_type' => $feeEntry->fee_basis_type->value,
+                        'fee_basis_amount_minor' => $feeEntry->fee_basis_amount_minor,
+                        'percentage_rate_snapshot' => $feeEntry->percentage_rate_snapshot,
+                        'service_fee_tier_snapshot' => $feeEntry->service_fee_tier_snapshot->value,
+                        'gross_platform_fee_minor' => $feeEntry->gross_platform_fee_minor,
+                        'client_shifted_amount_minor' => $feeEntry->client_shifted_amount_minor,
+                        'merchant_liability_minor' => $feeEntry->merchant_liability_minor,
+                        'currency' => $feeEntry->currency,
+                    ],
+                );
+            }
 
             // 5) One gap-free original receipt (durable; PDF generated after commit).
             $receipt = $this->receipts->issueOriginal($invoice, $event, $components);

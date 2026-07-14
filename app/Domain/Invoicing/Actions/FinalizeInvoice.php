@@ -6,6 +6,7 @@ namespace App\Domain\Invoicing\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Billing\Services\RecordPlatformFeeAtFinalization;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Catalogue\Models\Service;
 use App\Domain\FinanceOps\Services\FinancialPeriodGuard;
@@ -22,6 +23,7 @@ use App\Domain\Scheduling\Enums\ServiceSessionStatus;
 use App\Domain\Scheduling\Models\ServiceSession;
 use App\Enums\Currency;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -49,6 +51,7 @@ final class FinalizeInvoice
         private readonly PreferredPersonnelFeeResolver $preferredFee,
         private readonly InvoiceNumberAllocator $allocator,
         private readonly FinancialPeriodGuard $periodGuard,
+        private readonly RecordPlatformFeeAtFinalization $platformFee,
     ) {}
 
     public function handle(Invoice $invoice, User $actor): Invoice
@@ -98,14 +101,22 @@ final class FinalizeInvoice
 
             $computed = $this->totals->compute($lineTotals, $locked->tax_minor, $locked->discount_minor, $currency);
 
+            // Phase 20E — resolve/compute/snapshot the percentage platform fee BEFORE the number is
+            // allocated, so a fail-closed configuration/tier error consumes no invoice number. A true
+            // no-op in fixed-only mode (inactive result → all snapshots null, zero client-shifted delta).
+            $now = CarbonImmutable::now();
+            $feeResult = $this->platformFee->apply($locked, $items, $computed, $now);
+
             /** @var MerchantBranch $branch */
             $branch = MerchantBranch::query()->whereKey($locked->branch_id)->firstOrFail();
             $number = $this->allocator->allocate($locked->merchant_id, $branch->code);
 
             $locked->subtotal_minor = $computed->subtotalMinor;
             $locked->preferred_personnel_fee_snapshot_minor = $computed->preferredFeeTotalMinor;
-            $locked->total_minor = $computed->totalMinor;
-            // Gate E — no percentage-fee configuration exists until Phase 20E.
+            // The tier's client-shifted amount (0 unless shared/business_centric) is added to the total.
+            $locked->total_minor = $computed->totalMinor + $feeResult->clientShiftedDeltaMinor();
+            // Structured Phase 20E snapshot (null in fixed-only mode). The legacy JSON seam stays null.
+            $locked->forceFill($feeResult->headerSnapshot());
             $locked->percentage_fee_config_snapshot = null;
             $locked->invoice_number = $number;
             $locked->status = InvoiceStatus::Issued;
@@ -124,7 +135,7 @@ final class FinalizeInvoice
                     'previous_state' => InvoiceStatus::Draft->value,
                     'new_state' => InvoiceStatus::Issued->value,
                     'item_count' => $locked->items->count(),
-                    'percentage_fee_config_snapshot' => null,
+                    ...$feeResult->auditContext(),
                 ]),
             );
 

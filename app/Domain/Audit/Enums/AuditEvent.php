@@ -316,6 +316,27 @@ enum AuditEvent: string
     case FreePeriodOfferExpired = 'free_period_offer.expired';
     case FreePeriodOfferCancelled = 'free_period_offer.cancelled';
 
+    // Phase 20E — percentage platform-fee engine (Plan §51). Finance domain.
+    case PlatformFeeOriginalRecorded = 'platform_fee.original_recorded';
+    // Phase 20E Increment 5 — aggregation into subscription invoices; additive reversal/adjustment
+    // corrections; the canonical platform-fee dispute workflow. Finance domain; safe public ULIDs +
+    // integer minor amounts only (never internal ids, raw references, private evidence, or headers).
+    case PlatformFeeAggregated = 'platform_fee.aggregated';
+    case PlatformFeeInvoiced = 'platform_fee.invoiced';
+    case PlatformFeeReversed = 'platform_fee.reversed';
+    case PlatformFeeAdjusted = 'platform_fee.adjusted';
+    case PlatformFeeDisputeCreated = 'platform_fee.dispute_created';
+    case PlatformFeeDisputeReviewStarted = 'platform_fee.dispute_review_started';
+    case PlatformFeeDisputeResolved = 'platform_fee.dispute_resolved';
+    case PlatformFeeDisputeRejected = 'platform_fee.dispute_rejected';
+    // Phase 20E Increment 6 — percentage platform-fee CONFIGURATION governance (Super-Admin,
+    // platform scope, high severity). Redacted public-ULID context; never rates as PII.
+    case PlatformFeeConfigurationCreated = 'platform_fee.configuration_created';
+    case PlatformFeeConfigurationUpdated = 'platform_fee.configuration_updated';
+    case PlatformFeeConfigurationApproved = 'platform_fee.configuration_approved';
+    case PlatformFeeConfigurationSuperseded = 'platform_fee.configuration_superseded';
+    case PlatformFeeConfigurationCancelled = 'platform_fee.configuration_cancelled';
+
     /**
      * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
      *
@@ -370,7 +391,16 @@ enum AuditEvent: string
             self::FinanceExportFailed,
             self::FinanceExportDownloaded,
             self::FinanceExportExpired,
-            self::FinanceExportRevoked => AuditDomain::Finance,
+            self::FinanceExportRevoked,
+            self::PlatformFeeOriginalRecorded,
+            self::PlatformFeeAggregated,
+            self::PlatformFeeInvoiced,
+            self::PlatformFeeReversed,
+            self::PlatformFeeAdjusted,
+            self::PlatformFeeDisputeCreated,
+            self::PlatformFeeDisputeReviewStarted,
+            self::PlatformFeeDisputeResolved,
+            self::PlatformFeeDisputeRejected => AuditDomain::Finance,
 
             // Compensation events arrive with Phases 20F–20H; none exist yet.
 
@@ -497,7 +527,13 @@ enum AuditEvent: string
             self::MfaEnrollmentConfirmed => AuditSeverity::Notice,
 
             self::SubscriptionInvoicePdfGenerated,
-            self::BillingEscalationReminder => AuditSeverity::Info,
+            self::BillingEscalationReminder,
+            self::PlatformFeeOriginalRecorded,
+            // Increment 5 — aggregation and issuance of the rollup are routine billing steps; the
+            // dispute review handoff mirrors finance_dispute.review_started.
+            self::PlatformFeeAggregated,
+            self::PlatformFeeInvoiced,
+            self::PlatformFeeDisputeReviewStarted => AuditSeverity::Info,
 
             self::LoginLinkDenied,
             self::LoginLinkFailed,
@@ -537,6 +573,14 @@ enum AuditEvent: string
             self::SubscriptionInvoiceOverdue,
             self::BillingEscalationGraceEntered,
             self::BillingEscalationOverdue,
+            // Increment 5 — additive money corrections and dispute lifecycle. A money-changing dispute
+            // resolution records the linked platform_fee_adjustment ULID in context; the base severity
+            // stays warning (the original ledger fact is never rewritten).
+            self::PlatformFeeReversed,
+            self::PlatformFeeAdjusted,
+            self::PlatformFeeDisputeCreated,
+            self::PlatformFeeDisputeResolved,
+            self::PlatformFeeDisputeRejected,
             self::MfaStepUpDenied => AuditSeverity::Warning,
 
             self::FileScanInfected,
@@ -594,6 +638,12 @@ enum AuditEvent: string
             self::FreePeriodOfferResumed,
             self::FreePeriodOfferExpired,
             self::FreePeriodOfferCancelled,
+            // Phase 20E — platform-fee configuration governance (Super-Admin platform mutations).
+            self::PlatformFeeConfigurationCreated,
+            self::PlatformFeeConfigurationUpdated,
+            self::PlatformFeeConfigurationApproved,
+            self::PlatformFeeConfigurationSuperseded,
+            self::PlatformFeeConfigurationCancelled,
             self::UnauthorizedAccess => AuditSeverity::High,
 
             self::MerchantDeactivated => AuditSeverity::Critical,

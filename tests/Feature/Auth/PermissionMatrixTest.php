@@ -48,7 +48,9 @@ function expectedMatrix(): array
             'receipt.view',
             // Phase 18B: routine period locking is Finance-owned (ADR-0007); the Merchant
             // Administrator holds ONLY exceptional-reopen approval (was legacy `periods.lock`).
-            'merchant.period_reopen.approve_exception', 'commissions.view', 'platform_fees.view',
+            'merchant.period_reopen.approve_exception', 'commissions.view',
+            // Phase 20E: canonical merchant-wide platform-fee read + dispute creation.
+            'platform_fee.view', 'platform_fee.dispute',
             // Phase 19: `audit.view_full` RETIRED — Merchant Admin holds NO direct raw
             // audit-log key (canonical §19.3; oversight via reports/dashboards).
             'reports.view',
@@ -60,7 +62,8 @@ function expectedMatrix(): array
             'day.open_close', 'branch.cash_up.submit',
             // Phase 17: NO invoice key — Branch Manager must not create invoices
             // (Plan §10.2/§19.3); legacy invoices.create/view grants removed.
-            'receipt.view', 'commissions.view', 'platform_fees.view',
+            // Phase 20E: branch-attributable masked platform-fee read only.
+            'receipt.view', 'commissions.view', 'platform_fee.view',
             // Phase 19: `audit.view_full` RETIRED — no direct raw audit-log key.
             'reports.view',
             // Phase 20A: read-only effective preferred-personnel fee rule for the branch.
@@ -84,7 +87,8 @@ function expectedMatrix(): array
             'cash_up.view', 'cash_up.approve', 'cash_up.reject', 'cash_up.request_correction',
             'period_lock.create', 'period_lock.reopen',
             'finance_export.create', 'finance_export.download',
-            'platform_fees.dispute',
+            // Phase 20E: settled/reconciliation read + dispute creation + dispute review/resolve/reject.
+            'platform_fee.view', 'platform_fee.dispute', 'platform_fee.dispute.review',
             // Phase 19: canonical Finance audit surface (REPLACES legacy `audit.view_full`).
             'reports.view', 'finance.audit.view',
         ],
@@ -110,7 +114,7 @@ function expectedMatrix(): array
         'audit' => [
             // Phase 17: no invoice key (Audit reads finance activity via the finance-domain audit view).
             'receipt.view',
-            'commissions.view', 'platform_fees.view', 'reports.view',
+            'commissions.view', 'platform_fee.view', 'reports.view',
             // Phase 19 — canonical, domain-segmented, branch-scoped, masked Audit reads
             // (REPLACE the retired catch-all `audit.view_full`) + the flagged-event review
             // workflow (review metadata only; Audit stays read-only over source records).
@@ -133,6 +137,8 @@ function expectedMatrix(): array
             'platform.plan_price.manage', 'platform.preferred_personnel_fee.manage',
             // Phase 20C — promotions & free-period offers (Plan §53).
             'platform.promotion.manage', 'platform.free_period_offer.manage',
+            // Phase 20E — percentage platform-fee configuration governance (Plan §51/§52).
+            'platform.platform_fee.configure',
         ],
     ];
 }

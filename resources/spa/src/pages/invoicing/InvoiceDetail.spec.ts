@@ -75,6 +75,28 @@ describe('InvoiceDetail.vue', () => {
     expect(wrapper.find('[data-testid="item-preferred-fee"]').text()).toContain('Preferred-personnel fee');
   });
 
+  it('shows the client-facing platform-fee line only when a shifted amount is present', async () => {
+    // Shared / business-centric tiers shift a portion → the server returns a positive money object.
+    get.mockResolvedValueOnce({
+      data: { data: invoiceWith('issued', {}, { platform_fee_client_shifted: money(6250) }) },
+    });
+    const wrapper = mount(InvoiceDetail);
+    await flushPromises();
+    const line = wrapper.find('[data-testid="invoice-platform-fee-line"]');
+    expect(line.exists()).toBe(true);
+    expect(line.text()).toContain('Platform fee');
+    expect(line.text()).toContain('62.50');
+  });
+
+  it('shows no platform-fee line for a customer-centric / fixed-only invoice (server null)', async () => {
+    get.mockResolvedValueOnce({
+      data: { data: invoiceWith('issued', {}, { platform_fee_client_shifted: null }) },
+    });
+    const wrapper = mount(InvoiceDetail);
+    await flushPromises();
+    expect(wrapper.find('[data-testid="invoice-platform-fee-line"]').exists()).toBe(false);
+  });
+
   it('marks a finalized invoice as a read-only snapshot with its number', async () => {
     get.mockResolvedValueOnce({ data: { data: invoiceWith('issued', {}) } });
     const wrapper = mount(InvoiceDetail);

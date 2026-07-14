@@ -6,12 +6,16 @@ namespace App\Domain\Invoicing\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Billing\Enums\PlatformFeeEntryType;
+use App\Domain\Billing\Models\PlatformFeeLedgerEntry;
+use App\Domain\Billing\Services\RecordPlatformFeeReversal;
 use App\Domain\FinanceOps\Services\FinancialPeriodGuard;
 use App\Domain\Invoicing\Concerns\BuildsInvoiceAudit;
 use App\Domain\Invoicing\Enums\InvoiceStatus;
 use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Invoicing\Services\InvoiceStateMachine;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -31,6 +35,7 @@ final class ExecuteInvoiceVoid
         private readonly AuditRecorder $audit,
         private readonly InvoiceStateMachine $machine,
         private readonly FinancialPeriodGuard $periodGuard,
+        private readonly RecordPlatformFeeReversal $platformFeeReversal,
     ) {}
 
     public function handle(Invoice $invoice, User $actor): Invoice
@@ -66,7 +71,37 @@ final class ExecuteInvoiceVoid
                 ]),
             );
 
+            // Phase 20E — a void fully reverses every earned platform-fee liability on this invoice
+            // (additive; the original earned amount is never rewritten). Inert when no percentage fee
+            // was ever earned. Any failure here rolls back the whole void (no success audit).
+            $this->reverseEarnedPlatformFees($locked, $actor);
+
             return $locked;
         });
+    }
+
+    /** Reverse (in full) every earned platform-fee ledger entry for the voided invoice. */
+    private function reverseEarnedPlatformFees(Invoice $invoice, User $actor): void
+    {
+        $businessDate = CarbonImmutable::now('Africa/Nairobi');
+
+        $entries = PlatformFeeLedgerEntry::query()
+            ->where('merchant_id', $invoice->merchant_id)
+            ->where('source_invoice_id', $invoice->id)
+            ->where('entry_type', PlatformFeeEntryType::Earned->value)
+            ->orderBy('id')
+            ->lockForUpdate()
+            ->get();
+
+        foreach ($entries as $entry) {
+            $this->platformFeeReversal->record(
+                $entry,
+                (string) ($invoice->void_reason ?? 'Invoice voided'),
+                $invoice->ulid,
+                'reversal:invoice_void:'.$invoice->id.':'.$entry->id,
+                $actor,
+                $businessDate,
+            );
+        }
     }
 }

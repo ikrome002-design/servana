@@ -62,6 +62,10 @@ enum StepUpAction: string
     // from the test-harness businessActions() (like AuditExportCreate) because it has live routes.
     case MerchantGovernance = 'merchant_governance';
 
+    // Phase 20E — Platform-fee dispute resolution/rejection (Finance; fresh step-up on resolve/reject).
+    // A real, implemented route; excluded from businessActions() like the other live-route actions.
+    case PlatformFeeDisputeResolution = 'platform_fee_dispute_resolution';
+
     /** The phase that owns the real route this classification protects. */
     public function owningPhase(): string
     {
@@ -80,6 +84,7 @@ enum StepUpAction: string
             self::FinanceExportCreate => 'Phase 18B (implemented)',
             self::AuditExportCreate => 'Phase 19 (implemented)',
             self::MerchantGovernance => 'Phase 20B (implemented)',
+            self::PlatformFeeDisputeResolution => 'Phase 20E (implemented)',
         };
     }
 

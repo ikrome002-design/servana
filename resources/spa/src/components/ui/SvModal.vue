@@ -69,7 +69,7 @@ onMounted(() => {
         :aria-labelledby="'modal-title'"
         :aria-describedby="description ? 'modal-desc' : undefined"
         tabindex="-1"
-        class="relative z-10 w-full max-w-lg rounded-card bg-surface p-6 shadow-xl focus:outline-none"
+        class="relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-card bg-surface p-6 shadow-xl focus:outline-none"
       >
         <h2
           id="modal-title"

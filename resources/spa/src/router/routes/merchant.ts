@@ -54,6 +54,14 @@ export const merchantRoutes: RouteRecordRaw[] = [
         name: 'merchant.invoices',
         component: () => import('@/pages/merchant/SubscriptionInvoices.vue'),
       },
+      {
+        // Phase 20E — merchant-wide masked platform-fee visibility + dispute creation. Backend
+        // authoritative (server-side merchant scope + `platform_fee.view`/`platform_fee.dispute`).
+        path: 'platform-fees',
+        name: 'merchant.platform-fees',
+        component: () => import('@/pages/billing/PlatformFees.vue'),
+        meta: { roleIdentity: 'merchant_administrator' },
+      },
     ],
   },
 ];

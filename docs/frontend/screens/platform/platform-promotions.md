@@ -1,89 +1,24 @@
-# Screen specification — Promotions / free periods (platform)
+# Screen specification — Promotions / free periods
 
-> Plan §27.1 · §53; Phase 20C. Owning-phase authored spec (not the generator stub). Status:
-> **implemented** · Owning phase: **Phase 20C**. Source of truth for this screen; the inventory entry
-> `platform-promotions` points here.
-
-## Identity
+> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 20C**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `platform-promotions`
-- **Route name and URL:** `platform.promotions` → `/platform/promotions`
-- **Layout:** `PlatformAdminLayout` (Super Administrator header shell; nested under `/platform`)
-- **Component:** `resources/spa/src/pages/platform/Promotions.vue` (self-contained; two sections).
-- **Allowed roles:** `super_administrator` only.
-- **Platform scope:** platform-only. Routes use `ResolvePlatformContext`; **no merchant or branch
-  context is established**. The offer records are platform-owned (no `merchant_id`/`branch_id`); a target
-  row may reference a merchant, but the offer itself is platform configuration.
-
-## Permissions (frontend visibility only — API is authoritative)
-
-One coherent screen with two accessible sections (tabs); each section is **absent** (not disabled) when
-its manage permission is not resolved. Every mutation additionally requires MFA + a fresh step-up, and a
-mandatory reason, enforced by the server.
-
-| Section | Manage permission | MFA | Fresh step-up | Audit severity |
-|---|---|---|---|---|
-| Promotional discounts | `platform.promotion.manage` | yes | yes (`billing_configuration`) | high |
-| Free-period offers | `platform.free_period_offer.manage` | yes | yes (`billing_configuration`) | high |
-
-No merchant role receives either permission. When neither is present the page renders a **"No access"**
-empty state.
-
-## Behaviour
-
-### Promotional discounts
-
-- **List + filter** by status (`draft`/`scheduled`/`active`/`paused`/`expired`/`cancelled`).
-- **Draft create/edit form:** name; type (`percentage` shows a basis-points value, `fixed_amount` shows
-  a KES minor-unit value + currency); target scope (`all_new_merchants`/`selected_merchants`/
-  `selected_plans`/`billing_mode`); a scope-driven target builder (merchant/plan ULIDs, or a
-  billing-mode select); effective window (`effective_from` required, `effective_to` optional). Percentage
-  values are basis points (≤10000 = 100%); money is integer minor units, never float.
-- **Lifecycle actions by status:** `approve`/`cancel` (draft, scheduled), `pause` (active), `resume`
-  (paused). Each opens a **reason modal** (mandatory reason; MFA/step-up + `invalid_state_transition`
-  errors surfaced from the server). Approved terms and targets are immutable — a change requires a new
-  record.
-
-### Free-period offers
-
-- Same list/create/lifecycle shape with `free_period_days` (1–365) instead of type/value/currency.
-- **Approval schedules the offer** (never straight to active); activation is scheduler-driven.
-
-### States
-
-Loading, empty (per section), validation errors, server-conflict/step-up errors (surfaced in the reason
-modal), and a no-access state. Controls the user cannot perform are absent, never disabled.
-
-## Data contracts (generated OpenAPI/TS)
-
-- `GET/POST /api/v1/platform/promotional-discounts`, `GET/PATCH /{promotionalDiscount}`,
-  `POST /{promotionalDiscount}/{approve|pause|resume|cancel}` → `PromotionalDiscountResource`.
-- `GET/POST /api/v1/platform/free-period-offers`, `GET/PATCH /{freePeriodOffer}`,
-  `POST /{freePeriodOffer}/{approve|pause|resume|cancel}` → `FreePeriodOfferResource`.
-- Resources expose ULIDs only (targets by their own ULID + referenced merchant/plan ULID or billing-mode
-  value); never internal ids or `created_by`/`approved_by`.
-
-## Merchant read-only presentation (elsewhere)
-
-Merchant subscription/invoice surfaces show the **applied** snapshot read-only: the subscription
-dashboard exposes `trial_days_snapshot` + `free_period_offer_applied`; a subscription invoice exposes
-`promotion_applied` + snapshotted type/value/currency alongside subtotal/discount/total. Merchant users
-get no promotion-management control.
-
-## Accessibility & responsive (release gates)
-
-Labelled inputs, visible focus rings, ≥44px targets, `role="tablist"`/`role="tab"` sections, dialog focus
-management + restoration (Escape closes), AA contrast in light + dark, axe serious/critical = 0, no
-page-level horizontal overflow at 360/768/1280, usable at 200% zoom.
-
-## Absolute exclusions
-
-No Wallet/provider/payment/STK/PayBill control; no percentage-fee ledger; no merchant creation, first-
-admin creation, or impersonation; no generic status route; no destructive edits to issued invoices or
-existing trials.
-
-## Unit / component / e2e tests
-
-`resources/spa/src/stores/promotionStore.spec.ts`, `freePeriodOfferStore.spec.ts`,
-`resources/spa/src/pages/platform/Promotions.spec.ts`, and `tests/e2e/phase-20c.spec.ts` (create flows,
-target inputs by scope, reason modal, status rendering, role gate, responsive/zoom/keyboard/dark/axe).
+- **Route name and URL:** `platform.promotions`
+- **Layout:** `PlatformAdminLayout`
+- **Allowed roles:** `super_administrator`
+- **Required permissions:** `platform.promotion.manage`, `platform.free_period_offer.manage` (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
+- **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
+- **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
+- **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
+- **Fields and displayed data:** Consolidated Super-Administrator surface for promotional discounts and free-period offers: draft/approve/pause/resume/cancel with mandatory reason, MFA + fresh step-up (server-enforced), immutable approved terms. Backend authoritative; controls are UX-only permission gates.
+- **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
+- **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
+- **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.
+- **No-permission / no-branch states:** permissioned controls hidden via `PermissionGate`; branch-scoped roles show a no-branch boundary.
+- **Locked / read-only / suspended-billing states:** read-only foundation; suspended/locked handled by the owning phase.
+- **Mobile / tablet / desktop transformation:** responsive at 360 / 768 / 1280; merchant roles use sidebar (desktop) + drawer (mobile); Super Administrator uses header nav collapsing to a disclosure.
+- **Keyboard and screen-reader behavior:** skip link, landmarks, visible focus, 44px targets, aria-current on the active nav item, drawer focus return.
+- **Dark-mode requirements:** light + dark via design tokens; AA contrast (ADR-009: no white text on Savannah-Orange CTA).
+- **Audit events triggered:** none new in Phase 11.
+- **Unit / component / e2e tests:** see `resources/spa/src/**/*.spec.ts` and `tests/e2e/role-*.spec.ts` (navigation parity, role entry routes, get-started persistence, landing content, layout placement, responsive/dark/axe).

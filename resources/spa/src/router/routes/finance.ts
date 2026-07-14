@@ -106,6 +106,15 @@ export const financeRoutes: RouteRecordRaw[] = [
         name: 'finance.audit',
         component: () => import('@/pages/finance/FinanceAuditView.vue'),
       },
+      {
+        // Phase 20E — Finance platform-fee reconciliation + dispute review/resolve/reject worklist.
+        // Backend authoritative (`platform_fee.view` + `platform_fee.dispute.review`; fresh step-up +
+        // period-lock + maker/checker on resolve/reject).
+        path: 'platform-fees',
+        name: 'finance.platform-fees',
+        component: () => import('@/pages/billing/PlatformFees.vue'),
+        meta: { roleIdentity: 'merchant_finance' },
+      },
     ],
   },
 ];

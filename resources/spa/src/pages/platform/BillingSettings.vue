@@ -5,6 +5,7 @@ import BillingSettingsSection from '@/pages/platform/billing/BillingSettingsSect
 import GeneralSettingsSection from '@/pages/platform/billing/GeneralSettingsSection.vue';
 import PlanEntitlementsSection from '@/pages/platform/billing/PlanEntitlementsSection.vue';
 import PlanPricesSection from '@/pages/platform/billing/PlanPricesSection.vue';
+import PlatformFeeConfigSection from '@/pages/platform/billing/PlatformFeeConfigSection.vue';
 import PreferredFeeRulesSection from '@/pages/platform/billing/PreferredFeeRulesSection.vue';
 import SubscriptionPlansSection from '@/pages/platform/billing/SubscriptionPlansSection.vue';
 import type { SubscriptionPlan } from '@/stores/subscriptionPlanStore';
@@ -29,6 +30,7 @@ const allTabs: TabDef[] = [
   { key: 'prices', label: 'Prices', permission: 'platform.plan.view' },
   { key: 'entitlements', label: 'Entitlements', permission: 'platform.plan.view' },
   { key: 'fees', label: 'Preferred-personnel fee', permission: 'platform.preferred_personnel_fee.manage' },
+  { key: 'platform-fees', label: 'Platform fees', permission: 'platform.platform_fee.configure' },
 ];
 
 // Only tabs the user can view are rendered — a denied control is absent, never disabled.
@@ -154,6 +156,7 @@ function onSelectPlan(plan: SubscriptionPlan): void {
           :plan="selectedPlan"
         />
         <PreferredFeeRulesSection v-else-if="tab.key === 'fees' && currentKey === 'fees'" />
+        <PlatformFeeConfigSection v-else-if="tab.key === 'platform-fees' && currentKey === 'platform-fees'" />
       </div>
     </template>
   </div>

@@ -43,7 +43,7 @@ it('covers every canonical §19.2 key with a populated YAML row', function (): v
 
     $missing = array_values(array_diff($canonical, $yamlKeys));
 
-    expect($canonical)->toHaveCount(156);
+    expect($canonical)->toHaveCount(160);
     expect($missing)->toBe([], 'canonical keys missing from the YAML: '.implode(', ', $missing));
 });
 

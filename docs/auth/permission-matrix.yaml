@@ -3071,6 +3071,31 @@ keys:
       - PermissionMatrix/platform.plan_price.manage_allows
     negative_tests:
       - PermissionMatrix/platform.plan_price.manage_denies
+  platform.platform_fee.configure:
+    key: platform.platform_fee.configure
+    description: Manage percentage platform-fee configurations (create/update-draft/approve/supersede/cancel; Phase 20E). Approved monetary terms are immutable — a change is a supersede, never an in-place edit.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: non_overridable
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: platform_fee.configuration_approved; platform_fee.configuration_cancelled; platform_fee.configuration_created; platform_fee.configuration_superseded; platform_fee.configuration_updated
+    audit_severity: high
+    backend_policy_or_service: PlatformFeeConfigurationPolicy + Create/Update/Approve/Supersede/Cancel PlatformFeeConfiguration
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities:
+      - "configuration approver should differ from its creator"
+    positive_tests:
+      - PermissionMatrix/platform.platform_fee.configure_allows
+    negative_tests:
+      - PermissionMatrix/platform.platform_fee.configure_denies
   platform.preferred_personnel_fee.manage:
     key: platform.preferred_personnel_fee.manage
     description: Svc ManagePreferredPersonnelFeeRule (fixed+percentage).
@@ -3191,11 +3216,11 @@ keys:
       - PermissionMatrix/platform.settings.view_allows
     negative_tests:
       - PermissionMatrix/platform.settings.view_denies
-  platform_fees.dispute:
-    key: platform_fees.dispute
-    description: Dispute a Citrus platform fee.
+  platform_fee.dispute:
+    key: platform_fee.dispute
+    description: Raise a dispute against a Citrus percentage platform fee (Phase 20E; reconciled from platform_fees.dispute).
     implementation_status: active
-    owning_phase: Phase 20B
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -3204,22 +3229,48 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: none
+    audit_event: platform_fee.dispute_created
     audit_severity: warn
-    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    backend_policy_or_service: PlatformFeeDisputePolicy@create + CreatePlatformFeeDispute
     frontend_ux_usage: visibility_only
     default_roles:
+      - merchant_admin
       - finance
     maker_checker_incompatibilities: []
     positive_tests:
-      - PermissionMatrix/platform_fees.dispute_allows
+      - PermissionMatrix/platform_fee.dispute_allows
     negative_tests:
-      - PermissionMatrix/platform_fees.dispute_denies
-  platform_fees.view:
-    key: platform_fees.view
-    description: View Citrus platform fees (scoped).
+      - PermissionMatrix/platform_fee.dispute_denies
+  platform_fee.dispute.review:
+    key: platform_fee.dispute.review
+    description: Review, resolve, or reject a platform-fee dispute (Phase 20E; Finance; fresh step-up on resolve/reject; a money change creates an additive adjustment, never a ledger edit).
     implementation_status: active
-    owning_phase: Phase 20B
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: merchant
+    billing_read_only_behavior: block
+    period_lock_behavior: enforced
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: platform_fee.dispute_rejected; platform_fee.dispute_resolved; platform_fee.dispute_review_started
+    audit_severity: warn
+    backend_policy_or_service: PlatformFeeDisputePolicy@review + Start/Resolve/Reject PlatformFeeDispute
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - finance
+    maker_checker_incompatibilities:
+      - "dispute creator may not resolve/reject their own dispute"
+    positive_tests:
+      - PermissionMatrix/platform_fee.dispute.review_allows
+    negative_tests:
+      - PermissionMatrix/platform_fee.dispute.review_denies
+  platform_fee.view:
+    key: platform_fee.view
+    description: View Citrus percentage platform fees (scoped, masked; Phase 20E; reconciled from platform_fees.view). Server-side scope is merchant-wide (Merchant Admin/Finance) or branch-attributable (Branch Manager/Audit).
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: grantable
     scope: merchant
@@ -3230,17 +3281,18 @@ keys:
     step_up_required: false
     audit_event: none
     audit_severity: info
-    backend_policy_or_service: legacy runtime key pending §19 reconciliation
+    backend_policy_or_service: PlatformFeeLedgerEntryPolicy (server-side role scope)
     frontend_ux_usage: visibility_only
     default_roles:
       - merchant_admin
       - branch_manager
+      - finance
       - audit
     maker_checker_incompatibilities: []
     positive_tests:
-      - PermissionMatrix/platform_fees.view_allows
+      - PermissionMatrix/platform_fee.view_allows
     negative_tests:
-      - PermissionMatrix/platform_fees.view_denies
+      - PermissionMatrix/platform_fee.view_denies
   preferred_personnel.select:
     key: preferred_personnel.select
     description: "Record a preferred-personnel request on a queue entry."
