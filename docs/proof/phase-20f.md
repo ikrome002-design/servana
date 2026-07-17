@@ -1625,3 +1625,23 @@ The Phase 18B `paid_at` / `finalized_at` corrections are test-helper-only: both 
 wall-clock that PostgreSQL would read verbatim in the UTC session — which made the cash-up business
 date land on *tomorrow* whenever the suite ran between 21:00 and 23:59 Nairobi. No production code and
 no response value changed.
+
+## Solo-Maintainer Review Exception - PR #39
+
+- PR: #39
+- implementation commit: a42e13e66413a27020a07180d1fb7a8b7cda2f27
+- verified corrective head: d8bc799468428091cb2aa97a61cbc5cdad269706
+- successful corrective CI run: 29578358637
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-39.md
+
+The initial CI failures were corrected by test-only commit d8bc799468428091cb2aa97a61cbc5cdad269706. Full local backend verification and all five corrective CI checks passed.
+
+This exception applies only to Phase 20F and is not independent reviewer approval.
+
+Phase 20G, Phase 20H, Phase 20D-W and later Wallet, salary, commission, payout, settlement, referral, notification, SMS, search, performance and production-readiness domains remain deferred to their documented owning phases.
