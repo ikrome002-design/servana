@@ -317,3 +317,23 @@ payouts/earnings, no 20D-W Wallet/provider runtime, no unrelated refactor, no
   behaviour; `selected_services` has no membership substrate; no compensation boundary-transition
   scheduler; pre-approval impact preview stays descriptive; E2E uses repository-standard stubbed
   APIs for frontend behaviour.
+
+## Solo-Maintainer Review Exception - PR #40
+
+- PR: #40
+- verified hardening head: cdcb83fc89d89b2139063ce0c099ec1a84ee7748
+- initial successful CI run: 29588324838
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-40.md
+
+This exception applies only to the post-Phase-20F deferred hardening branch and
+is not independent reviewer approval.
+
+Phase 20D-W, Phase 20G, Phase 20H and all later Wallet, salary, commission,
+payout, settlement, referral, notification, SMS, search, performance and
+production-readiness domains remain deferred to their documented owning phases.
