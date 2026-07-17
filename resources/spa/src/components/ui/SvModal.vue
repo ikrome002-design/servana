@@ -71,9 +71,12 @@ onMounted(() => {
         tabindex="-1"
         class="relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-card bg-surface p-6 shadow-xl focus:outline-none"
       >
+        <!-- `text-heading` is the adaptive heading token; `text-brand-deep` is deliberately not
+             overridden in dark mode (it is the CTA-on-orange colour, ADR-009), so using it here
+             rendered the dialog title at 1.07:1 on the dark surface. -->
         <h2
           id="modal-title"
-          class="font-display text-lg font-bold text-brand-deep"
+          class="font-display text-lg font-bold text-heading"
         >
           {{ title }}
         </h2>

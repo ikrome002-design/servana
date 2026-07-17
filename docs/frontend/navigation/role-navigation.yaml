@@ -141,7 +141,7 @@ merchant_administrator:
     label: Compensation summary
     availability: planned
     permission: merchant.compensation_summary.view
-    phase: Phase 20F
+    phase: Phase 20H
 merchant_branch:
   - key: branch.overview
     label: Branch overview
@@ -268,7 +268,8 @@ merchant_human_resource:
     phase: Phase 15B
   - key: hr.compensation
     label: Compensation
-    availability: planned
+    availability: live
+    route: hr.compensation
     permission: compensation.plan.view
     phase: Phase 20F
   - key: hr.payout-runs

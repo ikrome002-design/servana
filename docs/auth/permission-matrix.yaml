@@ -823,58 +823,6 @@ keys:
       - PermissionMatrix/client.view_allows
     negative_tests:
       - PermissionMatrix/client.view_denies
-  commissions.manage:
-    key: commissions.manage
-    description: Set staff commissions.
-    implementation_status: active
-    owning_phase: Phase 20F
-    canonical_successor: compensation.plan.update_draft
-    override_policy: revocable_only
-    scope: merchant
-    billing_read_only_behavior: block
-    period_lock_behavior: n/a
-    entitlement_key: null
-    mfa_required: false
-    step_up_required: false
-    audit_event: none
-    audit_severity: warn
-    backend_policy_or_service: legacy runtime key pending §19 reconciliation
-    frontend_ux_usage: visibility_only
-    default_roles:
-      - hr
-    maker_checker_incompatibilities: []
-    positive_tests:
-      - PermissionMatrix/commissions.manage_allows
-    negative_tests:
-      - PermissionMatrix/commissions.manage_denies
-  commissions.view:
-    key: commissions.view
-    description: View commissions (scoped).
-    implementation_status: active
-    owning_phase: Phase 20F
-    canonical_successor: compensation.history.view
-    override_policy: grantable
-    scope: merchant
-    billing_read_only_behavior: allow_read
-    period_lock_behavior: n/a
-    entitlement_key: null
-    mfa_required: false
-    step_up_required: false
-    audit_event: none
-    audit_severity: info
-    backend_policy_or_service: legacy runtime key pending §19 reconciliation
-    frontend_ux_usage: visibility_only
-    default_roles:
-      - merchant_admin
-      - branch_manager
-      - hr
-      - personnel
-      - audit
-    maker_checker_incompatibilities: []
-    positive_tests:
-      - PermissionMatrix/commissions.view_allows
-    negative_tests:
-      - PermissionMatrix/commissions.view_denies
   compensation.adjustment.create:
     key: compensation.adjustment.create
     description: Adjustment entry only.
@@ -902,8 +850,8 @@ keys:
   compensation.history.view:
     key: compensation.history.view
     description: View (compensation / history).
-    implementation_status: planned
-    owning_phase: Phase 20F
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -912,9 +860,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: CompensationPlanHistoryPolicy (append-only read; branch-scoped; canonical successor of the retired commissions.view)
     frontend_ux_usage: visibility_only
     default_roles:
       - hr
@@ -950,8 +898,8 @@ keys:
   compensation.plan.approve:
     key: compensation.plan.approve
     description: Backdated change → crit audit.
-    implementation_status: planned
-    owning_phase: Phase 20F
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -960,9 +908,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: true
-    audit_event: pending
+    audit_event: commission_rule.approved; commission_rule.ended; compensation.plan.approved; compensation.plan.backdated_change_approved; compensation.plan.superseded
     audit_severity: high
-    backend_policy_or_service: backdated change → crit audit
+    backend_policy_or_service: ApproveCompensationPlan + PersonnelCompensationPlanPolicy + RequireFreshMfa(compensation_backdated_change); backdated => compensation.plan.backdated_change_approved (critical)
     frontend_ux_usage: visibility_only
     default_roles:
       - hr
@@ -975,8 +923,8 @@ keys:
   compensation.plan.cancel:
     key: compensation.plan.cancel
     description: Cancel (compensation / plan).
-    implementation_status: planned
-    owning_phase: Phase 20F
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -985,9 +933,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: commission_rule.cancelled; compensation.plan.cancelled
     audit_severity: warn
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: CancelCompensationPlan + PersonnelCompensationPlanPolicy
     frontend_ux_usage: visibility_only
     default_roles:
       - hr
@@ -999,8 +947,8 @@ keys:
   compensation.plan.create:
     key: compensation.plan.create
     description: Create (compensation / plan).
-    implementation_status: planned
-    owning_phase: Phase 20F
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -1009,9 +957,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: commission_rule.created; compensation.plan.created
     audit_severity: warn
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: CreateCompensationPlanDraft + PersonnelCompensationPlanPolicy
     frontend_ux_usage: visibility_only
     default_roles:
       - hr
@@ -1023,8 +971,8 @@ keys:
   compensation.plan.reject:
     key: compensation.plan.reject
     description: Reject (compensation / plan).
-    implementation_status: planned
-    owning_phase: Phase 20F
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -1033,9 +981,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: commission_rule.rejected; compensation.plan.rejected
     audit_severity: warn
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: RejectCompensationPlan + PersonnelCompensationPlanPolicy
     frontend_ux_usage: visibility_only
     default_roles:
       - hr
@@ -1047,8 +995,8 @@ keys:
   compensation.plan.submit:
     key: compensation.plan.submit
     description: Submit (compensation / plan).
-    implementation_status: planned
-    owning_phase: Phase 20F
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -1057,9 +1005,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: commission_rule.submitted; compensation.plan.submitted
     audit_severity: warn
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: SubmitCompensationPlan + PersonnelCompensationPlanPolicy
     frontend_ux_usage: visibility_only
     default_roles:
       - hr
@@ -1072,8 +1020,8 @@ keys:
   compensation.plan.update_draft:
     key: compensation.plan.update_draft
     description: Update draft (compensation / plan).
-    implementation_status: planned
-    owning_phase: Phase 20F
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -1082,9 +1030,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: commission_rule.updated_draft; compensation.plan.updated_draft
     audit_severity: info
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: UpdateCompensationPlanDraft + PersonnelCompensationPlanPolicy (draft only; DB trigger authoritative)
     frontend_ux_usage: visibility_only
     default_roles:
       - hr
@@ -1096,8 +1044,8 @@ keys:
   compensation.plan.view:
     key: compensation.plan.view
     description: View (compensation / plan).
-    implementation_status: planned
-    owning_phase: Phase 20F
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -1106,9 +1054,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: PersonnelCompensationPlanPolicy (read; branch-scoped)
     frontend_ux_usage: visibility_only
     default_roles:
       - hr

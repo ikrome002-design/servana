@@ -22,9 +22,10 @@ use App\Domain\Audit\Enums\AuditEvent;
  * are proven by the domain coverage/redaction suites (AuditEventCoverageTest,
  * AuditRedactionTest, and each domain's API tests), not re-driven here.
  *
- * Deferred domains (billing 20A–20E, compensation 20F–20H, notifications/reports
- * 21N, SMS 21S) own NO implemented mutating route yet, so they are intentionally
- * absent — this registry never claims a future-domain emission.
+ * Deferred domains (notifications/reports 21N, SMS 21S) own NO implemented mutating
+ * route yet, so they are intentionally absent — this registry never claims a
+ * future-domain emission. Phase 20F added the compensation-CONFIGURATION routes below;
+ * the compensation EARNING/payout routes (20G/20H) remain absent.
  */
 final class AuditMutationCoverage
 {
@@ -82,6 +83,28 @@ final class AuditMutationCoverage
         'cash-ups.request-correction' => ['cash_up.correction_requested'],
         'cash-ups.resubmit' => ['cash_up.resubmitted'],
         'cash-ups.lock' => ['cash_up.locked'],
+
+        // --- Compensation configuration (Phase 20F) ------------------------
+        // Every event each route's handler emits on the COMMITTED path, including the events the
+        // same transaction emits for the referencing plan's commission rule (a rule has no
+        // independent lifecycle) and for an incumbent that gets superseded/ended by an approval.
+        // Configuration only — none of these is an earned/paid money fact (20G/20H own those).
+        'commission-rules.store' => ['commission_rule.created'],
+        'commission-rules.draft.update' => ['commission_rule.updated_draft'],
+        'compensation-plans.store' => ['compensation.plan.created'],
+        'compensation-plans.draft.update' => ['compensation.plan.updated_draft'],
+        'compensation-plans.submit' => ['compensation.plan.submitted', 'commission_rule.submitted'],
+        // Approve is the one route that can emit five events in a single transaction: the approval,
+        // the CRITICAL backdated variant, the incumbent's supersede, and the rule's approve/end.
+        'compensation-plans.approve' => [
+            'compensation.plan.approved',
+            'compensation.plan.backdated_change_approved',
+            'compensation.plan.superseded',
+            'commission_rule.approved',
+            'commission_rule.ended',
+        ],
+        'compensation-plans.reject' => ['compensation.plan.rejected', 'commission_rule.rejected'],
+        'compensation-plans.cancel' => ['compensation.plan.cancelled', 'commission_rule.cancelled'],
 
         // --- Clients (Phase 15A) -------------------------------------------
         'clients.store' => ['client.created'],

@@ -690,7 +690,15 @@ function cashUpComponent(
         'reference_display_encrypted' => $reference,
         'validated_amount_minor' => $validated ? $amountMinor : null,
         'status' => $status,
-        'paid_at' => CarbonImmutable::now('Africa/Nairobi'),
+        // Store the INSTANT, exactly as the production recording path does
+        // (PaymentRecordingGroupController -> CarbonImmutable::now()). `paid_at` is cast
+        // 'datetime', so Laravel serializes it as a naive 'Y-m-d H:i:s' string and PostgreSQL
+        // reads it in the UTC session: passing a Nairobi WALL-CLOCK here would store 22:30 as
+        // 22:30 UTC, and CashUpExpectedTotalCalculator's
+        // `(paid_at AT TIME ZONE 'Africa/Nairobi')::date` would then add +03:00 again and land on
+        // TOMORROW's business date — making the cash-up expectations fail whenever the suite runs
+        // between 21:00 and 23:59 Nairobi. now() keeps the instant correct at every hour.
+        'paid_at' => CarbonImmutable::now(),
     ]);
 }
 

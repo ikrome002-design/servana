@@ -1,4 +1,4 @@
-# Billing and Wallet Integration — Data Dictionary (Plan §13.9–§13.11; Phases 20A–20D-W)
+# Billing and Wallet Integration — Data Dictionary (Plan §13.9–§13.11, §59; Phases 20A–20D-W, 20E, 20F)
 
 > **Architecture specification only.** This document defines future tables and columns for
 > the Servana↔Wallet integration boundary. **No business migrations ship in the v4 plan-adoption
@@ -20,6 +20,10 @@
 
 - Plan §13.9–§13.11, §25.4 (subscription invoice + payment attempt machines), §49, §56–§58,
   §80.1–§80.2 (Gate W), ADR-012, ADR-014, ADR-015
+- Plan §59 + §80 (Phase 20F compensation-plan setup / commission rules; Correction 19), Scope
+  §12.1–§12.9 and §18.3 — the Phase 20F section below. Compensation configuration is
+  HR-owned and **creates no earned financial fact**; the compensation subject `staff_profiles`
+  is documented in `docs/architecture/data-dictionary/branches-and-staff.md`.
 - `docs/architecture/adr/0012-wallet-by-citrus-payment-orchestration-boundary.md`
 - `Wallet_by_Citrus_Platform_Project_Scope.md` (**not present in this repository** — contract
   pins deferred to External Gate W)
@@ -967,6 +971,199 @@ constraint. Failed verification → security audit + metrics; no ad-hoc rejectio
 - **`platform_fee_ledger_entries → subscription_invoice_items`:** the aggregation link lives on the ledger
   (`subscription_invoice_item_id`); the existing `platform_fee_rollup` line `type` (§13.10, shipped 20B)
   is reused — **no** schema change to `subscription_invoice_items`.
+
+## Phase 20F — Compensation plan setup and commission rules (Plan §59, §80; Correction 19; HR)
+
+**Configuration only.** These three tables define *how personnel will earn*. They create **no**
+earned financial fact: no `salary_ledger`, no `commission_ledger`, no `compensation_adjustments`
+(all **Phase 20G**), and no payout runs/items or earnings statements/queries (all **Phase 20H**).
+They also carry no Wallet/provider concern (**Phase 20D-W**, Gate W CLOSED).
+
+Sources: Plan §59 (Compensation-Plan Management), Plan §80 (Phase 20F entry), Scope §12.1–§12.9,
+Scope §18.3. Gate decisions: `docs/proof/phase-20f.md` (F1–F10).
+HR-domain cross-reference: `docs/architecture/data-dictionary/branches-and-staff.md`
+(`staff_profiles` is the compensation subject).
+
+**Ownership (F2):** all three are **branch-owned** — non-null `merchant_id` + `branch_id`,
+composite FK → `merchant_branches(id, merchant_id)`, `BelongsToMerchant` + `BelongsToBranch`,
+registered in `TenantOwnership::BRANCH_OWNED` / `::MODELS` (`'branch'`) / `::COMPOSITE_CONSISTENCY`.
+Subject is `staff_profile_id` (Plan §59: "one active plan per staff profile, branch, and date";
+Scope §12.9 hard rule: "one active compensation plan per personnel per branch at a time").
+
+### `commission_rules` (Plan §59, Scope §12.7 Step 3A / §18.3; Phase 20F)
+
+HR-controlled commission **configuration**. A **sibling** record referenced by
+`personnel_compensation_plans.commission_rule_id` (Scope §18.3 is decisive) — **not** a child of the
+plan, and **not** a ledger.
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | public id + route key; `UNIQUE` |
+| `merchant_id` | bigint | no | FK `merchants(id)`; tenant scope |
+| `branch_id` | bigint | no | FK `merchant_branches(id)`; composite FK `(branch_id, merchant_id)` → `merchant_branches(id, merchant_id)` |
+| `calculation_type` | varchar(16) | no | CHECK ∈ (`percentage`,`fixed_amount`) |
+| `percentage_basis_points` | int | yes | required iff percentage; `CHECK (… IS NULL OR … BETWEEN 0 AND 10000)` |
+| `fixed_amount_minor` | bigint | yes | required iff fixed; `CHECK (… IS NULL OR … >= 0)`; integer minor units (ADR-005) |
+| `currency` | char(3) | yes | required iff fixed; `CHECK (currency IS NULL OR (currency = upper(currency) AND char_length(currency) = 3))` |
+| `calculation_basis` | varchar(32) | no | CHECK ∈ (`service_price`,`invoice_item_total`,`paid_amount`,`net_after_discount`) — Scope §12.7 "Commission basis" |
+| `applies_to` | varchar(24) | no | CHECK ∈ (`all_services`,`selected_services`,`service_category`) — Scope §12.7 "Applies to" |
+| `service_category_id` | bigint | yes | FK `service_categories(id)` ON DELETE RESTRICT; required iff `applies_to='service_category'`, else null |
+| `applies_to_preferred_personnel_fee` | boolean | no | **default `false`** — F6 basis-inclusion flag (Plan §59; Scope §969) |
+| `effective_from` | date | no | inclusive start |
+| `effective_to` | date | yes | exclusive end; NULL = ongoing |
+| `status` | varchar(16) | no | CHECK ∈ (`draft`,`pending_approval`,`scheduled`,`active`,`superseded`,`expired`,`rejected`,`cancelled`) |
+| `notes` | text | yes | internal HR note (Scope §12.7) |
+| `change_reason` | text | no | non-empty; `CHECK (char_length(btrim(change_reason)) > 0)` |
+| `created_by` | bigint | no | FK `users(id)` ON DELETE RESTRICT |
+| `approved_by` | bigint | yes | FK `users(id)` ON DELETE RESTRICT |
+| `approved_at` | timestamptz | yes | |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **Value-shape CHECK (DB-authoritative, F4):** percentage ⇒ `percentage_basis_points` present and
+  `fixed_amount_minor` + `currency` null; fixed ⇒ `fixed_amount_minor` + `currency` present and
+  `percentage_basis_points` null. Exactly one calculation value. **Never float.**
+- **Applies-to CHECK:** `service_category` ⇒ `service_category_id` not null; `all_services` /
+  `selected_services` ⇒ `service_category_id` null. (`selected_services` membership is carried by the
+  plan's configured selection surface; Phase 20F stores configuration only.)
+- **Effective range:** `CHECK (effective_to IS NULL OR effective_to > effective_from)`.
+- **F6 semantics:** `applies_to_preferred_personnel_fee = true` ⇒ the Phase 20A preferred-personnel
+  fee **is included** in the future commission **basis**; `false` ⇒ **excluded**. It is a
+  basis-inclusion flag only — **not** a separate basis, **not** a rate modifier, **not** a payout
+  trigger, **not** an earned row. **Phase 20G** consumes it when earning commission.
+- **Immutability + supersede (F7):** an `active`/`scheduled` rule's monetary terms are immutable;
+  a change **supersedes** with a new version (`active → superseded`) — never an in-place edit.
+  A previously active rule is **ended, not deleted** (Scope §12.7 Step 3C).
+- **F4 residual:** Scope §12.7 mentions a "configured merchant/platform maximum" commission
+  percentage; no such configuration exists anywhere in the repository/Plan/Scope and Plan §59 does
+  not require one, so the structural bound `0..10000` bp is the enforced ceiling. See
+  `docs/proof/phase-20f.md` §F4.
+- **Phase 20F does NOT:** resolve a rule against a business event, compute a commission amount, or
+  create an earned row. Earning happens **only** at Finance validation in **Phase 20G** (Plan §61).
+- **Indexes:** `UNIQUE(ulid)`; `(merchant_id, branch_id)`; `(merchant_id, branch_id, status, effective_from)`.
+- **Audit:** `commission_rule.created` (warn), `.updated_draft` (info), `.ended` (high).
+  **Retention:** permanent. **Factory:** `CommissionRuleFactory` (percentage + fixed states).
+
+### `personnel_compensation_plans` (Plan §59, Scope §12.2–§12.9 / §18.3; Phase 20F)
+
+Compensation model per personnel per branch. **One active plan per personnel per branch.**
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | public id + route key; `UNIQUE` |
+| `merchant_id` | bigint | no | FK `merchants(id)`; tenant scope |
+| `branch_id` | bigint | no | FK `merchant_branches(id)`; composite FK `(branch_id, merchant_id)` → `merchant_branches(id, merchant_id)` |
+| `staff_profile_id` | bigint | no | FK `staff_profiles(id)` ON DELETE RESTRICT; composite FK `(staff_profile_id, merchant_id)` → `staff_profiles(id, merchant_id)` — the compensation **subject** |
+| `compensation_model` | varchar(24) | no | **F1** CHECK ∈ (`commission_only`,`salary_plus_commission`,`salary_only`). **Distinct from `staff_profiles.employment_type`** (Scope §12.2 forbids overloading) |
+| `salary_amount_minor` | bigint | yes | integer minor units; `CHECK (… IS NULL OR … > 0)` (Scope §12.7 3B/3C "salary amount > 0") |
+| `salary_currency` | char(3) | yes | `CHECK (… IS NULL OR (… = upper(…) AND char_length(…) = 3))` |
+| `salary_period` | varchar(16) | yes | CHECK ∈ (`monthly`,`weekly`,`daily`,`hourly`,`per_shift`) — Plan §60 cadences; monthly recommended at launch |
+| `salary_payout_day` | smallint | yes | optional (Scope §12.7 3B/3C); `CHECK (… IS NULL OR … BETWEEN 1 AND 31)` |
+| `commission_rule_id` | bigint | yes | **F5** FK `commission_rules(id)` ON DELETE RESTRICT; composite FK `(commission_rule_id, merchant_id)` → `commission_rules(id, merchant_id)` |
+| `effective_from` | date | no | inclusive start |
+| `effective_to` | date | yes | exclusive end; NULL = ongoing |
+| `status` | varchar(20) | no | **Scope §12.9** CHECK ∈ (`draft`,`pending_approval`,`scheduled`,`active`,`expired`,`superseded`,`rejected`,`cancelled`) |
+| `is_backdated` | boolean | no | default `false`; **F8** set at submission when `effective_from` < current `Africa/Nairobi` business date |
+| `supersedes_plan_id` | bigint | yes | FK `personnel_compensation_plans(id)` ON DELETE RESTRICT; set on a supersede version |
+| `notes` | text | yes | internal HR note |
+| `change_reason` | text | no | non-empty; `CHECK (char_length(btrim(change_reason)) > 0)` (Scope §12.7: HR must provide a reason) |
+| `created_by` | bigint | no | FK `users(id)` ON DELETE RESTRICT — the maker |
+| `submitted_by` | bigint | yes | FK `users(id)` ON DELETE RESTRICT |
+| `submitted_at` | timestamptz | yes | |
+| `approved_by` | bigint | yes | FK `users(id)` ON DELETE RESTRICT — the checker; **never equal to `submitted_by`** (maker/checker, F8) |
+| `approved_at` | timestamptz | yes | |
+| `rejected_by` | bigint | yes | FK `users(id)` ON DELETE RESTRICT |
+| `rejected_at` | timestamptz | yes | |
+| `created_at`/`updated_at` | timestamptz | no | |
+
+- **Model-shape CHECKs (DB-authoritative, F1 — Plan §59):**
+  - `commission_only` ⇒ `salary_amount_minor`/`salary_currency`/`salary_period` **null** **and**
+    `commission_rule_id` **not null**;
+  - `salary_only` ⇒ salary fields **not null** **and** `commission_rule_id` **null**;
+  - `salary_plus_commission` ⇒ salary fields **not null** **and** `commission_rule_id` **not null**.
+
+  This is the DB-level guarantee behind Plan §80's named test "salary-only has no commission rule"
+  and Scope §12.5 ("no commission ledger entries are created for this personnel" — 20G honours it).
+- **Maker/checker CHECK (F8):** `CHECK (approved_by IS NULL OR submitted_by IS NULL OR approved_by <> submitted_by)`
+  — the submitter can never be recorded as their own approver.
+- **One active plan per personnel per branch (F3 — Plan §59, Scope §12.9):**
+  `EXCLUDE USING gist (staff_profile_id WITH =, branch_id WITH =, daterange(effective_from, effective_to, '[)') WITH &&) WHERE (status IN ('active','scheduled'))`.
+  Half-open ⇒ **adjacent windows are legal**; `draft`/`pending_approval`/`superseded`/`expired`/
+  `rejected`/`cancelled` **never block**. `CHECK (effective_to IS NULL OR effective_to > effective_from)`.
+  `btree_gist` is already installed by the merged Phase 20A migration `2026_07_10_000005`.
+- **Immutability (F7, DB-authoritative):** a `BEFORE UPDATE` trigger rejects any change to
+  `merchant_id`, `branch_id`, `staff_profile_id`, `compensation_model`, `salary_amount_minor`,
+  `salary_currency`, `salary_period`, `salary_payout_day`, `commission_rule_id`, `effective_from`, or
+  `effective_to` **once `status <> 'draft'`**. Terms change **only** by supersede
+  (new version + `compensation_plan_history` row + audit + reason + actor); the prior row moves to
+  `superseded`. Never destructively edited; never deleted. Mid-period changes split by effective
+  date (Plan §59) — **Phase 20G** performs the split arithmetic.
+- **Configuration grants no access (Plan §59):** a compensation plan never grants login, role, branch
+  assignment, availability, or service eligibility.
+- **Lifecycle spec:** `docs/architecture/state-machines/personnel-compensation-plan.md`.
+- **Indexes:** `UNIQUE(ulid)`; `UNIQUE(id, merchant_id)` (composite-FK target);
+  `(merchant_id, branch_id)`; `(merchant_id, branch_id, staff_profile_id, status, effective_from)`
+  (resolution index); `(commission_rule_id)`.
+- **Audit:** `compensation.plan.created` (warn), `.updated_draft` (info), `.submitted` (warn),
+  `.approved` (high), `.rejected` (warn), `.cancelled` (warn), `.superseded` (high),
+  **`.backdated_change_approved` (critical)** — Plan §59 requires critical severity for a backdated
+  change. **Retention:** permanent. **Factory:** `PersonnelCompensationPlanFactory` (one state per
+  compensation model + lifecycle states).
+
+### `compensation_plan_history` (Plan §59, §80; Scope §12 "compensation change history"; Phase 20F)
+
+**Append-only** compensation change history. No UPDATE, no DELETE.
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK |
+| `ulid` | char(26) | no | public id + route key; `UNIQUE` |
+| `merchant_id` | bigint | no | FK `merchants(id)`; tenant scope |
+| `branch_id` | bigint | no | FK `merchant_branches(id)`; composite FK `(branch_id, merchant_id)` → `merchant_branches(id, merchant_id)` |
+| `compensation_plan_id` | bigint | no | FK `personnel_compensation_plans(id)` ON DELETE RESTRICT; composite FK `(compensation_plan_id, merchant_id)` → `personnel_compensation_plans(id, merchant_id)` |
+| `staff_profile_id` | bigint | no | FK `staff_profiles(id)` ON DELETE RESTRICT; denormalized subject for history reads |
+| `event` | varchar(32) | no | CHECK ∈ (`created`,`updated_draft`,`submitted`,`approved`,`activated`,`rejected`,`cancelled`,`superseded`,`expired`) |
+| `from_status` | varchar(20) | yes | null on `created` |
+| `to_status` | varchar(20) | no | |
+| `changed_fields` | jsonb | yes | masked field-level diff of configured terms (no secrets, no PII beyond the subject) |
+| `was_backdated` | boolean | no | default `false` — F8 |
+| `change_reason` | text | no | non-empty; `CHECK (char_length(btrim(change_reason)) > 0)` |
+| `actor_user_id` | bigint | no | FK `users(id)` ON DELETE RESTRICT |
+| `effective_from` | date | no | the effective date of the version this row describes |
+| `created_at` | timestamptz | no | append-only; **no `updated_at`** |
+
+- **Append-only:** a `BEFORE UPDATE OR DELETE` trigger raises — history is never rewritten
+  (the `audit_logs` append-only precedent, Guardrail 5). Financial-configuration history is
+  permanent.
+- **`activated` (Increment 3 correction):** the `scheduled → active` boundary is a real transition
+  and is the symmetric partner of `expired` (already listed). It was omitted from this table's
+  original `event` list while the plan state machine defined the transition + its
+  `compensation.plan.activated` audit event — a documentation omission that propagated into the
+  Increment 2 CHECK. Recording activation as `approved` would collapse two distinct lifecycle
+  moments; recording it as `updated_draft` would be false; omitting it would make activation
+  invisible in compensation history. Enum, CHECK, both state-machine specs and this dictionary are
+  now in parity, proven by `Phase20FEnumParityTest`. See `docs/proof/phase-20f.md` (Increment 3).
+- **Written inside the same transaction** as the plan transition that produced it.
+- **Not a ledger:** it records *configuration changes*, never money owed, accrued, earned, or paid.
+- **Indexes:** `UNIQUE(ulid)`; `(merchant_id, branch_id)`;
+  `(merchant_id, branch_id, staff_profile_id, created_at)`; `(compensation_plan_id)`.
+- **Permission:** read via `compensation.history.view` (HR, branch-scoped; the canonical successor of
+  the retired legacy `commissions.view`). **Factory:** `CompensationPlanHistoryFactory`.
+
+### Not created by Phase 20F (owner phases)
+
+| Table / concern | Owner |
+|---|---|
+| `salary_ledger`, `commission_ledger`, `compensation_adjustments`, earned commission rows, salary accrual scheduler | **20G** |
+| `personnel_payout_runs`, `personnel_payout_items`, `personnel_earnings_queries`, earnings statements, mark-paid | **20H** |
+| Merchant-Administrator compensation summary (`merchant.compensation_summary.view`) | **20H** |
+| Wallet payment/settlement/collections | **20D-W** (Gate W) |
+
+The existing Phase 18B `commission_handoff_events` seam is the durable hand-off Phase 20G will
+consume. **Phase 20F does not modify it.**
+
+---
 
 ## Forbidden in Servana (never assign to Servana schema)
 

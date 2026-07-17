@@ -30,6 +30,8 @@ use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServiceCategory;
 use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Compensation\Models\CommissionRule;
+use App\Domain\Compensation\Models\PersonnelCompensationPlan;
 use App\Domain\Files\Contracts\FileScanner;
 use App\Domain\Files\Services\ClamAvScanner;
 use App\Domain\Files\Services\ImageSanitizer;
@@ -62,6 +64,7 @@ use App\Policies\BranchDayRecordPolicy;
 use App\Policies\BranchOperatingHourPolicy;
 use App\Policies\CashUpPolicy;
 use App\Policies\ClientPolicy;
+use App\Policies\CommissionRulePolicy;
 use App\Policies\FinanceDisputePolicy;
 use App\Policies\FinanceExportPolicy;
 use App\Policies\FinancialPeriodLockPolicy;
@@ -72,6 +75,7 @@ use App\Policies\MerchantPolicy;
 use App\Policies\MerchantSubscriptionPolicy;
 use App\Policies\MerchantUserPolicy;
 use App\Policies\PaymentRecordingGroupPolicy;
+use App\Policies\PersonnelCompensationPlanPolicy;
 use App\Policies\PlatformBillingSettingsPolicy;
 use App\Policies\PlatformFeeConfigurationPolicy;
 use App\Policies\PlatformFeeDisputePolicy;
@@ -164,6 +168,9 @@ class AppServiceProvider extends ServiceProvider
         PlatformFeeConfiguration::class => PlatformFeeConfigurationPolicy::class,
         PlatformFeeLedgerEntry::class => PlatformFeeLedgerEntryPolicy::class,
         PlatformFeeDispute::class => PlatformFeeDisputePolicy::class,
+        // Phase 20F — HR compensation configuration (branch-scoped; HR-only by Plan §10.2).
+        PersonnelCompensationPlan::class => PersonnelCompensationPlanPolicy::class,
+        CommissionRule::class => CommissionRulePolicy::class,
     ];
 
     public function register(): void

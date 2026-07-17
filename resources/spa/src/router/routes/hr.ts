@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { requiresActiveMerchant, requiresAuth } from '@/router/guards';
+import { requiresActiveMerchant, requiresAuth, requiresPermission } from '@/router/guards';
 
 export const hrRoutes: RouteRecordRaw[] = [
   // Public staff invitation acceptance (Scope §3.4). No auth — the emailed token
@@ -61,6 +61,14 @@ export const hrRoutes: RouteRecordRaw[] = [
         path: 'availability',
         name: 'hr.availability',
         component: () => import('@/pages/hr/PersonnelAvailability.vue'),
+      },
+      // Phase 20F — branch-scoped, HR-only compensation configuration. The guard is UX only; the
+      // API (EnsureBranchScope + EnsurePermission + policy) is the security boundary.
+      {
+        path: 'compensation',
+        name: 'hr.compensation',
+        component: () => import('@/pages/hr/Compensation.vue'),
+        beforeEnter: [requiresPermission('compensation.plan.view')],
       },
     ],
   },

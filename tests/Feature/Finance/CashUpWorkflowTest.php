@@ -68,7 +68,11 @@ it('subtracts finalized refunds of the method from the expected total (refund tr
         'payment_record_id' => $component->id, 'method' => PaymentMethod::Cash, 'amount_minor' => 50000,
         'status' => RefundStatus::Finalized,
         'approved_by' => $scn['finance']->id, 'approved_at' => CarbonImmutable::now(),
-        'finalized_by' => $scn['finance']->id, 'finalized_at' => CarbonImmutable::now('Africa/Nairobi'),
+        // The INSTANT, like the production finalize path (and `approved_at` above): a Nairobi
+        // wall-clock would be stored verbatim in the UTC session, and the calculator's
+        // `(finalized_at AT TIME ZONE 'Africa/Nairobi')::date` would then shift it to tomorrow
+        // whenever the suite runs between 21:00 and 23:59 Nairobi.
+        'finalized_by' => $scn['finance']->id, 'finalized_at' => CarbonImmutable::now(),
     ]);
     // A non-finalized (requested) refund must NOT reduce expected.
     Refund::factory()->create([

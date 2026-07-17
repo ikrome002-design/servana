@@ -55,7 +55,7 @@ final class PermissionRegistry
     private const ROLES = [
         self::ROLE_MERCHANT_ADMIN => ['name' => 'Merchant Administrator', 'scope' => 'merchant', 'read_only' => false, 'description' => 'Account owner; merchant profile, tier, branch + branch-user lifecycle.'],
         self::ROLE_BRANCH_MANAGER => ['name' => 'Branch Manager', 'scope' => 'merchant', 'read_only' => false, 'description' => 'Own-branch operations: profile, services, queue, appointments, day.'],
-        self::ROLE_HR => ['name' => 'Human Resource', 'scope' => 'merchant', 'read_only' => false, 'description' => 'Same-branch staff lifecycle, eligibility, availability, commissions.'],
+        self::ROLE_HR => ['name' => 'Human Resource', 'scope' => 'merchant', 'read_only' => false, 'description' => 'Same-branch staff lifecycle, eligibility, availability, compensation configuration.'],
         self::ROLE_FINANCE => ['name' => 'Finance', 'scope' => 'merchant', 'read_only' => false, 'description' => 'Payment validation, receipts, refunds, disputes, cash-up review.'],
         self::ROLE_FRONT_OFFICE => ['name' => 'Front Office', 'scope' => 'merchant', 'read_only' => false, 'description' => 'Records payments and sessions; never validates payments or issues receipts.'],
         self::ROLE_PERSONNEL => ['name' => 'Personnel', 'scope' => 'merchant', 'read_only' => false, 'description' => 'Own-scope reads only; no export of any kind.'],
@@ -145,7 +145,22 @@ final class PermissionRegistry
         // Personnel availability (Plan §19.2/§19.3; Phase 15B canonical key —
         // reconciled from the legacy Phase 8 `availability.manage` baseline). HR-owned.
         'personnel.availability.manage' => ['staff', 'Manage personnel availability.', true],
-        'commissions.manage' => ['staff', 'Set staff commissions.', true],
+        // Phase 20F — HR compensation-plan CONFIGURATION (canonical §19.2 keys; Plan §59, §80).
+        // RECONCILED from the legacy `commissions.manage` (→ compensation.plan.update_draft) and
+        // `commissions.view` (→ compensation.history.view), both RETIRED here — no alias, no
+        // compatibility grant (the Phase 19 `audit.view_full` retirement precedent). Branch-scoped
+        // and HR-only: Plan §10.2 says the Merchant Administrator "never configures
+        // services/pricing/commissions/personnel assignment", so MA/Branch Manager receive NO
+        // compensation-configuration authority and no broad replacement read. Configuration only —
+        // these keys create no earned salary/commission, no payout, no ledger (20G/20H own those).
+        'compensation.plan.view' => ['compensation', 'View branch-scoped compensation plans (HR).', false],
+        'compensation.plan.create' => ['compensation', 'Create a draft compensation plan (HR).', true],
+        'compensation.plan.update_draft' => ['compensation', 'Update a DRAFT compensation plan in place (HR); effective terms are superseded, never edited.', true],
+        'compensation.plan.submit' => ['compensation', 'Submit a draft compensation plan for approval (HR maker).', true],
+        'compensation.plan.approve' => ['compensation', 'Approve a pending compensation plan (HR checker; fresh step-up; never the submitter).', true],
+        'compensation.plan.reject' => ['compensation', 'Reject a pending compensation plan (HR checker).', true],
+        'compensation.plan.cancel' => ['compensation', 'Cancel a draft or scheduled compensation plan before it takes effect (HR).', true],
+        'compensation.history.view' => ['compensation', 'View append-only compensation change history (HR; branch-scoped).', false],
         // Clients (Plan §19.2/§19.3; Phase 15A canonical keys — reconciled from the
         // legacy `clients.create/edit/view` baseline). Front Office owns client records
         // and client search; contact is masked at read and never exported.
@@ -225,8 +240,12 @@ final class PermissionRegistry
         // creation + reopen execution (reopen requires fresh MFA + mandatory reason).
         'period_lock.create' => ['finance', 'Create a financial period lock (Finance).', true],
         'period_lock.reopen' => ['finance', 'Execute a controlled reopen of a locked financial period (Finance; fresh MFA).', true],
-        // Commissions & platform fees.
-        'commissions.view' => ['finance', 'View commissions (scoped).', false],
+        // Platform fees. (The legacy `commissions.view` that lived here is RETIRED — Phase 20F
+        // activated its HR-only canonical successor `compensation.history.view` above. Finance's
+        // compensation READ is `compensation.liability.view` (Phase 20G), the Merchant
+        // Administrator's is `merchant.compensation_summary.view` (Phase 20H), Personnel's is
+        // `earnings.*` (Phase 20H), and Audit already reads the domain through the masked
+        // `audit.compensation.view`. None of those is granted here — no broad replacement.)
         // Phase 20E — percentage platform-fee merchant surface (canonical §19.2 keys; RECONCILED from
         // the legacy plural `platform_fees.view` / `platform_fees.dispute`, whose singular canonical
         // successors match the Phase 20E `platform_fee_*` domain naming and are wired to real policies
@@ -324,7 +343,10 @@ final class PermissionRegistry
             // holds ONLY exceptional-reopen approval — NOT routine locking/reopen (Finance).
             'merchant.period_reopen.approve_exception',
             // Phase 20E — merchant-wide masked platform-fee read + dispute creation (§5 role boundary).
-            'commissions.view', 'platform_fee.view', 'platform_fee.dispute',
+            // Phase 20F: the legacy `commissions.view` grant is RETIRED, not retained (Plan §10.2 —
+            // the Merchant Administrator never configures commissions). Its compensation
+            // visibility arrives as `merchant.compensation_summary.view` in Phase 20H.
+            'platform_fee.view', 'platform_fee.dispute',
             // Phase 19: NO direct raw audit-log key (canonical §19.3 — the Merchant
             // Administrator's oversight is via reports/dashboards, not the raw trail;
             // the legacy `audit.view_full` grant is RETIRED, not retained).
@@ -345,7 +367,9 @@ final class PermissionRegistry
             // creation; the legacy placeholder grant of invoices.create is removed, not
             // retained. Branch invoice visibility is via branch.dashboard.view/reports.
             // Phase 20E — branch-attributable masked platform-fee read only (server-side branch scope).
-            'receipt.view', 'commissions.view', 'platform_fee.view',
+            // Phase 20F: the legacy `commissions.view` grant is RETIRED, not retained — the Branch
+            // Manager receives NO compensation-configuration authority and no replacement read.
+            'receipt.view', 'platform_fee.view',
             // Phase 19: NO direct raw audit-log key (canonical §19.3 — Branch Manager
             // oversight is via branch.dashboard.view/reports; legacy `audit.view_full` retired).
             'reports.view',
@@ -355,10 +379,18 @@ final class PermissionRegistry
         ],
         self::ROLE_HR => [
             'staff.invite', 'staff.edit', 'staff.suspend',
-            'personnel.eligibility.manage', 'personnel.availability.manage', 'commissions.manage',
+            'personnel.eligibility.manage', 'personnel.availability.manage',
+            // Phase 20F — HR owns compensation CONFIGURATION end to end (Plan §59; branch-scoped).
+            // These are the canonical successors of the retired `commissions.manage`
+            // (→ compensation.plan.update_draft) and `commissions.view` (→ compensation.history.view).
+            // approve is maker/checker-incompatible with submit and needs a fresh step-up; both are
+            // enforced at the route + action, not by this grant.
+            'compensation.plan.view', 'compensation.plan.create', 'compensation.plan.update_draft',
+            'compensation.plan.submit', 'compensation.plan.approve', 'compensation.plan.reject',
+            'compensation.plan.cancel', 'compensation.history.view',
             // Phase 19: NO direct raw audit-log key (canonical §19.3 — HR oversight is via
             // staff.history/reports; legacy `audit.view_full` retired).
-            'commissions.view', 'reports.view',
+            'reports.view',
             'exports.staff_roster',
         ],
         self::ROLE_FINANCE => [
@@ -415,14 +447,20 @@ final class PermissionRegistry
             // No invoice key (Plan §19.3): Personnel are strict own-scope and receive
             // no broad invoice browsing; the legacy invoices.view grant is removed.
             'receipt.view',
-            'commissions.view', 'reports.view',
+            // Phase 20F: the legacy `commissions.view` grant is RETIRED, not retained. Personnel
+            // never see compensation CONFIGURATION; their own-earnings visibility arrives as
+            // `earnings.*` in Phase 20H.
+            'reports.view',
         ],
         self::ROLE_AUDIT => [
             // No invoice key (Plan §19.3): Audit reads finance activity through the
             // finance-domain audit view, not a direct invoice key.
             'receipt.view',
             // Phase 20E — masked branch-scoped platform-fee read only (Audit is read-only everywhere).
-            'commissions.view', 'platform_fee.view', 'reports.view',
+            // Phase 20F: the legacy `commissions.view` grant is RETIRED, not retained — Audit reads
+            // the compensation domain through the masked `audit.compensation.view` below, which
+            // Phase 20F now populates with real events.
+            'platform_fee.view', 'reports.view',
             // Phase 19 — canonical, domain-segmented, branch-scoped, masked Audit reads
             // (REPLACE the retired catch-all `audit.view_full`).
             'audit.branch_events.view', 'audit.finance.view', 'audit.compensation.view',
@@ -474,7 +512,9 @@ final class PermissionRegistry
             'refund.approve', 'refund.finalize',
             // platform_fee.view is now a Finance DEFAULT (Phase 20E settled/reconciliation read), so it
             // is no longer a grantable-only override here.
-            'commissions.view',
+            // Phase 20F: the grantable legacy `commissions.view` is RETIRED, not retained. Finance's
+            // canonical compensation read is `compensation.liability.view` — a Phase 20G key that
+            // stays PLANNED here; 20F grants Finance no compensation authority at all.
         ],
     ];
 

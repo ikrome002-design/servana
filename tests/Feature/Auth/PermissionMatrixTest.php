@@ -48,7 +48,10 @@ function expectedMatrix(): array
             'receipt.view',
             // Phase 18B: routine period locking is Finance-owned (ADR-0007); the Merchant
             // Administrator holds ONLY exceptional-reopen approval (was legacy `periods.lock`).
-            'merchant.period_reopen.approve_exception', 'commissions.view',
+            'merchant.period_reopen.approve_exception',
+            // Phase 20F: legacy `commissions.view` RETIRED — the Merchant Administrator never
+            // configures commissions (Plan §10.2) and gets NO replacement read here; compensation
+            // visibility arrives as merchant.compensation_summary.view in Phase 20H.
             // Phase 20E: canonical merchant-wide platform-fee read + dispute creation.
             'platform_fee.view', 'platform_fee.dispute',
             // Phase 19: `audit.view_full` RETIRED — Merchant Admin holds NO direct raw
@@ -63,7 +66,8 @@ function expectedMatrix(): array
             // Phase 17: NO invoice key — Branch Manager must not create invoices
             // (Plan §10.2/§19.3); legacy invoices.create/view grants removed.
             // Phase 20E: branch-attributable masked platform-fee read only.
-            'receipt.view', 'commissions.view', 'platform_fee.view',
+            // Phase 20F: legacy `commissions.view` RETIRED — no compensation authority, no replacement.
+            'receipt.view', 'platform_fee.view',
             // Phase 19: `audit.view_full` RETIRED — no direct raw audit-log key.
             'reports.view',
             // Phase 20A: read-only effective preferred-personnel fee rule for the branch.
@@ -71,9 +75,14 @@ function expectedMatrix(): array
         ],
         'hr' => [
             'staff.invite', 'staff.edit', 'staff.suspend',
-            'personnel.eligibility.manage', 'personnel.availability.manage', 'commissions.manage',
+            'personnel.eligibility.manage', 'personnel.availability.manage',
+            // Phase 20F: HR owns compensation CONFIGURATION end to end (canonical successors of the
+            // retired commissions.manage / commissions.view).
+            'compensation.plan.view', 'compensation.plan.create', 'compensation.plan.update_draft',
+            'compensation.plan.submit', 'compensation.plan.approve', 'compensation.plan.reject',
+            'compensation.plan.cancel', 'compensation.history.view',
             // Phase 19: `audit.view_full` RETIRED — no direct raw audit-log key.
-            'commissions.view', 'reports.view',
+            'reports.view',
             'exports.staff_roster',
         ],
         'finance' => [
@@ -109,12 +118,16 @@ function expectedMatrix(): array
             'personnel.my_sessions.view',
             // Phase 17: no invoice key (strict own-scope; no broad browsing).
             'receipt.view',
-            'commissions.view', 'reports.view',
+            // Phase 20F: legacy `commissions.view` RETIRED — Personnel never see compensation
+            // configuration; own-earnings visibility arrives as earnings.* in Phase 20H.
+            'reports.view',
         ],
         'audit' => [
             // Phase 17: no invoice key (Audit reads finance activity via the finance-domain audit view).
             'receipt.view',
-            'commissions.view', 'platform_fee.view', 'reports.view',
+            // Phase 20F: legacy `commissions.view` RETIRED — Audit reads the compensation domain
+            // through the masked audit.compensation.view below (populated by Phase 20F).
+            'platform_fee.view', 'reports.view',
             // Phase 19 — canonical, domain-segmented, branch-scoped, masked Audit reads
             // (REPLACE the retired catch-all `audit.view_full`) + the flagged-event review
             // workflow (review metadata only; Audit stays read-only over source records).

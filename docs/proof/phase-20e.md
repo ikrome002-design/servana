@@ -1,7 +1,28 @@
 # Phase 20E — Percentage Platform-Fee Engine — Proof
 
-> Lifecycle: **in_progress** (branch `phase-20e-percentage-platform-fees`, based on `origin/main` =
-> `735f419bf72fdd9be3f95c4507e8925c1ed0859e` = the Phase 20C PR #37 squash merge). Specification-first:
+> Lifecycle: **verified_complete** — reconciled from `local_complete pending PR CI/review/merge` during
+> **Phase 20F Increment 1** on the merge evidence below.
+>
+> | Reconciliation fact | Value |
+> |---|---|
+> | PR | **#38** — "Phase 20E: Implement percentage platform fee engine" (<https://github.com/ikrome002-design/servana/pull/38>) |
+> | State | **MERGED** |
+> | Implementation commit | `f6e208a90513bf5ca1c219c456b263ea0d111c5c` (recorded exactly once on PR #38) |
+> | Governance / final PR head | `24d1cad60539fe40596125240391c48a1b821246` (recorded exactly once on PR #38) |
+> | Merge commit | `c0881993ae0c59536013c9b84e182e5000fa1e11` |
+> | Merged at | `2026-07-14T06:19:43Z` |
+> | Final CI run | `29310753740` |
+> | Required jobs | Backend **SUCCESS** · Frontend **SUCCESS** · Docker **SUCCESS** · Security **SUCCESS** · E2E — Playwright **SUCCESS** |
+> | `reviewDecision` | **blank** — documented solo-maintainer governance exception; **NOT** independent reviewer approval |
+> | Branch cleanup | local `phase-20e-percentage-platform-fees` deleted · remote deleted |
+> | Post-merge state | merge commit = `origin/main` = local `main` at Phase 20F branch creation; `origin/main...HEAD` = `0 0`; working tree clean; `git fsck --full` clean |
+>
+> Reconciliation is **documentation-only** — no Phase 20E implementation logic was altered, and the phase
+> is **not** rewritten as independently reviewed. Phase 20F branched from the merge commit `c088199…`.
+>
+> Original in-progress header (retained for history): branch `phase-20e-percentage-platform-fees`, based on
+> `origin/main` = `735f419bf72fdd9be3f95c4507e8925c1ed0859e` = the Phase 20C PR #37 squash merge.
+> Specification-first:
 > **no migration is created until every material gate (E1–E9) is resolved and the data dictionary,
 > state machines, and migration manifest are written.** Controlling sources: Plan §§13.10, 51, 52, 80
 > (Phase 20E), §§17/18 (invoicing/validation), §§20A/20B (billing settings / subscription invoices);

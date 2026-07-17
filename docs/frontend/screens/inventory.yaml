@@ -341,7 +341,7 @@ screens:
     domain: merchant
     route: ~
     status: planned
-    phase: Phase 20F
+    phase: Phase 20H
     spec: ~
   - key: merchant-period-reopen-approvals
     domain: merchant
@@ -417,10 +417,10 @@ screens:
     spec: ~
   - key: hr-compensation
     domain: hr
-    route: ~
-    status: planned
+    route: hr.compensation
+    status: implemented
     phase: Phase 20F
-    spec: ~
+    spec: hr/hr-compensation.md
   - key: hr-payout-prep
     domain: hr
     route: ~

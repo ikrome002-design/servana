@@ -6,7 +6,289 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 20E — Percentage Platform-Fee Engine (`phase-20e-percentage-platform-fees`) — local_complete pending PR CI/review/merge
+### Phase 20F — Compensation Plan Setup and Commission Rules (`phase-20f-compensation-plan-commission-rules`) — local_complete pending PR CI/review/merge
+
+Started off `main` = `c0881993ae0c59536013c9b84e182e5000fa1e11` (the Phase 20E PR #38 merge commit).
+**Gate W remains CLOSED** — `docs/integrations/wallet/gate-w-evidence.md`, `docs/integrations/wallet/`,
+and `docs/integrations/` are absent (no Collections Slice evidence, sandbox credentials, pinned Wallet
+OpenAPI hash, contract suite, STK/C2B/webhook/reconciliation transcripts, or PASS status) ⇒ **20D-W stays
+blocked** and Phase 20F, which depends only on merged HR/staff (Phase 8/15B) and Phase 20A
+preferred-personnel-fee substrate, is the next executable phase per the v4 dependency graph. No pivot to
+20D-W; **no Wallet runtime is introduced**.
+
+Phase 20F implements Plan §59 + §80 (Correction 19; HR) and Scope §12.1–§12.9/§18.3 as **HR/admin
+configuration only**: it defines *how personnel will earn* and creates **none** of the earned financial
+facts owned by Phase 20G (`salary_ledger`, `commission_ledger`, `compensation_adjustments`, earning at
+Finance validation) or Phase 20H (payout runs/items, earnings statements/queries, mark-paid, the Merchant
+Administrator compensation summary).
+
+**Increment 1 (specification-first):** Phase 20E reconciled to `verified_complete` (PR #38 MERGED, merge
+`c088199…`, implementation `f6e208a…`, governance head `24d1cad…`, merged `2026-07-14T06:19:43Z`, final CI
+run `29310753740` five required jobs SUCCESS, `reviewDecision` blank under the documented solo-maintainer
+governance exception — **not** independent approval; both 20E branches deleted). Gate W CLOSED recorded.
+Specification gates **F1–F10** resolved in `docs/proof/phase-20f.md` before any migration:
+**F1** `compensation_model` ∈ `commission_only`/`salary_plus_commission`/`salary_only`, kept separate from
+`staff_profiles.employment_type` (Scope §12.2 forbids overloading);
+**F2** branch-owned (`merchant_id`+`branch_id`+`staff_profile_id`), one active plan per personnel per branch;
+**F3** `effective_from`/nullable `effective_to`, half-open `[from,to)`, gist EXCLUDE partial on
+`active`/`scheduled` (adjacent windows legal; draft/superseded/expired/rejected/cancelled never block);
+**F4** integer minor units, `percentage_basis_points` XOR `fixed_amount_minor`+`currency`, bp bound 0–10000;
+**F5** `commission_rules` is a **sibling** table referenced by `personnel_compensation_plans.commission_rule_id`
+(Scope §18.3 decisive) — configuration only, no earned commission;
+**F6** `applies_to_preferred_personnel_fee` boolean default `false` = basis-inclusion flag consumed by 20G;
+**F7** active/effective monetary terms immutable → supersede-not-edit + history row + audit, prior rules
+ended not deleted; **F8** backdated ⇔ `effective_from` < current `Africa/Nairobi` business date → submit →
+approve with mandatory reason, impact preview, maker/checker, fresh step-up, **critical** audit;
+**F9** activate 8 `compensation.*` keys (HR, branch) and retire legacy `commissions.manage` →
+`compensation.plan.update_draft` / `commissions.view` → `compensation.history.view`;
+**F10** exactly one Phase 20F frontend surface — **HR Compensation** (`hr.compensation`).
+
+Added the data-dictionary entries for `commission_rules`, `personnel_compensation_plans`, and
+`compensation_plan_history`; the `personnel-compensation-plan` state-machine spec (Scope §12.9 statuses
+`draft`/`pending_approval`/`scheduled`/`active`/`expired`/`superseded`/`rejected`/`cancelled`); the
+traceability row `SRV-COMPENSATION-001`; and the migration plan (manifest entries land in Increment 2 with
+the migration files, since `MigrationManifestTest` forbids entries without on-disk files — the Phase 20E
+precedent). **No migration in Increment 1.**
+
+**F4 residual (non-blocking):** Scope §12.7 mentions a "configured merchant/platform maximum" commission
+percentage, but no such configuration exists in the repository, Plan, or elsewhere in the Scope, and Plan §59
+(higher authority) does not require one. Phase 20F enforces the structural bound
+`percentage_basis_points BETWEEN 0 AND 10000` per the merged `preferred_personnel_fee_rules` precedent
+rather than inventing a settings surface (Phase 20A scope creep). Recorded as a residual.
+
+**Documentation corrections:** `merchant.compensation-summary` was tagged Phase 20F, but its permission
+`merchant.compensation_summary.view` is `owning_phase: Phase 20H` in the plan-parity-tested permission
+matrix and Plan §80/§63 place that screen in 20H — retagged to **Phase 20H** and **not** built in 20F
+(same class of inventory mistag recorded in Phase 20A). The retag was applied at the **sources**
+(`resources/spa/src/navigation/roleNavigation.ts` and `docs/frontend/screens/inventory.json`) and
+propagated into the generated vitest file snapshots `docs/frontend/navigation/role-navigation.yaml` and
+`docs/frontend/screens/inventory.yaml` via `vitest -u`; both fixtures then pass without `-u`. **No
+generated file was hand-edited.** The stale `## Phase 20C … (in_progress)` PROGRESS heading was corrected
+to `verified_complete` to match the roadmap table and PR #37 evidence.
+**Increment 2 (schema):** three forward-only migrations in FK order — `commission_rules` →
+`personnel_compensation_plans` → `compensation_plan_history` (`2026_07_14_000001..000003`) — plus 7 enums,
+3 models, 3 factories, and `TenantOwnership` registration (all three **branch-owned**:
+`BRANCH_OWNED` + `MODELS` + `COMPOSITE_CONSISTENCY`). PostgreSQL is the authority, not the application:
+F1 model-shape CHECK (`commission_only` ⇒ no salary + rule required; `salary_only` ⇒ salary required +
+`commission_rule_id` NULL — the DB guarantee behind Plan §80's named "salary-only has no commission rule"
+test; `salary_plus_commission` ⇒ both), F4 value-shape CHECK (percentage XOR fixed, integer minor units,
+`0..10000` bp), F8 maker/checker CHECK (`approved_by <> submitted_by`) + approval/status CHECK so an
+unapproved backdated change can never reach an effective state, composite FKs to `merchant_branches` /
+`staff_profiles` / `commission_rules` / `personnel_compensation_plans` (ADR-002), an F3 partial
+`EXCLUDE USING gist (branch_id, staff_profile_id, daterange(effective_from, effective_to, '[)'))
+WHERE status IN ('active','scheduled')` (one active plan per personnel per branch; adjacent windows legal;
+draft/pending/terminal never block), 2 supersede-aware immutability triggers (only `active → superseded`
+may close an OPEN-ENDED window; every other non-draft term edit raises) and 2 append-only history triggers.
+Gates: `Phase20FSchemaTest` 73, `Phase20FEnumParityTest` 15, manifest 9, tenancy 23, **full suite 1269
+passed / 7 skipped / 0 failed**, Pint 1285, Larastan L8 clean, disposable PG16 proof (`servana_p20f_proof`,
+16.14, 99 migrations, 3/3 tables, 0 forbidden ledger/payout tables, 0/0/0 rows, dropped).
+**F1 finding:** `staff_profiles.employment_type` already contains `commission_only` — identical to
+`CompensationModel::CommissionOnly`. This is exactly the collision F1 anticipates: the shared label does
+**not** make the fields interchangeable. The parity test now pins the overlap to exactly
+`['commission_only']` and proves neither column's CHECK accepts the other's exclusive values.
+
+**Increment 3 (domain):** `PersonnelCompensationPlanStateMachine` + `CommissionRuleStateMachine`
+(each implements **exactly** the nine accepted arrows; all 55 other pairs of the 8×8 matrix are rejected →
+`422 invalid_state_transition`), 12 domain actions, 3 resolvers, a deterministic impact preview, 6 typed
+exceptions, an append-only history writer, and **19 typed audit events** that populate the previously
+empty `AuditDomain::Compensation` (`audit.compensation.view`) read segment reserved by Phase 19.
+Backdated approval (F8) requires fresh step-up + maker/checker + reason + impact preview and emits
+**CRITICAL** `compensation.plan.backdated_change_approved`; ordinary approval is **high**. **Supersede is
+a consequence, not a permission**: approving/activating a successor closes the incumbent
+(`active → superseded`, `effective_to` := successor's `effective_from`) in the SAME transaction, adjacent
+not overlapping, with the incumbent's terms byte-identical afterwards; a previously active rule is
+**ended, not deleted**. Commission rules have **no independent lifecycle** — every non-draft transition is
+driven by the referencing plan inside that plan's transaction, and is skipped when another non-terminal
+plan still depends on the rule. Resolvers return configuration only and **fail closed**
+(`effective_plan_conflict` rather than guessing; `salary_only` → **null always**;
+`effective_commission_rule_missing` rather than a silent "no commission").
+
+**Activation history-event correction (product-owner authorized):** the accepted data dictionary omitted
+`activated` from the `compensation_plan_history.event` CHECK while the accepted state machine defines
+`scheduled → active` and already lists the symmetric `expired` — a **documentation omission** that
+propagated into the Increment 2 CHECK. Resolved by editing the **still-uncommitted** Increment 2 migration
+(`git log --all` proves it was never committed on any branch; Guardrail 12 and the manifest header scope
+forward-only to **shipped** migrations, and a create-then-expand pair inside one never-merged PR would
+permanently pollute `main`), with the **full Increment 2 schema proof + disposable PG16 proof rerun**.
+Enum, DB CHECK, both state-machine specs and the data dictionary are now in parity.
+
+Increment 3 gates: state machines 18, actions 50, resolvers 24, audit/scope/parity 37, schema+manifest+
+provider+tenancy 97, Pint 1317 clean, Larastan L8 clean (1014 files), disposable PG16 rerun green with
+`activated` in the CHECK. `docs/api/openapi.json` was regenerated because the **pre-existing** Phase 19
+audit-read endpoints document the `AuditEvent` action enum — paths/operations stay at **196/235**
+(identical to the 20E baseline) and the only compensation path remains the pre-existing
+`/api/v1/audit-logs/compensation`. **No Phase 20F route, controller, Form Request, Resource, policy, or
+frontend exists yet** (Increments 4–5).
+
+**Pre-existing defect surfaced and fixed (not a Phase 20F regression): `CashUpWorkflowTest` had a
+~3-hour-per-day red window in CI.** The Phase 18B test helper `cashUpComponent()` set
+`paid_at => CarbonImmutable::now('Africa/Nairobi')` — a Nairobi **wall-clock**. `paid_at` is cast
+`datetime`, so Laravel drops the `+03:00` offset and PostgreSQL reads the naive string in the UTC
+session; `CashUpExpectedTotalCalculator`'s `(paid_at AT TIME ZONE 'Africa/Nairobi')::date` then adds
++03:00 **again**, landing the row on tomorrow's business date and collapsing `expected_minor` to 0.
+It fires only when the suite runs between **21:00–23:59 Nairobi (18:00–20:59 UTC)**, which is why the
+Increment 2 suite was green (1269/0) earlier the same day and the Increment 3 runs were not. A direct
+probe proved the double conversion. **Production is correct and untouched** — the real recording path
+(`PaymentRecordingGroupController` → `CarbonImmutable::now()`) stores the instant; only the helper and
+one refund `finalized_at` (whose neighbouring `approved_at` already used `now()`) passed a wall-clock.
+Both now use `CarbonImmutable::now()`, matching production and making the tests time-independent. **No
+production financial calculation, constraint, or timezone rule was changed.**
+
+**Increment 4 (permissions, API, security wiring, contracts):** the Phase 20F permission flip landed
+atomically — **8 canonical keys activated** (`compensation.plan.view/create/update_draft/submit/
+approve/reject/cancel` + `compensation.history.view`; HR-only, branch scope) and the **2 legacy keys
+retired outright** (`commissions.manage → compensation.plan.update_draft`;
+`commissions.view → compensation.history.view`) with no alias and no compatibility grant, the Phase 19
+`audit.view_full` precedent. Counts moved **active 104 → 110, planned 66 → 58, legacy-active ratchet
+10 → 8** (arithmetic proven from the repository, not asserted). Because the successor of
+`commissions.view` is HR-only, its old **merchant_admin / branch_manager / personnel / audit** grants
+and the **finance** grantable override are all retired rather than carried over (Plan §10.2: the
+Merchant Administrator never configures commissions); no broad replacement key was added — Finance's
+`compensation.liability.view` (20G), the Merchant Administrator's `merchant.compensation_summary.view`
+(20H) and Personnel's `earnings.*` (20H) stay PLANNED, and Audit keeps reading the domain through the
+masked `audit.compensation.view` that 20F now populates. `phase8-matrix.txt` (regenerated by
+`PermissionMatrixTest`) shows a single ✓ in the `hr` column for all 8 keys.
+
+**API (11 new paths / 13 new operations, all `branch_mutation`, HR-only):** `commission-rules`
+index/store/show + `/draft` PATCH; `compensation-plans` index/store/show + `/draft` PATCH +
+`/submit`, `/approve`, `/reject`, `/cancel` POST + `/history` GET. **No DELETE, no generic status
+route, no manual supersede route** (supersede stays a consequence of approval), no ledger/payout/
+earnings/summary route, no platform or provider context. Approve carries
+`RequireFreshMfa:compensation_backdated_change` — the §18 designated *compensation* step-up action
+that already existed, now a live route (removed from the harness `businessActions()` per the
+BillingConfiguration/InvoiceVoid precedent and proven on the real route instead). Missing AND stale
+assertions both 403 `step_up_required`; the submitter approving their own plan gets 403
+`maker_checker_violation`; a backdated approval without an acknowledged, SERVER-BUILT impact preview
+fails closed with 422 `backdated_approval_requires_impact_preview`. The preview is never accepted
+from the client. Server-owned fields (status, is_backdated, merchant/branch, actors, timestamps,
+ulid, supersedes_plan_id) are all proven to come from the server.
+
+**Idempotency (reasoned, recorded):** these are configuration mutations that create no money fact, so
+they are `branch_mutation` and carry no idempotency key — the repository only requires it for
+`financial_mutation`. Replay is safe by construction: `pending_approval` is the only legal source for
+approve, so a replayed approve is `422 invalid_state_transition`, never a duplicate history/audit row,
+and the DB EXCLUDE blocks a duplicate active window regardless.
+
+**Audit:** all 8 mutating routes mapped in `AuditMutationCoverage`, including the same-transaction
+rule events and the incumbent supersede (approve maps to five events). The matrix `audit_event`
+metadata is **re-derived from the live route table** by `PermissionMatrixPlanMetadataParityTest`, so
+it is repository evidence rather than a hand-written claim. Backdated approval proven **critical** at
+the API level; a denied approval writes no success audit.
+
+**Contracts:** OpenAPI **196 → 207 paths / 235 → 248 operations**; `api:contract:check` OK;
+`permissions.ts` + `api.ts` regenerated through their generators only (never hand-edited); a second
+regeneration of all three produced **identical hashes** (determinism proven). Gates: Phase 20F suite
+**290 passed**, full backend **1469 passed / 7 skipped / 0 failed**, Vitest **352/352**, vue-tsc clean,
+Pint 1334, Larastan L8 clean (1029 files). **No frontend view, Pinia store, Vitest UI spec or
+Playwright spec was written — those are Increment 5.**
+
+**Increment 5 (HR Compensation frontend, generated-contract integration, browser proof):** exactly one
+Phase 20F screen — **HR Compensation** (`hr.compensation` → `/hr/compensation`, `BranchLayout`,
+`compensation.plan.view`, HR, branch-scoped), hosted under the existing HR/branch shell. The nav item
+flipped `planned → live` in `roleNavigation.ts` and the inventory entry flipped `planned → implemented`
+in `inventory.json`; `role-navigation.yaml`, `inventory.yaml` and the §27.1 screen spec
+(`docs/frontend/screens/hr/hr-compensation.md`) were regenerated through their own generators/tests —
+**no generated file was hand-edited**. The nav-fixture regeneration also flushed a pre-existing
+Increment-1 drift (`merchant.compensation-summary` fixture said `Phase 20F`; the source already said
+`Phase 20H`). `router/guards.ts::requiresPermission` had **no caller** in the SPA before this increment;
+`hr.compensation` is its first use — UX only, the API stays the security boundary.
+
+`stores/compensationStore.ts` (Pinia) types every response from the **generated** `api.ts` and exposes
+one named transition per verb (`submit`/`approve`/`reject`/`cancel`) — **no generic status setter and no
+supersede action**; a test proves no `supersede` URL is ever constructed. Local state is written **only**
+from the server's response, so a refused submit/approve (validation, forbidden, `step_up_required`,
+`maker_checker_violation`, `invalid_state_transition`, `compensation_plan_overlap`) can never leave the
+screen showing a state the backend did not grant. `$reset()` + a `branchIds` watch drop stale
+branch/tenant data. **No authoritative money is computed in JavaScript** — integer minor units in,
+display formatting out.
+
+The screen provides list (+status/staff/model filters), detail with the append-only history rendered
+verbatim, the commission-rule draft form (percentage XOR fixed+currency, 0–10000 bp, category only when
+`applies_to = service_category`, preferred-fee **basis-inclusion** toggle), the plan draft form (F1 model
+shape: `salary_only` forbids a rule, `commission_only` forbids salary, `salary_plus_commission` requires
+both), and the four transitions each behind a mandatory reason. Approval states the fresh-step-up
+requirement and surfaces a stale step-up without faking success or storing any step-up secret; submit
+states the maker/checker rule up front; a **backdated** plan shows a warning + impact-preview summary and
+blocks approval until the acknowledgement is ticked, sending `acknowledge_impact_preview: true` so the
+**server** builds and records the authoritative preview (never composed or sent client-side).
+
+**Contract-truth fix (DEF-20F-015):** `vue-tsc` proved the published contract lied — the OpenAPI
+generator infers nullability from an explicit `=== null ? null : …` ternary but **not** through the
+nullsafe `?->` operator, so `effective_to`, `approved_at`, `submitted_at`, `rejected_at`,
+`salary_period`, `from_status` and `occurred_at` were published as non-nullable `string` while the
+server genuinely returns `null` (`PreferredPersonnelFeeRuleResource` writes the same fields with the
+ternary and was already correct). Converted only the genuinely-nullable Phase 20F resource fields —
+**no runtime behaviour change, the emitted JSON is byte-identical** — and regenerated; path/operation
+counts unchanged at **207/248**, confirming a schema-nullability-only change. The identical Phase 20E
+drift in `PlatformFeeConfigurationResource` is recorded as **out of scope, not fixed here**.
+
+**No Merchant-Administrator compensation summary, no Branch-Manager compensation configuration, no
+Personnel earnings statement, no Finance liability screen, no commission/salary ledger UI, no payout UI
+and no Wallet/provider UI was built** — and this is enforced rather than asserted: the store test fails
+on any action key matching `earning|payout|ledger|liability|settle|wallet|accrual`, the component test
+fails if the rendered screen contains `earned|payout|ledger|payable|settled|wallet|settlement`, and the
+E2E fails if a `Supersede`/`Payout`/`Earnings`/`Ledger`/`Liability`/`Wallet` control exists. Gates:
+ESLint **0 errors** (new files add no warning), vue-tsc **clean** (strictness not lowered, no ignores),
+Vitest **352 → 404** (+52; `compensationStore` 20, `Compensation` 32), `api:contract:check` **OK
+207/248**, `npm run build` PASS.
+
+**Accessibility corrections (DEF-20F-019, serious / WCAG 2 AA 1.4.3).** `--color-brand-deep` and
+`--color-warning` are deliberately **not** dark-overridden (brand-deep is the CTA-text-on-orange
+colour, ADR-009), so using them as foregrounds on backgrounds that *do* adapt renders dark-on-dark
+(1.07–1.28:1) or amber-on-white (2.14:1). Fixed HR Compensation's own headings and status badges, and
+the shared `SvModal` title — the latter a **pre-existing** defect that Phase 20F's dialogs are simply
+the first to axe-scan in dark mode, fixed here only because §16 forbids suppressing the rule and the
+**full** Playwright suite (364) proves no regression to any other dialog. The `draft` badge correctly
+**keeps** `bg-cream text-brand-deep` (cream has no dark override either). The axe *coverage* gap that
+hid this was fixed too: the suite now renders all five status badges and scans all three dialogs in
+both themes — which caught the `Scheduled` badge on the next run. **No axe rule was suppressed.**
+
+**Increment 6 (full local gates, documentation finalization, scope-purity audit, completion commit):**
+no new feature work. Two real defects discovered during Phase 20F are recorded as **deferred
+follow-ups** rather than executed here — each is repo-wide, touches unrelated domains, and would fold
+foreign cleanup into the Phase 20F completion commit, breaking one-phase/one-reviewed-branch
+(CLAUDE.md §5) and this diff's reviewability. Each needs its own product-owner-authorized branch/PR
+after Phase 20F local completion.
+
+1. **Repo-wide nullable Resource/OpenAPI truth sweep — deferred.** Phase 20F corrected the Phase 20F
+   Resources required for HR Compensation; a broader sweep affects many Resources and generated
+   frontend consumers across unrelated domains. Evidence: the generator infers nullability from an
+   explicit `$x === null ? null : …` ternary but **not** reliably from `?->`. Known example:
+   `PlatformFeeConfigurationResource` (Phase 20E). A read-only Increment 6 audit measured the blast
+   radius — **92 nullable Resource expressions across 29 Resources**, every one declared
+   `"type": "string"` *and* `required: true` while the server can emit `null`; correcting them would
+   change `api.ts` for unrelated SPA consumers and likely cascade into `vue-tsc` failures elsewhere.
+   **0 of 92 were fixed in this branch**, `PlatformFeeConfigurationResource` explicitly included —
+   fixing only it would still fold a Phase 20E change into the Phase 20F commit while leaving the
+   other 88 wrong. **Not a Phase 20F blocker:** the Phase 20F screen, OpenAPI, `api.ts`, vue-tsc and
+   contract gates are green.
+2. **Repo-wide dark-mode heading/warning-badge contrast sweep — deferred.** Phase 20F corrected HR
+   Compensation and the shared `SvModal` issue its dialogs depended on; a broader token audit affects
+   unrelated screens and needs dedicated axe coverage. Evidence: `text-brand-deep` fails on adaptive
+   dark surfaces; `text-warning` fails as a small badge foreground on light surfaces; some existing
+   tests never render every badge/dialog state. A blanket replace would be **wrong** — `text-brand-deep`
+   is correct on orange/cream backgrounds. **Not a Phase 20F blocker:** HR Compensation has axe
+   serious/critical = 0 and the full Playwright suite passed.
+
+**Increment 6 gates (every gate re-run, none inherited):** composer validate OK; Pint **1334 PASS**;
+Larastan L8 **no errors** (1029 files); **full backend serial 1469 passed / 7 skipped / 0 failed /
+8644 assertions** and **`--parallel` (4 processes) identical 1469/7/0**; ESLint **0 errors**; vue-tsc
+clean; Vitest **404/84 files**; `npm run build` PASS; **full Playwright 364 passed**; axe
+serious/critical **0** across the list and all three dialogs in light + dark; OpenAPI **207 paths /
+248 operations**, `api:contract:check` OK, `servana:permission-types --check` up to date, and
+**generator determinism proven by identical SHA-256 hashes across the baseline plus two full
+regeneration passes** (openapi.json / api.ts / permissions.ts); `composer audit --locked` clean;
+`npm audit --audit-level=high` 2 moderate (exit 0, below gate); gitleaks **no leaks** (16.88 MB);
+Docker dev app + prod app + prod nginx all built. **Disposable PostgreSQL 16 proof re-run** on a
+throwaway database (`servana_p20f_i6_proof`, PG 16.14): 99 migrations, 3 Phase 20F migrations, 3/3
+tables, 1 EXCLUDE constraint, 4 triggers, 0/0/0 rows after seed, **0 forbidden 20G/20H tables**,
+database dropped and the dev database untouched. **Scope-purity audit:** every changed path maps to an
+authorized category, and `PlatformFeeConfigurationResource.php`, `StaffList.vue`, every other
+unrelated Resource, all ledger/payout/earnings/Wallet surfaces and all build artifacts are verified
+**absent** from the diff. One Phase 20F completion commit on top of `c088199…`; branch pushed. **No PR
+created, no merge, branch retained.**
+
+### Phase 20E — Percentage Platform-Fee Engine (`phase-20e-percentage-platform-fees`) — verified_complete (PR #38 MERGED, merge `c088199…`, 2026-07-14)
 
 Started off `main` = `735f419…` (Phase 20C PR #37 squash merge); Gate W CLOSED (evidence absent) ⇒ 20E
 is the next executable phase per the v4 dependency graph. Increment 1 (specification-first): Phase 20C
@@ -101,8 +383,13 @@ build ✓; Playwright affected 77 + full **324 / 0 fail** (Phase 20E 360/768/128
 --audit-level=high` exit 0 (2 moderate dev-only `js-yaml`@`@redocly/openapi-core`, disclosed), gitleaks no
 leaks; Docker `servana-app:dev` + `servana-app:prod` + `servana-nginx:prod` all built. Scope-purity clean —
 no Wallet/provider runtime introduced. No gate failed on first execution; nothing disabled, loosened, or
-suppressed. Lifecycle: `local_complete pending PR CI/review/merge` — the PR/CI/review/merge is a separate,
-product-owner-authorized step.
+suppressed. Lifecycle: ✅ `verified_complete` — reconciled during Phase 20F Increment 1. **PR #38**
+"Phase 20E: Implement percentage platform fee engine" MERGED into `main`: merge commit
+`c0881993ae0c59536013c9b84e182e5000fa1e11`, implementation commit `f6e208a90513bf5ca1c219c456b263ea0d111c5c`,
+governance / final PR head `24d1cad60539fe40596125240391c48a1b821246`, merged `2026-07-14T06:19:43Z`.
+Final CI run `29310753740` — five required jobs (Backend, Frontend, Docker, Security, E2E — Playwright) all
+SUCCESS. `reviewDecision` **blank** under the documented solo-maintainer governance exception — **not**
+independent reviewer approval. Local + remote `phase-20e-percentage-platform-fees` branches deleted.
 
 ### Phase 20C — Promotions and Free-Period Offers (`phase-20c-promotions-free-periods`) — verified_complete (PR #37 merged `735f419…`, 2026-07-12)
 
