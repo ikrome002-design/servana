@@ -99,7 +99,7 @@ async function setConsent(state: SmsConsentState): Promise<void> {
       @retry="load"
     >
       <div v-if="client">
-        <h1 class="font-display text-2xl font-bold text-brand-deep">
+        <h1 class="font-display text-2xl font-bold text-heading">
           {{ client.full_name }}
         </h1>
         <p class="mt-1 text-sm text-text-muted">
@@ -113,7 +113,7 @@ async function setConsent(state: SmsConsentState): Promise<void> {
           padding="md"
           class="mt-6"
         >
-          <h2 class="font-display text-base font-semibold text-brand-deep">
+          <h2 class="font-display text-base font-semibold text-heading">
             SMS consent
           </h2>
           <p

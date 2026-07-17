@@ -6,7 +6,54 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 20F — Compensation Plan Setup and Commission Rules (`phase-20f-compensation-plan-commission-rules`) — local_complete pending PR CI/review/merge
+### Post-Phase-20F Deferred Hardening (`hardening/resource-contracts-and-accessibility-tokens`) — local_complete pending PR CI/review/merge
+
+Started off `main` = `f4bc664b7ba77476f9db01dcb0ec1a526dc20538` (the Phase 20F PR #39 **squash** merge —
+which is why the Phase 20F implementation commit `a42e13e6…` is not an ancestor of `main`). Discharges
+the two follow-ups Phase 20F recorded as deferred. **Not a feature phase:** no migrations, no new
+permissions, no new API routes, no new money/billing logic, no Phase 20D-W / 20G / 20H work.
+
+**A. Repo-wide nullable Resource/OpenAPI truth sweep.** The audit was re-run rather than inherited:
+124 non-comment `?->` lines across 38 of 56 Resources, 110 field assignments published non-null.
+**104 confirmed defects fixed across 34 Resource files**; **20 deliberately kept** where null is
+unreachable (relations on non-null FKs; `QueueEntryResource`'s `(string)` cast, which yields `''`).
+A post-fix audit re-run reports **0** remaining genuine defects.
+Every candidate was decided against the model's own `@property` docblock (attributes) or the FK
+column's nullability (relations) — no blanket rewrite, and no nullability invented where the
+database and resource cannot emit null. The Phase 20E `PlatformFeeConfigurationResource` drift that
+20F recorded out of scope is fixed here, as are `FreePeriodOffer`/`PromotionalDiscount`
+`targets[]` (a target names exactly one of merchant/plan/billing_mode, so two are always null yet
+all three were published required non-null). **Runtime JSON is byte-identical** — `$x?->m()` and
+`$x === null ? null : $x->m()` are semantically identical; only the published contract changed, from
+a lie to the truth. OpenAPI stays at **207 paths / 248 operations**; generator determinism proven by
+three byte-identical passes. New finding beyond 20F's note: a `fn (): ?string` closure **return type
+hint does not create nullability** — the explicit ternary must sit inside the closure. The truthful
+types exposed exactly **3** `vue-tsc` errors, each a genuine latent bug: `platformFee.ts` pushed
+`null` into a terms label (would render a literal "null"), and `PlatformFeeConfigSection.prefill()`
+assigned a nullable tier/basis into a `string` form field — now prefilled blank so a legacy null
+cannot silently propose a different fee behaviour on edit. Fixed with real null handling: no
+non-null assertions, no casts, no null→`''` in any API Resource.
+
+**B. Repo-wide dark-mode heading / warning-badge contrast sweep.** `--color-brand-deep` and
+`--color-warning` are deliberately not dark-overridden, so `text-brand-deep` headings on adaptive
+surfaces rendered at ~1.07–1.28:1 and `bg-warning/15 text-warning` at ~2.14:1. Of **128**
+`text-brand-deep` occurrences, **105 changed** to the adaptive `text-heading` and **23 kept**: 16 sit
+on non-adaptive orange/cream backgrounds where brand-deep is the correct CTA/badge foreground
+(ADR-009), 3 are comments, and 4 already carry their own `dark:text-text` override and are therefore
+proven safe rather than failing. Four occurrences a background heuristic flagged as "probably on
+cream" were read individually and **all four proved to be failures** — the `bg-cream` belonged to a
+sibling icon div or badge, not the heading. `text-warning` exists **twice in the whole repo**, both
+in `StaffList.vue`, fixed to `bg-warning/15 text-text` (the pair 20F proved). `success`/`error`
+badges are untouched: their tokens *are* dark-overridden. **`StaffList` had no e2e coverage at
+all** — exactly how its warning badges stayed invisible to every axe run; new
+`tests/e2e/hardening-accessibility.spec.ts` renders all four membership statuses in light and dark
+with axe serious/critical = 0, and a **negative control proves the spec fails on the pre-fix
+classes**. No axe rule suppressed or narrowed.
+
+Phase 20F is reconciled to `verified_complete` in this branch, per the established convention that
+the next branch reconciles the previous phase. Proof: `docs/proof/post-20f-deferred-hardening.md`.
+
+### Phase 20F — Compensation Plan Setup and Commission Rules (`phase-20f-compensation-plan-commission-rules`) — verified_complete (PR #39 MERGED, squash merge `f4bc664…`, 2026-07-17)
 
 Started off `main` = `c0881993ae0c59536013c9b84e182e5000fa1e11` (the Phase 20E PR #38 merge commit).
 **Gate W remains CLOSED** — `docs/integrations/wallet/gate-w-evidence.md`, `docs/integrations/wallet/`,

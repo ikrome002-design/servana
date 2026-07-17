@@ -133,7 +133,7 @@ async function confirmRetire(): Promise<void> {
       <div>
         <h2
           id="plans-heading"
-          class="font-display text-lg font-bold text-brand-deep"
+          class="font-display text-lg font-bold text-heading"
         >
           Subscription plans
         </h2>

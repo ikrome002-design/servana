@@ -33,7 +33,9 @@ final class PaymentReferenceCheckResource extends JsonResource
 
                 return $record->maskedReference();
             }),
-            'matched_payment_id' => $this->whenLoaded('matchedRecord', fn (): ?string => $this->matchedRecord?->ulid),
+            // matched_payment_record_id is a nullable FK (an unmatched check has no record),
+            // so a loaded relation can still be null.
+            'matched_payment_id' => $this->whenLoaded('matchedRecord', fn (): ?string => $this->matchedRecord === null ? null : $this->matchedRecord->ulid),
             'is_override' => $this->override_by !== null,
             'override_reason' => $this->override_reason,
             'checked_at' => $this->checked_at->toIso8601String(),

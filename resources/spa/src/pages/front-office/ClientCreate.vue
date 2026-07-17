@@ -58,7 +58,7 @@ const submit = form.handleSubmit(async (values) => {
 
 <template>
   <section class="mx-auto w-full max-w-lg p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-brand-deep">
+    <h1 class="font-display text-2xl font-bold text-heading">
       Add a client
     </h1>
 
@@ -71,7 +71,7 @@ const submit = form.handleSubmit(async (values) => {
       A client with this phone number already exists in this branch.
       <RouterLink
         :to="{ name: 'front-office.clients.detail', params: { id: duplicateId } }"
-        class="font-semibold text-brand-deep underline"
+        class="font-semibold text-heading underline"
       >
         Open the existing client
       </RouterLink>.

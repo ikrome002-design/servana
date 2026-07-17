@@ -18,7 +18,7 @@ onMounted(() => {
 <template>
   <section class="p-4 md:p-6">
     <div class="flex items-center justify-between">
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         Branches
       </h1>
       <PermissionGate permission="branches.create">
@@ -50,7 +50,7 @@ onMounted(() => {
           padding="md"
         >
           <div class="flex items-center justify-between">
-            <h2 class="font-display text-base font-semibold text-brand-deep">
+            <h2 class="font-display text-base font-semibold text-heading">
               {{ branch.name }}
             </h2>
             <span
@@ -66,7 +66,7 @@ onMounted(() => {
           </p>
           <RouterLink
             :to="{ name: 'branch.detail', params: { id: branch.id } }"
-            class="mt-3 inline-block text-sm font-semibold text-brand-deep underline"
+            class="mt-3 inline-block text-sm font-semibold text-heading underline"
           >
             View branch
           </RouterLink>

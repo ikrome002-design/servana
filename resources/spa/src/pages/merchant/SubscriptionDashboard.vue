@@ -74,7 +74,7 @@ onMounted(async () => {
 <template>
   <div class="mx-auto flex max-w-4xl flex-col gap-6">
     <header>
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         Subscription and billing
       </h1>
       <p class="mt-1 text-sm text-text-muted">
@@ -126,7 +126,7 @@ onMounted(async () => {
                 Subscription status
               </dt>
               <dd
-                class="mt-1 text-base font-semibold text-brand-deep"
+                class="mt-1 text-base font-semibold text-heading"
                 data-testid="subscription-status"
               >
                 {{ label(SUBSCRIPTION_STATUS_LABELS, sub.status) }}
@@ -137,7 +137,7 @@ onMounted(async () => {
                 Billing status
               </dt>
               <dd
-                class="mt-1 text-base font-semibold text-brand-deep"
+                class="mt-1 text-base font-semibold text-heading"
                 data-testid="billing-status"
               >
                 {{ label(BILLING_STATUS_LABELS, sub.billing_status) }}
@@ -181,7 +181,7 @@ onMounted(async () => {
 
         <!-- Scheduled plan change -->
         <SvCard>
-          <h2 class="font-display text-lg font-bold text-brand-deep">
+          <h2 class="font-display text-lg font-bold text-heading">
             Scheduled plan change
           </h2>
           <p
@@ -217,7 +217,7 @@ onMounted(async () => {
         <!-- Latest invoice -->
         <SvCard>
           <div class="flex items-center justify-between gap-4">
-            <h2 class="font-display text-lg font-bold text-brand-deep">
+            <h2 class="font-display text-lg font-bold text-heading">
               Latest invoice
             </h2>
             <RouterLink

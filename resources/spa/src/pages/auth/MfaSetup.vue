@@ -88,7 +88,7 @@ onMounted(startEnrollment);
     padding="lg"
     class="w-full max-w-md"
   >
-    <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+    <h1 class="font-display text-2xl font-extrabold text-heading">
       Set up two-factor authentication
     </h1>
     <p class="mt-2 text-sm text-text-muted">

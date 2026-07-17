@@ -50,7 +50,7 @@ const submit = form.handleSubmit(async ({ email }) => {
     padding="lg"
     class="w-full max-w-md"
   >
-    <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+    <h1 class="font-display text-2xl font-extrabold text-heading">
       Sign in to Servana
     </h1>
     <p class="mt-2 text-sm text-text-muted">
@@ -85,7 +85,7 @@ const submit = form.handleSubmit(async ({ email }) => {
       New to Servana?
       <RouterLink
         :to="{ name: 'auth.register' }"
-        class="font-semibold text-brand-deep underline"
+        class="font-semibold text-heading underline"
       >
         Create a business account
       </RouterLink>

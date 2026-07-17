@@ -93,7 +93,7 @@ async function download(): Promise<void> {
 <template>
   <div class="mx-auto flex max-w-5xl flex-col gap-6">
     <header>
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         Subscription invoices
       </h1>
       <p class="mt-1 text-sm text-text-muted">
@@ -133,7 +133,7 @@ async function download(): Promise<void> {
               <button
                 type="button"
                 class="flex w-full items-center justify-between gap-3 px-1 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                :class="{ 'font-semibold text-brand-deep': selected?.id === invoice.id }"
+                :class="{ 'font-semibold text-heading': selected?.id === invoice.id }"
                 :aria-current="selected?.id === invoice.id ? 'true' : undefined"
                 :data-testid="`invoice-row-${invoice.id}`"
                 @click="select(invoice)"
@@ -153,7 +153,7 @@ async function download(): Promise<void> {
             <div class="flex items-start justify-between gap-4">
               <div>
                 <h2
-                  class="font-display text-lg font-bold text-brand-deep"
+                  class="font-display text-lg font-bold text-heading"
                   data-testid="invoice-number"
                 >
                   {{ selected.invoice_number ?? 'Draft invoice' }}
@@ -188,7 +188,7 @@ async function download(): Promise<void> {
                 <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
                   Total
                 </dt>
-                <dd class="mt-1 font-semibold text-brand-deep">
+                <dd class="mt-1 font-semibold text-heading">
                   {{ formatMoney(selected.total_minor, selected.currency) }}
                 </dd>
               </div>

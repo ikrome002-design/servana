@@ -72,7 +72,7 @@ function toggleMode(): void {
     padding="lg"
     class="w-full max-w-md"
   >
-    <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+    <h1 class="font-display text-2xl font-extrabold text-heading">
       Verify it’s you
     </h1>
     <p class="mt-2 text-sm text-text-muted">
@@ -109,7 +109,7 @@ function toggleMode(): void {
 
     <button
       type="button"
-      class="mt-4 text-sm font-semibold text-brand-deep underline"
+      class="mt-4 text-sm font-semibold text-heading underline"
       @click="toggleMode"
     >
       {{ useRecoveryCode ? 'Use my authenticator app instead' : 'Use a recovery code instead' }}

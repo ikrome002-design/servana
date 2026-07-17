@@ -118,7 +118,7 @@ async function confirmCancel(): Promise<void> {
       <div>
         <h2
           id="prices-heading"
-          class="font-display text-lg font-bold text-brand-deep"
+          class="font-display text-lg font-bold text-heading"
         >
           Plan prices
           <span

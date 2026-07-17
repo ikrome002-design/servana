@@ -53,7 +53,7 @@ onMounted(verify);
     padding="lg"
     class="w-full max-w-md"
   >
-    <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+    <h1 class="font-display text-2xl font-extrabold text-heading">
       Signing you in
     </h1>
 

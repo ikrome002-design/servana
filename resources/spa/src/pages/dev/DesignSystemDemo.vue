@@ -39,7 +39,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
     <div class="mx-auto max-w-3xl space-y-10">
       <!-- Header -->
       <div>
-        <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+        <h1 class="font-display text-2xl font-extrabold text-heading">
           Design System Demo
         </h1>
         <p class="mt-1 text-sm text-text-muted">
@@ -49,7 +49,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
 
       <!-- Theme toggle -->
       <SvCard>
-        <h2 class="mb-4 font-display text-base font-bold text-brand-deep">
+        <h2 class="mb-4 font-display text-base font-bold text-heading">
           Theme
         </h2>
         <SvButton
@@ -64,7 +64,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
 
       <!-- Buttons -->
       <SvCard>
-        <h2 class="mb-4 font-display text-base font-bold text-brand-deep">
+        <h2 class="mb-4 font-display text-base font-bold text-heading">
           SvButton
         </h2>
         <div class="flex flex-wrap gap-3">
@@ -97,7 +97,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
 
       <!-- Inputs -->
       <SvCard>
-        <h2 class="mb-4 font-display text-base font-bold text-brand-deep">
+        <h2 class="mb-4 font-display text-base font-bold text-heading">
           SvInput, SvSelect, SvTextarea
         </h2>
         <div class="space-y-4">
@@ -152,7 +152,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
 
       <!-- SvStateBoundary -->
       <SvCard>
-        <h2 class="mb-4 font-display text-base font-bold text-brand-deep">
+        <h2 class="mb-4 font-display text-base font-bold text-heading">
           SvStateBoundary
         </h2>
         <div class="grid gap-6 md:grid-cols-2">
@@ -196,7 +196,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
 
       <!-- SvEmptyState -->
       <SvCard>
-        <h2 class="mb-4 font-display text-base font-bold text-brand-deep">
+        <h2 class="mb-4 font-display text-base font-bold text-heading">
           SvEmptyState
         </h2>
         <SvEmptyState
@@ -209,7 +209,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
 
       <!-- SvModal -->
       <SvCard>
-        <h2 class="mb-4 font-display text-base font-bold text-brand-deep">
+        <h2 class="mb-4 font-display text-base font-bold text-heading">
           SvModal
         </h2>
         <SvButton
@@ -244,7 +244,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
 
       <!-- Toasts -->
       <SvCard>
-        <h2 class="mb-4 font-display text-base font-bold text-brand-deep">
+        <h2 class="mb-4 font-display text-base font-bold text-heading">
           SvToast
         </h2>
         <div class="flex flex-wrap gap-2">

@@ -17,7 +17,7 @@ const emit = defineEmits<{ action: [] }>();
     >
       {{ icon ?? '📋' }}
     </div>
-    <h3 class="font-display text-base font-bold text-brand-deep">
+    <h3 class="font-display text-base font-bold text-heading">
       {{ title }}
     </h3>
     <p

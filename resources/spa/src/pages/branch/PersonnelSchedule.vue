@@ -74,7 +74,7 @@ onMounted(async () => {
 
 <template>
   <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-brand-deep">
+    <h1 class="font-display text-2xl font-bold text-heading">
       Personnel schedule
     </h1>
     <p class="mt-1 text-sm text-text-muted">
@@ -163,7 +163,7 @@ onMounted(async () => {
             padding="md"
             data-testid="bm-today"
           >
-            <h2 class="font-display text-lg font-semibold text-brand-deep">
+            <h2 class="font-display text-lg font-semibold text-heading">
               Today ({{ WEEKDAY_LABELS[todayWeekday] }})
             </h2>
             <dl class="mt-2 flex flex-col gap-2 text-sm">
@@ -222,7 +222,7 @@ onMounted(async () => {
             as="div"
             padding="md"
           >
-            <h2 class="font-display text-lg font-semibold text-brand-deep">
+            <h2 class="font-display text-lg font-semibold text-heading">
               Weekly schedule
             </h2>
             <ul class="mt-2 flex flex-col gap-1 text-sm">

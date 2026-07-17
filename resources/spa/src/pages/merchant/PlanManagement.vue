@@ -94,7 +94,7 @@ function resolveError(err: unknown, fallback: string): string {
 <template>
   <div class="mx-auto flex max-w-4xl flex-col gap-6">
     <header>
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         Plan management
       </h1>
       <p class="mt-1 text-sm text-text-muted">
@@ -141,7 +141,7 @@ function resolveError(err: unknown, fallback: string): string {
 
         <!-- Scheduled change -->
         <SvCard v-if="scheduled">
-          <h2 class="font-display text-lg font-bold text-brand-deep">
+          <h2 class="font-display text-lg font-bold text-heading">
             Scheduled change
           </h2>
           <p
@@ -171,7 +171,7 @@ function resolveError(err: unknown, fallback: string): string {
         <section aria-labelledby="plans-heading">
           <h2
             id="plans-heading"
-            class="font-display text-lg font-bold text-brand-deep"
+            class="font-display text-lg font-bold text-heading"
           >
             Available plans
           </h2>
@@ -191,7 +191,7 @@ function resolveError(err: unknown, fallback: string): string {
               <SvCard>
                 <div class="flex items-start justify-between gap-2">
                   <div>
-                    <h3 class="text-base font-semibold text-brand-deep">
+                    <h3 class="text-base font-semibold text-heading">
                       {{ plan.name }}
                     </h3>
                     <p
@@ -212,7 +212,7 @@ function resolveError(err: unknown, fallback: string): string {
 
                 <p
                   v-if="plan.effective_price"
-                  class="mt-3 text-lg font-bold text-brand-deep"
+                  class="mt-3 text-lg font-bold text-heading"
                 >
                   {{ formatMoney(amount(plan.effective_price.amount_minor), plan.effective_price.currency) }}
                   <span class="text-sm font-normal text-text-muted">/ {{ plan.effective_price.billing_interval }}</span>

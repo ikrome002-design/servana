@@ -78,7 +78,7 @@ async function revoke(staffProfileId: string | null | undefined): Promise<void> 
 
 <template>
   <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-brand-deep">
+    <h1 class="font-display text-2xl font-bold text-heading">
       Service eligibility
     </h1>
     <p class="mt-1 text-sm text-text-muted">

@@ -47,7 +47,7 @@ function backToLogin(): void {
     >
       ✉️
     </div>
-    <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+    <h1 class="font-display text-2xl font-extrabold text-heading">
       Check your email
     </h1>
     <p class="mt-2 text-sm text-text-muted">

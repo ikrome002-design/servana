@@ -26,8 +26,8 @@ final class MerchantResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'status' => $this->status->value,
-            'service_fee_tier' => $this->service_fee_tier?->value,
-            'setup_completed_at' => $this->setup_completed_at?->toIso8601String(),
+            'service_fee_tier' => $this->service_fee_tier === null ? null : $this->service_fee_tier->value,
+            'setup_completed_at' => $this->setup_completed_at === null ? null : $this->setup_completed_at->toIso8601String(),
         ];
     }
 }

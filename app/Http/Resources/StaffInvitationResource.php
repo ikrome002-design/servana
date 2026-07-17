@@ -33,7 +33,7 @@ final class StaffInvitationResource extends JsonResource
             'status' => $this->status->value,
             'resend_count' => $this->resend_count,
             'expires_at' => $this->expires_at->toIso8601String(),
-            'last_sent_at' => $this->last_sent_at?->toIso8601String(),
+            'last_sent_at' => $this->last_sent_at === null ? null : $this->last_sent_at->toIso8601String(),
             'can' => $this->capabilities($request, [
                 'manage' => 'manage',
             ]),

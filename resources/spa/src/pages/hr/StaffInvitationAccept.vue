@@ -53,7 +53,7 @@ const submit = form.handleSubmit(async (values) => {
     class="w-full max-w-md"
   >
     <template v-if="accepted">
-      <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+      <h1 class="font-display text-2xl font-extrabold text-heading">
         You're all set
       </h1>
       <p
@@ -65,14 +65,14 @@ const submit = form.handleSubmit(async (values) => {
       </p>
       <RouterLink
         :to="{ name: 'auth.login' }"
-        class="mt-6 inline-block font-semibold text-brand-deep underline"
+        class="mt-6 inline-block font-semibold text-heading underline"
       >
         Go to sign-in
       </RouterLink>
     </template>
 
     <template v-else-if="token === '' || failed">
-      <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+      <h1 class="font-display text-2xl font-extrabold text-heading">
         Invitation problem
       </h1>
       <p
@@ -84,7 +84,7 @@ const submit = form.handleSubmit(async (values) => {
     </template>
 
     <template v-else>
-      <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+      <h1 class="font-display text-2xl font-extrabold text-heading">
         Accept your invitation
       </h1>
       <p class="mt-2 text-sm text-text-muted">

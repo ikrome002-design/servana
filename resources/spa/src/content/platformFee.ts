@@ -90,6 +90,6 @@ export function platformFeeConfigTermsLabel(config: PlatformFeeConfiguration): s
   if (config.fixed_component_minor !== null && config.fixed_component_minor > 0) {
     parts.push(`+ ${config.currency} ${(config.fixed_component_minor / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}`);
   }
-  parts.push(tierLabel(config.tier_behavior));
+  if (config.tier_behavior !== null) parts.push(tierLabel(config.tier_behavior));
   return parts.join(' · ');
 }

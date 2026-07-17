@@ -109,9 +109,12 @@ function prefill(config: PlatformFeeConfiguration): void {
   form.billing_mode = config.billing_mode;
   form.percentage_basis_points = config.percentage_basis_points === null ? '' : String(config.percentage_basis_points);
   form.fixed_component_major = config.fixed_component_minor === null ? '' : String(config.fixed_component_minor / 100);
-  form.tier_behavior = config.tier_behavior;
+  // A legacy configuration can carry a null tier/basis. Prefill blank rather than the
+  // create-time default so editing it cannot silently propose a different fee behaviour —
+  // the admin must re-select, and the Form Request rejects a blank.
+  form.tier_behavior = config.tier_behavior ?? '';
   form.shared_split_basis_points = config.shared_split_basis_points === null ? '' : String(config.shared_split_basis_points);
-  form.fee_basis_type = config.fee_basis_type;
+  form.fee_basis_type = config.fee_basis_type ?? '';
   form.currency = config.currency;
   form.effective_from = config.effective_from;
   form.effective_to = config.effective_to ?? '';

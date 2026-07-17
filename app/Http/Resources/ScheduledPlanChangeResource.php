@@ -30,8 +30,8 @@ final class ScheduledPlanChangeResource extends JsonResource
             'id' => $this->ulid,
             'status' => $this->status->value,
             'effective_at' => $this->effective_at->toDateString(),
-            'applied_at' => $this->applied_at?->toIso8601String(),
-            'cancelled_at' => $this->cancelled_at?->toIso8601String(),
+            'applied_at' => $this->applied_at === null ? null : $this->applied_at->toIso8601String(),
+            'cancelled_at' => $this->cancelled_at === null ? null : $this->cancelled_at->toIso8601String(),
             'target_plan' => [
                 'id' => $plan->ulid,
                 'key' => $plan->key,

@@ -58,7 +58,7 @@ final class AuthenticatedUserResource extends JsonResource
                 'email' => $this->email,
                 'name' => $this->name,
                 'status' => $this->status,
-                'email_verified_at' => $this->email_verified_at?->toIso8601String(),
+                'email_verified_at' => $this->email_verified_at === null ? null : $this->email_verified_at->toIso8601String(),
                 'is_platform_staff' => (bool) $this->is_platform_staff,
             ],
             'merchant' => $merchantPayload,
@@ -120,7 +120,7 @@ final class AuthenticatedUserResource extends JsonResource
         return [
             'required' => $progress->required($merchant),
             'current_step' => $progress->currentStep($merchant),
-            'completed_at' => $merchant->setup_completed_at?->toIso8601String(),
+            'completed_at' => $merchant->setup_completed_at === null ? null : $merchant->setup_completed_at->toIso8601String(),
         ];
     }
 }

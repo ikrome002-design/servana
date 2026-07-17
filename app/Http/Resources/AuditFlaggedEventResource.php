@@ -38,8 +38,8 @@ final class AuditFlaggedEventResource extends JsonResource
             'review_notes' => $this->review_notes,
             'assigned_to' => $this->maskedUser($this->whenLoaded('assignee')),
             'resolved_by' => $this->maskedUser($this->whenLoaded('resolver')),
-            'created_at' => $this->created_at?->toIso8601String(),
-            'updated_at' => $this->updated_at?->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
+            'updated_at' => $this->updated_at === null ? null : $this->updated_at->toIso8601String(),
             'audit_event' => $this->whenLoaded('auditLog', function () use ($masker): ?array {
                 /** @var AuditLog|null $log */
                 $log = $this->auditLog;
@@ -55,7 +55,7 @@ final class AuditFlaggedEventResource extends JsonResource
                     'actor' => $log->actor_label !== null ? AuditValueMasker::maskEmail($log->actor_label) : null,
                     'subject_type' => $log->auditable_type !== null ? class_basename($log->auditable_type) : null,
                     'context' => $masker->mask($log->context ?? []),
-                    'occurred_at' => $log->created_at?->toIso8601String(),
+                    'occurred_at' => $log->created_at === null ? null : $log->created_at->toIso8601String(),
                 ];
             }),
             'can' => $this->capabilities($request, [

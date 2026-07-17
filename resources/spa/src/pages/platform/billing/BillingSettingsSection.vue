@@ -86,7 +86,7 @@ async function submit(): Promise<void> {
   <section aria-labelledby="billing-settings-heading">
     <h2
       id="billing-settings-heading"
-      class="font-display text-lg font-bold text-brand-deep"
+      class="font-display text-lg font-bold text-heading"
     >
       Billing settings
     </h2>

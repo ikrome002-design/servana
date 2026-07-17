@@ -53,7 +53,7 @@ onMounted(() => {
 
 <template>
   <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-brand-deep">
+    <h1 class="font-display text-2xl font-bold text-heading">
       Permission preview
     </h1>
 
@@ -89,7 +89,7 @@ onMounted(() => {
           as="article"
           padding="md"
         >
-          <h2 class="font-display text-base font-semibold text-brand-deep">
+          <h2 class="font-display text-base font-semibold text-heading">
             Default permissions
           </h2>
           <ul class="mt-3 flex flex-col gap-1">
@@ -107,7 +107,7 @@ onMounted(() => {
           as="article"
           padding="md"
         >
-          <h2 class="font-display text-base font-semibold text-brand-deep">
+          <h2 class="font-display text-base font-semibold text-heading">
             Grantable (override) permissions
           </h2>
           <p

@@ -28,7 +28,8 @@ final class CommissionRuleResource extends JsonResource
             'calculation_type' => $this->calculation_type->value,
             'calculation_basis' => $this->calculation_basis->value,
             'applies_to' => $this->applies_to->value,
-            'service_category_id' => $this->whenLoaded('serviceCategory', fn (): ?string => $this->serviceCategory?->ulid),
+            // service_category_id is a nullable FK, so a loaded relation can still be null.
+            'service_category_id' => $this->whenLoaded('serviceCategory', fn (): ?string => $this->serviceCategory === null ? null : $this->serviceCategory->ulid),
             // Exactly one calculation value is ever populated (DB value-shape CHECK).
             'percentage_basis_points' => $this->percentage_basis_points,
             'fixed_amount_minor' => $this->fixed_amount_minor,

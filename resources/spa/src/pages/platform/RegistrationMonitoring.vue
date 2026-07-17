@@ -138,7 +138,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
 <template>
   <div class="mx-auto flex max-w-5xl flex-col gap-6">
     <header>
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         Registration monitoring and merchant governance
       </h1>
       <p class="mt-1 text-sm text-text-muted">
@@ -169,7 +169,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
           :aria-selected="tab === 'monitoring'"
           aria-controls="panel-monitoring"
           class="min-h-[44px] px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          :class="tab === 'monitoring' ? 'border-b-2 border-primary text-brand-deep' : 'text-text-muted'"
+          :class="tab === 'monitoring' ? 'border-b-2 border-primary text-heading' : 'text-text-muted'"
           @click="switchTab('monitoring')"
         >
           Registration monitoring
@@ -181,7 +181,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
           :aria-selected="tab === 'directory'"
           aria-controls="panel-directory"
           class="min-h-[44px] px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          :class="tab === 'directory' ? 'border-b-2 border-primary text-brand-deep' : 'text-text-muted'"
+          :class="tab === 'directory' ? 'border-b-2 border-primary text-heading' : 'text-text-muted'"
           @click="switchTab('directory')"
         >
           Merchant directory
@@ -287,7 +287,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
                 <button
                   type="button"
                   class="flex w-full items-center justify-between gap-3 px-1 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  :class="{ 'font-semibold text-brand-deep': selected?.id === m.id }"
+                  :class="{ 'font-semibold text-heading': selected?.id === m.id }"
                   :aria-current="selected?.id === m.id ? 'true' : undefined"
                   :data-testid="`merchant-row-${m.id}`"
                   @click="openMerchant(m.id)"
@@ -303,7 +303,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
 
           <SvCard v-if="selected">
             <h2
-              class="font-display text-lg font-bold text-brand-deep"
+              class="font-display text-lg font-bold text-heading"
               data-testid="merchant-detail-name"
             >
               {{ selected.name }}
@@ -314,7 +314,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
                   Operational status
                 </dt>
                 <dd
-                  class="mt-1 font-semibold text-brand-deep"
+                  class="mt-1 font-semibold text-heading"
                   data-testid="operational-status"
                 >
                   {{ STATUS_LABELS[selected.operational_status] ?? selected.operational_status }}
@@ -325,7 +325,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
                   Billing status
                 </dt>
                 <dd
-                  class="mt-1 font-semibold text-brand-deep"
+                  class="mt-1 font-semibold text-heading"
                   data-testid="detail-billing-status"
                 >
                   {{ BILLING_LABELS[selected.billing_status] ?? selected.billing_status }}

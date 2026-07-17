@@ -25786,13 +25786,22 @@
                         "type": "string"
                     },
                     "checked_in_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "cancelled_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "no_show_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "cancellation_reason": {
                         "type": [
@@ -26084,19 +26093,34 @@
                         "type": "integer"
                     },
                     "requested_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "generated_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "expires_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "first_downloaded_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "last_downloaded_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "failure_code": {
                         "type": [
@@ -26111,7 +26135,10 @@
                         ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "can": {
                         "type": "object",
@@ -26167,10 +26194,16 @@
                         ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "updated_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "audit_event": {
                         "type": [
@@ -26203,7 +26236,10 @@
                                 "type": "string"
                             },
                             "occurred_at": {
-                                "type": "string"
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
                             }
                         },
                         "required": [
@@ -26254,7 +26290,11 @@
                         ]
                     },
                     "branch": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "branch_id is nullable (platform-scoped logs have no branch), so a loaded\nrelation can still be null."
                     },
                     "subject_type": {
                         "type": [
@@ -26272,7 +26312,10 @@
                         ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "can": {
                         "type": "object",
@@ -26316,7 +26359,10 @@
                                 "type": "string"
                             },
                             "email_verified_at": {
-                                "type": "string"
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
                             },
                             "is_platform_staff": {
                                 "type": "boolean"
@@ -26395,7 +26441,10 @@
                                         "type": "string"
                                     },
                                     "completed_at": {
-                                        "type": "string"
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
                                     }
                                 },
                                 "required": [
@@ -26494,7 +26543,10 @@
                         ]
                     },
                     "archived_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "can": {
                         "type": "object",
@@ -26600,7 +26652,10 @@
                         "type": "string"
                     },
                     "business_date": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "status": {
                         "type": "string"
@@ -26672,13 +26727,22 @@
                         "type": "integer"
                     },
                     "submitted_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "approved_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "reviewed_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "review_note": {
                         "type": [
@@ -26687,7 +26751,10 @@
                         ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "lines": {
                         "type": "array",
@@ -26824,7 +26891,10 @@
                         "type": "string"
                     },
                     "sms_consent": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "can": {
                         "type": "object",
@@ -26908,7 +26978,11 @@
                         "type": "string"
                     },
                     "service_category_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "service_category_id is a nullable FK, so a loaded relation can still be null."
                     },
                     "percentage_basis_points": {
                         "type": [
@@ -27157,7 +27231,11 @@
                         "type": "boolean"
                     },
                     "supersedes_plan_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "supersedes_plan_id is a nullable FK, so a loaded relation can still be null."
                     },
                     "notes": {
                         "type": [
@@ -27704,7 +27782,10 @@
                         "type": "integer"
                     },
                     "available_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "can": {
                         "type": "object",
@@ -27753,10 +27834,16 @@
                         "type": "boolean"
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "updated_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "invoice": {
                         "type": [
@@ -27859,13 +27946,22 @@
                         "type": "integer"
                     },
                     "expires_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "first_downloaded_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "last_downloaded_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "failure_code": {
                         "type": [
@@ -27880,7 +27976,10 @@
                         ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -27950,19 +28049,34 @@
                         ]
                     },
                     "reopen_requested_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "reopen_approved_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "reopened_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "locked_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -28037,13 +28151,19 @@
                         "type": "string"
                     },
                     "effective_to": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "status": {
                         "type": "string"
                     },
                     "approved_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "change_reason": {
                         "type": [
@@ -28063,13 +28183,23 @@
                                     "type": "string"
                                 },
                                 "merchant_id": {
-                                    "type": "string"
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "description": "A target names exactly one of merchant / plan / billing_mode, so the other\ntwo are genuinely null. Each null branch is spelled out because the OpenAPI\ngenerator infers nullability from an explicit null ternary but not through\nthe nullsafe operator."
                                 },
                                 "subscription_plan_id": {
-                                    "type": "string"
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
                                 },
                                 "billing_mode": {
-                                    "type": "string"
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
                                 }
                             },
                             "required": [
@@ -28103,7 +28233,10 @@
                         "type": "string"
                     },
                     "service_session_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "service": {
                         "type": "object",
@@ -28458,10 +28591,16 @@
                         "items": {}
                     },
                     "finalized_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "voided_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "void_reason": {
                         "type": [
@@ -28470,7 +28609,10 @@
                         ]
                     },
                     "adjusted_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "adjustment_reason": {
                         "type": [
@@ -28479,7 +28621,10 @@
                         ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "items": {
                         "type": "array",
@@ -28578,10 +28723,16 @@
                         "type": "boolean"
                     },
                     "registered_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "setup_completed_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -28611,10 +28762,16 @@
                         "type": "string"
                     },
                     "service_fee_tier": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "setup_completed_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -28929,13 +29086,22 @@
                         ]
                     },
                     "recorded_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "submitted_for_validation_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "maker": {
                         "type": "object",
@@ -29037,7 +29203,11 @@
                         ]
                     },
                     "matched_payment_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "matched_payment_record_id is a nullable FK (an unmatched check has no record),\nso a loaded relation can still be null."
                     },
                     "is_override": {
                         "type": "boolean"
@@ -29224,7 +29394,11 @@
                                 "type": "boolean"
                             },
                             "reissue_of": {
-                                "type": "string"
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "description": "reissue_of_receipt_id is a nullable FK, so a loaded relation can still be null."
                             },
                             "reason": {
                                 "type": [
@@ -29239,7 +29413,10 @@
                                 "type": "string"
                             },
                             "created_at": {
-                                "type": "string"
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
                             },
                             "invoice": {
                                 "type": "object",
@@ -29493,13 +29670,22 @@
                         "type": "string"
                     },
                     "started_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "completed_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "cancelled_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "service": {
                         "type": "object",
@@ -29630,7 +29816,10 @@
                         ]
                     },
                     "tier_behavior": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "shared_split_basis_points": {
                         "type": [
@@ -29639,7 +29828,10 @@
                         ]
                     },
                     "fee_basis_type": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "currency": {
                         "type": "string"
@@ -29648,13 +29840,19 @@
                         "type": "string"
                     },
                     "effective_to": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "status": {
                         "type": "string"
                     },
                     "approved_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "change_reason": {
                         "type": "string"
@@ -29708,10 +29906,17 @@
                         "type": "string"
                     },
                     "platform_fee_ledger_entry_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Nullable FKs (platform_fee_ledger_entry_id, subscription_invoice_id,\nassigned_reviewer, resolved_by): each null branch is spelled out because the\nOpenAPI generator infers nullability from an explicit null ternary but not\nthrough the nullsafe operator. `created_by` is a non-nullable FK, so it stays."
                     },
                     "subscription_invoice_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "reason": {
                         "type": "string"
@@ -29720,7 +29925,10 @@
                         "type": "string"
                     },
                     "assigned_reviewer": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "resolution_note": {
                         "type": [
@@ -29735,13 +29943,22 @@
                         "type": "string"
                     },
                     "resolved_by": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "resolved_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "capabilities": {
                         "type": "object",
@@ -29787,16 +30004,23 @@
                         "type": "string"
                     },
                     "merchant_id": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "branch_id, source_invoice_item_id and subscription_invoice_item_id are nullable\nFKs, so each null branch is spelled out: the OpenAPI generator infers nullability\nfrom an explicit null ternary but not through the nullsafe operator. merchant_id\nand source_invoice_id are non-nullable FKs and stay as-is."
                     },
                     "branch_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "source_invoice_id": {
                         "type": "string"
                     },
                     "source_invoice_item_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "entry_type": {
                         "type": "string"
@@ -29841,10 +30065,16 @@
                         "type": "string"
                     },
                     "subscription_invoice_item_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "billable_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -29899,16 +30129,28 @@
                         ]
                     },
                     "suspended_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "deactivated_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "setup_completed_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "registered_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "can": {
                         "type": "object",
@@ -30051,13 +30293,19 @@
                         "type": "string"
                     },
                     "effective_to": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "status": {
                         "type": "string"
                     },
                     "approved_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "change_reason": {
                         "type": [
@@ -30077,13 +30325,23 @@
                                     "type": "string"
                                 },
                                 "merchant_id": {
-                                    "type": "string"
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "description": "A target names exactly one of merchant / plan / billing_mode, so the other\ntwo are genuinely null. Each null branch is spelled out because the OpenAPI\ngenerator infers nullability from an explicit null ternary but not through\nthe nullsafe operator."
                                 },
                                 "subscription_plan_id": {
-                                    "type": "string"
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
                                 },
                                 "billing_mode": {
-                                    "type": "string"
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
                                 }
                             },
                             "required": [
@@ -30214,25 +30472,46 @@
                         "type": "string"
                     },
                     "assigned_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "called_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "started_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "completed_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "cancelled_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "no_show_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "transferred_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "cancellation_reason": {
                         "type": [
@@ -30377,16 +30656,28 @@
                                 "type": "string"
                             },
                             "queue_entry_id": {
-                                "type": "string"
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
                             },
                             "started_at": {
-                                "type": "string"
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
                             },
                             "completed_at": {
-                                "type": "string"
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
                             },
                             "cancelled_at": {
-                                "type": "string"
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
                             },
                             "cancellation_reason": {
                                 "type": [
@@ -30613,7 +30904,11 @@
                         "type": "boolean"
                     },
                     "reissue_of": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "reissue_of_receipt_id is a nullable FK, so a loaded relation can still be null."
                     },
                     "reason": {
                         "type": [
@@ -30628,7 +30923,10 @@
                         "type": "string"
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "invoice": {
                         "type": "object",
@@ -30764,16 +31062,28 @@
                         "type": "string"
                     },
                     "approved_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "finalized_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "rejected_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "created_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "invoice": {
                         "type": "object",
@@ -31183,10 +31493,16 @@
                         "type": "string"
                     },
                     "applied_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "cancelled_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "target_plan": {
                         "type": "object",
@@ -31372,16 +31688,28 @@
                         "type": "string"
                     },
                     "queue_entry_id": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "started_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "completed_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "cancelled_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "cancellation_reason": {
                         "type": [
@@ -31539,7 +31867,10 @@
                         "type": "string"
                     },
                     "last_sent_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "can": {
                         "type": "object",
@@ -32687,7 +33018,10 @@
                         "description": "Phase 20C — read-only applied promotion snapshot (immutable; no internal/promotion id leaked)."
                     },
                     "promotion_type": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "promotion_value_snapshot": {
                         "type": [
@@ -32702,10 +33036,16 @@
                         ]
                     },
                     "issued_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "due_at": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "payment_reference_pending": {
                         "type": "boolean"

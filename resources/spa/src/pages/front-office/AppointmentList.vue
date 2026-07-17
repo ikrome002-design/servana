@@ -43,7 +43,7 @@ onMounted(() => {
 <template>
   <section class="p-4 md:p-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         Appointments
       </h1>
       <PermissionGate permission="appointment.create">
@@ -109,7 +109,7 @@ onMounted(() => {
           >
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h2 class="font-display text-base font-semibold text-brand-deep">
+                <h2 class="font-display text-base font-semibold text-heading">
                   {{ appointment.client?.full_name ?? 'Client' }}
                 </h2>
                 <p class="mt-0.5 text-sm text-text-muted">
@@ -126,7 +126,7 @@ onMounted(() => {
                 >{{ appointmentStatusLabel(appointment.status) }}</span>
                 <RouterLink
                   :to="{ name: 'front-office.appointments.detail', params: { id: appointment.id } }"
-                  class="text-sm font-semibold text-brand-deep underline"
+                  class="text-sm font-semibold text-heading underline"
                 >
                   View
                 </RouterLink>
