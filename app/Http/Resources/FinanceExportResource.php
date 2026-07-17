@@ -36,12 +36,12 @@ final class FinanceExportResource extends JsonResource
             'reason' => $this->reason,
             'row_count' => $this->row_count,
             'download_count' => $this->download_count,
-            'expires_at' => $this->expires_at?->toIso8601String(),
-            'first_downloaded_at' => $this->first_downloaded_at?->toIso8601String(),
-            'last_downloaded_at' => $this->last_downloaded_at?->toIso8601String(),
+            'expires_at' => $this->expires_at === null ? null : $this->expires_at->toIso8601String(),
+            'first_downloaded_at' => $this->first_downloaded_at === null ? null : $this->first_downloaded_at->toIso8601String(),
+            'last_downloaded_at' => $this->last_downloaded_at === null ? null : $this->last_downloaded_at->toIso8601String(),
             'failure_code' => $this->failure_code,
             'failure_message' => $this->failure_message_redacted,
-            'created_at' => $this->created_at?->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
         ];
     }
 }

@@ -27,7 +27,7 @@ onMounted(async () => {
 <template>
   <section class="p-4 md:p-6">
     <template v-if="member">
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         {{ member.display_name }}
       </h1>
       <SvCard

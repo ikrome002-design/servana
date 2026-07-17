@@ -37,7 +37,8 @@ final class ClientResource extends JsonResource
             'sms_consent' => $this->whenLoaded('consents', function () {
                 $consent = $this->consents->firstWhere('channel', ConsentChannel::Sms);
 
-                return $consent?->state->value;
+                // A client with no recorded SMS consent has no state to publish.
+                return $consent === null ? null : $consent->state->value;
             }),
             'can' => $this->capabilities($request, [
                 'view' => 'view',

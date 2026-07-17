@@ -38,11 +38,11 @@ final class ServiceSessionResource extends JsonResource
                 /** @var QueueEntry|null $entry */
                 $entry = $this->queueEntry;
 
-                return $entry?->ulid;
+                return $entry === null ? null : $entry->ulid;
             }),
-            'started_at' => $this->started_at?->toIso8601String(),
-            'completed_at' => $this->completed_at?->toIso8601String(),
-            'cancelled_at' => $this->cancelled_at?->toIso8601String(),
+            'started_at' => $this->started_at === null ? null : $this->started_at->toIso8601String(),
+            'completed_at' => $this->completed_at === null ? null : $this->completed_at->toIso8601String(),
+            'cancelled_at' => $this->cancelled_at === null ? null : $this->cancelled_at->toIso8601String(),
             'cancellation_reason' => $this->cancellation_reason,
             'notes' => $this->notes,
             'preferred_personnel_honored' => $this->preferred_personnel_honored,

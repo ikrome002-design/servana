@@ -34,7 +34,7 @@ final class BranchResource extends JsonResource
             'business_category' => $this->business_category,
             'status' => $this->status->value,
             'status_reason' => $this->status_reason,
-            'archived_at' => $this->archived_at?->toIso8601String(),
+            'archived_at' => $this->archived_at === null ? null : $this->archived_at->toIso8601String(),
             'can' => $this->capabilities($request, [
                 'view' => 'view',
                 'update' => 'update',

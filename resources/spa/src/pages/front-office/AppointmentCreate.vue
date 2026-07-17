@@ -87,7 +87,7 @@ onMounted(() => {
 
 <template>
   <section class="mx-auto w-full max-w-lg p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-brand-deep">
+    <h1 class="font-display text-2xl font-bold text-heading">
       Book an appointment
     </h1>
 

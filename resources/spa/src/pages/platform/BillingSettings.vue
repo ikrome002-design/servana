@@ -86,7 +86,7 @@ function onSelectPlan(plan: SubscriptionPlan): void {
     data-testid="billing-screen"
   >
     <header class="mb-6">
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         Billing settings
       </h1>
       <p class="mt-1 text-sm text-text-muted">
@@ -122,7 +122,7 @@ function onSelectPlan(plan: SubscriptionPlan): void {
           :tabindex="currentKey === tab.key ? 0 : -1"
           class="min-h-[44px] rounded-t-control px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           :class="currentKey === tab.key
-            ? 'border-b-2 border-primary text-brand-deep'
+            ? 'border-b-2 border-primary text-heading'
             : 'text-text-muted hover:text-text'"
           @click="select(tab.key)"
           @keydown="onKeydown($event, index)"

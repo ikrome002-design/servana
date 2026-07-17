@@ -34,7 +34,7 @@ final class InvoiceItemResource extends JsonResource
                 /** @var ServiceSession|null $session */
                 $session = $this->serviceSession;
 
-                return $session?->ulid;
+                return $session === null ? null : $session->ulid;
             }),
             'service' => $this->whenLoaded('service', function (): array {
                 /** @var Service $service */

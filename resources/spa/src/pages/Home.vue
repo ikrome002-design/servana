@@ -18,7 +18,7 @@ const logoUrl = '/assets/brand/Logo.png';
         alt="Servana by Citrus"
         class="mx-auto mb-6 h-12 w-auto"
       >
-      <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+      <h1 class="font-display text-2xl font-extrabold text-heading">
         {{ app.name }}
       </h1>
       <p class="mt-2 text-text-muted">

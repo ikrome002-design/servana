@@ -37,11 +37,13 @@ final class AuditLogResource extends JsonResource
             'actor' => $this->actor_label !== null
                 ? AuditValueMasker::maskEmail($this->actor_label)
                 : null,
-            'branch' => $this->whenLoaded('branch', fn () => $this->branch?->ulid),
+            // branch_id is nullable (platform-scoped logs have no branch), so a loaded
+            // relation can still be null.
+            'branch' => $this->whenLoaded('branch', fn (): ?string => $this->branch === null ? null : $this->branch->ulid),
             'subject_type' => $this->auditable_type !== null ? class_basename($this->auditable_type) : null,
             'context' => $masker->mask($this->context ?? []),
             'correlation_id' => $this->correlation_id,
-            'created_at' => $this->created_at?->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
             'can' => $this->capabilities($request, [
                 'view' => 'view',
             ]),

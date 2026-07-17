@@ -34,9 +34,9 @@ final class AppointmentResource extends JsonResource
             'status' => $this->status->value,
             'starts_at' => $this->starts_at->toIso8601String(),
             'ends_at' => $this->ends_at->toIso8601String(),
-            'checked_in_at' => $this->checked_in_at?->toIso8601String(),
-            'cancelled_at' => $this->cancelled_at?->toIso8601String(),
-            'no_show_at' => $this->no_show_at?->toIso8601String(),
+            'checked_in_at' => $this->checked_in_at === null ? null : $this->checked_in_at->toIso8601String(),
+            'cancelled_at' => $this->cancelled_at === null ? null : $this->cancelled_at->toIso8601String(),
+            'no_show_at' => $this->no_show_at === null ? null : $this->no_show_at->toIso8601String(),
             'cancellation_reason' => $this->cancellation_reason,
             'service' => $this->whenLoaded('service', function (): array {
                 /** @var Service $service */

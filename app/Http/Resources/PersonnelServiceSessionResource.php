@@ -28,9 +28,9 @@ final class PersonnelServiceSessionResource extends JsonResource
         return [
             'id' => $this->ulid,
             'status' => $this->status->value,
-            'started_at' => $this->started_at?->toIso8601String(),
-            'completed_at' => $this->completed_at?->toIso8601String(),
-            'cancelled_at' => $this->cancelled_at?->toIso8601String(),
+            'started_at' => $this->started_at === null ? null : $this->started_at->toIso8601String(),
+            'completed_at' => $this->completed_at === null ? null : $this->completed_at->toIso8601String(),
+            'cancelled_at' => $this->cancelled_at === null ? null : $this->cancelled_at->toIso8601String(),
             'service' => $this->whenLoaded('service', function (): array {
                 /** @var Service $service */
                 $service = $this->service;

@@ -36,7 +36,7 @@ function search(): void {
 <template>
   <section class="p-4 md:p-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         Clients
       </h1>
       <PermissionGate permission="client.create">
@@ -96,7 +96,7 @@ function search(): void {
           >
             <div class="flex items-center justify-between gap-2">
               <div>
-                <h2 class="font-display text-base font-semibold text-brand-deep">
+                <h2 class="font-display text-base font-semibold text-heading">
                   {{ client.full_name }}
                 </h2>
                 <p class="mt-0.5 text-sm text-text-muted">
@@ -106,7 +106,7 @@ function search(): void {
               </div>
               <RouterLink
                 :to="{ name: 'front-office.clients.detail', params: { id: client.id } }"
-                class="text-sm font-semibold text-brand-deep underline"
+                class="text-sm font-semibold text-heading underline"
               >
                 View
               </RouterLink>

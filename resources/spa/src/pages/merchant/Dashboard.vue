@@ -16,7 +16,7 @@ const sections = ['Overview', 'Branches', 'Staff', 'Reports'];
 
 <template>
   <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-brand-deep">
+    <h1 class="font-display text-2xl font-bold text-heading">
       Welcome, {{ auth.user?.name }}
     </h1>
     <p class="mt-1 text-text-muted">
@@ -30,7 +30,7 @@ const sections = ['Overview', 'Branches', 'Staff', 'Reports'];
         as="article"
         padding="md"
       >
-        <h2 class="font-display text-base font-semibold text-brand-deep">{{ name }}</h2>
+        <h2 class="font-display text-base font-semibold text-heading">{{ name }}</h2>
         <p class="mt-1 text-sm text-text-muted">Coming soon.</p>
       </SvCard>
     </div>

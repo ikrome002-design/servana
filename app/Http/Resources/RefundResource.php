@@ -37,10 +37,10 @@ final class RefundResource extends JsonResource
             'reference_masked' => $this->maskedReference(),
             'reason' => $this->reason,
             'refund_group' => $this->refund_group_ulid,
-            'approved_at' => $this->approved_at?->toIso8601String(),
-            'finalized_at' => $this->finalized_at?->toIso8601String(),
-            'rejected_at' => $this->rejected_at?->toIso8601String(),
-            'created_at' => $this->created_at?->toIso8601String(),
+            'approved_at' => $this->approved_at === null ? null : $this->approved_at->toIso8601String(),
+            'finalized_at' => $this->finalized_at === null ? null : $this->finalized_at->toIso8601String(),
+            'rejected_at' => $this->rejected_at === null ? null : $this->rejected_at->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
             'invoice' => $this->whenLoaded('invoice', function (): array {
                 /** @var Invoice $invoice */
                 $invoice = $this->invoice;

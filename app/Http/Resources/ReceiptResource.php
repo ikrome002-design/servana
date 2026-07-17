@@ -37,11 +37,12 @@ final class ReceiptResource extends JsonResource
                 'amount' => Money::ofMinor((int) $c['amount_minor'], $currency)->toArray(),
             ], $this->components),
             'is_reissue' => $this->isReissue(),
-            'reissue_of' => $this->whenLoaded('reissueOf', fn (): ?string => $this->reissueOf?->ulid),
+            // reissue_of_receipt_id is a nullable FK, so a loaded relation can still be null.
+            'reissue_of' => $this->whenLoaded('reissueOf', fn (): ?string => $this->reissueOf === null ? null : $this->reissueOf->ulid),
             'reason' => $this->reason,
             'downloadable' => $this->file_generation_status === 'ready',
             'file_generation_status' => $this->file_generation_status,
-            'created_at' => $this->created_at?->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
             'invoice' => $this->whenLoaded('invoice', function (): array {
                 /** @var Invoice $invoice */
                 $invoice = $this->invoice;

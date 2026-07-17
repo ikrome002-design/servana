@@ -18,12 +18,12 @@ onMounted(() => {
   <section class="p-4 md:p-6">
     <template v-if="branches.activeBranch">
       <div class="flex items-center justify-between">
-        <h1 class="font-display text-2xl font-bold text-brand-deep">
+        <h1 class="font-display text-2xl font-bold text-heading">
           {{ branches.activeBranch.name }}
         </h1>
         <RouterLink
           :to="{ name: 'branch.operating-hours', params: { id } }"
-          class="text-sm font-semibold text-brand-deep underline"
+          class="text-sm font-semibold text-heading underline"
         >
           Operating hours
         </RouterLink>

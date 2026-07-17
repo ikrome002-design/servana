@@ -106,7 +106,7 @@ async function save(): Promise<void> {
   <section aria-labelledby="entitlements-heading">
     <h2
       id="entitlements-heading"
-      class="font-display text-lg font-bold text-brand-deep"
+      class="font-display text-lg font-bold text-heading"
     >
       Plan entitlements
       <span

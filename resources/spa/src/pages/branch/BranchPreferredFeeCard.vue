@@ -39,7 +39,7 @@ onMounted(() => {
     class="mt-6"
     data-testid="branch-preferred-fee"
   >
-    <h2 class="font-display text-base font-semibold text-brand-deep">
+    <h2 class="font-display text-base font-semibold text-heading">
       Preferred-personnel fee (effective)
     </h2>
     <p class="mt-1 text-sm text-text-muted">

@@ -117,7 +117,7 @@ async function confirmArchive(): Promise<void> {
 <template>
   <section class="p-4 md:p-6">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-brand-deep">
+      <h1 class="font-display text-2xl font-bold text-heading">
         Services
       </h1>
       <PermissionGate permission="service.create">
@@ -166,7 +166,7 @@ async function confirmArchive(): Promise<void> {
             padding="md"
           >
             <div class="flex items-start justify-between gap-2">
-              <h2 class="font-display text-base font-semibold text-brand-deep">
+              <h2 class="font-display text-base font-semibold text-heading">
                 {{ service.name }}
               </h2>
               <span
@@ -188,7 +188,7 @@ async function confirmArchive(): Promise<void> {
               <PermissionGate permission="service.update">
                 <button
                   type="button"
-                  class="text-sm font-semibold text-brand-deep underline"
+                  class="text-sm font-semibold text-heading underline"
                   :data-testid="`edit-${service.id}`"
                   @click="openEdit(service)"
                 >

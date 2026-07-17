@@ -50,7 +50,7 @@ async function save(): Promise<void> {
 
 <template>
   <section class="mx-auto w-full max-w-2xl p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-brand-deep">
+    <h1 class="font-display text-2xl font-bold text-heading">
       Operating hours
     </h1>
 

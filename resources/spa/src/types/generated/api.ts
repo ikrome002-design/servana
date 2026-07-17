@@ -3376,9 +3376,9 @@ export interface components {
             status: string;
             starts_at: string;
             ends_at: string;
-            checked_in_at: string;
-            cancelled_at: string;
-            no_show_at: string;
+            checked_in_at: string | null;
+            cancelled_at: string | null;
+            no_show_at: string | null;
             cancellation_reason: string | null;
             service?: {
                 id: string;
@@ -3479,14 +3479,14 @@ export interface components {
             };
             row_count: number | null;
             download_count: number;
-            requested_at: string;
-            generated_at: string;
-            expires_at: string;
-            first_downloaded_at: string;
-            last_downloaded_at: string;
+            requested_at: string | null;
+            generated_at: string | null;
+            expires_at: string | null;
+            first_downloaded_at: string | null;
+            last_downloaded_at: string | null;
             failure_code: string | null;
             failure_message: string | null;
-            created_at: string;
+            created_at: string | null;
             can: {
                 [key: string]: boolean;
             };
@@ -3498,8 +3498,8 @@ export interface components {
             review_notes: string | null;
             assigned_to: string | null;
             resolved_by: string | null;
-            created_at: string;
-            updated_at: string;
+            created_at: string | null;
+            updated_at: string | null;
             audit_event?: {
                 id: string;
                 action: string;
@@ -3507,7 +3507,7 @@ export interface components {
                 actor: string | null;
                 subject_type: string | null;
                 context: string;
-                occurred_at: string;
+                occurred_at: string | null;
             } | null;
             can: {
                 [key: string]: boolean;
@@ -3519,11 +3519,13 @@ export interface components {
             action: string;
             severity: string;
             actor: string | null;
-            branch?: string;
+            /** @description branch_id is nullable (platform-scoped logs have no branch), so a loaded
+             *     relation can still be null. */
+            branch?: string | null;
             subject_type: string | null;
             context: string;
             correlation_id: string | null;
-            created_at: string;
+            created_at: string | null;
             can: {
                 [key: string]: boolean;
             };
@@ -3535,7 +3537,7 @@ export interface components {
                 email: string;
                 name: string;
                 status: string;
-                email_verified_at: string;
+                email_verified_at: string | null;
                 is_platform_staff: boolean;
             };
             merchant: unknown[] | null;
@@ -3554,7 +3556,7 @@ export interface components {
             setup: {
                 required: string;
                 current_step: string;
-                completed_at: string;
+                completed_at: string | null;
             } | {
                 required: boolean;
                 current_step: null;
@@ -3576,7 +3578,7 @@ export interface components {
             business_category: string | null;
             status: string;
             status_reason: string | null;
-            archived_at: string;
+            archived_at: string | null;
             can: {
                 [key: string]: boolean;
             };
@@ -3632,7 +3634,7 @@ export interface components {
         /** CashUpResource */
         CashUpResource: {
             id: string;
-            business_date: string;
+            business_date: string | null;
             status: string;
             expected: {
                 amount: number;
@@ -3652,11 +3654,11 @@ export interface components {
             expected_minor: number;
             counted_minor: number;
             variance_minor: number;
-            submitted_at: string;
-            approved_at: string;
-            reviewed_at: string;
+            submitted_at: string | null;
+            approved_at: string | null;
+            reviewed_at: string | null;
             review_note: string | null;
-            created_at: string;
+            created_at: string | null;
             lines?: {
                 method: string;
                 expected_minor: number;
@@ -3700,7 +3702,7 @@ export interface components {
             has_email: boolean;
             notes: string | null;
             status: string;
-            sms_consent?: string;
+            sms_consent?: string | null;
             can: {
                 [key: string]: boolean;
             };
@@ -3735,7 +3737,8 @@ export interface components {
             calculation_type: string;
             calculation_basis: string;
             applies_to: string;
-            service_category_id?: string;
+            /** @description service_category_id is a nullable FK, so a loaded relation can still be null. */
+            service_category_id?: string | null;
             /** @description Exactly one calculation value is ever populated (DB value-shape CHECK). */
             percentage_basis_points: number | null;
             fixed_amount_minor: number | null;
@@ -3805,7 +3808,8 @@ export interface components {
             effective_from: string;
             effective_to: string | null;
             is_backdated: boolean;
-            supersedes_plan_id?: string;
+            /** @description supersedes_plan_id is a nullable FK, so a loaded relation can still be null. */
+            supersedes_plan_id?: string | null;
             notes: string | null;
             change_reason: string;
             submitted_at: string | null;
@@ -3979,7 +3983,7 @@ export interface components {
             safe_download_filename: string;
             detected_mime_type: string | null;
             size_bytes: number;
-            available_at: string;
+            available_at: string | null;
             can: {
                 download: boolean;
             };
@@ -3991,8 +3995,8 @@ export interface components {
             reason: string;
             resolution_note: string | null;
             has_evidence: boolean;
-            created_at: string;
-            updated_at: string;
+            created_at: string | null;
+            updated_at: string | null;
             invoice?: {
                 id: string;
                 invoice_number: string | null;
@@ -4016,12 +4020,12 @@ export interface components {
             reason: string;
             row_count: number | null;
             download_count: number;
-            expires_at: string;
-            first_downloaded_at: string;
-            last_downloaded_at: string;
+            expires_at: string | null;
+            first_downloaded_at: string | null;
+            last_downloaded_at: string | null;
             failure_code: string | null;
             failure_message: string | null;
-            created_at: string;
+            created_at: string | null;
         };
         /** FinancialPeriodLockResource */
         FinancialPeriodLockResource: {
@@ -4037,11 +4041,11 @@ export interface components {
             status: string;
             exception_required: boolean;
             reopen_reason: string | null;
-            reopen_requested_at: string;
-            reopen_approved_at: string;
-            reopened_at: string;
-            locked_at: string;
-            created_at: string;
+            reopen_requested_at: string | null;
+            reopen_approved_at: string | null;
+            reopened_at: string | null;
+            locked_at: string | null;
+            created_at: string | null;
         };
         /**
          * FlagAuditEventRequest
@@ -4068,22 +4072,26 @@ export interface components {
             free_period_days: number;
             target_scope: string;
             effective_from: string;
-            effective_to: string;
+            effective_to: string | null;
             status: string;
-            approved_at: string;
+            approved_at: string | null;
             change_reason: string | null;
             targets: {
                 id: string;
                 target_type: string;
-                merchant_id: string;
-                subscription_plan_id: string;
-                billing_mode: string;
+                /** @description A target names exactly one of merchant / plan / billing_mode, so the other
+                 *     two are genuinely null. Each null branch is spelled out because the OpenAPI
+                 *     generator infers nullability from an explicit null ternary but not through
+                 *     the nullsafe operator. */
+                merchant_id: string | null;
+                subscription_plan_id: string | null;
+                billing_mode: string | null;
             }[];
         };
         /** InvoiceItemResource */
         InvoiceItemResource: {
             id: string;
-            service_session_id?: string;
+            service_session_id?: string | null;
             service?: {
                 id: string;
                 name: string;
@@ -4180,12 +4188,12 @@ export interface components {
                 formatted: string;
             };
             percentage_fee_config_snapshot: unknown[] | null;
-            finalized_at: string;
-            voided_at: string;
+            finalized_at: string | null;
+            voided_at: string | null;
             void_reason: string | null;
-            adjusted_at: string;
+            adjusted_at: string | null;
             adjustment_reason: string | null;
-            created_at: string;
+            created_at: string | null;
             items?: components["schemas"]["InvoiceItemResource"][];
             can: {
                 update: string;
@@ -4213,8 +4221,8 @@ export interface components {
             operational_status: string;
             billing_status: string;
             pending_setup: boolean;
-            registered_at: string;
-            setup_completed_at: string;
+            registered_at: string | null;
+            setup_completed_at: string | null;
         };
         /** MerchantResource */
         MerchantResource: {
@@ -4222,8 +4230,8 @@ export interface components {
             name: string;
             slug: string;
             status: string;
-            service_fee_tier: string;
-            setup_completed_at: string;
+            service_fee_tier: string | null;
+            setup_completed_at: string | null;
         };
         /** MerchantSubscriptionResource */
         MerchantSubscriptionResource: {
@@ -4323,9 +4331,9 @@ export interface components {
                 currency: string;
                 formatted: string;
             };
-            recorded_at: string;
-            submitted_for_validation_at: string;
-            created_at: string;
+            recorded_at: string | null;
+            submitted_for_validation_at: string | null;
+            created_at: string | null;
             maker?: {
                 id: string | null;
                 name: string;
@@ -4349,7 +4357,9 @@ export interface components {
             method: string;
             result: string;
             reference_masked?: string | null;
-            matched_payment_id?: string;
+            /** @description matched_payment_record_id is a nullable FK (an unmatched check has no record),
+             *     so a loaded relation can still be null. */
+            matched_payment_id?: string | null;
             is_override: boolean;
             override_reason: string | null;
             checked_at: string;
@@ -4395,11 +4405,12 @@ export interface components {
                 currency: string;
                 components: unknown[];
                 is_reissue: boolean;
-                reissue_of?: string;
+                /** @description reissue_of_receipt_id is a nullable FK, so a loaded relation can still be null. */
+                reissue_of?: string | null;
                 reason: string | null;
                 downloadable: boolean;
                 file_generation_status: string;
-                created_at: string;
+                created_at: string | null;
                 invoice?: {
                     id: string;
                     invoice_number: string | null;
@@ -4469,9 +4480,9 @@ export interface components {
         PersonnelServiceSessionResource: {
             id: string;
             status: string;
-            started_at: string;
-            completed_at: string;
-            cancelled_at: string;
+            started_at: string | null;
+            completed_at: string | null;
+            cancelled_at: string | null;
             service?: {
                 id: string;
                 name: string;
@@ -4505,14 +4516,14 @@ export interface components {
             billing_mode: string;
             percentage_basis_points: number | null;
             fixed_component_minor: number | null;
-            tier_behavior: string;
+            tier_behavior: string | null;
             shared_split_basis_points: number | null;
-            fee_basis_type: string;
+            fee_basis_type: string | null;
             currency: string;
             effective_from: string;
-            effective_to: string;
+            effective_to: string | null;
             status: string;
-            approved_at: string;
+            approved_at: string | null;
             change_reason: string;
             capabilities: {
                 editable: boolean;
@@ -4524,17 +4535,21 @@ export interface components {
         /** PlatformFeeDisputeResource */
         PlatformFeeDisputeResource: {
             id: string;
-            platform_fee_ledger_entry_id: string;
-            subscription_invoice_id: string;
+            /** @description Nullable FKs (platform_fee_ledger_entry_id, subscription_invoice_id,
+             *     assigned_reviewer, resolved_by): each null branch is spelled out because the
+             *     OpenAPI generator infers nullability from an explicit null ternary but not
+             *     through the nullsafe operator. `created_by` is a non-nullable FK, so it stays. */
+            platform_fee_ledger_entry_id: string | null;
+            subscription_invoice_id: string | null;
             reason: string;
             status: string;
-            assigned_reviewer: string;
+            assigned_reviewer: string | null;
             resolution_note: string | null;
             has_evidence: boolean;
             created_by: string;
-            resolved_by: string;
-            resolved_at: string;
-            created_at: string;
+            resolved_by: string | null;
+            resolved_at: string | null;
+            created_at: string | null;
             capabilities: {
                 reviewable: boolean;
                 resolvable: boolean;
@@ -4544,10 +4559,14 @@ export interface components {
         /** PlatformFeeLedgerEntryResource */
         PlatformFeeLedgerEntryResource: {
             id: string;
+            /** @description branch_id, source_invoice_item_id and subscription_invoice_item_id are nullable
+             *     FKs, so each null branch is spelled out: the OpenAPI generator infers nullability
+             *     from an explicit null ternary but not through the nullsafe operator. merchant_id
+             *     and source_invoice_id are non-nullable FKs and stay as-is. */
             merchant_id: string;
-            branch_id: string;
+            branch_id: string | null;
             source_invoice_id: string;
-            source_invoice_item_id: string;
+            source_invoice_item_id: string | null;
             entry_type: string;
             status: string;
             billing_mode: string;
@@ -4561,8 +4580,8 @@ export interface components {
             merchant_absorbed_amount_minor: number;
             merchant_liability_minor: number;
             currency: string;
-            subscription_invoice_item_id: string;
-            billable_at: string;
+            subscription_invoice_item_id: string | null;
+            billable_at: string | null;
         };
         /** PlatformMerchantResource */
         PlatformMerchantResource: {
@@ -4572,10 +4591,10 @@ export interface components {
             billing_status: string;
             billing_status_reason: string | null;
             suspension_reason: string | null;
-            suspended_at: string;
-            deactivated_at: string;
-            setup_completed_at: string;
-            registered_at: string;
+            suspended_at: string | null;
+            deactivated_at: string | null;
+            setup_completed_at: string | null;
+            registered_at: string | null;
             can: {
                 suspend: string;
                 reactivate: string;
@@ -4607,16 +4626,20 @@ export interface components {
             currency: string | null;
             target_scope: string;
             effective_from: string;
-            effective_to: string;
+            effective_to: string | null;
             status: string;
-            approved_at: string;
+            approved_at: string | null;
             change_reason: string | null;
             targets: {
                 id: string;
                 target_type: string;
-                merchant_id: string;
-                subscription_plan_id: string;
-                billing_mode: string;
+                /** @description A target names exactly one of merchant / plan / billing_mode, so the other
+                 *     two are genuinely null. Each null branch is spelled out because the OpenAPI
+                 *     generator infers nullability from an explicit null ternary but not through
+                 *     the nullsafe operator. */
+                merchant_id: string | null;
+                subscription_plan_id: string | null;
+                billing_mode: string | null;
             }[];
         };
         /** QueueConfigurationResource */
@@ -4646,13 +4669,13 @@ export interface components {
                 id: string;
             };
             queued_at: string;
-            assigned_at: string;
-            called_at: string;
-            started_at: string;
-            completed_at: string;
-            cancelled_at: string;
-            no_show_at: string;
-            transferred_at: string;
+            assigned_at: string | null;
+            called_at: string | null;
+            started_at: string | null;
+            completed_at: string | null;
+            cancelled_at: string | null;
+            no_show_at: string | null;
+            transferred_at: string | null;
             cancellation_reason: string | null;
             transfer_reason: string | null;
             preferred_personnel_override_reason: string | null;
@@ -4686,10 +4709,10 @@ export interface components {
             service_session?: {
                 id: string;
                 status: string;
-                queue_entry_id?: string;
-                started_at: string;
-                completed_at: string;
-                cancelled_at: string;
+                queue_entry_id?: string | null;
+                started_at: string | null;
+                completed_at: string | null;
+                cancelled_at: string | null;
                 cancellation_reason: string | null;
                 notes: string | null;
                 preferred_personnel_honored: boolean | null;
@@ -4743,11 +4766,12 @@ export interface components {
             currency: string;
             components: unknown[];
             is_reissue: boolean;
-            reissue_of?: string;
+            /** @description reissue_of_receipt_id is a nullable FK, so a loaded relation can still be null. */
+            reissue_of?: string | null;
             reason: string | null;
             downloadable: boolean;
             file_generation_status: string;
-            created_at: string;
+            created_at: string | null;
             invoice?: {
                 id: string;
                 invoice_number: string | null;
@@ -4788,10 +4812,10 @@ export interface components {
             reference_masked: string | null;
             reason: string;
             refund_group: string;
-            approved_at: string;
-            finalized_at: string;
-            rejected_at: string;
-            created_at: string;
+            approved_at: string | null;
+            finalized_at: string | null;
+            rejected_at: string | null;
+            created_at: string | null;
             invoice?: {
                 id: string;
                 invoice_number: string | null;
@@ -4972,8 +4996,8 @@ export interface components {
             id: string;
             status: string;
             effective_at: string;
-            applied_at: string;
-            cancelled_at: string;
+            applied_at: string | null;
+            cancelled_at: string | null;
             target_plan: {
                 id: string;
                 key: string;
@@ -5026,10 +5050,10 @@ export interface components {
         ServiceSessionResource: {
             id: string;
             status: string;
-            queue_entry_id?: string;
-            started_at: string;
-            completed_at: string;
-            cancelled_at: string;
+            queue_entry_id?: string | null;
+            started_at: string | null;
+            completed_at: string | null;
+            cancelled_at: string | null;
             cancellation_reason: string | null;
             notes: string | null;
             preferred_personnel_honored: boolean | null;
@@ -5070,7 +5094,7 @@ export interface components {
             status: string;
             resend_count: number;
             expires_at: string;
-            last_sent_at: string;
+            last_sent_at: string | null;
             can: {
                 [key: string]: boolean;
             };
@@ -5467,11 +5491,11 @@ export interface components {
             currency: string;
             /** @description Phase 20C — read-only applied promotion snapshot (immutable; no internal/promotion id leaked). */
             promotion_applied: boolean;
-            promotion_type: string;
+            promotion_type: string | null;
             promotion_value_snapshot: number | null;
             promotion_currency: string | null;
-            issued_at: string;
-            due_at: string;
+            issued_at: string | null;
+            due_at: string | null;
             payment_reference_pending: boolean;
             account_reference: string | null;
             has_pdf: boolean;

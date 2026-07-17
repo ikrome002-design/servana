@@ -27,7 +27,7 @@ final class FileResource extends JsonResource
             'safe_download_filename' => $this->safe_download_filename,
             'detected_mime_type' => $this->detected_mime_type,
             'size_bytes' => $this->size_bytes,
-            'available_at' => $this->available_at?->toIso8601String(),
+            'available_at' => $this->available_at === null ? null : $this->available_at->toIso8601String(),
             'can' => [
                 'download' => $this->isDownloadable(),
             ],

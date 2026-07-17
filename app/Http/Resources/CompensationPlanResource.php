@@ -49,7 +49,8 @@ final class CompensationPlanResource extends JsonResource
             'effective_from' => $this->effective_from->toDateString(),
             'effective_to' => $this->effective_to === null ? null : $this->effective_to->toDateString(),
             'is_backdated' => $this->is_backdated,
-            'supersedes_plan_id' => $this->whenLoaded('supersedesPlan', fn (): ?string => $this->supersedesPlan?->ulid),
+            // supersedes_plan_id is a nullable FK, so a loaded relation can still be null.
+            'supersedes_plan_id' => $this->whenLoaded('supersedesPlan', fn (): ?string => $this->supersedesPlan === null ? null : $this->supersedesPlan->ulid),
             'notes' => $this->notes,
             'change_reason' => $this->change_reason,
             'submitted_at' => $this->submitted_at === null ? null : $this->submitted_at->toIso8601String(),

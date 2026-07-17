@@ -36,11 +36,11 @@ final class FinancialPeriodLockResource extends JsonResource
             'status' => $this->status->value,
             'exception_required' => $this->exception_required,
             'reopen_reason' => $this->reopen_reason,
-            'reopen_requested_at' => $this->reopen_requested_at?->toIso8601String(),
-            'reopen_approved_at' => $this->reopen_approved_at?->toIso8601String(),
-            'reopened_at' => $this->reopened_at?->toIso8601String(),
-            'locked_at' => $this->locked_at?->toIso8601String(),
-            'created_at' => $this->created_at?->toIso8601String(),
+            'reopen_requested_at' => $this->reopen_requested_at === null ? null : $this->reopen_requested_at->toIso8601String(),
+            'reopen_approved_at' => $this->reopen_approved_at === null ? null : $this->reopen_approved_at->toIso8601String(),
+            'reopened_at' => $this->reopened_at === null ? null : $this->reopened_at->toIso8601String(),
+            'locked_at' => $this->locked_at === null ? null : $this->locked_at->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
         ];
     }
 }

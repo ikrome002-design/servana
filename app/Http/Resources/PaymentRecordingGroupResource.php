@@ -37,9 +37,9 @@ final class PaymentRecordingGroupResource extends JsonResource
             'is_pending_validation' => $this->status === PaymentRecordingGroupStatus::PendingValidation,
             'currency' => $this->currency,
             'total' => Money::ofMinor($this->total_amount_minor, $currency)->toArray(),
-            'recorded_at' => $this->recorded_at?->toIso8601String(),
-            'submitted_for_validation_at' => $this->submitted_for_validation_at?->toIso8601String(),
-            'created_at' => $this->created_at?->toIso8601String(),
+            'recorded_at' => $this->recorded_at === null ? null : $this->recorded_at->toIso8601String(),
+            'submitted_for_validation_at' => $this->submitted_for_validation_at === null ? null : $this->submitted_for_validation_at->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
             'maker' => $this->whenLoaded('maker', function (): array {
                 /** @var User $maker */
                 $maker = $this->maker;

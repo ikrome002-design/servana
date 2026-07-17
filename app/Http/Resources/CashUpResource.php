@@ -28,7 +28,7 @@ final class CashUpResource extends JsonResource
 
         return [
             'id' => $this->ulid,
-            'business_date' => $this->business_date?->toDateString(),
+            'business_date' => $this->business_date === null ? null : $this->business_date->toDateString(),
             'status' => $this->status->value,
             'expected' => Money::ofMinor($this->expected_minor, $currency)->toArray(),
             'counted' => Money::ofMinor($this->counted_minor, $currency)->toArray(),
@@ -36,11 +36,11 @@ final class CashUpResource extends JsonResource
             'expected_minor' => $this->expected_minor,
             'counted_minor' => $this->counted_minor,
             'variance_minor' => $this->variance_minor,
-            'submitted_at' => $this->submitted_at?->toIso8601String(),
-            'approved_at' => $this->approved_at?->toIso8601String(),
-            'reviewed_at' => $this->reviewed_at?->toIso8601String(),
+            'submitted_at' => $this->submitted_at === null ? null : $this->submitted_at->toIso8601String(),
+            'approved_at' => $this->approved_at === null ? null : $this->approved_at->toIso8601String(),
+            'reviewed_at' => $this->reviewed_at === null ? null : $this->reviewed_at->toIso8601String(),
             'review_note' => $this->review_note,
-            'created_at' => $this->created_at?->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
             'lines' => $this->whenLoaded('lines', fn (): array => $this->lines
                 ->map(static fn (CashUpLine $line): array => [
                     'method' => $line->method->value,

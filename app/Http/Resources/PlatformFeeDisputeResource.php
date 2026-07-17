@@ -24,17 +24,21 @@ final class PlatformFeeDisputeResource extends JsonResource
     {
         return [
             'id' => $this->ulid,
-            'platform_fee_ledger_entry_id' => $this->ledgerEntry?->ulid,
-            'subscription_invoice_id' => $this->subscriptionInvoice?->ulid,
+            // Nullable FKs (platform_fee_ledger_entry_id, subscription_invoice_id,
+            // assigned_reviewer, resolved_by): each null branch is spelled out because the
+            // OpenAPI generator infers nullability from an explicit null ternary but not
+            // through the nullsafe operator. `created_by` is a non-nullable FK, so it stays.
+            'platform_fee_ledger_entry_id' => $this->ledgerEntry === null ? null : $this->ledgerEntry->ulid,
+            'subscription_invoice_id' => $this->subscriptionInvoice === null ? null : $this->subscriptionInvoice->ulid,
             'reason' => $this->reason,
             'status' => $this->status->value,
-            'assigned_reviewer' => $this->assignedReviewer?->ulid,
+            'assigned_reviewer' => $this->assignedReviewer === null ? null : $this->assignedReviewer->ulid,
             'resolution_note' => $this->resolution_note,
             'has_evidence' => $this->evidence_file_id !== null,
             'created_by' => $this->createdBy?->ulid,
-            'resolved_by' => $this->resolvedBy?->ulid,
-            'resolved_at' => $this->resolved_at?->toIso8601String(),
-            'created_at' => $this->created_at?->toIso8601String(),
+            'resolved_by' => $this->resolvedBy === null ? null : $this->resolvedBy->ulid,
+            'resolved_at' => $this->resolved_at === null ? null : $this->resolved_at->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
             'capabilities' => [
                 'reviewable' => $this->status->value === 'open',
                 'resolvable' => $this->status->value === 'under_review',

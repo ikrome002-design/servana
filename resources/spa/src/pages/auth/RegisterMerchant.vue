@@ -57,7 +57,7 @@ const submit = form.handleSubmit(async (values) => {
     class="w-full max-w-md"
   >
     <template v-if="!submitted">
-      <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+      <h1 class="font-display text-2xl font-extrabold text-heading">
         Create your business account
       </h1>
       <p class="mt-2 text-sm text-text-muted">
@@ -109,7 +109,7 @@ const submit = form.handleSubmit(async (values) => {
         Already have an account?
         <RouterLink
           :to="{ name: 'auth.login' }"
-          class="font-semibold text-brand-deep underline"
+          class="font-semibold text-heading underline"
         >
           Sign in
         </RouterLink>
@@ -117,7 +117,7 @@ const submit = form.handleSubmit(async (values) => {
     </template>
 
     <template v-else>
-      <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+      <h1 class="font-display text-2xl font-extrabold text-heading">
         Check your email
       </h1>
       <p
@@ -129,7 +129,7 @@ const submit = form.handleSubmit(async (values) => {
       </p>
       <RouterLink
         :to="{ name: 'auth.login' }"
-        class="mt-6 inline-block font-semibold text-brand-deep underline"
+        class="mt-6 inline-block font-semibold text-heading underline"
       >
         Back to sign in
       </RouterLink>

@@ -100,7 +100,7 @@ async function submit(): Promise<void> {
 
 <template>
   <section class="mx-auto w-full max-w-2xl p-4 md:p-6">
-    <h1 class="font-display text-2xl font-extrabold text-brand-deep">
+    <h1 class="font-display text-2xl font-extrabold text-heading">
       Set up your business
     </h1>
     <p class="mt-1 text-sm text-text-muted">
@@ -117,7 +117,7 @@ async function submit(): Promise<void> {
         :key="s.key"
         class="flex items-center gap-2 rounded-control border px-3 py-2 text-sm"
         :class="i === step
-          ? 'border-primary bg-surface-alt font-semibold text-brand-deep'
+          ? 'border-primary bg-surface-alt font-semibold text-heading'
           : 'border-border text-text-muted'"
         :aria-current="i === step ? 'step' : undefined"
       >
@@ -136,7 +136,7 @@ async function submit(): Promise<void> {
     >
       <!-- Step 1: service fee tier -->
       <div v-show="step === 0">
-        <h2 class="font-display text-lg font-bold text-brand-deep">
+        <h2 class="font-display text-lg font-bold text-heading">
           Choose your service fee tier
         </h2>
         <p class="mt-1 text-sm text-text-muted">
@@ -158,7 +158,7 @@ async function submit(): Promise<void> {
 
       <!-- Step 2: business profile -->
       <div v-show="step === 1">
-        <h2 class="font-display text-lg font-bold text-brand-deep">
+        <h2 class="font-display text-lg font-bold text-heading">
           Business profile
         </h2>
         <div class="mt-4 flex flex-col gap-4">
@@ -210,7 +210,7 @@ async function submit(): Promise<void> {
 
       <!-- Step 3: first branch -->
       <div v-show="step === 2">
-        <h2 class="font-display text-lg font-bold text-brand-deep">
+        <h2 class="font-display text-lg font-bold text-heading">
           Your first branch
         </h2>
         <p class="mt-1 text-sm text-text-muted">
@@ -251,7 +251,7 @@ async function submit(): Promise<void> {
 
       <!-- Step 4: invite initial staff -->
       <div v-show="step === 3">
-        <h2 class="font-display text-lg font-bold text-brand-deep">
+        <h2 class="font-display text-lg font-bold text-heading">
           Invite your team
         </h2>
         <p class="mt-1 text-sm text-text-muted">

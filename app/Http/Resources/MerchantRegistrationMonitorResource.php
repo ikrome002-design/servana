@@ -26,8 +26,8 @@ final class MerchantRegistrationMonitorResource extends JsonResource
             'operational_status' => $this->status->value,
             'billing_status' => $this->billing_status->value,
             'pending_setup' => $this->status->isPendingSetup(),
-            'registered_at' => $this->created_at?->toIso8601String(),
-            'setup_completed_at' => $this->setup_completed_at?->toIso8601String(),
+            'registered_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
+            'setup_completed_at' => $this->setup_completed_at === null ? null : $this->setup_completed_at->toIso8601String(),
         ];
     }
 }

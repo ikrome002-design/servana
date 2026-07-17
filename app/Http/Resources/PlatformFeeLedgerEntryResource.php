@@ -24,10 +24,14 @@ final class PlatformFeeLedgerEntryResource extends JsonResource
     {
         return [
             'id' => $this->ulid,
+            // branch_id, source_invoice_item_id and subscription_invoice_item_id are nullable
+            // FKs, so each null branch is spelled out: the OpenAPI generator infers nullability
+            // from an explicit null ternary but not through the nullsafe operator. merchant_id
+            // and source_invoice_id are non-nullable FKs and stay as-is.
             'merchant_id' => $this->merchant?->ulid,
-            'branch_id' => $this->branch?->ulid,
+            'branch_id' => $this->branch === null ? null : $this->branch->ulid,
             'source_invoice_id' => $this->sourceInvoice?->ulid,
-            'source_invoice_item_id' => $this->sourceInvoiceItem?->ulid,
+            'source_invoice_item_id' => $this->sourceInvoiceItem === null ? null : $this->sourceInvoiceItem->ulid,
             'entry_type' => $this->entry_type->value,
             'status' => $this->status->value,
             'billing_mode' => $this->billing_mode_snapshot->value,
@@ -41,8 +45,8 @@ final class PlatformFeeLedgerEntryResource extends JsonResource
             'merchant_absorbed_amount_minor' => $this->merchant_absorbed_amount_minor,
             'merchant_liability_minor' => $this->merchant_liability_minor,
             'currency' => $this->currency,
-            'subscription_invoice_item_id' => $this->subscriptionInvoiceItem?->ulid,
-            'billable_at' => $this->billable_at?->toIso8601String(),
+            'subscription_invoice_item_id' => $this->subscriptionInvoiceItem === null ? null : $this->subscriptionInvoiceItem->ulid,
+            'billable_at' => $this->billable_at === null ? null : $this->billable_at->toIso8601String(),
         ];
     }
 }

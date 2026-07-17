@@ -29,8 +29,8 @@ final class FinanceDisputeResource extends JsonResource
             'reason' => $this->reason,
             'resolution_note' => $this->resolution_note,
             'has_evidence' => $this->evidence_file_id !== null,
-            'created_at' => $this->created_at?->toIso8601String(),
-            'updated_at' => $this->updated_at?->toIso8601String(),
+            'created_at' => $this->created_at === null ? null : $this->created_at->toIso8601String(),
+            'updated_at' => $this->updated_at === null ? null : $this->updated_at->toIso8601String(),
             'invoice' => $this->whenLoaded('invoice', function (): ?array {
                 /** @var Invoice|null $invoice */
                 $invoice = $this->invoice;
