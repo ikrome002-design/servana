@@ -76,7 +76,11 @@ enum StepUpAction: string
             self::PayoutApproval => 'Phase 20H',
             self::PayoutMarkPaid => 'Phase 20H',
             self::ReconciliationResolution => 'Phase 20D',
-            self::CompensationBackdatedChange => 'Phase 20F/20G',
+            // Phase 20F ships the real route: compensation-plans.approve carries
+            // RequireFreshMfa:compensation_backdated_change (every approval of effective terms, and
+            // a BACKDATED approval additionally emits the CRITICAL audit event). Phase 20G reuses
+            // this same canonical compensation action for backdated adjustments.
+            self::CompensationBackdatedChange => 'Phase 20F (implemented; 20G extends)',
             self::RecoveryCodeRegeneration => 'Phase R3 (implemented)',
             self::InvoiceVoid => 'Phase 17 (implemented)',
             self::PaymentDuplicateOverride => 'Phase 18A (implemented)',
@@ -108,7 +112,10 @@ enum StepUpAction: string
             self::PayoutApproval,
             self::PayoutMarkPaid,
             self::ReconciliationResolution,
-            self::CompensationBackdatedChange,
+            // CompensationBackdatedChange is EXCLUDED here (like BillingConfiguration/InvoiceVoid/
+            // PlatformFeeDisputeResolution): Phase 20F ships its real route
+            // (compensation-plans.approve), so it is a live compensation step-up proven on that
+            // route by CompensationPlanApiTest, not a harness-only business action.
         ];
     }
 }

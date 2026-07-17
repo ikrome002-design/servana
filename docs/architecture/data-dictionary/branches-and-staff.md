@@ -60,6 +60,24 @@ route-bound today and uses `BelongsToMerchant` (foreign ULID → 404 + audit). T
 branch-owned child tables are reached via nested `{branch}`-scoped routes
 (`EnsureBranchScope`), not by their own ULID.
 
+### Personnel compensation (Phase 20F) — cross-reference
+
+`staff_profiles` is the **subject** of HR compensation configuration. The Phase 20F tables
+(`commission_rules`, `personnel_compensation_plans`, `compensation_plan_history`) are **branch-owned**
+and reference `staff_profiles(id, merchant_id)` via the composite FK enabled by the R5
+`UNIQUE (id, merchant_id)` above. Their canonical DDL lives in
+`docs/architecture/data-dictionary/billing-and-wallet.md` §"Phase 20F — Compensation plan setup and
+commission rules"; the lifecycle is
+`docs/architecture/state-machines/personnel-compensation-plan.md`; gate decisions are in
+`docs/proof/phase-20f.md`.
+
+**`compensation_model` is not `employment_type`.** `staff_profiles.employment_type`
+(`full_time`/`part_time`/`contract`/`commission_only`) describes the *employment relationship*;
+`personnel_compensation_plans.compensation_model`
+(`commission_only`/`salary_plus_commission`/`salary_only`) describes *how the person earns*. Scope
+§12.2 forbids overloading one onto the other — they share the `commission_only` label but are
+different columns with different meanings.
+
 ---
 
 ## Migration order (forward-only; no shipped migration edited)

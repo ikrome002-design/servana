@@ -21,6 +21,8 @@ use App\Http\Controllers\Api\V1\Catalogue\ServiceController;
 use App\Http\Controllers\Api\V1\Catalogue\ServiceEligibilityController;
 use App\Http\Controllers\Api\V1\Clients\ClientConsentController;
 use App\Http\Controllers\Api\V1\Clients\ClientController;
+use App\Http\Controllers\Api\V1\Compensation\CommissionRuleController;
+use App\Http\Controllers\Api\V1\Compensation\CompensationPlanController;
 use App\Http\Controllers\Api\V1\Files\FileController;
 use App\Http\Controllers\Api\V1\FinanceDisputes\FinanceDisputeController;
 use App\Http\Controllers\Api\V1\FinanceExports\FinanceExportController;
@@ -444,6 +446,74 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 ->middleware([EnsureBranchScope::class, EnsurePermission::class.':personnel.availability.manage'])
                 ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                 ->name('staff.availability.emergency-unavailable');
+
+            // Phase 20F — HR compensation-plan + commission-rule CONFIGURATION (Plan §59, §80;
+            // Scope §12.1-§12.9/§18.3). Branch-scoped, HR-only (Plan §10.2: the Merchant
+            // Administrator never configures commissions; Branch Manager/Finance/Personnel/Audit
+            // hold no compensation key at all). One named route per transition — NO generic status
+            // route, NO DELETE (effective terms are superseded/ended, never deleted), and NO manual
+            // supersede route: supersede is a CONSEQUENCE of approving a successor, and the matrix
+            // declares no `compensation.plan.supersede` key.
+            //
+            // Fresh step-up on approve uses the canonical compensation step-up action
+            // (StepUpAction::CompensationBackdatedChange — the §18 designated compensation action,
+            // now a live route). Maker/checker (approver != submitter) is enforced by the action and
+            // a DB CHECK, not by the route.
+            //
+            // Class = branch_mutation (ResolveTenantContext + EnsureBranchScope). These are
+            // CONFIGURATION mutations, not financial_mutation: they create no money fact, so they
+            // carry no idempotency key — approval replay is instead rejected by the state machine
+            // (pending_approval is the only legal source of approve) and the DB EXCLUDE.
+            $compensationStepUp = RequireFreshMfa::class.':'.StepUpAction::CompensationBackdatedChange->value;
+
+            Route::get('commission-rules', [CommissionRuleController::class, 'index'])
+                ->middleware(EnsurePermission::class.':compensation.plan.view')
+                ->name('commission-rules.index');
+            Route::post('commission-rules', [CommissionRuleController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':compensation.plan.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('commission-rules.store');
+            Route::get('commission-rules/{commissionRule}', [CommissionRuleController::class, 'show'])
+                ->middleware(EnsurePermission::class.':compensation.plan.view')
+                ->name('commission-rules.show');
+            Route::patch('commission-rules/{commissionRule}/draft', [CommissionRuleController::class, 'updateDraft'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':compensation.plan.update_draft'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('commission-rules.draft.update');
+
+            Route::get('compensation-plans', [CompensationPlanController::class, 'index'])
+                ->middleware(EnsurePermission::class.':compensation.plan.view')
+                ->name('compensation-plans.index');
+            Route::post('compensation-plans', [CompensationPlanController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':compensation.plan.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('compensation-plans.store');
+            Route::get('compensation-plans/{compensationPlan}', [CompensationPlanController::class, 'show'])
+                ->middleware(EnsurePermission::class.':compensation.plan.view')
+                ->name('compensation-plans.show');
+            Route::patch('compensation-plans/{compensationPlan}/draft', [CompensationPlanController::class, 'updateDraft'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':compensation.plan.update_draft'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('compensation-plans.draft.update');
+            Route::post('compensation-plans/{compensationPlan}/submit', [CompensationPlanController::class, 'submit'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':compensation.plan.submit'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('compensation-plans.submit');
+            Route::post('compensation-plans/{compensationPlan}/approve', [CompensationPlanController::class, 'approve'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':compensation.plan.approve', $compensationStepUp])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('compensation-plans.approve');
+            Route::post('compensation-plans/{compensationPlan}/reject', [CompensationPlanController::class, 'reject'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':compensation.plan.reject'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('compensation-plans.reject');
+            Route::post('compensation-plans/{compensationPlan}/cancel', [CompensationPlanController::class, 'cancel'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':compensation.plan.cancel'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('compensation-plans.cancel');
+            Route::get('compensation-plans/{compensationPlan}/history', [CompensationPlanController::class, 'history'])
+                ->middleware(EnsurePermission::class.':compensation.history.view')
+                ->name('compensation-plans.history');
 
             // Client records (Scope §clients, Plan §35; Phase 15A). Front Office owns
             // them (`client.*`); search is a distinct capability (`front_office.search`,

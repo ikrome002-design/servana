@@ -69,7 +69,12 @@ const merchantAdministrator: NavItem[] = [
   { key: 'merchant.invoices', label: 'Subscription invoices', routeName: 'merchant.invoices', permission: 'merchant.subscription.invoice.view', phase: 'Phase 20B', availability: 'live' },
   { key: 'merchant.platform-fees', label: 'Platform fees', routeName: 'merchant.platform-fees', permission: 'platform_fee.view', phase: 'Phase 20E', availability: 'live' },
   { key: 'merchant.reports', label: 'Reports', permission: 'merchant.report.view_all_branches', phase: 'Phase 21N', availability: 'planned' },
-  { key: 'merchant.compensation-summary', label: 'Compensation summary', permission: 'merchant.compensation_summary.view', phase: 'Phase 20F', availability: 'planned' },
+  // Phase retag (Phase 20F Increment 1): was 'Phase 20F', but the permission
+  // merchant.compensation_summary.view is owning_phase: Phase 20H in the plan-parity-tested
+  // docs/auth/permission-matrix.yaml, and Plan §80/§63 place the Merchant-Administrator
+  // compensation summary in Phase 20H (earnings surface). Matrix + Plan win over the nav tag.
+  // Not built in Phase 20F. See docs/proof/phase-20f.md §F10.
+  { key: 'merchant.compensation-summary', label: 'Compensation summary', permission: 'merchant.compensation_summary.view', phase: 'Phase 20H', availability: 'planned' },
 ];
 
 // Verbatim final-launch Merchant Branch navigation (Scope §, "Final
@@ -103,7 +108,7 @@ const humanResource: NavItem[] = [
   { key: 'hr.permission-preview', label: 'Permission preview', routeName: 'hr.permission-preview', permission: 'staff.role.assign', phase: 'Phase 7', availability: 'live' },
   { key: 'hr.eligibility', label: 'Service eligibility', routeName: 'hr.eligibility', permission: 'personnel.eligibility.manage', phase: 'Phase 15A', availability: 'live' },
   { key: 'hr.availability', label: 'Availability', routeName: 'hr.availability', permission: 'personnel.availability.manage', phase: 'Phase 15B', availability: 'live' },
-  { key: 'hr.compensation', label: 'Compensation', permission: 'compensation.plan.view', phase: 'Phase 20F', availability: 'planned' },
+  { key: 'hr.compensation', label: 'Compensation', routeName: 'hr.compensation', permission: 'compensation.plan.view', phase: 'Phase 20F', availability: 'live' },
   { key: 'hr.payout-runs', label: 'Payout runs', permission: 'payout_run.create', phase: 'Phase 20H', availability: 'planned' },
 ];
 

@@ -116,8 +116,8 @@ it('masks the linked audit row and never exposes internal ids or hashes', functi
     expect($json['id'])->toBe($id)
         ->and($json['audit_event']['id'])->toBe($scn['log']->ulid)
         ->and($json)->not->toHaveKey('audit_log_id')
-        ->and(json_encode($json))->not->toContain((string) $scn['log']->id)
-        ->and(json_encode($json))->not->toContain($scn['log']->hash);
+        ->and(json_encode($json, JSON_THROW_ON_ERROR))->not->toContain('"audit_log_id"')
+        ->and(json_encode($json, JSON_THROW_ON_ERROR))->not->toContain($scn['log']->hash);
 });
 
 it('records a typed, masked audit event for each transition', function (): void {

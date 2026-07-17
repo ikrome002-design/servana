@@ -22,11 +22,18 @@ service.view                          ·            ✓           ·            
 client.create                         ·            ·            ·            ·            ✓           ·            ·            ·
 client.update                         ·            ·            ·            ·            ✓           ·            ·            ·
 client.view                           ·            ·            ·            ·            ✓           ·            ·            ·
+compensation.history.view             ·            ·            ✓           ·            ·            ·            ·            ·
+compensation.plan.approve             ·            ·            ✓           ·            ·            ·            ·            ·
+compensation.plan.cancel              ·            ·            ✓           ·            ·            ·            ·            ·
+compensation.plan.create              ·            ·            ✓           ·            ·            ·            ·            ·
+compensation.plan.reject              ·            ·            ✓           ·            ·            ·            ·            ·
+compensation.plan.submit              ·            ·            ✓           ·            ·            ·            ·            ·
+compensation.plan.update_draft        ·            ·            ✓           ·            ·            ·            ·            ·
+compensation.plan.view                ·            ·            ✓           ·            ·            ·            ·            ·
 cash_up.approve                       ·            ·            ·            ✓           ·            ·            ·            ·
 cash_up.reject                        ·            ·            ·            ✓           ·            ·            ·            ·
 cash_up.request_correction            ·            ·            ·            ✓           ·            ·            ·            ·
 cash_up.view                          ·            ·            ·            ✓           ·            ·            ·            ·
-commissions.view                      ✓           ✓           ✓           ·            ·            ✓           ✓           ·
 customer_payment.duplicate_override   ·            ·            ·            ✓           ·            ·            ·            ·
 customer_payment.record               ·            ·            ·            ·            ✓           ·            ·            ·
 customer_payment.record_exception     ·            ·            ·            ✓           ·            ·            ·            ·
@@ -100,7 +107,6 @@ appointment.create                    ·            ·            ·            
 appointment.reschedule                ·            ·            ·            ·            ✓           ·            ·            ·
 appointment.transfer                  ·            ·            ·            ·            ✓           ·            ·            ·
 appointment.view                      ·            ·            ·            ·            ✓           ·            ·            ·
-commissions.manage                    ·            ·            ✓           ·            ·            ·            ·            ·
 personnel.availability.manage         ·            ·            ✓           ·            ·            ·            ·            ·
 personnel.eligibility.manage          ·            ·            ✓           ·            ·            ·            ·            ·
 staff.edit                            ·            ·            ✓           ·            ·            ·            ·            ·

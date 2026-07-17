@@ -1265,3 +1265,51 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-20e.md
     notes: "Forward-only expand (Increment 5A; shipped P20B migration NOT edited). Partial UNIQUE index on subscription_invoice_items(subscription_invoice_id) WHERE type='platform_fee_rollup' — at most one platform_fee_rollup line per subscription invoice. Combined with the one-invoice-per-(merchant, period) idempotency (serialized on the MerchantSubscription row lock in IssueSubscriptionInvoice) this is the DB-level cycle guard preventing two concurrent workers from issuing two platform-fee rollups for the same merchant/subscription/currency/period. Non-rollup line types unconstrained. No backfill."
+
+  - file: 2026_07_14_000001_create_commission_rules_table.php
+    table: commission_rules
+    domain: Compensation
+    owner_phase: "20F"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_28_000001_create_service_categories_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20f.md
+    notes: "Branch-owned HR commission CONFIGURATION (merchant_id + branch_id; composite FK (branch_id, merchant_id) -> merchant_branches(id, merchant_id); UNIQUE (id, merchant_id) makes it a composite-FK target for personnel_compensation_plans.commission_rule_id). A SIBLING of the plan (Scope 18.3), never a child and never a ledger. Value-shape CHECK: percentage => basis points only; fixed_amount => minor units + currency only (integer, never float). Basis-points range 0..10000 (F4 structural ceiling; no merchant/platform-max settings substrate exists). Applies-to CHECK binds service_category_id. CHECKs: calculation_type/calculation_basis/applies_to/status enums, currency uppercase ISO-3, non-negative fixed amount, effective_to > effective_from, non-empty change_reason, approval pair coherence. BEFORE UPDATE immutability trigger: once non-draft the terms are frozen; the only permitted effective_to mutation is the approved end/supersede transition closing an open-ended window (Scope 12.7 Step 3C: ended, not deleted). applies_to_preferred_personnel_fee is an F6 basis-inclusion flag consumed by Phase 20G. Creates no commission_ledger row and computes nothing. No backfill."
+  - file: 2026_07_14_000002_create_personnel_compensation_plans_table.php
+    table: personnel_compensation_plans
+    domain: Compensation
+    owner_phase: "20F"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_14_000001_create_commission_rules_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20f.md
+    notes: "Branch-owned compensation model per personnel per branch; subject is staff_profile_id. Composite FKs: (branch_id, merchant_id) -> merchant_branches, (staff_profile_id, merchant_id) -> staff_profiles, (commission_rule_id, merchant_id) -> commission_rules — no reference can cross a merchant boundary (ADR-002). F1 model-shape CHECK: commission_only => no salary + rule required; salary_only => salary required + rule NULL (the DB guarantee behind Plan 80's named 'salary-only has no commission rule' test, Scope 12.5); salary_plus_commission => both. Salary is integer minor units > 0 (never float); currency uppercase ISO-3; salary_period in (monthly,weekly,daily,hourly,per_shift); payout day 1..31. F8 maker/checker CHECK (approved_by <> submitted_by) + actor/timestamp pair coherence + approval/status CHECK so an unapproved backdated change can never reach an effective state (fail closed). F3 partial btree_gist EXCLUDE (branch_id, staff_profile_id, daterange(effective_from, effective_to, '[)')) WHERE status IN (active, scheduled) — one active plan per personnel per branch (Scope 12.9); half-open so adjacent/supersede windows are legal and draft/pending/terminal rows never block. BEFORE UPDATE immutability trigger (F7): once non-draft the subject/model/monetary/rule/effective_from terms are frozen — a change is a supersede (new version), never an in-place edit; the only permitted effective_to mutation is the approved active->superseded closure. Creates no salary/commission/payout/earnings fact (20G/20H). No backfill."
+  - file: 2026_07_14_000003_create_compensation_plan_history_table.php
+    table: compensation_plan_history
+    domain: Compensation
+    owner_phase: "20F"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_14_000002_create_personnel_compensation_plans_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20f.md
+    notes: "Branch-owned APPEND-ONLY compensation change history (the audit_logs precedent, Guardrail 5): BEFORE UPDATE OR DELETE trigger raises on every attempt — history is never rewritten and never deleted. created_at only (no updated_at; the row has no mutable column). Composite FKs to merchant_branches, personnel_compensation_plans (id, merchant_id) and staff_profiles (id, merchant_id). CHECKs: event in (created,updated_draft,submitted,approved,rejected,cancelled,superseded,expired), from/to status mirror the Scope 12.9 plan vocabulary, created is the only event with no prior status, non-empty change_reason. changed_fields is a masked jsonb diff of configured terms. Written in the SAME transaction as the transition that produced it. NOT a ledger — records configuration changes, never money owed/accrued/earned/paid. Read via compensation.history.view. No backfill."

@@ -900,7 +900,7 @@
       "route": null,
       "layout": "MerchantLayout",
       "status": "planned",
-      "phase": "Phase 20F",
+      "phase": "Phase 20H",
       "spec": null,
       "title": "Compensation summary",
       "roles": [
@@ -1122,19 +1122,26 @@
     {
       "key": "hr-compensation",
       "domain": "hr",
-      "route": null,
+      "route": "hr.compensation",
       "layout": "BranchLayout",
-      "status": "planned",
+      "status": "implemented",
       "phase": "Phase 20F",
-      "spec": null,
-      "title": "Compensation setup",
+      "spec": "hr/hr-compensation.md",
+      "title": "Compensation",
       "roles": [
         "merchant_human_resource"
       ],
       "permissions": [
-        "compensation.plan.view"
+        "compensation.plan.view",
+        "compensation.plan.create",
+        "compensation.plan.update_draft",
+        "compensation.plan.submit",
+        "compensation.plan.approve",
+        "compensation.plan.reject",
+        "compensation.plan.cancel",
+        "compensation.history.view"
       ],
-      "summary": "Compensation list/detail/setup/history."
+      "summary": "Branch-scoped, HR-only compensation-plan and commission-rule configuration: plan list with status/backdated/pending-approval indicators, plan detail with append-only history, commission-rule and plan draft forms (F1 model shape, F4 value shape, preferred-personnel-fee basis inclusion), and the named submit/approve/reject/cancel transitions (approval requires a fresh step-up and a different approver). Configuration only — no earned commission, salary ledger, commission ledger, payout, earnings statement, liability or Wallet/provider surface exists here."
     },
     {
       "key": "hr-payout-prep",

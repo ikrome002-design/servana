@@ -336,6 +336,32 @@ enum AuditEvent: string
     case PlatformFeeConfigurationApproved = 'platform_fee.configuration_approved';
     case PlatformFeeConfigurationSuperseded = 'platform_fee.configuration_superseded';
     case PlatformFeeConfigurationCancelled = 'platform_fee.configuration_cancelled';
+    // Phase 20F — HR compensation-plan CONFIGURATION governance (branch-scoped; AuditDomain::
+    // Compensation, read via audit.compensation.view). Approval is high; a BACKDATED approval is
+    // CRITICAL (Plan §59). Context carries public ULIDs + configured terms only — never personnel
+    // contact details, never internal ids. These events record CONFIGURATION changes; no earned
+    // salary/commission fact exists in Phase 20F (20G/20H own that).
+    case CompensationPlanCreated = 'compensation.plan.created';
+    case CompensationPlanUpdatedDraft = 'compensation.plan.updated_draft';
+    case CompensationPlanSubmitted = 'compensation.plan.submitted';
+    case CompensationPlanApproved = 'compensation.plan.approved';
+    case CompensationPlanBackdatedChangeApproved = 'compensation.plan.backdated_change_approved';
+    case CompensationPlanActivated = 'compensation.plan.activated';
+    case CompensationPlanRejected = 'compensation.plan.rejected';
+    case CompensationPlanCancelled = 'compensation.plan.cancelled';
+    case CompensationPlanSuperseded = 'compensation.plan.superseded';
+    case CompensationPlanExpired = 'compensation.plan.expired';
+    // Phase 20F — commission-rule configuration. A rule never transitions independently; each of
+    // these is emitted inside the referencing plan's transaction.
+    case CommissionRuleCreated = 'commission_rule.created';
+    case CommissionRuleUpdatedDraft = 'commission_rule.updated_draft';
+    case CommissionRuleSubmitted = 'commission_rule.submitted';
+    case CommissionRuleApproved = 'commission_rule.approved';
+    case CommissionRuleActivated = 'commission_rule.activated';
+    case CommissionRuleRejected = 'commission_rule.rejected';
+    case CommissionRuleCancelled = 'commission_rule.cancelled';
+    case CommissionRuleEnded = 'commission_rule.ended';
+    case CommissionRuleExpired = 'commission_rule.expired';
 
     /**
      * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
@@ -402,7 +428,27 @@ enum AuditEvent: string
             self::PlatformFeeDisputeResolved,
             self::PlatformFeeDisputeRejected => AuditDomain::Finance,
 
-            // Compensation events arrive with Phases 20F–20H; none exist yet.
+            // Phase 20F — compensation configuration (HR). This populates the previously empty
+            // `audit.compensation.view` read segment; 20G/20H extend it with earned/payout events.
+            self::CompensationPlanCreated,
+            self::CompensationPlanUpdatedDraft,
+            self::CompensationPlanSubmitted,
+            self::CompensationPlanApproved,
+            self::CompensationPlanBackdatedChangeApproved,
+            self::CompensationPlanActivated,
+            self::CompensationPlanRejected,
+            self::CompensationPlanCancelled,
+            self::CompensationPlanSuperseded,
+            self::CompensationPlanExpired,
+            self::CommissionRuleCreated,
+            self::CommissionRuleUpdatedDraft,
+            self::CommissionRuleSubmitted,
+            self::CommissionRuleApproved,
+            self::CommissionRuleActivated,
+            self::CommissionRuleRejected,
+            self::CommissionRuleCancelled,
+            self::CommissionRuleEnded,
+            self::CommissionRuleExpired => AuditDomain::Compensation,
 
             default => AuditDomain::General,
         };
@@ -533,8 +579,26 @@ enum AuditEvent: string
             // dispute review handoff mirrors finance_dispute.review_started.
             self::PlatformFeeAggregated,
             self::PlatformFeeInvoiced,
-            self::PlatformFeeDisputeReviewStarted => AuditSeverity::Info,
+            self::PlatformFeeDisputeReviewStarted,
+            // Phase 20F — routine in-place draft edits and the effective-date boundaries. No
+            // approval decision and no money is involved in these moments.
+            self::CompensationPlanUpdatedDraft,
+            self::CompensationPlanActivated,
+            self::CompensationPlanExpired,
+            self::CommissionRuleUpdatedDraft,
+            self::CommissionRuleActivated,
+            self::CommissionRuleExpired => AuditSeverity::Info,
 
+            // Phase 20F — creation/submission and the withdraw/reject outcomes of a compensation
+            // change. Each records a governance decision but not an approval of effective terms.
+            self::CompensationPlanCreated,
+            self::CompensationPlanSubmitted,
+            self::CompensationPlanRejected,
+            self::CompensationPlanCancelled,
+            self::CommissionRuleCreated,
+            self::CommissionRuleSubmitted,
+            self::CommissionRuleRejected,
+            self::CommissionRuleCancelled,
             self::LoginLinkDenied,
             self::LoginLinkFailed,
             self::InvitationRevoked,
@@ -644,8 +708,17 @@ enum AuditEvent: string
             self::PlatformFeeConfigurationApproved,
             self::PlatformFeeConfigurationSuperseded,
             self::PlatformFeeConfigurationCancelled,
+            // Phase 20F — approving effective compensation terms, and ending/superseding terms that
+            // were already effective. These decide how personnel will earn (Plan §59).
+            self::CompensationPlanApproved,
+            self::CompensationPlanSuperseded,
+            self::CommissionRuleApproved,
+            self::CommissionRuleEnded,
             self::UnauthorizedAccess => AuditSeverity::High,
 
+            // Plan §59 requires CRITICAL severity for an approved BACKDATED compensation change:
+            // it rewrites how personnel earned over a window that has already passed.
+            self::CompensationPlanBackdatedChangeApproved,
             self::MerchantDeactivated => AuditSeverity::Critical,
         };
     }

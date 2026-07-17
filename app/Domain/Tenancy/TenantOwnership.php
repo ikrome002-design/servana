@@ -28,6 +28,9 @@ use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Clients\Models\ClientConsent;
 use App\Domain\Compensation\Models\CommissionHandoffEvent;
+use App\Domain\Compensation\Models\CommissionRule;
+use App\Domain\Compensation\Models\CompensationPlanHistory;
+use App\Domain\Compensation\Models\PersonnelCompensationPlan;
 use App\Domain\FinanceOps\Models\FinanceDispute;
 use App\Domain\FinanceOps\Models\FinanceExport;
 use App\Domain\FinanceOps\Models\FinancialPeriodLock;
@@ -117,6 +120,11 @@ final class TenantOwnership
         'audit_flagged_events',
         // Phase 19 — branch-scoped Audit export request (ADR-010).
         'audit_exports',
+        // Phase 20F — HR compensation configuration (Plan §59, §80; Scope §12.9 "one active
+        // compensation plan per personnel per branch"). Configuration only — no earned fact.
+        'commission_rules',
+        'personnel_compensation_plans',
+        'compensation_plan_history',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -277,6 +285,12 @@ final class TenantOwnership
         PlatformFeeLedgerEntry::class => 'tenant',
         PlatformFeeAdjustment::class => 'tenant',
         PlatformFeeDispute::class => 'tenant',
+        // Phase 20F — branch-owned HR compensation configuration (BelongsToMerchant +
+        // BelongsToBranch). The plan's subject is staff_profile_id; the commission rule is a
+        // sibling reference; history is append-only.
+        CommissionRule::class => 'branch',
+        PersonnelCompensationPlan::class => 'branch',
+        CompensationPlanHistory::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -320,5 +334,12 @@ final class TenantOwnership
         'commission_handoff_events' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'audit_flagged_events' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'audit_exports' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 20F — branch consistency via composite FK to merchant_branches. Each table
+        // additionally carries composite FKs to its own parents (staff_profiles for the
+        // subject, commission_rules for the sibling reference, personnel_compensation_plans
+        // for history) so no reference can ever cross a merchant boundary.
+        'commission_rules' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'personnel_compensation_plans' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'compensation_plan_history' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }
