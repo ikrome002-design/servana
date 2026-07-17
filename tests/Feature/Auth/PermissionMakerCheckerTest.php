@@ -12,10 +12,12 @@ uses()->group('auth', 'permissions', 'matrix');
  | default-grant matrix keeps maker and checker on DIFFERENT roles for the
  | separation-of-duty workflows.
  |
- | The one deliberate single-role pair — customer_payment.record_exception ⟂
+ | One deliberate same-role pair is customer_payment.record_exception /
  | customer_payment.validate (both Finance) — is separated PER TRANSACTION by the
  | PaymentMakerCheckerGuard (a checker may not be the group maker), not by role,
- | and is proven in the Phase 18A/18B payment tests. It is excluded here.
+ | and is proven in the Phase 18A/18B payment tests.
+ | A second pair, compensation.plan.submit / compensation.plan.approve (both HR),
+ | is separated by the approval action and a database CHECK. Both are excluded here.
  */
 
 /** Normalise the one documented Plan alias (cash_up.submit → branch.cash_up.submit). */
@@ -53,6 +55,7 @@ it('never grants both sides of a separation-of-duty pair to a single role by def
     $matrix = app(PermissionMatrix::class);
     $excludedSingleRolePairs = [
         ['customer_payment.record_exception', 'customer_payment.validate'],
+        ['compensation.plan.submit', 'compensation.plan.approve'],
     ];
 
     $problems = [];
