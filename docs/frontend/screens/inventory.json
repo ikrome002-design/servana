@@ -1141,7 +1141,7 @@
         "compensation.plan.cancel",
         "compensation.history.view"
       ],
-      "summary": "Branch-scoped, HR-only compensation-plan and commission-rule configuration: plan list with status/backdated/pending-approval indicators, plan detail with append-only history, commission-rule and plan draft forms (F1 model shape, F4 value shape, preferred-personnel-fee basis inclusion), and the named submit/approve/reject/cancel transitions (approval requires a fresh step-up and a different approver). Configuration only — no earned commission, salary ledger, commission ledger, payout, earnings statement, liability or Wallet/provider surface exists here."
+      "summary": "Branch-scoped, HR-only compensation-plan and commission-rule configuration: plan list with status/backdated/pending-approval indicators, plan detail with append-only history, commission-rule and plan draft forms (F1 model shape, F4 value shape, preferred-personnel-fee basis inclusion), and the named submit/approve/reject/cancel transitions (approval requires a fresh step-up and a different approver). Phase 20G §9.1: a selected_services commission-rule draft shows a branch-scoped service multi-select whose options load from the narrow compensation-scoped GET /commission-rule-service-options endpoint (authorized by compensation.plan.view, never service.view which HR cannot hold; returns {ulid,name} for the acting branch's active services only) — at least one service required, add/remove only while draft, server-returned selections hydrate, stale selection cleared when applies_to changes, non-draft memberships read-only; selected_service_ulids are submitted and the server persists immutable draft memberships. Configuration only — no earned commission, salary ledger, commission ledger, payout, earnings statement, liability or Wallet/provider surface exists here."
     },
     {
       "key": "hr-payout-prep",
@@ -2027,6 +2027,24 @@
         "platform_fee.dispute.review"
       ],
       "summary": "Finance platform-fee reconciliation view plus the dispute worklist: start review, resolve with an optional signed money change that creates an additive adjustment on a future invoice, and reject. Fresh step-up, period-lock and maker/checker are enforced by the API. The original ledger fact and issued invoices are never rewritten; there is no direct ledger edit or generic adjustment creator. No Wallet/settlement UI."
+    },
+    {
+      "key": "finance-compensation-liabilities",
+      "domain": "finance",
+      "route": "finance.liabilities",
+      "layout": "FinanceLayout",
+      "status": "implemented",
+      "phase": "Phase 20G",
+      "spec": "finance/finance-compensation-liabilities.md",
+      "title": "Compensation liabilities",
+      "roles": [
+        "merchant_finance"
+      ],
+      "permissions": [
+        "compensation.liability.view",
+        "compensation.adjustment.create"
+      ],
+      "summary": "Finance masked, merchant-scoped compensation-liability surface: a per-currency summary (net salary, net commission, adjustments, combined net, plus gross accrual/earned and reversal totals; never combined across currencies), a filtered/paginated liability-entry list (salary accrual/reversal, earned commission/reversal) with safe source detail, a compensation-adjustment list/detail, and a capability-gated Record-adjustment dialog that posts a standalone additive positive/negative adjustment (server-derived branch/type/actors; fresh step-up + Idempotency-Key enforced by the API). The browser never computes authoritative liability money and never sends a server-owned field. A liability is not a payout, settlement, disbursement, earnings statement or paid event; no Wallet/provider UI."
     },
     {
       "key": "audit-platform-fees",

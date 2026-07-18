@@ -37,6 +37,11 @@ class StoreCommissionRuleRequest extends FormRequest
             'calculation_basis' => ['required', Rule::enum(CommissionCalculationBasis::class)],
             'applies_to' => ['required', Rule::enum(CommissionAppliesTo::class)],
             'service_category_id' => ['nullable', 'string', 'size:26'],
+            // §9.1 selected-services membership by public Service ULID. Required + non-empty + distinct
+            // for `selected_services`; prohibited/empty otherwise (enforced in withValidator by applies_to).
+            // Internal numeric ids are never accepted — the server resolves ULIDs within the acting scope.
+            'selected_service_ulids' => ['sometimes', 'array'],
+            'selected_service_ulids.*' => ['string', 'size:26', 'distinct'],
             // Integer basis points only — `integer` rejects "10.5" and 10.5.
             'percentage_basis_points' => ['nullable', 'integer', 'between:0,10000'],
             'fixed_amount_minor' => ['nullable', 'integer', 'min:0'],
@@ -83,6 +88,17 @@ class StoreCommissionRuleRequest extends FormRequest
 
             if ($appliesTo !== null && ! $appliesTo->requiresServiceCategory() && $this->filled('service_category_id')) {
                 $validator->errors()->add('service_category_id', 'This commission rule applicability cannot carry a service category.');
+            }
+
+            // §9.1 selected-services coherence: exactly `selected_services` may (and must) carry ≥1 service.
+            $selected = $this->input('selected_service_ulids');
+            $selectedCount = is_array($selected) ? count($selected) : 0;
+            if ($appliesTo === CommissionAppliesTo::SelectedServices) {
+                if ($selectedCount < 1) {
+                    $validator->errors()->add('selected_service_ulids', 'A selected-services commission rule requires at least one service.');
+                }
+            } elseif ($selectedCount > 0) {
+                $validator->errors()->add('selected_service_ulids', 'This commission rule applicability cannot carry selected services.');
             }
         });
     }

@@ -105,6 +105,8 @@ final class AuditMutationCoverage
         ],
         'compensation-plans.reject' => ['compensation.plan.rejected', 'commission_rule.rejected'],
         'compensation-plans.cancel' => ['compensation.plan.cancelled', 'commission_rule.cancelled'],
+        // Phase 20G — a Finance MANUAL compensation adjustment (fresh step-up; high-severity audit).
+        'compensation.adjustments.store' => ['compensation.adjustment.created'],
 
         // --- Clients (Phase 15A) -------------------------------------------
         'clients.store' => ['client.created'],

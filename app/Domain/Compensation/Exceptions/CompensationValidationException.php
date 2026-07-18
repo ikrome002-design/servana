@@ -42,6 +42,12 @@ final class CompensationValidationException extends Exception
         return new self('commission_rule_shape_invalid', $detail);
     }
 
+    /** §9.1: the selected-services membership set for a commission rule is invalid. */
+    public static function selectedServices(string $detail): self
+    {
+        return new self('selected_services_invalid', $detail);
+    }
+
     /** F8: a backdated change always requires an explicit reason. */
     public static function backdatedApprovalRequiresReason(): self
     {

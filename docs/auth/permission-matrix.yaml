@@ -826,8 +826,8 @@ keys:
   compensation.adjustment.create:
     key: compensation.adjustment.create
     description: Adjustment entry only.
-    implementation_status: planned
-    owning_phase: Phase 20G
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -836,7 +836,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: compensation.adjustment.created
     audit_severity: high
     backend_policy_or_service: adjustment entry only
     frontend_ux_usage: visibility_only
@@ -874,8 +874,8 @@ keys:
   compensation.liability.view:
     key: compensation.liability.view
     description: View (compensation / liability).
-    implementation_status: planned
-    owning_phase: Phase 20G
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -884,7 +884,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only

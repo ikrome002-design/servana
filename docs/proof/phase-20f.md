@@ -1,9 +1,16 @@
 # Phase 20F — Compensation Plan Setup and Commission Rules — Proof
 
-> Lifecycle: **in_progress** (branch `phase-20f-compensation-plan-commission-rules`, based on
-> `origin/main` = `c0881993ae0c59536013c9b84e182e5000fa1e11` = the Phase 20E PR #38 merge commit).
-> **NOT** `local_complete` / `ci_passed` / `merged` / `verified_complete`. No commit, push, or PR has
-> occurred for Phase 20F.
+> Lifecycle: **verified_complete** — reconciled on the Phase 20G branch. Phase 20F merged via
+> **PR #39** "Phase 20F: Implement compensation plan setup" (squash merge
+> `f4bc664b7ba77476f9db01dcb0ec1a526dc20538`; `origin/main` == `f4bc664`; merged
+> `2026-07-17T12:11:44Z`). The two deferred follow-ups were discharged by the post-20F hardening
+> branch, merged via **PR #40** (merge commit `57dce1031ce10c37977540a0e63b1491d444b877`,
+> `verified_complete`; see `docs/proof/post-20f-deferred-hardening.md`).
+>
+> **HISTORICAL note (retained, not current):** this proof was authored specification-first while the
+> branch was pre-commit. Its original header read *"Lifecycle: in_progress … No commit, push, or PR
+> has occurred for Phase 20F"* — true at that checkpoint, now superseded by the PR #39/#40 evidence
+> above. The F1–F10 decision detail below remains accurate and authoritative.
 >
 > Specification-first, per the Phase 20A/20C/20E precedent: **no migration is created until every
 > material gate (F1–F10) is resolved and the data dictionary + state machines are written.**

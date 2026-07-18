@@ -18,7 +18,7 @@ uses(RefreshDatabase::class)->group('auth', 'permissions', 'matrix');
  | permission middleware.
  */
 
-it('keeps all 58 planned keys out of every runtime projection', function (): void {
+it('keeps all 56 planned keys out of every runtime projection', function (): void {
     $this->seed(PermissionSeeder::class);
     $matrix = app(PermissionMatrix::class);
     $registry = app(PermissionRegistry::class);
@@ -26,11 +26,12 @@ it('keeps all 58 planned keys out of every runtime projection', function (): voi
     // Phase 20A activated 9 previously-planned canonical keys (86 → 77); Phase 20B activated the
     // 9 subscription-lifecycle / merchant-governance canonical keys (77 → 68); Phase 20C activated the
     // 2 promotion / free-period-offer canonical keys (68 → 66); Phase 20F activated the 8 HR
-    // compensation-configuration canonical keys (66 → 58). compensation.adjustment.create and
-    // compensation.liability.view stay PLANNED (Phase 20G), as do merchant.compensation_summary.view
-    // and the payout/earnings families (Phase 20H) — Phase 20F activates configuration only.
+    // compensation-configuration canonical keys (66 → 58); Phase 20G activated the 2 Finance
+    // compensation-financial canonical keys compensation.liability.view + compensation.adjustment.create
+    // (58 → 56). merchant.compensation_summary.view and the payout/earnings families stay PLANNED
+    // (Phase 20H).
     $planned = $matrix->plannedKeys();
-    expect($planned)->toHaveCount(58);
+    expect($planned)->toHaveCount(56);
 
     $registryKeys = array_fill_keys($registry->permissionKeys(), true);
     $dbKeys = array_fill_keys(Permission::query()->pluck('key')->all(), true);

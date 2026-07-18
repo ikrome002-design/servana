@@ -609,15 +609,12 @@ it('rejects a transition history event with no prior status', function (): void 
 
 // ---- Phase 20F introduces no earned/ledger/payout runtime -----------------------
 
-it('creates no salary, commission, adjustment, payout, or earnings runtime table', function (string $table): void {
-    // Phase 20F is CONFIGURATION ONLY. These belong to Phase 20G (ledgers/adjustments) and
-    // Phase 20H (payout runs/items, earnings). The Phase 18B commission_handoff_events seam
-    // already exists and is NOT modified here.
+it('creates no payout or earnings (Phase 20H) runtime table', function (string $table): void {
+    // Phase 20F is CONFIGURATION ONLY. (salary_ledger / commission_ledger / compensation_adjustments
+    // were owned by 20G and ARE now created by Phase 20G — so they are asserted absent by the Phase
+    // 20G suite, not here. The still-unbuilt tables below belong to Phase 20H payout/earnings.)
     expect(Schema::hasTable($table))->toBeFalse();
 })->with([
-    'salary_ledger',
-    'commission_ledger',
-    'compensation_adjustments',
     'personnel_payout_runs',
     'personnel_payout_items',
     'personnel_earnings_queries',

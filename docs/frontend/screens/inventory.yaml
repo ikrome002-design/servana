@@ -721,6 +721,12 @@ screens:
     status: implemented
     phase: Phase 20E
     spec: finance/finance-platform-fees.md
+  - key: finance-compensation-liabilities
+    domain: finance
+    route: finance.liabilities
+    status: implemented
+    phase: Phase 20G
+    spec: finance/finance-compensation-liabilities.md
   - key: audit-platform-fees
     domain: audit
     route: audit.platform-fees

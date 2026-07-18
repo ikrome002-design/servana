@@ -185,6 +185,9 @@ async function stubCompensation(page: Page, opts: StubOpts = {}): Promise<void> 
     if (r.request().method() === 'POST') return r.fulfill(created({ data: rule() }));
     return r.fulfill(ok({ data: [rule()] }));
   });
+  // Phase 20G §9.1 — the HR rule form loads branch service options from this narrow compensation-scoped
+  // endpoint when opened; stub it empty so the 20F flows (all_services) render without a pass-through call.
+  await page.route(/\/api\/v1\/commission-rule-service-options(\?|$)/, (r) => r.fulfill(ok({ data: [] })));
   await page.route(/\/api\/v1\/commission-rules\/[^/]+\/draft$/, (r) => r.fulfill(ok({ data: rule() })));
   await page.route(/\/api\/v1\/compensation-plans\/[^/]+\/history(\?|$)/, (r) => r.fulfill(ok({ data: history })));
   await page.route(/\/api\/v1\/compensation-plans\/[^/]+\/submit$/, (r) =>

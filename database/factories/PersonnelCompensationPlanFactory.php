@@ -8,6 +8,7 @@ use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Compensation\Enums\CompensationModel;
 use App\Domain\Compensation\Enums\CompensationPlanStatus;
 use App\Domain\Compensation\Enums\SalaryPeriod;
+use App\Domain\Compensation\Enums\SuspensionSalaryPolicy;
 use App\Domain\Compensation\Models\CommissionRule;
 use App\Domain\Compensation\Models\PersonnelCompensationPlan;
 use App\Domain\Hr\Models\StaffProfile;
@@ -45,6 +46,7 @@ class PersonnelCompensationPlanFactory extends Factory
             'salary_currency' => null,
             'salary_period' => null,
             'salary_payout_day' => null,
+            'suspension_salary_policy' => SuspensionSalaryPolicy::Continue,
             'commission_rule_id' => fn (array $attributes) => CommissionRule::factory()->state([
                 'merchant_id' => $attributes['merchant_id'],
                 'branch_id' => $attributes['branch_id'],
@@ -75,6 +77,7 @@ class PersonnelCompensationPlanFactory extends Factory
             'salary_currency' => null,
             'salary_period' => null,
             'salary_payout_day' => null,
+            'suspension_salary_policy' => SuspensionSalaryPolicy::Continue,
         ]);
     }
 

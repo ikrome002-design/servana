@@ -1313,3 +1313,86 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-20f.md
     notes: "Branch-owned APPEND-ONLY compensation change history (the audit_logs precedent, Guardrail 5): BEFORE UPDATE OR DELETE trigger raises on every attempt — history is never rewritten and never deleted. created_at only (no updated_at; the row has no mutable column). Composite FKs to merchant_branches, personnel_compensation_plans (id, merchant_id) and staff_profiles (id, merchant_id). CHECKs: event in (created,updated_draft,submitted,approved,rejected,cancelled,superseded,expired), from/to status mirror the Scope 12.9 plan vocabulary, created is the only event with no prior status, non-empty change_reason. changed_fields is a masked jsonb diff of configured terms. Written in the SAME transaction as the transition that produced it. NOT a ledger — records configuration changes, never money owed/accrued/earned/paid. Read via compensation.history.view. No backfill."
+  - file: 2026_07_17_000001_create_commission_rule_services_table.php
+    table: commission_rule_services
+    domain: Compensation
+    owner_phase: "20G"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_14_000001_create_commission_rules_table.php
+      - 2026_06_28_000001_create_service_categories_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20g.md
+    notes: "Phase 20G / §9.1 product-owner decision. Normalized selected-services membership substrate for commission rules (closes the 20F seam where applies_to='selected_services' had no membership source). Branch-owned config substrate — no money. One row per (rule, service): UNIQUE (commission_rule_id, service_id). Composite FKs (branch_id, merchant_id) -> merchant_branches, (commission_rule_id, merchant_id) -> commission_rules, (service_id, merchant_id) -> services enforce merchant consistency; a BEFORE INSERT trigger proves rule.branch = service.branch = membership.branch (parents expose only (id, merchant_id)). Guard triggers: membership may be inserted/deleted ONLY while the parent rule is draft (supersede-not-edit); rows are never UPDATEd. A second BEFORE UPDATE trigger on commission_rules blocks a selected_services rule from leaving draft with zero memberships. No JSON list. No backfill. Forward-only (ADR-004)."
+  - file: 2026_07_17_000002_create_commission_ledger_table.php
+    table: commission_ledger
+    domain: Compensation
+    owner_phase: "20G"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_14_000001_create_commission_rules_table.php
+      - 2026_07_14_000002_create_personnel_compensation_plans_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_30_000001_create_service_sessions_table.php
+      - 2026_06_30_000003_create_invoices_table.php
+      - 2026_06_30_000004_create_invoice_items_table.php
+      - 2026_07_01_000002_create_payment_records_table.php
+      - 2026_07_02_000001_create_payment_validation_events_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20g.md
+    notes: "Phase 20G (Plan §61; §13.12 canonical DDL). Branch-owned APPEND-ONLY earned/reversal commission ledger. Earned ONLY at Finance validation (driven by the durable commission_handoff_events outbox). Also adds the additive index invoice_items_id_merchant_id_unique so invoice_item_id can be merchant-consistent (id is PK => trivially unique; never edits the shipped 17 migration). Composite (id, merchant_id) FKs to staff_profiles/personnel_compensation_plans/commission_rules/invoices/invoice_items/service_sessions/payment_records/payment_validation_events/self so no reference crosses a merchant (ADR-002). Backed-enum CHECKs (entry_type/reversal_reason/status), currency uppercase ISO-3, non-negative basis/fixed, rate 0..10000, provenance CHECK (earned/preview carry no source+reason; reversal references an original + reason; adjustment carries a reason), earned-shape CHECK (earned => amount>=0 + validation event + earned_at), reversal-sign CHECK (<=0). Idempotency: UNIQUE (payment_validation_event_id, invoice_item_id, staff_profile_id, entry_type) WHERE earned; UNIQUE (source_entry_id) WHERE reversal. Append-only guard trigger: DELETE blocked; UPDATE limited to status + payout_item_id. payout_item_id is nullable + UN-CONSTRAINED (its FK target personnel_payout_items is Phase 20H expand). Integer minor units (ADR-005). No backfill. Forward-only."
+  - file: 2026_07_17_000003_create_salary_ledger_table.php
+    table: salary_ledger
+    domain: Compensation
+    owner_phase: "20G"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_14_000002_create_personnel_compensation_plans_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20g.md
+    notes: "Phase 20G (Plan §60; §13.12 canonical DDL). Branch-owned APPEND-ONLY salary accrual ledger. Scheduler creates one accrual per payable pay-period SEGMENT using the Actual/Actual calendar-day proration convention (G8 product-owner decision; Africa/Nairobi; monthly denom = actual days in month, weekly = 7; half-open plan windows). pay_period_start/end store the segment's payable range; pay_period_segment_key + source_entry_id extend the minimal §13.12 columns for segment idempotency + reversal provenance (commission_ledger pattern). Composite (id, merchant_id) FKs to staff_profiles/personnel_compensation_plans/self. CHECKs: entry_type (accrual/adjustment/reversal), status, currency uppercase, period_end>=start, accrual sign>=0, reversal sign<=0 + source. Idempotency: UNIQUE (compensation_plan_id, staff_profile_id, pay_period_segment_key, entry_type) WHERE accrual; UNIQUE (source_entry_id) WHERE reversal. Append-only guard: DELETE blocked; UPDATE limited to status + payout_item_id (Phase 20H, nullable UN-CONSTRAINED). daily/hourly/per_shift are NOT accrued here (no approved attendance source; domain guard fails closed). Integer minor units. No backfill. Forward-only."
+  - file: 2026_07_17_000004_create_compensation_adjustments_table.php
+    table: compensation_adjustments
+    domain: Compensation
+    owner_phase: "20G"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_17_000002_create_commission_ledger_table.php
+      - 2026_07_17_000003_create_salary_ledger_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20g.md
+    notes: "Phase 20G (Plan §60/§61; §13.12 canonical DDL). Branch-owned APPEND-ONLY additive compensation adjustments. Two sources: a Finance manual adjustment (compensation.adjustment.create, MFA + fresh step-up) and a system negative adjustment offsetting an ALREADY-PAID ledger row (Plan §61 — paid history never rewritten). adjustment_type/created_by/source_*_ledger_id/payout_item_id extend the minimal §13.12 columns for provenance + idempotency. Composite (id, merchant_id) FKs to staff_profiles + commission_ledger + salary_ledger. CHECKs: adjustment_type enum, currency uppercase, amount<>0, non-empty reason, provenance CHECK (manual/correction => no source; paid_*_reversal => the matching source + amount<0). Idempotency: UNIQUE per source_commission_ledger_id and per source_salary_ledger_id (one paid-reversal per paid source row). Append-only guard: DELETE blocked; UPDATE limited to the Phase 20H payout_item_id link (nullable UN-CONSTRAINED). Integer minor units. No backfill. Forward-only."
+  - file: 2026_07_17_000005_add_suspension_salary_policy_to_personnel_compensation_plans.php
+    table: personnel_compensation_plans
+    domain: Compensation
+    owner_phase: "20G"
+    change_type: alter
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_14_000002_create_personnel_compensation_plans_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20g.md
+    notes: "Phase 20G (Plan A-11; §60; §13.12; G10). Forward-only EXPAND adding the canonical §13.12 column `suspension_salary_policy` that the shipped Phase 20F migration omitted (the 20F migration is never edited — ADR-004). Settled default `continue` (A-11): salary accrues during suspension; a prospective `pause` override is a plan SUPERSEDE to a new effective-dated version (never a retroactive edit), so the salary segmenter treats a `pause` version window as non-payable. Adds a NOT NULL column with constant default `continue` (backfills the 0 existing rows; production-safe), CHECK in ('continue','pause'), and a second BEFORE UPDATE trigger freezing the column once the plan leaves draft (the shipped F7 immutability trigger is untouched). No backfill of business data."

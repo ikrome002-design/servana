@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Compensation\Models;
 
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServiceCategory;
 use App\Domain\Compensation\Enums\CommissionAppliesTo;
 use App\Domain\Compensation\Enums\CommissionCalculationBasis;
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
@@ -157,5 +159,29 @@ class CommissionRule extends Model
     public function compensationPlans(): HasMany
     {
         return $this->hasMany(PersonnelCompensationPlan::class, 'commission_rule_id');
+    }
+
+    /**
+     * Selected-services membership rows (Plan §61 §9.1). Present only for `applies_to = selected_services`;
+     * mutable only while the rule is draft (DB guard). Append-only configuration substrate — no money.
+     *
+     * @return HasMany<CommissionRuleService, $this>
+     */
+    public function commissionRuleServices(): HasMany
+    {
+        return $this->hasMany(CommissionRuleService::class, 'commission_rule_id');
+    }
+
+    /**
+     * The selected services themselves, through the membership table. Ordered deterministically by
+     * service name then public ULID so the masked Resource output is stable.
+     *
+     * @return BelongsToMany<Service, $this>
+     */
+    public function selectedServices(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class, 'commission_rule_services', 'commission_rule_id', 'service_id')
+            ->orderBy('services.name')
+            ->orderBy('services.ulid');
     }
 }

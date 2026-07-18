@@ -30,8 +30,11 @@ use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServiceCategory;
 use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Compensation\Models\CommissionLedgerEntry;
 use App\Domain\Compensation\Models\CommissionRule;
+use App\Domain\Compensation\Models\CompensationAdjustment;
 use App\Domain\Compensation\Models\PersonnelCompensationPlan;
+use App\Domain\Compensation\Models\SalaryLedgerEntry;
 use App\Domain\Files\Contracts\FileScanner;
 use App\Domain\Files\Services\ClamAvScanner;
 use App\Domain\Files\Services\ImageSanitizer;
@@ -64,7 +67,9 @@ use App\Policies\BranchDayRecordPolicy;
 use App\Policies\BranchOperatingHourPolicy;
 use App\Policies\CashUpPolicy;
 use App\Policies\ClientPolicy;
+use App\Policies\CommissionLedgerEntryPolicy;
 use App\Policies\CommissionRulePolicy;
+use App\Policies\CompensationAdjustmentPolicy;
 use App\Policies\FinanceDisputePolicy;
 use App\Policies\FinanceExportPolicy;
 use App\Policies\FinancialPeriodLockPolicy;
@@ -85,6 +90,7 @@ use App\Policies\PromotionalDiscountPolicy;
 use App\Policies\QueueEntryPolicy;
 use App\Policies\ReceiptPolicy;
 use App\Policies\RefundPolicy;
+use App\Policies\SalaryLedgerEntryPolicy;
 use App\Policies\ServiceCategoryPolicy;
 use App\Policies\ServicePersonnelEligibilityPolicy;
 use App\Policies\ServicePolicy;
@@ -171,6 +177,10 @@ class AppServiceProvider extends ServiceProvider
         // Phase 20F — HR compensation configuration (branch-scoped; HR-only by Plan §10.2).
         PersonnelCompensationPlan::class => PersonnelCompensationPlanPolicy::class,
         CommissionRule::class => CommissionRulePolicy::class,
+        // Phase 20G — Finance compensation-liability read + manual adjustment (merchant scope).
+        CommissionLedgerEntry::class => CommissionLedgerEntryPolicy::class,
+        SalaryLedgerEntry::class => SalaryLedgerEntryPolicy::class,
+        CompensationAdjustment::class => CompensationAdjustmentPolicy::class,
     ];
 
     public function register(): void

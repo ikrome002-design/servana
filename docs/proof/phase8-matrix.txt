@@ -22,7 +22,9 @@ service.view                          ·            ✓           ·            
 client.create                         ·            ·            ·            ·            ✓           ·            ·            ·
 client.update                         ·            ·            ·            ·            ✓           ·            ·            ·
 client.view                           ·            ·            ·            ·            ✓           ·            ·            ·
+compensation.adjustment.create        ·            ·            ·            ✓           ·            ·            ·            ·
 compensation.history.view             ·            ·            ✓           ·            ·            ·            ·            ·
+compensation.liability.view           ·            ·            ·            ✓           ·            ·            ·            ·
 compensation.plan.approve             ·            ·            ✓           ·            ·            ·            ·            ·
 compensation.plan.cancel              ·            ·            ✓           ·            ·            ·            ·            ·
 compensation.plan.create              ·            ·            ✓           ·            ·            ·            ·            ·

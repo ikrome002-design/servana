@@ -7,6 +7,7 @@ namespace App\Domain\Compensation\Actions;
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServiceCategory;
 use App\Domain\Compensation\Enums\CommissionAppliesTo;
 use App\Domain\Compensation\Enums\CommissionCalculationBasis;
@@ -15,6 +16,7 @@ use App\Domain\Compensation\Enums\CommissionRuleStatus;
 use App\Domain\Compensation\Exceptions\CompensationScopeException;
 use App\Domain\Compensation\Exceptions\CompensationValidationException;
 use App\Domain\Compensation\Models\CommissionRule;
+use App\Domain\Compensation\Models\CommissionRuleService;
 use App\Domain\Compensation\Services\CompensationShapeValidator;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +40,9 @@ final class CreateCommissionRuleDraft
         private readonly CompensationShapeValidator $shape,
     ) {}
 
+    /**
+     * @param  list<Service>  $selectedServices  Resolved services for `selected_services` (scope pre-validated by the controller).
+     */
     public function handle(
         MerchantBranch $branch,
         User $actor,
@@ -53,6 +58,7 @@ final class CreateCommissionRuleDraft
         bool $appliesToPreferredPersonnelFee = false,
         ?string $effectiveTo = null,
         ?string $notes = null,
+        array $selectedServices = [],
     ): CommissionRule {
         $this->shape->ensureCommissionRuleShape($calculationType, $percentageBasisPoints, $fixedAmountMinor, $currency);
 
@@ -77,7 +83,7 @@ final class CreateCommissionRuleDraft
         return DB::transaction(function () use (
             $branch, $actor, $calculationType, $calculationBasis, $appliesTo, $effectiveFrom, $changeReason,
             $percentageBasisPoints, $fixedAmountMinor, $currency, $serviceCategory,
-            $appliesToPreferredPersonnelFee, $effectiveTo, $notes,
+            $appliesToPreferredPersonnelFee, $effectiveTo, $notes, $selectedServices,
         ): CommissionRule {
             /** @var CommissionRule $rule */
             $rule = CommissionRule::query()->create([
@@ -98,6 +104,19 @@ final class CreateCommissionRuleDraft
                 'change_reason' => $changeReason,
                 'created_by' => $actor->id,
             ]);
+
+            // §9.1 — persist one immutable membership row per selected service (draft only; the DB guard
+            // freezes them once the rule leaves draft). Only `selected_services` carries memberships.
+            if ($appliesTo === CommissionAppliesTo::SelectedServices) {
+                foreach ($selectedServices as $service) {
+                    CommissionRuleService::query()->create([
+                        'merchant_id' => $rule->merchant_id,
+                        'branch_id' => $rule->branch_id,
+                        'commission_rule_id' => $rule->id,
+                        'service_id' => $service->id,
+                    ]);
+                }
+            }
 
             $this->audit->record(
                 AuditEvent::CommissionRuleCreated,

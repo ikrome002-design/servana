@@ -343,7 +343,8 @@ merchant_finance:
     phase: Phase 20H
   - key: finance.liabilities
     label: Commission and salary liabilities
-    availability: planned
+    availability: live
+    route: finance.liabilities
     permission: compensation.liability.view
     phase: Phase 20G
   - key: finance.subscription-billing

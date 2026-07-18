@@ -161,6 +161,13 @@ final class PermissionRegistry
         'compensation.plan.reject' => ['compensation', 'Reject a pending compensation plan (HR checker).', true],
         'compensation.plan.cancel' => ['compensation', 'Cancel a draft or scheduled compensation plan before it takes effect (HR).', true],
         'compensation.history.view' => ['compensation', 'View append-only compensation change history (HR; branch-scoped).', false],
+        // Phase 20G — Finance compensation FINANCIAL surface (canonical §19.2 keys; Plan §60/§61, §80).
+        // Merchant-scoped: `compensation.liability.view` is the masked salary/commission liability read
+        // (Finance MFA); `compensation.adjustment.create` is a Finance MANUAL additive adjustment (MFA +
+        // fresh step-up + high-severity audit; append-only, never a ledger edit). These are distinct
+        // from the HR configuration keys above (Plan §10.2 keeps configuration HR-only).
+        'compensation.liability.view' => ['compensation', 'View masked salary/commission liabilities (Finance; merchant-scoped).', false],
+        'compensation.adjustment.create' => ['compensation', 'Create a manual additive compensation adjustment (Finance; MFA + fresh step-up).', true],
         // Clients (Plan §19.2/§19.3; Phase 15A canonical keys — reconciled from the
         // legacy `clients.create/edit/view` baseline). Front Office owns client records
         // and client search; contact is masked at read and never exported.
@@ -415,6 +422,10 @@ final class PermissionRegistry
             // Phase 19: canonical Finance audit surface (branch-scoped, masked, finance
             // domain only) — REPLACES the legacy catch-all `audit.view_full`.
             'reports.view', 'finance.audit.view',
+            // Phase 20G — Finance compensation FINANCIAL surface (merchant-scoped): the masked
+            // salary/commission liability read, and the manual additive adjustment (MFA + fresh
+            // step-up + high-severity audit). Configuration stays HR-only (Plan §10.2).
+            'compensation.liability.view', 'compensation.adjustment.create',
         ],
         self::ROLE_FRONT_OFFICE => [
             // Queue operations (Phase 16B): Front Office owns the operational queue
@@ -513,8 +524,8 @@ final class PermissionRegistry
             // platform_fee.view is now a Finance DEFAULT (Phase 20E settled/reconciliation read), so it
             // is no longer a grantable-only override here.
             // Phase 20F: the grantable legacy `commissions.view` is RETIRED, not retained. Finance's
-            // canonical compensation read is `compensation.liability.view` — a Phase 20G key that
-            // stays PLANNED here; 20F grants Finance no compensation authority at all.
+            // canonical compensation read is `compensation.liability.view` — a Phase 20G key now ACTIVE
+            // as a Finance DEFAULT (above), together with `compensation.adjustment.create`.
         ],
     ];
 

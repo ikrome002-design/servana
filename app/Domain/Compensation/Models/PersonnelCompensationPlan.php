@@ -8,6 +8,7 @@ use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Compensation\Enums\CompensationModel;
 use App\Domain\Compensation\Enums\CompensationPlanStatus;
 use App\Domain\Compensation\Enums\SalaryPeriod;
+use App\Domain\Compensation\Enums\SuspensionSalaryPolicy;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
@@ -45,6 +46,7 @@ use Illuminate\Support\Str;
  * @property string|null $salary_currency
  * @property SalaryPeriod|null $salary_period
  * @property int|null $salary_payout_day
+ * @property SuspensionSalaryPolicy $suspension_salary_policy
  * @property int|null $commission_rule_id
  * @property CarbonImmutable $effective_from
  * @property CarbonImmutable|null $effective_to
@@ -80,6 +82,7 @@ class PersonnelCompensationPlan extends Model
         'salary_currency',
         'salary_period',
         'salary_payout_day',
+        'suspension_salary_policy',
         'commission_rule_id',
         'effective_from',
         'effective_to',
@@ -120,6 +123,7 @@ class PersonnelCompensationPlan extends Model
             'salary_amount_minor' => 'integer',
             'salary_period' => SalaryPeriod::class,
             'salary_payout_day' => 'integer',
+            'suspension_salary_policy' => SuspensionSalaryPolicy::class,
             'effective_from' => 'immutable_date',
             'effective_to' => 'immutable_date',
             'status' => CompensationPlanStatus::class,

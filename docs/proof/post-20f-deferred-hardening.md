@@ -1,9 +1,18 @@
 # Post-Phase-20F Deferred Hardening — Proof
 
-**Branch:** `hardening/resource-contracts-and-accessibility-tokens`
+**Branch:** `hardening/resource-contracts-and-accessibility-tokens` (local + remote deleted after merge)
 **Base:** `f4bc664b7ba77476f9db01dcb0ec1a526dc20538` (= the Phase 20F PR #39 squash merge on `main`)
-**Lifecycle:** `local_complete` pending PR CI/review/merge
+**Lifecycle:** `verified_complete` — reconciled on the Phase 20G branch.
 **Type:** post-phase hardening / remediation branch — **not** a product-feature phase.
+
+> **PR #40 — "Hardening: Fix resource contracts and accessibility tokens" — MERGED.**
+> Implementation commit `cdcb83fc89d89b2139063ce0c099ec1a84ee7748`; governance/final PR head
+> `53a595bba86e94521279a2c9258bc349a54bfcfc`; merge commit `57dce1031ce10c37977540a0e63b1491d444b877`
+> (== `origin/main`); merged `2026-07-17T14:43:17Z`. Required CI: **Backend, Frontend, Docker,
+> Security, E2E — Playwright all SUCCESS** (initial successful run `29588324838`; final successful
+> run `29588846573`). `reviewDecision` **blank under the documented PR-specific solo-maintainer
+> governance exception — not independent reviewer approval.** Local + remote hardening branches
+> deleted. (The `local_complete pending PR CI/review/merge` state below was true before the merge.)
 
 This branch discharges the two follow-ups Phase 20F discovered, deliberately scoped out, and
 recorded as deferred:

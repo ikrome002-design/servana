@@ -6,6 +6,7 @@ namespace App\Domain\Compensation\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServiceCategory;
 use App\Domain\Compensation\Enums\CommissionAppliesTo;
 use App\Domain\Compensation\Enums\CommissionCalculationBasis;
@@ -15,6 +16,7 @@ use App\Domain\Compensation\Exceptions\CompensationScopeException;
 use App\Domain\Compensation\Exceptions\CompensationStateException;
 use App\Domain\Compensation\Exceptions\CompensationValidationException;
 use App\Domain\Compensation\Models\CommissionRule;
+use App\Domain\Compensation\Models\CommissionRuleService;
 use App\Domain\Compensation\Services\CompensationShapeValidator;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +36,9 @@ final class UpdateCommissionRuleDraft
         private readonly CompensationShapeValidator $shape,
     ) {}
 
+    /**
+     * @param  list<Service>  $selectedServices  Resolved services for `selected_services` (scope pre-validated by the controller).
+     */
     public function handle(
         CommissionRule $rule,
         User $actor,
@@ -49,6 +54,7 @@ final class UpdateCommissionRuleDraft
         bool $appliesToPreferredPersonnelFee = false,
         ?string $effectiveTo = null,
         ?string $notes = null,
+        array $selectedServices = [],
     ): CommissionRule {
         if (! $rule->status->isEditable()) {
             throw CompensationStateException::invalidTransition(
@@ -80,7 +86,7 @@ final class UpdateCommissionRuleDraft
         return DB::transaction(function () use (
             $rule, $actor, $calculationType, $calculationBasis, $appliesTo, $effectiveFrom, $changeReason,
             $percentageBasisPoints, $fixedAmountMinor, $currency, $serviceCategory,
-            $appliesToPreferredPersonnelFee, $effectiveTo, $notes,
+            $appliesToPreferredPersonnelFee, $effectiveTo, $notes, $selectedServices,
         ): CommissionRule {
             /** @var CommissionRule $locked */
             $locked = CommissionRule::query()->whereKey($rule->id)->lockForUpdate()->firstOrFail();
@@ -110,6 +116,21 @@ final class UpdateCommissionRuleDraft
             ])->save();
 
             $locked->refresh();
+
+            // §9.1 — replace the draft's membership set atomically. The rule is draft under lock, so the
+            // DB guard permits delete+insert. A move AWAY from `selected_services` clears stale memberships;
+            // a move TO it (re)inserts the resolved set. Historical (non-draft) memberships never reach here.
+            CommissionRuleService::query()->where('commission_rule_id', $locked->id)->delete();
+            if ($appliesTo === CommissionAppliesTo::SelectedServices) {
+                foreach ($selectedServices as $service) {
+                    CommissionRuleService::query()->create([
+                        'merchant_id' => $locked->merchant_id,
+                        'branch_id' => $locked->branch_id,
+                        'commission_rule_id' => $locked->id,
+                        'service_id' => $service->id,
+                    ]);
+                }
+            }
 
             $this->audit->record(
                 AuditEvent::CommissionRuleUpdatedDraft,

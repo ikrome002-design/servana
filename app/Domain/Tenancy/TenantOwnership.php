@@ -28,9 +28,13 @@ use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
 use App\Domain\Clients\Models\Client;
 use App\Domain\Clients\Models\ClientConsent;
 use App\Domain\Compensation\Models\CommissionHandoffEvent;
+use App\Domain\Compensation\Models\CommissionLedgerEntry;
 use App\Domain\Compensation\Models\CommissionRule;
+use App\Domain\Compensation\Models\CommissionRuleService;
+use App\Domain\Compensation\Models\CompensationAdjustment;
 use App\Domain\Compensation\Models\CompensationPlanHistory;
 use App\Domain\Compensation\Models\PersonnelCompensationPlan;
+use App\Domain\Compensation\Models\SalaryLedgerEntry;
 use App\Domain\FinanceOps\Models\FinanceDispute;
 use App\Domain\FinanceOps\Models\FinanceExport;
 use App\Domain\FinanceOps\Models\FinancialPeriodLock;
@@ -125,6 +129,13 @@ final class TenantOwnership
         'commission_rules',
         'personnel_compensation_plans',
         'compensation_plan_history',
+        // Phase 20G — branch-owned salary/commission ledgers + adjustments + selected-services
+        // membership substrate (Plan §60/§61/§13.12; §9.1). Append-only financial facts +
+        // configuration substrate. Earned only at Finance validation; salary accrued by scheduler.
+        'commission_ledger',
+        'salary_ledger',
+        'compensation_adjustments',
+        'commission_rule_services',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -291,6 +302,11 @@ final class TenantOwnership
         CommissionRule::class => 'branch',
         PersonnelCompensationPlan::class => 'branch',
         CompensationPlanHistory::class => 'branch',
+        // Phase 20G — branch-owned ledgers/adjustments/membership (BelongsToMerchant + BelongsToBranch).
+        CommissionLedgerEntry::class => 'branch',
+        SalaryLedgerEntry::class => 'branch',
+        CompensationAdjustment::class => 'branch',
+        CommissionRuleService::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -341,5 +357,13 @@ final class TenantOwnership
         'commission_rules' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'personnel_compensation_plans' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'compensation_plan_history' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 20G — branch consistency via composite FK to merchant_branches. Each ledger/adjustment
+        // additionally carries composite FKs to its own parents (staff_profiles, personnel_compensation_plans,
+        // commission_rules, invoices, invoice_items, service_sessions, payment_records, payment_validation_events,
+        // self) so no reference can cross a merchant boundary.
+        'commission_ledger' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'salary_ledger' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'compensation_adjustments' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'commission_rule_services' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }
