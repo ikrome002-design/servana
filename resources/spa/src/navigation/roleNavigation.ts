@@ -125,7 +125,7 @@ const finance: NavItem[] = [
   { key: 'finance.cash-up', label: 'Cash-up and reconciliation', routeName: 'finance.cash-up', permission: 'cash_up.view', phase: 'Phase 18B', availability: 'live' },
   { key: 'finance.periods', label: 'Financial periods', routeName: 'finance.periods', permission: 'period_lock.create', phase: 'Phase 18B', availability: 'live' },
   { key: 'finance.payout-runs', label: 'Payout runs', permission: 'payout_run.verify', phase: 'Phase 20H', availability: 'planned' },
-  { key: 'finance.liabilities', label: 'Commission and salary liabilities', permission: 'compensation.liability.view', phase: 'Phase 20G', availability: 'planned' },
+  { key: 'finance.liabilities', label: 'Commission and salary liabilities', routeName: 'finance.liabilities', permission: 'compensation.liability.view', phase: 'Phase 20G', availability: 'live' },
   { key: 'finance.subscription-billing', label: 'Subscription billing', permission: 'subscription.payment_attempts.view', phase: 'Phase 20B', availability: 'planned' },
   { key: 'finance.reports', label: 'Finance reports', phase: 'Phase 21N', availability: 'planned' },
   { key: 'finance.exports', label: 'Exports', routeName: 'finance.exports', permission: 'finance_export.create', phase: 'Phase 18B', availability: 'live' },

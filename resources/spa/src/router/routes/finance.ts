@@ -115,6 +115,16 @@ export const financeRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/billing/PlatformFees.vue'),
         meta: { roleIdentity: 'merchant_finance' },
       },
+      {
+        // Phase 20G — Finance compensation liabilities (salary accrual + earned commission + manual
+        // adjustments). Backend authoritative (`compensation.liability.view` for masked merchant-scoped
+        // reads; `compensation.adjustment.create` + fresh step-up + idempotency for a standalone additive
+        // adjustment). The browser never computes authoritative liability money.
+        path: 'liabilities',
+        name: 'finance.liabilities',
+        component: () => import('@/pages/finance/CompensationLiabilities.vue'),
+        meta: { roleIdentity: 'merchant_finance' },
+      },
     ],
   },
 ];

@@ -196,6 +196,7 @@ const ruleForm = reactive({
   calculation_basis: 'service_price',
   applies_to: 'all_services',
   service_category_id: '',
+  selected_service_ulids: [] as string[],
   applies_to_preferred_personnel_fee: false,
   effective_from: '',
   effective_to: '',
@@ -204,6 +205,38 @@ const ruleForm = reactive({
 const ruleErrors = reactive<Record<string, string[]>>({});
 const isPercentage = computed(() => ruleForm.calculation_type === 'percentage');
 const ruleNeedsCategory = computed(() => ruleForm.applies_to === 'service_category');
+// §9.1 — only `selected_services` carries a membership set; the multi-select loads branch services from
+// the NARROW compensation-scoped option endpoint (HR has no `service.view`).
+const ruleNeedsSelectedServices = computed(() => ruleForm.applies_to === 'selected_services');
+
+/** ULID → display name for every selectable option AND any service already selected on the edited rule
+ * (so an archived-but-selected service still shows a name and stays removable). */
+const editingRule = computed(() => (ruleEditing.value === null ? null : store.rules.find((r) => r.id === ruleEditing.value) ?? null));
+const serviceNameByUlid = computed<Record<string, string>>(() => {
+  const map: Record<string, string> = {};
+  for (const opt of store.serviceOptions) map[opt.ulid] = opt.name;
+  for (const s of editingRule.value?.selected_services ?? []) map[s.ulid] = s.name;
+  return map;
+});
+function serviceLabel(ulid: string): string {
+  return serviceNameByUlid.value[ulid] ?? ulid;
+}
+function removeSelectedService(ulid: string): void {
+  ruleForm.selected_service_ulids = ruleForm.selected_service_ulids.filter((u) => u !== ulid);
+}
+
+// Clear a stale membership set the moment the rule stops being selected-services (the submitted payload
+// must match the visible form); load options when it becomes selected-services.
+watch(
+  () => ruleForm.applies_to,
+  (appliesTo) => {
+    if (appliesTo !== 'selected_services') {
+      ruleForm.selected_service_ulids = [];
+    } else if (store.serviceOptions.length === 0 && !store.serviceOptionsLoading) {
+      void store.fetchServiceOptions();
+    }
+  },
+);
 
 function resetRuleForm(): void {
   ruleForm.calculation_type = 'percentage';
@@ -213,6 +246,7 @@ function resetRuleForm(): void {
   ruleForm.calculation_basis = 'service_price';
   ruleForm.applies_to = 'all_services';
   ruleForm.service_category_id = '';
+  ruleForm.selected_service_ulids = [];
   ruleForm.applies_to_preferred_personnel_fee = false;
   ruleForm.effective_from = '';
   ruleForm.effective_to = '';
@@ -225,6 +259,7 @@ function openRuleCreate(): void {
   rememberFocus();
   ruleEditing.value = null;
   resetRuleForm();
+  void store.fetchServiceOptions();
   ruleModalOpen.value = true;
 }
 
@@ -253,6 +288,9 @@ function validateRule(): boolean {
   if (ruleNeedsCategory.value && ruleForm.service_category_id.trim() === '') {
     ruleErrors.service_category_id = ['A category-scoped commission rule requires a service category.'];
   }
+  if (ruleNeedsSelectedServices.value && ruleForm.selected_service_ulids.length < 1) {
+    ruleErrors.selected_service_ulids = ['Select at least one service for a selected-services rule.'];
+  }
   if (ruleForm.effective_from === '') ruleErrors.effective_from = ['An effective-from date is required.'];
   if (ruleForm.effective_to !== '' && ruleForm.effective_to <= ruleForm.effective_from) {
     ruleErrors.effective_to = ['Effective to must be after effective from.'];
@@ -272,6 +310,9 @@ async function saveRule(): Promise<void> {
     calculation_basis: ruleForm.calculation_basis,
     applies_to: ruleForm.applies_to,
     service_category_id: ruleNeedsCategory.value ? ruleForm.service_category_id : null,
+    // §9.1 — send the membership set only for selected_services; an empty array everywhere else so a
+    // move away from selected_services truthfully clears the server's memberships.
+    selected_service_ulids: ruleNeedsSelectedServices.value ? [...ruleForm.selected_service_ulids] : [],
     // Percentage and fixed terms are mutually exclusive — only ever send one.
     percentage_basis_points: isPercentage.value ? Number(ruleForm.percentage_basis_points) : null,
     fixed_amount_minor: isPercentage.value ? null : Math.round(Number(ruleForm.fixed_amount_major) * 100),
@@ -307,6 +348,9 @@ function openRuleEdit(id: string): void {
   ruleForm.calculation_type = rule.calculation_type;
   ruleForm.calculation_basis = rule.calculation_basis;
   ruleForm.applies_to = rule.applies_to;
+  // Hydrate the membership set from the server-returned selection (§9.1); load the branch options too.
+  ruleForm.selected_service_ulids = [...(rule.selected_service_ulids ?? [])];
+  void store.fetchServiceOptions();
   ruleForm.applies_to_preferred_personnel_fee = rule.applies_to_preferred_personnel_fee;
   ruleForm.effective_from = rule.effective_from;
   ruleForm.effective_to = rule.effective_to ?? '';
@@ -769,10 +813,20 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           >
             <SvCard padding="sm">
               <div class="flex flex-wrap items-center justify-between gap-3">
-                <p class="text-sm text-text">
-                  {{ rule.calculation_type === 'percentage' ? `${((rule.percentage_basis_points ?? 0) / 100).toFixed(2)}%` : money(rule.fixed_amount_minor, rule.currency) }}
-                  <span class="ml-2 text-text-muted">{{ rule.status_label }} · from {{ rule.effective_from }}</span>
-                </p>
+                <div class="min-w-0">
+                  <p class="text-sm text-text">
+                    {{ rule.calculation_type === 'percentage' ? `${((rule.percentage_basis_points ?? 0) / 100).toFixed(2)}%` : money(rule.fixed_amount_minor, rule.currency) }}
+                    <span class="ml-2 text-text-muted">{{ rule.status_label }} · from {{ rule.effective_from }}</span>
+                  </p>
+                  <!-- Read-only selected-services membership for selected_services rules (§9.1). -->
+                  <p
+                    v-if="rule.applies_to === 'selected_services'"
+                    :data-testid="`rule-selected-services-${rule.id}`"
+                    class="mt-1 break-words text-xs text-text-muted"
+                  >
+                    Selected services: {{ (rule.selected_services ?? []).map((s) => s.name).join(', ') || '—' }}
+                  </p>
+                </div>
                 <SvButton
                   v-if="canUpdateDraft && rule.is_editable"
                   variant="ghost"
@@ -1026,6 +1080,103 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           required
           @update:model-value="ruleForm.service_category_id = $event"
         />
+
+        <!-- §9.1 selected-services multi-select. Options come from the NARROW compensation-scoped endpoint
+             (HR has no service.view); add/remove only while draft; ≥1 required; server-returned selections
+             hydrate on edit. No money is computed here. -->
+        <fieldset
+          v-if="ruleNeedsSelectedServices"
+          data-testid="selected-services"
+          class="rounded-control border border-border p-3"
+        >
+          <legend class="px-1 text-sm font-medium text-text">
+            Selected services
+          </legend>
+          <p class="text-xs text-text-muted">
+            Choose at least one service. Only services in your branch are shown.
+          </p>
+
+          <p
+            v-if="store.serviceOptionsLoading"
+            role="status"
+            class="mt-2 text-sm text-text-muted"
+          >
+            Loading services…
+          </p>
+          <p
+            v-else-if="store.serviceOptionsError"
+            role="alert"
+            class="mt-2 text-sm text-error"
+          >
+            {{ store.serviceOptionsError }}
+          </p>
+          <p
+            v-else-if="store.serviceOptions.length === 0"
+            data-testid="no-service-options"
+            class="mt-2 text-sm text-text-muted"
+          >
+            No services are available in this branch yet.
+          </p>
+          <div
+            v-else
+            class="mt-2 flex flex-col gap-2"
+            role="group"
+            aria-label="Branch services"
+          >
+            <div
+              v-for="opt in store.serviceOptions"
+              :key="opt.ulid"
+              class="flex items-start gap-2"
+            >
+              <input
+                :id="`svc-${opt.ulid}`"
+                v-model="ruleForm.selected_service_ulids"
+                type="checkbox"
+                :value="opt.ulid"
+                class="mt-1 h-5 w-5 rounded-control border-border text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+              <label
+                :for="`svc-${opt.ulid}`"
+                class="text-sm text-text"
+              >{{ opt.name }}</label>
+            </div>
+          </div>
+
+          <div
+            v-if="ruleForm.selected_service_ulids.length > 0"
+            class="mt-3"
+          >
+            <p class="text-xs text-text-muted">
+              Selected ({{ ruleForm.selected_service_ulids.length }}):
+            </p>
+            <ul class="mt-1 flex flex-wrap gap-2">
+              <li
+                v-for="ulid in ruleForm.selected_service_ulids"
+                :key="ulid"
+                class="flex items-center gap-1 rounded-control bg-surface-alt px-2 py-0.5 text-xs text-text"
+              >
+                {{ serviceLabel(ulid) }}
+                <button
+                  type="button"
+                  class="text-text-muted hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  :aria-label="`Remove ${serviceLabel(ulid)}`"
+                  @click="removeSelectedService(ulid)"
+                >
+                  ✕
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <p
+            v-if="ruleErrors.selected_service_ulids"
+            data-testid="selected-services-error"
+            class="mt-2 text-sm text-error"
+            role="alert"
+          >
+            {{ ruleErrors.selected_service_ulids[0] }}
+          </p>
+        </fieldset>
 
         <div class="flex items-start gap-2">
           <input

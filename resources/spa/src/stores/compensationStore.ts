@@ -18,6 +18,8 @@ import type { components } from '@/types/generated/api';
  */
 export type CompensationPlan = components['schemas']['CompensationPlanResource'];
 export type CommissionRule = components['schemas']['CommissionRuleResource'];
+/** Minimal branch-scoped service option for the selected-services multi-select (§9.1; {ulid, name} only). */
+export type SelectableService = components['schemas']['CompensationSelectableServiceResource'];
 export type CompensationPlanHistoryEntry = components['schemas']['CompensationPlanHistoryResource'];
 export type CompensationModel = components['schemas']['CompensationModel'];
 export type SalaryPeriod = components['schemas']['SalaryPeriod'];
@@ -90,6 +92,8 @@ export interface CommissionRulePayload {
   calculation_basis: string;
   applies_to: string;
   service_category_id?: string | null;
+  /** §9.1 — public Service ULIDs for `selected_services`; empty/omitted otherwise (server owns identities). */
+  selected_service_ulids?: string[];
   percentage_basis_points?: number | null;
   fixed_amount_minor?: number | null;
   currency?: string | null;
@@ -128,6 +132,9 @@ export const useCompensationStore = defineStore('compensation', () => {
   const current = ref<CompensationPlan | null>(null);
   const history = ref<CompensationPlanHistoryEntry[]>([]);
   const rules = ref<CommissionRule[]>([]);
+  const serviceOptions = ref<SelectableService[]>([]);
+  const serviceOptionsLoading = ref(false);
+  const serviceOptionsError = ref<string | null>(null);
   const loading = ref(false);
   const historyLoading = ref(false);
   const error = ref<string | null>(null);
@@ -144,12 +151,33 @@ export const useCompensationStore = defineStore('compensation', () => {
     current.value = null;
     history.value = [];
     rules.value = [];
+    serviceOptions.value = [];
+    serviceOptionsLoading.value = false;
+    serviceOptionsError.value = null;
     loading.value = false;
     historyLoading.value = false;
     error.value = null;
     filterStatus.value = '';
     filterStaffProfile.value = '';
     filterModel.value = '';
+  }
+
+  /**
+   * Load the acting branch's selectable services for the selected-services multi-select (§9.1). Uses the
+   * NARROW compensation-scoped option endpoint (`compensation.plan.view`) — never the branch-manager
+   * `/services` catalogue (HR has no `service.view`). Branch-context change clears these via `$reset`.
+   */
+  async function fetchServiceOptions(): Promise<void> {
+    serviceOptionsLoading.value = true;
+    serviceOptionsError.value = null;
+    try {
+      const { data } = await apiClient.get<{ data: SelectableService[] }>('/commission-rule-service-options');
+      serviceOptions.value = data.data;
+    } catch {
+      serviceOptionsError.value = 'Unable to load services for this branch.';
+    } finally {
+      serviceOptionsLoading.value = false;
+    }
   }
 
   async function fetchPlans(): Promise<void> {
@@ -246,6 +274,9 @@ export const useCompensationStore = defineStore('compensation', () => {
     current,
     history,
     rules,
+    serviceOptions,
+    serviceOptionsLoading,
+    serviceOptionsError,
     loading,
     historyLoading,
     error,
@@ -257,6 +288,7 @@ export const useCompensationStore = defineStore('compensation', () => {
     fetchPlan,
     fetchHistory,
     fetchCommissionRules,
+    fetchServiceOptions,
     createCommissionRule,
     updateCommissionRuleDraft,
     createPlan,

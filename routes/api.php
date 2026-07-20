@@ -22,6 +22,9 @@ use App\Http\Controllers\Api\V1\Catalogue\ServiceEligibilityController;
 use App\Http\Controllers\Api\V1\Clients\ClientConsentController;
 use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Compensation\CommissionRuleController;
+use App\Http\Controllers\Api\V1\Compensation\CommissionRuleServiceOptionController;
+use App\Http\Controllers\Api\V1\Compensation\CompensationAdjustmentController;
+use App\Http\Controllers\Api\V1\Compensation\CompensationLiabilityController;
 use App\Http\Controllers\Api\V1\Compensation\CompensationPlanController;
 use App\Http\Controllers\Api\V1\Files\FileController;
 use App\Http\Controllers\Api\V1\FinanceDisputes\FinanceDisputeController;
@@ -469,6 +472,13 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('commission-rules', [CommissionRuleController::class, 'index'])
                 ->middleware(EnsurePermission::class.':compensation.plan.view')
                 ->name('commission-rules.index');
+            // Phase 20G §9.1 — HR selected-services option source (product-owner decision). A narrow,
+            // read-only compensation read model: the acting branch's ACTIVE services as {ulid, name},
+            // authorized by `compensation.plan.view` (NOT `service.view`, which HR cannot hold). Declared
+            // before the `commission-rules/{commissionRule}` route so its literal path is never captured.
+            Route::get('commission-rule-service-options', [CommissionRuleServiceOptionController::class, 'index'])
+                ->middleware(EnsurePermission::class.':compensation.plan.view')
+                ->name('commission-rule-service-options.index');
             Route::post('commission-rules', [CommissionRuleController::class, 'store'])
                 ->middleware([EnsureBranchScope::class, EnsurePermission::class.':compensation.plan.create'])
                 ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
@@ -514,6 +524,31 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('compensation-plans/{compensationPlan}/history', [CompensationPlanController::class, 'history'])
                 ->middleware(EnsurePermission::class.':compensation.history.view')
                 ->name('compensation-plans.history');
+
+            // Phase 20G — Finance compensation liabilities + manual adjustments (Plan §61/§80, §19.3).
+            // Merchant scope, masked reads under `compensation.liability.view` (Finance; group MFA). A
+            // manual adjustment is a FINANCIAL mutation: `compensation.adjustment.create` + fresh
+            // step-up + Idempotency-Key; append-only, high-severity audit. NO update/delete/status route
+            // (the ledgers are append-only; corrections are additive). Server-authoritative scope +
+            // currency grouping; no payout/earnings/mark-paid surface (20H).
+            $compensationAdjustmentStepUp = RequireFreshMfa::class.':'.StepUpAction::CompensationAdjustmentCreate->value;
+
+            Route::get('compensation/liabilities/summary', [CompensationLiabilityController::class, 'summary'])
+                ->middleware(EnsurePermission::class.':compensation.liability.view')
+                ->name('compensation.liabilities.summary');
+            Route::get('compensation/liabilities', [CompensationLiabilityController::class, 'index'])
+                ->middleware(EnsurePermission::class.':compensation.liability.view')
+                ->name('compensation.liabilities.index');
+            Route::get('compensation/adjustments', [CompensationAdjustmentController::class, 'index'])
+                ->middleware(EnsurePermission::class.':compensation.liability.view')
+                ->name('compensation.adjustments.index');
+            Route::post('compensation/adjustments', [CompensationAdjustmentController::class, 'store'])
+                ->middleware([EnsurePermission::class.':compensation.adjustment.create', $compensationAdjustmentStepUp, EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('compensation.adjustments.store');
+            Route::get('compensation/adjustments/{compensationAdjustment}', [CompensationAdjustmentController::class, 'show'])
+                ->middleware(EnsurePermission::class.':compensation.liability.view')
+                ->name('compensation.adjustments.show');
 
             // Client records (Scope §clients, Plan §35; Phase 15A). Front Office owns
             // them (`client.*`); search is a distinct capability (`front_office.search`,

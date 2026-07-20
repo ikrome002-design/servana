@@ -59,4 +59,19 @@ class RefundFactory extends Factory
             'approved_at' => now(),
         ]);
     }
+
+    /**
+     * A finalized refund with complete approval/finalization provenance (distinct maker/checker),
+     * as written by FinalizeRefund — the only state in which a `reversal` commission handoff exists.
+     */
+    public function finalized(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'status' => RefundStatus::Finalized,
+            'approved_by' => User::factory(),
+            'approved_at' => now(),
+            'finalized_by' => User::factory(),
+            'finalized_at' => now(),
+        ]);
+    }
 }

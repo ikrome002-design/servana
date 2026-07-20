@@ -100,6 +100,8 @@ function expectedMatrix(): array
             'platform_fee.view', 'platform_fee.dispute', 'platform_fee.dispute.review',
             // Phase 19: canonical Finance audit surface (REPLACES legacy `audit.view_full`).
             'reports.view', 'finance.audit.view',
+            // Phase 20G — Finance compensation financial surface (merchant scope).
+            'compensation.liability.view', 'compensation.adjustment.create',
         ],
         'front_office' => [
             'queue.view', 'queue.create', 'queue.assign', 'queue.transfer', 'queue.reorder',

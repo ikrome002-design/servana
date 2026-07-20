@@ -99,12 +99,18 @@ it('gives the activation boundary its own audit action', function (): void {
         ->and(AuditEvent::CompensationPlanActivated)->not->toBe(AuditEvent::CompensationPlanApproved);
 });
 
-it('declares no earned, payout, or settlement audit event in Phase 20F', function (): void {
-    // Those belong to Phases 20G/20H — a configuration phase never audits money movement.
-    $compensationActions = AuditEvent::actionsIn(AuditDomain::Compensation);
+it('declares no earned, payout, or settlement audit event in the Phase 20F families', function (): void {
+    // Phase 20F is CONFIGURATION only — its own event families never audit money movement.
+    // (Scoped to the 20F families rather than the whole Compensation domain: Phase 20G legitimately
+    // adds compensation.salary.accrued / compensation.commission.earned money-fact events to the
+    // same read segment. The 20F invariant is about 20F's events, not the domain forever.)
+    $phase20fActions = array_map(
+        static fn (AuditEvent $e): string => $e->value,
+        [...phase20fPlanEvents(), ...phase20fRuleEvents()],
+    );
 
     foreach (['earned', 'payout', 'settled', 'accrued', 'disbursed', 'paid'] as $forbidden) {
-        foreach ($compensationActions as $action) {
+        foreach ($phase20fActions as $action) {
             expect($action)->not->toContain($forbidden);
         }
     }

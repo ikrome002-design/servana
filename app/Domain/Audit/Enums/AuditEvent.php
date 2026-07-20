@@ -362,6 +362,18 @@ enum AuditEvent: string
     case CommissionRuleCancelled = 'commission_rule.cancelled';
     case CommissionRuleEnded = 'commission_rule.ended';
     case CommissionRuleExpired = 'commission_rule.expired';
+    // Phase 20G — salary/commission LEDGER facts (AuditDomain::Compensation; branch-scoped).
+    // These record earned/accrued MONEY (unlike Phase 20F configuration). Context carries public
+    // ULIDs, integer minor amounts, currency, entry type, and pay-period/segment boundaries only —
+    // never personnel contact details, never internal ids. A manual Finance adjustment is HIGH
+    // (MFA + fresh step-up, §19.3); a handoff-consumption failure is observable but non-fatal.
+    case CompensationSalaryAccrued = 'compensation.salary.accrued';
+    case CompensationSalaryReversed = 'compensation.salary.reversed';
+    case CompensationSalaryAdjusted = 'compensation.salary.adjusted';
+    case CompensationCommissionEarned = 'compensation.commission.earned';
+    case CompensationCommissionReversed = 'compensation.commission.reversed';
+    case CompensationAdjustmentCreated = 'compensation.adjustment.created';
+    case CompensationHandoffFailed = 'compensation.handoff.failed';
 
     /**
      * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
@@ -448,7 +460,14 @@ enum AuditEvent: string
             self::CommissionRuleRejected,
             self::CommissionRuleCancelled,
             self::CommissionRuleEnded,
-            self::CommissionRuleExpired => AuditDomain::Compensation,
+            self::CommissionRuleExpired,
+            self::CompensationSalaryAccrued,
+            self::CompensationSalaryReversed,
+            self::CompensationSalaryAdjusted,
+            self::CompensationCommissionEarned,
+            self::CompensationCommissionReversed,
+            self::CompensationAdjustmentCreated,
+            self::CompensationHandoffFailed => AuditDomain::Compensation,
 
             default => AuditDomain::General,
         };
@@ -587,7 +606,11 @@ enum AuditEvent: string
             self::CompensationPlanExpired,
             self::CommissionRuleUpdatedDraft,
             self::CommissionRuleActivated,
-            self::CommissionRuleExpired => AuditSeverity::Info,
+            self::CommissionRuleExpired,
+            // Phase 20G — the routine ledger facts a scheduler/consumer records: a salary accrual
+            // and an earned commission recognize configured money at a boundary; no decision is made.
+            self::CompensationSalaryAccrued,
+            self::CompensationCommissionEarned => AuditSeverity::Info,
 
             // Phase 20F — creation/submission and the withdraw/reject outcomes of a compensation
             // change. Each records a governance decision but not an approval of effective terms.
@@ -645,7 +668,13 @@ enum AuditEvent: string
             self::PlatformFeeDisputeCreated,
             self::PlatformFeeDisputeResolved,
             self::PlatformFeeDisputeRejected,
-            self::MfaStepUpDenied => AuditSeverity::Warning,
+            self::MfaStepUpDenied,
+            // Phase 20G — a ledger reversal/adjustment offsets money already recognized, and a
+            // handoff-consumption failure is an observable (non-fatal, retryable) condition.
+            self::CompensationSalaryReversed,
+            self::CompensationSalaryAdjusted,
+            self::CompensationCommissionReversed,
+            self::CompensationHandoffFailed => AuditSeverity::Warning,
 
             self::FileScanInfected,
             self::FileAccessDenied,
@@ -714,6 +743,8 @@ enum AuditEvent: string
             self::CompensationPlanSuperseded,
             self::CommissionRuleApproved,
             self::CommissionRuleEnded,
+            // Phase 20G — a Finance manual compensation adjustment (MFA + fresh step-up, §19.3).
+            self::CompensationAdjustmentCreated,
             self::UnauthorizedAccess => AuditSeverity::High,
 
             // Plan §59 requires CRITICAL severity for an approved BACKDATED compensation change:

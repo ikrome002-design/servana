@@ -1165,6 +1165,104 @@ consume. **Phase 20F does not modify it.**
 
 ---
 
+## Phase 20G — Salary accrual and commission processing (Plan §60, §61, §13.12; Correction 19; financial)
+
+Phase 20G creates the earned/accrued financial facts 20F configured. Money is integer minor units
+(ADR-005; round-half-up + largest-remainder residual). All four tables are **branch-owned**
+(merchant_id + branch_id; composite FK `(branch_id, merchant_id)` → `merchant_branches(id, merchant_id)`).
+Ledgers + adjustments are **append-only at the database** (DELETE blocked; UPDATE limited to the
+lifecycle `status` and the Phase 20H `payout_item_id` link, which is nullable + UN-CONSTRAINED until
+20H adds its FK by expand migration — ADR-004).
+
+### `commission_ledger` (Plan §61, §13.12 Correction 2.3; migration `2026_07_17_000002`)
+
+Append-only earned/reversal commission facts. An `earned` row is created **only** at Finance
+validation, driven by the durable `commission_handoff_events` outbox; the 20G consumer allocates the
+validation event's validated amount across eligible invoice items (largest-remainder) and writes one
+earned row per `(payment_validation_event_id, invoice_item_id, staff_profile_id)`, snapshotting
+`compensation_plan_id`, `commission_rule_id`, `calculation_basis_minor`, `rate_basis_points` /
+`fixed_rate_minor`, `currency`, and the source identities. `salary_only` plans never generate rows.
+Corrections are additive: a `reversal` row is the **exact negative** of the original (never recomputed),
+references it via `source_entry_id`, and carries a `reversal_reason`
+(`invoice_voided|payment_reversed|refund_finalized|manual_adjustment|correction`); an already-paid
+reversal is a negative `compensation_adjustments` row instead (paid history is never rewritten).
+There is **at most one reversal per original** (`UNIQUE (source_entry_id) WHERE entry_type='reversal'`).
+Because there is no immutable item-level refund attribution, the 20G consumer reverses a validation
+event's earned rows **only once the entire validated allocation has been refunded** (cumulative
+finalized refunds = validated amount); a partial refund is a valid no-effect event and an impossible
+over-refund fails closed (Increment 4; product-owner resolution 2026-07-18). Invoice void does not
+invalidate the validated allocation, so it produces no commission reversal.
+`entry_type ∈ (pending_preview, earned, reversal, adjustment)` — `pending_preview` is carried for
+canonical completeness (Phase 16C computes previews on the fly; 20G persists none). `status ∈
+(pending, earned, included_in_payout, paid, reversed, adjusted, cancelled)`. Composite `(id,
+merchant_id)` FKs to every parent (staff/plan/rule/invoice/invoice_item/session/payment_record/
+validation_event/self) prevent any cross-merchant reference; the migration also adds the additive
+`invoice_items_id_merchant_id_unique` index as an FK target. **Basis (G4):** computed against the
+shipped 20F `CommissionCalculationBasis` enum (`service_price`, `invoice_item_total`, `paid_amount`,
+`net_after_discount`); `applies_to_preferred_personnel_fee` includes the item's
+`preferred_personnel_fee_minor` in the basis; per-item earned commission is capped at the item's
+eligible validated allocation (G5). **Idempotency:** UNIQUE
+`(payment_validation_event_id, invoice_item_id, staff_profile_id, entry_type) WHERE entry_type='earned'`;
+UNIQUE `(source_entry_id) WHERE entry_type='reversal'`.
+
+### `salary_ledger` (Plan §60, §13.12; migration `2026_07_17_000003`)
+
+Append-only salary accrual facts. The scheduler creates one `accrual` per payable **pay-period
+segment** in Africa/Nairobi under the **Actual/Actual calendar-day** convention (G8 product-owner
+decision): monthly denominator = actual days in the Nairobi month (28–31); weekly = ISO Mon–Mon,
+denominator 7; half-open plan windows `[effective_from, effective_to)`. `pay_period_start`/`_end`
+store the **segment's** payable range; `pay_period_segment_key` is the deterministic segment id.
+Mid-period plan changes, prospective suspension `pause`, resumption, and termination each split the
+period into separate segments; the period total is rounded once (round-half-up), floored per segment,
+and the residual allocated by largest remainder. `entry_type ∈ (accrual, adjustment, reversal)`;
+`status ∈ (pending, included_in_payout, paid, reversed, adjusted)`. `source_entry_id` +
+`pay_period_segment_key` extend the minimal §13.12 columns for reversal provenance + segment
+idempotency (commission_ledger pattern). **daily/hourly/per_shift is NOT accrued** — no approved
+attendance/shift source exists (G9); the domain guard fails closed. **Idempotency:** UNIQUE
+`(compensation_plan_id, staff_profile_id, pay_period_segment_key, entry_type) WHERE entry_type='accrual'`;
+UNIQUE `(source_entry_id) WHERE entry_type='reversal'`.
+
+### `compensation_adjustments` (Plan §60/§61, §13.12; migration `2026_07_17_000004`)
+
+Append-only additive adjustments. Two sources: a Finance **manual** adjustment
+(`compensation.adjustment.create`, MFA + fresh step-up, high-severity audit) and a system negative
+adjustment offsetting an **already-paid** ledger row (`paid_commission_reversal` / `paid_salary_reversal`
+referencing the paid source; Plan §61 — paid history never rewritten). `amount_minor` is non-zero (may
+be negative). `adjustment_type`, `created_by`, `source_*_ledger_id`, and the 20H `payout_item_id` link
+extend the minimal §13.12 columns for provenance + idempotency. **Idempotency:** UNIQUE per
+`source_commission_ledger_id` and per `source_salary_ledger_id` (one paid-reversal per paid source row).
+
+### `commission_rule_services` (§9.1 product-owner decision; migration `2026_07_17_000001`)
+
+Normalized selected-services membership substrate that closes the 20F seam (`applies_to =
+'selected_services'` had no membership source). One immutable row per `(commission_rule_id,
+service_id)`; **configuration only — no money.** Composite `(id, merchant_id)` FKs to
+`commission_rules` and `services` enforce merchant consistency; a BEFORE INSERT trigger proves
+`rule.branch = service.branch = membership.branch`. Membership is mutable **only while the rule is
+`draft`** (guard trigger; supersede-not-edit), and a second trigger on `commission_rules` blocks a
+`selected_services` rule from leaving draft with zero memberships. Finance validation earns commission
+for a `selected_services` rule only when the item's `service_id` is in the membership set; a non-draft
+rule with no substrate fails closed (never falls back to `all_services`). No JSON list.
+
+### `personnel_compensation_plans.suspension_salary_policy` (Plan A-11; §60; G10; expand `2026_07_17_000005`)
+
+Forward-only EXPAND adding the canonical §13.12 column the shipped Phase 20F migration omitted (the
+20F migration is never edited — ADR-004). `varchar NOT NULL DEFAULT 'continue'`, CHECK
+`('continue','pause')`. Settled default `continue` (A-11): salary accrues during suspension. A
+prospective `pause` override is expressed by **superseding** the plan to a new effective-dated version
+(never a retroactive edit), so the column is part of a plan version's frozen terms — a second BEFORE
+UPDATE trigger (additive; the shipped F7 immutability trigger is untouched) blocks changing it once the
+plan leaves draft. The salary segmenter treats a `pause` version window as non-payable. Backed by the
+`SuspensionSalaryPolicy` enum (Phase20GEnumParityTest).
+
+**Accrual cadence & cutoff (§6.3):** the `compensation:accrue-salary` scheduler accrues at the CLOSED
+pay-period boundary — only a period whose exclusive end has arrived in Africa/Nairobi is processed, so
+no future day and no provisional row; all segments (incl. mid-period plan-change splits) accrue together
+at close. Lock order: staff subject → existing salary-ledger identity rows → insert → audit. Commission
+is NOT scheduled — it is earned by the `commission_handoff_events` consumer at Finance validation.
+
+---
+
 ## Forbidden in Servana (never assign to Servana schema)
 
 | Forbidden concern | Owner |

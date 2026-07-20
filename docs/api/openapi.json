@@ -2315,7 +2315,14 @@
                                 "commission_rule.rejected",
                                 "commission_rule.cancelled",
                                 "commission_rule.ended",
-                                "commission_rule.expired"
+                                "commission_rule.expired",
+                                "compensation.salary.accrued",
+                                "compensation.salary.reversed",
+                                "compensation.salary.adjusted",
+                                "compensation.commission.earned",
+                                "compensation.commission.reversed",
+                                "compensation.adjustment.created",
+                                "compensation.handoff.failed"
                             ]
                         }
                     },
@@ -2814,7 +2821,14 @@
                                 "commission_rule.rejected",
                                 "commission_rule.cancelled",
                                 "commission_rule.ended",
-                                "commission_rule.expired"
+                                "commission_rule.expired",
+                                "compensation.salary.accrued",
+                                "compensation.salary.reversed",
+                                "compensation.salary.adjusted",
+                                "compensation.commission.earned",
+                                "compensation.commission.reversed",
+                                "compensation.adjustment.created",
+                                "compensation.handoff.failed"
                             ]
                         }
                     },
@@ -3313,7 +3327,14 @@
                                 "commission_rule.rejected",
                                 "commission_rule.cancelled",
                                 "commission_rule.ended",
-                                "commission_rule.expired"
+                                "commission_rule.expired",
+                                "compensation.salary.accrued",
+                                "compensation.salary.reversed",
+                                "compensation.salary.adjusted",
+                                "compensation.commission.earned",
+                                "compensation.commission.reversed",
+                                "compensation.adjustment.created",
+                                "compensation.handoff.failed"
                             ]
                         }
                     },
@@ -7107,6 +7128,58 @@
                 ]
             }
         },
+        "/api/v1/commission-rule-service-options": {
+            "get": {
+                "operationId": "commission-rule-service-options.index",
+                "tags": [
+                    "CommissionRuleServiceOption"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `CompensationSelectableServiceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CompensationSelectableServiceResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/commission-rules": {
             "get": {
                 "operationId": "commission-rules.index",
@@ -8340,6 +8413,910 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/compensation/adjustments": {
+            "get": {
+                "operationId": "compensation.adjustments.index",
+                "tags": [
+                    "CompensationAdjustment"
+                ],
+                "parameters": [
+                    {
+                        "name": "staff_profile_ulid",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "branch_ulid",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "adjustment_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "manual",
+                                "paid_commission_reversal",
+                                "paid_salary_reversal",
+                                "correction"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "currency",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[A-Z]{3}$",
+                            "minLength": 3,
+                            "maxLength": 3
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "merchant_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "branch_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `CompensationAdjustmentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CompensationAdjustmentResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "compensation.adjustments.store",
+                "tags": [
+                    "CompensationAdjustment"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCompensationAdjustmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`CompensationAdjustmentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CompensationAdjustmentResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Idempotency conflict / request in progress",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "423": {
+                        "description": "Financial period locked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 16,
+                            "maxLength": 255
+                        }
+                    }
+                ]
+            }
+        },
+        "/api/v1/compensation/adjustments/{compensationAdjustment}": {
+            "get": {
+                "operationId": "compensation.adjustments.show",
+                "tags": [
+                    "CompensationAdjustment"
+                ],
+                "parameters": [
+                    {
+                        "name": "compensationAdjustment",
+                        "in": "path",
+                        "required": true,
+                        "description": "The compensation adjustment ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`CompensationAdjustmentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CompensationAdjustmentResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/compensation/liabilities": {
+            "get": {
+                "operationId": "compensation.liabilities.index",
+                "tags": [
+                    "CompensationLiability"
+                ],
+                "parameters": [
+                    {
+                        "name": "liability_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "salary",
+                                "commission"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "staff_profile_ulid",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "branch_ulid",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "entry_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "accrual",
+                                "adjustment",
+                                "reversal",
+                                "pending_preview",
+                                "earned"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "included_in_payout",
+                                "paid",
+                                "reversed",
+                                "adjusted",
+                                "earned",
+                                "cancelled"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "currency",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[A-Z]{3}$",
+                            "minLength": 3,
+                            "maxLength": 3
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "merchant_id",
+                        "in": "query",
+                        "description": "Server-owned scope fields are never accepted from the client.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "branch_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `CompensationLiabilityEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CompensationLiabilityEntryResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/compensation/liabilities/summary": {
+            "get": {
+                "operationId": "compensation.liabilities.summary",
+                "tags": [
+                    "CompensationLiability"
+                ],
+                "parameters": [
+                    {
+                        "name": "liability_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "salary",
+                                "commission"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "staff_profile_ulid",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "branch_ulid",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "entry_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "accrual",
+                                "adjustment",
+                                "reversal",
+                                "pending_preview",
+                                "earned"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "included_in_payout",
+                                "paid",
+                                "reversed",
+                                "adjusted",
+                                "earned",
+                                "cancelled"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "currency",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[A-Z]{3}$",
+                            "minLength": 3,
+                            "maxLength": 3
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "merchant_id",
+                        "in": "query",
+                        "description": "Server-owned scope fields are never accepted from the client.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "branch_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "currency": {
+                                                        "type": "string"
+                                                    },
+                                                    "gross_salary_accrual_minor": {
+                                                        "type": "string"
+                                                    },
+                                                    "salary_reversal_minor": {
+                                                        "type": "string"
+                                                    },
+                                                    "net_salary_liability_minor": {
+                                                        "type": "string"
+                                                    },
+                                                    "gross_earned_commission_minor": {
+                                                        "type": "string"
+                                                    },
+                                                    "commission_reversal_minor": {
+                                                        "type": "string"
+                                                    },
+                                                    "net_commission_liability_minor": {
+                                                        "type": "string"
+                                                    },
+                                                    "compensation_adjustment_minor": {
+                                                        "type": "string"
+                                                    },
+                                                    "combined_net_liability_minor": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "currency",
+                                                    "gross_salary_accrual_minor",
+                                                    "salary_reversal_minor",
+                                                    "net_salary_liability_minor",
+                                                    "gross_earned_commission_minor",
+                                                    "commission_reversal_minor",
+                                                    "net_commission_liability_minor",
+                                                    "compensation_adjustment_minor",
+                                                    "combined_net_liability_minor"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -14734,7 +15711,14 @@
                                 "commission_rule.rejected",
                                 "commission_rule.cancelled",
                                 "commission_rule.ended",
-                                "commission_rule.expired"
+                                "commission_rule.expired",
+                                "compensation.salary.accrued",
+                                "compensation.salary.reversed",
+                                "compensation.salary.adjusted",
+                                "compensation.commission.earned",
+                                "compensation.commission.reversed",
+                                "compensation.adjustment.created",
+                                "compensation.handoff.failed"
                             ]
                         }
                     },
@@ -26984,6 +27968,31 @@
                         ],
                         "description": "service_category_id is a nullable FK, so a loaded relation can still be null."
                     },
+                    "selected_service_ulids": {
+                        "type": "array",
+                        "description": "§9.1 selected-services membership. Canonical contract = the public ULIDs; `selected_services`\nadds the safe display name so the HR form can hydrate without a service-list endpoint (HR has\nno `service.view`). Always an array: [] for all_services/service_category. Deterministic order\n(name then ULID) comes from the relationship. Never internal ids.",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "selected_services": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "ulid": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "ulid",
+                                "name"
+                            ]
+                        }
+                    },
                     "percentage_basis_points": {
                         "type": [
                             "integer",
@@ -27049,6 +28058,8 @@
                     "calculation_type",
                     "calculation_basis",
                     "applies_to",
+                    "selected_service_ulids",
+                    "selected_services",
                     "percentage_basis_points",
                     "fixed_amount_minor",
                     "currency",
@@ -27062,6 +28073,176 @@
                     "approved_at"
                 ],
                 "title": "CommissionRuleResource"
+            },
+            "CompensationAdjustmentResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "adjustment_type": {
+                        "type": "string"
+                    },
+                    "amount_minor": {
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    },
+                    "staff_profile_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "staff_display_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "branch_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "has_source": {
+                        "type": "boolean",
+                        "description": "Cast to a real boolean so the OpenAPI generator publishes `boolean` (a bare `A || B`\nexpression was mis-inferred as `string`); the runtime JSON value is unchanged (true/false)."
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "adjustment_type",
+                    "amount_minor",
+                    "currency",
+                    "reason",
+                    "staff_profile_id",
+                    "staff_display_name",
+                    "branch_id",
+                    "has_source",
+                    "created_at"
+                ],
+                "title": "CompensationAdjustmentResource"
+            },
+            "CompensationLiabilityEntryResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "liability_type": {
+                        "type": "string"
+                    },
+                    "entry_type": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "amount_minor": {
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "business_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "staff_profile_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "staff_display_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "branch_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "compensation_plan_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "commission_rule_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "pay_period_start": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "pay_period_end": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "invoice_reference": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "source_entry_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "liability_type",
+                    "entry_type",
+                    "status",
+                    "amount_minor",
+                    "currency",
+                    "business_date",
+                    "staff_profile_id",
+                    "staff_display_name",
+                    "branch_id",
+                    "compensation_plan_id",
+                    "commission_rule_id",
+                    "pay_period_start",
+                    "pay_period_end",
+                    "invoice_reference",
+                    "source_entry_id",
+                    "created_at"
+                ],
+                "title": "CompensationLiabilityEntryResource"
             },
             "CompensationModel": {
                 "type": "string",
@@ -27332,6 +28513,22 @@
                     "capabilities"
                 ],
                 "title": "CompensationPlanResource"
+            },
+            "CompensationSelectableServiceResource": {
+                "type": "object",
+                "properties": {
+                    "ulid": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "ulid",
+                    "name"
+                ],
+                "title": "CompensationSelectableServiceResource"
             },
             "CompleteFirstTimeSetupRequest": {
                 "type": "object",
@@ -32126,6 +33323,15 @@
                             "null"
                         ],
                         "maxLength": 2000
+                    },
+                    "selected_service_ulids": {
+                        "type": "array",
+                        "description": "§9.1 selected-services membership by public Service ULID. Required + non-empty + distinct\nfor `selected_services`; prohibited/empty otherwise (enforced in withValidator by applies_to).\nInternal numeric ids are never accepted — the server resolves ULIDs within the acting scope.",
+                        "items": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
                     }
                 },
                 "required": [
@@ -32136,6 +33342,70 @@
                     "change_reason"
                 ],
                 "title": "StoreCommissionRuleRequest"
+            },
+            "StoreCompensationAdjustmentRequest": {
+                "type": "object",
+                "description": "Create a Finance MANUAL compensation adjustment (Plan §60/§61, §19.3; Phase 20G). Additive and\nappend-only: it never edits an earned/accrued fact. The schema's provenance CHECK forbids a\nFinance-created source-linked row (`manual`/`correction` require NULL sources; the `paid_*_reversal`\nfamilies are SYSTEM-generated negatives), so this endpoint creates a STANDALONE `manual` adjustment —\nno `source_ledger_ulid` is accepted. `merchant_id`/`branch_id`/`status`/actor fields are\nserver-owned. `branch_id` is derived from the staff profile's primary branch (never client-supplied).\nAuthorization (`compensation.adjustment.create`), fresh MFA step-up, and idempotency are enforced by\nthe route middleware; the high-severity audit is written by the domain action.",
+                "properties": {
+                    "staff_profile_ulid": {
+                        "type": "string",
+                        "minLength": 26,
+                        "maxLength": 26
+                    },
+                    "amount_minor": {
+                        "type": "integer",
+                        "description": "Signed integer minor units; a zero adjustment is meaningless and rejected (mirrors the\nDB CHECK amount_minor <> 0). Positive or negative are both financially valid."
+                    },
+                    "currency": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{3}$",
+                        "minLength": 3,
+                        "maxLength": 3
+                    },
+                    "reason": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 2000
+                    },
+                    "merchant_id": {
+                        "type": "string",
+                        "description": "Server-owned / unsupported fields are explicitly rejected."
+                    },
+                    "branch_id": {
+                        "type": "string"
+                    },
+                    "adjustment_type": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
+                    "approved_by": {
+                        "type": "string"
+                    },
+                    "payout_item_id": {
+                        "type": "string"
+                    },
+                    "source_ledger_ulid": {
+                        "type": "string"
+                    },
+                    "source_commission_ledger_id": {
+                        "type": "string"
+                    },
+                    "source_salary_ledger_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "staff_profile_ulid",
+                    "amount_minor",
+                    "currency",
+                    "reason"
+                ],
+                "title": "StoreCompensationAdjustmentRequest"
             },
             "StoreCompensationPlanRequest": {
                 "type": "object",
@@ -33629,6 +34899,15 @@
                             "null"
                         ],
                         "maxLength": 2000
+                    },
+                    "selected_service_ulids": {
+                        "type": "array",
+                        "description": "§9.1 selected-services membership by public Service ULID. Required + non-empty + distinct\nfor `selected_services`; prohibited/empty otherwise (enforced in withValidator by applies_to).\nInternal numeric ids are never accepted — the server resolves ULIDs within the acting scope.",
+                        "items": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
                     }
                 },
                 "required": [

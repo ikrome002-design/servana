@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1\Compensation;
 
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Catalogue\Enums\ServiceStatus;
+use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServiceCategory;
 use App\Domain\Compensation\Actions\CreateCommissionRuleDraft;
 use App\Domain\Compensation\Actions\UpdateCommissionRuleDraft;
@@ -12,6 +14,8 @@ use App\Domain\Compensation\Enums\CommissionAppliesTo;
 use App\Domain\Compensation\Enums\CommissionCalculationBasis;
 use App\Domain\Compensation\Enums\CommissionCalculationType;
 use App\Domain\Compensation\Enums\CommissionRuleStatus;
+use App\Domain\Compensation\Exceptions\CompensationScopeException;
+use App\Domain\Compensation\Exceptions\CompensationValidationException;
 use App\Domain\Compensation\Models\CommissionRule;
 use App\Domain\Tenancy\TenantContext;
 use App\Http\Controllers\Controller;
@@ -45,7 +49,7 @@ final class CommissionRuleController extends Controller
         $this->authorize('viewAny', CommissionRule::class);
 
         $query = CommissionRule::query()
-            ->with('serviceCategory')
+            ->with(['serviceCategory', 'selectedServices'])
             ->orderByDesc('effective_from')
             ->orderByDesc('id');
 
@@ -62,7 +66,7 @@ final class CommissionRuleController extends Controller
     {
         $this->authorize('view', $commissionRule);
 
-        return CommissionRuleResource::make($commissionRule->load('serviceCategory'));
+        return CommissionRuleResource::make($commissionRule->load(['serviceCategory', 'selectedServices']));
     }
 
     public function store(StoreCommissionRuleRequest $request, CreateCommissionRuleDraft $action): JsonResponse
@@ -86,9 +90,10 @@ final class CommissionRuleController extends Controller
             appliesToPreferredPersonnelFee: $request->boolean('applies_to_preferred_personnel_fee'),
             effectiveTo: $request->input('effective_to'),
             notes: $request->input('notes'),
+            selectedServices: $this->resolveSelectedServices($request, (int) $branch->merchant_id, (int) $branch->id),
         );
 
-        return CommissionRuleResource::make($rule->load('serviceCategory'))
+        return CommissionRuleResource::make($rule->load(['serviceCategory', 'selectedServices']))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
@@ -115,9 +120,10 @@ final class CommissionRuleController extends Controller
             appliesToPreferredPersonnelFee: $request->boolean('applies_to_preferred_personnel_fee'),
             effectiveTo: $request->input('effective_to'),
             notes: $request->input('notes'),
+            selectedServices: $this->resolveSelectedServices($request, (int) $commissionRule->merchant_id, (int) $commissionRule->branch_id),
         );
 
-        return CommissionRuleResource::make($rule->load('serviceCategory'));
+        return CommissionRuleResource::make($rule->load(['serviceCategory', 'selectedServices']));
     }
 
     /**
@@ -146,6 +152,49 @@ final class CommissionRuleController extends Controller
         abort_if($category === null, Response::HTTP_NOT_FOUND);
 
         return $category;
+    }
+
+    /**
+     * Resolve the request's `selected_service_ulids` to Service models inside the acting merchant+branch
+     * (§9.1). Only `selected_services` carries a set. A ULID that does not resolve within the merchant, or
+     * a service from another branch, is indistinguishable from one that does not exist → 404 (never leaks
+     * existence). An archived service cannot be newly selected → 422. The server owns identities; the
+     * browser never supplies branch ownership. Duplicates are collapsed before resolution.
+     *
+     * @return list<Service>
+     */
+    private function resolveSelectedServices(StoreCommissionRuleRequest $request, int $merchantId, int $branchId): array
+    {
+        if ((string) $request->validated('applies_to') !== CommissionAppliesTo::SelectedServices->value) {
+            return [];
+        }
+
+        /** @var mixed $raw */
+        $raw = $request->validated('selected_service_ulids', []);
+        $ulids = is_array($raw) ? array_values(array_unique(array_map('strval', $raw))) : [];
+        if ($ulids === []) {
+            return [];
+        }
+
+        $services = Service::query()->whereIn('ulid', $ulids)->get();
+
+        // Every requested ULID must resolve within the acting merchant scope.
+        if ($services->count() !== count($ulids)) {
+            throw CompensationScopeException::service();
+        }
+
+        foreach ($services as $service) {
+            if ((int) $service->merchant_id !== $merchantId || (int) $service->branch_id !== $branchId) {
+                throw CompensationScopeException::service();
+            }
+            if ($service->status === ServiceStatus::Archived) {
+                throw CompensationValidationException::selectedServices(
+                    'An archived service cannot be selected for a commission rule.',
+                );
+            }
+        }
+
+        return array_values($services->all());
     }
 
     private function intOrNull(mixed $value): ?int

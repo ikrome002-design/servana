@@ -44,3 +44,15 @@ Schedule::command('billing:process-promotion-lifecycle')
     ->timezone('Africa/Nairobi')
     ->withoutOverlapping()
     ->onOneServer();
+
+// Accrue the most recent CLOSED monthly/weekly salary pay period daily in Africa/Nairobi (Plan §60,
+// §67; Phase 20G). Orchestrates the AccrueSalaryForPayPeriod action only; per-staff bounded
+// transactions with the subject row lock; idempotent per (plan, staff, pay-period segment);
+// daily/hourly/per_shift fail closed (no approved attendance source). Singleton (withoutOverlapping)
+// + leader-only (onOneServer); one bounded redacted failure signal per bad item. Commission is NOT
+// scheduled — it is earned by the commission_handoff_events consumer at Finance validation.
+Schedule::command('compensation:accrue-salary')
+    ->daily()
+    ->timezone('Africa/Nairobi')
+    ->withoutOverlapping()
+    ->onOneServer();

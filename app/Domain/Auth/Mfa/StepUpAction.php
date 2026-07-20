@@ -66,6 +66,11 @@ enum StepUpAction: string
     // A real, implemented route; excluded from businessActions() like the other live-route actions.
     case PlatformFeeDisputeResolution = 'platform_fee_dispute_resolution';
 
+    // Phase 20G — Finance manual compensation-adjustment creation (fresh step-up + high-severity audit,
+    // §19.3). A real, implemented route; excluded from the test-harness businessActions() like the other
+    // live-route actions. Distinct from CompensationBackdatedChange (plan-approval), per §11.7.
+    case CompensationAdjustmentCreate = 'compensation_adjustment_create';
+
     /** The phase that owns the real route this classification protects. */
     public function owningPhase(): string
     {
@@ -89,6 +94,7 @@ enum StepUpAction: string
             self::AuditExportCreate => 'Phase 19 (implemented)',
             self::MerchantGovernance => 'Phase 20B (implemented)',
             self::PlatformFeeDisputeResolution => 'Phase 20E (implemented)',
+            self::CompensationAdjustmentCreate => 'Phase 20G (implemented)',
         };
     }
 

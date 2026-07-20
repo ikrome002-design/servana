@@ -41,6 +41,11 @@ final class CompensationScopeException extends Exception
         return new self('commission_rule_scope_mismatch', 'The requested commission rule was not found in this branch.');
     }
 
+    public static function service(): self
+    {
+        return new self('service_scope_mismatch', 'The requested service was not found in this branch.');
+    }
+
     public function render(Request $request): JsonResponse
     {
         $correlationId = (string) app(CorrelationId::class)->get();

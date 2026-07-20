@@ -6,8 +6,122 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Post-Phase-20F Deferred Hardening (`hardening/resource-contracts-and-accessibility-tokens`) — local_complete pending PR CI/review/merge
+### Phase 20G — Salary Accrual and Commission Processing (`phase-20g-salary-commission-ledgers`) — in_progress
 
+Off `main` = `57dce1031ce10c37977540a0e63b1491d444b877` (the post-20F hardening PR #40 merge). Financial
+phase (Plan §60/§61/§13.12/§80; Correction 19). Creates the earned/accrued facts 20F configured:
+`salary_ledger`, `commission_ledger`, `compensation_adjustments`, plus the `commission_rule_services`
+selected-services substrate (§9.1, product-owner decision). Specification-first: G1–G12 resolved before
+any migration (`docs/proof/phase-20g.md`). Two product-owner decisions of record: **Actual/Actual
+calendar-day salary proration** (G8) and **build the `commission_rule_services` substrate** (§9.1).
+Commission is earned **only** at Finance validation via the pre-built durable idempotent
+`commission_handoff_events` outbox; reversals are exact-negative append-only rows; already-paid
+reversals become negative compensation adjustments; salary_only plans never earn commission;
+daily/hourly/per_shift salary fails closed (no approved attendance source exists). **No Wallet/provider
+runtime, no payout runs/items, no earnings/mark-paid — those are 20D-W/20H.** Increments 1–3 complete:
+schema (4 migrations + the `suspension_salary_policy` expand `2026_07_17_000005` that shipped 20F
+omitted), enums/models/factories/tenancy; and the full domain layer — salary segmenter + proration +
+accrual action + `compensation:accrue-salary` scheduler; commission basis resolver + earning consumer of
+the `commission_handoff_events` outbox + exact-negative reversals + additive/already-paid adjustments + 2
+ledger state machines + 7 typed audit events. Increment-3 tests green (SalaryAccrual 10, SalaryProration 7,
+CommissionEarning 10, CommissionReversal 5, CompensationAdjustment 3, StateMachine 2, TenantIsolation 4,
+Schema 16, EnumParity 7). **Increment 4 complete: Finance-source integration + reversal semantics.** A
+Plan-vs-continuation-prompt conflict on partial-refund reversal was surfaced and resolved **in favour of
+the Plan** (ADR-005 / §61 / data-dictionary / state-machine spec): a reversal is the **exact negative of
+the original (never recomputed), one reversal per original** — the proportional-partial-recompute
+language was withdrawn and is NOT implemented (no schema change). Because there is no immutable item-level
+refund attribution, `CommissionHandoffConsumer` reverses a validation event's earned rows **only once the
+whole validated allocation is refunded** (cumulative finalized refunds = validated amount, derived from
+immutable rows); a partial refund is a valid no-effect consumed event; an impossible over-refund fails
+closed (`cumulativeReversalExceedsValidatedAllocation`). Invoice void does **not** invalidate the
+validated allocation → no commission reversal (proven, not assumed); pre-validation reject/correction earn
+nothing. Increment-4 tests green (CommissionRefundReversal 10, CommissionReversalSeam 2; CommissionEarning
+full-refund case updated to a finalized refund). Two committed Phase 20F guards
+(`CompensationPlanApiTest`, `CompensationPlanActionTest`) reconciled: the 20G ledger tables now exist, so
+they assert **zero rows** written by a 20F flow (20H payout/earnings tables still asserted absent).
+Compensation group 362 passed; Payments+Refunds 98; NoDirectProvider+Invoice+20G schema/enum/isolation 95;
+manifest+tenancy 15; Pint clean; Larastan L8 0 errors. **Increment 5 complete: permission activation +
+Finance liability/adjustment API.** Activated the canonical Finance keys `compensation.liability.view` +
+`compensation.adjustment.create` (planned→active across matrix/registry/DB/permissions.ts/phase8-matrix;
+active 110→112, planned 58→56; legacy retirement none; Finance-only). New `StepUpAction
+::CompensationAdjustmentCreate`. `CompensationLiabilityReadModel` derives per-currency net liabilities
+(earned-unpaid balance; salary net = status≠paid, commission net = status∉{paid,cancelled}, + adjustments;
+never combines currencies). Route family `compensation/*`: masked liability summary + entries + adjustments
+reads (`compensation.liability.view`); `POST compensation/adjustments` is a financial mutation
+(`compensation.adjustment.create` + fresh step-up + Idempotency-Key + high-severity `compensation
+.adjustment.created` audit; append-only standalone `manual` — the schema forbids a Finance source-linked
+row; branch server-derived from the staff). 3 policies, 3 Form Requests (server-owned fields rejected),
+2 masked Resources, 2 thin controllers. OpenAPI 211 paths/253 ops (deterministic); api.ts + permissions.ts
+regenerated (`--check` green); `api:contract:check` OK; vue-tsc clean. Report definitions seeded in
+`docs/reporting/report-catalogue.md` (delivery = 21N). Tests: Phase20GCompensationApiTest 13; auth 196;
+route-security/idempotency/audit-coverage/OpenAPI 30; full compensation group 375; Pint clean; Larastan L8
+0 errors. **Increment 6 complete: Finance compensation-liability frontend.** ONE new Finance screen —
+**Compensation liabilities** (`finance.liabilities` → `/finance/liabilities`, `FinanceLayout`, Finance,
+`compensation.liability.view`) reusing the roadmap's reserved nav slot (`planned → live`); it consumes the
+**existing** Increment-5 generated contract only — **no backend/route/permission/contract change**
+(`OpenApiContractTest` re-run confirms `openapi.json` byte-current). `compensationLiabilityStore` (Pinia,
+typed from generated `api.ts`; summary/entries/adjustments/detail reads + `createAdjustment`; filters send
+only non-empty declared keys; 403 → forbidden state; **Idempotency-Key minted-on-submit / reused-on-retry /
+re-minted-on-change / retired-on-success**; local state written only from server responses; no authoritative
+money computed). `CompensationLiabilities.vue` — per-currency summary cards (never combined), filter bar,
+paginated liability-entry + adjustment lists with safe detail modals, and a capability-gated Record-adjustment
+dialog (**direction selector + positive amount → signed `amount_minor` via a float-free parser**; live
+"not a payment" preview; only the four contract fields sent; safe `step_up_required`/period-lock/validation/
+forbidden copy; focus restore + status announce). Nav + inventory flipped in **source** files with
+`role-navigation.yaml`, `inventory.yaml` and the §27.1 screen spec regenerated by their own tests/generator.
+**Selected-services HR UX = State C (§8): the §9.1 `commission_rule_services` API/Resource/OpenAPI contract
+was never wired** (substrate exists, earning path consumes it) → **stopped and reported per §8; no
+client-only list built**; smallest correction recorded as a tracked follow-up. Gates: ESLint 0 errors,
+vue-tsc clean, Vitest **404 → 428** (+24: store 12, component 12), build PASS, affected Playwright
+`phase-20g.spec.ts` **18 passed** (axe serious/critical = 0, page + dialog, light + dark; 360/768/1280;
+200% zoom; keyboard). Backend contract reruns serial (Phase20GCompensationApiTest 13; permission parity;
+RouteSecurity; idempotency; audit mutation + severity; OpenAPI byte-current; NoDirectProvider) **55 passed /
+0 failed**. **Increment 6A complete: selected-services contract + HR UX closure** (product-owner authorized
+to close the State-C gap before 20G local completion). Wired `selected_service_ulids` into the HR
+commission-rule draft API: Store/Update requests (required + ≥1 + distinct for `selected_services`,
+prohibited otherwise); `CommissionRuleController` resolves the ULIDs to services **inside the acting
+merchant+branch** (foreign/cross-branch → 404 no-leak; archived → 422); `CreateCommissionRuleDraft` /
+`UpdateCommissionRuleDraft` persist/replace `CommissionRuleService` memberships **transactionally, draft-only**
+(the DB triggers freeze them once the rule leaves draft); `CommissionRule::selectedServices()` relationship;
+`CommissionRuleResource` returns `selected_service_ulids: string[]` + `selected_services:[{ulid,name}]`;
+`CompensationAdjustmentResource.has_source` cast to a truthful `boolean`. **Product-owner service-options
+decision:** HR cannot hold `service.view` (Branch-Manager-only, not grantable — verified), so a NARROW
+read-only `GET /commission-rule-service-options` was added, gated by the existing `compensation.plan.view`
+(never `service.view`), returning only the acting branch's ACTIVE services as `{ulid,name}` — thin
+`CommissionRuleServiceOptionController` + `CompensationSelectableServiceResource`; no new permission, no
+matrix change. HR `Compensation.vue` gains a branch-scoped checkbox multi-select (options from that endpoint,
+**never** `/services`; ≥1 required; removable named chips; server hydration on edit; clears stale + hides on
+`applies_to` change; non-draft read-only line) via `compensationStore.fetchServiceOptions`. Observed but NOT
+changed: the Phase-15A HR Service Eligibility page references `/services` though HR lacks `service.view` —
+recorded as a separate pre-existing mismatch (no widening). OpenAPI **211/253 → 212/254** (+1 route;
+deterministic 2×; `permissions.ts` unchanged). Tests: backend affected **198 passed / 0 failed** serial
+(CommissionRuleSelectedServices 17; CommissionRuleServiceOptions 7 incl. Branch-Manager-with-service.view
+denied; CommissionRuleApi 36; CommissionEarning; Phase20GSchema/Enum/TenantIsolation; Phase20GCompensationApi
+13; OpenApiContract byte-current; RouteSecurity; idempotency; audit; parity) + manifest/tenancy 15; Pint
+clean; Larastan L8 0; ESLint 0 errors; vue-tsc clean; **Vitest 435/87** (+7); build PASS; **full Playwright
+397 passed** (+11 HR selected-services; axe 0 light+dark; responsive; 200% zoom; keyboard). No new permission,
+no `service.view` grant, no new screen, no migration. **Increment 7 complete: full local acceptance + closure.**
+composer validate; Pint 1398 clean; Larastan L8 0; **full backend serial 1578 passed / 0 failed / 7 skipped**
+and **`--parallel` identical 1578/0/7 (4 processes, isolated worker DBs)**; ESLint 0 errors; vue-tsc clean;
+Vitest 435/87; build PASS; **full Playwright 397 passed** (axe 0 light+dark); OpenAPI **212/254** deterministic
+(`openapi.json`/`api.ts`/`permissions.ts` byte-identical on 2nd generation); `permission-types --check` +
+`api:contract:check` green; composer audit clean; npm audit 2 moderate (below high gate); gitleaks no leaks;
+Docker dev app + prod app + prod nginx built. **Disposable PostgreSQL 16.14 proof:** `servana_p20g_i7_proof_*`
+— 104 migrations from zero, 87 tables, all 4 Phase 20G tables + `suspension_salary_policy`, append-only +
+immutability + selected-services-membership triggers, idempotency uniques, composite-consistency FKs, **0
+forbidden payout/earnings/Wallet tables**, dropped, dev DB untouched. One reconciliation fix:
+`ServiceSessionCouplingTest.php` stale cross-phase guard (`commission_ledger` table-absence → zero-rows; the
+same fix Increment 4 applied to two compensation guards) — test-only, no product change. Scope-purity audit
+clean. Phase 20G lifecycle → **local_complete pending PR CI/review/merge** at one Phase 20G completion commit
++ push (no PR created; branch retained; Phase 20H / 20D-W not started).
+
+### Post-Phase-20F Deferred Hardening (`hardening/resource-contracts-and-accessibility-tokens`) — verified_complete (PR #40 merged)
+
+Merged via **PR #40** "Hardening: Fix resource contracts and accessibility tokens" (implementation
+`cdcb83fc89d89b2139063ce0c099ec1a84ee7748`; governance/final head `53a595bba86e94521279a2c9258bc349a54bfcfc`;
+merge commit `57dce1031ce10c37977540a0e63b1491d444b877` == `origin/main`; merged 2026-07-17T14:43:17Z;
+required CI Backend/Frontend/Docker/Security/E2E all SUCCESS; `reviewDecision` blank under the documented
+solo-maintainer governance exception, not independent approval; local + remote branches deleted).
 Started off `main` = `f4bc664b7ba77476f9db01dcb0ec1a526dc20538` (the Phase 20F PR #39 **squash** merge —
 which is why the Phase 20F implementation commit `a42e13e6…` is not an ancestor of `main`). Discharges
 the two follow-ups Phase 20F recorded as deferred. **Not a feature phase:** no migrations, no new

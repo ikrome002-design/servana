@@ -7,7 +7,6 @@ use App\Domain\Scheduling\Models\QueueEntry;
 use App\Domain\Scheduling\Models\ServiceSession;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 uses(RefreshDatabase::class)->group('scheduling', 'service-session', 'service-session-coupling');
 
@@ -103,12 +102,13 @@ it('completes both aggregates and returns a non-payable preview; no invoice or c
         ->assertJsonPath('data.service_session.commission_preview.amount_minor', null);
 
     expect(ServiceSession::query()->where('status', 'completed')->count())->toBe(1);
-    // Completing a session creates NO invoice or commission ledger. The `invoices`
-    // table now exists (Phase 17 owns it), so the invariant is asserted at the ROW
-    // level — session completion never auto-creates an invoice; invoicing is a
-    // separate Front Office action. `commission_ledger` has no table yet (Phase 20G).
+    // Completing a session creates NO invoice or commission ledger row. Both `invoices`
+    // (Phase 17) and `commission_ledger` (Phase 20G) tables now exist, so the invariant is
+    // asserted at the ROW level — session completion never auto-creates an invoice (invoicing
+    // is a separate Front Office action) and never earns commission (commission is earned only
+    // at Finance validation, Plan §61).
     expect(DB::table('invoices')->count())->toBe(0)
-        ->and(Schema::hasTable('commission_ledger'))->toBeFalse();
+        ->and(DB::table('commission_ledger')->count())->toBe(0);
 });
 
 it('does not allow a non-called queue entry to start a session', function (): void {

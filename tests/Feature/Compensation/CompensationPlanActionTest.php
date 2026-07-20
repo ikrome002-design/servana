@@ -31,6 +31,7 @@ use App\Domain\Compensation\Models\PersonnelCompensationPlan;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 uses(RefreshDatabase::class)->group('compensation', 'phase20f', 'phase20f-actions');
@@ -751,9 +752,14 @@ it('creates no ledger, payout, or earnings runtime while driving a full lifecycl
     $scn = compScenario();
     approve($scn, submittedPlan($scn));
 
-    foreach (['salary_ledger', 'commission_ledger', 'compensation_adjustments',
-        'personnel_payout_runs', 'personnel_payout_items', 'earnings_statements'] as $table) {
-        expect(Schema::hasTable($table))->toBeFalse("{$table} must not exist in Phase 20F");
+    // Phase 20H payout/earnings tables still do not exist.
+    foreach (['personnel_payout_runs', 'personnel_payout_items', 'earnings_statements'] as $table) {
+        expect(Schema::hasTable($table))->toBeFalse("{$table} must not exist before Phase 20H");
+    }
+
+    // The Phase 20G ledger tables now exist, but a Phase 20F plan lifecycle writes NO rows to them.
+    foreach (['salary_ledger', 'commission_ledger', 'compensation_adjustments'] as $table) {
+        expect(DB::table($table)->count())->toBe(0, "Phase 20F must write no {$table} rows");
     }
 
     // The Phase 18B hand-off seam exists but Phase 20F never writes to it — 20G consumes it.

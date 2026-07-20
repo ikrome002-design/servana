@@ -32,6 +32,8 @@ const rule: CommissionRule = {
   calculation_type: 'percentage',
   calculation_basis: 'service_price',
   applies_to: 'all_services',
+  selected_service_ulids: [],
+  selected_services: [],
   percentage_basis_points: 1500,
   fixed_amount_minor: null,
   currency: null,
