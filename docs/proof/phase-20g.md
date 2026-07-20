@@ -735,3 +735,25 @@ tagged Phase 20H; `FilePurpose::EarningsStatement`) — not touched by 20G and n
 
 **Increment 7 COMPLETE.** Lifecycle → **local_complete pending PR CI/review/merge** at the single Phase 20G
 completion commit + push. No PR created; branch retained; Phase 20H and Phase 20D-W not started.
+
+## Solo-Maintainer Review Exception - PR #41
+
+- PR: #41
+- verified implementation head: 51ebb5dd0c44c858c7afadd828dea5891da17fa0
+- initial successful CI run: 29739428584
+- CI/Backend: passed
+- CI/Frontend: passed
+- CI/Docker: passed
+- CI/Security: passed
+- CI/E2E - Playwright: passed
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-41.md
+
+This exception applies only to Phase 20G and is not independent reviewer
+approval.
+
+Phase 20H, Phase 20D-W, Wallet/provider runtime, payout runs, payout items,
+earnings statements, earnings queries, mark-paid flows, Merchant Administrator
+compensation summary, direct money movement, notification delivery, search,
+performance, and production-readiness work remain deferred to their owning
+phases.
