@@ -62,6 +62,15 @@ export const merchantRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/billing/PlatformFees.vue'),
         meta: { roleIdentity: 'merchant_administrator' },
       },
+      {
+        // Phase 20H — Merchant Administrator compensation summary + high-value payout approvals. Backend
+        // authoritative (`merchant.compensation_summary.view` masked read; `merchant.payout
+        // .approve_high_value` + fresh step-up + Idempotency-Key). MA never creates/verifies/marks-paid.
+        path: 'compensation-summary',
+        name: 'merchant.compensation-summary',
+        component: () => import('@/pages/merchant/CompensationSummary.vue'),
+        meta: { roleIdentity: 'merchant_administrator' },
+      },
     ],
   },
 ];

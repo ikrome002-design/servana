@@ -70,6 +70,16 @@ export const hrRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/hr/Compensation.vue'),
         beforeEnter: [requiresPermission('compensation.plan.view')],
       },
+      // Phase 20H — HR prepares payout DRAFTS (create/edit/submit/cancel). The screen renders its own
+      // permission-gated forbidden state (no route guard, matching finance.liabilities); the API
+      // (EnsureBranchScope + EnsurePermission + policy + state machine) is the security boundary. HR
+      // never verifies, approves, or marks paid.
+      {
+        path: 'payout-runs',
+        name: 'hr.payout-runs',
+        component: () => import('@/pages/hr/PayoutRuns.vue'),
+        meta: { roleIdentity: 'merchant_human_resource' },
+      },
     ],
   },
 ];

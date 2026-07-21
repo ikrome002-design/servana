@@ -18,6 +18,10 @@ use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Compensation\Actions\CreatePayoutRunDraft;
+use App\Domain\Compensation\Models\CommissionLedgerEntry;
+use App\Domain\Compensation\Models\PersonnelPayoutRun;
+use App\Domain\Compensation\Models\SalaryLedgerEntry;
 use App\Domain\Files\Enums\FileLifecycleStatus;
 use App\Domain\Files\Enums\FilePurpose;
 use App\Domain\Files\Enums\FileScanStatus;
@@ -780,4 +784,49 @@ function streamAuditExport(User $audit, string $ulid): TestResponse
     $url = URL::temporarySignedRoute('audit-exports.download', now()->addMinutes(5), ['auditExport' => $ulid]);
 
     return test()->actingAs($audit, 'sanctum')->get($url);
+}
+
+/** A branch + one staff profile in it (Phase 20H payout/earnings shared helper). */
+function payoutBranchStaff(): array
+{
+    $branch = MerchantBranch::factory()->create();
+    $staff = StaffProfile::factory()->create([
+        'merchant_id' => $branch->merchant_id,
+        'primary_branch_id' => $branch->id,
+    ]);
+
+    return [$branch, $staff];
+}
+
+/** An eligible earned commission row for one staff (Phase 20H shared helper). */
+function earnedCommission(MerchantBranch $branch, StaffProfile $staff, int $minor = 50000, string $currency = 'KES'): CommissionLedgerEntry
+{
+    return CommissionLedgerEntry::factory()->create([
+        'merchant_id' => $branch->merchant_id,
+        'branch_id' => $branch->id,
+        'staff_profile_id' => $staff->id,
+        'amount_minor' => $minor,
+        'currency' => $currency,
+        'earned_at' => '2026-07-15 09:00:00',
+    ]);
+}
+
+/** An eligible pending salary accrual for one staff (Phase 20H shared helper). */
+function pendingSalary(MerchantBranch $branch, StaffProfile $staff, int $minor = 5000000, string $currency = 'KES'): SalaryLedgerEntry
+{
+    return SalaryLedgerEntry::factory()->create([
+        'merchant_id' => $branch->merchant_id,
+        'branch_id' => $branch->id,
+        'staff_profile_id' => $staff->id,
+        'amount_minor' => $minor,
+        'currency' => $currency,
+    ]);
+}
+
+/** Create a July-2026 draft payout run for a branch through the real action (Phase 20H shared helper). */
+function draftRun(MerchantBranch $branch, string $currency = 'KES'): PersonnelPayoutRun
+{
+    return app(CreatePayoutRunDraft::class)->handle(
+        $branch, '2026-07-01', '2026-07-31', $currency, User::factory()->create(),
+    );
 }

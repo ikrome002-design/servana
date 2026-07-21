@@ -609,16 +609,16 @@ it('rejects a transition history event with no prior status', function (): void 
 
 // ---- Phase 20F introduces no earned/ledger/payout runtime -----------------------
 
-it('creates no payout or earnings (Phase 20H) runtime table', function (string $table): void {
-    // Phase 20F is CONFIGURATION ONLY. (salary_ledger / commission_ledger / compensation_adjustments
-    // were owned by 20G and ARE now created by Phase 20G — so they are asserted absent by the Phase
-    // 20G suite, not here. The still-unbuilt tables below belong to Phase 20H payout/earnings.)
-    expect(Schema::hasTable($table))->toBeFalse();
+it('writes no payout or earnings (Phase 20H) runtime rows', function (string $table): void {
+    // Phase 20F is CONFIGURATION ONLY. Phase 20H shipped the payout/earnings tables
+    // (personnel_payout_runs / personnel_payout_items / earnings_queries); a Phase 20F schema state
+    // writes NO rows to them. (salary_ledger / commission_ledger / compensation_adjustments are the
+    // Phase 20G suite's concern. Earnings statements are 10F uploaded_files rows, not a bespoke table.)
+    expect(DB::table($table)->count())->toBe(0, "Phase 20F must write no {$table} rows");
 })->with([
     'personnel_payout_runs',
     'personnel_payout_items',
-    'personnel_earnings_queries',
-    'earnings_statements',
+    'earnings_queries',
 ]);
 
 it('adds no earned, paid, or payout column to the Phase 20F tables', function (): void {

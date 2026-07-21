@@ -125,6 +125,23 @@ export const financeRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/finance/CompensationLiabilities.vue'),
         meta: { roleIdentity: 'merchant_finance' },
       },
+      {
+        // Phase 20H — Finance payout worklist (verify/approve/reject/mark-paid). Backend authoritative
+        // (`payout_run.verify/approve_standard/reject/mark_paid`; fresh step-up + Idempotency-Key on the
+        // financial-mutation routes). Servana records external settlements only; it moves no money.
+        path: 'payout-runs',
+        name: 'finance.payout-runs',
+        component: () => import('@/pages/finance/PayoutRuns.vue'),
+        meta: { roleIdentity: 'merchant_finance' },
+      },
+      {
+        // Phase 20H — Finance earnings-query responder (D-H12-1). A correction is an additive adjustment,
+        // never a ledger edit (`earnings_query.respond`; Idempotency-Key server-enforced).
+        path: 'earnings-queries',
+        name: 'finance.earnings-queries',
+        component: () => import('@/pages/finance/EarningsQueries.vue'),
+        meta: { roleIdentity: 'merchant_finance' },
+      },
     ],
   },
 ];

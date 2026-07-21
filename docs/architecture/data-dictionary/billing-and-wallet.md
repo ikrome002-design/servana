@@ -1263,6 +1263,78 @@ is NOT scheduled — it is earned by the `commission_handoff_events` consumer at
 
 ---
 
+## Phase 20H — Payout runs and earnings (Plan §62, §63, §13.12, §25.4/§25.5; Correction 19; financial)
+
+Consumes the 20G ledgers into an internal payout workflow + personnel earnings surfaces. **Servana
+moves no money** — mark-paid records an EXTERNAL payment; no provider/Wallet call; no dependency on
+Gate W (CLOSED). Three new branch-owned tables + three EXPAND FKs on the 20G ledgers.
+
+### `personnel_payout_runs` (Plan §62, §13.12; migration `2026_07_20_000001`)
+
+Branch-owned internal payout run. HR drafts/submits (freeze); Finance verifies/approves-standard/
+marks-paid; Merchant Admin approves high-value. `status` CHECK (8):
+`draft/submitted/finance_verified/pending_merchant_admin_approval/approved/paid/rejected/cancelled`
+(state machine: `personnel-payout-run.md`; enum `PayoutRunStatus`). `high_value_threshold_snapshot_minor`
+(bigint nullable, CHECK null-or-`>=0`) is snapshotted at creation from
+`merchant_subscriptions.high_value_payout_threshold_minor` (Phase 20A — never hardcoded; null ⇒
+ordinary approval). **`currency` char(3)** completes the §13.12 summary so a run is single-currency
+(no-cross-currency invariant). `gross_total_minor` bigint is signed (clawbacks may net negative).
+Actor columns `created_by`(HR)/`submitted_by`/`verified_by`/`approved_by`/`paid_by`/`rejected_by`;
+`rejection_reason`; `external_payment_reference_encrypted` (encrypted at rest, never logged);
+`paid_at`. Composite `(branch_id, merchant_id)` FK; `(id, merchant_id)` unique = the payout-item FK
+target. CHECKs: status enum, currency uppercase, `period_end >= period_start`, threshold null-or-`>=0`.
+No append-only trigger (the run is mutable through its lifecycle; freeze is enforced by the state
+machine + the item guard).
+
+### `personnel_payout_items` (Plan §62, §13.12; migration `2026_07_20_000002`)
+
+Branch-owned FROZEN snapshot line; one per `(payout_run, staff_profile, currency)` (UNIQUE). Snapshots
+eligible unpaid 20G ledger facts (`salary_ledger`, `commission_ledger`, approved
+`compensation_adjustments`) into `salary_amount_minor`/`commission_amount_minor`/`adjustment_amount_minor`
+(all signed) with `gross_amount_minor = sum` (DB CHECK); `source_ledger_refs` jsonb holds the exact
+snapshotted row ids `{salary:[…], commission:[…], adjustment:[…]}`. **Never recomputed** from current
+plans/rules. `currency` = run currency. `status` mirrors the run (enum `PayoutItemStatus`; same 8
+values). Composite `(branch_id, merchant_id)`, `(payout_run_id, merchant_id)` RESTRICT,
+`(staff_profile_id, merchant_id)` FKs; `(id, merchant_id)` unique = the ledger `payout_item_id` FK
+target. **Freeze guard:** DELETE allowed only while `status='draft'`; UPDATE blocks all snapshot columns
+(only `status`/`updated_at` transition). Integer minor units.
+
+### `earnings_queries` (Plan §63, §13.12; migration `2026_07_20_000003`)
+
+Branch-owned + personnel own-scope (`staff_profile_id` from membership; arbitrary ids rejected). Query
+against one own fact: `subject_type` CHECK `commission_ledger/salary_ledger/payout_item` + `subject_id`
+(validated in-scope by the action; no polymorphic FK). `query_type` CHECK
+`commission_disagreement/salary_disagreement/payout_missing/payout_amount/statement_request/other`
+drives `assigned_role` (`finance`/`hr`) routing; the resolution permission is always
+`earnings_query.respond` (Finance). `status` CHECK `open/assigned/resolved/rejected` (state machine:
+`earnings-query.md`; enum `EarningsQueryStatus`). **Resolution never mutates a ledger** — a monetary
+correction is a separate `compensation_adjustments` row referenced by `resolved_adjustment_id`
+(nullable FK). `assigned_to`/`responded_by` (users), `resolution_note`, `responded_at`. Composite
+`(branch_id, merchant_id)` + `(staff_profile_id, merchant_id)` FKs; CHECKs on all enums + non-empty body.
+
+### `personnel_payout_items.earnings_statement_file_id` EXPAND (migration `2026_07_20_000007`; Increment 4)
+
+Nullable FK `→ uploaded_files(id)` (`nullOnDelete`) linking a PAID payout item to its generated
+earnings-statement PDF (Plan §63/§65; 10F private file domain). Deliberately **outside** the Increment-2
+item freeze guard's `ROW()` comparison, so `GenerateEarningsStatement` sets it once on a paid item while
+every snapshot column stays frozen. Once set it is never rewritten — the statement is **idempotent +
+immutable** (a later correction is a new adjustment + a future statement, never a rewrite). The statement
+file is `purpose = earnings_statement` with `owner_user_id` = the personnel user, so download is
+own-scope-authorised by `FileAccessService` (no extra permission).
+
+### Ledger `payout_item_id` EXPAND FKs (migrations `2026_07_20_000004/000005/000006`)
+
+Phase 20G created `commission_ledger.payout_item_id`, `salary_ledger.payout_item_id`, and
+`compensation_adjustments.payout_item_id` as nullable, UN-CONSTRAINED columns (their append-only guards
+already permit only `status`/`payout_item_id` to transition). Phase 20H adds the composite FK
+`(payout_item_id, merchant_id) → personnel_payout_items(id, merchant_id)` on each by **expand** (the
+shipped 20G migrations are never edited; ADR-004). PostgreSQL MATCH SIMPLE skips the FK while
+`payout_item_id` is NULL (unlinked earned/pending/approved row), so no backfill is needed. **Claim** =
+setting `payout_item_id` at submit; **release** = clearing it on reject/cancel; ledger **status**
+advances forward only (`earned/pending → included_in_payout → paid`) at mark-paid.
+
+---
+
 ## Forbidden in Servana (never assign to Servana schema)
 
 | Forbidden concern | Owner |

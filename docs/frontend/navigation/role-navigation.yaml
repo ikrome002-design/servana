@@ -139,7 +139,8 @@ merchant_administrator:
     phase: Phase 21N
   - key: merchant.compensation-summary
     label: Compensation summary
-    availability: planned
+    availability: live
+    route: merchant.compensation-summary
     permission: merchant.compensation_summary.view
     phase: Phase 20H
 merchant_branch:
@@ -274,7 +275,8 @@ merchant_human_resource:
     phase: Phase 20F
   - key: hr.payout-runs
     label: Payout runs
-    availability: planned
+    availability: live
+    route: hr.payout-runs
     permission: payout_run.create
     phase: Phase 20H
 merchant_finance:
@@ -338,8 +340,15 @@ merchant_finance:
     phase: Phase 18B
   - key: finance.payout-runs
     label: Payout runs
-    availability: planned
+    availability: live
+    route: finance.payout-runs
     permission: payout_run.verify
+    phase: Phase 20H
+  - key: finance.earnings-queries
+    label: Earnings queries
+    availability: live
+    route: finance.earnings-queries
+    permission: earnings_query.respond
     phase: Phase 20H
   - key: finance.liabilities
     label: Commission and salary liabilities
@@ -469,7 +478,8 @@ merchant_personnel:
     phase: Phase 15A
   - key: personnel.my-earnings
     label: My earnings
-    availability: planned
+    availability: live
+    route: personnel.earnings
     permission: personnel.my_earnings.view
     phase: Phase 20H
   - key: personnel.my-sms

@@ -28,10 +28,11 @@ it('keeps all 56 planned keys out of every runtime projection', function (): voi
     // 2 promotion / free-period-offer canonical keys (68 → 66); Phase 20F activated the 8 HR
     // compensation-configuration canonical keys (66 → 58); Phase 20G activated the 2 Finance
     // compensation-financial canonical keys compensation.liability.view + compensation.adjustment.create
-    // (58 → 56). merchant.compensation_summary.view and the payout/earnings families stay PLANNED
-    // (Phase 20H).
+    // (58 → 56); Phase 20H activated the 16 payout-run / earnings / merchant-compensation-summary
+    // canonical keys (56 → 40). The remaining planned families belong to Phase 20D-W / 21N / 21S /
+    // 22 / 23 / 24 / 25.
     $planned = $matrix->plannedKeys();
-    expect($planned)->toHaveCount(56);
+    expect($planned)->toHaveCount(40);
 
     $registryKeys = array_fill_keys($registry->permissionKeys(), true);
     $dbKeys = array_fill_keys(Permission::query()->pluck('key')->all(), true);

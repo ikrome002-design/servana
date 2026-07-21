@@ -897,19 +897,20 @@
     {
       "key": "compensation-summary",
       "domain": "merchant",
-      "route": null,
+      "route": "merchant.compensation-summary",
       "layout": "MerchantLayout",
-      "status": "planned",
+      "status": "implemented",
       "phase": "Phase 20H",
-      "spec": null,
+      "spec": "merchant/merchant-compensation-summary.md",
       "title": "Compensation summary",
       "roles": [
         "merchant_administrator"
       ],
       "permissions": [
-        "merchant.compensation_summary.view"
+        "merchant.compensation_summary.view",
+        "merchant.payout.approve_high_value"
       ],
-      "summary": "Personnel compensation summary by model."
+      "summary": "Merchant-Administrator compensation overview + high-value payout approvals: masked, merchant-wide, currency-grouped totals (outstanding liability by currency, paid by currency, payout runs by status, pending high-value approvals; never combined across currencies), and a high-value approval queue where the Merchant Administrator approves a run above the snapshotted threshold (fresh step-up + Idempotency-Key server-enforced). The Merchant Administrator never creates, verifies, or marks paid. The browser computes no authoritative money. Servana moves no money; no Wallet/provider UI."
     },
     {
       "key": "merchant-period-reopen-approvals",
@@ -1146,19 +1147,22 @@
     {
       "key": "hr-payout-prep",
       "domain": "hr",
-      "route": null,
+      "route": "hr.payout-runs",
       "layout": "BranchLayout",
-      "status": "planned",
+      "status": "implemented",
       "phase": "Phase 20H",
-      "spec": null,
-      "title": "Payout draft preparation",
+      "spec": "hr/hr-payout-runs.md",
+      "title": "Payout runs",
       "roles": [
         "merchant_human_resource"
       ],
       "permissions": [
-        "payout_run.create"
+        "payout_run.create",
+        "payout_run.update_draft",
+        "payout_run.submit",
+        "payout_run.cancel_draft"
       ],
-      "summary": "Payout-run draft preparation."
+      "summary": "Branch-scoped HR payout DRAFT workflow: list/filter payout runs, create a run for a branch + pay period + currency (Servana snapshots the eligible earned salary/commission/adjustments server-side — the browser never enters amounts or items), edit a draft (re-snapshot), submit (freeze + claim ledgers), and cancel a draft. HR never verifies, approves, or marks paid (Plan §10.2). Invalid transitions surface a safe state; the browser computes no authoritative total. Servana moves no money; no Wallet/provider UI."
     },
     {
       "key": "finance-task-inbox",
@@ -1373,19 +1377,39 @@
     {
       "key": "finance-payouts",
       "domain": "finance",
-      "route": null,
+      "route": "finance.payout-runs",
       "layout": "FinanceLayout",
-      "status": "planned",
+      "status": "implemented",
       "phase": "Phase 20H",
-      "spec": null,
-      "title": "Payout verification",
+      "spec": "finance/finance-payout-runs.md",
+      "title": "Payout runs",
       "roles": [
         "merchant_finance"
       ],
       "permissions": [
-        "payout_run.verify"
+        "payout_run.verify",
+        "payout_run.approve_standard",
+        "payout_run.reject",
+        "payout_run.mark_paid"
       ],
-      "summary": "Payout verification/approval/mark-paid."
+      "summary": "Merchant-scoped Finance payout worklist: list/filter runs, verify a submitted run (Servana routes high-value runs to the Merchant Administrator), approve an ordinary run, reject (releasing the claimed liabilities via a reason), and mark an approved run PAID after an EXTERNAL settlement (external payment reference + a not-in-the-future paid date). Verify/approve/mark-paid are financial mutations — fresh step-up + Idempotency-Key are server-enforced; the mark-paid dialog states plainly that Servana records an external payment and moves no money. The raw external reference is never displayed after saving; the browser computes no authoritative total. No provider/Wallet/settlement UI."
+    },
+    {
+      "key": "finance-earnings-queries",
+      "domain": "finance",
+      "route": "finance.earnings-queries",
+      "layout": "FinanceLayout",
+      "status": "implemented",
+      "phase": "Phase 20H",
+      "spec": "finance/finance-earnings-queries.md",
+      "title": "Earnings queries",
+      "roles": [
+        "merchant_finance"
+      ],
+      "permissions": [
+        "earnings_query.respond"
+      ],
+      "summary": "Finance earnings-query responder worklist: list/filter the merchant-scoped query queue and resolve or reject a query staff raised about their own earnings. An optional monetary correction on a resolve is recorded as a SEPARATE additive compensation adjustment (a direction-selector -> signed amount_minor float-free parser; a preview stating it does not edit the original earnings) — the original ledger fact is never rewritten and there is no direct ledger edit. Respond is a financial mutation (Idempotency-Key server-enforced; a replay never duplicates the correction); a terminal query shows a read-only resolved/rejected state. No Wallet/provider UI."
     },
     {
       "key": "finance-invoices",
@@ -1833,19 +1857,23 @@
     {
       "key": "personnel-my-earnings",
       "domain": "personnel",
-      "route": null,
+      "route": "personnel.earnings",
       "layout": "PersonnelLayout",
-      "status": "planned",
+      "status": "implemented",
       "phase": "Phase 20H",
-      "spec": null,
+      "spec": "personnel/personnel-my-earnings.md",
       "title": "My Earnings",
       "roles": [
         "merchant_personnel"
       ],
       "permissions": [
-        "personnel.my_earnings.view"
+        "personnel.my_earnings.view",
+        "personnel.my_compensation.view",
+        "personnel.my_payouts.view",
+        "personnel.my_statements.download",
+        "personnel.my_earnings_query.create"
       ],
-      "summary": "My Earnings tabs, statements, queries."
+      "summary": "Personnel own-scope earnings: a per-currency overview (net/unpaid/paid, with salary and commission breakdowns shown only when the compensation model or historical facts apply; conflicting plans fail closed), compensation terms, payout history, on-demand earnings-statement generation/download through Servana's authorised short-lived file link (own-scope by owner; billing read-only blocks new generation, not an existing download), and raising an earnings query about one of the personnel's own facts (Finance responds; a correction is a separate adjustment). The acting staff profile is derived from the membership — there is no staff selector and the browser never sends a staff reference. No other staff data, no payout controls, no money movement, no raw storage paths, no Wallet/provider UI."
     },
     {
       "key": "personnel-sms",

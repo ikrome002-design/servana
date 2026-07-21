@@ -1396,3 +1396,101 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-20g.md
     notes: "Phase 20G (Plan A-11; §60; §13.12; G10). Forward-only EXPAND adding the canonical §13.12 column `suspension_salary_policy` that the shipped Phase 20F migration omitted (the 20F migration is never edited — ADR-004). Settled default `continue` (A-11): salary accrues during suspension; a prospective `pause` override is a plan SUPERSEDE to a new effective-dated version (never a retroactive edit), so the salary segmenter treats a `pause` version window as non-payable. Adds a NOT NULL column with constant default `continue` (backfills the 0 existing rows; production-safe), CHECK in ('continue','pause'), and a second BEFORE UPDATE trigger freezing the column once the plan leaves draft (the shipped F7 immutability trigger is untouched). No backfill of business data."
+  - file: 2026_07_20_000001_create_personnel_payout_runs_table.php
+    table: personnel_payout_runs
+    domain: Compensation
+    owner_phase: "20H"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20h.md
+    notes: "Phase 20H (Plan §62; §13.12 canonical DDL; §25.4/§25.5). Branch-owned internal payout run. HR drafts/submits; Finance verifies/approves-standard/marks-paid; Merchant Admin approves high-value. Servana MOVES NO MONEY (mark-paid records an EXTERNAL payment; no provider/Wallet call). high_value_threshold_snapshot_minor snapshotted at creation from merchant_subscriptions.high_value_payout_threshold_minor (Phase 20A — never hardcoded; null => ordinary approval). currency completes the §13.12 summary (single-currency run; no-cross-currency invariant). gross_total_minor signed (clawbacks may net negative). external_payment_reference_encrypted encrypted at rest. Composite (branch_id, merchant_id) FK + (id, merchant_id) unique (payout-item FK target). CHECKs: status enum (8), currency uppercase, period_end>=start, threshold null-or->=0. No append-only trigger (run is mutable through its lifecycle; freeze is enforced by the state machine + the item guard). Integer minor units. Forward-only."
+  - file: 2026_07_20_000002_create_personnel_payout_items_table.php
+    table: personnel_payout_items
+    domain: Compensation
+    owner_phase: "20H"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_20_000001_create_personnel_payout_runs_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20h.md
+    notes: "Phase 20H (Plan §62; §13.12 canonical DDL). Branch-owned FROZEN snapshot line. One item per (run, staff_profile, currency). Snapshots eligible unpaid 20G ledger facts (salary_ledger, commission_ledger, approved compensation_adjustments) into bucketed sums; source_ledger_refs jsonb holds the exact snapshotted row ids (never recomputed). currency = run currency (single-currency). gross_amount_minor = salary + commission + adjustment (all signed; clawback item may net negative). Composite (branch_id, merchant_id) + (payout_run_id, merchant_id) RESTRICT + (staff_profile_id, merchant_id) FKs; (id, merchant_id) unique = the ledger payout_item_id FK target. UNIQUE (payout_run_id, staff_profile_id, currency). CHECKs: status enum (8), currency uppercase, gross-sum equality. FREEZE guard: DELETE allowed only while status='draft'; UPDATE blocks all snapshot columns (only status/updated_at transition). Integer minor units. Forward-only."
+  - file: 2026_07_20_000003_create_earnings_queries_table.php
+    table: earnings_queries
+    domain: Compensation
+    owner_phase: "20H"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_17_000004_create_compensation_adjustments_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+      - 2026_06_23_000001_add_composite_unique_to_tenant_parents.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20h.md
+    notes: "Phase 20H (Plan §63; §13.12 canonical DDL; §25.4). Branch-owned + personnel OWN-SCOPE (staff_profile_id from membership; arbitrary ids rejected). Query against one own fact (subject_type commission_ledger/salary_ledger/payout_item; subject_id validated in-scope by the action — no polymorphic FK). query_type drives assigned_role routing (finance/hr); the resolution permission is always earnings_query.respond (Finance). RESOLUTION NEVER MUTATES A LEDGER: a monetary correction is a separate compensation_adjustments row referenced by resolved_adjustment_id (nullable FK). Composite (branch_id, merchant_id) + (staff_profile_id, merchant_id) FKs. CHECKs: subject_type/query_type/status enums, assigned_role null-or-(finance/hr), non-empty body. Forward-only."
+  - file: 2026_07_20_000004_add_payout_item_fk_to_commission_ledger.php
+    table: commission_ledger
+    domain: Compensation
+    owner_phase: "20H"
+    change_type: alter
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_17_000002_create_commission_ledger_table.php
+      - 2026_07_20_000002_create_personnel_payout_items_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20h.md
+    notes: "Phase 20H EXPAND (ADR-004). Adds the composite FK commission_ledger.(payout_item_id, merchant_id) -> personnel_payout_items(id, merchant_id) now that the target exists; the shipped 20G migration (which created payout_item_id nullable UN-CONSTRAINED) is never edited. MATCH SIMPLE skips the FK while payout_item_id is NULL (unlinked earned row) — no backfill; existing rows valid. ON DELETE RESTRICT."
+  - file: 2026_07_20_000005_add_payout_item_fk_to_salary_ledger.php
+    table: salary_ledger
+    domain: Compensation
+    owner_phase: "20H"
+    change_type: alter
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_17_000003_create_salary_ledger_table.php
+      - 2026_07_20_000002_create_personnel_payout_items_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20h.md
+    notes: "Phase 20H EXPAND (ADR-004). Adds the composite FK salary_ledger.(payout_item_id, merchant_id) -> personnel_payout_items(id, merchant_id). Shipped 20G migration never edited. MATCH SIMPLE skips the FK while payout_item_id is NULL (unlinked pending accrual) — no backfill. ON DELETE RESTRICT."
+  - file: 2026_07_20_000006_add_payout_item_fk_to_compensation_adjustments.php
+    table: compensation_adjustments
+    domain: Compensation
+    owner_phase: "20H"
+    change_type: alter
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_17_000004_create_compensation_adjustments_table.php
+      - 2026_07_20_000002_create_personnel_payout_items_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20h.md
+    notes: "Phase 20H EXPAND (ADR-004). Adds the composite FK compensation_adjustments.(payout_item_id, merchant_id) -> personnel_payout_items(id, merchant_id). Shipped 20G migration never edited (its append-only guard already permits only payout_item_id to transition). MATCH SIMPLE skips the FK while payout_item_id is NULL (approved not-yet-paid adjustment) — no backfill. ON DELETE RESTRICT."
+  - file: 2026_07_20_000007_add_earnings_statement_file_id_to_personnel_payout_items.php
+    table: personnel_payout_items
+    domain: Compensation
+    owner_phase: "20H"
+    change_type: alter
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 2026_07_20_000002_create_personnel_payout_items_table.php
+      - 2026_06_24_000001_create_uploaded_files_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-20h.md
+    notes: "Phase 20H Increment 4 EXPAND (ADR-004; Plan §63/§65). Adds nullable earnings_statement_file_id FK -> uploaded_files (10F private file domain) linking a PAID payout item to its generated earnings-statement PDF. Deliberately OUTSIDE the Increment-2 item freeze guard ROW() comparison, so GenerateEarningsStatement may set it once on a paid item while every snapshot column stays frozen; once set it is never rewritten (idempotent + immutable statement). nullOnDelete. No backfill."

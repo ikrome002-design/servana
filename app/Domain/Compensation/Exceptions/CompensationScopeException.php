@@ -46,6 +46,16 @@ final class CompensationScopeException extends Exception
         return new self('service_scope_mismatch', 'The requested service was not found in this branch.');
     }
 
+    public static function earningsQuerySubject(): self
+    {
+        return new self('earnings_query_subject_scope_mismatch', 'The requested earnings record was not found for this personnel.');
+    }
+
+    public static function earningsStatement(): self
+    {
+        return new self('earnings_statement_scope_mismatch', 'The requested earnings statement was not found for this personnel.');
+    }
+
     public function render(Request $request): JsonResponse
     {
         $correlationId = (string) app(CorrelationId::class)->get();
