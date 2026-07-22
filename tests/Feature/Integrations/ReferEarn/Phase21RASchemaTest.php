@@ -211,12 +211,32 @@ it('bounds the stored delivery response body to 512 characters', function (): vo
 });
 
 it('keeps every enum in parity with its database CHECK', function (string $table, string $column, array $expected): void {
-    $definition = (string) DB::selectOne(
-        'SELECT pg_get_constraintdef(con.oid) AS def
-         FROM pg_constraint con JOIN pg_class rel ON rel.oid = con.conrelid
-         WHERE rel.relname = ? AND con.contype = ? AND pg_get_constraintdef(con.oid) LIKE ?',
+    $definitions = collect(DB::select(
+        <<<'SQL'
+            SELECT pg_get_constraintdef(con.oid) AS def
+            FROM pg_constraint con
+            JOIN pg_class rel ON rel.oid = con.conrelid
+            WHERE rel.relname = ?
+              AND con.contype = ?
+              AND pg_get_constraintdef(con.oid) LIKE ?
+            ORDER BY con.conname
+        SQL,
         [$table, 'c', '%'.$column.'%'],
-    )?->def;
+    ))->pluck('def')->filter()->values();
+
+    expect($definitions)->not->toBeEmpty();
+
+    $definition = $definitions->first(function (string $candidate) use ($expected): bool {
+        foreach ($expected as $value) {
+            if (! str_contains($candidate, "'{$value}'")) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+
+    expect($definition)->not->toBeNull();
 
     foreach ($expected as $value) {
         expect($definition)->toContain("'{$value}'");
