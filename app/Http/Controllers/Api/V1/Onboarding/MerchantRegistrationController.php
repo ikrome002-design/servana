@@ -33,6 +33,10 @@ final class MerchantRegistrationController extends Controller
             $request->ownerName(),
             $request->email(),
             $request->businessName(),
+            // Phase 21R-A (Plan §58A.1): optional referral intent. Null when none was submitted;
+            // a malformed code still arrives here and is stored as invalid_format evidence — it is
+            // never a reason to reject the registration.
+            $request->referralCapture(),
         );
 
         // Only a freshly created owner is eligible; for an existing email no

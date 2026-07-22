@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://citrus.co.ke/servana/refer-earn/schemas/merchant.registration_started.v1.json",
+  "title": "merchant.registration_started (v1) — Merchant self-registration transaction committed",
+  "description": "Emitted when a Servana merchant tenant is created (status pending_setup) AND a referral snapshot exists that permits emission. Unreferred merchants emit nothing (Plan §58B.1 data minimization). Carries NO business name, owner name, owner email, phone or address. additionalProperties is false: a payload builder that starts leaking a new field fails this schema in CI rather than in production.",
+  "type": "object",
+  "properties": {
+    "product_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32
+    },
+    "merchant_public_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sequence_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "schema_version": {
+      "const": "1"
+    },
+    "merchant_status": {
+      "type": "string",
+      "enum": [
+        "pending_setup",
+        "active",
+        "suspended",
+        "deactivated"
+      ]
+    }
+  },
+  "required": [
+    "product_code",
+    "environment",
+    "merchant_public_id",
+    "event_id",
+    "occurred_at",
+    "sequence_no",
+    "schema_version",
+    "merchant_status"
+  ],
+  "additionalProperties": false
+}

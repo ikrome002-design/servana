@@ -47,6 +47,10 @@ use App\Domain\FinanceOps\Models\FinancialPeriodLock;
 use App\Domain\FinanceOps\Support\DatabasePeriodLockRepository;
 use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Hr\Models\StaffProfile;
+use App\Domain\Integrations\ReferEarn\Clients\FakeReferEarnClient;
+use App\Domain\Integrations\ReferEarn\Clients\HttpReferEarnClient;
+use App\Domain\Integrations\ReferEarn\Clients\ReferEarnClientInterface;
+use App\Domain\Integrations\ReferEarn\Observers\MerchantIdentityObserver;
 use App\Domain\Invoicing\Contracts\PreferredPersonnelFeeResolver;
 use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Invoicing\Services\RuleBasedPreferredPersonnelFeeResolver;
@@ -242,12 +246,53 @@ class AppServiceProvider extends ServiceProvider
             ImageSanitizer::class,
             fn (): ImageSanitizer => ImageSanitizer::fromConfig(),
         );
+
+        // Citrus R&E transport (Phase 21R-A; Plan §17.1, §80 entry-criteria fallback, §81 rule 21).
+        // The HTTP client is bound ONLY when the integration is enabled AND every piece of the
+        // signing contract is configured. Anything less binds the deterministic fake, so a partly
+        // configured environment can never half-deliver, and CI — which configures none of it —
+        // physically cannot reach a live partner.
+        $this->app->singleton(
+            ReferEarnClientInterface::class,
+            fn ($app): ReferEarnClientInterface => $this->referEarnIsDeliverable()
+                ? $app->make(HttpReferEarnClient::class)
+                : $app->make(FakeReferEarnClient::class),
+        );
+
+        // The fake is a singleton so a test can script outcomes on the same instance the domain
+        // resolves, and assert afterwards on what Servana would have sent.
+        $this->app->singleton(FakeReferEarnClient::class);
+    }
+
+    /** Every piece of the R&E delivery contract present? Missing anything ⇒ fail closed to the fake. */
+    private function referEarnIsDeliverable(): bool
+    {
+        if (config('refer-earn.enabled') !== true) {
+            return false;
+        }
+
+        foreach (['refer-earn.base_url', 'refer-earn.signing.algorithm', 'refer-earn.signing.key_id', 'refer-earn.signing.secret'] as $key) {
+            $value = config($key);
+
+            if (! is_string($value) || trim($value) === '') {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function boot(): void
     {
         $this->registerRateLimiters();
         $this->registerPolicies();
+
+        // Phase 21R-A (Plan §58B.1). There is no merchant identity-update route as-built, so the
+        // identity-change event is emitted by observing the identity columns themselves — see
+        // MerchantIdentityObserver for the inspection that led to that choice.
+        foreach (MerchantIdentityObserver::observedModels() as $model) {
+            $model::observe(MerchantIdentityObserver::class);
+        }
     }
 
     /**

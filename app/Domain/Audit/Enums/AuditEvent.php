@@ -395,6 +395,15 @@ enum AuditEvent: string
     case EarningsQueryResolved = 'earnings_query.resolved';
     case EarningsQueryRejected = 'earnings_query.rejected';
 
+    // Phase 21R-A — Citrus Refer & Earn integration (Plan §70 integration audit rows; ADR-013).
+    // Context carries snapshot/merchant/event ULIDs, channel, status and response class only —
+    // NEVER the decrypted referral code (Plan §24.5) and never a referrer identity (Servana has
+    // none: §9 rule 23).
+    case ReReferralCaptured = 're.referral_captured';
+    case ReAttributionConfirmed = 're.attribution_confirmed';
+    case ReAttributionRejected = 're.attribution_rejected';
+    case ReEventDeadLettered = 're.event_dead_lettered';
+
     /**
      * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
      *
@@ -527,6 +536,9 @@ enum AuditEvent: string
     public function severity(): AuditSeverity
     {
         return match ($this) {
+            self::ReReferralCaptured,
+            self::ReAttributionConfirmed,
+            self::ReAttributionRejected,
             self::LoginSuccess,
             self::Logout,
             self::InvitationCreated,
@@ -794,6 +806,9 @@ enum AuditEvent: string
             // Phase 20H — Finance verify + ordinary approval of a payout run (MFA + fresh step-up).
             self::PayoutRunVerified,
             self::PayoutRunApprovedStandard,
+            // Phase 21R-A — an outbound R&E event stopped permanently (409 payload-mismatch tamper
+            // signal, 422 contract drift, or max age). Plan §58A.2 requires an alert here.
+            self::ReEventDeadLettered,
             self::UnauthorizedAccess => AuditSeverity::High,
 
             // Plan §59 requires CRITICAL severity for an approved BACKDATED compensation change:

@@ -545,18 +545,35 @@ items:
     classification: C0
     gating_category: FEATURE_DELIVERY_OBLIGATION
     scope_requirement: "Citrus R&E source-product integration: non-blocking referral capture, transactional outbox + signed delivery, subscription-fact emission, final-authority qualification engine, inbound reconciliation surface (ADR-013; R&E scope §11)."
-    repository_evidence: "v4 plan-adoption PR landed ADR-013, refer-earn-integration data dictionary, planned platform.integrations.refer_earn.* and platform.referral.* permissions; no R&E runtime tables/routes/jobs exist."
-    root_cause: "Phases 21R-A/21R-B not started."
-    affected_files_tables_routes: "referral_snapshots; re_outbound_events; re_event_deliveries; re_qualification_*; app/Domain/Integrations/ReferEarn/* (future)."
-    security_data_business_impact: "n/a until built; C0 obligation at 21R-A/21R-B exit."
-    precise_correction: "Implement per §58B and ADR-013 in 21R-A/21R-B; no reward ledger or payout tables in Servana."
-    migration_impact: "additive in 21R-A/21R-B."
-    test_plan: "outbox atomicity; signing; inbound verification; qualification engine (future)."
-    proof_artifact: "docs/proof/plan-adoption-v4.md (architecture); per-phase proofs (future)"
+    repository_evidence: "v4 plan-adoption PR landed ADR-013, refer-earn-integration data dictionary, planned platform.integrations.refer_earn.* and platform.referral.* permissions. Phase 21R-A (branch phase-21r-a-referral-capture-outbox off 6047835) builds the Servana-owned foundation: referral capture, referral_snapshots, re_outbound_events, re_event_deliveries, CitrusEventSigner, DeliverReOutboxJob and the five merchant.* event types. The 21R-B half (subscription.*/activity.* emission, qualification engine, inbound reconciliation surface) is NOT built and is blocked behind 20D-W / Gate W."
+    root_cause: "Phase 21R-A in progress; Phase 21R-B not started (blocked by 20D-W, which is blocked by External Gate W)."
+    affected_files_tables_routes: "referral_snapshots; re_outbound_events; re_event_deliveries (21R-A). re_activity_rule_versions; re_qualification_periods; re_qualification_decisions; re_inbound_requests (21R-B, absent). app/Domain/Integrations/ReferEarn/*."
+    security_data_business_impact: "21R-A half carries the data-minimization boundary (no referrer identity stored or displayed; no client/staff PII in any outbound payload) and the outbound-integrity boundary (append-only outbox, stable event id + hash across retries, algorithm-aware signing). C0 obligation closes only at 21R-B exit."
+    precise_correction: "Implement per §58A/§58B and ADR-013 across 21R-A/21R-B; no reward ledger, referrer account, campaign or payout tables in Servana."
+    migration_impact: "additive in 21R-A (3 tables) and 21R-B (4 tables)."
+    test_plan: "21R-A: ReferralCaptureTest; AttributionLifecycleTest; OutboxEmissionTest; OutboxDeliveryTest; schema/tenant-isolation/data-minimization guards; signer unit vectors. 21R-B: SubscriptionEventMappingTest; QualificationEngineTest; InboundReconciliationTest; GapReconciliationTest."
+    proof_artifact: "docs/proof/plan-adoption-v4.md (architecture); docs/proof/phase-21r-a.md (21R-A half); docs/proof/phase-21r-b.md (future)"
     owner: "21R-A/21R-B"
     completion_commit: null
     reviewer: "TBD"
-    status: not_started
+    status: in_progress   # 21R-A half in progress on branch phase-21r-a-referral-capture-outbox; 21R-B half not started (blocked by 20D-W / Gate W). Closes verified_complete only when BOTH halves merge.
+
+  - id: REM-RE-002
+    classification: C1
+    gating_category: DEFERRED_VERIFICATION
+    scope_requirement: "Plan §80 Phase 21R-A entry criteria: R&E sandbox service-account credentials received and recorded in docs/integrations/refer-earn/credentials-receipt.md, with the R&E schema/contract versions pinned in docs/integrations/refer-earn/contract-pins.md (Plan §81 rule 23) and the signing/delivery contract verified against the live sandbox."
+    repository_evidence: "docs/integrations/ did not exist at Phase 21R-A entry: no credential receipt, no R&E product code assignment, no pinned schema versions, no sandbox transcript. Refer_and_Earn_Project_Scope.md and Citrus_Refer_and_Earn_Production_Software_Development_Plan.md are not present in this repository."
+    root_cause: "The R&E platform is a separate product/repository; its sandbox credentials and product-code assignment are an external dependency that had not been delivered when Phase 21R-A executed."
+    affected_files_tables_routes: "docs/integrations/refer-earn/credentials-receipt.md; docs/integrations/refer-earn/contract-pins.md; config/refer-earn.php; app/Domain/Integrations/ReferEarn/Clients/*; app/Domain/Integrations/ReferEarn/Support/CitrusEventSigner.php."
+    security_data_business_impact: "No security exposure — no real credential exists in the repository and none is defaulted. The risk is contract drift: the signing algorithm, key id, product code and payload schema versions are configured, not verified against the live partner, so a mismatch would surface as 401/403 or 422 dead-letters in production rather than at build time."
+    precise_correction: "Plan §80 Phase 21R-A entry criteria fallback, applied verbatim: implement against FakeReferEarnClient + recorded contract fixtures now, and close this item before Phase 25 exit by (a) recording the credential receipt, (b) pinning the R&E schema/contract versions and signing algorithm identifier, (c) running the signed-delivery contract suite against the R&E sandbox, and (d) recording the transcript."
+    migration_impact: "none — configuration and documentation only."
+    test_plan: "OutboxDeliveryTest signing vectors (fixtures today, re-run against sandbox at closure); fail-closed test for unknown/missing algorithm; environment boot guard for sandbox/staging key-id prefixes in production (Plan §9 rule 24)."
+    proof_artifact: "docs/proof/phase-21r-a.md; docs/integrations/refer-earn/credentials-receipt.md"
+    owner: "21R-A (raised) / closes before Phase 25 exit"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started   # deferred-verification item explicitly authorised by Plan §80 Phase 21R-A entry criteria; MUST close before Phase 25 exit.
 
   # Historical identifier — superseded by REM-WALLET-001 (v4 ADR-012). Retained for traceability only.
   - id: REM-MPESA-001

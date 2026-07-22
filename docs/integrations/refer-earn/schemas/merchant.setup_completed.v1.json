@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://citrus.co.ke/servana/refer-earn/schemas/merchant.setup_completed.v1.json",
+  "title": "merchant.setup_completed (v1) — First-time merchant setup completed (merchant → active)",
+  "description": "Emitted when first-time setup flips the merchant to active. Carries the business DATE of completion (Africa/Nairobi) — never the branch, staff, service, plan price or contact details captured during setup. additionalProperties is false: a payload builder that starts leaking a new field fails this schema in CI rather than in production.",
+  "type": "object",
+  "properties": {
+    "product_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32
+    },
+    "merchant_public_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sequence_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "schema_version": {
+      "const": "1"
+    },
+    "merchant_status": {
+      "type": "string",
+      "enum": [
+        "pending_setup",
+        "active",
+        "suspended",
+        "deactivated"
+      ]
+    },
+    "setup_completed_on": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    }
+  },
+  "required": [
+    "product_code",
+    "environment",
+    "merchant_public_id",
+    "event_id",
+    "occurred_at",
+    "sequence_no",
+    "schema_version",
+    "merchant_status",
+    "setup_completed_on"
+  ],
+  "additionalProperties": false
+}

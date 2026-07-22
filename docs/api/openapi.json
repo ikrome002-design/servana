@@ -2336,7 +2336,11 @@
                                 "earnings_query.created",
                                 "earnings_query.assigned",
                                 "earnings_query.resolved",
-                                "earnings_query.rejected"
+                                "earnings_query.rejected",
+                                "re.referral_captured",
+                                "re.attribution_confirmed",
+                                "re.attribution_rejected",
+                                "re.event_dead_lettered"
                             ]
                         }
                     },
@@ -2856,7 +2860,11 @@
                                 "earnings_query.created",
                                 "earnings_query.assigned",
                                 "earnings_query.resolved",
-                                "earnings_query.rejected"
+                                "earnings_query.rejected",
+                                "re.referral_captured",
+                                "re.attribution_confirmed",
+                                "re.attribution_rejected",
+                                "re.event_dead_lettered"
                             ]
                         }
                     },
@@ -3376,7 +3384,11 @@
                                 "earnings_query.created",
                                 "earnings_query.assigned",
                                 "earnings_query.resolved",
-                                "earnings_query.rejected"
+                                "earnings_query.rejected",
+                                "re.referral_captured",
+                                "re.attribution_confirmed",
+                                "re.attribution_rejected",
+                                "re.event_dead_lettered"
                             ]
                         }
                     },
@@ -19212,7 +19224,11 @@
                                 "earnings_query.created",
                                 "earnings_query.assigned",
                                 "earnings_query.resolved",
-                                "earnings_query.rejected"
+                                "earnings_query.rejected",
+                                "re.referral_captured",
+                                "re.attribution_confirmed",
+                                "re.attribution_rejected",
+                                "re.event_dead_lettered"
                             ]
                         }
                     },
@@ -36231,6 +36247,39 @@
                         "type": "string",
                         "minLength": 2,
                         "maxLength": 160
+                    },
+                    "referral_code": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Phase 21R-A (Plan §58A.1, §12.1 item 5). Every referral field is OPTIONAL and\ndeliberately permissive: a malformed code must NEVER block registration — it is\nstored as `invalid_format` evidence and never sent to R&E. Only `max` bounds are\nenforced here; shape is decided by ReferralCodeNormalizer, not by validation.",
+                        "maxLength": 64
+                    },
+                    "referral_channel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "query_param",
+                            "manual_entry",
+                            "central_redirect"
+                        ]
+                    },
+                    "referral_landing_metadata": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "description": "The allowlist is the real control (LandingMetadataAllowlist drops unknown keys);\nthis rule just keeps the payload flat and bounded before it gets there.",
+                            "maxLength": 256
+                        }
                     }
                 },
                 "required": [

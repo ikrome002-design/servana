@@ -6,6 +6,9 @@ namespace App\Domain\Merchants\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Integrations\ReferEarn\Actions\EnqueueProductEvent;
+use App\Domain\Integrations\ReferEarn\Enums\MerchantStatusReasonCategory;
+use App\Domain\Integrations\ReferEarn\Enums\ReOutboundEventType;
 use App\Domain\Merchants\Enums\MerchantStatus;
 use App\Domain\Merchants\Exceptions\MerchantStatusException;
 use App\Domain\Merchants\Models\Merchant;
@@ -24,11 +27,24 @@ use Illuminate\Support\Facades\DB;
  */
 final class ReactivateMerchant
 {
-    public function __construct(private readonly AuditRecorder $audit) {}
+    public function __construct(
+        private readonly AuditRecorder $audit,
+        private readonly EnqueueProductEvent $enqueueProductEvent,
+    ) {}
 
-    public function handle(Merchant $merchant, string $reason, User $actor): Merchant
-    {
-        return DB::transaction(function () use ($merchant, $reason, $actor): Merchant {
+    /**
+     * @param  MerchantStatusReasonCategory  $reasonCategory  Phase 21R-A (Plan §58B.1): the BOUNDED
+     *                                                        category that crosses the Citrus R&E boundary. The free-text `$reason` never does.
+     *                                                        No as-built governance request supplies a category yet, so it defaults to `manual` —
+     *                                                        the conservative reading, since Servana must not infer a category from operator prose.
+     */
+    public function handle(
+        Merchant $merchant,
+        string $reason,
+        User $actor,
+        MerchantStatusReasonCategory $reasonCategory = MerchantStatusReasonCategory::Manual,
+    ): Merchant {
+        return DB::transaction(function () use ($merchant, $reason, $actor, $reasonCategory): Merchant {
             $locked = Merchant::query()->whereKey($merchant->id)->lockForUpdate()->firstOrFail();
 
             $from = $locked->status;
@@ -47,6 +63,16 @@ final class ReactivateMerchant
                 'to_status' => MerchantStatus::Active->value,
                 'reason' => $reason,
             ]);
+
+            // Phase 21R-A (Plan §58B.1, §58A.2). Same transaction as the status change, so the
+            // fact and its event are inseparable. Category only — never the free-text reason.
+            // The emission-scope gate inside the action suppresses everything for a merchant
+            // with no live referral claim.
+            $this->enqueueProductEvent->handle(
+                ReOutboundEventType::MerchantStatusChanged,
+                $locked,
+                ['previous_status' => $from->value, 'reason_category' => $reasonCategory],
+            );
 
             return $locked;
         });
