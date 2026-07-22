@@ -6,6 +6,11 @@ namespace App\Domain\Onboarding\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Integrations\ReferEarn\Actions\CaptureReferralSnapshot;
+use App\Domain\Integrations\ReferEarn\Actions\EnqueueProductEvent;
+use App\Domain\Integrations\ReferEarn\Data\ReferralCaptureData;
+use App\Domain\Integrations\ReferEarn\Enums\ReOutboundEventType;
+use App\Domain\Integrations\ReferEarn\Jobs\ValidateReferralCodeJob;
 use App\Domain\Merchants\Enums\MerchantStatus;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Enums\MerchantUserStatus;
@@ -37,10 +42,18 @@ use Illuminate\Support\Str;
  */
 final class RegisterMerchant
 {
-    public function __construct(private readonly AuditRecorder $audit) {}
+    public function __construct(
+        private readonly AuditRecorder $audit,
+        private readonly CaptureReferralSnapshot $captureReferral,
+        private readonly EnqueueProductEvent $enqueueProductEvent,
+    ) {}
 
-    public function handle(string $ownerName, string $email, string $businessName): ?Merchant
-    {
+    public function handle(
+        string $ownerName,
+        string $email,
+        string $businessName,
+        ?ReferralCaptureData $referral = null,
+    ): ?Merchant {
         $email = Str::lower(trim($email));
 
         // One identity per email. An existing email never creates a second
@@ -49,7 +62,9 @@ final class RegisterMerchant
             return null;
         }
 
-        return DB::transaction(function () use ($ownerName, $email, $businessName): Merchant {
+        $snapshotId = null;
+
+        $merchant = DB::transaction(function () use ($ownerName, $email, $businessName, $referral, &$snapshotId): Merchant {
             $user = new User;
             $user->name = $ownerName;
             $user->email = $email;
@@ -95,8 +110,32 @@ final class RegisterMerchant
                 ['target_membership' => $membership->ulid, 'target_role' => $membership->role->value, 'via' => 'self_registration'],
             );
 
+            // ── Phase 21R-A additive extension (Plan §58A.1, §58B.1; ADR-013) ────────────────
+            // Capture the referral snapshot INSIDE this transaction so the evidence and the
+            // registration commit or roll back together, then enqueue the two registration facts
+            // through the same outbox rule. `EnqueueProductEvent` applies the §58B.1 emission-scope
+            // gate itself, so an unreferred merchant — and a malformed code — emit nothing at all.
+            //
+            // Nothing here calls Citrus R&E: registration is never blocked or failed because R&E is
+            // unavailable (Plan A-19, §58B.5 R-03). Validation is queued after commit, below.
+            $snapshot = $this->captureReferral->handle($merchant, $referral);
+            $snapshotId = $snapshot?->snapshot_status->permitsEventEmission() === true ? $snapshot->id : null;
+
+            $this->enqueueProductEvent->handle(ReOutboundEventType::MerchantRegistrationStarted, $merchant);
+            // Emitted once the founding merchant_admin membership above exists — same transaction,
+            // so the fact and its event are inseparable.
+            $this->enqueueProductEvent->handle(ReOutboundEventType::MerchantAdminCreated, $merchant);
+
             return $merchant;
         });
+
+        // AFTER COMMIT. A queued job must never observe a half-written snapshot, and a queue outage
+        // must never roll back a merchant registration.
+        if ($snapshotId !== null) {
+            ValidateReferralCodeJob::dispatch($snapshotId);
+        }
+
+        return $merchant;
     }
 
     /** Lowercased, unique slug derived from the business name. */

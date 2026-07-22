@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://citrus.co.ke/servana/refer-earn/schemas/merchant.status_changed.v1.json",
+  "title": "merchant.status_changed (v1) — Merchant operational status transition",
+  "description": "Emitted on any merchants.status transition. Carries the reason CATEGORY only — Plan §58B.1 forbids free-text reasons, and Servana's own suspension_reason prose never crosses the boundary. additionalProperties is false: a payload builder that starts leaking a new field fails this schema in CI rather than in production.",
+  "type": "object",
+  "properties": {
+    "product_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32
+    },
+    "merchant_public_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sequence_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "schema_version": {
+      "const": "1"
+    },
+    "previous_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "pending_setup",
+        "active",
+        "suspended",
+        "deactivated",
+        null
+      ]
+    },
+    "merchant_status": {
+      "type": "string",
+      "enum": [
+        "pending_setup",
+        "active",
+        "suspended",
+        "deactivated"
+      ]
+    },
+    "reason_category": {
+      "type": "string",
+      "enum": [
+        "fraud",
+        "security",
+        "legal",
+        "compliance",
+        "manual"
+      ]
+    }
+  },
+  "required": [
+    "product_code",
+    "environment",
+    "merchant_public_id",
+    "event_id",
+    "occurred_at",
+    "sequence_no",
+    "schema_version",
+    "previous_status",
+    "merchant_status",
+    "reason_category"
+  ],
+  "additionalProperties": false
+}

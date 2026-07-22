@@ -219,6 +219,12 @@ final class TenantOwnership
         'idempotency_keys' => 'cross-cutting: platform/webhook scopes have null merchant/branch forensic columns (R4)',
         'uploaded_files' => 'cross-cutting: nullable merchant/branch/owner scope (platform-generated files may have no merchant); isolation enforced by FileAccessService + scoped route binding (10F)',
         'file_scan_events' => 'inherits scope via uploaded_file_id; never directly route-bound (10F)',
+        // Phase 21R-A — Citrus R&E integration evidence (Plan §13.17, §58A; ADR-013).
+        // Written from platform-side integration code; NO merchant-facing route exists for any of
+        // the three, so there is nothing for a merchant-scoped query to isolate.
+        'referral_snapshots' => 'integration evidence keyed 1:1 to a merchant, but written INSIDE the public unauthenticated self-registration transaction where no TenantContext can exist, and read only by platform-side R&E jobs; merchant_id is NOT NULL + unique + indexed and asserted directly by Phase21RASchemaTest; no merchant-facing route or Resource exposes it (21R-A)',
+        're_outbound_events' => 'cross-cutting outbox: merchant_id is nullable by design (§13.17 reserves null for product-level events, none at launch — asserted in tests); platform-side emission/delivery only, never route-bound (21R-A)',
+        're_event_deliveries' => 'inherits scope via re_outbound_event_id; append-only delivery attempts; never route-bound (21R-A)',
         // Framework / Laravel infrastructure tables.
         'migrations' => 'framework: migration ledger',
         'password_reset_tokens' => 'framework: unused (passwordless), Laravel default',

@@ -7,6 +7,8 @@ namespace App\Domain\Onboarding\Actions;
 use App\Domain\Billing\Actions\CreateTrialSubscription;
 use App\Domain\Billing\Services\ResolveSetupPlanPrice;
 use App\Domain\Branches\Models\MerchantBranch;
+use App\Domain\Integrations\ReferEarn\Actions\EnqueueProductEvent;
+use App\Domain\Integrations\ReferEarn\Enums\ReOutboundEventType;
 use App\Domain\Merchants\Enums\MerchantStatus;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Enums\MerchantUserStatus;
@@ -38,6 +40,7 @@ final class CompleteFirstTimeSetup
     public function __construct(
         private readonly CreateTrialSubscription $createTrialSubscription,
         private readonly ResolveSetupPlanPrice $resolveSetupPlanPrice,
+        private readonly EnqueueProductEvent $enqueueProductEvent,
     ) {}
 
     public function handle(Merchant $merchant, User $actor, FirstTimeSetupData $data): Merchant
@@ -105,7 +108,14 @@ final class CompleteFirstTimeSetup
             // subscription).
             $this->createTrialSubscription->handle($merchant, $price, $actor);
 
-            return $merchant->refresh();
+            $merchant = $merchant->refresh();
+
+            // Phase 21R-A (Plan §58B.1, §58A.2). Same transaction as the status flip, so the fact
+            // and its event are inseparable. The emission-scope gate lives inside the action: an
+            // unreferred merchant, a malformed code and a rejected claim all emit nothing.
+            $this->enqueueProductEvent->handle(ReOutboundEventType::MerchantSetupCompleted, $merchant);
+
+            return $merchant;
         });
     }
 

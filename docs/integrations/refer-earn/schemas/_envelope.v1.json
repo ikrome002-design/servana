@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://citrus.co.ke/servana/refer-earn/schemas/_envelope.v1.json",
+  "title": "Servana → Citrus R&E common payload envelope (Plan §58B.2, schema_version 1)",
+  "description": "Fields present in EVERY Servana outbound event payload. Referenced by each event schema; not emitted on its own.",
+  "type": "object",
+  "properties": {
+    "product_code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16,
+      "description": "R&E-assigned product code for Servana. NOT pinned at Phase 21R-A (assumed 'SRV'; see contract-pins.md, REM-RE-002)."
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "description": "Partner-facing environment label."
+    },
+    "merchant_public_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "Servana merchant ULID = R&E source_tenant_id. The ONLY merchant identifier that ever crosses the boundary; internal sequential ids are forbidden (§58B.2)."
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "ULID generated once at outbox insert; stable across every retry (§9 rule 22)."
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "BUSINESS time of the source fact (UTC, ISO-8601 Zulu). The signing timestamp is delivery time and is a header, not a payload field (§58B.5 R-21)."
+    },
+    "sequence_no": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Per-merchant monotonic ordering key. R&E workers partition by merchant."
+    },
+    "schema_version": {
+      "const": "1"
+    }
+  },
+  "required": ["product_code", "environment", "merchant_public_id", "event_id", "occurred_at", "sequence_no", "schema_version"]
+}

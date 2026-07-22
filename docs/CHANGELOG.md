@@ -6,7 +6,140 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 20H — Payout Runs and Earnings (`phase-20h-payout-runs-earnings`) — in_progress
+### Phase 21R-A — Citrus Refer & Earn Referral Capture, Outbox, Signed Delivery (`phase-21r-a-referral-capture-outbox`) — local_complete pending PR CI/review/merge
+
+Off `main` = `6047835b3a388fff5cc92a13370963635700f5e3` (the Phase 20H PR #43 squash merge). Implements
+**Servana's own side** of the Citrus Refer & Earn source-product contract (Plan §58A, §58B.1
+`merchant.*` rows only, §58B.2, §13.17, §25.6, §17.1, §9 rules 22–24, §10.1, §12.1 item 5, §80 Phase
+21R-A; ADR-013, ADR-015). Servana owns referral capture, the local immutable snapshot, its own
+merchant lifecycle facts, the transactional outbox, signed delivery and delivery evidence. **Citrus
+Refer & Earn owns** referrer accounts, referral codes as system of record, campaigns, reward rules,
+reward calculation, the reward ledger, referrer payouts and reward statements — **none of which is
+built here**. Proof: `docs/proof/phase-21r-a.md`.
+
+#### Added
+- **Three additive tables** (`referral_snapshots`, `re_outbound_events`, `re_event_deliveries`) with
+  four database triggers: capture-evidence + terminal-status immutability on the snapshot, append-only
+  and no-delete on the outbox, append-only on the delivery log. The outbox `event_type` CHECK admits
+  **only** the five Phase 21R-A `merchant.*` types, so a 21R-B catalogue row is rejected by the
+  database itself.
+- **Bounded context `app/Domain/Integrations/ReferEarn/`** (Plan §10.1): 6 actions, 3 clients + 3 DTOs,
+  6 enums, 2 exceptions, 3 jobs, 3 models, 1 observer, 6 support classes.
+- **Referral capture at self-registration** — `?ref=`, central-redirect and manual entry; deterministic
+  normalization; encrypted raw code; allowlisted non-PII landing metadata; at most one snapshot per
+  merchant; malformed codes stored as `invalid_format` evidence and **never** sent to R&E.
+- **Transactional outbox** — `EnqueueProductEvent` refuses to run outside its source fact's
+  transaction, applies the §58B.1 emission-scope rule, allocates a per-merchant monotonic
+  `sequence_no` under a transaction-scoped advisory lock, and computes `content_sha256` over canonical
+  JSON so every retry signs byte-identical content.
+- **Signed delivery** — `CitrusEventSigner` implements the Plan §9 rule 22 canonical string verbatim
+  and the full `X-Citrus-*` header set with `Idempotency-Key = event_id`; `DeliverProductEvent`
+  claims under a row lock, preserves per-merchant ordering, routes responses per §58A.2
+  (202 → delivered; 409 → dead-letter + high-severity audit; 422 → dead-letter; 401/403 → retriable +
+  alert; 429/5xx/timeout → backoff), and records every attempt with a redacted, 512-char-bounded body.
+- **Five `merchant.*` event types** with committed JSON Schemas
+  (`docs/integrations/refer-earn/schemas/*.v1.json`, all `additionalProperties: false`).
+  `merchant.status_changed` carries a reason **category** only; `merchant.identity_snapshot_changed`
+  carries a SHA-256 digest and a changed-field **count**, never a raw identity value.
+- **Four audit events** — `re.referral_captured`, `re.attribution_confirmed`,
+  `re.attribution_rejected` (info) and `re.event_dead_lettered` (high).
+- **Registration UI** — optional referral field, `?ref=` pre-fill, dismissible "applied" notice,
+  advisory (never blocking) format hint. No referrer identity is displayed, because Servana holds none.
+- **Documentation** — data dictionary rewritten; two state-machine specifications;
+  `credentials-receipt.md` and `contract-pins.md` recording exactly what is and is not pinned.
+
+#### Changed
+- **Phase 20H reconciled `in_progress → verified_complete`** (PROGRESS roadmap row + Phase 20H section
+  + this file), recording PR #43 squash merge `6047835…`, implementation head `309057c…`, test-only CI
+  repair `16c368a…`, governance head `9824e46…`, final CI run `29890786464` (Backend, Frontend, Docker,
+  Security, E2E — Playwright all SUCCESS), merged `2026-07-22T04:27:01Z`, `reviewDecision` blank under
+  the documented PR-specific solo-maintainer governance exception (**not** independent reviewer
+  approval), and local + remote Phase 20H branch deletion.
+- **`RegisterMerchant`** takes an optional referral intent and performs capture + the two registration
+  events **inside** its existing transaction; the validation job is dispatched only **after** commit.
+- **`CompleteFirstTimeSetup`** and the three merchant status-governance actions each enqueue their
+  event inside their existing transaction. The governance actions gained an optional
+  `MerchantStatusReasonCategory` (default `manual`); no as-built request supplies one, so every 21R-A
+  emission is `manual` — a conservative default rather than an inference from operator prose.
+- **`docs/architecture/data-dictionary/refer-earn-integration.md`** rewritten against §13.17, and a
+  drift corrected: `re_inbound_requests` was labelled Phase 21R-A; Plan §13.17, §12 and §80 all place
+  it in **21R-B**. Documentation only — the table does not exist.
+- **`docs/traceability/servana-requirements.csv`** — new `SRV-REFERRAL-001` row; the Phase 20H row
+  reconciled to `verified_complete` (and its missing `evidence` column, a pre-existing defect,
+  filled in).
+- **`docs/remediation/register.yaml`** — `REM-RE-001` `not_started → in_progress`; new **`REM-RE-002`**
+  deferred-verification item for the absent R&E sandbox credentials.
+
+#### Fixed
+- No pre-existing product defect is fixed here; the only corrections to shipped material are the two
+  documentation inaccuracies recorded above (the data-dictionary phase label and the truncated
+  traceability row).
+- Two defects **in this phase's own work** were caught before commit and are recorded rather than
+  quietly amended: (1) `EnqueueProductEvent` wrote the outbox row but nothing dispatched
+  `DeliverReOutboxJob`, so the outbox would never have delivered — now dispatched `afterCommit`;
+  (2) the first test for that dispatch asserted "nothing pushed during a rolled-back transaction",
+  which `Queue::fake()` cannot express because it records pushes immediately and ignores
+  `afterCommit` — the assertion was testing the fake, and was rewritten to assert the dispatch flag.
+
+#### Tests
+- 11 new backend feature files, 1 unit file, 1 Playwright spec, 1 test-support class, and 9 added
+  Vitest cases. Highlights: transactional atomicity (rollback ⇒ no snapshot, no event); a **real
+  fault injected** into the capture step proving registration still succeeds (Plan A-19); exhaustive
+  state-machine transition sets; canonical-hash stability; retry with the same event id **and** the
+  same body hash; 409/422 dead-lettering; per-merchant ordering; schema validation of every emitted
+  payload; a forbidden-field scan of the payload builder's tokenized source; and a scope-purity guard
+  that fails the moment 21R-B, Wallet runtime, or R&E reward logic appears.
+
+#### Security
+- **Gate W recorded CLOSED** before branch creation: `docs/integrations/`,
+  `docs/integrations/wallet/` and `gate-w-evidence.md` are absent, so Phase 20D-W remains blocked and
+  **no Wallet runtime is introduced by 21R-A**.
+- **Signing fails closed** (ADR-015). The algorithm identifier is deliberately **unset** — hardcoding
+  HMAC-SHA-256 without an authoritative contract pin is what ADR-015 forbids — and
+  `CitrusEventSigner` raises on a missing or unknown algorithm, key id or secret rather than guessing.
+  It also refuses to sign a body whose hash does not match the stored `content_sha256`.
+- **The transport itself fails closed.** `HttpReferEarnClient` is bound only when the integration is
+  enabled **and** base URL, algorithm, key id and secret are all present; anything less binds the
+  deterministic `FakeReferEarnClient`, so CI and local runs physically cannot reach a live partner
+  (Plan §81 rule 21).
+- **No secret has a default and none is committed.** Every credential is `env()` with a `null`
+  default; `.env.example` carries empty placeholders; `gitleaks` reports no leaks.
+- **Redaction (Plan §24.5).** The decrypted referral code is `$hidden` on the model and never audited
+  or logged; partner response bodies pass through `DeliveryResponseRedactor` (key-shaped values,
+  emails, MSISDNs, referral codes and long hex runs redacted **before** truncation, so a secret cannot
+  survive by sitting past the cut); signatures, nonces and key ids are never stored or logged.
+- **Data minimization (Plan §9 rule 23).** No referrer identity column exists anywhere; payloads are
+  built from an explicit per-type allowlist, never a model spread; unreferred, `invalid_format` and
+  `rejected` merchants stream nothing at all.
+
+#### Documentation
+- `docs/proof/phase-21r-a.md` — full phase proof (preflight, Gate W decision, entry criteria, inventory,
+  schema/state-machine/capture/outbox/signing/redaction/isolation evidence, scope-purity audit).
+- `docs/architecture/state-machines/referral-snapshot.md` and `…/re-outbound-event.md` — the two named
+  mandatory state-machine specifications (Plan §25.1).
+- `docs/architecture/data-dictionary/refer-earn-integration.md` — rewritten against §13.17, with the
+  Phase 21R-B tables clearly marked specification-only.
+- `docs/architecture/migrations/manifest.yaml` — three `owner_phase: "21R-A"` entries.
+- `docs/integrations/refer-earn/credentials-receipt.md` — records truthfully that **no** credential,
+  product code or algorithm was issued, and the custody rules that bind when they are.
+- `docs/integrations/refer-earn/contract-pins.md` — what is pinned from the Plan versus what is
+  explicitly **UNPINNED** and fails closed (Plan §81 rule 23).
+- `docs/integrations/refer-earn/schemas/` — five event schemas plus a shared envelope reference.
+
+#### Deferred / Not in scope
+- Wallet payment runtime, subscription payment events, qualification engine, inbound R&E reconciliation
+  surface, `re_activity_rule_versions` / `re_qualification_periods` / `re_qualification_decisions` /
+  `re_inbound_requests`, R&E reward/referrer/campaign/payout/statement logic, personnel SMS,
+  notifications/reports, search, release-wide audits, performance, deployment. Owner phases are listed
+  in `docs/PROGRESS.md`.
+- **The shared Integrations Health screen (§12.1 item 4) is deferred to Phase 20D-W**, which owns both
+  the screen and its `platform.integrations.health.view` permission. Its Wallet panels cannot be built
+  while Gate W is closed, and Plan §0 forbids stubbing a Wallet capability; building only the R&E panel
+  would activate a 20D-W-owned permission and ship a half-populated shared screen.
+- **Live R&E sandbox verification is deferred (`REM-RE-002`)** under the Plan §80 Phase 21R-A
+  entry-criteria fallback, and must close before Phase 25 exit.
+
+### Phase 20H — Payout Runs and Earnings (`phase-20h-payout-runs-earnings`) — verified_complete (PR #43 merged)
 
 Off `main` = `1879110de6cb1d73ef82403dd7007cca447f8c5c` (the PR #42 dependency-remediation squash merge;
 originally branched from the Phase 20G PR #41 squash merge `dcdbfb6…` and **refreshed** onto the
@@ -17,6 +150,18 @@ personnel earnings surfaces. **Servana moves no money** — no Wallet/provider r
 STK/PayBill/Till/C2B/Daraja/callbacks, no settlement; mark-paid records an **external** payment and
 never depends on Gate W (CLOSED). Specification-first: H1–H18 resolved before any migration
 (`docs/proof/phase-20h.md`).
+
+**Closed:** PR #43 MERGED into `main` as squash commit `6047835b3a388fff5cc92a13370963635700f5e3`
+(implementation `309057c2f29e492bbc2602714d9c7e52ea1014b4`; governance / final head
+`9824e463273ffb6d8b089c6cef683b165cdc8c25`; merged `2026-07-22T04:27:01Z`; final CI run `29890786464`
+— Backend, Frontend, Docker, Security, E2E — Playwright all SUCCESS; `reviewDecision` blank under
+`docs/governance/solo-maintainer-review-exception-pr-43.md`, **not** independent approval; local +
+remote branches deleted). The initial PR #43 Backend failure was repaired **test-only** in
+`16c368a96dbd3d53a5bb7fda8a3b39e55ac46b92` ("test: update permission expectations for phase 20h"),
+touching only `tests/Feature/Auth/PermissionMatrixTest.php` (added the 16 grants 20H activated) and
+`tests/Feature/Auth/PermissionDatabaseProjectionTest.php` (swapped the now-active
+`payout_run.mark_paid` fixture for the still-planned `personnel.my_sms.send`, Phase 21S). No
+implementation permission truth changed; no test weakened or skipped.
 
 - **Increment 1 (verification + reconciliation + specification) — in progress.** Verified PR #41
   MERGED (`dcdbfb6` == `origin/main`; five CI checks SUCCESS; solo-maintainer exception, not

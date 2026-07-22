@@ -1494,3 +1494,39 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-20h.md
     notes: "Phase 20H Increment 4 EXPAND (ADR-004; Plan §63/§65). Adds nullable earnings_statement_file_id FK -> uploaded_files (10F private file domain) linking a PAID payout item to its generated earnings-statement PDF. Deliberately OUTSIDE the Increment-2 item freeze guard ROW() comparison, so GenerateEarningsStatement may set it once on a paid item while every snapshot column stays frozen; once set it is never rewritten (idempotent + immutable statement). nullOnDelete. No backfill."
+  - file: 2026_07_22_000001_create_referral_snapshots_table.php
+    table: referral_snapshots
+    domain: Integrations/ReferEarn
+    owner_phase: "21R-A"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/refer-earn-integration.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-21r-a.md
+    notes: "Phase 21R-A (Plan §13.17 canonical DDL; §58A.1 capture; §25.6 snapshot machine; ADR-013). Servana's immutable local evidence that a merchant registered with a Citrus R&E referral code. At most one row per merchant (unique merchant_id), written INSIDE the public self-registration transaction so the referrer's claim survives R&E being unavailable. raw_code_encrypted holds the code exactly as submitted (Eloquent 'encrypted' cast; Plan §24.5 forbids logging the decrypted value); code_normalized is the only searchable form and is NULL exactly when snapshot_status='invalid_format' (CHECK). landing_metadata is an allowlisted non-PII utm-style bag (LandingMetadataAllowlist). NO referrer-identity column exists anywhere — Servana holds only the code and R&E's opaque re_attribution_public_id (Plan §9 rule 23). CHECKs: capture_channel enum (3), snapshot_status enum (7), invalid_format<=>null normalized code, confirmed<=>confirmed_at, non-blank raw code. Trigger referral_snapshots_guard: confirmed/rejected/invalid_format/expired_unconfirmed are terminal (no status change out of them) and the capture evidence columns (merchant, ulid, raw code, normalized code, channel, captured_at, landing metadata) are immutable at any status. Classified EXEMPT in TenantOwnership (no TenantContext exists on the public registration route; no merchant-facing route reads it). Forward-only (ADR-004)."
+  - file: 2026_07_22_000002_create_re_outbound_events_table.php
+    table: re_outbound_events
+    domain: Integrations/ReferEarn
+    owner_phase: "21R-A"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/refer-earn-integration.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-21r-a.md
+    notes: "Phase 21R-A (Plan §13.17 canonical DDL; §58A.2 emission/delivery; §25.6 outbox machine; §9 rule 22; ADR-013/015). Transactional outbox: every row is inserted in the SAME DB transaction as its source domain fact, so the fact and the event commit or roll back together. event_id is a ULID generated once at insert and reused on every retry; content_sha256 is computed at insert over the canonical JSON payload (sorted keys, no insignificant whitespace) so retries sign byte-identical bodies and R&E's 409 EVENT_ID_PAYLOAD_MISMATCH is a genuine tamper signal. sequence_no is per-merchant monotonic (UNIQUE merchant_id+sequence_no) because R&E workers partition by merchant. event_type CHECK admits ONLY the five Phase 21R-A merchant.* types — the §58B.1 subscription.*/activity.* rows are Phase 21R-B and are rejected by the database until that phase widens the constraint. merchant_id is nullable strictly because §13.17 reserves null for product-level events, of which there are NONE at launch. Trigger re_outbound_events_append_only freezes ulid/event_id/type/version/merchant/sequence/payload/hash/occurred_at/created_at and lets only delivery progress move; delivered and dead_letter are terminal except for the §25.6 'superseded' schema-version replacement replay, and superseded is final. Trigger re_outbound_events_no_delete: emitted facts are evidence and are never deleted. Index (delivery_status, next_attempt_at) backs the dispatcher sweep. Classified EXEMPT in TenantOwnership. Forward-only (ADR-004)."
+  - file: 2026_07_22_000003_create_re_event_deliveries_table.php
+    table: re_event_deliveries
+    domain: Integrations/ReferEarn
+    owner_phase: "21R-A"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/refer-earn-integration.md
+    depends_on:
+      - 2026_07_22_000002_create_re_outbound_events_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-21r-a.md
+    notes: "Phase 21R-A (Plan §13.17 canonical DDL; §58A.2; §24.5 redaction). Append-only delivery-attempt history — one row per attempt, because R&E dedupes by event id + hash while Servana keeps retrying the same id and body, so the attempt trail is the only record of what actually happened. response_class (8 values) is the retry/dead-letter decision input, so the policy is testable without a live partner: accepted | payload_mismatch | unauthorized | schema_rejected | rate_limited | server_error | transport_error | unexpected. response_body_truncated_redacted is bounded to 512 chars by the column AND passed through DeliveryResponseRedactor before persistence; request headers, signatures, nonces and payloads are never stored at all. FK re_outbound_event_id RESTRICT. Trigger re_event_deliveries_append_only blocks every UPDATE and DELETE. Scope inherited via re_outbound_event_id; never route-bound; classified EXEMPT in TenantOwnership. Forward-only (ADR-004)."
