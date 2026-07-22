@@ -1207,3 +1207,34 @@ money movement, no notification-center, no scheduled-report-delivery runtime.**
 
 Phase 20H lifecycle: **local_complete pending PR CI/review/merge** after the single completion commit + branch
 push below. **No Phase 20H PR is created** — that requires separate product-owner authorization.
+
+## Solo-Maintainer Review Exception - PR #43
+
+- PR: #43
+- previous failing PR head: 309057c2f29e492bbc2602714d9c7e52ea1014b4
+- verified fixed PR head: 16c368a96dbd3d53a5bb7fda8a3b39e55ac46b92
+- successful pre-governance CI run: 29889697667
+- CI/Backend: passed after test-only fix
+- CI/Frontend: passed after test-only fix
+- CI/Docker: passed after test-only fix
+- CI/Security: passed after test-only fix
+- CI/E2E - Playwright: passed after test-only fix
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-43.md
+
+This exception applies only to Phase 20H and is not independent reviewer
+approval.
+
+The PR #43 test-only follow-up changed only:
+
+- tests/Feature/Auth/PermissionMatrixTest.php
+- tests/Feature/Auth/PermissionDatabaseProjectionTest.php
+
+The fix updated stale hand-maintained permission expectations to match the live
+Phase 20H permission-registry truth and replaced the now-active
+payout_run.mark_paid planned-key example with the still-planned
+personnel.my_sms.send key from Phase 21S.
+
+Phase 20D-W, Wallet/provider runtime, settlement runtime, notification-center
+runtime, scheduled report delivery, search, performance, and production-readiness
+work remain deferred to their owning phases.
