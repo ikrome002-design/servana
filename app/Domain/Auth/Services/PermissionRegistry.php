@@ -168,6 +168,31 @@ final class PermissionRegistry
         // from the HR configuration keys above (Plan §10.2 keeps configuration HR-only).
         'compensation.liability.view' => ['compensation', 'View masked salary/commission liabilities (Finance; merchant-scoped).', false],
         'compensation.adjustment.create' => ['compensation', 'Create a manual additive compensation adjustment (Finance; MFA + fresh step-up).', true],
+        // Phase 20H — payout runs + earnings (canonical §19.2 keys; Plan §62/§63, §80). HR owns the
+        // draft/submit/cancel payout workflow (branch scope, no money movement); Finance verifies,
+        // approves ordinary runs, rejects, and marks-paid (merchant scope; MFA + fresh step-up on
+        // verify/approve/mark_paid; Idempotency-Key on the financial-mutation routes; mark_paid is
+        // CRITICAL). The Merchant Administrator holds ONLY the compensation-summary read + high-value
+        // approval (never create/verify/standard-approve/mark-paid — Plan §10.2). Personnel are strict
+        // own-scope: earnings/compensation/payout reads, own-statement access, own earnings-query create.
+        // earnings_query.respond is Finance (D-H12-1). Servana MOVES NO MONEY — mark_paid records an
+        // external settlement outcome only, with no Wallet/provider call and no Gate-W dependency.
+        'payout_run.create' => ['compensation', 'Create a draft personnel payout run (HR; branch-scoped).', true],
+        'payout_run.update_draft' => ['compensation', 'Update/re-snapshot a draft personnel payout run (HR).', true],
+        'payout_run.submit' => ['compensation', 'Submit (freeze + claim ledgers) a draft personnel payout run (HR maker).', true],
+        'payout_run.cancel_draft' => ['compensation', 'Cancel a draft personnel payout run (HR).', true],
+        'payout_run.verify' => ['compensation', 'Verify a submitted payout run and route by value (Finance; MFA + fresh step-up).', true],
+        'payout_run.approve_standard' => ['compensation', 'Approve an ordinary-value payout run (Finance; MFA + fresh step-up).', true],
+        'payout_run.reject' => ['compensation', 'Reject a pre-paid payout run and release claimed ledgers (Finance; reason required).', true],
+        'payout_run.mark_paid' => ['compensation', 'Mark an approved payout run paid after an EXTERNAL settlement (Finance; MFA + fresh step-up + Idempotency-Key; no money movement).', true],
+        'earnings_query.respond' => ['compensation', 'Resolve/reject a personnel earnings query; a monetary correction is an additive adjustment only (Finance).', true],
+        'merchant.compensation_summary.view' => ['merchant', 'View the merchant compensation summary (Merchant Administrator; masked, currency-grouped).', false],
+        'merchant.payout.approve_high_value' => ['merchant', 'Approve a high-value payout run above the snapshotted threshold (Merchant Administrator; MFA + fresh step-up).', true],
+        'personnel.my_compensation.view' => ['personnel', 'View own compensation terms (own scope).', false],
+        'personnel.my_earnings.view' => ['personnel', 'View own earnings overview and salary/commission tabs (own scope).', false],
+        'personnel.my_statements.download' => ['personnel', 'Generate and download own paid-period earnings statements (own scope).', false],
+        'personnel.my_payouts.view' => ['personnel', 'View own payout history (own scope).', false],
+        'personnel.my_earnings_query.create' => ['personnel', 'Raise an earnings query against an own compensation fact (own scope).', true],
         // Clients (Plan §19.2/§19.3; Phase 15A canonical keys — reconciled from the
         // legacy `clients.create/edit/view` baseline). Front Office owns client records
         // and client search; contact is masked at read and never exported.
@@ -354,6 +379,10 @@ final class PermissionRegistry
             // the Merchant Administrator never configures commissions). Its compensation
             // visibility arrives as `merchant.compensation_summary.view` in Phase 20H.
             'platform_fee.view', 'platform_fee.dispute',
+            // Phase 20H — the Merchant Administrator's compensation surface: the masked, currency-grouped
+            // summary read + high-value payout approval ONLY (Plan §10.2/§62 — no create/verify/standard-
+            // approve/mark-paid; those stay HR/Finance). High-value approval is MFA + fresh step-up.
+            'merchant.compensation_summary.view', 'merchant.payout.approve_high_value',
             // Phase 19: NO direct raw audit-log key (canonical §19.3 — the Merchant
             // Administrator's oversight is via reports/dashboards, not the raw trail;
             // the legacy `audit.view_full` grant is RETIRED, not retained).
@@ -395,6 +424,10 @@ final class PermissionRegistry
             'compensation.plan.view', 'compensation.plan.create', 'compensation.plan.update_draft',
             'compensation.plan.submit', 'compensation.plan.approve', 'compensation.plan.reject',
             'compensation.plan.cancel', 'compensation.history.view',
+            // Phase 20H — HR owns the payout DRAFT workflow (branch-scoped): create/update/submit/cancel.
+            // HR never verifies, approves, or marks paid (Plan §10.2/§62 — those are Finance/Merchant
+            // Admin). Submit freezes the run and claims the ledgers; it carries no money movement.
+            'payout_run.create', 'payout_run.update_draft', 'payout_run.submit', 'payout_run.cancel_draft',
             // Phase 19: NO direct raw audit-log key (canonical §19.3 — HR oversight is via
             // staff.history/reports; legacy `audit.view_full` retired).
             'reports.view',
@@ -426,6 +459,13 @@ final class PermissionRegistry
             // salary/commission liability read, and the manual additive adjustment (MFA + fresh
             // step-up + high-severity audit). Configuration stays HR-only (Plan §10.2).
             'compensation.liability.view', 'compensation.adjustment.create',
+            // Phase 20H — Finance owns payout verification/approval/rejection/mark-paid and earnings-query
+            // resolution (merchant-scoped; MFA group-level; fresh step-up on verify/approve/mark_paid;
+            // Idempotency-Key on the financial-mutation routes). mark_paid records an EXTERNAL settlement
+            // only — no money movement, no Wallet/provider call. A query correction is an additive
+            // compensation adjustment, never a ledger edit.
+            'payout_run.verify', 'payout_run.approve_standard', 'payout_run.reject', 'payout_run.mark_paid',
+            'earnings_query.respond',
         ],
         self::ROLE_FRONT_OFFICE => [
             // Queue operations (Phase 16B): Front Office owns the operational queue
@@ -462,6 +502,13 @@ final class PermissionRegistry
             // never see compensation CONFIGURATION; their own-earnings visibility arrives as
             // `earnings.*` in Phase 20H.
             'reports.view',
+            // Phase 20H — Personnel own-scope earnings surface (Plan §63): own compensation terms,
+            // earnings overview + salary/commission tabs, payout history, own paid-period statements,
+            // and raising an earnings query against an own fact. Strict own-scope (no other staff, no
+            // export, no mutation of any money fact).
+            'personnel.my_compensation.view', 'personnel.my_earnings.view',
+            'personnel.my_statements.download', 'personnel.my_payouts.view',
+            'personnel.my_earnings_query.create',
         ],
         self::ROLE_AUDIT => [
             // No invoice key (Plan §19.3): Audit reads finance activity through the

@@ -33,7 +33,10 @@ use App\Domain\Compensation\Models\CommissionRule;
 use App\Domain\Compensation\Models\CommissionRuleService;
 use App\Domain\Compensation\Models\CompensationAdjustment;
 use App\Domain\Compensation\Models\CompensationPlanHistory;
+use App\Domain\Compensation\Models\EarningsQuery;
 use App\Domain\Compensation\Models\PersonnelCompensationPlan;
+use App\Domain\Compensation\Models\PersonnelPayoutItem;
+use App\Domain\Compensation\Models\PersonnelPayoutRun;
 use App\Domain\Compensation\Models\SalaryLedgerEntry;
 use App\Domain\FinanceOps\Models\FinanceDispute;
 use App\Domain\FinanceOps\Models\FinanceExport;
@@ -136,6 +139,11 @@ final class TenantOwnership
         'salary_ledger',
         'compensation_adjustments',
         'commission_rule_services',
+        // Phase 20H — branch-owned payout runs/items + personnel own-scope earnings queries
+        // (Plan §62/§63/§13.12). Payout workflow + earnings surfaces over the 20G ledgers.
+        'personnel_payout_runs',
+        'personnel_payout_items',
+        'earnings_queries',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -307,6 +315,11 @@ final class TenantOwnership
         SalaryLedgerEntry::class => 'branch',
         CompensationAdjustment::class => 'branch',
         CommissionRuleService::class => 'branch',
+        // Phase 20H — branch-owned payout runs/items + personnel own-scope earnings queries
+        // (BelongsToMerchant + BelongsToBranch).
+        PersonnelPayoutRun::class => 'branch',
+        PersonnelPayoutItem::class => 'branch',
+        EarningsQuery::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -365,5 +378,11 @@ final class TenantOwnership
         'salary_ledger' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'compensation_adjustments' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'commission_rule_services' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 20H — branch consistency via composite FK to merchant_branches. Payout items also
+        // carry composite FKs to their run + staff_profile; earnings queries to their staff_profile;
+        // and the run/staff refs so no reference can cross a merchant boundary.
+        'personnel_payout_runs' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'personnel_payout_items' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'earnings_queries' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }

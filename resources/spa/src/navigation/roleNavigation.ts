@@ -74,7 +74,7 @@ const merchantAdministrator: NavItem[] = [
   // docs/auth/permission-matrix.yaml, and Plan §80/§63 place the Merchant-Administrator
   // compensation summary in Phase 20H (earnings surface). Matrix + Plan win over the nav tag.
   // Not built in Phase 20F. See docs/proof/phase-20f.md §F10.
-  { key: 'merchant.compensation-summary', label: 'Compensation summary', permission: 'merchant.compensation_summary.view', phase: 'Phase 20H', availability: 'planned' },
+  { key: 'merchant.compensation-summary', label: 'Compensation summary', routeName: 'merchant.compensation-summary', permission: 'merchant.compensation_summary.view', phase: 'Phase 20H', availability: 'live' },
 ];
 
 // Verbatim final-launch Merchant Branch navigation (Scope §, "Final
@@ -109,7 +109,7 @@ const humanResource: NavItem[] = [
   { key: 'hr.eligibility', label: 'Service eligibility', routeName: 'hr.eligibility', permission: 'personnel.eligibility.manage', phase: 'Phase 15A', availability: 'live' },
   { key: 'hr.availability', label: 'Availability', routeName: 'hr.availability', permission: 'personnel.availability.manage', phase: 'Phase 15B', availability: 'live' },
   { key: 'hr.compensation', label: 'Compensation', routeName: 'hr.compensation', permission: 'compensation.plan.view', phase: 'Phase 20F', availability: 'live' },
-  { key: 'hr.payout-runs', label: 'Payout runs', permission: 'payout_run.create', phase: 'Phase 20H', availability: 'planned' },
+  { key: 'hr.payout-runs', label: 'Payout runs', routeName: 'hr.payout-runs', permission: 'payout_run.create', phase: 'Phase 20H', availability: 'live' },
 ];
 
 // Verbatim Final Production-Launch Finance Navigation (Scope).
@@ -124,7 +124,8 @@ const finance: NavItem[] = [
   { key: 'finance.refunds', label: 'External refunds', routeName: 'finance.refunds', permission: 'refund.create', phase: 'Phase 18B', availability: 'live' },
   { key: 'finance.cash-up', label: 'Cash-up and reconciliation', routeName: 'finance.cash-up', permission: 'cash_up.view', phase: 'Phase 18B', availability: 'live' },
   { key: 'finance.periods', label: 'Financial periods', routeName: 'finance.periods', permission: 'period_lock.create', phase: 'Phase 18B', availability: 'live' },
-  { key: 'finance.payout-runs', label: 'Payout runs', permission: 'payout_run.verify', phase: 'Phase 20H', availability: 'planned' },
+  { key: 'finance.payout-runs', label: 'Payout runs', routeName: 'finance.payout-runs', permission: 'payout_run.verify', phase: 'Phase 20H', availability: 'live' },
+  { key: 'finance.earnings-queries', label: 'Earnings queries', routeName: 'finance.earnings-queries', permission: 'earnings_query.respond', phase: 'Phase 20H', availability: 'live' },
   { key: 'finance.liabilities', label: 'Commission and salary liabilities', routeName: 'finance.liabilities', permission: 'compensation.liability.view', phase: 'Phase 20G', availability: 'live' },
   { key: 'finance.subscription-billing', label: 'Subscription billing', permission: 'subscription.payment_attempts.view', phase: 'Phase 20B', availability: 'planned' },
   { key: 'finance.reports', label: 'Finance reports', phase: 'Phase 21N', availability: 'planned' },
@@ -154,7 +155,7 @@ const personnel: NavItem[] = [
   { key: 'personnel.my-appointments', label: 'My appointments', routeName: 'personnel.appointments', permission: 'personnel.my_appointments.view', phase: 'Phase 16A', availability: 'live' },
   { key: 'personnel.my-sessions', label: 'My sessions', routeName: 'personnel.sessions', permission: 'personnel.my_sessions.view', phase: 'Phase 16C', availability: 'live' },
   { key: 'personnel.my-served-clients', label: 'My served clients', permission: 'personnel.my_served_clients.view', phase: 'Phase 15A', availability: 'planned' },
-  { key: 'personnel.my-earnings', label: 'My earnings', permission: 'personnel.my_earnings.view', phase: 'Phase 20H', availability: 'planned' },
+  { key: 'personnel.my-earnings', label: 'My earnings', routeName: 'personnel.earnings', permission: 'personnel.my_earnings.view', phase: 'Phase 20H', availability: 'live' },
   { key: 'personnel.my-sms', label: 'Client SMS', permission: 'personnel.my_sms.send', phase: 'Phase 21S', availability: 'planned' },
 ];
 

@@ -6,7 +6,108 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 20G — Salary Accrual and Commission Processing (`phase-20g-salary-commission-ledgers`) — in_progress
+### Phase 20H — Payout Runs and Earnings (`phase-20h-payout-runs-earnings`) — in_progress
+
+Off `main` = `1879110de6cb1d73ef82403dd7007cca447f8c5c` (the PR #42 dependency-remediation squash merge;
+originally branched from the Phase 20G PR #41 squash merge `dcdbfb6…` and **refreshed** onto the
+remediated `main` with `git reset --keep origin/main` during Increment 7 — no code churn). Financial
+phase (Plan §62/§63/§13.12/§25.4/§25.5/§65/§80; Correction 19.6–19.9). **Consumes** the 20G ledgers
+(`salary_ledger`, `commission_ledger`, `compensation_adjustments`) into internal payout workflow +
+personnel earnings surfaces. **Servana moves no money** — no Wallet/provider runtime, no
+STK/PayBill/Till/C2B/Daraja/callbacks, no settlement; mark-paid records an **external** payment and
+never depends on Gate W (CLOSED). Specification-first: H1–H18 resolved before any migration
+(`docs/proof/phase-20h.md`).
+
+- **Increment 1 (verification + reconciliation + specification) — in progress.** Verified PR #41
+  MERGED (`dcdbfb6` == `origin/main`; five CI checks SUCCESS; solo-maintainer exception, not
+  independent approval); **reconciled Phase 20G `local_complete pending PR → verified_complete`**
+  (PROGRESS + roadmap row + this file), preserving the governance truth. Gate W confirmed **CLOSED**
+  → 20H is the next executable phase. Created branch `phase-20h-payout-runs-earnings` off the verified
+  20G merge.
+- **Key resolutions:** H6 high-value threshold = existing `merchant_subscriptions.high_value_payout_threshold_minor`
+  (Phase 20A) — snapshot source, no new substrate, nothing hardcoded (null ⇒ ordinary approval).
+  Tables `personnel_payout_runs`/`personnel_payout_items`/`earnings_queries` (Plan §13.12) + three
+  **expand** FKs adding `payout_item_id → personnel_payout_items` to the 20G ledgers. Schema-completion
+  D-H3-1 adds `currency` to runs/items (single-currency run) to honour the no-cross-currency
+  invariant. Ledger claim at **submit/freeze** (D-H3-2), released on reject/cancel, `paid` at
+  mark-paid. Earnings statements reuse the existing 10F `earnings_statement` file purpose (no schema
+  change). Earnings-query **respond = Finance** per the authoritative matrix (D-H12-1). 16 planned
+  Phase 20H permission keys activate in Increment 5 (active 112→128, planned 56→40 — live count).
+- **No blocking conflict; no product-owner decision required.** No migration, no commit, no push, no
+  PR yet.
+- **Increments 2–4 COMPLETE + green (backend):** schema (6 migrations + 3 expand FKs), enums, models,
+  factories, state machines, freeze guard; payout domain (10 actions + eligibility selector + snapshotter
+  + 14 audit events; reversal netting verified; no money movement); earnings domain (`PersonnelEarningsReadModel`
+  own-scope overview/tabs/history/terms; on-demand idempotent immutable earnings statements via the 10F
+  file subsystem; earnings queries with correction-via-`compensation_adjustment` only + `…000007`
+  statement-link migration). Pint clean; **Larastan L8 0 errors** throughout; targeted + affected
+  regressions green.
+- **Increment 5 COMPLETE + green (API surface + generated contracts; no commit):** 16 canonical keys
+  activated across YAML/PHP registry/DB/`permissions.ts`/`phase8-matrix.txt` — **active 112→128, planned
+  56→40, no legacy retirement** (the Inc1 estimate 113→129 reconciled to the authoritative live count).
+  2 new `StepUpAction` cases (`PayoutVerify`, `PayoutHighValueApprove`); `PersonnelPayoutRunPolicy` +
+  `EarningsQueryPolicy`; 16 Form Requests (server-owned fields prohibited; `paid_date` not future;
+  correction only on resolve); masked Resources (presence-only external ref, source counts not ledger ids,
+  integer minor money); 6 thin controllers + `MerchantCompensationSummaryReadModel`; **25 routes** (HR
+  branch-mutation draft workflow; Finance/MA financial-mutation verify/approve/reject/mark-paid/high-value +
+  query-respond, MFA group + fresh step-up on verify/approve/mark-paid/high-value + Idempotency-Key on
+  every financial route; Personnel own-scope reads + statement generation `tenant_mutation` +
+  `EnsureBillingMutable`, download via the existing 10F `files.*` endpoints). Audit map extended (12
+  mutation routes). OpenAPI **235 paths / 280 operations** (23 new); generated `api.ts`/`permissions.ts`
+  regenerated; contract + permission-type checks green; **deterministic (hash-verified) second
+  generation.** Gates: Phase20H API 14+11+6; `--group=auth` 76, `--group=compensation` 478,
+  `--group=security --group=audit` 205, file/receipt/manifest/tenancy 30; OpenApiContract byte-current.
+  Pint clean; **Larastan L8 0 errors (1145 files)**; git diff --check clean. **No frontend, no Wallet/
+  provider, no money movement, no notification center, no scheduled report delivery.**
+- **Increment 6 COMPLETE + green (frontend; no commit):** 5 screens (HR/Finance payout runs, Merchant
+  compensation summary + high-value approval, Personnel earnings/statements/queries, Finance earnings-query
+  responder) + 4 Pinia stores typed from generated `api.ts`; routes + 4 nav placeholders flipped live +
+  `finance.earnings-queries` added; 4 inventory entries flipped implemented + 1 added; §27.1 specs +
+  `inventory.yaml`/`role-navigation.yaml` regenerated. Financial UX: Idempotency-Key mint/reuse/remint;
+  step-up-required safe states; float-free money parser; HR never verifies/approves/marks-paid; Finance
+  mark-paid records an EXTERNAL payment (moves no money; raw ref never re-displayed); MA never marks-paid;
+  Personnel own-scope (no staff selector; authorised signed statement link); responder additive-correction
+  only; no Wallet/provider wording. **DEF-20H-001** (authorized contract-truth fix): `paid_at`/
+  `responded_at` made genuinely nullable in api.ts (JSON byte-identical; OpenAPI unchanged 235/280).
+  Gates: **Vitest 435→481**, ESLint 0 / vue-tsc clean / build PASS; **Playwright 397→416** (responsive
+  360/768/1280, 200% zoom, keyboard+Escape, axe serious/critical 0 light+dark; role denial); backend
+  contract reruns 76 passed (OpenApiContract byte-current; Phase20H API; route-security; idempotency;
+  audit; permission parity; NoDirectProvider; file download); **Pint clean; Larastan L8 0 errors**. No
+  frontend Wallet/provider/money-movement/notification/scheduled-report. Lifecycle **in_progress**.
+- **Increment 7 gates RUN + green; completion HELD (no commit):** composer validate; Pint 1474; Larastan
+  L8 0; backend serial 1663/7skip/0fail + parallel 1663/7/0; disposable PG16.14 proof (90 tables/111
+  migrations; all 20H tables/triggers/FKs; no forbidden provider/wallet/notification tables; dropped; dev
+  DB intact); contract determinism (byte-stable; checks green 235/280); ESLint 0, vue-tsc clean, Vitest
+  481, build PASS; Playwright 416 (axe 0); gitleaks clean (one proof false-positive reworded); Docker
+  dev+prod app+prod nginx built. **BLOCKER (product-owner Option 1):** `npm audit --audit-level=high`
+  fails on **inherited** advisories (`axios` HIGH GHSA-gcfj-64vw-6mp9 fixed ≥1.18.0 + transitive
+  `brace-expansion`/`js-yaml`; composer guzzle medium-only) — `package-lock.json`+`composer.lock`
+  byte-identical to origin/main, so origin/main fails the same gate. Per CLAUDE.md §7 the prod axios HIGH
+  blocks the commit; remediation is isolated to a separate branch off origin/main. **Phase 20H not
+  committed/pushed; dirty tree preserved; lifecycle in_progress.**
+- **Increment 7 (resumed) — dependency remediation merged, branch refreshed, closure gates re-run:**
+  **PR #42** ("Security: Remediate inherited dependency audit advisories") **MERGED** into `main`
+  (squash merge `1879110de6cb1d73ef82403dd7007cca447f8c5c`; head-before-squash `caa7161…`; final CI run
+  **29838903181** all SUCCESS; `reviewDecision` blank under
+  `docs/governance/solo-maintainer-review-exception-pr-42.md`; changed only `composer.lock`,
+  `package-lock.json`, `package.json`, that governance file). Remediation branch deleted local+remote.
+  Phase 20H branch **refreshed `dcdbfb6…` → `1879110…`** via `git reset --keep origin/main` (all 139
+  Phase 20H dirty entries preserved; PR #42 files absent from the Phase 20H diff). Post-refresh:
+  `npm audit --audit-level=high` → **0 vulnerabilities**; `composer audit --locked` → **no advisories**.
+  All Increment 7 closure gates **re-ran GREEN** (in-container Composer deps resynced first — guzzle
+  7.12.1→7.15.1): composer validate valid; Pint 1474; Larastan L8 0; **backend serial 1663/7/0 +
+  parallel 1663/7/0**; disposable **PG16.14** proof (111 migrations/90 tables; all 20H tables/triggers/
+  FKs; forbidden-table scan empty; dev DB intact); contracts byte-stable **235 paths/280 operations**
+  (permission-types --check + api:contract:check green); ESLint 0; vue-tsc clean; **Vitest 481**; build
+  PASS; **Playwright 416/0** (axe serious/critical 0); gitleaks clean; Docker dev+prod app+prod nginx
+  built. Two CPU-contention flakes (Vitest forks worker-start; one Phase-18A `payment.spec.ts` load
+  timeout) cleared on isolated re-run — no code change. Lifecycle remains **in_progress**; single
+  completion commit + branch push follow; no Phase 20H PR yet.
+- **Excluded (owners):** Wallet/provider/settlement → 20D-W; scheduled report delivery + notification
+  center → 21N; bulk SMS → 21S; search → 22; release-wide audits → 23; performance → 24;
+  deployment/alerting/runbooks → 25.
+
+### Phase 20G — Salary Accrual and Commission Processing (`phase-20g-salary-commission-ledgers`) — ✅ verified_complete (PR #41 merged `dcdbfb6`, 2026-07-20; reconciled during Phase 20H Increment 1)
 
 Off `main` = `57dce1031ce10c37977540a0e63b1491d444b877` (the post-20F hardening PR #40 merge). Financial
 phase (Plan §60/§61/§13.12/§80; Correction 19). Creates the earned/accrued facts 20F configured:

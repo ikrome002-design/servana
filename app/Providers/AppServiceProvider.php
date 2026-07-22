@@ -33,7 +33,9 @@ use App\Domain\Clients\Models\Client;
 use App\Domain\Compensation\Models\CommissionLedgerEntry;
 use App\Domain\Compensation\Models\CommissionRule;
 use App\Domain\Compensation\Models\CompensationAdjustment;
+use App\Domain\Compensation\Models\EarningsQuery;
 use App\Domain\Compensation\Models\PersonnelCompensationPlan;
+use App\Domain\Compensation\Models\PersonnelPayoutRun;
 use App\Domain\Compensation\Models\SalaryLedgerEntry;
 use App\Domain\Files\Contracts\FileScanner;
 use App\Domain\Files\Services\ClamAvScanner;
@@ -70,6 +72,7 @@ use App\Policies\ClientPolicy;
 use App\Policies\CommissionLedgerEntryPolicy;
 use App\Policies\CommissionRulePolicy;
 use App\Policies\CompensationAdjustmentPolicy;
+use App\Policies\EarningsQueryPolicy;
 use App\Policies\FinanceDisputePolicy;
 use App\Policies\FinanceExportPolicy;
 use App\Policies\FinancialPeriodLockPolicy;
@@ -81,6 +84,7 @@ use App\Policies\MerchantSubscriptionPolicy;
 use App\Policies\MerchantUserPolicy;
 use App\Policies\PaymentRecordingGroupPolicy;
 use App\Policies\PersonnelCompensationPlanPolicy;
+use App\Policies\PersonnelPayoutRunPolicy;
 use App\Policies\PlatformBillingSettingsPolicy;
 use App\Policies\PlatformFeeConfigurationPolicy;
 use App\Policies\PlatformFeeDisputePolicy;
@@ -181,6 +185,10 @@ class AppServiceProvider extends ServiceProvider
         CommissionLedgerEntry::class => CommissionLedgerEntryPolicy::class,
         SalaryLedgerEntry::class => SalaryLedgerEntryPolicy::class,
         CompensationAdjustment::class => CompensationAdjustmentPolicy::class,
+        // Phase 20H — personnel payout runs (HR/Finance/Merchant-Admin split) + earnings queries
+        // (personnel own-scope create/read; Finance respond).
+        PersonnelPayoutRun::class => PersonnelPayoutRunPolicy::class,
+        EarningsQuery::class => EarningsQueryPolicy::class,
     ];
 
     public function register(): void

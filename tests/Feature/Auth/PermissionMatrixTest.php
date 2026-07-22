@@ -54,6 +54,10 @@ function expectedMatrix(): array
             // visibility arrives as merchant.compensation_summary.view in Phase 20H.
             // Phase 20E: canonical merchant-wide platform-fee read + dispute creation.
             'platform_fee.view', 'platform_fee.dispute',
+            // Phase 20H: the Merchant Administrator's compensation surface — the masked, currency-grouped
+            // summary read + high-value payout approval ONLY (Plan §10.2/§62; no create/verify/standard-
+            // approve/mark-paid — those stay HR/Finance).
+            'merchant.compensation_summary.view', 'merchant.payout.approve_high_value',
             // Phase 19: `audit.view_full` RETIRED — Merchant Admin holds NO direct raw
             // audit-log key (canonical §19.3; oversight via reports/dashboards).
             'reports.view',
@@ -81,6 +85,9 @@ function expectedMatrix(): array
             'compensation.plan.view', 'compensation.plan.create', 'compensation.plan.update_draft',
             'compensation.plan.submit', 'compensation.plan.approve', 'compensation.plan.reject',
             'compensation.plan.cancel', 'compensation.history.view',
+            // Phase 20H: HR owns the payout-run maker workflow (branch-scoped) — draft/update/
+            // submit(freeze)/cancel ONLY; HR never verifies, approves, or marks paid (Plan §10.2/§62).
+            'payout_run.create', 'payout_run.update_draft', 'payout_run.submit', 'payout_run.cancel_draft',
             // Phase 19: `audit.view_full` RETIRED — no direct raw audit-log key.
             'reports.view',
             'exports.staff_roster',
@@ -102,6 +109,11 @@ function expectedMatrix(): array
             'reports.view', 'finance.audit.view',
             // Phase 20G — Finance compensation financial surface (merchant scope).
             'compensation.liability.view', 'compensation.adjustment.create',
+            // Phase 20H — Finance payout checker workflow + earnings-query resolution (Plan §62/§63):
+            // verify/standard-approve/reject/mark-paid and earnings_query.respond. Mark-paid records an
+            // EXTERNAL settlement only — no money movement, no Wallet/provider call.
+            'payout_run.verify', 'payout_run.approve_standard', 'payout_run.reject', 'payout_run.mark_paid',
+            'earnings_query.respond',
         ],
         'front_office' => [
             'queue.view', 'queue.create', 'queue.assign', 'queue.transfer', 'queue.reorder',
@@ -121,8 +133,14 @@ function expectedMatrix(): array
             // Phase 17: no invoice key (strict own-scope; no broad browsing).
             'receipt.view',
             // Phase 20F: legacy `commissions.view` RETIRED — Personnel never see compensation
-            // configuration; own-earnings visibility arrives as earnings.* in Phase 20H.
+            // configuration; own-earnings visibility arrives with Phase 20H below.
             'reports.view',
+            // Phase 20H — Personnel own-scope compensation/earnings surface (Plan §62/§63): own
+            // compensation terms, earnings overview, payout history, own paid-period statement
+            // download, and raising an earnings query against an own fact. Strict own-scope only.
+            'personnel.my_compensation.view', 'personnel.my_earnings.view',
+            'personnel.my_statements.download', 'personnel.my_payouts.view',
+            'personnel.my_earnings_query.create',
         ],
         'audit' => [
             // Phase 17: no invoice key (Audit reads finance activity via the finance-domain audit view).

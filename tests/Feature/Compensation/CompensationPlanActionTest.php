@@ -752,9 +752,9 @@ it('creates no ledger, payout, or earnings runtime while driving a full lifecycl
     $scn = compScenario();
     approve($scn, submittedPlan($scn));
 
-    // Phase 20H payout/earnings tables still do not exist.
-    foreach (['personnel_payout_runs', 'personnel_payout_items', 'earnings_statements'] as $table) {
-        expect(Schema::hasTable($table))->toBeFalse("{$table} must not exist before Phase 20H");
+    // Phase 20H shipped the payout/earnings tables; a Phase 20F plan lifecycle writes NO rows to them.
+    foreach (['personnel_payout_runs', 'personnel_payout_items', 'earnings_queries'] as $table) {
+        expect(DB::table($table)->count())->toBe(0, "Phase 20F must write no {$table} rows");
     }
 
     // The Phase 20G ledger tables now exist, but a Phase 20F plan lifecycle writes NO rows to them.

@@ -26,6 +26,12 @@ use App\Http\Controllers\Api\V1\Compensation\CommissionRuleServiceOptionControll
 use App\Http\Controllers\Api\V1\Compensation\CompensationAdjustmentController;
 use App\Http\Controllers\Api\V1\Compensation\CompensationLiabilityController;
 use App\Http\Controllers\Api\V1\Compensation\CompensationPlanController;
+use App\Http\Controllers\Api\V1\Compensation\FinanceEarningsQueryController;
+use App\Http\Controllers\Api\V1\Compensation\FinancePayoutRunController;
+use App\Http\Controllers\Api\V1\Compensation\HrPayoutRunController;
+use App\Http\Controllers\Api\V1\Compensation\MerchantCompensationController;
+use App\Http\Controllers\Api\V1\Compensation\PersonnelEarningsController;
+use App\Http\Controllers\Api\V1\Compensation\PersonnelEarningsQueryController;
 use App\Http\Controllers\Api\V1\Files\FileController;
 use App\Http\Controllers\Api\V1\FinanceDisputes\FinanceDisputeController;
 use App\Http\Controllers\Api\V1\FinanceExports\FinanceExportController;
@@ -549,6 +555,130 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('compensation/adjustments/{compensationAdjustment}', [CompensationAdjustmentController::class, 'show'])
                 ->middleware(EnsurePermission::class.':compensation.liability.view')
                 ->name('compensation.adjustments.show');
+
+            // Phase 20H — payout runs + personnel earnings (Plan §62/§63, §80; §19.3). HR owns the
+            // DRAFT payout workflow (branch scope); Finance verifies/approves/rejects/marks-paid
+            // (merchant scope); the Merchant Administrator holds ONLY the compensation-summary read +
+            // high-value approval; Personnel are strict own-scope. MFA is group-level (Finance/MA are
+            // privileged roles); fresh step-up + Idempotency-Key are on the financial-mutation routes.
+            // Route bindings resolve ULIDs inside tenant + branch scope (foreign/out-of-scope → 404).
+            // Servana MOVES NO MONEY — mark-paid records an EXTERNAL settlement outcome only (no
+            // provider/Wallet call, no Gate-W dependency).
+            $payoutVerifyStepUp = RequireFreshMfa::class.':'.StepUpAction::PayoutVerify->value;
+            $payoutApproveStepUp = RequireFreshMfa::class.':'.StepUpAction::PayoutApproval->value;
+            $payoutMarkPaidStepUp = RequireFreshMfa::class.':'.StepUpAction::PayoutMarkPaid->value;
+            $payoutHighValueStepUp = RequireFreshMfa::class.':'.StepUpAction::PayoutHighValueApprove->value;
+
+            // HR payout runs (branch-scoped draft workflow — create/update/submit/cancel; no verify/
+            // approve/mark-paid). Submit freezes the run + claims the ledgers (no money movement).
+            Route::get('hr/payout-runs', [HrPayoutRunController::class, 'index'])
+                ->middleware(EnsurePermission::class.':payout_run.create')
+                ->name('hr.payout-runs.index');
+            Route::get('hr/payout-runs/{personnelPayoutRun}', [HrPayoutRunController::class, 'show'])
+                ->middleware(EnsurePermission::class.':payout_run.create')
+                ->name('hr.payout-runs.show');
+            Route::post('hr/payout-runs', [HrPayoutRunController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':payout_run.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('hr.payout-runs.store');
+            Route::patch('hr/payout-runs/{personnelPayoutRun}', [HrPayoutRunController::class, 'update'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':payout_run.update_draft'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('hr.payout-runs.update');
+            Route::post('hr/payout-runs/{personnelPayoutRun}/submit', [HrPayoutRunController::class, 'submit'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':payout_run.submit'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('hr.payout-runs.submit');
+            Route::post('hr/payout-runs/{personnelPayoutRun}/cancel', [HrPayoutRunController::class, 'cancel'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':payout_run.cancel_draft'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('hr.payout-runs.cancel');
+
+            // Finance payout runs (merchant-scoped). Verify/approve/mark-paid carry fresh step-up +
+            // Idempotency-Key; reject carries Idempotency-Key. mark-paid records an external settlement.
+            Route::get('finance/payout-runs', [FinancePayoutRunController::class, 'index'])
+                ->middleware(EnsurePermission::class.':payout_run.verify')
+                ->name('finance.payout-runs.index');
+            Route::get('finance/payout-runs/{personnelPayoutRun}', [FinancePayoutRunController::class, 'show'])
+                ->middleware(EnsurePermission::class.':payout_run.verify')
+                ->name('finance.payout-runs.show');
+            Route::post('finance/payout-runs/{personnelPayoutRun}/verify', [FinancePayoutRunController::class, 'verify'])
+                ->middleware([EnsurePermission::class.':payout_run.verify', $payoutVerifyStepUp, EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('finance.payout-runs.verify');
+            Route::post('finance/payout-runs/{personnelPayoutRun}/approve', [FinancePayoutRunController::class, 'approve'])
+                ->middleware([EnsurePermission::class.':payout_run.approve_standard', $payoutApproveStepUp, EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('finance.payout-runs.approve');
+            Route::post('finance/payout-runs/{personnelPayoutRun}/reject', [FinancePayoutRunController::class, 'reject'])
+                ->middleware([EnsurePermission::class.':payout_run.reject', EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('finance.payout-runs.reject');
+            Route::post('finance/payout-runs/{personnelPayoutRun}/mark-paid', [FinancePayoutRunController::class, 'markPaid'])
+                ->middleware([EnsurePermission::class.':payout_run.mark_paid', $payoutMarkPaidStepUp, EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('finance.payout-runs.mark-paid');
+
+            // Merchant Administrator — compensation summary read + high-value payout approval ONLY
+            // (Plan §10.2 — never create/verify/standard-approve/mark-paid). High-value approval carries
+            // fresh step-up + Idempotency-Key.
+            Route::get('merchant/compensation-summary', [MerchantCompensationController::class, 'summary'])
+                ->middleware(EnsurePermission::class.':merchant.compensation_summary.view')
+                ->name('merchant.compensation-summary.show');
+            Route::get('merchant/payout-runs', [MerchantCompensationController::class, 'index'])
+                ->middleware(EnsurePermission::class.':merchant.payout.approve_high_value')
+                ->name('merchant.payout-runs.index');
+            Route::get('merchant/payout-runs/{personnelPayoutRun}', [MerchantCompensationController::class, 'show'])
+                ->middleware(EnsurePermission::class.':merchant.payout.approve_high_value')
+                ->name('merchant.payout-runs.show');
+            Route::post('merchant/payout-runs/{personnelPayoutRun}/approve-high-value', [MerchantCompensationController::class, 'approveHighValue'])
+                ->middleware([EnsurePermission::class.':merchant.payout.approve_high_value', $payoutHighValueStepUp, EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('merchant.payout-runs.approve-high-value');
+
+            // Personnel own-scope earnings (staff profile derived from the authenticated membership;
+            // never client-selectable). Statement generation is on-demand + idempotent for a PAID item;
+            // download is via the existing 10F file endpoints (own-scope by owner_user_id). Billing
+            // read-only blocks NEW generation, never an existing download.
+            Route::get('personnel/me/earnings', [PersonnelEarningsController::class, 'overview'])
+                ->middleware(EnsurePermission::class.':personnel.my_earnings.view')
+                ->name('personnel.earnings.overview');
+            Route::get('personnel/me/compensation', [PersonnelEarningsController::class, 'compensation'])
+                ->middleware(EnsurePermission::class.':personnel.my_compensation.view')
+                ->name('personnel.compensation.show');
+            Route::get('personnel/me/payouts', [PersonnelEarningsController::class, 'payouts'])
+                ->middleware(EnsurePermission::class.':personnel.my_payouts.view')
+                ->name('personnel.payouts.index');
+            Route::post('personnel/me/payout-items/{personnelPayoutItem}/statement', [PersonnelEarningsController::class, 'generateStatement'])
+                ->middleware([EnsureBillingMutable::class, EnsurePermission::class.':personnel.my_statements.download'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('personnel.statements.generate');
+
+            // Personnel own-scope earnings queries (own facts only; the subject is validated in-scope by
+            // the action). Finance is the sole authoritative responder (D-H12-1).
+            Route::get('personnel/me/earnings-queries', [PersonnelEarningsQueryController::class, 'index'])
+                ->middleware(EnsurePermission::class.':personnel.my_earnings_query.create')
+                ->name('personnel.earnings-queries.index');
+            Route::get('personnel/me/earnings-queries/{earningsQuery}', [PersonnelEarningsQueryController::class, 'show'])
+                ->middleware(EnsurePermission::class.':personnel.my_earnings_query.create')
+                ->name('personnel.earnings-queries.show');
+            Route::post('personnel/me/earnings-queries', [PersonnelEarningsQueryController::class, 'store'])
+                ->middleware([EnsureBranchScope::class, EnsurePermission::class.':personnel.my_earnings_query.create'])
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('personnel.earnings-queries.store');
+
+            // Finance earnings-query responder work queue. Respond is a financial mutation (it may create
+            // an additive compensation adjustment) → Idempotency-Key; MFA is group-level, no fresh step-up.
+            Route::get('finance/earnings-queries', [FinanceEarningsQueryController::class, 'index'])
+                ->middleware(EnsurePermission::class.':earnings_query.respond')
+                ->name('finance.earnings-queries.index');
+            Route::get('finance/earnings-queries/{earningsQuery}', [FinanceEarningsQueryController::class, 'show'])
+                ->middleware(EnsurePermission::class.':earnings_query.respond')
+                ->name('finance.earnings-queries.show');
+            Route::post('finance/earnings-queries/{earningsQuery}/respond', [FinanceEarningsQueryController::class, 'respond'])
+                ->middleware([EnsurePermission::class.':earnings_query.respond', EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('finance.earnings-queries.respond');
 
             // Client records (Scope §clients, Plan §35; Phase 15A). Front Office owns
             // them (`client.*`); search is a distinct capability (`front_office.search`,

@@ -26,6 +26,12 @@ enum StepUpAction: string
     case PeriodReopen = 'period_reopen';
     case PayoutApproval = 'payout_approval';
     case PayoutMarkPaid = 'payout_mark_paid';
+    // Phase 20H — Finance payout verification + Merchant-Admin high-value approval. Real, implemented
+    // routes (finance.payout-runs.verify / merchant.payout-runs.approve-high-value); excluded from the
+    // test-harness businessActions() like the other live-route actions. Distinct from PayoutApproval
+    // (Finance ordinary approval) and PayoutMarkPaid (Finance mark-paid).
+    case PayoutVerify = 'payout_verify';
+    case PayoutHighValueApprove = 'payout_high_value_approve';
     case ReconciliationResolution = 'reconciliation_resolution';
     case CompensationBackdatedChange = 'compensation_backdated_change';
 
@@ -78,8 +84,10 @@ enum StepUpAction: string
             self::BillingConfiguration => 'Phase 20A (implemented)',
             self::RefundFinalization => 'Phase 18B',
             self::PeriodReopen => 'Phase 18B',
-            self::PayoutApproval => 'Phase 20H',
-            self::PayoutMarkPaid => 'Phase 20H',
+            self::PayoutApproval => 'Phase 20H (implemented)',
+            self::PayoutMarkPaid => 'Phase 20H (implemented)',
+            self::PayoutVerify => 'Phase 20H (implemented)',
+            self::PayoutHighValueApprove => 'Phase 20H (implemented)',
             self::ReconciliationResolution => 'Phase 20D',
             // Phase 20F ships the real route: compensation-plans.approve carries
             // RequireFreshMfa:compensation_backdated_change (every approval of effective terms, and
@@ -115,9 +123,12 @@ enum StepUpAction: string
             // configuration step-up, not a harness-only business action.
             self::RefundFinalization,
             self::PeriodReopen,
-            self::PayoutApproval,
-            self::PayoutMarkPaid,
             self::ReconciliationResolution,
+            // PayoutApproval / PayoutMarkPaid / PayoutVerify / PayoutHighValueApprove are EXCLUDED here
+            // (like the other implemented actions): Phase 20H Increment 5 ships their real routes
+            // (finance.payout-runs.approve / .verify / .mark-paid, merchant.payout-runs.approve-high-value),
+            // proven on those routes by PayoutRunApiTest, so they are live step-up actions, not
+            // harness-only business actions.
             // CompensationBackdatedChange is EXCLUDED here (like BillingConfiguration/InvoiceVoid/
             // PlatformFeeDisputeResolution): Phase 20F ships its real route
             // (compensation-plans.approve), so it is a live compensation step-up proven on that

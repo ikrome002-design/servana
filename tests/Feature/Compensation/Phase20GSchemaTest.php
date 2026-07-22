@@ -10,6 +10,8 @@ use App\Domain\Compensation\Models\CommissionLedgerEntry;
 use App\Domain\Compensation\Models\CommissionRule;
 use App\Domain\Compensation\Models\CommissionRuleService;
 use App\Domain\Compensation\Models\CompensationAdjustment;
+use App\Domain\Compensation\Models\PersonnelPayoutItem;
+use App\Domain\Compensation\Models\PersonnelPayoutRun;
 use App\Domain\Compensation\Models\SalaryLedgerEntry;
 use App\Domain\Tenancy\TenantOwnership;
 use Illuminate\Database\QueryException;
@@ -45,12 +47,22 @@ it('registers the four tables as branch-owned with composite consistency', funct
 
 it('allows a commission_ledger status + payout_item_id transition', function (): void {
     $entry = CommissionLedgerEntry::factory()->create();
+    // Phase 20H added the composite FK (payout_item_id, merchant_id) -> personnel_payout_items, so
+    // the link must reference a REAL same-merchant payout item (was a bare id 99 before 20H).
+    $run = PersonnelPayoutRun::factory()->create([
+        'merchant_id' => $entry->merchant_id,
+        'branch_id' => $entry->branch_id,
+    ]);
+    $item = PersonnelPayoutItem::factory()->create([
+        'payout_run_id' => $run->id,
+        'staff_profile_id' => $entry->staff_profile_id,
+    ]);
 
-    DB::update('update commission_ledger set status = ?, payout_item_id = ? where id = ?', ['included_in_payout', 99, $entry->id]);
+    DB::update('update commission_ledger set status = ?, payout_item_id = ? where id = ?', ['included_in_payout', $item->id, $entry->id]);
 
     $row = DB::table('commission_ledger')->where('id', $entry->id)->first();
     expect($row->status)->toBe('included_in_payout');
-    expect((int) $row->payout_item_id)->toBe(99);
+    expect((int) $row->payout_item_id)->toBe($item->id);
 });
 
 it('blocks UPDATE of a commission_ledger monetary column (append-only)', function (): void {

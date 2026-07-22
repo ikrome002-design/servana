@@ -66,6 +66,15 @@ final class CompensationValidationException extends Exception
         );
     }
 
+    /** H12: an earnings-query response must resolve or reject — no other transition is permitted. */
+    public static function earningsQueryDecision(): self
+    {
+        return new self(
+            'earnings_query_invalid_decision',
+            'An earnings query response must resolve or reject the query.',
+        );
+    }
+
     public function render(Request $request): JsonResponse
     {
         $correlationId = (string) app(CorrelationId::class)->get();

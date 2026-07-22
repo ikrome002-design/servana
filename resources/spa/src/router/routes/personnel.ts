@@ -39,6 +39,14 @@ export const personnelRoutes: RouteRecordRaw[] = [
         name: 'personnel.sessions',
         component: () => import('@/pages/personnel/MyServiceSessions.vue'),
       },
+      {
+        // Phase 20H — Personnel own-scope earnings, payout history, statements and earnings queries.
+        // Backend authoritative (`personnel.my_earnings/compensation/payouts/statements.view/download` +
+        // `personnel.my_earnings_query.create`; own-scope derived from the membership, never selectable).
+        path: 'earnings',
+        name: 'personnel.earnings',
+        component: () => import('@/pages/personnel/Earnings.vue'),
+      },
     ],
   },
 ];

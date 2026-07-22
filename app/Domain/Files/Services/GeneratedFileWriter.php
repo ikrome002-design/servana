@@ -38,6 +38,7 @@ final class GeneratedFileWriter
         ?int $merchantId,
         ?int $branchId,
         ?int $uploadedBy,
+        ?int $ownerUserId = null,
     ): UploadedFile {
         $definition = FilePurposeRegistry::for($purpose);
         $disk = (string) config('files.disk');
@@ -56,7 +57,9 @@ final class GeneratedFileWriter
         $file->fill([
             'merchant_id' => $merchantId,
             'branch_id' => $branchId,
-            'owner_user_id' => null,
+            // Own-scope purposes (e.g. earnings statements) authorise download by owner_user_id;
+            // other generated files (receipts, exports) pass null and authorise by tenant/permission.
+            'owner_user_id' => $ownerUserId,
             'purpose' => $purpose->value,
             'storage_disk' => $disk,
             // Generated files skip quarantine; the quarantine path equals the final path.

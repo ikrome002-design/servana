@@ -375,6 +375,26 @@ enum AuditEvent: string
     case CompensationAdjustmentCreated = 'compensation.adjustment.created';
     case CompensationHandoffFailed = 'compensation.handoff.failed';
 
+    // Phase 20H — personnel payout runs + earnings (AuditDomain::Compensation; branch-scoped).
+    // Context carries public ULIDs, integer minor amounts, currency, and status only — never the
+    // external payment reference, never personnel contact details, never internal ids. Verify/
+    // approve are HIGH; a high-value Merchant-Admin approval and mark-paid are CRITICAL (money is
+    // recorded as settled). Servana moves no money — mark-paid records an EXTERNAL payment.
+    case PayoutRunCreated = 'payout_run.created';
+    case PayoutRunUpdatedDraft = 'payout_run.updated_draft';
+    case PayoutRunSubmitted = 'payout_run.submitted';
+    case PayoutRunVerified = 'payout_run.verified';
+    case PayoutRunApprovedStandard = 'payout_run.approved_standard';
+    case PayoutRunHighValueApproved = 'payout_run.high_value_approved';
+    case PayoutRunRejected = 'payout_run.rejected';
+    case PayoutRunCancelled = 'payout_run.cancelled';
+    case PayoutRunMarkedPaid = 'payout_run.marked_paid';
+    case EarningsStatementGenerated = 'earnings_statement.generated';
+    case EarningsQueryCreated = 'earnings_query.created';
+    case EarningsQueryAssigned = 'earnings_query.assigned';
+    case EarningsQueryResolved = 'earnings_query.resolved';
+    case EarningsQueryRejected = 'earnings_query.rejected';
+
     /**
      * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
      *
@@ -467,7 +487,21 @@ enum AuditEvent: string
             self::CompensationCommissionEarned,
             self::CompensationCommissionReversed,
             self::CompensationAdjustmentCreated,
-            self::CompensationHandoffFailed => AuditDomain::Compensation,
+            self::CompensationHandoffFailed,
+            self::PayoutRunCreated,
+            self::PayoutRunUpdatedDraft,
+            self::PayoutRunSubmitted,
+            self::PayoutRunVerified,
+            self::PayoutRunApprovedStandard,
+            self::PayoutRunHighValueApproved,
+            self::PayoutRunRejected,
+            self::PayoutRunCancelled,
+            self::PayoutRunMarkedPaid,
+            self::EarningsStatementGenerated,
+            self::EarningsQueryCreated,
+            self::EarningsQueryAssigned,
+            self::EarningsQueryResolved,
+            self::EarningsQueryRejected => AuditDomain::Compensation,
 
             default => AuditDomain::General,
         };
@@ -610,7 +644,15 @@ enum AuditEvent: string
             // Phase 20G — the routine ledger facts a scheduler/consumer records: a salary accrual
             // and an earned commission recognize configured money at a boundary; no decision is made.
             self::CompensationSalaryAccrued,
-            self::CompensationCommissionEarned => AuditSeverity::Info,
+            self::CompensationCommissionEarned,
+            // Phase 20H — routine payout/earnings lifecycle records (no money settled yet).
+            self::PayoutRunUpdatedDraft,
+            self::PayoutRunCancelled,
+            self::EarningsStatementGenerated,
+            self::EarningsQueryCreated,
+            self::EarningsQueryAssigned,
+            self::EarningsQueryResolved,
+            self::EarningsQueryRejected => AuditSeverity::Info,
 
             // Phase 20F — creation/submission and the withdraw/reject outcomes of a compensation
             // change. Each records a governance decision but not an approval of effective terms.
@@ -674,7 +716,11 @@ enum AuditEvent: string
             self::CompensationSalaryReversed,
             self::CompensationSalaryAdjusted,
             self::CompensationCommissionReversed,
-            self::CompensationHandoffFailed => AuditSeverity::Warning,
+            self::CompensationHandoffFailed,
+            // Phase 20H — HR payout drafting/submission + Finance rejection (no money settled).
+            self::PayoutRunCreated,
+            self::PayoutRunSubmitted,
+            self::PayoutRunRejected => AuditSeverity::Warning,
 
             self::FileScanInfected,
             self::FileAccessDenied,
@@ -745,11 +791,18 @@ enum AuditEvent: string
             self::CommissionRuleEnded,
             // Phase 20G — a Finance manual compensation adjustment (MFA + fresh step-up, §19.3).
             self::CompensationAdjustmentCreated,
+            // Phase 20H — Finance verify + ordinary approval of a payout run (MFA + fresh step-up).
+            self::PayoutRunVerified,
+            self::PayoutRunApprovedStandard,
             self::UnauthorizedAccess => AuditSeverity::High,
 
             // Plan §59 requires CRITICAL severity for an approved BACKDATED compensation change:
             // it rewrites how personnel earned over a window that has already passed.
             self::CompensationPlanBackdatedChangeApproved,
+            // Phase 20H — a high-value Merchant-Admin payout approval and mark-paid record money as
+            // settled to personnel (mark-paid is the §25.5 critical financial effect).
+            self::PayoutRunHighValueApproved,
+            self::PayoutRunMarkedPaid,
             self::MerchantDeactivated => AuditSeverity::Critical,
         };
     }

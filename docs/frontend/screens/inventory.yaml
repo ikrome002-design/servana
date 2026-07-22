@@ -339,10 +339,10 @@ screens:
     spec: ~
   - key: compensation-summary
     domain: merchant
-    route: ~
-    status: planned
+    route: merchant.compensation-summary
+    status: implemented
     phase: Phase 20H
-    spec: ~
+    spec: merchant/merchant-compensation-summary.md
   - key: merchant-period-reopen-approvals
     domain: merchant
     route: merchant.period-reopen-approvals
@@ -423,10 +423,10 @@ screens:
     spec: hr/hr-compensation.md
   - key: hr-payout-prep
     domain: hr
-    route: ~
-    status: planned
+    route: hr.payout-runs
+    status: implemented
     phase: Phase 20H
-    spec: ~
+    spec: hr/hr-payout-runs.md
   - key: finance-task-inbox
     domain: finance
     route: finance.dashboard
@@ -501,10 +501,16 @@ screens:
     spec: finance/finance-exports.md
   - key: finance-payouts
     domain: finance
-    route: ~
-    status: planned
+    route: finance.payout-runs
+    status: implemented
     phase: Phase 20H
-    spec: ~
+    spec: finance/finance-payout-runs.md
+  - key: finance-earnings-queries
+    domain: finance
+    route: finance.earnings-queries
+    status: implemented
+    phase: Phase 20H
+    spec: finance/finance-earnings-queries.md
   - key: finance-invoices
     domain: finance
     route: finance.invoices
@@ -657,10 +663,10 @@ screens:
     spec: personnel/personnel-sessions.md
   - key: personnel-my-earnings
     domain: personnel
-    route: ~
-    status: planned
+    route: personnel.earnings
+    status: implemented
     phase: Phase 20H
-    spec: ~
+    spec: personnel/personnel-my-earnings.md
   - key: personnel-sms
     domain: personnel
     route: ~

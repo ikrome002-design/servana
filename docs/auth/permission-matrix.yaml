@@ -1263,8 +1263,8 @@ keys:
   earnings_query.respond:
     key: earnings_query.respond
     description: Resolution via adjustment only.
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -1273,7 +1273,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: earnings_query.rejected; earnings_query.resolved
     audit_severity: info
     backend_policy_or_service: resolution via adjustment only
     frontend_ux_usage: visibility_only
@@ -1600,8 +1600,8 @@ keys:
   merchant.compensation_summary.view:
     key: merchant.compensation_summary.view
     description: View (merchant / compensation_summary).
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -1610,7 +1610,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -1624,8 +1624,8 @@ keys:
   merchant.payout.approve_high_value:
     key: merchant.payout.approve_high_value
     description: "Action ApprovePayoutRun(high-value); threshold snapshot."
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -1634,7 +1634,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: payout_run.high_value_approved
     audit_severity: crit
     backend_policy_or_service: "action ApprovePayoutRun(high-value); threshold snapshot"
     frontend_ux_usage: visibility_only
@@ -2010,8 +2010,8 @@ keys:
   payout_run.approve_standard:
     key: payout_run.approve_standard
     description: "Ordinary-value approval (Finance)."
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -2020,7 +2020,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: payout_run.approved_standard
     audit_severity: high
     backend_policy_or_service: "ordinary-value approval (Finance)"
     frontend_ux_usage: visibility_only
@@ -2034,8 +2034,8 @@ keys:
   payout_run.cancel_draft:
     key: payout_run.cancel_draft
     description: Cancel draft (payout_run).
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -2044,7 +2044,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: payout_run.cancelled
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2058,8 +2058,8 @@ keys:
   payout_run.create:
     key: payout_run.create
     description: HR drafts.
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -2068,7 +2068,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: payout_run.created
     audit_severity: warn
     backend_policy_or_service: HR drafts
     frontend_ux_usage: visibility_only
@@ -2082,8 +2082,8 @@ keys:
   payout_run.mark_paid:
     key: payout_run.mark_paid
     description: "External ref+date; idempotent; row-lock."
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -2092,7 +2092,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: payout_run.marked_paid
     audit_severity: crit
     backend_policy_or_service: "external ref+date; idempotent; row-lock"
     frontend_ux_usage: visibility_only
@@ -2106,8 +2106,8 @@ keys:
   payout_run.reject:
     key: payout_run.reject
     description: Reject (payout_run).
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -2116,7 +2116,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: payout_run.rejected
     audit_severity: warn
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2130,8 +2130,8 @@ keys:
   payout_run.submit:
     key: payout_run.submit
     description: Frozen on submit.
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -2140,7 +2140,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: payout_run.submitted
     audit_severity: warn
     backend_policy_or_service: frozen on submit
     frontend_ux_usage: visibility_only
@@ -2155,8 +2155,8 @@ keys:
   payout_run.update_draft:
     key: payout_run.update_draft
     description: Update draft (payout_run).
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -2165,7 +2165,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: payout_run.updated_draft
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2179,8 +2179,8 @@ keys:
   payout_run.verify:
     key: payout_run.verify
     description: Verify (payout_run).
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -2189,7 +2189,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: pending
+    audit_event: payout_run.verified
     audit_severity: high
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2325,8 +2325,8 @@ keys:
   personnel.my_compensation.view:
     key: personnel.my_compensation.view
     description: View (personnel / my_compensation).
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: own
@@ -2335,7 +2335,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2349,8 +2349,8 @@ keys:
   personnel.my_earnings.view:
     key: personnel.my_earnings.view
     description: View (personnel / my_earnings).
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: own
@@ -2359,7 +2359,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2373,8 +2373,8 @@ keys:
   personnel.my_earnings_query.create:
     key: personnel.my_earnings_query.create
     description: Create (personnel / my_earnings_query).
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: own
@@ -2383,7 +2383,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: earnings_query.created
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2397,8 +2397,8 @@ keys:
   personnel.my_payouts.view:
     key: personnel.my_payouts.view
     description: View (personnel / my_payouts).
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: own
@@ -2407,7 +2407,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: enforced by policy/registry
     frontend_ux_usage: visibility_only
@@ -2517,8 +2517,8 @@ keys:
   personnel.my_statements.download:
     key: personnel.my_statements.download
     description: Own statements only.
-    implementation_status: planned
-    owning_phase: Phase 20H
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: own
@@ -2527,7 +2527,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: earnings_statement.generated
     audit_severity: info
     backend_policy_or_service: own statements only
     frontend_ux_usage: visibility_only

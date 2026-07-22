@@ -34,7 +34,9 @@ it('prunes the retired audit.view_full and never projects a planned key', functi
 
     expect(Permission::query()->where('key', 'audit.view_full')->exists())->toBeFalse();
     expect(Permission::query()->where('key', 'audit.flag')->exists())->toBeFalse();
-    // A representative planned canonical key must not be projected.
-    expect(Permission::query()->where('key', 'payout_run.mark_paid')->exists())->toBeFalse();
+    // A representative planned canonical key must not be projected. (`personnel.my_sms.send`
+    // is a still-planned Phase 21S key; `payout_run.mark_paid` was activated by Phase 20H and is
+    // now correctly projected, so it is no longer a valid planned-key example.)
+    expect(Permission::query()->where('key', 'personnel.my_sms.send')->exists())->toBeFalse();
     expect(Permission::query()->where('key', 'platform.audit.export')->exists())->toBeFalse();
 });

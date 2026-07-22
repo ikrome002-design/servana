@@ -32,6 +32,15 @@ compensation.plan.reject              ·            ·            ✓           
 compensation.plan.submit              ·            ·            ✓           ·            ·            ·            ·            ·
 compensation.plan.update_draft        ·            ·            ✓           ·            ·            ·            ·            ·
 compensation.plan.view                ·            ·            ✓           ·            ·            ·            ·            ·
+earnings_query.respond                ·            ·            ·            ✓           ·            ·            ·            ·
+payout_run.approve_standard           ·            ·            ·            ✓           ·            ·            ·            ·
+payout_run.cancel_draft               ·            ·            ✓           ·            ·            ·            ·            ·
+payout_run.create                     ·            ·            ✓           ·            ·            ·            ·            ·
+payout_run.mark_paid                  ·            ·            ·            ✓           ·            ·            ·            ·
+payout_run.reject                     ·            ·            ·            ✓           ·            ·            ·            ·
+payout_run.submit                     ·            ·            ✓           ·            ·            ·            ·            ·
+payout_run.update_draft               ·            ·            ✓           ·            ·            ·            ·            ·
+payout_run.verify                     ·            ·            ·            ✓           ·            ·            ·            ·
 cash_up.approve                       ·            ·            ·            ✓           ·            ·            ·            ·
 cash_up.reject                        ·            ·            ·            ✓           ·            ·            ·            ·
 cash_up.request_correction            ·            ·            ·            ✓           ·            ·            ·            ·
@@ -62,6 +71,8 @@ refund.finalize                       ·            ·            ·            
 front_office.search                   ·            ·            ·            ·            ✓           ·            ·            ·
 branches.create                       ✓           ·            ·            ·            ·            ·            ·            ·
 branches.manage_users_lifecycle       ✓           ·            ·            ·            ·            ·            ·            ·
+merchant.compensation_summary.view    ✓           ·            ·            ·            ·            ·            ·            ·
+merchant.payout.approve_high_value    ✓           ·            ·            ·            ·            ·            ·            ·
 merchant.period_reopen.approve_exception✓           ·            ·            ·            ·            ·            ·            ·
 merchant.profile.manage               ✓           ·            ·            ·            ·            ·            ·            ·
 merchant.subscription.invoice.download✓           ·            ·            ·            ·            ·            ·            ·
@@ -73,8 +84,13 @@ service_session.complete              ·            ·            ·            
 service_session.start                 ·            ·            ·            ·            ✓           ·            ·            ·
 service_session.view                  ·            ·            ·            ·            ✓           ·            ·            ·
 personnel.my_appointments.view        ·            ·            ·            ·            ·            ✓           ·            ·
+personnel.my_compensation.view        ·            ·            ·            ·            ·            ✓           ·            ·
+personnel.my_earnings.view            ·            ·            ·            ·            ·            ✓           ·            ·
+personnel.my_earnings_query.create    ·            ·            ·            ·            ·            ✓           ·            ·
+personnel.my_payouts.view             ·            ·            ·            ·            ·            ✓           ·            ·
 personnel.my_queue.view               ·            ·            ·            ·            ·            ✓           ·            ·
 personnel.my_sessions.view            ·            ·            ·            ·            ·            ✓           ·            ·
+personnel.my_statements.download      ·            ·            ·            ·            ·            ✓           ·            ·
 platform.audit.view                   ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing_settings.update      ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing_settings.view        ·            ·            ·            ·            ·            ·            ·            ✓

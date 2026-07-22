@@ -108,6 +108,27 @@ final class AuditMutationCoverage
         // Phase 20G — a Finance MANUAL compensation adjustment (fresh step-up; high-severity audit).
         'compensation.adjustments.store' => ['compensation.adjustment.created'],
 
+        // --- Payout runs + earnings (Phase 20H) ----------------------------
+        // HR draft workflow, Finance verify/approve/reject/mark-paid, Merchant-Admin high-value
+        // approval, on-demand statement generation, and the earnings-query lifecycle. Every event is
+        // emitted inside the same transaction as its mutation (no success audit survives a rollback);
+        // the encrypted external payment reference is NEVER placed in a payload. The earnings-query
+        // `respond` route lists only its own resolve/reject lifecycle events — the nested
+        // `compensation.adjustment.created` side-effect is covered on compensation.adjustments.store
+        // (the platform-fee-disputes.resolve precedent). Servana MOVES NO MONEY.
+        'hr.payout-runs.store' => ['payout_run.created'],
+        'hr.payout-runs.update' => ['payout_run.updated_draft'],
+        'hr.payout-runs.submit' => ['payout_run.submitted'],
+        'hr.payout-runs.cancel' => ['payout_run.cancelled'],
+        'finance.payout-runs.verify' => ['payout_run.verified'],
+        'finance.payout-runs.approve' => ['payout_run.approved_standard'],
+        'finance.payout-runs.reject' => ['payout_run.rejected'],
+        'finance.payout-runs.mark-paid' => ['payout_run.marked_paid'],
+        'merchant.payout-runs.approve-high-value' => ['payout_run.high_value_approved'],
+        'personnel.statements.generate' => ['earnings_statement.generated'],
+        'personnel.earnings-queries.store' => ['earnings_query.created'],
+        'finance.earnings-queries.respond' => ['earnings_query.resolved', 'earnings_query.rejected'],
+
         // --- Clients (Phase 15A) -------------------------------------------
         'clients.store' => ['client.created'],
         'clients.update' => ['client.updated'],
