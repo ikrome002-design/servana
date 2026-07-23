@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Domain\Files\Jobs\DeleteExpiredQuarantineFile;
 use App\Domain\Files\Jobs\ExpireSignedExport;
 use App\Domain\Files\Jobs\VerifyOrphanedFileRecords;
+use App\Domain\Messaging\Sms\Support\ContactExportAttemptDetector;
 use App\Exceptions\ApiErrorRenderer;
 use App\Http\Controllers\HealthController;
 use App\Http\Middleware\CorrelationIdMiddleware;
@@ -34,6 +35,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Sentry\Laravel\Integration;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -104,6 +107,17 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         // Report to Sentry — a no-op while SENTRY_LARAVEL_DSN is empty.
         Integration::handles($exceptions);
+
+        // Contact-export probe detection (ADR-010; Plan §64, §73; Phase 21S). There is NO
+        // contact-export route in Servana, so a guessed one 404s like any unknown path — but the
+        // ATTEMPT must be visible. This records a HIGH-severity audit row and returns null, so the
+        // response is byte-identical to any other 404 and the probe learns nothing. Runs before the
+        // envelope renderer purely for ordering clarity; it never renders.
+        $exceptions->render(function (NotFoundHttpException $e, Request $request): ?Response {
+            app(ContactExportAttemptDetector::class)->recordIfExportShaped($request);
+
+            return null;
+        });
 
         // Render API / JSON exceptions as the structured envelope (Plan §11.5).
         $exceptions->render(function (Throwable $e, Request $request) {

@@ -47,6 +47,16 @@ export const personnelRoutes: RouteRecordRaw[] = [
         name: 'personnel.earnings',
         component: () => import('@/pages/personnel/Earnings.vue'),
       },
+      {
+        // Phase 21S — Personnel bulk SMS to PERSONALLY SERVED clients. Backend authoritative
+        // (`personnel.my_served_clients.view` for the masked served-client read,
+        // `personnel.my_sms.send` + the `sms` entitlement + the billing-status gate for sending;
+        // own-scope derived from the membership, never selectable). No contact export exists
+        // anywhere on this screen (ADR-010).
+        path: 'sms',
+        name: 'personnel.sms',
+        component: () => import('@/pages/personnel/ClientSms.vue'),
+      },
     ],
   },
 ];

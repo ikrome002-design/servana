@@ -2340,7 +2340,17 @@
                                 "re.referral_captured",
                                 "re.attribution_confirmed",
                                 "re.attribution_rejected",
-                                "re.event_dead_lettered"
+                                "re.event_dead_lettered",
+                                "personnel.sms.previewed",
+                                "personnel.sms.campaign_created",
+                                "personnel.sms.campaign_confirmed",
+                                "personnel.sms.campaign_cancelled",
+                                "personnel.sms.recipient_suppressed",
+                                "personnel.sms.delivery_succeeded",
+                                "personnel.sms.delivery_failed",
+                                "personnel.sms.delivery_dead_lettered",
+                                "personnel.sms.billing_entry_created",
+                                "personnel.sms.export_attempt_blocked"
                             ]
                         }
                     },
@@ -2864,7 +2874,17 @@
                                 "re.referral_captured",
                                 "re.attribution_confirmed",
                                 "re.attribution_rejected",
-                                "re.event_dead_lettered"
+                                "re.event_dead_lettered",
+                                "personnel.sms.previewed",
+                                "personnel.sms.campaign_created",
+                                "personnel.sms.campaign_confirmed",
+                                "personnel.sms.campaign_cancelled",
+                                "personnel.sms.recipient_suppressed",
+                                "personnel.sms.delivery_succeeded",
+                                "personnel.sms.delivery_failed",
+                                "personnel.sms.delivery_dead_lettered",
+                                "personnel.sms.billing_entry_created",
+                                "personnel.sms.export_attempt_blocked"
                             ]
                         }
                     },
@@ -3388,7 +3408,17 @@
                                 "re.referral_captured",
                                 "re.attribution_confirmed",
                                 "re.attribution_rejected",
-                                "re.event_dead_lettered"
+                                "re.event_dead_lettered",
+                                "personnel.sms.previewed",
+                                "personnel.sms.campaign_created",
+                                "personnel.sms.campaign_confirmed",
+                                "personnel.sms.campaign_cancelled",
+                                "personnel.sms.recipient_suppressed",
+                                "personnel.sms.delivery_succeeded",
+                                "personnel.sms.delivery_failed",
+                                "personnel.sms.delivery_dead_lettered",
+                                "personnel.sms.billing_entry_created",
+                                "personnel.sms.export_attempt_blocked"
                             ]
                         }
                     },
@@ -17854,6 +17884,228 @@
                 ]
             }
         },
+        "/api/v1/personnel/me/served-clients/sms": {
+            "get": {
+                "operationId": "personnel.served-clients.sms.index",
+                "tags": [
+                    "PersonnelServedClient"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "full_name",
+                                "-full_name",
+                                "created_at",
+                                "-created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 80
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `ServedClientForSmsResource`\n\nNo staff profile ⇒ no served clients. An empty page, never an unscoped query.\n\n\n\nPaginated set of `ServedClientForSmsResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ServedClientForSmsResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/personnel/me/sessions": {
             "get": {
                 "operationId": "personnel.sessions.index",
@@ -18068,6 +18320,846 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/sms-campaigns": {
+            "get": {
+                "operationId": "personnel.sms-campaigns.index",
+                "tags": [
+                    "PersonnelSmsCampaign"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at",
+                                "confirmed_at",
+                                "-confirmed_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "draft",
+                                "confirmed",
+                                "queued",
+                                "sending",
+                                "completed",
+                                "partially_failed",
+                                "failed",
+                                "cancelled"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PersonnelSmsCampaignResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PersonnelSmsCampaignResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "personnel.sms-campaigns.store",
+                "summary": "Compose the draft + its immutable recipient snapshots. Still bills and sends nothing",
+                "tags": [
+                    "PersonnelSmsCampaign"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePersonnelSmsCampaignRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`PersonnelSmsCampaignResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PersonnelSmsCampaignResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/sms-campaigns/preview": {
+            "post": {
+                "operationId": "personnel.sms-campaigns.preview",
+                "summary": "Advisory preview — creates nothing, sends nothing, bills nothing",
+                "tags": [
+                    "PersonnelSmsCampaign"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PreviewPersonnelSmsCampaignRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`SmsCampaignPreviewResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/SmsCampaignPreviewResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/sms-campaigns/{campaign}": {
+            "get": {
+                "operationId": "personnel.sms-campaigns.show",
+                "tags": [
+                    "PersonnelSmsCampaign"
+                ],
+                "parameters": [
+                    {
+                        "name": "campaign",
+                        "in": "path",
+                        "required": true,
+                        "description": "The campaign ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PersonnelSmsCampaignResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PersonnelSmsCampaignResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/sms-campaigns/{campaign}/cancel": {
+            "post": {
+                "operationId": "personnel.sms-campaigns.cancel",
+                "tags": [
+                    "PersonnelSmsCampaign"
+                ],
+                "parameters": [
+                    {
+                        "name": "campaign",
+                        "in": "path",
+                        "required": true,
+                        "description": "The campaign ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 16,
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CancelPersonnelSmsCampaignRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PersonnelSmsCampaignResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PersonnelSmsCampaignResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "409": {
+                        "description": "Idempotency conflict / request in progress",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "423": {
+                        "description": "Financial period locked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/sms-campaigns/{campaign}/confirm": {
+            "post": {
+                "operationId": "personnel.sms-campaigns.confirm",
+                "summary": "The commitment point. Revalidates every recipient, snapshots consent, creates the single\nbilling entry, and queues delivery AFTER COMMIT — never inside the transaction",
+                "tags": [
+                    "PersonnelSmsCampaign"
+                ],
+                "parameters": [
+                    {
+                        "name": "campaign",
+                        "in": "path",
+                        "required": true,
+                        "description": "The campaign ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Idempotency-Key",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 16,
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConfirmPersonnelSmsCampaignRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`PersonnelSmsCampaignResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PersonnelSmsCampaignResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "409": {
+                        "description": "Idempotency conflict / request in progress",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "423": {
+                        "description": "Financial period locked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/sms-campaigns/{campaign}/recipients": {
+            "get": {
+                "operationId": "personnel.sms-campaigns.recipients",
+                "summary": "Recipient statuses — masked contact only, never a phone list",
+                "tags": [
+                    "PersonnelSmsCampaign"
+                ],
+                "parameters": [
+                    {
+                        "name": "campaign",
+                        "in": "path",
+                        "required": true,
+                        "description": "The campaign ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at",
+                                "confirmed_at",
+                                "-confirmed_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "draft",
+                                "confirmed",
+                                "queued",
+                                "sending",
+                                "completed",
+                                "partially_failed",
+                                "failed",
+                                "cancelled"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PersonnelSmsRecipientResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PersonnelSmsRecipientResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -19228,7 +20320,17 @@
                                 "re.referral_captured",
                                 "re.attribution_confirmed",
                                 "re.attribution_rejected",
-                                "re.event_dead_lettered"
+                                "re.event_dead_lettered",
+                                "personnel.sms.previewed",
+                                "personnel.sms.campaign_created",
+                                "personnel.sms.campaign_confirmed",
+                                "personnel.sms.campaign_cancelled",
+                                "personnel.sms.recipient_suppressed",
+                                "personnel.sms.delivery_succeeded",
+                                "personnel.sms.delivery_failed",
+                                "personnel.sms.delivery_dead_lettered",
+                                "personnel.sms.billing_entry_created",
+                                "personnel.sms.export_attempt_blocked"
                             ]
                         }
                     },
@@ -31139,6 +32241,17 @@
                 },
                 "title": "CancelPayoutRunDraftRequest"
             },
+            "CancelPersonnelSmsCampaignRequest": {
+                "type": "object",
+                "description": "Cancel an SMS campaign that has not yet been handed to the provider (Plan §64; Phase 21S).\n\nTakes an optional short free-text reason for the personnel member's own record. The reason is\nNOT placed in the audit context: it is user-authored text that could name a client, and Plan\n§24.5 keeps client identity out of audit payloads. Whether the cancellation is legal at all is\nthe state machine's decision, never this request's.\n\nAN ALLOWLIST, NOT A DENYLIST (see {@see PersonnelSmsCompositionRequest}): every other key is\nrejected by {@see after()}, so no server-owned or contact field name is published as an\nacceptable input in the OpenAPI contract.",
+                "properties": {
+                    "reason": {
+                        "type": "string",
+                        "maxLength": 280
+                    }
+                },
+                "title": "CancelPersonnelSmsCampaignRequest"
+            },
             "CancelQueueEntryRequest": {
                 "type": "object",
                 "description": "Queue-entry cancellation validation (Plan §37; Phase 16B). A non-empty reason is\nrequired (distinct from a no-show, which carries none).",
@@ -32224,6 +33337,19 @@
                     "branch"
                 ],
                 "title": "CompleteFirstTimeSetupRequest"
+            },
+            "ConfirmPersonnelSmsCampaignRequest": {
+                "type": "object",
+                "description": "Explicit confirmation of an SMS campaign (Plan §64: *\"personnel confirms explicitly\"*; Phase 21S).\n\nThe ONLY accepted field is `acknowledged`, which must be literally true. Nothing about the\ncampaign can be changed at confirm time — not the recipients, not the message, and above all not\nthe cost: the client's estimate is never accepted as authoritative, and\n{@see ConfirmSmsCampaign} re-prices from the recipients that survive its own revalidation.\n\nAN ALLOWLIST, NOT A DENYLIST (see {@see PersonnelSmsCompositionRequest} for the full reasoning):\nevery other key is rejected by {@see after()}, so an unanticipated field is refused too and no\nserver-owned or contact field name is published as an acceptable input in the OpenAPI contract.",
+                "properties": {
+                    "acknowledged": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "acknowledged"
+                ],
+                "title": "ConfirmPersonnelSmsCampaignRequest"
             },
             "ConvertAppointmentToQueueRequest": {
                 "type": "object",
@@ -34822,6 +35948,168 @@
                 ],
                 "title": "PersonnelServiceSessionResource"
             },
+            "PersonnelSmsCampaignResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "status_label": {
+                        "type": "string",
+                        "enum": [
+                            "Draft",
+                            "Confirmed",
+                            "Queued",
+                            "Sending",
+                            "Completed",
+                            "Partially failed",
+                            "Failed",
+                            "Cancelled"
+                        ]
+                    },
+                    "recipient_count": {
+                        "type": "integer"
+                    },
+                    "message_character_count": {
+                        "type": "integer"
+                    },
+                    "segment_count": {
+                        "type": "integer"
+                    },
+                    "estimated_cost": {
+                        "type": "object",
+                        "properties": {
+                            "amount": {
+                                "type": "integer"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "formatted": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "amount",
+                            "currency",
+                            "formatted"
+                        ]
+                    },
+                    "final_cost": {
+                        "type": "string"
+                    },
+                    "failure_reason_code": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "is_cancellable": {
+                        "type": "boolean"
+                    },
+                    "consent_snapshot_at": {
+                        "type": "string"
+                    },
+                    "confirmed_at": {
+                        "type": "string"
+                    },
+                    "queued_at": {
+                        "type": "string"
+                    },
+                    "completed_at": {
+                        "type": "string"
+                    },
+                    "cancelled_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "status_label",
+                    "recipient_count",
+                    "message_character_count",
+                    "segment_count",
+                    "estimated_cost",
+                    "final_cost",
+                    "failure_reason_code",
+                    "is_cancellable",
+                    "consent_snapshot_at",
+                    "confirmed_at",
+                    "queued_at",
+                    "completed_at",
+                    "cancelled_at",
+                    "created_at"
+                ],
+                "title": "PersonnelSmsCampaignResource"
+            },
+            "PersonnelSmsRecipientResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "client": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "full_name": {
+                                "type": "string"
+                            },
+                            "phone_masked": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "full_name",
+                            "phone_masked"
+                        ]
+                    },
+                    "phone_masked": {
+                        "type": "string"
+                    },
+                    "delivery_status": {
+                        "type": "string"
+                    },
+                    "delivery_status_label": {
+                        "type": "string",
+                        "enum": [
+                            "Pending",
+                            "Sent",
+                            "Delivered",
+                            "Failed",
+                            "Opted out",
+                            "Suppressed"
+                        ]
+                    },
+                    "consent_status": {
+                        "type": "string"
+                    },
+                    "exclusion_reason": {},
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "phone_masked",
+                    "delivery_status",
+                    "delivery_status_label",
+                    "consent_status",
+                    "exclusion_reason",
+                    "updated_at"
+                ],
+                "title": "PersonnelSmsRecipientResource"
+            },
             "PlanEntitlementResource": {
                 "type": "object",
                 "properties": {
@@ -35351,6 +36639,32 @@
                     "change_reason"
                 ],
                 "title": "PreferredPersonnelFeeRuleResource"
+            },
+            "PreviewPersonnelSmsCampaignRequest": {
+                "type": "object",
+                "description": "Validated input for an SMS preview (Plan §64; Phase 21S).\n\nPreview is ADVISORY: it creates nothing, sends nothing and bills nothing. It nevertheless takes\nexactly the same validated contract as draft creation\n({@see PersonnelSmsCompositionRequest}), so what a Personnel user previews is what they can\nsubsequently create — no field is accepted here that would be rejected there, or vice versa.",
+                "properties": {
+                    "message_body": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 480
+                    },
+                    "client_ulids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        },
+                        "minItems": 1,
+                        "maxItems": 200
+                    }
+                },
+                "required": [
+                    "message_body",
+                    "client_ulids"
+                ],
+                "title": "PreviewPersonnelSmsCampaignRequest"
             },
             "PromotionalDiscountResource": {
                 "type": "object",
@@ -36761,6 +38075,26 @@
                 ],
                 "title": "ScheduledPlanChangeResource"
             },
+            "ServedClientForSmsResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "phone_masked": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "full_name",
+                    "phone_masked"
+                ],
+                "title": "ServedClientForSmsResource"
+            },
             "ServiceCategoryResource": {
                 "type": "object",
                 "properties": {
@@ -37031,6 +38365,81 @@
                     "can"
                 ],
                 "title": "ServiceSessionResource"
+            },
+            "SmsCampaignPreviewResource": {
+                "type": "object",
+                "properties": {
+                    "recipient_count": {
+                        "type": "integer"
+                    },
+                    "excluded_count": {
+                        "type": "integer"
+                    },
+                    "excluded_reasons": {
+                        "type": "string",
+                        "description": "Object cast keeps an empty map as `{}` rather than `[]` in JSON."
+                    },
+                    "message_character_count": {
+                        "type": "integer"
+                    },
+                    "segment_count": {
+                        "type": "integer"
+                    },
+                    "requires_unicode": {
+                        "type": "boolean"
+                    },
+                    "characters_remaining_in_segment": {
+                        "type": "integer"
+                    },
+                    "estimated_cost": {
+                        "type": "object",
+                        "properties": {
+                            "amount": {
+                                "type": "integer"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "formatted": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "amount",
+                            "currency",
+                            "formatted"
+                        ]
+                    },
+                    "unit_cost_minor": {
+                        "type": "integer"
+                    },
+                    "max_recipients": {
+                        "type": "integer"
+                    },
+                    "max_message_characters": {
+                        "type": "integer"
+                    },
+                    "billing_notice": {
+                        "type": "string",
+                        "description": "The §64 \"billing notice\": a plain statement that confirming owes money. It is a\nnotice, not a charge — nothing is billed until confirmation.",
+                        "const": "Sending this campaign adds an SMS charge to your Servana billing."
+                    }
+                },
+                "required": [
+                    "recipient_count",
+                    "excluded_count",
+                    "excluded_reasons",
+                    "message_character_count",
+                    "segment_count",
+                    "requires_unicode",
+                    "characters_remaining_in_segment",
+                    "estimated_cost",
+                    "unit_cost_minor",
+                    "max_recipients",
+                    "max_message_characters",
+                    "billing_notice"
+                ],
+                "title": "SmsCampaignPreviewResource"
             },
             "StaffInvitationResource": {
                 "type": "object",
@@ -37811,6 +39220,32 @@
                     "effect"
                 ],
                 "title": "StorePermissionOverrideRequest"
+            },
+            "StorePersonnelSmsCampaignRequest": {
+                "type": "object",
+                "description": "Validated input for creating an SMS campaign DRAFT (Plan §64; Phase 21S).\n\nSame contract as the preview ({@see PersonnelSmsCompositionRequest}) — the same two\nclient-supplied fields and the same server-owned prohibitions — because the draft must be\ncomposed from exactly what was previewed and nothing more. Creating the draft persists the\nrecipient snapshots; it still bills nothing and sends nothing, which is\n{@see ConfirmSmsCampaign}'s job.",
+                "properties": {
+                    "message_body": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 480
+                    },
+                    "client_ulids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        },
+                        "minItems": 1,
+                        "maxItems": 200
+                    }
+                },
+                "required": [
+                    "message_body",
+                    "client_ulids"
+                ],
+                "title": "StorePersonnelSmsCampaignRequest"
             },
             "StorePlanPriceRequest": {
                 "type": "object",

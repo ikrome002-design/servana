@@ -669,10 +669,10 @@ screens:
     spec: personnel/personnel-my-earnings.md
   - key: personnel-sms
     domain: personnel
-    route: ~
-    status: planned
+    route: personnel.sms
+    status: implemented
     phase: Phase 21S
-    spec: ~
+    spec: personnel/personnel-sms.md
   - key: platform-billing-settings
     domain: platform
     route: platform.billing-settings
