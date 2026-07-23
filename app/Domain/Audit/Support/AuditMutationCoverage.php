@@ -22,10 +22,10 @@ use App\Domain\Audit\Enums\AuditEvent;
  * are proven by the domain coverage/redaction suites (AuditEventCoverageTest,
  * AuditRedactionTest, and each domain's API tests), not re-driven here.
  *
- * Deferred domains (notifications/reports 21N, SMS 21S) own NO implemented mutating
- * route yet, so they are intentionally absent — this registry never claims a
- * future-domain emission. Phase 20F added the compensation-CONFIGURATION routes below;
- * the compensation EARNING/payout routes (20G/20H) remain absent.
+ * Deferred domains own NO implemented mutating route, so they are intentionally absent —
+ * this registry never claims a future-domain emission. Notifications/reports (21N) remain
+ * absent. Phase 20F added the compensation-CONFIGURATION routes below; 20G/20H added the
+ * compensation EARNING/payout routes; Phase 21S added the personnel-SMS routes.
  */
 final class AuditMutationCoverage
 {
@@ -128,6 +128,22 @@ final class AuditMutationCoverage
         'personnel.statements.generate' => ['earnings_statement.generated'],
         'personnel.earnings-queries.store' => ['earnings_query.created'],
         'finance.earnings-queries.respond' => ['earnings_query.resolved', 'earnings_query.rejected'],
+
+        // --- Personnel bulk SMS (Phase 21S; ADR-010) ------------------------
+        // Preview is audited even though it changes nothing: Plan §64 requires enumeration-pattern
+        // detection, and a repeated preview against unknown ULIDs is exactly that signal. Confirm
+        // emits the commitment event, the billing-entry event and — when the revalidation drops
+        // recipients — one AGGREGATE suppression event (never one per client; a per-client audit
+        // row would itself record who was contacted). Delivery outcomes are emitted by the queue
+        // worker, not by a route, so they are covered by the delivery suite rather than listed here.
+        'personnel.sms-campaigns.preview' => ['personnel.sms.previewed'],
+        'personnel.sms-campaigns.store' => ['personnel.sms.campaign_created', 'personnel.sms.recipient_suppressed'],
+        'personnel.sms-campaigns.confirm' => [
+            'personnel.sms.campaign_confirmed',
+            'personnel.sms.billing_entry_created',
+            'personnel.sms.recipient_suppressed',
+        ],
+        'personnel.sms-campaigns.cancel' => ['personnel.sms.campaign_cancelled'],
 
         // --- Clients (Phase 15A) -------------------------------------------
         'clients.store' => ['client.created'],

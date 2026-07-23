@@ -404,6 +404,22 @@ enum AuditEvent: string
     case ReAttributionRejected = 're.attribution_rejected';
     case ReEventDeadLettered = 're.event_dead_lettered';
 
+    // Phase 21S — Personnel bulk SMS to personally served clients (Plan §64, §70; ADR-010).
+    // Context carries campaign/staff/merchant/branch ULIDs, COUNTS, safe exclusion reason codes,
+    // money in minor units and the provider result class only — NEVER a phone number (not even
+    // masked), never a client identity, and never the message body (Plan §24.5, §74).
+    case PersonnelSmsPreviewed = 'personnel.sms.previewed';
+    case PersonnelSmsCampaignCreated = 'personnel.sms.campaign_created';
+    case PersonnelSmsCampaignConfirmed = 'personnel.sms.campaign_confirmed';
+    case PersonnelSmsCampaignCancelled = 'personnel.sms.campaign_cancelled';
+    case PersonnelSmsRecipientSuppressed = 'personnel.sms.recipient_suppressed';
+    case PersonnelSmsDeliverySucceeded = 'personnel.sms.delivery_succeeded';
+    case PersonnelSmsDeliveryFailed = 'personnel.sms.delivery_failed';
+    case PersonnelSmsDeliveryDeadLettered = 'personnel.sms.delivery_dead_lettered';
+    case PersonnelSmsBillingEntryCreated = 'personnel.sms.billing_entry_created';
+    /** A guessed contact-export-shaped route was attempted (ADR-010; always 404 + high severity). */
+    case PersonnelSmsExportAttemptBlocked = 'personnel.sms.export_attempt_blocked';
+
     /**
      * Read-segment domain for each event (Plan §19.2 Audit read split; Phase 19).
      *
@@ -587,6 +603,13 @@ enum AuditEvent: string
             self::AuditExportGenerated,
             self::AuditExportDownloaded,
             self::AuditExportExpired,
+            // Phase 21S — advisory/routine SMS moments. `previewed` is deliberately audited even
+            // though it changes nothing: it is the enumeration-detection signal Plan §64 asks for
+            // ("detect enumeration patterns"), and it carries counts only.
+            self::PersonnelSmsPreviewed,
+            self::PersonnelSmsCampaignCreated,
+            self::PersonnelSmsRecipientSuppressed,
+            self::PersonnelSmsDeliverySucceeded,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
@@ -732,7 +755,15 @@ enum AuditEvent: string
             // Phase 20H — HR payout drafting/submission + Finance rejection (no money settled).
             self::PayoutRunCreated,
             self::PayoutRunSubmitted,
-            self::PayoutRunRejected => AuditSeverity::Warning,
+            self::PayoutRunRejected,
+            // Phase 21S — the commitment points. `campaign_confirmed` is the moment consent is
+            // snapshotted, money is owed and delivery is queued, so it carries the `warn` severity
+            // the permission matrix records for `personnel.my_sms.send`; the billing entry and a
+            // per-recipient delivery failure are the other money/outcome facts.
+            self::PersonnelSmsCampaignConfirmed,
+            self::PersonnelSmsCampaignCancelled,
+            self::PersonnelSmsBillingEntryCreated,
+            self::PersonnelSmsDeliveryFailed => AuditSeverity::Warning,
 
             self::FileScanInfected,
             self::FileAccessDenied,
@@ -809,6 +840,12 @@ enum AuditEvent: string
             // Phase 21R-A — an outbound R&E event stopped permanently (409 payload-mismatch tamper
             // signal, 422 contract drift, or max age). Plan §58A.2 requires an alert here.
             self::ReEventDeadLettered,
+            // Phase 21S — a message that exhausted its retries (an operator/provider condition the
+            // merchant must see), and an attempt to reach a contact-export-shaped route. ADR-010
+            // requires the export probe to be HIGH: it is the personnel-contact-extraction signal
+            // from the Plan §73 threat model, even though the request always 404s.
+            self::PersonnelSmsDeliveryDeadLettered,
+            self::PersonnelSmsExportAttemptBlocked,
             self::UnauthorizedAccess => AuditSeverity::High,
 
             // Plan §59 requires CRITICAL severity for an approved BACKDATED compensation change:

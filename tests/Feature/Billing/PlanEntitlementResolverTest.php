@@ -6,7 +6,7 @@ use App\Domain\Billing\Contracts\PlanContextResolver;
 use App\Domain\Billing\Models\PlanEntitlement;
 use App\Domain\Billing\Models\SubscriptionPlan;
 use App\Domain\Billing\Queries\ResolvePlanEntitlement;
-use App\Domain\Billing\Services\UnboundPlanContextResolver;
+use App\Domain\Billing\Services\SubscriptionPlanContextResolver;
 use App\Domain\Billing\ValueObjects\EntitlementDecision;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -83,9 +83,9 @@ it('denies new usage after a downgrade without deleting existing entitlement dat
         ->and($entitlement->fresh()->limit_int)->toBe(2);
 });
 
-it('has an unbound plan-context resolver by default (merchant→plan binding is Phase 20B)', function (): void {
+it('binds the concrete subscription plan-context resolver once merchant subscriptions exist', function (): void {
     $resolver = app(PlanContextResolver::class);
 
-    expect($resolver)->toBeInstanceOf(UnboundPlanContextResolver::class)
+    expect($resolver)->toBeInstanceOf(SubscriptionPlanContextResolver::class)
         ->and($resolver->resolveActivePlan(999))->toBeNull();
 });

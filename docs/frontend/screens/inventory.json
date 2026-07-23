@@ -1878,19 +1878,20 @@
     {
       "key": "personnel-sms",
       "domain": "personnel",
-      "route": null,
+      "route": "personnel.sms",
       "layout": "PersonnelLayout",
-      "status": "planned",
+      "status": "implemented",
       "phase": "Phase 21S",
-      "spec": null,
+      "spec": "personnel/personnel-sms.md",
       "title": "Client SMS composer",
       "roles": [
         "merchant_personnel"
       ],
       "permissions": [
+        "personnel.my_served_clients.view",
         "personnel.my_sms.send"
       ],
-      "summary": "In-platform bulk SMS to served clients (no contact export)."
+      "summary": "Personnel own-scope bulk SMS to clients this staff member PERSONALLY SERVED (at least one completed service session performed by them, in the acting merchant + branch). The screen shows a paginated, name-searchable served-client list with MASKED contact only (`••• ••• 1234`), recipient selection bounded by the configured max batch, a composer whose character count, segment count, excluded-recipient reason codes and estimated KES cost all come from the server preview (the browser derives none of them), a billing notice, an explicit confirmation dialog, and the resulting campaign statuses with per-recipient outcomes. The acting staff profile is derived from the membership — there is no staff selector and the browser never sends a staff reference, a cost or a recipient count. The served-client READ (`personnel.my_served_clients.view`) survives billing read-only grace; SENDING (`personnel.my_sms.send`) additionally requires the `sms` plan entitlement and is blocked in read-only grace / suspended billing, with both refusals rendered as actionable copy rather than raw codes. NO contact export exists anywhere on this screen — no export, download, print, clipboard-copy or phone-list control, no full phone in state, storage or a URL, and no such control may ever be added (ADR-010; Plan §19.4 non-overridable)."
     },
     {
       "key": "platform-billing-settings",

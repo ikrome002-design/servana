@@ -54,11 +54,18 @@ it('activates exactly the sixteen canonical Phase 20H keys across YAML + PHP reg
     }
 });
 
-it('lifts the active count to 128 and drops planned to 40 with no legacy retirement', function (): void {
+it('keeps its sixteen keys active as later phases extend the matrix', function (): void {
     $matrix = app(PermissionMatrix::class);
+    $active = array_fill_keys($matrix->activeKeys(), true);
 
-    expect($matrix->activeKeys())->toHaveCount(128);
-    expect($matrix->plannedKeys())->toHaveCount(40);
+    // The absolute counts move with every phase (20H left 128/40; 21S activated 2 more → 130/38),
+    // so this asserts what Phase 20H actually owns: its own sixteen keys, still active.
+    foreach (P20H_ACTIVATED as $key) {
+        expect($active)->toHaveKey($key);
+    }
+
+    expect(count($matrix->activeKeys()) + count($matrix->plannedKeys()))
+        ->toBe(168, 'the canonical catalogue size is unchanged — phases activate, never invent');
 });
 
 it('grants the payout/earnings keys to exactly the right roles and no others', function (): void {
@@ -111,11 +118,12 @@ it('keeps mark-paid + high-value approval at critical severity', function (): vo
     expect($matrix->get('merchant.payout.approve_high_value')['audit_severity'])->toBe('crit');
 });
 
-it('leaves the deferred payout/notification families planned (20D-W / 21N / 21S / 22 / 23 / 24 / 25)', function (): void {
+it('leaves the deferred payout/notification families planned (20D-W / 21N / 21R-B / 22 / 23 / 24 / 25)', function (): void {
     $matrix = app(PermissionMatrix::class);
     $planned = array_fill_keys($matrix->plannedKeys(), true);
 
-    // Representative deferred keys from later phases remain planned.
-    expect($planned)->toHaveKey('personnel.my_sms.send'); // Phase 21S
+    // Representative deferred keys from still-blocked phases remain planned.
+    // (`personnel.my_sms.send` was activated by Phase 21S and is no longer a valid example.)
     expect($planned)->toHaveKey('platform.billing_reconciliation.resolve'); // Phase 20D-W
+    expect($planned)->toHaveKey('platform.integrations.health.view'); // Phase 20D-W
 });

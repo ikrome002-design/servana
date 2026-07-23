@@ -50,6 +50,9 @@ use App\Domain\Invoicing\Models\InvoiceNumberSequence;
 use App\Domain\Merchants\Models\MerchantProfile;
 use App\Domain\Merchants\Models\MerchantStatusHistory;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Messaging\Sms\Models\PersonnelSmsCampaign;
+use App\Domain\Messaging\Sms\Models\PersonnelSmsRecipient;
+use App\Domain\Messaging\Sms\Models\SmsBillingEntry;
 use App\Domain\Payments\Models\PaymentAllocation;
 use App\Domain\Payments\Models\PaymentRecord;
 use App\Domain\Payments\Models\PaymentRecordingGroup;
@@ -144,6 +147,14 @@ final class TenantOwnership
         'personnel_payout_runs',
         'personnel_payout_items',
         'earnings_queries',
+        // Phase 21S — Personnel bulk SMS to personally served clients (Plan §13.13, §64; ADR-010).
+        // The campaign is branch-owned + personnel own-scope; the recipient snapshot carries
+        // merchant_id + branch_id (repo convention for child tables, cf. cash_up_lines) so a
+        // recipient can never reference a client, session or campaign across a merchant boundary;
+        // the billing entry is branch-owned per the §13.13 canonical DDL.
+        'personnel_sms_campaigns',
+        'personnel_sms_recipients',
+        'sms_billing_entries',
     ];
 
     /** @var list<string> tenant-owned tables (merchant_id required, no branch_id). */
@@ -225,6 +236,8 @@ final class TenantOwnership
         'referral_snapshots' => 'integration evidence keyed 1:1 to a merchant, but written INSIDE the public unauthenticated self-registration transaction where no TenantContext can exist, and read only by platform-side R&E jobs; merchant_id is NOT NULL + unique + indexed and asserted directly by Phase21RASchemaTest; no merchant-facing route or Resource exposes it (21R-A)',
         're_outbound_events' => 'cross-cutting outbox: merchant_id is nullable by design (§13.17 reserves null for product-level events, none at launch — asserted in tests); platform-side emission/delivery only, never route-bound (21R-A)',
         're_event_deliveries' => 'inherits scope via re_outbound_event_id; append-only delivery attempts; never route-bound (21R-A)',
+        // Phase 21S — provider attempt history for one SMS recipient (Plan §13.13, §24.5).
+        'sms_delivery_attempts' => 'inherits scope via recipient_id (personnel_sms_recipients is branch-owned with composite consistency FKs); append-only provider attempt evidence; no API surface exposes an attempt, so it is never route-bound and there is nothing for a merchant-scoped query to isolate (21S)',
         // Framework / Laravel infrastructure tables.
         'migrations' => 'framework: migration ledger',
         'password_reset_tokens' => 'framework: unused (passwordless), Laravel default',
@@ -326,6 +339,12 @@ final class TenantOwnership
         PersonnelPayoutRun::class => 'branch',
         PersonnelPayoutItem::class => 'branch',
         EarningsQuery::class => 'branch',
+        // Phase 21S — branch-owned Personnel SMS campaign, its immutable recipient snapshots and
+        // the billable-SMS queue (BelongsToMerchant + BelongsToBranch). SmsDeliveryAttempt is
+        // deliberately absent: it inherits scope via recipient_id and is EXEMPT above.
+        PersonnelSmsCampaign::class => 'branch',
+        PersonnelSmsRecipient::class => 'branch',
+        SmsBillingEntry::class => 'branch',
     ];
 
     /** Tables whose merchant_id consistency is enforced by a composite FK to a parent. */
@@ -390,5 +409,13 @@ final class TenantOwnership
         'personnel_payout_runs' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'personnel_payout_items' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
         'earnings_queries' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        // Phase 21S — branch consistency via composite FK to merchant_branches. The campaign also
+        // carries a composite FK to staff_profiles (the own-scope subject); the recipient snapshot
+        // carries composite FKs to its campaign, its client and its evidencing service session; the
+        // billing entry carries one to its campaign — so no SMS reference can cross a merchant
+        // boundary at the database level.
+        'personnel_sms_campaigns' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'personnel_sms_recipients' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
+        'sms_billing_entries' => ['parent' => 'merchant_branches', 'fk' => 'branch_id'],
     ];
 }

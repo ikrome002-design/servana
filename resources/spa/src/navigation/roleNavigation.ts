@@ -154,9 +154,11 @@ const personnel: NavItem[] = [
   { key: 'personnel.my-queue', label: 'My queue', routeName: 'personnel.queue', permission: 'personnel.my_queue.view', phase: 'Phase 16B', availability: 'live' },
   { key: 'personnel.my-appointments', label: 'My appointments', routeName: 'personnel.appointments', permission: 'personnel.my_appointments.view', phase: 'Phase 16A', availability: 'live' },
   { key: 'personnel.my-sessions', label: 'My sessions', routeName: 'personnel.sessions', permission: 'personnel.my_sessions.view', phase: 'Phase 16C', availability: 'live' },
-  { key: 'personnel.my-served-clients', label: 'My served clients', permission: 'personnel.my_served_clients.view', phase: 'Phase 15A', availability: 'planned' },
+  // Phase 21S — both point at the single Client SMS screen: the served-client list is the entry
+  // point of the send flow, so it is not a separate route (Plan §64). Neither offers any export.
+  { key: 'personnel.my-served-clients', label: 'My served clients', routeName: 'personnel.sms', permission: 'personnel.my_served_clients.view', phase: 'Phase 21S', availability: 'live' },
   { key: 'personnel.my-earnings', label: 'My earnings', routeName: 'personnel.earnings', permission: 'personnel.my_earnings.view', phase: 'Phase 20H', availability: 'live' },
-  { key: 'personnel.my-sms', label: 'Client SMS', permission: 'personnel.my_sms.send', phase: 'Phase 21S', availability: 'planned' },
+  { key: 'personnel.my-sms', label: 'Client SMS', routeName: 'personnel.sms', permission: 'personnel.my_sms.send', phase: 'Phase 21S', availability: 'live' },
 ];
 
 const audit: NavItem[] = [

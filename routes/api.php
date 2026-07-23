@@ -46,6 +46,8 @@ use App\Http\Controllers\Api\V1\Invoicing\InvoiceVoidController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantDashboardController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantSubscriptionController;
 use App\Http\Controllers\Api\V1\Merchant\SubscriptionInvoiceController;
+use App\Http\Controllers\Api\V1\Messaging\PersonnelServedClientController;
+use App\Http\Controllers\Api\V1\Messaging\PersonnelSmsCampaignController;
 use App\Http\Controllers\Api\V1\Onboarding\FirstTimeSetupController;
 use App\Http\Controllers\Api\V1\Onboarding\MerchantRegistrationController;
 use App\Http\Controllers\Api\V1\Payments\PaymentRecordController;
@@ -77,6 +79,7 @@ use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureActivePrincipal;
 use App\Http\Middleware\EnsureBillingMutable;
 use App\Http\Middleware\EnsureBranchScope;
+use App\Http\Middleware\EnsureEntitlement;
 use App\Http\Middleware\EnsureFirstTimeSetupAccess;
 use App\Http\Middleware\EnsureIdempotentRequest;
 use App\Http\Middleware\EnsureMerchantActive;
@@ -838,6 +841,63 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             // the controller.
             Route::get('personnel/me/sessions', [PersonnelServiceSessionController::class, 'index'])
                 ->name('personnel.sessions.index');
+
+            // ----------------------------------------------------------------
+            // Personnel bulk SMS to PERSONALLY SERVED clients (Plan §64, §20, §22, §68;
+            // ADR-010; Phase 21S).
+            //
+            // Own scope is derived from the authenticated membership in every controller
+            // method — no route, parameter or body field accepts a staff identifier.
+            //
+            // GATES, in the Plan §9.4 order:
+            //   - `personnel.my_served_clients.view` guards the served-client READ. Its matrix row
+            //     is `allow_read`, so it deliberately carries NO billing gate: a merchant in
+            //     read-only grace can still see their served clients.
+            //   - `personnel.my_sms.send` guards preview/compose/confirm/cancel, and those routes
+            //     additionally carry EnsureEntitlement:sms (Plan §20 — the matrix pins
+            //     `entitlement_key: sms`) and EnsureBillingMutable (matrix `block`), so SENDING
+            //     stops in read-only grace / suspended billing while reading continues.
+            //
+            // Confirmation is a FINANCIAL mutation: it creates the campaign's single
+            // `sms_billing_entries` charge, so it requires an Idempotency-Key. Cancellation
+            // cancels that charge and is classified the same way.
+            //
+            // There is deliberately NO export, download, print or copy route here, and none will
+            // ever be added (ADR-010, Plan §19.4 non-overridable). A guessed export-shaped path
+            // 404s like any unknown route and is recorded at HIGH severity by
+            // ContactExportAttemptDetector.
+            $smsSend = [EnsureBranchScope::class, EnsurePermission::class.':personnel.my_sms.send', EnsureEntitlement::class.':sms', EnsureBillingMutable::class];
+
+            Route::get('personnel/me/served-clients/sms', [PersonnelServedClientController::class, 'index'])
+                ->middleware(EnsurePermission::class.':personnel.my_served_clients.view')
+                ->name('personnel.served-clients.sms.index');
+
+            Route::post('personnel/me/sms-campaigns/preview', [PersonnelSmsCampaignController::class, 'preview'])
+                ->middleware($smsSend)
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('personnel.sms-campaigns.preview');
+            Route::post('personnel/me/sms-campaigns', [PersonnelSmsCampaignController::class, 'store'])
+                ->middleware($smsSend)
+                ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                ->name('personnel.sms-campaigns.store');
+            Route::post('personnel/me/sms-campaigns/{campaign}/confirm', [PersonnelSmsCampaignController::class, 'confirm'])
+                ->middleware([...$smsSend, EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('personnel.sms-campaigns.confirm');
+            Route::post('personnel/me/sms-campaigns/{campaign}/cancel', [PersonnelSmsCampaignController::class, 'cancel'])
+                ->middleware([...$smsSend, EnsureIdempotentRequest::class])
+                ->defaults(RouteClassification::KEY, RouteClass::FinancialMutation->value)
+                ->name('personnel.sms-campaigns.cancel');
+
+            Route::get('personnel/me/sms-campaigns', [PersonnelSmsCampaignController::class, 'index'])
+                ->middleware(EnsurePermission::class.':personnel.my_sms.send')
+                ->name('personnel.sms-campaigns.index');
+            Route::get('personnel/me/sms-campaigns/{campaign}', [PersonnelSmsCampaignController::class, 'show'])
+                ->middleware(EnsurePermission::class.':personnel.my_sms.send')
+                ->name('personnel.sms-campaigns.show');
+            Route::get('personnel/me/sms-campaigns/{campaign}/recipients', [PersonnelSmsCampaignController::class, 'recipients'])
+                ->middleware(EnsurePermission::class.':personnel.my_sms.send')
+                ->name('personnel.sms-campaigns.recipients');
 
             // Invoices (Plan §40, §25.3; Phase 17). Front Office owns invoice.view +
             // invoice.create (list/detail/draft/finalize); Finance owns the void/adjust

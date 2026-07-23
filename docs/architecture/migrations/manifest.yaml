@@ -1530,3 +1530,55 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-21r-a.md
     notes: "Phase 21R-A (Plan §13.17 canonical DDL; §58A.2; §24.5 redaction). Append-only delivery-attempt history — one row per attempt, because R&E dedupes by event id + hash while Servana keeps retrying the same id and body, so the attempt trail is the only record of what actually happened. response_class (8 values) is the retry/dead-letter decision input, so the policy is testable without a live partner: accepted | payload_mismatch | unauthorized | schema_rejected | rate_limited | server_error | transport_error | unexpected. response_body_truncated_redacted is bounded to 512 chars by the column AND passed through DeliveryResponseRedactor before persistence; request headers, signatures, nonces and payloads are never stored at all. FK re_outbound_event_id RESTRICT. Trigger re_event_deliveries_append_only blocks every UPDATE and DELETE. Scope inherited via re_outbound_event_id; never route-bound; classified EXEMPT in TenantOwnership. Forward-only (ADR-004)."
+  - file: 2026_07_22_000004_create_personnel_sms_campaigns_table.php
+    table: personnel_sms_campaigns
+    domain: Messaging/Sms
+    owner_phase: "21S"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/messaging-sms.md
+    depends_on:
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_15_000103_create_staff_profiles_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-21s.md
+    notes: "Phase 21S (Plan §13.13 canonical DDL; §64; §80 Phase 21S; ADR-010 personnel contact protection; ADR-005 integer minor units). A Personnel member's bulk SMS to clients they PERSONALLY SERVED. BRANCH-OWNED + own-scope: branch_id is the staff member's home branch and staff_profile_id is derived from the authenticated membership, with a composite FK to staff_profiles(id, merchant_id) so a cross-merchant subject is impossible in the database. The campaign holds NO recipient contact of any kind - not even masked; recipients live in personnel_sms_recipients. message_body_encrypted uses the Eloquent 'encrypted' cast and is $hidden because a personnel-authored message may name a client (Plan §24.5 forbids logging it and the audit context never carries it). message_template_id exists per §13.13 but is CHECK-pinned to NULL: Phase 21S ships no template catalogue, so a dangling reference is impossible until the owning phase drops the CHECK and adds the FK (expand/contract). CHECKs: status enum (8), currency shape, non-negative costs, non-blank body, segment/character >= 1, template NULL, confirmed_at present past draft (cancelled exempt), consent_snapshot_at present past draft/cancelled, recipient_count >= 1 past draft/cancelled (an empty send can never be queued or billed). Trigger personnel_sms_campaigns_guard: completed/failed/cancelled are terminal; ulid/merchant/branch/staff_profile/created_by immutable always; the composition + pricing snapshot frozen once the campaign leaves draft. UNIQUE (id, merchant_id) backs the child tables' composite FKs. Forward-only (ADR-004)."
+  - file: 2026_07_22_000005_create_personnel_sms_recipients_table.php
+    table: personnel_sms_recipients
+    domain: Messaging/Sms
+    owner_phase: "21S"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/messaging-sms.md
+    depends_on:
+      - 2026_07_22_000004_create_personnel_sms_campaigns_table.php
+      - 2026_06_28_000004_create_clients_table.php
+      - 2026_06_30_000001_create_service_sessions_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-21s.md
+    notes: "Phase 21S (Plan §13.13; §64; §74 data minimization; ADR-010). The immutable per-recipient snapshot, and the ONE place in the product where a full client phone number is reachable for SMS. §13.13 lists only the distinguishing columns; merchant_id + branch_id are added per repository convention for child tables (cash_up_lines, invoice_items) with composite FKs to merchant_branches, personnel_sms_campaigns, clients and service_sessions, so a recipient can never reference anything across a merchant boundary in the DATABASE, not merely in application code. CONTACT PROTECTION: phone_encrypted is NULLABLE by design - a recipient suppressed or opted out at composition is never dispatched, so their number is never copied at all, and personnel_sms_recipients_phone_required_check permits NULL only for opted_out/suppressed while requiring it for every dispatchable status. phone_last_four is the maximum display identifier anywhere in the product. personnel_sms_recipients_snapshot_no_phone_check rejects a phone/phone_encrypted/msisdn/phone_number key in eligibility_snapshot_json outright (jsonb_exists() function form, deliberately not the ? operator, which PDO would treat as a bound parameter). There is NO searchable phone index here. UNIQUE (campaign_id, client_id) is the Plan §64 dedupe key. CHECKs: delivery_status enum (6), consent_status_snapshot enum (3 - the SMS vocabulary adds 'missing', which 15A's ConsentState has no value for, because absence of a consent row is NEVER consent), 4-digit last-four, non-blank phone when present, non-negative cost, undispatched recipients carry no provider id and no cost. Triggers: personnel_sms_recipients_guard (snapshot columns immutable at ALL times; only delivery_status, provider_message_id and cost_minor may transition; terminal statuses final) and personnel_sms_recipients_no_delete (rows are delivery evidence and are never deleted). Forward-only (ADR-004)."
+  - file: 2026_07_22_000006_create_sms_delivery_attempts_table.php
+    table: sms_delivery_attempts
+    domain: Messaging/Sms
+    owner_phase: "21S"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/messaging-sms.md
+    depends_on:
+      - 2026_07_22_000005_create_personnel_sms_recipients_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-21s.md
+    notes: "Phase 21S (Plan §13.13; §64 retry policy; §24.5 redaction). One append-only row per provider attempt. result_class (9 values) is the RETRY DECISION INPUT and is stored, so the transient-vs-permanent policy is provable from the database without a live provider - the same design as re_event_deliveries.response_class (21R-A). Only invalid_recipient and opted_out are permanent: retrying either can never succeed and, for opt-out, retrying would be a consent violation. Redaction is defence in depth: SmsProviderPayloadRedactor strips labelled credentials/senders/bodies AND any run of 7+ digits however punctuated, the column is bounded to 512 chars, and sms_delivery_attempts_redaction_check rejects the row outright if a 7+ digit run somehow survives - so a provider that echoes the destination MSISDN in an error cannot leak it into Servana. Request headers, API keys and message bodies are never stored at all. UNIQUE (recipient_id, attempt_number) gives one monotonic sequence per recipient; next_retry_at may be set only on a transient_failure (CHECK). Trigger sms_delivery_attempts_append_only blocks every UPDATE and DELETE. Scope inherited via recipient_id; no API surface exposes an attempt, so the table is never route-bound and is classified EXEMPT in TenantOwnership. Forward-only (ADR-004)."
+  - file: 2026_07_22_000007_create_sms_billing_entries_table.php
+    table: sms_billing_entries
+    domain: Messaging/Sms
+    owner_phase: "21S"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/messaging-sms.md
+    depends_on:
+      - 2026_07_22_000004_create_personnel_sms_campaigns_table.php
+      - 2026_07_11_000006_create_subscription_invoice_items_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/phase-21s.md
+    notes: "Phase 21S (Plan §13.13; §64 'roll up billable SMS charge to Servana billing'; ADR-005; ADR-012). The authoritative billable-SMS queue. amount_minor = quantity * unit_cost_minor is a DB CHECK, so a float-derived or hand-edited amount cannot exist. The partial unique index sms_billing_entries_live_campaign_unique permits at most ONE live entry (provisional/billable/invoiced) per campaign - the structural guarantee that a duplicate confirm, a job retry or a concurrent settlement cannot double-bill. Because sms_billing_entries_guard freezes every monetary column, a settled quantity that differs from the provisional one is NOT an in-place edit: the finalizer cancels the provisional row and writes a new billable row, leaving both as an auditable correction trail. SERVANA MOVES NO MONEY HERE (ADR-012): no Wallet payment resource, no payment attempt, no subscription payment event, no provider call - money movement is Wallet truth and is 20D-W work behind a CLOSED External Gate W. billing_invoice_line_id is the nullable seam to subscription_invoice_items that a FUTURE billing phase sets when it rolls SMS charges into a subscription invoice line; Phase 21S owns the queue, never the invoicing, and only an invoiced/credited entry may carry a line (CHECK). credited/cancelled are terminal. Forward-only (ADR-004)."

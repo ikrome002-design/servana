@@ -684,18 +684,35 @@ items:
     classification: C1
     gating_category: FEATURE_DELIVERY_OBLIGATION
     scope_requirement: "Personnel served-client SMS with contact-protection controls; no contact export (Correction 20; ADR-010)."
-    repository_evidence: "No SMS tables/routes; no contact-export route (confirmed absent in route:list)."
-    root_cause: "Phase 21S not started."
-    affected_files_tables_routes: "personnel_sms_* tables + routes."
-    security_data_business_impact: "n/a until built; the no-export invariant already holds."
-    precise_correction: "Build in 21S with own-scope/consent/entitlement gating."
-    migration_impact: "additive."
-    test_plan: "Correction 20.8 list."
+    repository_evidence: "At Phase 21S entry: no SMS tables/routes; no contact-export route (re-confirmed absent). The 15A consent substrate (client_consents, channel 'sms', state opted_in/opted_out, unique (client_id, channel)) and the 16C service-session substrate (service_sessions, ServiceSessionStatus::Completed, personnel own-scope read at GET /api/v1/personnel/me/sessions) are both live and verified_complete."
+    root_cause: "Phase 21S not started until now; Plan §80.1 dependency 16C + 15A(consent) -> 21S is satisfied and External Gate W is CLOSED, so 21S is the next executable phase."
+    affected_files_tables_routes: "personnel_sms_campaigns; personnel_sms_recipients; sms_delivery_attempts; sms_billing_entries; app/Domain/Messaging/Sms/**; personnel own-scope SMS routes; personnel.my_served_clients.view + personnel.my_sms.send."
+    security_data_business_impact: "The no-contact-export invariant (ADR-010, Plan §19.4 non-overridable) must hold through the new surface: no bulk full-phone response, no export/download/print/copy route or control, no phone in logs/audit/URLs/frontend persistence. Full phone exists only as an encrypted-at-rest delivery snapshot; display is phone_last_four only."
+    precise_correction: "Build in 21S with own-scope (completed own service session) + consent + entitlement + billing-status gating, server-authoritative preview/confirm revalidation, transactional snapshots, provider adapter with redaction, transient-only retry, and the full contact-export prohibition proof."
+    migration_impact: "additive (four forward-only creates; ADR-004)."
+    test_plan: "Plan §64 / Correction 20.8 list — cannot view or message another personnel member's clients; no completed own session means no message; no contact export; billing/entitlement gates; cost-preview accuracy; duplicate-confirmation single send; opt-out suppression; cross-tenant/branch denial; no full-phone exposure; log redaction."
     proof_artifact: "docs/proof/phase-21s.md"
     owner: "21S"
+    completion_commit: null   # single completion commit created + pushed on phase-21s-personnel-bulk-sms (origin/main..HEAD = 0 1); hash recorded on the reconciling branch after merge, not via a second doc-only commit
+    reviewer: "TBD"
+    status: local_complete   # implementation + all local gates green (docs/proof/phase-21s.md §Quality gates); final closure -> verified_complete on the reviewed PR merge
+
+  - id: REM-SMS-002
+    classification: C1
+    gating_category: DEFERRED_VERIFICATION
+    scope_requirement: "Plan §64 provider-adapter contract: a live SMS provider account with credentials, sender id, unit price and (if the provider offers them) delivery-receipt callbacks, verified end to end against the provider sandbox with the payload-redaction and idempotent-receipt behaviour proven against real responses."
+    repository_evidence: "At Phase 21S entry no SMS provider configuration existed anywhere: no config/services.php SMS entry, no SMS_* environment key, no provider contract document under docs/integrations/, and no provider named in the Plan or Scope. The Plan pins the adapter interface and the retry/redaction policy but pins no provider."
+    root_cause: "The SMS provider is an external commercial dependency that had not been selected or contracted when Phase 21S executed. The phase directive explicitly forbids inventing provider credentials, endpoints or pricing."
+    affected_files_tables_routes: "config/sms.php; app/Domain/Messaging/Sms/Clients/*; app/Domain/Messaging/Sms/Support/SmsProviderPayloadRedactor.php; sms_delivery_attempts; sms_billing_entries.unit_cost_minor."
+    security_data_business_impact: "No security exposure — no real credential exists in the repository and none is defaulted (the HTTP client fails closed on any missing base URL, API key, sender id or unpinned contract version, and the deterministic fake client is bound whenever the integration is not fully configured, always in testing). The residual risk is contract drift: provider result codes, the transient-vs-permanent classification, the per-segment unit price and the receipt callback authentication scheme are modelled from the Plan rather than verified against a live partner, so a mismatch would surface as mis-classified retries, a wrong billed amount or an unusable receipt endpoint in production rather than at build time. NO provider callback endpoint is shipped, because no verifiable authentication contract exists (Plan §24.1 forbids an unauthenticated provider webhook)."
+    precise_correction: "Close before Phase 25 exit by (a) recording the provider credential receipt and sender id under docs/integrations/sms/, (b) pinning the provider result-code map, the transient/permanent classification and the per-segment unit price, (c) running the delivery + redaction contract suite against the provider sandbox and recording the transcript, and (d) implementing the delivery-receipt route ONLY once an authenticated/verifiable receipt contract exists, with idempotent receipt handling and server-side price authority."
+    migration_impact: "none — configuration and documentation only; sms_delivery_attempts already stores the redacted provider result and sms_billing_entries already stores the unit price per campaign."
+    test_plan: "SmsProviderClientBindingTest (fake bound by default and always in testing; HTTP client fails closed on each missing config key); SmsProviderRedactionTest (re-run against sandbox responses at closure); SmsDeliveryRetryPolicyTest (re-verify the transient/permanent map against real provider codes); SmsCostCalculatorTest (re-verify the unit price)."
+    proof_artifact: "docs/proof/phase-21s.md"
+    owner: "21S (raised) / closes before Phase 25 exit"
     completion_commit: null
     reviewer: "TBD"
-    status: not_started
+    status: not_started   # deferred-verification item; the Plan pins no SMS provider. MUST close before Phase 25 exit.
 
   - id: REM-REP-001
     classification: C1

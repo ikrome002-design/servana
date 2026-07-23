@@ -2445,8 +2445,14 @@ keys:
   personnel.my_served_clients.view:
     key: personnel.my_served_clients.view
     description: Masked contact; no export.
-    implementation_status: planned
-    owning_phase: Phase 21N
+    implementation_status: active
+    # Corrected in Phase 21S. This row previously carried `owning_phase: Phase 21N`, and
+    # docs/frontend/navigation/role-navigation.yaml carried `phase: Phase 15A`, but Plan §64 and
+    # the §80 Phase 21S entry both place the served-clients view inside Phase 21S ("personnel opens
+    # served-clients view (own served clients only, paginated, masked contact)"), and the Phase 21N
+    # entry covers only queues/notifications/scheduled reports. The Plan is authoritative; the
+    # attributes below are unchanged from the original row.
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: own
@@ -2455,7 +2461,7 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
     backend_policy_or_service: masked contact; no export
     frontend_ux_usage: visibility_only
@@ -2493,8 +2499,8 @@ keys:
   personnel.my_sms.send:
     key: personnel.my_sms.send
     description: "Served-clients only; no contact export (ADR-010)."
-    implementation_status: planned
-    owning_phase: Phase 21S
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: non_overridable
     scope: own
@@ -2503,7 +2509,7 @@ keys:
     entitlement_key: sms
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: "personnel.sms.billing_entry_created; personnel.sms.campaign_cancelled; personnel.sms.campaign_confirmed; personnel.sms.campaign_created; personnel.sms.previewed; personnel.sms.recipient_suppressed"
     audit_severity: warn
     backend_policy_or_service: "served-clients only; no contact export (ADR-010)"
     frontend_ux_usage: visibility_only

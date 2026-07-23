@@ -473,9 +473,10 @@ merchant_personnel:
     phase: Phase 16C
   - key: personnel.my-served-clients
     label: My served clients
-    availability: planned
+    availability: live
+    route: personnel.sms
     permission: personnel.my_served_clients.view
-    phase: Phase 15A
+    phase: Phase 21S
   - key: personnel.my-earnings
     label: My earnings
     availability: live
@@ -484,7 +485,8 @@ merchant_personnel:
     phase: Phase 20H
   - key: personnel.my-sms
     label: Client SMS
-    availability: planned
+    availability: live
+    route: personnel.sms
     permission: personnel.my_sms.send
     phase: Phase 21S
 merchant_audit:

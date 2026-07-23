@@ -6,7 +6,139 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 21R-A — Citrus Refer & Earn Referral Capture, Outbox, Signed Delivery (`phase-21r-a-referral-capture-outbox`) — local_complete pending PR CI/review/merge
+### Phase 21S — Personnel Bulk SMS to Personally Served Clients (`phase-21s-personnel-bulk-sms`) — local_complete pending PR
+
+Off `main` = `b5a8733616a4603996e18695db31528299cdf8d7` (the Phase 21R-A PR #44 merge commit).
+Implements Plan **§64**, **§80 Phase 21S**, **§13.13** canonical DDL, **§19.3/§19.4**, **§20**,
+**§22**, **§24.5**, **§70**, **§73**, **§74**; **ADR-010**, **ADR-005**. Closes **REM-SMS-001**
+(final closure on merge) and opens **REM-SMS-002** (deferred live-provider verification, before
+Phase 25). Proof: `docs/proof/phase-21s.md`. Single completion commit created and pushed;
+`origin/main…HEAD = 0 1`. **Not** merged — no PR exists yet, so this is not `verified_complete`.
+Final local gates all green (new IDE session, reran from the final tree): full backend serial
+**2006 / 7 skipped / 0 failed / 12414 assertions** and `--parallel` identical; disposable PG16.14
+proof (0 forbidden tables, dev DB untouched); OpenAPI **242 paths / 288 operations** deterministic;
+Vitest **501/501**; Playwright **453 passed**; Pint / Larastan L8 / npm audit / composer audit /
+gitleaks all clean; Docker dev + prod (app, nginx) built. Closure fixes: F1 Pint style on two 21S
+test files; F2 stale committed OpenAPI carried `phone_encrypted` after the SMS Form Requests moved
+denylist→allowlist (regenerated — `phone_encrypted`/`phone_index` gone, counts unchanged); F3
+unrelated Playwright load-flake, reran clean.
+
+**Contact protection is the phase-defining invariant.** ADR-010 and Plan §19.4 make personnel
+contact export non-existent, not merely unauthorised — no schema field, no endpoint, no permission,
+no UI control, and no response, log or audit row from which a phone list could be reconstructed.
+
+#### Added
+- **Four additive tables** (`personnel_sms_campaigns`, `personnel_sms_recipients`,
+  `sms_delivery_attempts`, `sms_billing_entries`) with five database triggers: campaign
+  snapshot-immutability past `draft` + terminal finality; recipient snapshot-immutability at all
+  times + terminal finality; recipient no-delete; attempt append-only; billing-entry
+  monetary immutability + terminal finality.
+- **Bounded context `app/Domain/Messaging/Sms/`** (Plan §10.1): 9 actions, 3 clients + 1 DTO,
+  7 enums, 3 exceptions, 1 job, 4 models, 4 services, 7 support classes, 4 value objects.
+- **Own-scope served clients** — `ServedClientSelector` defines "personally served" as *at least
+  one COMPLETED service session performed by this staff profile*, with the merchant and branch
+  pinned explicitly in the `EXISTS` sub-query (a raw sub-query does not inherit the model global
+  scopes). Search is allowlisted to the client NAME with LIKE metacharacters escaped; there is no
+  phone or email search path, because either would confirm whether a guessed number belongs to a
+  client.
+- **Advisory preview / authoritative confirm** — the SAME evaluator runs at both, so a consent
+  withdrawal, an archival or a lost session between them changes the outcome and confirm always
+  wins. Confirm re-prices from the survivors, refuses entirely when none survive
+  (422 `no_eligible_recipients`), snapshots consent, creates the single provisional charge, and
+  queues delivery only in `DB::afterCommit`.
+- **Duplicate confirm sends once, three ways over:** `EnsureIdempotentRequest` replays a repeated
+  key; the action is an idempotent no-op past `confirmed`; and
+  `sms_billing_entries_live_campaign_unique` makes a second live charge impossible under
+  concurrency.
+- **Provider adapter** — `SmsProviderClientInterface` + `FakeSmsProviderClient` (bound whenever the
+  integration is disabled or incompletely configured, and **unconditionally in `testing`**) +
+  `HttpSmsProviderClient` (fails closed on any missing base URL, API key, sender id or contract
+  version). CI physically cannot reach a live provider. The fake records destinations as SHA-256
+  digests only, so no plaintext number enters a test artefact or a failure diff.
+- **Retry policy stored, not inferred** — `sms_delivery_attempts.result_class` is the decision
+  input, so transient-vs-permanent is provable from the database without a partner.
+  `invalid_recipient` and a provider-reported `opted_out` are PERMANENT and never retried (retrying
+  an opt-out would be a consent violation); everything else retries with capped exponential backoff
+  and dead-letters at HIGH severity.
+- **Ten typed audit events** (`personnel.sms.*`) carrying campaign ULIDs, counts, safe exclusion
+  reason codes, money in minor units and the provider result class — never a phone, never a client
+  identity, never the message body. Suppression is ONE aggregate event per campaign, because a
+  per-client audit row would itself be a record of who was contacted.
+- **Minimal Plan §20 entitlement runtime** — see *Fixed* below.
+
+#### Changed
+- **Two canonical permissions activated** (128 → 130 active, 40 → 38 planned):
+  `personnel.my_served_clients.view` (own scope, `allow_read` in billing read-only, no entitlement)
+  and `personnel.my_sms.send` (own scope, entitlement `sms`, blocked in billing read-only, `warn`
+  severity). Both are `non_overridable` and granted to **Personnel only**. No legacy key retired,
+  no contact-export key created.
+- **Frontend:** new `personnel.sms` screen (`ClientSms.vue` + `personnelSmsStore.ts`), and the two
+  previously-`planned` Personnel navigation rows are now `live` and point at it.
+- **OpenAPI 235 → 242 paths / 280 → 288 operations** — exactly the eight new personnel own-scope
+  routes. No export/download/print/copy route exists, and no provider receipt route ships.
+
+#### Fixed
+- **The Plan §20 entitlement gate had no runtime.** Phase 20A shipped `PlanContextResolver` +
+  `ResolvePlanEntitlement` and bound the interface to `UnboundPlanContextResolver` ("Phase 20B
+  provides the real implementation"); Phase 20B shipped `merchant_subscriptions` but never replaced
+  the binding, so `resolveActivePlan()` returned `null` for every merchant and **no entitlement
+  could ever resolve**. Phase 21S is the first phase with an entitlement-gated permission, so the
+  gap became load-bearing. Added `SubscriptionPlanContextResolver` (reads the single non-terminal
+  subscription; terminal records are history, never an entitlement source) and the opt-in
+  `EnsureEntitlement` middleware. Blast radius is exactly Phase 21S: nothing else consumed the
+  resolver, and a test asserts the gate is attached to the four SMS composition routes and no
+  others.
+- **`personnel.my_served_clients.view` owning phase corrected.** The matrix said `Phase 21N` and
+  the navigation YAML said `Phase 15A`, but Plan §64 and the §80 Phase 21S entry both place the
+  served-clients view inside 21S, and the §80 Phase 21N entry covers only queues/notifications/
+  scheduled reports. The Plan is authoritative; the row's ATTRIBUTES are unchanged.
+
+#### Security
+- **No endpoint returns bulk full phone numbers.** The only column holding a full number is
+  `personnel_sms_recipients.phone_encrypted` — encrypted at rest, `$hidden`, referenced by exactly
+  one class immediately before the provider call, and **NULL** for any recipient excluded at
+  composition (Plan §74 data minimization).
+- **Redaction is defence in depth, three layers:** `SmsProviderPayloadRedactor` strips labelled
+  credentials/senders/bodies/emails; `stripDigitRuns()` removes ANY run of 7+ digits however
+  punctuated; and `sms_delivery_attempts_redaction_check` rejects the row outright if one survives.
+  A provider that echoes the destination MSISDN in an error cannot leak it into Servana.
+- **Guessed export-shaped routes** (`/export`, `/download`, `/print`, `/copy`, `/csv`, `/contacts`,
+  `/phones`, …) 404 exactly like any unknown path **and** record
+  `personnel.sms.export_attempt_blocked` at HIGH severity. The detector is scoped to the SMS /
+  served-client surface, so a mistyped legitimate download is not misreported as contact
+  extraction.
+- **Anti-enumeration:** a foreign client, an absent ULID and another branch's client all report the
+  same `unknown_client` code, and exclusions are returned as reason-code → count maps, never as a
+  per-client list.
+
+#### Deferred / Not in scope
+- Wallet payment runtime, Integrations Health screen, R&E qualification/inbound reconciliation
+  (21R-B), notifications / queue topology / scheduled reports (21N), search (22), release-wide
+  audits (23), performance (24), deployment (25). Owner phases are listed in `docs/PROGRESS.md`.
+- **Live SMS provider verification is deferred (`REM-SMS-002`)**: the Plan pins no provider, so no
+  credentials, no result-code map, no per-segment tariff and no authenticated delivery-receipt
+  contract exist. **No receipt endpoint ships** — Plan §24.1 forbids an unverifiable provider
+  webhook. Must close before Phase 25 exit.
+- **Scheduled retention purge** of aged delivery snapshots (Plan §74 "retained per policy then
+  purged") is scheduler work owned by **21N**; `personnel_sms_recipients_no_delete` means that
+  purge must be an explicit, audited job rather than an ad-hoc DELETE.
+- **Rolling a `billable` entry into a subscription invoice line** is owned by the billing phase that
+  aggregates SMS charges; the nullable FK to `subscription_invoice_items` is the waiting seam.
+
+#### Changed (predecessor reconciliation)
+- **Phase 21R-A reconciled `local_complete pending PR CI/review/merge` → `verified_complete`.**
+  PR #44 MERGED into `main` as merge commit `b5a8733616a4603996e18695db31528299cdf8d7` (GitHub
+  **merge-commit** strategy, not squash) at `2026-07-22T10:17:57Z`; base before 21R-A
+  `6047835b3a388fff5cc92a13370963635700f5e3`; implementation head
+  `a9ee4445d56be29217c9db146d585228bf3f27ed`; final patched head
+  `7b7cdb342ffa37df09ac91a030d8417746266710`. Final CI run `29909918754` — Backend, Frontend,
+  Docker, Security and E2E — Playwright all SUCCESS. `reviewDecision` blank under the
+  solo-maintainer governance exception (**not** independent approval); governance evidence posted
+  as PR comment `#issuecomment-5044610118`. Remote branch deleted by the merge; stale local branch
+  deleted. `REM-RE-002` stays **open** (no R&E sandbox credentials; fixture-verified only) and must
+  close before Phase 25.
+
+### Phase 21R-A — Citrus Refer & Earn Referral Capture, Outbox, Signed Delivery (`phase-21r-a-referral-capture-outbox`) — verified_complete (PR #44 merged as `b5a8733`)
 
 Off `main` = `6047835b3a388fff5cc92a13370963635700f5e3` (the Phase 20H PR #43 squash merge). Implements
 **Servana's own side** of the Citrus Refer & Earn source-product contract (Plan §58A, §58B.1
@@ -138,6 +270,15 @@ built here**. Proof: `docs/proof/phase-21r-a.md`.
   would activate a 20D-W-owned permission and ship a half-populated shared screen.
 - **Live R&E sandbox verification is deferred (`REM-RE-002`)** under the Plan §80 Phase 21R-A
   entry-criteria fallback, and must close before Phase 25 exit.
+
+**Closed:** PR #44 MERGED into `main` as **merge commit** `b5a8733616a4603996e18695db31528299cdf8d7`
+(GitHub merge-commit strategy, **not** squash; implementation `a9ee4445d56be29217c9db146d585228bf3f27ed`;
+CI-stabilization / final PR head `7b7cdb342ffa37df09ac91a030d8417746266710`; merged
+`2026-07-22T10:17:57Z`; final CI run `29909918754` — Backend, Frontend, Docker, Security,
+E2E — Playwright all SUCCESS; `reviewDecision` blank under the solo-maintainer governance exception,
+**not** independent approval, with governance evidence posted as PR comment
+`#issuecomment-5044610118`; remote branch deleted by the merge and the stale local branch deleted).
+Reconciled to `verified_complete` during Phase 21S Increment 1.
 
 ### Phase 20H — Payout Runs and Earnings (`phase-20h-payout-runs-earnings`) — verified_complete (PR #43 merged)
 

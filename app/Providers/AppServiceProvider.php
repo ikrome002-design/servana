@@ -21,7 +21,7 @@ use App\Domain\Billing\Models\PromotionalDiscount;
 use App\Domain\Billing\Models\SubscriptionInvoice;
 use App\Domain\Billing\Models\SubscriptionPlan;
 use App\Domain\Billing\Models\SubscriptionPlanPrice;
-use App\Domain\Billing\Services\UnboundPlanContextResolver;
+use App\Domain\Billing\Services\SubscriptionPlanContextResolver;
 use App\Domain\Branches\Models\BranchCashUp;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
@@ -56,6 +56,10 @@ use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Invoicing\Services\RuleBasedPreferredPersonnelFeeResolver;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Messaging\Sms\Clients\FakeSmsProviderClient;
+use App\Domain\Messaging\Sms\Clients\HttpSmsProviderClient;
+use App\Domain\Messaging\Sms\Clients\SmsProviderClientInterface;
+use App\Domain\Messaging\Sms\Models\PersonnelSmsCampaign;
 use App\Domain\Payments\Models\PaymentRecord;
 use App\Domain\Payments\Models\PaymentRecordingGroup;
 use App\Domain\Payments\Models\PaymentReferenceCheck;
@@ -89,6 +93,7 @@ use App\Policies\MerchantUserPolicy;
 use App\Policies\PaymentRecordingGroupPolicy;
 use App\Policies\PersonnelCompensationPlanPolicy;
 use App\Policies\PersonnelPayoutRunPolicy;
+use App\Policies\PersonnelSmsCampaignPolicy;
 use App\Policies\PlatformBillingSettingsPolicy;
 use App\Policies\PlatformFeeConfigurationPolicy;
 use App\Policies\PlatformFeeDisputePolicy;
@@ -147,6 +152,8 @@ class AppServiceProvider extends ServiceProvider
         QueueEntry::class => QueueEntryPolicy::class,
         // Phase 16C — service sessions.
         ServiceSession::class => ServiceSessionPolicy::class,
+        // Phase 21S — personnel bulk SMS (strictly own scope; ADR-010).
+        PersonnelSmsCampaign::class => PersonnelSmsCampaignPolicy::class,
         // Phase 17 — invoicing.
         Invoice::class => InvoicePolicy::class,
         // Phase 18A — merchant-client payment recording (group + reference-check
@@ -225,10 +232,29 @@ class AppServiceProvider extends ServiceProvider
         // recalculated. The prospective cutover is DATE '2026-07-10' (backfill migration).
         $this->app->bind(PreferredPersonnelFeeResolver::class, RuleBasedPreferredPersonnelFeeResolver::class);
 
-        // Merchant→plan binding for the Phase 20 entitlement gate. Phase 20A has no
-        // merchant_subscriptions (that is Phase 20B), so the default resolver is unbound
-        // (returns null → entitlement-dependent actions deny) and fabricates no subscription.
-        $this->app->bind(PlanContextResolver::class, UnboundPlanContextResolver::class);
+        // Merchant→plan binding for the Plan §20 entitlement gate. Phase 20A shipped the interface
+        // plus UnboundPlanContextResolver (always null) because merchant_subscriptions was Phase
+        // 20B; 20B shipped the table but never replaced the binding, so no entitlement could ever
+        // resolve. Phase 21S is the first phase with an entitlement-gated permission
+        // (`personnel.my_sms.send`, entitlement_key `sms`), so it binds the concrete resolver.
+        // UnboundPlanContextResolver is retained for reference/history only.
+        $this->app->bind(PlanContextResolver::class, SubscriptionPlanContextResolver::class);
+
+        // SMS transport (Phase 21S; Plan §64, §17.1, §81 rule 21; REM-SMS-002). The HTTP client is
+        // bound ONLY when the integration is enabled AND every credential is configured — and never
+        // in `testing`, whatever the environment says. Anything less binds the deterministic fake,
+        // so a partly configured environment can never half-send and CI physically cannot reach a
+        // live provider.
+        $this->app->singleton(
+            SmsProviderClientInterface::class,
+            fn ($app): SmsProviderClientInterface => $this->smsIsDeliverable()
+                ? $app->make(HttpSmsProviderClient::class)
+                : $app->make(FakeSmsProviderClient::class),
+        );
+
+        // The fake is a singleton so a test can script outcomes on the same instance the domain
+        // resolves, and assert afterwards on what Servana would have sent (digests only).
+        $this->app->singleton(FakeSmsProviderClient::class);
 
         // Must run in register() — before dedoc/scramble's provider boots and
         // registers its default docs routes (Phase 10).
@@ -262,6 +288,32 @@ class AppServiceProvider extends ServiceProvider
         // The fake is a singleton so a test can script outcomes on the same instance the domain
         // resolves, and assert afterwards on what Servana would have sent.
         $this->app->singleton(FakeReferEarnClient::class);
+    }
+
+    /**
+     * Every piece of the SMS provider contract present? Missing anything ⇒ fail closed to the fake.
+     * `testing` short-circuits unconditionally so no test can reach a live provider even if an
+     * environment file configures one (Plan §81 rule 21).
+     */
+    private function smsIsDeliverable(): bool
+    {
+        if ($this->app->environment('testing')) {
+            return false;
+        }
+
+        if (config('sms.enabled') !== true) {
+            return false;
+        }
+
+        foreach (['sms.base_url', 'sms.api_key', 'sms.sender_id', 'sms.contract_version'] as $key) {
+            $value = config($key);
+
+            if (! is_string($value) || trim($value) === '') {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** Every piece of the R&E delivery contract present? Missing anything ⇒ fail closed to the fake. */

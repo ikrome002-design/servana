@@ -10,6 +10,13 @@ use App\Domain\Auth\Models\MerchantUserPermissionOverride;
 use App\Domain\Auth\Models\MfaCredential;
 use App\Domain\Auth\Models\Permission;
 use App\Domain\Auth\Seeders\PermissionSeeder;
+use App\Domain\Billing\Enums\BillingInterval;
+use App\Domain\Billing\Enums\MerchantBillingStatus;
+use App\Domain\Billing\Enums\MerchantSubscriptionStatus;
+use App\Domain\Billing\Models\MerchantSubscription;
+use App\Domain\Billing\Models\PlanEntitlement;
+use App\Domain\Billing\Models\SubscriptionPlan;
+use App\Domain\Billing\Models\SubscriptionPlanPrice;
 use App\Domain\Branches\Enums\BranchDayStatus;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
@@ -17,7 +24,10 @@ use App\Domain\Branches\Models\BranchUserAssignment;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Catalogue\Models\Service;
 use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
+use App\Domain\Clients\Enums\ConsentChannel;
+use App\Domain\Clients\Enums\ConsentState;
 use App\Domain\Clients\Models\Client;
+use App\Domain\Clients\Models\ClientConsent;
 use App\Domain\Compensation\Actions\CreatePayoutRunDraft;
 use App\Domain\Compensation\Models\CommissionLedgerEntry;
 use App\Domain\Compensation\Models\PersonnelPayoutRun;
@@ -28,6 +38,7 @@ use App\Domain\Files\Enums\FileScanStatus;
 use App\Domain\Files\Models\UploadedFile;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Invoicing\Models\Invoice;
+use App\Domain\Merchants\Enums\MerchantStatus;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
@@ -37,6 +48,7 @@ use App\Domain\Payments\Enums\PaymentRecordStatus;
 use App\Domain\Payments\Models\PaymentRecord;
 use App\Domain\Payments\Models\PaymentRecordingGroup;
 use App\Domain\Scheduling\Enums\QueueAssignmentMode;
+use App\Domain\Scheduling\Enums\ServiceSessionStatus;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Domain\Scheduling\Models\ServiceSession;
 use App\Models\User;
@@ -828,5 +840,122 @@ function draftRun(MerchantBranch $branch, string $currency = 'KES'): PersonnelPa
 {
     return app(CreatePayoutRunDraft::class)->handle(
         $branch, '2026-07-01', '2026-07-31', $currency, User::factory()->create(),
+    );
+}
+
+/*
+ |--------------------------------------------------------------------------
+ | Phase 21S — Personnel bulk SMS shared helpers
+ |--------------------------------------------------------------------------
+ */
+
+/**
+ * A complete, valid Personnel-SMS scenario (Phase 21S): an ACTIVE merchant whose billing status
+ * allows mutations, an active subscription on a plan that ENABLES the `sms` entitlement, a
+ * branch-assigned Personnel member with a staff profile, and one served + opted-in client.
+ *
+ * "Served" means exactly what Plan §64 means: a COMPLETED service session performed by THIS staff
+ * profile. Every eligibility test builds on this and removes one ingredient.
+ *
+ * @return array{merchant: Merchant, branch: MerchantBranch, user: User, membership: MerchantUser, staff: StaffProfile, plan: SubscriptionPlan, client: Client, service: Service}
+ */
+function smsScenario(bool $withSmsEntitlement = true): array
+{
+    $merchant = Merchant::factory()->create([
+        'status' => MerchantStatus::Active,
+        'billing_status' => MerchantBillingStatus::Active,
+    ]);
+    $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
+
+    [$user, $membership, $staff] = branchStaff($merchant, $branch, MerchantUserRole::Personnel);
+
+    $plan = SubscriptionPlan::factory()->create();
+    PlanEntitlement::query()->create([
+        'plan_id' => $plan->id,
+        'entitlement_key' => 'sms',
+        'limit_int' => null,
+        'enabled' => $withSmsEntitlement,
+    ]);
+    $price = SubscriptionPlanPrice::factory()->create([
+        'plan_id' => $plan->id,
+        'billing_interval' => BillingInterval::Monthly,
+    ]);
+    MerchantSubscription::factory()->create([
+        'merchant_id' => $merchant->id,
+        'plan_id' => $plan->id,
+        'price_id' => $price->id,
+        'status' => MerchantSubscriptionStatus::Active,
+        'billing_interval' => BillingInterval::Monthly,
+    ]);
+
+    $service = Service::factory()->create(['merchant_id' => $merchant->id, 'branch_id' => $branch->id]);
+    $client = smsServedClient($merchant, $branch, $staff, $service);
+
+    return compact('merchant', 'branch', 'user', 'membership', 'staff', 'plan', 'client', 'service');
+}
+
+/**
+ * A client this staff profile PERSONALLY SERVED (one completed service session) and who has opted
+ * in to SMS. `$consent` may be `ConsentState::OptedOut`, or null to record NO consent row at all —
+ * which is deliberately different from opting out, because absence is never consent.
+ */
+function smsServedClient(
+    Merchant $merchant,
+    MerchantBranch $branch,
+    StaffProfile $staff,
+    Service $service,
+    ?ConsentState $consent = ConsentState::OptedIn,
+    ServiceSessionStatus $sessionStatus = ServiceSessionStatus::Completed,
+    string $phone = '+254712345678',
+): Client {
+    $client = Client::factory()->withPhone($phone)->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+    ]);
+
+    ServiceSession::factory()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'client_id' => $client->id,
+        'service_id' => $service->id,
+        'staff_profile_id' => $staff->id,
+        'status' => $sessionStatus,
+        // service_sessions_completed_started_check: a completed session always has a start.
+        'started_at' => $sessionStatus === ServiceSessionStatus::Pending ? null : now()->subDay()->subHour(),
+        'completed_at' => $sessionStatus === ServiceSessionStatus::Completed ? now()->subDay() : null,
+        'cancelled_at' => $sessionStatus === ServiceSessionStatus::Cancelled ? now()->subDay() : null,
+        // service_sessions_cancellation_reason_check: a cancelled session always has a reason.
+        'cancellation_reason' => $sessionStatus === ServiceSessionStatus::Cancelled ? 'Client did not attend.' : null,
+    ]);
+
+    if ($consent !== null) {
+        ClientConsent::factory()->create([
+            'merchant_id' => $merchant->id,
+            'branch_id' => $branch->id,
+            'client_id' => $client->id,
+            'channel' => ConsentChannel::Sms,
+            'state' => $consent,
+        ]);
+    }
+
+    return $client;
+}
+
+/** Compose an SMS draft through the real HTTP surface and return the response. */
+function smsDraft(User $actor, array $clientUlids, string $body = 'Thank you for visiting us today.'): TestResponse
+{
+    return test()->actingAs($actor, 'sanctum')->postJson('/api/v1/personnel/me/sms-campaigns', [
+        'client_ulids' => $clientUlids,
+        'message_body' => $body,
+    ]);
+}
+
+/** Confirm a campaign through the real HTTP surface (financial route: Idempotency-Key required). */
+function smsConfirm(User $actor, string $campaignUlid, ?string $key = null): TestResponse
+{
+    return test()->actingAs($actor, 'sanctum')->postJson(
+        "/api/v1/personnel/me/sms-campaigns/{$campaignUlid}/confirm",
+        ['acknowledged' => true],
+        ['Idempotency-Key' => $key ?? (string) Str::uuid()],
     );
 }

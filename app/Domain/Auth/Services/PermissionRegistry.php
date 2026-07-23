@@ -222,6 +222,16 @@ final class PermissionRegistry
         // see ONLY sessions assigned to their own staff profile; no branch-wide
         // sessions, no mutation, no contact export, no earned/payable claim.
         'personnel.my_sessions.view' => ['personnel', 'View own assigned service sessions (own scope).', false],
+        // Personnel bulk SMS to PERSONALLY SERVED clients (Plan §19.3, §64; ADR-010; Phase 21S).
+        // `my_served_clients.view` is the masked, paginated, rate-limited READ of clients this
+        // staff profile personally served — the entry point of the SMS flow. It is a READ
+        // (`allow_read` in billing read-only) and carries NO entitlement, so a merchant in grace can
+        // still see their served clients. `my_sms.send` is the SENDING capability: entitlement
+        // `sms`, blocked in billing read-only, warn-severity audit. NEITHER implies any export —
+        // Plan §19.4 makes "Personnel can never gain contact export" non-overridable, and no
+        // contact-export key exists anywhere in this catalogue.
+        'personnel.my_served_clients.view' => ['personnel', 'View own personally served clients (own scope; masked contact; no export).', false],
+        'personnel.my_sms.send' => ['personnel', 'Send SMS to own personally served clients (own scope; no contact export, ADR-010).', true],
         // Invoices (Plan §19.3, §40; Phase 17 canonical keys — reconciled from the
         // legacy placeholder `invoices.create/view/void_unpaid/void_paid/adjust_paid`
         // baseline, which mis-granted invoice creation to Branch Manager + Merchant
@@ -509,6 +519,10 @@ final class PermissionRegistry
             'personnel.my_compensation.view', 'personnel.my_earnings.view',
             'personnel.my_statements.download', 'personnel.my_payouts.view',
             'personnel.my_earnings_query.create',
+            // Phase 21S — own-scope served-client read + SMS send (Plan §64). Granted to
+            // PERSONNEL ONLY: no other role receives either key, and neither is grantable as an
+            // override (both are non_overridable in the matrix). Contact export does not exist.
+            'personnel.my_served_clients.view', 'personnel.my_sms.send',
         ],
         self::ROLE_AUDIT => [
             // No invoice key (Plan §19.3): Audit reads finance activity through the

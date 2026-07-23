@@ -141,6 +141,9 @@ function expectedMatrix(): array
             'personnel.my_compensation.view', 'personnel.my_earnings.view',
             'personnel.my_statements.download', 'personnel.my_payouts.view',
             'personnel.my_earnings_query.create',
+            // Phase 21S — own-scope served-client read + SMS send (Plan §64; ADR-010). No other
+            // role receives either key, and neither is grantable as an override.
+            'personnel.my_served_clients.view', 'personnel.my_sms.send',
         ],
         'audit' => [
             // Phase 17: no invoice key (Audit reads finance activity via the finance-domain audit view).
