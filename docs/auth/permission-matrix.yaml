@@ -2509,7 +2509,7 @@ keys:
     entitlement_key: sms
     mfa_required: false
     step_up_required: false
-    audit_event: personnel.sms.campaign_confirmed
+    audit_event: "personnel.sms.billing_entry_created; personnel.sms.campaign_cancelled; personnel.sms.campaign_confirmed; personnel.sms.campaign_created; personnel.sms.previewed; personnel.sms.recipient_suppressed"
     audit_severity: warn
     backend_policy_or_service: "served-clients only; no contact export (ADR-010)"
     frontend_ux_usage: visibility_only

@@ -77,7 +77,7 @@ it('fails CLOSED in the real HTTP client when any credential is missing', functi
 
 it('defaults every SMS provider secret to null — nothing is ever guessed', function (): void {
     foreach (['sms.base_url', 'sms.api_key', 'sms.sender_id', 'sms.contract_version'] as $key) {
-        expect(env(strtoupper(str_replace('.', '_', $key))))->toBeNull("{$key} must have no default");
+        expect(config($key))->toBeNull("{$key} must have no default");
     }
 
     expect(config('sms.enabled'))->toBeFalse();

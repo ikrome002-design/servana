@@ -33,10 +33,10 @@ return [
     | Provider credentials. No default: unset ⇒ the real client cannot be constructed and the fake
     | is bound. HttpSmsProviderClient THROWS on a missing value rather than sending unauthenticated.
     */
-    'base_url' => env('SMS_BASE_URL'),
-    'api_key' => env('SMS_API_KEY'),
-    'sender_id' => env('SMS_SENDER_ID'),
-    'contract_version' => env('SMS_CONTRACT_VERSION'),
+    'base_url' => env('SMS_BASE_URL') ?: null,
+    'api_key' => env('SMS_API_KEY') ?: null,
+    'sender_id' => env('SMS_SENDER_ID') ?: null,
+    'contract_version' => env('SMS_CONTRACT_VERSION') ?: null,
 
     /*
     | Composition limits (Plan §64 "configurable max batch" / "configurable char/segment limit").
