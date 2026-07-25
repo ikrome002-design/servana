@@ -1,8 +1,9 @@
 import js from '@eslint/js';
+import globals from 'globals';
 import vue from 'eslint-plugin-vue';
 import tseslint from 'typescript-eslint';
 
-// Flat config (ESLint 9). Lints the Vue 3 + TypeScript SPA. No jQuery, no JS
+// Flat config (ESLint 10). Lints the Vue 3 + TypeScript SPA. No jQuery, no JS
 // device detection (CLAUDE.md §6.1) — enforced by review + the absence of those
 // deps; the no-restricted-imports rule below blocks jQuery at the lint layer.
 export default tseslint.config(
@@ -19,6 +20,14 @@ export default tseslint.config(
       // Node tooling scripts (not part of the SPA bundle).
       'scripts/**',
     ],
+  },
+  // The SPA runs in the browser. eslint-plugin-vue 9 supplied these globals
+  // implicitly from its flat base config; v10 no longer does, so declare them
+  // here to keep `no-undef` accurate for browser APIs (REM-DEP-002).
+  {
+    languageOptions: {
+      globals: { ...globals.browser },
+    },
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

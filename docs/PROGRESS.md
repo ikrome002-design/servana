@@ -89,6 +89,69 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
+## REM-DEP-002 — npm audit high-severity remediation (local_complete pending PR)
+
+Not a Plan §80 feature phase — a **dependency remediation** carried on its own branch
+`remediation/rem-dep-002-npm-audit`, cut from `origin/main` = `d8a7a15…` (Phase 21S PR #45
+merge). Register item **REM-DEP-002** (added 2026-07-25; it had never been recorded in
+`docs/remediation/register.yaml` before). Proof: `docs/proof/rem-dep-002.md`.
+
+- **Why it exists.** CI's Frontend job ends with `npm audit --audit-level=high`
+  (`.github/workflows/ci.yml:184`). On `main` that command exits 1 with **15 high-severity
+  findings**, so the job fails on *any* branch cut from `main` — including the pending
+  Phase 22 PR — for a reason unrelated to the phase under review. Fixed on its own branch
+  so the audit gate is never weakened and Phase 22 is never asked to carry an unrelated fix.
+- **Root cause.** Only **two** published advisories, not fifteen:
+  `GHSA-mh99-v99m-4gvg` (`brace-expansion <=5.0.7`) and `GHSA-r28c-9q8g-f849`
+  (`postcss <=8.5.17`); the other 13 entries are transitive propagation through `minimatch`.
+  The only patched `brace-expansion` is **5.0.8**, reachable only via `minimatch >= 10.0.3`.
+  ESLint 9 pins `minimatch@^3.1.5` and `@eslint/eslintrc` (which default-imports it), so that
+  chain cannot be cleared by an override — npm's own `fixAvailable` is `eslint@10.8.0`,
+  `isSemVerMajor: true`.
+- **Fix.** Semver-major upgrade *only* where an override is provably unsafe — `eslint`
+  `^9.13.0 → ^10.8.0`, `@eslint/js → ^10.0.1`, `eslint-plugin-vue → ^10.10.0`,
+  `typescript-eslint → ^8.65.0`, plus `vue-eslint-parser ^10.4.1` (now a peer) and
+  `globals ^17.7.0` (now direct). Everywhere the consumer uses minimatch's **named** exports,
+  a **scoped `minimatch ^10.2.5` override** (`@redocly/openapi-core`, `@vue/language-core`,
+  `editorconfig`, `glob`) avoids four further majors — `vue-tsc`, `openapi-typescript`,
+  `@vue/test-utils` and `glob` are **unchanged**. `postcss` cleared by lockfile refresh inside
+  the existing `^8.4.47` range. Rejected with evidence: `npm audit fix --force` (downgrades
+  `openapi-typescript` to 6.7.6 and `@vue/test-utils` to 2.4.0), `@redocly/openapi-core@2`
+  (`ERR_PACKAGE_PATH_NOT_EXPORTED` against every `openapi-typescript@7.x`), and `vue-tsc@3`
+  (new `TS6133` in Phase 21S `ClientSms.vue`).
+- **Consequential edits.** `eslint.config.js` re-declares `globals.browser`
+  (eslint-plugin-vue 9 injected it implicitly from its flat base config; v10 does not — a
+  restoration, not a relaxation), and `BillingSettings.vue` changes `let next = index` to
+  `let next: number` for `no-useless-assignment`, promoted into `js.configs.recommended` by
+  ESLint 10. **Four files changed**; no backend file, route, table, permission key, policy,
+  migration, generated artifact or CI configuration touched.
+- **Gates (all green).** `npm audit --audit-level=high` → **0 vulnerabilities** (and 0 at every
+  severity); ESLint **0 errors / 138 warnings — rule-for-rule identical to the ESLint 9
+  baseline** measured in a throwaway worktree, so no lint regression; `vue-tsc` clean;
+  `api:contract:check` **OK 242 paths / 288 operations** (unchanged); Vitest **501/501**;
+  Vite build OK; Playwright **453 passed**; gitleaks no leaks; `git diff --check` clean;
+  `composer validate --strict` OK; Pint 1611 files; Larastan L8 clean (1257 files).
+  Vitest/Playwright counts match the Phase 21S baseline exactly — no test changed, skipped or
+  weakened.
+- **Backend suite is NOT green, and it is not this change's doing.** `php artisan test` reports
+  **24 failed / 7 skipped / 1982 passed**. Proven pre-existing: `git diff origin/main` contains
+  **zero** backend files, and re-running the failing file on a stashed, byte-identical
+  `origin/main` checkout reproduces **exactly the same 6 failed / 1 passed**. Proximate cause is
+  the `tests/Pest.php:444` helper calling `POST /queue-entries/{id}/call` on an entry still in
+  `waiting`, a transition `QueueEntryStatus::allowedTransitions()` forbids by design
+  (`waiting → assigned → called`); the trigger looks environmental (likely time-of-day personnel
+  availability — these runs executed 23:00–00:00 `Africa/Nairobi`), since Phase 21S recorded
+  2006 passed / 0 failed on the same unchanged code days earlier. **Flagged for separate
+  investigation; deliberately not fixed here** — backend behaviour is outside REM-DEP-002's scope,
+  and it does not affect the Frontend job this remediation exists to unblock.
+- **Lifecycle.** ✅ **`local_complete pending PR CI/review/merge`** — single commit pushed to
+  `origin/remediation/rem-dep-002-npm-audit`; `origin/main…HEAD = 0 1`. Becomes
+  `verified_complete` only on the reviewed PR merge with green CI.
+- **Ordering.** Phase 22 stays `local_complete` on `phase-22-search` (`edff8c0`) with **no PR**.
+  After this remediation merges: update `phase-22-search` from `origin/main` (prefer a merge,
+  not a rebase), rerun the Phase 22 gates and `npm audit --audit-level=high`, then open the
+  Phase 22 PR. Gate W remains **CLOSED** — 20D-W / 21R-B / 21N stay blocked; Phase 23 not started.
+
 ## Phase 21S — Personnel Bulk SMS to Personally Served Clients (local_complete pending PR)
 
 Implements Plan **§64** (Personnel Bulk SMS), **§80 Phase 21S**, **§13.13** canonical DDL for
