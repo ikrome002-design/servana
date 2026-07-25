@@ -91,6 +91,11 @@ merchant_administrator:
     availability: live
     route: merchant.get-started
     phase: Phase 11
+  - key: merchant.search
+    label: Search
+    availability: live
+    route: search
+    phase: Phase 22
   - key: merchant.dashboard
     label: Dashboard
     availability: live
@@ -154,6 +159,11 @@ merchant_branch:
     availability: live
     route: branch.get-started
     phase: Phase 11
+  - key: branch.search
+    label: Search
+    availability: live
+    route: search
+    phase: Phase 22
   - key: branch.directory
     label: Branches
     availability: live
@@ -237,6 +247,11 @@ merchant_human_resource:
     availability: live
     route: hr.get-started
     phase: Phase 11
+  - key: hr.search
+    label: Search
+    availability: live
+    route: search
+    phase: Phase 22
   - key: hr.staff
     label: Staff
     availability: live
@@ -290,6 +305,11 @@ merchant_finance:
     availability: live
     route: finance.get-started
     phase: Phase 11
+  - key: finance.search
+    label: Search
+    availability: live
+    route: search
+    phase: Phase 22
   - key: finance.pending-validations
     label: Pending validations
     availability: live
@@ -394,6 +414,11 @@ merchant_front_office:
     availability: live
     route: front-office.get-started
     phase: Phase 11
+  - key: front-office.search
+    label: Search
+    availability: live
+    route: search
+    phase: Phase 22
   - key: front-office.clients
     label: Clients
     availability: live
@@ -453,6 +478,11 @@ merchant_personnel:
     availability: live
     route: personnel.get-started
     phase: Phase 11
+  - key: personnel.search
+    label: Search
+    availability: live
+    route: search
+    phase: Phase 22
   - key: personnel.my-queue
     label: My queue
     availability: live
@@ -500,6 +530,11 @@ merchant_audit:
     availability: live
     route: audit.get-started
     phase: Phase 11
+  - key: audit.search
+    label: Search
+    availability: live
+    route: search
+    phase: Phase 22
   - key: audit.branch-events
     label: Branch audit log
     availability: live

@@ -17,6 +17,9 @@ function makeRouter(): Router {
       { path: '/front-office', name: 'front-office.landing', component: stub },
       { path: '/front-office/get-started', name: 'front-office.get-started', component: stub },
       { path: '/legal/:role/:doc', name: 'legal.document', component: stub },
+      // Phase 22 global search is in every merchant-role navigation, so the test router must
+      // resolve it or RouterLink cannot render the item.
+      { path: '/search', name: 'search', component: stub },
     ],
   });
 }

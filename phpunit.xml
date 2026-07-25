@@ -30,6 +30,15 @@
         <env name="MAIL_MAILER" value="array" force="true"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <!-- Phase 22 (D-22-02): Scout's NullEngine by default, so the pre-existing
+             suite acquires zero search-indexing coupling — no network call to
+             Meilisearch, no async-index wait, no behaviour change. The Phase 22
+             tests that must prove real engine behaviour opt in explicitly and
+             REQUIRE a reachable engine (they fail, never skip, without one — the
+             CI Backend job runs a getmeili/meilisearch:v1.10 service for exactly
+             this reason, and the dev stack already runs one). -->
+        <env name="SCOUT_DRIVER" value="null" force="true"/>
+        <env name="SCOUT_PREFIX" value="servana_testing_" force="true"/>
         <env name="SESSION_DRIVER" value="array" force="true"/>
         <env name="SANCTUM_STATEFUL_DOMAINS" value="localhost" force="true"/>
         <env name="TELESCOPE_ENABLED" value="false"/>

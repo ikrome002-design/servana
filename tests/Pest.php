@@ -959,3 +959,141 @@ function smsConfirm(User $actor, string $campaignUlid, ?string $key = null): Tes
         ['Idempotency-Key' => $key ?? (string) Str::uuid()],
     );
 }
+
+/*
+ |--------------------------------------------------------------------------
+ | Phase 22 — Search
+ |--------------------------------------------------------------------------
+ */
+
+/**
+ * A two-branch merchant with a Front-Office actor assigned to branch A ONLY, and the same client
+ * name present in BOTH branches. That shape is what makes cross-branch leakage detectable: a query
+ * for the name must return the branch-A row and never the branch-B row, even though both match.
+ *
+ * @return array{merchant: Merchant, branchA: MerchantBranch, branchB: MerchantBranch, frontOffice: User, foMembership: MerchantUser, foProfile: StaffProfile, serviceA: Service, serviceB: Service, clientA: Client, clientB: Client}
+ */
+function searchScenario(string $clientName = 'Amina Wanjiku'): array
+{
+    $merchant = Merchant::factory()->active()->create();
+    $branchA = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
+    $branchB = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
+
+    [$frontOffice, $foMembership, $foProfile] = branchStaff($merchant, $branchA, MerchantUserRole::FrontOffice);
+
+    $serviceA = Service::factory()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branchA->id,
+        'name' => 'Signature Braiding',
+    ]);
+    $serviceB = Service::factory()->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branchB->id,
+        'name' => 'Signature Braiding',
+    ]);
+
+    $clientA = Client::factory()->withPhone('+254712345678')->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branchA->id,
+        'full_name' => $clientName,
+    ]);
+    $clientB = Client::factory()->withPhone('+254733111222')->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branchB->id,
+        'full_name' => $clientName,
+    ]);
+
+    return compact(
+        'merchant', 'branchA', 'branchB', 'frontOffice', 'foMembership', 'foProfile',
+        'serviceA', 'serviceB', 'clientA', 'clientB',
+    );
+}
+
+/**
+ * A DIFFERENT merchant holding a client with the same name — the cross-tenant control row.
+ *
+ * @return array{merchant: Merchant, branch: MerchantBranch, client: Client}
+ */
+function foreignSearchScenario(string $clientName = 'Amina Wanjiku'): array
+{
+    $merchant = Merchant::factory()->active()->create();
+    $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
+    $client = Client::factory()->withPhone('+254799888777')->create([
+        'merchant_id' => $merchant->id,
+        'branch_id' => $branch->id,
+        'full_name' => $clientName,
+    ]);
+
+    return compact('merchant', 'branch', 'client');
+}
+
+/** Call the search endpoint as an actor. */
+function search(User $actor, array $query): TestResponse
+{
+    return test()->actingAs($actor, 'sanctum')->getJson('/api/v1/search?'.http_build_query($query));
+}
+
+/**
+ * Every `type` value present in a search response, deduplicated.
+ *
+ * @return list<string>
+ */
+function searchResultTypes(TestResponse $response): array
+{
+    /** @var array<int, array<string, mixed>> $data */
+    $data = $response->json('data') ?? [];
+
+    return array_values(array_unique(array_map(
+        static fn (array $row): string => (string) ($row['type'] ?? ''),
+        $data,
+    )));
+}
+
+/**
+ * Every `ulid` in a search response, restricted to one document type.
+ *
+ * @return list<string>
+ */
+function searchResultUlids(TestResponse $response, ?string $type = null): array
+{
+    /** @var array<int, array<string, mixed>> $data */
+    $data = $response->json('data') ?? [];
+
+    $rows = $type === null
+        ? $data
+        : array_filter($data, static fn (array $row): bool => ($row['type'] ?? null) === $type);
+
+    return array_values(array_map(static fn (array $row): string => (string) $row['ulid'], $rows));
+}
+
+/**
+ * PHP source with every comment removed.
+ *
+ * Phase 22 scans its own source to prove absences ("no Wallet field", "no scout:flush"), and those
+ * absences are DOCUMENTED in docblocks — so scanning raw source would flag the documentation as the
+ * violation. Stripping comments first makes the scan measure runtime code only.
+ */
+function phpCodeWithoutComments(string $source): string
+{
+    $code = '';
+
+    foreach (token_get_all($source) as $token) {
+        if (is_array($token) && in_array($token[0], [T_COMMENT, T_DOC_COMMENT], true)) {
+            continue;
+        }
+
+        $code .= is_array($token) ? $token[1] : $token;
+    }
+
+    return $code;
+}
+
+/**
+ * How long a Phase 22 engine test waits for a Meilisearch task.
+ *
+ * meilisearch-php defaults `waitForTask()` to 5000 ms. That is ample in isolation but NOT under the
+ * full suite, where these tests create and delete their own per-run indexes while everything else
+ * runs — the task queue backs up and a 5 s budget expires on a healthy engine. An explicit, generous
+ * budget makes the engine tests load-independent instead of quietly flaky.
+ */
+const P22_TASK_TIMEOUT_MS = 60_000;

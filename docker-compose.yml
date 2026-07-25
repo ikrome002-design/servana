@@ -191,7 +191,12 @@ services:
     image: servana-app:dev
     # Magic Link mail takes queue priority (Plan §20); list mail first. Full
     # per-queue config arrives with Horizon in Phase 21.
-    command: ["php", "artisan", "queue:work", "--queue=mail,default", "--tries=1", "--sleep=1", "--max-time=3600"]
+    #
+    # `search-index` is LAST on purpose (Phase 22): Scout index updates are the lowest-priority
+    # work in the system — search re-resolves every candidate against PostgreSQL, so a lagging
+    # index can only ever cause a MISSING result, never a wrong or leaked one. It is listed here
+    # because a queue with no consumer would mean index updates never apply at all.
+    command: ["php", "artisan", "queue:work", "--queue=mail,default,search-index", "--tries=1", "--sleep=1", "--max-time=3600"]
     environment: *app-environment
     volumes:
       - .:/var/www/html

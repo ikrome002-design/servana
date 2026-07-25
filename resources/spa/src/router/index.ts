@@ -9,6 +9,7 @@ import { hrRoutes } from './routes/hr';
 import { merchantRoutes } from './routes/merchant';
 import { personnelRoutes } from './routes/personnel';
 import { platformRoutes } from './routes/platform';
+import { searchRoutes } from './routes/search';
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -31,6 +32,7 @@ export const router = createRouter({
       component: () => import('@/pages/legal/LegalDocument.vue'),
     },
     ...authRoutes,
+    ...searchRoutes,
     ...platformRoutes,
     ...merchantRoutes,
     ...branchRoutes,

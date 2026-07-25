@@ -83,13 +83,104 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 21R-A | Citrus Refer & Earn — referral capture, outbox, signed delivery | ✅ `verified_complete` — **PR #44** "Phase 21R-A: Implement referral capture and R&E outbox" MERGED into `main` (**merge commit `b5a8733616a4603996e18695db31528299cdf8d7`** == `origin/main`, merged `2026-07-22T10:17:57Z`; **GitHub merge-commit strategy, not squash**; base before 21R-A `6047835b3a388fff5cc92a13370963635700f5e3`; implementation commit `a9ee4445d56be29217c9db146d585228bf3f27ed`; CI-stabilization / schema-test patch + final PR head `7b7cdb342ffa37df09ac91a030d8417746266710`). Final CI run **`29909918754`** (`event=pull_request`, `conclusion=success`) — five required checks **Backend — Pint, Larastan, Pest** / **Frontend — ESLint, vue-tsc, Vitest, build** / **Docker — build images** / **Security — gitleaks** / **E2E — Playwright** all SUCCESS. `reviewDecision` **blank** under the solo-maintainer governance exception — **not** independent approval; governance evidence posted as a PR comment after green CI: <https://github.com/ikrome002-design/servana/pull/44#issuecomment-5044610118>. Branch cleanup: remote `phase-21r-a-referral-capture-outbox` deleted by the merge (0 refs); stale local branch deleted with `git branch -d` (was `7b7cdb3`, reported merged). Reconciled during Phase 21S Increment 1. `REM-RE-002` (no R&E sandbox credentials / algorithm / product code — fixture-verified only) stays **open** and must close before Phase 25. See the Phase 21R-A section + `docs/proof/phase-21r-a.md`. |
 | 21R-B | R&E subscription events, qualification engine, inbound reconciliation | ⛔ Blocked — entry criteria require 21R-A **and** 20D-W (payment received/cleared sources), and 20D-W is blocked by Gate W. Not started. |
 | 21N | Queues / notifications / scheduled reports | ⛔ Blocked — Plan §80.1 dependency `(17,18,20D-W) → 21N`; 20D-W is blocked by Gate W. Not started. |
-| 21S | Personnel bulk SMS to personally served clients | ✅ `local_complete pending PR CI/review/merge` — branch `phase-21s-personnel-bulk-sms` off `b5a8733…` (PR #44 merge commit), single completion commit, pushed; `origin/main…HEAD = 0 1`. Executable because Plan §80.1 lists `16C + 15A(consent) → 21S` and both are `verified_complete` with live `client_consents` + `service_sessions` substrate; Gate W remains CLOSED so 20D-W / 21R-B / 21N stay blocked. Closes **REM-SMS-001** (final closure on merge); opens **REM-SMS-002** (deferred live-provider verification, before Phase 25). Final local gates: composer validate OK; Pint 1611 clean; Larastan L8 0 errors (1257); **full backend serial 2006 passed / 7 skipped / 0 failed / 12414 assertions** and **`--parallel` identical 2006/7/0 (4 procs)**; disposable PG16.14 proof `servana_p21s_proof_*` (118 migrations from zero, 97 tables, 4/4 SMS tables, phone_encrypted nullable, 5 triggers, 0 forbidden tables, dropped, dev DB untouched); OpenAPI **242 paths / 288 operations** deterministic (openapi.json/api.ts/permissions.ts byte-identical 2×), `permission-types --check` + `api:contract:check` green; ESLint 0 errors / 138 baseline warnings; vue-tsc clean; Vitest 501/501; build OK; Playwright 21S 21/21 + full **453 passed / 0 failed** (one unrelated appointments load-flake reran clean, isolated 13/13); npm audit 0 vulnerabilities; composer audit no advisories; gitleaks no leaks; Docker dev app + prod app + prod nginx built. Closure-session fixes: F1 Pint CRLF/style on two 21S test files; F2 stale committed OpenAPI still carried `phone_encrypted` after the Form Requests moved denylist→allowlist (regenerated, counts unchanged 242/288); F3 Playwright load-flake (no code change). **Not** `verified_complete`/`ci_passed`/`merged` — no PR exists. See the Phase 21S section + `docs/proof/phase-21s.md`. |
-| 22 | Search | ⬜ Not started |
-| 23 | Security hardening + responsive/dark/a11y release audit + threat-model | ⬜ Not started |
+| 21S | Personnel bulk SMS to personally served clients | ✅ `verified_complete` — **PR #45** "Phase 21S: Implement personnel bulk SMS" MERGED into `main` (merge commit `d8a7a15603c22e41354e570f4d2735935468d973` == `origin/main`; implementation commit `9d2c547a4a8e8af76a80bc138ae0b608e448dfe7`; CI-fix commit `34a5921ca5b2f4502e20172c10ed472d7d416954`; final PR head / empty PR-ref resync commit `dc48d095529757dd1282ad5a8659e8e087cbc2a8`; base `main`; merged `2026-07-23T09:13:10Z`). Final CI run **29992575586** on head `dc48d09…`, event `pull_request`, conclusion `success` — five required jobs all SUCCESS (Backend — Pint, Larastan, Pest; Frontend — ESLint, vue-tsc, Vitest, build; Docker — build images; Security — gitleaks; E2E — Playwright). `reviewDecision` **blank** under the PR-specific solo-maintainer governance exception recorded at [PR #45 comment 5056479540](https://github.com/ikrome002-design/servana/pull/45#issuecomment-5056479540) — **not** independent reviewer approval. Local **and** remote `phase-21s-personnel-bulk-sms` branches deleted. **REM-SMS-001** closed `verified_complete` on the merge; **REM-SMS-002** remains open (deferred live SMS provider/callback verification, must close before Phase 25). (Reconciled from `local_complete` on the `phase-22-search` branch, per the established convention that the next branch reconciles the previous phase.) Branch was off `b5a8733…` (PR #44 merge commit). Executable because Plan §80.1 lists `16C + 15A(consent) → 21S` and both are `verified_complete` with live `client_consents` + `service_sessions` substrate; Gate W remains CLOSED so 20D-W / 21R-B / 21N stay blocked. Closes **REM-SMS-001** (final closure on merge); opens **REM-SMS-002** (deferred live-provider verification, before Phase 25). Final local gates: composer validate OK; Pint 1611 clean; Larastan L8 0 errors (1257); **full backend serial 2006 passed / 7 skipped / 0 failed / 12414 assertions** and **`--parallel` identical 2006/7/0 (4 procs)**; disposable PG16.14 proof `servana_p21s_proof_*` (118 migrations from zero, 97 tables, 4/4 SMS tables, phone_encrypted nullable, 5 triggers, 0 forbidden tables, dropped, dev DB untouched); OpenAPI **242 paths / 288 operations** deterministic (openapi.json/api.ts/permissions.ts byte-identical 2×), `permission-types --check` + `api:contract:check` green; ESLint 0 errors / 138 baseline warnings; vue-tsc clean; Vitest 501/501; build OK; Playwright 21S 21/21 + full **453 passed / 0 failed** (one unrelated appointments load-flake reran clean, isolated 13/13); npm audit 0 vulnerabilities; composer audit no advisories; gitleaks no leaks; Docker dev app + prod app + prod nginx built. Closure-session fixes: F1 Pint CRLF/style on two 21S test files; F2 stale committed OpenAPI still carried `phone_encrypted` after the Form Requests moved denylist→allowlist (regenerated, counts unchanged 242/288); F3 Playwright load-flake (no code change). **Not** `verified_complete`/`ci_passed`/`merged` — no PR exists. See the Phase 21S section + `docs/proof/phase-21s.md`. |
+| 22 | Search | 🟡 `local_complete pending PR CI/review/merge` — branch `phase-22-search` off `d8a7a15…` (the verified PR #45 merge commit), single completion commit, pushed; `origin/main…HEAD = 0 1`. **One gate is BLOCKED by a pre-existing dependency condition Phase 22 did not cause — see REM-DEP-002 and the Phase 22 section below.** Executable because Plan §80.1 line 2517 places `→ 22` after the 21S clause and 21S is `verified_complete`; **External Gate W re-verified CLOSED before branch creation** (`docs/integrations/wallet/gate-w-evidence.md`, `docs/integrations/wallet/` and `docs/proof/phase-20d-w.md` all absent; `docs/integrations/` holds only `refer-earn/`), so 20D-W stays blocked, 21R-B stays blocked behind 20D-W, and 21N stays blocked behind `(17,18,20D-W) → 21N` — Phase 22 is the next executable non-Wallet phase. Implements Plan **§68** + **§80 Phase 22**, under the **§64/§73 RK-05/§74/ADR-010** contact-protection invariants. **Decision D-22-01:** no global search permission exists or is added — `GET /api/v1/search` is an authenticated, tenant-scoped **aggregator** whose results are the intersection of the authority already governing each result type's own list/detail route; callers with no searchable authority receive a 200 empty collection (never 403, to avoid a catalogue existence oracle). See the Phase 22 section + [phase-22.md](proof/phase-22.md). |
+| 23 | Security hardening + responsive/dark/a11y release audit + threat-model | ⬜ Not started. Also inherits **REM-DEP-002** (npm high-severity advisory gate) if the dedicated dependency-remediation branch has not closed it by then. |
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
-## Phase 21S — Personnel Bulk SMS to Personally Served Clients (local_complete pending PR)
+## Phase 22 — Search (local_complete pending PR)
+
+Implements Plan **§68** (Search) and **§80 Phase 22**, under **§64**, **§73** (RK-05 personnel
+contact exfiltration), **§74**, **§24.5**, **§23/§24.1–24.2**, **§19.4** and **ADR-010**.
+Branch `phase-22-search` off **`d8a7a15…`** (the verified Phase 21S PR #45 merge commit).
+Proof: [phase-22.md](proof/phase-22.md). Specification:
+[search-catalogue.md](architecture/search/search-catalogue.md) ·
+[search-indexing.md](architecture/search/search-indexing.md) ·
+[search-security.md](architecture/search/search-security.md).
+
+**External Gate W re-verified CLOSED before branch creation** (`docs/integrations/wallet/`,
+`gate-w-evidence.md` and `docs/proof/phase-20d-w.md` all absent; `docs/integrations/` holds only
+`refer-earn/`). So **20D-W** stays blocked by Gate W, **21R-B** stays blocked behind 20D-W, **21N**
+stays blocked by `(17,18,20D-W) → 21N`, and Plan §80.1 line 2517 makes **Phase 22 the next
+executable non-Wallet phase**.
+
+**D-22-01 — the search gate adds no permission (escalated to the product owner and resolved).** The
+live matrix holds **130 active / 38 planned** keys and **none is owned by Phase 22**; no `search.*`
+key exists anywhere; the only search key is the front-office-only `front_office.search`. Rather than
+invent `search.global.view` or broaden that key, Phase 22 treats search as an **aggregator over
+existing authorities, not an independent data authority**. `GET /api/v1/search` is authenticated,
+tenant-scoped, active-membership-gated and rate-limited; each result type is admitted only after the
+server proves the caller already holds the authority governing that type's own list/detail route;
+and a caller with no searchable authority receives **200 + an empty collection, never 403** (a 403
+would be an existence oracle over the catalogue). Consequently
+`docs/auth/permission-matrix.yaml`, `PermissionRegistry`, `docs/proof/phase8-matrix.txt` and the
+generated `permissions.ts` are all **unmodified** — proven by `Phase22SearchGateTest`.
+
+**Three independent layers must agree before a row is returned:** the Meilisearch query carries a
+server-built `merchant_id`/`branch_id` filter; the candidate ids are re-resolved through the model's
+own tenant-scoped query with `BelongsToMerchant`/`BelongsToBranch` still applied; and every surviving
+record re-passes `Gate::allows('view')` — the same policy call its own detail route makes. A
+**deliberately poisoned index** (a foreign row written with this tenant's tenancy pair) is proven to
+return nothing, so security never depends on the engine.
+
+**Contact protection is a schema property, not a condition (D-22-03).** The search response has **no
+contact field at all** — no `phone`, `phone_masked`, `phone_last_four`, `email` or `email_masked` —
+even though four of the underlying canonical Resources return masked client contact today. Nothing
+sensitive is indexed (`phone_encrypted`, `email_encrypted`, `phone_index`, blind indexes,
+`StaffProfile::phone`, operator free text). Authorized **exact** phone lookup exists for Front Office
+through the existing keyed HMAC blind index, never reaches Meilisearch, returns the client's name
+only, and is **redacted out of `meta.query`** rather than echoed back; a partial phone fragment is
+not searchable anywhere.
+
+**Catalogue:** `client`, `staff`, `appointment`, `queue_entry`, `service_session`, `invoice`,
+`receipt` (indexed) + **`served_client`** (Personnel own-scope, **never indexed** — delegated to the
+Phase 21S `ServedClientSelector`). `service` and nine other candidates are deferred with recorded
+reasons. **No migration and no table** — Phase 22 is additive behaviour over existing substrate.
+
+**Gate evidence:** composer validate OK; Pint **1655 files PASS**; Larastan L8 **0 errors (1287
+files)**; full backend **serial 2229 passed / 7 skipped / 0 failed / 13336 assertions** (2006/7/0 at
+Phase 21S → +223) and `--parallel` identical; **27 real-Meilisearch tests** against the live
+`getmeili/meilisearch:v1.10` service (including the poisoned-index and settings-not-synced cases),
+now also wired into the CI Backend job as a service container so they run in CI and **fail rather
+than skip** without an engine; OpenAPI **243 paths / 289 operations** (242/288 → +1/+1) with
+`api:contract:check` OK and the generators proven **byte-identical across the baseline and two
+regeneration passes** (`permissions.ts` shows **no diff at all** — the mechanical proof of D-22-01);
+ESLint **0 errors / 138 baseline warnings** (no new warning); vue-tsc clean; Vitest **519/519**
+(501 → +18); build OK; Playwright **479 passed** (453 → +26) with axe serious/critical **0** across
+360/768/1280 × light/dark and at 200% zoom; `composer audit` no advisories; `gitleaks` no leaks;
+Docker dev app + prod app + prod nginx all built. The 7 skips are the pre-existing baseline (3
+ClamAV opt-in-profile + 4 threat-model placeholders). **No migration and no table.**
+
+**⛔ One gate is BLOCKED and it is NOT a Phase 22 regression — `REM-DEP-002`.**
+`npm audit --audit-level=high` reports **15 high findings** where Phase 21S recorded 0, against a
+`package.json`/`package-lock.json` that Phase 22 **did not touch**. Two upstream advisories published
+since the 21S run: `brace-expansion` GHSA-mh99-v99m-4gvg reached through `minimatch` by 12 packages
+(npm's only published fix is **eslint@10.8.0, a semver-major**, so a non-breaking `npm audit fix`
+cannot clear it — dry-run confirms 15 remain), and `postcss` GHSA-r28c-9q8g-f849 (non-breaking).
+Every affected package is a **devDependency** — production exposure is nil — but CI runs this gate in
+the Frontend job, so **it will fail the Phase 22 PR until remediated on its own authorized branch**
+(the pattern PR #42 already set for this repository). Fixing it inside Phase 22 would breach the
+scope-purity rule and ride a breaking lint-toolchain major along in a security-feature PR.
+
+## Phase 21S — Personnel Bulk SMS to Personally Served Clients (verified_complete)
+
+**Closure evidence (verified live on the `phase-22-search` branch, 2026-07-25).** PR
+[#45](https://github.com/ikrome002-design/servana/pull/45) "Phase 21S: Implement personnel bulk SMS"
+is `MERGED` into `main`, base `main`, head `phase-21s-personnel-bulk-sms`, not a draft, merged
+`2026-07-23T09:13:10Z`. Its three commits are each recorded exactly once: implementation
+`9d2c547a4a8e8af76a80bc138ae0b608e448dfe7`, CI-fix `34a5921ca5b2f4502e20172c10ed472d7d416954`,
+final head `dc48d095529757dd1282ad5a8659e8e087cbc2a8`. Merge commit
+`d8a7a15603c22e41354e570f4d2735935468d973` == `origin/main`. Final CI run
+[29992575586](https://github.com/ikrome002-design/servana/actions/runs/29992575586) — `pull_request`
+on `dc48d09…`, `completed`/`success`, all five required jobs SUCCESS. `reviewDecision` **blank**
+under the PR-specific solo-maintainer governance exception
+([comment 5056479540](https://github.com/ikrome002-design/servana/pull/45#issuecomment-5056479540),
+which states in terms that it "is not independent reviewer approval" and that "Gate W remains
+closed") — **not** independent reviewer approval. Local and remote
+`phase-21s-personnel-bulk-sms` branches both deleted. **REM-SMS-001 → `verified_complete`**;
+**REM-SMS-002** stays open (no SMS provider is pinned by the Plan; live provider/callback
+verification must close before Phase 25 exit).
 
 Implements Plan **§64** (Personnel Bulk SMS), **§80 Phase 21S**, **§13.13** canonical DDL for
 `personnel_sms_campaigns` / `personnel_sms_recipients` / `sms_delivery_attempts` /

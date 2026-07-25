@@ -75,6 +75,7 @@ use App\Http\Controllers\Api\V1\Scheduling\QueueConfigurationController;
 use App\Http\Controllers\Api\V1\Scheduling\QueueController;
 use App\Http\Controllers\Api\V1\Scheduling\ServiceSessionController;
 use App\Http\Controllers\Api\V1\Scheduling\StaffAvailabilityController;
+use App\Http\Controllers\Api\V1\Search\SearchController;
 use App\Http\Middleware\EnforceIdleTimeout;
 use App\Http\Middleware\EnsureActivePrincipal;
 use App\Http\Middleware\EnsureBillingMutable;
@@ -220,6 +221,21 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
         Route::middleware(EnsureMerchantActive::class)->group(function (): void {
             Route::get('merchant/dashboard', [MerchantDashboardController::class, 'show'])
                 ->name('merchant.dashboard');
+
+            // Search (Plan §68; Phase 22; decision D-22-01). A tenant-scoped, permission-aware
+            // AGGREGATOR: it grants access to no document type. Authentication + tenant context +
+            // active membership + `throttle:search` gate the ROUTE; every result type is admitted
+            // only after the server proves the caller already holds the authority governing that
+            // type's own list/detail route, and every returned record re-passes that type's own
+            // policy. There is deliberately NO `EnsurePermission` and no new permission key: the
+            // live matrix has no Phase 22 key and none was invented. A caller with no searchable
+            // authority gets 200 + an empty collection, never 403 (a 403 would be an existence
+            // oracle over the catalogue). GET reads need no RouteClass — RouteSecurityContractTest
+            // classifies non-GET routes only — matching `clients.index` / `appointments.index` /
+            // `staff.index`, which likewise authorize in their controllers.
+            Route::get('search', [SearchController::class, 'index'])
+                ->middleware('throttle:search')
+                ->name('search.index');
 
             // Merchant subscription self-service (Plan §22, §48, §49; Phase 20B). Merchant
             // Administrator, merchant scope. Reads (subscription/dashboard, plan options with

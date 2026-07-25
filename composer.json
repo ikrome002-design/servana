@@ -8,10 +8,13 @@
     "require": {
         "php": "^8.3",
         "dedoc/scramble": "^0.13.28",
+        "http-interop/http-factory-guzzle": "^1.2",
         "laravel/framework": "^12.61.1",
         "laravel/sanctum": "^4.3",
+        "laravel/scout": "^10.0",
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.0",
+        "meilisearch/meilisearch-php": "^1.10",
         "pragmarx/google2fa": "^8.0",
         "sentry/sentry-laravel": "^4.10"
     },

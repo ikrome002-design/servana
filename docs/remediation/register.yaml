@@ -693,9 +693,9 @@ items:
     test_plan: "Plan §64 / Correction 20.8 list — cannot view or message another personnel member's clients; no completed own session means no message; no contact export; billing/entitlement gates; cost-preview accuracy; duplicate-confirmation single send; opt-out suppression; cross-tenant/branch denial; no full-phone exposure; log redaction."
     proof_artifact: "docs/proof/phase-21s.md"
     owner: "21S"
-    completion_commit: null   # single completion commit created + pushed on phase-21s-personnel-bulk-sms (origin/main..HEAD = 0 1); hash recorded on the reconciling branch after merge, not via a second doc-only commit
-    reviewer: "TBD"
-    status: local_complete   # implementation + all local gates green (docs/proof/phase-21s.md §Quality gates); final closure -> verified_complete on the reviewed PR merge
+    completion_commit: "9d2c547a4a8e8af76a80bc138ae0b608e448dfe7"   # Phase 21S implementation commit; PR #45 also carried CI-fix 34a5921ca5b2f4502e20172c10ed472d7d416954 and final head dc48d095529757dd1282ad5a8659e8e087cbc2a8; merged as d8a7a15603c22e41354e570f4d2735935468d973
+    reviewer: "solo-maintainer governance exception (PR #45 comment 5056479540) — NOT independent reviewer approval; merge eligibility rested on final CI run 29992575586 (all five required jobs SUCCESS)"
+    status: verified_complete   # PR #45 MERGED into main as d8a7a15 (== origin/main) on 2026-07-23T09:13:10Z; final CI run 29992575586 conclusion success (Backend/Frontend/Docker/Security/E2E all SUCCESS); local + remote phase-21s-personnel-bulk-sms branches deleted; promoted on the phase-22-search branch per the convention that the next branch reconciles the previous phase
 
   - id: REM-SMS-002
     classification: C1
@@ -798,3 +798,42 @@ items:
     completion_commit: "81a5866 (PR #24 squash merge to main; foundation 73c7d26, implementation 23aeed1, final PR head 1fcfa40)"
     reviewer: "PR #24 MERGED into main (base main, merge commit 81a5866, 2026-06-28); CI run 28338582235 on head 1fcfa40 — five required checks (Backend — Pint/Larastan/Pest; Frontend — ESLint/vue-tsc/Vitest/build; Docker — build images; Security — gitleaks; E2E — Playwright) all SUCCESS; solo-maintainer governance exception (docs/governance/solo-maintainer-review-exception-pr-24.md), reviewDecision intentionally blank — NOT an independent approval."
     status: verified_complete   # PR #24 merged (81a5866); CI run 28338582235 five checks SUCCESS; governance exception recorded. REM-PERM-001 stays open (Phase 19 owns full permission-matrix closure).
+
+  - id: REM-DEP-002
+    classification: C1
+    gating_category: DEFERRED_VERIFICATION
+    scope_requirement: "Clear the npm high-severity advisory gate (`npm audit --audit-level=high`, enforced by the CI Frontend job at .github/workflows/ci.yml). Requires a deliberate ESLint 9 -> 10 MAJOR upgrade plus the non-breaking postcss bump, on its own authorized branch."
+    repository_evidence: >
+      Surfaced during the Phase 22 gate run (2026-07-25). `npm audit --audit-level=high`
+      reports 15 high findings; Phase 21S recorded 0 at its closure, and Phase 22 did NOT
+      touch package.json or package-lock.json (git status shows both unmodified on
+      phase-22-search), so these are newly PUBLISHED upstream advisories against an
+      unchanged lockfile rather than a Phase 22 regression. Two root causes:
+      (1) brace-expansion GHSA-mh99-v99m-4gvg (DoS via unbounded expansion) reached through
+      minimatch by @eslint/config-array, @eslint/eslintrc, eslint, eslint-plugin-vue, glob,
+      editorconfig, js-beautify, @vue/test-utils, @vue/language-core, vue-tsc,
+      @redocly/openapi-core and openapi-typescript — 12 of the 15 findings. npm reports
+      `fixAvailable = eslint@10.8.0, isSemVerMajor = true`, so it CANNOT be resolved by a
+      non-breaking `npm audit fix`; a dry run confirms 15 findings remain.
+      (2) postcss GHSA-r28c-9q8g-f849 (path traversal in previous-source-map auto-loading)
+      — direct devDependency, `fixAvailable = true`, non-breaking.
+    root_cause: "Upstream advisories published after the Phase 21S closure run. The blocking half is a transitive brace-expansion/minimatch chain whose only published fix is an ESLint major (9 -> 10), which changes the lint toolchain and config surface."
+    affected_files_tables_routes: "package.json; package-lock.json; eslint.config.* (ESLint 10 config-format migration); no application code, no route, no table."
+    security_data_business_impact: >
+      PRODUCTION EXPOSURE IS NIL: every affected package is a devDependency — eslint,
+      eslint-plugin-vue, vue-tsc, @vue/language-core, @vue/test-utils, openapi-typescript,
+      @redocly/openapi-core, js-beautify, editorconfig, glob, minimatch, brace-expansion —
+      plus postcss, a build-time CSS processor. None ships in the SPA bundle at runtime and
+      none is reachable from the Laravel runtime. The exposure is to the CI and developer
+      toolchain (a crafted glob pattern or a crafted sourceMappingURL during a build).
+      OPERATIONAL IMPACT IS REAL: the CI Frontend job runs `npm audit --audit-level=high`,
+      so this fails the Frontend check on ANY pull request until remediated — including the
+      Phase 22 PR.
+    precise_correction: "On a dedicated dependency-remediation branch (the pattern PR #42 already established for this repository, kept out of feature PRs): apply the non-breaking postcss bump, then upgrade ESLint 9 -> 10 with its config migration, re-run `npm run lint` / `typecheck` / `test` / `build` and the full Playwright suite, and confirm `npm audit --audit-level=high` exits 0. NOT fixed inside Phase 22: package-lock.json is not a Phase 22 Search path (scope-purity rule), and a breaking lint-toolchain major must not ride along in a security-feature PR."
+    migration_impact: "none (no database change)."
+    test_plan: "npm audit --audit-level=high exits 0; ESLint still reports 0 errors with the migrated config; vue-tsc clean; Vitest full suite green; Vite build green; full Playwright suite green (the lint/type toolchain change can only surface there)."
+    proof_artifact: "docs/proof/phase-22.md (discovery + evidence); the remediation branch writes its own proof."
+    owner: "dependency remediation (product-owner authorized branch; before Phase 25 exit)"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started   # BLOCKS the Phase 22 PR Frontend check. Discovered by Phase 22's gate run, not caused by it; requires a breaking ESLint major, so it is out of Phase 22's scope.

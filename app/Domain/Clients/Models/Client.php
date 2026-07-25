@@ -7,6 +7,7 @@ namespace App\Domain\Clients\Models;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Clients\Enums\ClientStatus;
 use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Search\Concerns\SearchableDocument;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Database\Factories\ClientFactory;
@@ -44,9 +45,10 @@ class Client extends Model
 {
     use BelongsToBranch;
     use BelongsToMerchant;
-
     /** @use HasFactory<ClientFactory> */
     use HasFactory;
+
+    use SearchableDocument;
 
     protected $fillable = [
         'merchant_id',

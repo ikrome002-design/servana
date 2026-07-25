@@ -61,6 +61,11 @@ const platform: NavItem[] = [
 const merchantAdministrator: NavItem[] = [
   { key: 'merchant.overview', label: 'Overview', routeName: 'merchant.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'merchant.get-started', label: 'Get started', routeName: 'merchant.get-started', phase: 'Phase 11', availability: 'live' },
+  // Phase 22 global search. NO permission key: GET /api/v1/search grants access to nothing and
+  // returns only what the caller's existing per-type authority already allows (D-22-01), so there is
+  // no key to gate visibility on. Shown to every merchant-side role; a role with no searchable
+  // authority sees the server-authoritative empty state.
+  { key: 'merchant.search', label: 'Search', routeName: 'search', phase: 'Phase 22', availability: 'live' },
   { key: 'merchant.dashboard', label: 'Dashboard', routeName: 'merchant.dashboard', phase: 'Phase 6', availability: 'live' },
   { key: 'merchant.branches', label: 'Branches', routeName: 'branch.list', permission: 'merchant.branch.view_all', phase: 'Phase 7', availability: 'live' },
   { key: 'merchant.period-reopen-approvals', label: 'Period-reopen approvals', routeName: 'merchant.period-reopen-approvals', permission: 'merchant.period_reopen.approve_exception', phase: 'Phase 18B', availability: 'live' },
@@ -84,6 +89,11 @@ const merchantAdministrator: NavItem[] = [
 const branchManager: NavItem[] = [
   { key: 'branch.overview', label: 'Branch overview', routeName: 'branch.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'branch.get-started', label: 'Get started', routeName: 'branch.get-started', phase: 'Phase 11', availability: 'live' },
+  // Phase 22 global search. NO permission key: GET /api/v1/search grants access to nothing and
+  // returns only what the caller's existing per-type authority already allows (D-22-01), so there is
+  // no key to gate visibility on. Shown to every merchant-side role; a role with no searchable
+  // authority sees the server-authoritative empty state.
+  { key: 'branch.search', label: 'Search', routeName: 'search', phase: 'Phase 22', availability: 'live' },
   { key: 'branch.directory', label: 'Branches', routeName: 'branch.list', permission: 'branch.profile.view', phase: 'Phase 7', availability: 'live' },
   { key: 'branch.services', label: 'Services', routeName: 'branch.services', permission: 'service.view', phase: 'Phase 15A', availability: 'live' },
   { key: 'branch.personnel-schedule', label: 'Personnel schedule', routeName: 'branch.personnel-schedule', permission: 'branch.dashboard.view', phase: 'Phase 15B', availability: 'live' },
@@ -103,6 +113,11 @@ const branchManager: NavItem[] = [
 const humanResource: NavItem[] = [
   { key: 'hr.overview', label: 'Overview', routeName: 'hr.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'hr.get-started', label: 'Get started', routeName: 'hr.get-started', phase: 'Phase 11', availability: 'live' },
+  // Phase 22 global search. NO permission key: GET /api/v1/search grants access to nothing and
+  // returns only what the caller's existing per-type authority already allows (D-22-01), so there is
+  // no key to gate visibility on. Shown to every merchant-side role; a role with no searchable
+  // authority sees the server-authoritative empty state.
+  { key: 'hr.search', label: 'Search', routeName: 'search', phase: 'Phase 22', availability: 'live' },
   { key: 'hr.staff', label: 'Staff', routeName: 'hr.staff', permission: 'staff.view', phase: 'Phase 7', availability: 'live' },
   { key: 'hr.invitations', label: 'Invitations', routeName: 'hr.invitations', permission: 'staff.invite', phase: 'Phase 7', availability: 'live' },
   { key: 'hr.permission-preview', label: 'Permission preview', routeName: 'hr.permission-preview', permission: 'staff.role.assign', phase: 'Phase 7', availability: 'live' },
@@ -116,6 +131,11 @@ const humanResource: NavItem[] = [
 const finance: NavItem[] = [
   { key: 'finance.overview', label: 'Finance overview', routeName: 'finance.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'finance.get-started', label: 'Get started', routeName: 'finance.get-started', phase: 'Phase 11', availability: 'live' },
+  // Phase 22 global search. NO permission key: GET /api/v1/search grants access to nothing and
+  // returns only what the caller's existing per-type authority already allows (D-22-01), so there is
+  // no key to gate visibility on. Shown to every merchant-side role; a role with no searchable
+  // authority sees the server-authoritative empty state.
+  { key: 'finance.search', label: 'Search', routeName: 'search', phase: 'Phase 22', availability: 'live' },
   { key: 'finance.pending-validations', label: 'Pending validations', routeName: 'finance.pending-validations', permission: 'customer_payment.validate', phase: 'Phase 18B', availability: 'live' },
   { key: 'finance.invoices', label: 'Invoices', routeName: 'finance.invoices', permission: 'invoice.view', phase: 'Phase 17', availability: 'live' },
   { key: 'finance.payment-records', label: 'Payment records', routeName: 'finance.payment-records', permission: 'customer_payment.view', phase: 'Phase 18A', availability: 'live' },
@@ -137,6 +157,11 @@ const finance: NavItem[] = [
 const frontOffice: NavItem[] = [
   { key: 'front-office.overview', label: 'Overview', routeName: 'front-office.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'front-office.get-started', label: 'Get started', routeName: 'front-office.get-started', phase: 'Phase 11', availability: 'live' },
+  // Phase 22 global search. NO permission key: GET /api/v1/search grants access to nothing and
+  // returns only what the caller's existing per-type authority already allows (D-22-01), so there is
+  // no key to gate visibility on. Shown to every merchant-side role; a role with no searchable
+  // authority sees the server-authoritative empty state.
+  { key: 'front-office.search', label: 'Search', routeName: 'search', phase: 'Phase 22', availability: 'live' },
   { key: 'front-office.clients', label: 'Clients', routeName: 'front-office.clients', permission: 'client.view', phase: 'Phase 15A', availability: 'live' },
   { key: 'front-office.appointments', label: 'Appointments', routeName: 'front-office.appointments', permission: 'appointment.view', phase: 'Phase 16A', availability: 'live' },
   { key: 'front-office.walk-ins', label: 'Walk-ins', routeName: 'front-office.walk-in', permission: 'queue.create', phase: 'Phase 16B', availability: 'live' },
@@ -151,6 +176,11 @@ const frontOffice: NavItem[] = [
 const personnel: NavItem[] = [
   { key: 'personnel.overview', label: 'Overview', routeName: 'personnel.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'personnel.get-started', label: 'Get started', routeName: 'personnel.get-started', phase: 'Phase 11', availability: 'live' },
+  // Phase 22 global search. NO permission key: GET /api/v1/search grants access to nothing and
+  // returns only what the caller's existing per-type authority already allows (D-22-01), so there is
+  // no key to gate visibility on. Shown to every merchant-side role; a role with no searchable
+  // authority sees the server-authoritative empty state.
+  { key: 'personnel.search', label: 'Search', routeName: 'search', phase: 'Phase 22', availability: 'live' },
   { key: 'personnel.my-queue', label: 'My queue', routeName: 'personnel.queue', permission: 'personnel.my_queue.view', phase: 'Phase 16B', availability: 'live' },
   { key: 'personnel.my-appointments', label: 'My appointments', routeName: 'personnel.appointments', permission: 'personnel.my_appointments.view', phase: 'Phase 16A', availability: 'live' },
   { key: 'personnel.my-sessions', label: 'My sessions', routeName: 'personnel.sessions', permission: 'personnel.my_sessions.view', phase: 'Phase 16C', availability: 'live' },
@@ -164,6 +194,11 @@ const personnel: NavItem[] = [
 const audit: NavItem[] = [
   { key: 'audit.overview', label: 'Overview', routeName: 'audit.landing', phase: 'Phase 11', availability: 'live' },
   { key: 'audit.get-started', label: 'Get started', routeName: 'audit.get-started', phase: 'Phase 11', availability: 'live' },
+  // Phase 22 global search. NO permission key: GET /api/v1/search grants access to nothing and
+  // returns only what the caller's existing per-type authority already allows (D-22-01), so there is
+  // no key to gate visibility on. Shown to every merchant-side role; a role with no searchable
+  // authority sees the server-authoritative empty state.
+  { key: 'audit.search', label: 'Search', routeName: 'search', phase: 'Phase 22', availability: 'live' },
   { key: 'audit.branch-events', label: 'Branch audit log', routeName: 'audit.branch-events', permission: 'audit.branch_events.view', phase: 'Phase 19', availability: 'live' },
   { key: 'audit.flagged-events', label: 'Flagged events', routeName: 'audit.flagged-events', permission: 'audit.branch_events.view', phase: 'Phase 19', availability: 'live' },
   { key: 'audit.compensation', label: 'Compensation audit', routeName: 'audit.compensation', permission: 'audit.compensation.view', phase: 'Phase 19', availability: 'live' },
