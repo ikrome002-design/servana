@@ -13,6 +13,9 @@ function makeRouter(): Router {
     history: createMemoryHistory(),
     routes: [
       { path: '/', name: 'test.home', component: stub },
+      // Phase 22 global search is in every merchant-role navigation, so the test router must
+      // resolve it or RouterLink cannot render the item.
+      { path: '/search', name: 'search', component: stub },
       { path: '/branch', name: 'branch.landing', component: stub },
       { path: '/branch/get-started', name: 'branch.get-started', component: stub },
       { path: '/branch/list', name: 'branch.list', component: stub },

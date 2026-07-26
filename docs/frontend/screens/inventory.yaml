@@ -739,3 +739,9 @@ screens:
     status: implemented
     phase: Phase 20E
     spec: audit/audit-platform-fees.md
+  - key: global-search
+    domain: search
+    route: search
+    status: implemented
+    phase: Phase 22
+    spec: search/global-search.md

@@ -3357,6 +3357,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["search.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/service-categories": {
         parameters: {
             query?: never;
@@ -5888,6 +5904,34 @@ export interface components {
                 currency: string;
                 billing_interval: string;
             };
+        };
+        /** SearchResultResource */
+        SearchResultResource: {
+            type: string;
+            /** @enum {string} */
+            type_label: "Client" | "Staff" | "Appointment" | "Queue entry" | "Service session" | "Invoice" | "Receipt" | "Served client";
+            ulid: string;
+            title: string;
+            subtitle: string | null;
+            snippet: string | null;
+            status: string | null;
+            date: string | null;
+            /** @description An explicit `=== null ? null :` ternary, not `?->`: the OpenAPI generator infers
+             *     nullability from the ternary but not through the nullsafe operator, so `?->` would
+             *     publish this non-nullable (the Phase 20F DEF-20F-015 lesson). */
+            amount: {
+                amount: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            route: {
+                name: string;
+                id: string | null;
+            };
+            branch: {
+                ulid: string | null;
+                name: string | null;
+            } | null;
         };
         /** ServedClientForSmsResource */
         ServedClientForSmsResource: {
@@ -19453,6 +19497,64 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "search.index": {
+        parameters: {
+            query: {
+                q: string;
+                "types[]"?: "client" | "staff" | "appointment" | "queue_entry" | "service_session" | "invoice" | "receipt" | "served_client";
+                "branch_ulids[]"?: string[];
+                sort?: "relevance" | "recent";
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `SearchResultResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SearchResultResource"][];
+                        meta: {
+                            query: string;
+                            /** @description The EFFECTIVE types — what the caller was actually authorized for, which may
+                             *     be narrower than what was requested and is never wider. */
+                            types: string;
+                            limit: number;
+                            /** @description Always null: the aggregator returns a bounded top-N per type, and deep
+                             *     pagination stays with each type's own canonical list route (decision D-22-04). */
+                            next_cursor: null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {

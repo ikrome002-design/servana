@@ -6,15 +6,19 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### REM-DEP-002 — npm audit high-severity remediation (`remediation/rem-dep-002-npm-audit`) — local_complete pending PR
+### REM-DEP-002 — npm audit high-severity remediation (`remediation/rem-dep-002-npm-audit`) — verified_complete (PR #46 merged)
 
 Off `main` = `d8a7a15603c22e41354e570f4d2735935468d973` (the Phase 21S PR #45 merge commit).
 A **dependency remediation**, not a Plan §80 feature phase, carried on its own branch so the
 Phase 22 PR is never asked to absorb an unrelated fix and the audit gate is never weakened.
-Register item **REM-DEP-002** — added in this change; it had never been recorded in
-`docs/remediation/register.yaml`. Proof: `docs/proof/rem-dep-002.md`. Single completion commit
-created and pushed; `origin/main…HEAD = 0 1`. **Not** merged — no PR exists yet, so this is not
-`verified_complete`.
+Register item **REM-DEP-002** is closed. Proof: `docs/proof/rem-dep-002.md`. Governance:
+`docs/governance/solo-maintainer-review-exception-pr-46.md`. PR #46
+**"REM-DEP-002: Fix npm audit dependency chain"** merged into `main` on 2026-07-26 as squash
+commit `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408` from final PR head
+`b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d`. Backend, Frontend, Docker, Security and E2E
+checks passed. `reviewDecision` remained intentionally blank under the PR-specific
+solo-maintainer governance exception; this is not independent reviewer approval. The local and
+remote `remediation/rem-dep-002-npm-audit` branches were deleted.
 
 CI's Frontend job ends with `npm audit --audit-level=high` (`.github/workflows/ci.yml:184`),
 which exited 1 on `main` with **15 high-severity findings**, failing the Frontend check on every
@@ -93,17 +97,173 @@ matching) is reachable only for remote HTTP `$ref`s; `docs/api/openapi.json` has
 `$ref`s and there is no `redocly.yaml`, and it would fail loudly rather than match incorrectly.
 Drop the override once `openapi-typescript` supports `@redocly/openapi-core` v2 upstream.
 
-**Ordering.** Phase 22 remains `local_complete` on `phase-22-search` (`edff8c0`) with **no PR**
-until this remediation merges.
+**Follow-on.** REM-DEP-002 no longer blocks Phase 22. The original Phase 22 implementation
+commit `edff8c059671b551eec1e6f9617ea3ae6add0d7b` remains preserved while `origin/main` is merged
+into `phase-22-search`. The complete Phase 22 gates, including
+`npm audit --audit-level=high`, must pass on the refreshed head before push and before the
+Phase 22 pull request is created.
 
-### Phase 21S — Personnel Bulk SMS to Personally Served Clients (`phase-21s-personnel-bulk-sms`) — local_complete pending PR
+### Phase 22 — Search (`phase-22-search`) — in_progress
+
+Off `main` = `d8a7a15603c22e41354e570f4d2735935468d973` (the Phase 21S PR #45 merge commit).
+Implements Plan **§68** and **§80 Phase 22** under the **§64 / §73 RK-05 / §74 / ADR-010**
+contact-protection invariants. **External Gate W re-verified CLOSED before branch creation**, so
+20D-W, 21R-B and 21N all remain blocked and Phase 22 is the next executable non-Wallet phase.
+Proof: `docs/proof/phase-22.md`.
+
+**D-22-01 — the search gate adds no permission.** The live matrix holds 130 active / 38 planned
+keys and **not one is owned by Phase 22**; no `search.*` key exists anywhere. Rather than invent
+`search.global.view` or broaden the front-office-only `front_office.search`, Phase 22 resolves the
+missing-key question by treating Search as an **aggregator over existing authorities, not as an
+independent data authority**. `GET /api/v1/search` is authenticated, tenant-scoped, active-
+membership-gated and rate-limited; every result type is admitted only after the server proves the
+caller already holds the authority governing that type's own list/detail route, and a caller with
+no searchable authority receives a 200 empty collection rather than a 403 (a 403 would be an
+existence oracle for the search catalogue). Consequently no permission-matrix key, no
+`PermissionRegistry` key, no database projection row and no generated `permissions.ts` entry is
+added for search, and no route result depends on frontend authorization.
+
+**Source-of-truth note.** The live Plan's only Search text is **§68** (one sentence) and the
+**Phase 22 roadmap entry**; the richer "Search Strategy" detail cited in the phase directive
+(`GET /api/v1/search`, TenantContext-injected mandatory filters, SPA never holding a search key,
+queued Scout jobs, a `scout:verify-counts` drift check, Front-Office speed search) appears nowhere
+in the Plan — live §21 is *Merchant Operational-Status Enforcement*, and the `AS-8` reference in
+`.env.example` does not exist either. That detail is therefore adopted as product-owner design
+intent (hierarchy rank 12), recorded as such in the proof, and never cited as a Plan section.
+
+#### Added
+- **`GET /api/v1/search`** — one read route, five published query parameters (`q`, `types[]`,
+  `branch_ulids[]`, `sort`, `limit`) and nothing else. Authenticated, tenant-scoped,
+  active-membership-gated, and wired to the **pre-existing** `search` rate limiter (60/min per
+  principal, defined since Phase 10 and unused until now). No `EnsurePermission` and no
+  `RouteClass`: `RouteSecurityContractTest` classifies non-GET routes only, so this follows the
+  same house convention as `clients.index` / `appointments.index` / `staff.index`, which likewise
+  authorize in their controllers.
+- **Bounded context `app/Domain/Search/`** — 2 enums, 2 DTOs, 1 contract, 9 catalogue definitions
+  (8 live types + the shared abstract flow), 6 services, 3 support classes, 1 model trait.
+- **Launch catalogue (8 types).** `client`, `staff`, `appointment`, `queue_entry`,
+  `service_session`, `invoice`, `receipt` are Meilisearch-indexed; **`served_client`** is Personnel
+  own-scope and **never indexed** (D-22-06) — it delegates to the Phase 21S `ServedClientSelector`,
+  because indexing a derived "served by" relation would make own-scope correctness depend on index
+  freshness, and a stale document there would be a cross-personnel disclosure.
+- **Two commands.** `servana:search-reindex` (idempotent upsert, chunked with `chunkById`,
+  forward-only — no `--fresh`, no `--flush`, no index deletion — and it syncs index settings FIRST)
+  and `servana:search-verify-counts` (read-only drift check that waits for the index to settle, then
+  exits non-zero on real drift).
+- **Search screen** at `/search`, reachable from all seven merchant-side role navigations, with
+  loading / idle / empty / rate-limited / forbidden / error states, a live region, and full keyboard
+  operation.
+
+#### Security
+- **Three independent layers must agree before a row is returned:** the Meilisearch query carries
+  `merchant_id = … AND branch_id IN […]` built server-side from integers only; the candidate ids are
+  re-resolved through the model's own tenant-scoped Eloquent query with `BelongsToMerchant` /
+  `BelongsToBranch` still applied; and every surviving record re-passes `Gate::allows('view')` — the
+  *same* policy call its own detail route makes. Security therefore never depends on the search
+  engine being correctly filtered, and a **deliberately poisoned index** (a foreign row written with
+  this tenant's `merchant_id`/`branch_id`) is proven to return nothing.
+- **The response schema has no contact field at all** (D-22-03) — no `phone`, `phone_masked`,
+  `phone_last_four`, `email` or `email_masked` — even though `AppointmentResource`,
+  `QueueEntryResource`, `ServiceSessionResource` and `InvoiceResource` all return masked client
+  contact today. Making the absence a property of the *type* rather than a per-branch condition is
+  what lets one assertion cover every result type at once. `receipt` carries no client name either,
+  because `ReceiptResource` exposes no client.
+- **The index holds only what it needs to match:** `{id, merchant_id, branch_id, allowlisted text}`.
+  `displayedAttributes` is `id` alone, so even a misconfigured index cannot surface a field, and
+  `sortableAttributes` is empty on every index so no caller-supplied token can reach an engine sort.
+  Every displayed value is read from PostgreSQL during the authorization pass.
+- **Exact phone lookup is narrow and non-enumerating.** Only a *complete* number is phone-like
+  (`SearchPhoneCandidate`); a partial fragment is not searchable anywhere, because no phone digit is
+  indexed. A phone-like term **never reaches Meilisearch**, is resolved through the existing keyed
+  HMAC blind index under `client.view` + `front_office.search`, returns the client's name only, and
+  is **redacted out of `meta.query`** rather than echoed back.
+- **The 21 scope/permission/engine forgery fields are rejected with 422**, not silently ignored — a
+  422 is positive evidence that the field has no effect. They are validated in an `after()` callback
+  rather than as `prohibited` rules, because per-field rules would make the generator publish all 21
+  as *accepted* query parameters (the same generator trap as the Phase 21S F2 finding).
+- **`front_office.search` was not broadened and no `search.*` key was created.**
+  `docs/auth/permission-matrix.yaml`, `PermissionRegistry`, `docs/proof/phase8-matrix.txt` and the
+  generated `permissions.ts` are all **unmodified** by this phase, and `Phase22SearchGateTest` is the
+  standing guard on that.
+- **Integration payload tables are never indexed** — asserted structurally over the catalogue's
+  model classes rather than by convention.
+- The search term is **never logged** (a phone-like term would put a phone number in a log line),
+  Scout's `identify` is explicitly `false` (it would forward caller IP/id to the engine), and the
+  engine host/key never reach a Resource, the OpenAPI document, `api.ts`, or the SPA bundle.
+
+#### Fixed (found by this phase's own tests, before review)
+- `ClientSearchDefinition` linked results at `front-office.client-detail`, a route that does not
+  exist; the SPA route is `front-office.clients.detail`. The test now asserts the exact route name, so
+  a broken result link fails.
+- `meta.query` echoed a phone number straight back into the response body. A phone-like term is now
+  redacted to `•••`; a non-phone term is still echoed.
+- Scout composed a **second** identifier attribute into every real index document (`ulid` alongside
+  the builders' `id`), quietly breaking the "a document contains exactly its declared keys"
+  invariant. `getScoutKeyName()` now returns `id`, and the invariant is asserted against the **real**
+  engine, not only the builder.
+- An index with documents but no synced settings made search **silently return nothing** (Meilisearch
+  rejects a filter on a non-filterable attribute, and the resolver correctly degrades to "no
+  candidates"). `servana:search-reindex` now syncs index settings **first**, making that state
+  unreachable through the command; both the failure mode and the fix are covered by tests.
+- `servana:search-reindex` reported success while documents were still queued, and
+  `servana:search-verify-counts` reported drift that did not exist for the same reason. Both now
+  settle the index first through a shared, bounded `SearchEngineTasks::settle()`, so a backfill that
+  reports success is queryable and a reported difference is real drift.
+- The `search-index` queue had **no consumer**, so observer-driven index updates would never have
+  applied. `search-index` is now last in the dev worker's queue list — the minimum wiring Search
+  itself requires. `docker-compose.prod.yml` is deliberately untouched (Phase 25 owns deployment; full
+  per-queue topology is Phase 21N), and the gap is recorded as a residual risk with
+  `servana:search-reindex` as the interim path.
+
+#### Gates
+composer validate OK; Pint **1655 files PASS**; Larastan L8 **0 errors (1287 files)**; full backend
+**serial 2229 passed / 7 skipped / 0 failed / 13336 assertions** (2006/7/0 at Phase 21S → +223) and
+`--parallel` identical; **27 real-Meilisearch tests** against the live `getmeili/meilisearch:v1.10`
+service, including the poisoned-index and settings-not-synced cases; OpenAPI **243 paths / 289
+operations** (242/288 → +1/+1) with generators proven **byte-identical across the baseline and two
+regeneration passes** and `permissions.ts` showing **no diff at all**; ESLint 0 errors / 138 baseline
+warnings (no new warning); vue-tsc clean; Vitest **519/519** (501 → +18); build OK; Playwright
+**479 passed** (453 → +26) with axe serious/critical **0** at 360/768/1280 × light/dark and at 200%
+zoom; `composer audit` no advisories; `gitleaks` no leaks; Docker dev app + prod app + prod nginx all
+built. The 7 skips are the pre-existing baseline (3 ClamAV opt-in-profile + 4 threat-model
+placeholders); Phase 22 adds none. **No migration and no table.**
+
+#### Dependency gate resolved; post-refresh verification pending (`REM-DEP-002`)
+
+REM-DEP-002 is `verified_complete`. PR #46 merged into `main` on 2026-07-26 as squash
+commit `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408` from final PR head
+`b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d`. The remediation branches were deleted and
+`reviewDecision` remained intentionally blank under the PR-specific solo-maintainer
+governance exception. This is not independent reviewer approval.
+
+The Phase 22 implementation commit `edff8c059671b551eec1e6f9617ea3ae6add0d7b` remains
+preserved. All Phase 22 gates, including `npm audit --audit-level=high`, must pass on the
+refreshed merge head before push and before the Phase 22 pull request is created.
+
+### Phase 21S — Personnel Bulk SMS to Personally Served Clients (`phase-21s-personnel-bulk-sms`) — verified_complete
+
+**Merged.** PR [#45](https://github.com/ikrome002-design/servana/pull/45) "Phase 21S: Implement
+personnel bulk SMS" merged into `main` as `d8a7a15603c22e41354e570f4d2735935468d973`
+(== `origin/main`) on `2026-07-23T09:13:10Z`. Implementation commit
+`9d2c547a4a8e8af76a80bc138ae0b608e448dfe7`; CI-fix commit
+`34a5921ca5b2f4502e20172c10ed472d7d416954`; final PR head `dc48d095529757dd1282ad5a8659e8e087cbc2a8`.
+Final CI run [29992575586](https://github.com/ikrome002-design/servana/actions/runs/29992575586) —
+`pull_request` on the final head, conclusion `success`, all five required jobs SUCCESS (Backend,
+Frontend, Docker, Security, E2E — Playwright). `reviewDecision` **blank** under the PR-specific
+solo-maintainer governance exception
+([comment 5056479540](https://github.com/ikrome002-design/servana/pull/45#issuecomment-5056479540)) —
+**not** independent reviewer approval. Local and remote `phase-21s-personnel-bulk-sms` branches
+deleted. **REM-SMS-001 → `verified_complete`** on the merge; **REM-SMS-002** stays open (deferred
+live SMS provider/callback verification, before Phase 25). Reconciled from `local_complete` on the
+`phase-22-search` branch.
 
 Off `main` = `b5a8733616a4603996e18695db31528299cdf8d7` (the Phase 21R-A PR #44 merge commit).
 Implements Plan **§64**, **§80 Phase 21S**, **§13.13** canonical DDL, **§19.3/§19.4**, **§20**,
 **§22**, **§24.5**, **§70**, **§73**, **§74**; **ADR-010**, **ADR-005**. Closes **REM-SMS-001**
 (final closure on merge) and opens **REM-SMS-002** (deferred live-provider verification, before
 Phase 25). Proof: `docs/proof/phase-21s.md`. Single completion commit created and pushed;
-`origin/main…HEAD = 0 1`. **Not** merged — no PR exists yet, so this is not `verified_complete`.
+`origin/main…HEAD = 0 1` at local completion; subsequently raised as PR #45 and merged — see the
+`verified_complete` closure evidence above.
 Final local gates all green (new IDE session, reran from the final tree): full backend serial
 **2006 / 7 skipped / 0 failed / 12414 assertions** and `--parallel` identical; disposable PG16.14
 proof (0 forbidden tables, dev DB untouched); OpenAPI **242 paths / 288 operations** deterministic;

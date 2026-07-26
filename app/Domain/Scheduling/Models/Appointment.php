@@ -11,6 +11,7 @@ use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Scheduling\Enums\AppointmentStatus;
 use App\Domain\Scheduling\Services\AppointmentStateMachine;
+use App\Domain\Search\Concerns\SearchableDocument;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
@@ -56,6 +57,8 @@ class Appointment extends Model
 
     /** @use HasFactory<AppointmentFactory> */
     use HasFactory;
+
+    use SearchableDocument;
 
     protected $fillable = [
         'merchant_id',

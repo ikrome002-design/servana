@@ -12,6 +12,7 @@ use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Scheduling\Enums\QueueAssignmentMode;
 use App\Domain\Scheduling\Enums\QueueEntryStatus;
 use App\Domain\Scheduling\Services\QueueEntryStateMachine;
+use App\Domain\Search\Concerns\SearchableDocument;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
@@ -71,6 +72,8 @@ class QueueEntry extends Model
 
     /** @use HasFactory<QueueEntryFactory> */
     use HasFactory;
+
+    use SearchableDocument;
 
     protected $fillable = [
         'merchant_id',

@@ -16,10 +16,35 @@
 | Field | Value |
 |---|---|
 | Phase | 21S — Personnel Bulk SMS |
-| Status | `local_complete pending PR CI/review/merge` |
-| Branch | `phase-21s-personnel-bulk-sms` |
+| Status | `verified_complete` |
+| Branch | `phase-21s-personnel-bulk-sms` (deleted local + remote after merge) |
 | Base commit | `b5a8733616a4603996e18695db31528299cdf8d7` (PR #44 merge commit) |
 | Predecessor | Phase 21R-A (PR #44, merged) — reconciled to `verified_complete` in this branch |
+| PR | [#45](https://github.com/ikrome002-design/servana/pull/45) "Phase 21S: Implement personnel bulk SMS" — `MERGED`, base `main` |
+| Implementation commit | `9d2c547a4a8e8af76a80bc138ae0b608e448dfe7` |
+| CI-fix commit | `34a5921ca5b2f4502e20172c10ed472d7d416954` |
+| Final PR head | `dc48d095529757dd1282ad5a8659e8e087cbc2a8` (empty PR-ref resync) |
+| Merge commit | `d8a7a15603c22e41354e570f4d2735935468d973` (== `origin/main`) |
+| Merged at | `2026-07-23T09:13:10Z` |
+| Final CI run | [29992575586](https://github.com/ikrome002-design/servana/actions/runs/29992575586) — `pull_request` on `dc48d09…`, `completed` / `success` |
+| CI jobs | Backend — Pint, Larastan, Pest **SUCCESS**; Frontend — ESLint, vue-tsc, Vitest, build **SUCCESS**; Docker — build images **SUCCESS**; Security — gitleaks **SUCCESS**; E2E — Playwright **SUCCESS** |
+| Governance | [PR #45 comment 5056479540](https://github.com/ikrome002-design/servana/pull/45#issuecomment-5056479540) — PR-specific solo-maintainer exception |
+| `reviewDecision` | **blank** under that exception — **not** independent reviewer approval |
+| REM-SMS-001 | `verified_complete` (closed on the merge) |
+| REM-SMS-002 | **open** — deferred live SMS provider/callback verification; must close before Phase 25 exit |
+| Reconciled by | the `phase-22-search` branch (next-branch-reconciles-previous-phase convention) |
+
+### Closure verification (re-run live on 2026-07-25, `phase-22-search` branch)
+
+`gh pr view 45` returned `state=MERGED`, `baseRefName=main`,
+`headRefName=phase-21s-personnel-bulk-sms`, `headRefOid=dc48d09…`, `mergeCommit.oid=d8a7a15…`,
+`isDraft=false`, `reviewDecision` empty, and exactly the three expected commits.
+`gh run view 29992575586` returned `event=pull_request`, `headSha=dc48d09…`,
+`status=completed`, `conclusion=success` with all five required jobs `completed`/`success`.
+The governance comment body contains the solo-maintainer heading, the final head, the run id, the
+sentence "This is not independent reviewer approval", and "Gate W remains closed".
+`git ls-remote --heads origin phase-21s-personnel-bulk-sms` and
+`git branch --list phase-21s-personnel-bulk-sms` are both empty.
 
 ---
 

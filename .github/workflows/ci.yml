@@ -44,6 +44,25 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      # Phase 22 search substrate. The suite runs on Scout's NullEngine by default
+      # (phpunit.xml forces SCOUT_DRIVER=null), so this service exists purely so the
+      # Phase 22 engine-integration tests prove real Meilisearch behaviour in CI
+      # rather than only on a developer machine. They fail — never skip — without it.
+      meilisearch:
+        image: getmeili/meilisearch:v1.10
+        env:
+          MEILI_ENV: development
+          MEILI_MASTER_KEY: ciMasterKey
+          MEILI_NO_ANALYTICS: 'true'
+        ports:
+          - 7700:7700
+        options: >-
+          --health-cmd "wget --no-verbose --tries=1 --spider http://127.0.0.1:7700/health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+          --health-start-period 15s
+
       clamav:
         image: clamav/clamav:stable
         ports:
@@ -126,6 +145,22 @@ jobs:
         run: php vendor/bin/pest tests/Feature/Files/ClamAvEicarIntegrationTest.php --fail-on-skipped
 
 
+      - name: Verify Meilisearch is reachable (Phase 22)
+        shell: bash
+        run: |
+          for attempt in {1..30}; do
+            if curl --silent --fail http://127.0.0.1:7700/health > /dev/null; then
+              echo "Meilisearch is reachable on 127.0.0.1:7700."
+              exit 0
+            fi
+
+            echo "Waiting for Meilisearch readiness: attempt ${attempt}/30"
+            sleep 2
+          done
+
+          echo "::error::Meilisearch did not become reachable on 127.0.0.1:7700."
+          exit 1
+
       - name: Lint — Pint (check only)
         run: composer pint -- --test
 
@@ -146,6 +181,10 @@ jobs:
           CLAMAV_PORT: 3310
           CLAMAV_CONNECT_TIMEOUT: 3
           CLAMAV_READ_TIMEOUT: 30
+          # Phase 22: the suite defaults to Scout's NullEngine; only the engine
+          # tests opt in, and they resolve the host/key from here.
+          MEILISEARCH_HOST: http://127.0.0.1:7700
+          MEILISEARCH_KEY: ciMasterKey
         run: php artisan test --parallel
       - name: Dependency audit (Composer)
         run: composer audit --no-interaction

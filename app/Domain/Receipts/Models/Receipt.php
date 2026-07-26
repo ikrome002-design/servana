@@ -9,6 +9,7 @@ use App\Domain\Files\Models\UploadedFile;
 use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Payments\Models\PaymentValidationEvent;
+use App\Domain\Search\Concerns\SearchableDocument;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
@@ -51,6 +52,8 @@ class Receipt extends Model
 
     /** @use HasFactory<ReceiptFactory> */
     use HasFactory;
+
+    use SearchableDocument;
 
     protected $fillable = [
         'merchant_id',

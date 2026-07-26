@@ -2091,6 +2091,27 @@
         "platform_fee.view"
       ],
       "summary": "Masked, branch-scoped, read-only platform-fee visibility for Audit. No dispute-create or review controls, and no mutation anywhere. No private client contact, raw payment references, internal ids, or evidence content is shown. No Wallet/settlement UI."
+    },
+    {
+      "key": "global-search",
+      "domain": "search",
+      "route": "search",
+      "layout": "Standalone",
+      "status": "implemented",
+      "phase": "Phase 22",
+      "spec": "search/global-search.md",
+      "title": "Global search",
+      "roles": [
+        "merchant_administrator",
+        "merchant_branch",
+        "merchant_human_resource",
+        "merchant_finance",
+        "merchant_front_office",
+        "merchant_personnel",
+        "merchant_audit"
+      ],
+      "permissions": [],
+      "summary": "Cross-domain search over the records the authenticated user can ALREADY reach (Plan §68). A single term queries a fixed catalogue of document types — clients, staff, appointments, queue entries, service sessions, invoices, receipts, and a Personnel member's own served clients — and each type is admitted only after the server proves the caller holds the authority governing that type's own list/detail route (decision D-22-01). The screen therefore lists no permission of its own: `GET /api/v1/search` grants access to nothing, and a role with no searchable authority sees the empty state rather than a 403, which would confirm which types exist. Every filter is built server-side from the authenticated membership — the browser sends only the term and, optionally, a type list, an own-branch narrowing filter, an allowlisted sort and a bounded limit; the 21 scope/permission/engine forgery fields are rejected with 422. Results are masked by omission: the response schema has NO contact field of any kind — no phone, masked phone, phone last four, email or masked email — even for the types whose own Resources return masked contact today (decision D-22-03). An authorized EXACT phone lookup exists for Front Office through the existing keyed blind index, returns the client name only, never reaches the search engine, and never echoes the number back; a partial phone fragment is not searchable anywhere. NO export, download, print or clipboard-copy control exists on this screen and none may ever be added (ADR-010; Plan §19.4 non-overridable); nothing is persisted to localStorage or sessionStorage; and held results are cleared on any membership or branch-scope change."
     }
   ]
 }

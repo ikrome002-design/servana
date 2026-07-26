@@ -9,15 +9,6 @@
 meta:
   generated: "2026-06-21"
   last_updated: "2026-07-02 (Phase 18A merchant-client payment recording verified_complete on PR #30 merge 4a489d04156aec8348eda9a968f830da31668c87; implementation baa3678, local-completion doc 24ae7e8, CI-correction aef8d51, governance/final head 0e36641; initial CI run 28574550657 FAILED (Backend Pint in PaymentRecordingGroupResource.php + E2E body-copy assertion, corrected without weakening behavior/assertions/role boundary), corrected-head run 28575564965 SUCCESS (Docker reran once, no code change), final governance-head run 28576226830 five required checks Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; reviewDecision blank, not independent approval — reconciled PROGRESS/CHANGELOG/proof-18a/traceability from local_complete to verified_complete; no new remediation item created merely because CI passed. REM-PAY-001 stays open (spans 18A+18B). Phase 18B validation/receipts/refunds/disputes/cash-up/period-locks/finance-exports in progress on branch phase-18b-financial-validation-controls, base 4a489d0 — see REM-PAY-001, REM-ENT-001 (finance_exports evidence), REM-SM-001/REM-DDL-001 (18B state machines + tables). REM-PERM-001 (full §19.3/§19.5 matrix closure + per-key parity tests) remains open, Phase 19)"
-  # 2026-07-25 — REM-DEP-002 ADDED (this entry was never recorded in the register
-  # before today; it existed only as a session note). CI's Frontend job runs
-  # `npm audit --audit-level=high`, which failed with 15 high findings on every
-  # branch cut from main (d8a7a15), blocking the pending Phase 22 PR for a reason
-  # unrelated to Phase 22. Remediated on its own branch
-  # remediation/rem-dep-002-npm-audit (base d8a7a15): audit now 0 vulnerabilities
-  # with the gate, threshold and workflow untouched. status local_complete —
-  # verified_complete only on the reviewed PR merge. Phase 22 stays local_complete
-  # on phase-22-search (edff8c0) with NO PR until this merges.
   branch: docs/pre-feature-remediation-gate-closure
   base: 4f0d4f3   # merged main (PR #19, R7)
   # §5.4 — CLOSED decision: all PRE_FEATURE_REMEDIATION items are verified_complete
@@ -702,9 +693,9 @@ items:
     test_plan: "Plan §64 / Correction 20.8 list — cannot view or message another personnel member's clients; no completed own session means no message; no contact export; billing/entitlement gates; cost-preview accuracy; duplicate-confirmation single send; opt-out suppression; cross-tenant/branch denial; no full-phone exposure; log redaction."
     proof_artifact: "docs/proof/phase-21s.md"
     owner: "21S"
-    completion_commit: null   # single completion commit created + pushed on phase-21s-personnel-bulk-sms (origin/main..HEAD = 0 1); hash recorded on the reconciling branch after merge, not via a second doc-only commit
-    reviewer: "TBD"
-    status: local_complete   # implementation + all local gates green (docs/proof/phase-21s.md §Quality gates); final closure -> verified_complete on the reviewed PR merge
+    completion_commit: "9d2c547a4a8e8af76a80bc138ae0b608e448dfe7"   # Phase 21S implementation commit; PR #45 also carried CI-fix 34a5921ca5b2f4502e20172c10ed472d7d416954 and final head dc48d095529757dd1282ad5a8659e8e087cbc2a8; merged as d8a7a15603c22e41354e570f4d2735935468d973
+    reviewer: "solo-maintainer governance exception (PR #45 comment 5056479540) — NOT independent reviewer approval; merge eligibility rested on final CI run 29992575586 (all five required jobs SUCCESS)"
+    status: verified_complete   # PR #45 MERGED into main as d8a7a15 (== origin/main) on 2026-07-23T09:13:10Z; final CI run 29992575586 conclusion success (Backend/Frontend/Docker/Security/E2E all SUCCESS); local + remote phase-21s-personnel-bulk-sms branches deleted; promoted on the phase-22-search branch per the convention that the next branch reconciles the previous phase
 
   - id: REM-SMS-002
     classification: C1
@@ -849,10 +840,10 @@ items:
     precise_correction: "Split by whether an override is provably safe. (A) REAL UPGRADE where it is not — eslint ^9.13.0 -> ^10.8.0, @eslint/js ^9.13.0 -> ^10.0.1, eslint-plugin-vue ^9.30.0 -> ^10.10.0, typescript-eslint ^8.12.0 -> ^8.65.0, plus vue-eslint-parser ^10.4.1 (v10 of the plugin makes it a peer) and globals ^17.7.0 (now a direct devDependency). (B) SCOPED minimatch ^10.2.5 OVERRIDES for the four consumers verified to use minimatch's NAMED exports — @redocly/openapi-core, @vue/language-core, editorconfig, glob — avoiding four otherwise-forced majors (vue-tsc, openapi-typescript, @vue/test-utils, glob). (C) postcss cleared by lockfile refresh inside the existing ^8.4.47 range. Consequential edits: eslint.config.js re-declares globals.browser (eslint-plugin-vue 9 injected it implicitly from its flat base config; v10 does not — restoration, not relaxation), and BillingSettings.vue changes `let next = index` to `let next: number` for no-useless-assignment, promoted into js.configs.recommended by ESLint 10. REJECTED with evidence: `npm audit fix --force` (downgrades openapi-typescript to 6.7.6 and @vue/test-utils to 2.4.0); overriding @redocly/openapi-core to ^2.40.0 (ERR_PACKAGE_PATH_NOT_EXPORTED — every openapi-typescript 7.x imports the v1 subpath ./lib/ref-utils.js); upgrading vue-tsc 2 -> 3 (surfaces a new TS6133 in Phase 21S ClientSms.vue, and the scoped override achieves the same audit result with zero feature-code change)."
     migration_impact: "none — frontend dependency manifests, one lint config and one statement in one SPA component."
     test_plan: "npm audit --audit-level=high (the exact CI command) must exit 0; the full CI Frontend sequence npm ci -> lint -> typecheck -> api:contract:check -> test -> build -> audit must pass; ESLint error/warning counts must match the ESLint 9 baseline rule-for-rule; Vitest and Playwright counts must match the Phase 21S baseline (501 / 453) with no test changed, skipped or weakened; the OpenAPI contract must stay byte-identical; backend gates run to prove no collateral damage. ALL PASSED — see docs/proof/rem-dep-002.md."
-    proof_artifact: "docs/proof/rem-dep-002.md"
+    proof_artifact: "docs/proof/rem-dep-002.md; docs/governance/solo-maintainer-review-exception-pr-46.md"
     owner: "dependency remediation (own branch remediation/rem-dep-002-npm-audit, base d8a7a15)"
-    completion_commit: null   # set on the reviewed PR merge
-    blocks: "Phase 22 PR — Frontend CI job (npm audit step). Phase 22 remains local_complete on branch phase-22-search (commit edff8c0) and is NOT to be opened as a PR until this item merges."
+    completion_commit: "1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408 (PR #46 squash merge to main on 2026-07-26; final PR head b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d)"
+    blocks: "closed — PR #46 merged and REM-DEP-002 no longer blocks Phase 22. phase-22-search retains implementation commit edff8c059671b551eec1e6f9617ea3ae6add0d7b and must finish the origin/main refresh and rerun all Phase 22 gates, including npm audit --audit-level=high, before push and PR creation."
     rollback_forward_repair: "Revert the single remediation commit to restore the previous package.json/package-lock.json/eslint.config.js; this reintroduces the 15 high findings and the failing Frontend job (emergency-only). Forward repair: drop the @redocly/openapi-core override once openapi-typescript supports @redocly/openapi-core v2 upstream."
-    reviewer: "TBD — PR not yet created."
-    status: local_complete   # implementation + all local gates green (docs/proof/rem-dep-002.md); -> verified_complete only on the reviewed PR merge with green CI
+    reviewer: "PR #46 merged with Backend, Frontend, Docker, Security and E2E checks successful; reviewDecision intentionally blank under docs/governance/solo-maintainer-review-exception-pr-46.md — not independent reviewer approval."
+    status: verified_complete   # PR #46 merged as 1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408 on 2026-07-26; final PR head b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d; local and remote remediation branches deleted.

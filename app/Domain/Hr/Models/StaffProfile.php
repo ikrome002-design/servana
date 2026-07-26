@@ -9,6 +9,7 @@ use App\Domain\Hr\Enums\StaffEmploymentStatus;
 use App\Domain\Hr\Enums\StaffEmploymentType;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Search\Concerns\SearchableDocument;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use Database\Factories\StaffProfileFactory;
@@ -51,6 +52,8 @@ class StaffProfile extends Model
 
     /** @use HasFactory<StaffProfileFactory> */
     use HasFactory;
+
+    use SearchableDocument;
 
     /** @return Factory<StaffProfile> */
     protected static function newFactory(): Factory
