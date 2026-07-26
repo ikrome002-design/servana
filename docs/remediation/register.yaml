@@ -9,6 +9,15 @@
 meta:
   generated: "2026-06-21"
   last_updated: "2026-07-02 (Phase 18A merchant-client payment recording verified_complete on PR #30 merge 4a489d04156aec8348eda9a968f830da31668c87; implementation baa3678, local-completion doc 24ae7e8, CI-correction aef8d51, governance/final head 0e36641; initial CI run 28574550657 FAILED (Backend Pint in PaymentRecordingGroupResource.php + E2E body-copy assertion, corrected without weakening behavior/assertions/role boundary), corrected-head run 28575564965 SUCCESS (Docker reran once, no code change), final governance-head run 28576226830 five required checks Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; reviewDecision blank, not independent approval — reconciled PROGRESS/CHANGELOG/proof-18a/traceability from local_complete to verified_complete; no new remediation item created merely because CI passed. REM-PAY-001 stays open (spans 18A+18B). Phase 18B validation/receipts/refunds/disputes/cash-up/period-locks/finance-exports in progress on branch phase-18b-financial-validation-controls, base 4a489d0 — see REM-PAY-001, REM-ENT-001 (finance_exports evidence), REM-SM-001/REM-DDL-001 (18B state machines + tables). REM-PERM-001 (full §19.3/§19.5 matrix closure + per-key parity tests) remains open, Phase 19)"
+  # 2026-07-25 — REM-DEP-002 ADDED (this entry was never recorded in the register
+  # before today; it existed only as a session note). CI's Frontend job runs
+  # `npm audit --audit-level=high`, which failed with 15 high findings on every
+  # branch cut from main (d8a7a15), blocking the pending Phase 22 PR for a reason
+  # unrelated to Phase 22. Remediated on its own branch
+  # remediation/rem-dep-002-npm-audit (base d8a7a15): audit now 0 vulnerabilities
+  # with the gate, threshold and workflow untouched. status local_complete —
+  # verified_complete only on the reviewed PR merge. Phase 22 stays local_complete
+  # on phase-22-search (edff8c0) with NO PR until this merges.
   branch: docs/pre-feature-remediation-gate-closure
   base: 4f0d4f3   # merged main (PR #19, R7)
   # §5.4 — CLOSED decision: all PRE_FEATURE_REMEDIATION items are verified_complete
@@ -798,3 +807,52 @@ items:
     completion_commit: "81a5866 (PR #24 squash merge to main; foundation 73c7d26, implementation 23aeed1, final PR head 1fcfa40)"
     reviewer: "PR #24 MERGED into main (base main, merge commit 81a5866, 2026-06-28); CI run 28338582235 on head 1fcfa40 — five required checks (Backend — Pint/Larastan/Pest; Frontend — ESLint/vue-tsc/Vitest/build; Docker — build images; Security — gitleaks; E2E — Playwright) all SUCCESS; solo-maintainer governance exception (docs/governance/solo-maintainer-review-exception-pr-24.md), reviewDecision intentionally blank — NOT an independent approval."
     status: verified_complete   # PR #24 merged (81a5866); CI run 28338582235 five checks SUCCESS; governance exception recorded. REM-PERM-001 stays open (Phase 19 owns full permission-matrix closure).
+
+  - id: REM-DEP-002
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "CI Frontend job runs `npm audit --audit-level=high` (.github/workflows/ci.yml:184) and must exit 0 without weakening the gate, lowering the threshold, or suppressing advisories (CLAUDE.md §7 quality gates)."
+    repository_evidence: >
+      BEFORE (clean branch off origin/main d8a7a15): `npm audit --audit-level=high`
+      exits 1 with 15 high-severity findings. Parsing `npm audit --json` shows only
+      TWO published advisories — GHSA-mh99-v99m-4gvg (brace-expansion <=5.0.7) and
+      GHSA-r28c-9q8g-f849 (postcss <=8.5.17); the other 13 entries are transitive
+      "depends on a vulnerable version" propagation through minimatch. Exposure is
+      devDependencies only (audit metadata prod 56 / dev 380; all six brace-expansion
+      instances and postcss carry "dev": true in package-lock.json; the four prod
+      dependencies are axios, pinia, vue, vue-router — none in either chain).
+      AFTER (this branch): `npm audit --audit-level=high` and bare `npm audit` both
+      report "found 0 vulnerabilities" (exit 0). Single hoisted brace-expansion 5.0.8
+      and minimatch 10.2.5; postcss 8.5.23; @eslint/config-array 0.23.5;
+      @eslint/eslintrc removed. Gates: ESLint 0 errors / 138 warnings (rule-for-rule
+      IDENTICAL to the ESLint 9 baseline measured in a throwaway worktree — no lint
+      regression), vue-tsc 0 errors, api:contract:check OK 242 paths / 288 operations
+      (unchanged), Vitest 501/501, Playwright 453 passed, Vite build OK, gitleaks
+      clean, git diff --check clean, composer validate --strict OK, Pint 1611 files,
+      Larastan L8 clean (1257 files). .github/workflows/ci.yml NOT modified.
+      BACKEND SUITE NOT GREEN AND NOT CAUSED BY THIS CHANGE: php artisan test reports
+      24 failed / 7 skipped / 1982 passed. Proven pre-existing — `git diff origin/main`
+      contains ZERO backend files (no PHP, migration, test or composer manifest), and
+      re-running the failing file on a stashed, byte-identical origin/main checkout
+      reproduces exactly 6 failed / 1 passed, the same as on this branch. Proximate
+      cause is the tests/Pest.php:444 helper calling POST /queue-entries/{id}/call on
+      an entry still in `waiting`, which QueueEntryStatus::allowedTransitions()
+      forbids by design (waiting -> assigned -> called); trigger appears environmental
+      (likely time-of-day personnel availability — runs executed 23:00-00:00
+      Africa/Nairobi) since Phase 21S recorded 2006 passed / 0 failed on the same
+      unchanged code days earlier. FLAGGED for separate investigation; deliberately
+      NOT fixed on this branch (backend behaviour is outside REM-DEP-002 scope) and it
+      does not affect the Frontend job this item exists to unblock.
+    root_cause: "Two independent causes. (1) postcss: the declared range ^8.4.47 already admitted the patched release; the lockfile was merely pinned to 8.5.15, below the 8.5.18 fix line. (2) brace-expansion: the advisory range <=5.0.7 spans every major line and the ONLY patched release is 5.0.8 — there is no 1.x or 2.x backport — so every consumer must reach it through minimatch >= 10.0.3 (minimatch itself is flagged across 2.0.0 - 10.0.2). ESLint 9 depends on minimatch ^3.1.5 and on @eslint/eslintrc, which default-imports minimatch, and therefore cannot be cleared by an override at all; npm's own fixAvailable for that chain is eslint@10.8.0 with isSemVerMajor true."
+    affected_files_tables_routes: "package.json; package-lock.json; eslint.config.js; resources/spa/src/pages/platform/BillingSettings.vue. No backend file, route, table, permission key, policy, migration or generated API artifact changed; no CI configuration changed."
+    security_data_business_impact: "No production runtime exposure — every affected package is a devDependency and postcss is build-time only, not shipped in the SPA bundle. The material impact was CI integrity: the Frontend job fails on any branch cut from main, which would have blocked the Phase 22 PR for a reason unrelated to Phase 22 and created pressure to weaken the audit gate. Remediated, not suppressed: the audit step, its --audit-level=high threshold and every other gate are untouched."
+    precise_correction: "Split by whether an override is provably safe. (A) REAL UPGRADE where it is not — eslint ^9.13.0 -> ^10.8.0, @eslint/js ^9.13.0 -> ^10.0.1, eslint-plugin-vue ^9.30.0 -> ^10.10.0, typescript-eslint ^8.12.0 -> ^8.65.0, plus vue-eslint-parser ^10.4.1 (v10 of the plugin makes it a peer) and globals ^17.7.0 (now a direct devDependency). (B) SCOPED minimatch ^10.2.5 OVERRIDES for the four consumers verified to use minimatch's NAMED exports — @redocly/openapi-core, @vue/language-core, editorconfig, glob — avoiding four otherwise-forced majors (vue-tsc, openapi-typescript, @vue/test-utils, glob). (C) postcss cleared by lockfile refresh inside the existing ^8.4.47 range. Consequential edits: eslint.config.js re-declares globals.browser (eslint-plugin-vue 9 injected it implicitly from its flat base config; v10 does not — restoration, not relaxation), and BillingSettings.vue changes `let next = index` to `let next: number` for no-useless-assignment, promoted into js.configs.recommended by ESLint 10. REJECTED with evidence: `npm audit fix --force` (downgrades openapi-typescript to 6.7.6 and @vue/test-utils to 2.4.0); overriding @redocly/openapi-core to ^2.40.0 (ERR_PACKAGE_PATH_NOT_EXPORTED — every openapi-typescript 7.x imports the v1 subpath ./lib/ref-utils.js); upgrading vue-tsc 2 -> 3 (surfaces a new TS6133 in Phase 21S ClientSms.vue, and the scoped override achieves the same audit result with zero feature-code change)."
+    migration_impact: "none — frontend dependency manifests, one lint config and one statement in one SPA component."
+    test_plan: "npm audit --audit-level=high (the exact CI command) must exit 0; the full CI Frontend sequence npm ci -> lint -> typecheck -> api:contract:check -> test -> build -> audit must pass; ESLint error/warning counts must match the ESLint 9 baseline rule-for-rule; Vitest and Playwright counts must match the Phase 21S baseline (501 / 453) with no test changed, skipped or weakened; the OpenAPI contract must stay byte-identical; backend gates run to prove no collateral damage. ALL PASSED — see docs/proof/rem-dep-002.md."
+    proof_artifact: "docs/proof/rem-dep-002.md"
+    owner: "dependency remediation (own branch remediation/rem-dep-002-npm-audit, base d8a7a15)"
+    completion_commit: null   # set on the reviewed PR merge
+    blocks: "Phase 22 PR — Frontend CI job (npm audit step). Phase 22 remains local_complete on branch phase-22-search (commit edff8c0) and is NOT to be opened as a PR until this item merges."
+    rollback_forward_repair: "Revert the single remediation commit to restore the previous package.json/package-lock.json/eslint.config.js; this reintroduces the 15 high findings and the failing Frontend job (emergency-only). Forward repair: drop the @redocly/openapi-core override once openapi-typescript supports @redocly/openapi-core v2 upstream."
+    reviewer: "TBD — PR not yet created."
+    status: local_complete   # implementation + all local gates green (docs/proof/rem-dep-002.md); -> verified_complete only on the reviewed PR merge with green CI

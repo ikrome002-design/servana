@@ -6,6 +6,96 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### REM-DEP-002 — npm audit high-severity remediation (`remediation/rem-dep-002-npm-audit`) — local_complete pending PR
+
+Off `main` = `d8a7a15603c22e41354e570f4d2735935468d973` (the Phase 21S PR #45 merge commit).
+A **dependency remediation**, not a Plan §80 feature phase, carried on its own branch so the
+Phase 22 PR is never asked to absorb an unrelated fix and the audit gate is never weakened.
+Register item **REM-DEP-002** — added in this change; it had never been recorded in
+`docs/remediation/register.yaml`. Proof: `docs/proof/rem-dep-002.md`. Single completion commit
+created and pushed; `origin/main…HEAD = 0 1`. **Not** merged — no PR exists yet, so this is not
+`verified_complete`.
+
+CI's Frontend job ends with `npm audit --audit-level=high` (`.github/workflows/ci.yml:184`),
+which exited 1 on `main` with **15 high-severity findings**, failing the Frontend check on every
+branch cut from `main`. There were only **two** published advisories —
+[GHSA-mh99-v99m-4gvg](https://github.com/advisories/GHSA-mh99-v99m-4gvg) (`brace-expansion <=5.0.7`)
+and [GHSA-r28c-9q8g-f849](https://github.com/advisories/GHSA-r28c-9q8g-f849) (`postcss <=8.5.17`);
+the remaining 13 entries were transitive propagation through `minimatch`. Exposure was
+**devDependencies only** (`axios`, `pinia`, `vue`, `vue-router` are the sole production
+dependencies and appear in neither chain); the material impact was CI integrity.
+
+#### Changed
+
+- **ESLint stack upgraded to v10** — the one chain no override can fix, because ESLint 9 pins
+  `minimatch@^3.1.5` and `@eslint/eslintrc`, which default-imports it:
+  `eslint` `^9.13.0 → ^10.8.0`, `@eslint/js` `^9.13.0 → ^10.0.1`,
+  `eslint-plugin-vue` `^9.30.0 → ^10.10.0`, `typescript-eslint` `^8.12.0 → ^8.65.0`.
+- **`postcss`** resolved `8.5.15 → 8.5.23` by lockfile refresh; the declared `^8.4.47` range
+  already admitted the patched release and is unchanged.
+- **`package-lock.json` regenerated** — npm could not transition `eslint-plugin-vue` 9 → 10 in
+  place (`ERESOLVE`). Nine further packages re-resolved **within ranges already declared in
+  `package.json`**; no range was widened. Full before/after table in the proof.
+- **`eslint.config.js`** now declares `globals.browser` explicitly. `eslint-plugin-vue@9`
+  supplied it implicitly from its flat base config and v10 does not, which surfaced 74
+  `no-undef` errors for `document`, `window`, `HTMLElement`, … This restores the previous
+  semantics; `no-undef` remains enabled everywhere.
+- **`BillingSettings.vue`** — `let next = index` → `let next: number` in `onKeydown`, where the
+  initialiser was dead (every branch reassigns or returns). ESLint 10 promotes
+  `no-useless-assignment` into `js.configs.recommended`. Behaviour unchanged.
+
+#### Added
+
+- `vue-eslint-parser` `^10.4.1` — a **peer** of `eslint-plugin-vue@10`, so it must be declared.
+- `globals` `^17.7.0` — promoted from transitive (14.0.0) to a direct devDependency.
+- Scoped `minimatch: ^10.2.5` **overrides** for `@redocly/openapi-core`, `@vue/language-core`,
+  `editorconfig` and `glob` — each verified to use minimatch's *named* exports. These avoid four
+  otherwise-forced majors: **`vue-tsc` (2.2.12), `openapi-typescript` (7.4.4), `@vue/test-utils`
+  (2.4.11) and `glob` are all unchanged.**
+- `docs/proof/rem-dep-002.md`; `REM-DEP-002` in `docs/remediation/register.yaml`.
+
+#### Rejected (with evidence, recorded in the proof)
+
+- `npm audit fix --force` — **downgrades** contract-critical tooling
+  (`openapi-typescript@6.7.6`, `@vue/test-utils@2.4.0`).
+- Overriding `@redocly/openapi-core` to `^2.40.0` — breaks every `openapi-typescript@7.x`
+  with `ERR_PACKAGE_PATH_NOT_EXPORTED: './lib/ref-utils.js'`.
+- `vue-tsc` 2 → 3 — surfaces a new `TS6133` in Phase 21S `ClientSms.vue`; the scoped override
+  achieves the same audit result with zero feature-code change.
+
+#### Verification
+
+`npm audit --audit-level=high` → **0 vulnerabilities** (exit 0), and 0 at every severity.
+ESLint **0 errors / 138 warnings**, *rule-for-rule identical* to the ESLint 9 baseline measured
+in a throwaway worktree — the upgrade adds no new error or warning. `vue-tsc` clean;
+`api:contract:check` **OK — 242 paths / 288 operations** (byte-identical contract);
+Vitest **501/501**; Vite build OK; Playwright **453 passed**; gitleaks no leaks;
+`git diff --check` clean; `composer validate --strict` OK; Pint 1611 files; Larastan L8 clean
+(1257 files). Vitest and Playwright match the Phase 21S baseline exactly — no test was
+changed, skipped or weakened, and **`.github/workflows/ci.yml` is not in the diff**: the audit
+step and its `--audit-level=high` threshold are untouched.
+
+**The backend suite is not green, and this change is not the cause.** `php artisan test` reports
+**24 failed / 7 skipped / 1982 passed**. Proven pre-existing: `git diff origin/main` contains
+**zero** backend files (no PHP, migration, test or composer manifest), and re-running the failing
+file against a stashed, byte-identical `origin/main` checkout reproduces **the same 6 failed /
+1 passed**. Proximate cause is the `tests/Pest.php:444` helper calling
+`POST /queue-entries/{id}/call` on an entry still in `waiting` — a transition
+`QueueEntryStatus::allowedTransitions()` forbids by design (`waiting → assigned → called`). The
+trigger appears environmental (likely time-of-day personnel availability; these runs executed
+23:00–00:00 `Africa/Nairobi`), since Phase 21S recorded 2006 passed / 0 failed on the same
+unchanged code days earlier. Flagged for separate investigation and deliberately **not** fixed
+here; it does not affect the Frontend job this remediation exists to unblock.
+
+**Residual risk.** `@redocly/openapi-core@1.34.17` is the one consumer left on a `minimatch`
+call style incompatible with v10. Its only call site (`readFileFromUrl` → per-URL header
+matching) is reachable only for remote HTTP `$ref`s; `docs/api/openapi.json` has **0** remote
+`$ref`s and there is no `redocly.yaml`, and it would fail loudly rather than match incorrectly.
+Drop the override once `openapi-typescript` supports `@redocly/openapi-core` v2 upstream.
+
+**Ordering.** Phase 22 remains `local_complete` on `phase-22-search` (`edff8c0`) with **no PR**
+until this remediation merges.
+
 ### Phase 21S — Personnel Bulk SMS to Personally Served Clients (`phase-21s-personnel-bulk-sms`) — local_complete pending PR
 
 Off `main` = `b5a8733616a4603996e18695db31528299cdf8d7` (the Phase 21R-A PR #44 merge commit).

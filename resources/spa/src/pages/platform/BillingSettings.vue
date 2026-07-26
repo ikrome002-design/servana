@@ -63,7 +63,7 @@ async function focusTab(key: string): Promise<void> {
 function onKeydown(event: KeyboardEvent, index: number): void {
   const list = tabs.value;
   if (list.length === 0) return;
-  let next = index;
+  let next: number;
   if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % list.length;
   else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index - 1 + list.length) % list.length;
   else if (event.key === 'Home') next = 0;
