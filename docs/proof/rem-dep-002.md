@@ -450,3 +450,29 @@ or pass on the Phase 22 PR exactly as it would have without this remediation.
    `^20.19.0 || ^22.13.0 || >=24`; `brace-expansion@5.0.8` requires `20 || >=22`),
    and `actions/setup-node@v4` with `node-version: '20'` resolves to 20.19+.
    CI on Node 20 is the authoritative confirmation.
+
+## Solo-Maintainer Review Exception - PR #46
+
+- PR: #46
+- remediation: REM-DEP-002
+- implementation head: 13feb2bfe55a057d7a4082d386e6686963fd230c
+- successful initial CI run: 30195126975
+- initial Backend check: passed
+- initial Frontend check: passed
+- initial Docker check: passed
+- initial Security check: passed
+- initial E2E check: passed
+- GitHub reviewDecision: intentionally blank
+- governance record: docs/governance/solo-maintainer-review-exception-pr-46.md
+
+This exception applies only to REM-DEP-002 and is not independent reviewer
+approval.
+
+A governance-only commit will add this evidence. All required checks must pass
+again on that governance commit before PR #46 is merged.
+
+The Phase 22 branch remains preserved at:
+
+edff8c059671b551eec1e6f9617ea3ae6add0d7b
+
+The Phase 22 PR remains unopened until REM-DEP-002 is merged and verified.
