@@ -801,39 +801,49 @@ items:
 
   - id: REM-DEP-002
     classification: C1
-    gating_category: DEFERRED_VERIFICATION
-    scope_requirement: "Clear the npm high-severity advisory gate (`npm audit --audit-level=high`, enforced by the CI Frontend job at .github/workflows/ci.yml). Requires a deliberate ESLint 9 -> 10 MAJOR upgrade plus the non-breaking postcss bump, on its own authorized branch."
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: "CI Frontend job runs `npm audit --audit-level=high` (.github/workflows/ci.yml:184) and must exit 0 without weakening the gate, lowering the threshold, or suppressing advisories (CLAUDE.md §7 quality gates)."
     repository_evidence: >
-      Surfaced during the Phase 22 gate run (2026-07-25). `npm audit --audit-level=high`
-      reports 15 high findings; Phase 21S recorded 0 at its closure, and Phase 22 did NOT
-      touch package.json or package-lock.json (git status shows both unmodified on
-      phase-22-search), so these are newly PUBLISHED upstream advisories against an
-      unchanged lockfile rather than a Phase 22 regression. Two root causes:
-      (1) brace-expansion GHSA-mh99-v99m-4gvg (DoS via unbounded expansion) reached through
-      minimatch by @eslint/config-array, @eslint/eslintrc, eslint, eslint-plugin-vue, glob,
-      editorconfig, js-beautify, @vue/test-utils, @vue/language-core, vue-tsc,
-      @redocly/openapi-core and openapi-typescript — 12 of the 15 findings. npm reports
-      `fixAvailable = eslint@10.8.0, isSemVerMajor = true`, so it CANNOT be resolved by a
-      non-breaking `npm audit fix`; a dry run confirms 15 findings remain.
-      (2) postcss GHSA-r28c-9q8g-f849 (path traversal in previous-source-map auto-loading)
-      — direct devDependency, `fixAvailable = true`, non-breaking.
-    root_cause: "Upstream advisories published after the Phase 21S closure run. The blocking half is a transitive brace-expansion/minimatch chain whose only published fix is an ESLint major (9 -> 10), which changes the lint toolchain and config surface."
-    affected_files_tables_routes: "package.json; package-lock.json; eslint.config.* (ESLint 10 config-format migration); no application code, no route, no table."
-    security_data_business_impact: >
-      PRODUCTION EXPOSURE IS NIL: every affected package is a devDependency — eslint,
-      eslint-plugin-vue, vue-tsc, @vue/language-core, @vue/test-utils, openapi-typescript,
-      @redocly/openapi-core, js-beautify, editorconfig, glob, minimatch, brace-expansion —
-      plus postcss, a build-time CSS processor. None ships in the SPA bundle at runtime and
-      none is reachable from the Laravel runtime. The exposure is to the CI and developer
-      toolchain (a crafted glob pattern or a crafted sourceMappingURL during a build).
-      OPERATIONAL IMPACT IS REAL: the CI Frontend job runs `npm audit --audit-level=high`,
-      so this fails the Frontend check on ANY pull request until remediated — including the
-      Phase 22 PR.
-    precise_correction: "On a dedicated dependency-remediation branch (the pattern PR #42 already established for this repository, kept out of feature PRs): apply the non-breaking postcss bump, then upgrade ESLint 9 -> 10 with its config migration, re-run `npm run lint` / `typecheck` / `test` / `build` and the full Playwright suite, and confirm `npm audit --audit-level=high` exits 0. NOT fixed inside Phase 22: package-lock.json is not a Phase 22 Search path (scope-purity rule), and a breaking lint-toolchain major must not ride along in a security-feature PR."
-    migration_impact: "none (no database change)."
-    test_plan: "npm audit --audit-level=high exits 0; ESLint still reports 0 errors with the migrated config; vue-tsc clean; Vitest full suite green; Vite build green; full Playwright suite green (the lint/type toolchain change can only surface there)."
-    proof_artifact: "docs/proof/phase-22.md (discovery + evidence); the remediation branch writes its own proof."
-    owner: "dependency remediation (product-owner authorized branch; before Phase 25 exit)"
-    completion_commit: null
-    reviewer: "TBD"
-    status: not_started   # BLOCKS the Phase 22 PR Frontend check. Discovered by Phase 22's gate run, not caused by it; requires a breaking ESLint major, so it is out of Phase 22's scope.
+      BEFORE (clean branch off origin/main d8a7a15): `npm audit --audit-level=high`
+      exits 1 with 15 high-severity findings. Parsing `npm audit --json` shows only
+      TWO published advisories — GHSA-mh99-v99m-4gvg (brace-expansion <=5.0.7) and
+      GHSA-r28c-9q8g-f849 (postcss <=8.5.17); the other 13 entries are transitive
+      "depends on a vulnerable version" propagation through minimatch. Exposure is
+      devDependencies only (audit metadata prod 56 / dev 380; all six brace-expansion
+      instances and postcss carry "dev": true in package-lock.json; the four prod
+      dependencies are axios, pinia, vue, vue-router — none in either chain).
+      AFTER (this branch): `npm audit --audit-level=high` and bare `npm audit` both
+      report "found 0 vulnerabilities" (exit 0). Single hoisted brace-expansion 5.0.8
+      and minimatch 10.2.5; postcss 8.5.23; @eslint/config-array 0.23.5;
+      @eslint/eslintrc removed. Gates: ESLint 0 errors / 138 warnings (rule-for-rule
+      IDENTICAL to the ESLint 9 baseline measured in a throwaway worktree — no lint
+      regression), vue-tsc 0 errors, api:contract:check OK 242 paths / 288 operations
+      (unchanged), Vitest 501/501, Playwright 453 passed, Vite build OK, gitleaks
+      clean, git diff --check clean, composer validate --strict OK, Pint 1611 files,
+      Larastan L8 clean (1257 files). .github/workflows/ci.yml NOT modified.
+      BACKEND SUITE NOT GREEN AND NOT CAUSED BY THIS CHANGE: php artisan test reports
+      24 failed / 7 skipped / 1982 passed. Proven pre-existing — `git diff origin/main`
+      contains ZERO backend files (no PHP, migration, test or composer manifest), and
+      re-running the failing file on a stashed, byte-identical origin/main checkout
+      reproduces exactly 6 failed / 1 passed, the same as on this branch. Proximate
+      cause is the tests/Pest.php:444 helper calling POST /queue-entries/{id}/call on
+      an entry still in `waiting`, which QueueEntryStatus::allowedTransitions()
+      forbids by design (waiting -> assigned -> called); trigger appears environmental
+      (likely time-of-day personnel availability — runs executed 23:00-00:00
+      Africa/Nairobi) since Phase 21S recorded 2006 passed / 0 failed on the same
+      unchanged code days earlier. FLAGGED for separate investigation; deliberately
+      NOT fixed on this branch (backend behaviour is outside REM-DEP-002 scope) and it
+      does not affect the Frontend job this item exists to unblock.
+    root_cause: "Two independent causes. (1) postcss: the declared range ^8.4.47 already admitted the patched release; the lockfile was merely pinned to 8.5.15, below the 8.5.18 fix line. (2) brace-expansion: the advisory range <=5.0.7 spans every major line and the ONLY patched release is 5.0.8 — there is no 1.x or 2.x backport — so every consumer must reach it through minimatch >= 10.0.3 (minimatch itself is flagged across 2.0.0 - 10.0.2). ESLint 9 depends on minimatch ^3.1.5 and on @eslint/eslintrc, which default-imports minimatch, and therefore cannot be cleared by an override at all; npm's own fixAvailable for that chain is eslint@10.8.0 with isSemVerMajor true."
+    affected_files_tables_routes: "package.json; package-lock.json; eslint.config.js; resources/spa/src/pages/platform/BillingSettings.vue. No backend file, route, table, permission key, policy, migration or generated API artifact changed; no CI configuration changed."
+    security_data_business_impact: "No production runtime exposure — every affected package is a devDependency and postcss is build-time only, not shipped in the SPA bundle. The material impact was CI integrity: the Frontend job fails on any branch cut from main, which would have blocked the Phase 22 PR for a reason unrelated to Phase 22 and created pressure to weaken the audit gate. Remediated, not suppressed: the audit step, its --audit-level=high threshold and every other gate are untouched."
+    precise_correction: "Split by whether an override is provably safe. (A) REAL UPGRADE where it is not — eslint ^9.13.0 -> ^10.8.0, @eslint/js ^9.13.0 -> ^10.0.1, eslint-plugin-vue ^9.30.0 -> ^10.10.0, typescript-eslint ^8.12.0 -> ^8.65.0, plus vue-eslint-parser ^10.4.1 (v10 of the plugin makes it a peer) and globals ^17.7.0 (now a direct devDependency). (B) SCOPED minimatch ^10.2.5 OVERRIDES for the four consumers verified to use minimatch's NAMED exports — @redocly/openapi-core, @vue/language-core, editorconfig, glob — avoiding four otherwise-forced majors (vue-tsc, openapi-typescript, @vue/test-utils, glob). (C) postcss cleared by lockfile refresh inside the existing ^8.4.47 range. Consequential edits: eslint.config.js re-declares globals.browser (eslint-plugin-vue 9 injected it implicitly from its flat base config; v10 does not — restoration, not relaxation), and BillingSettings.vue changes `let next = index` to `let next: number` for no-useless-assignment, promoted into js.configs.recommended by ESLint 10. REJECTED with evidence: `npm audit fix --force` (downgrades openapi-typescript to 6.7.6 and @vue/test-utils to 2.4.0); overriding @redocly/openapi-core to ^2.40.0 (ERR_PACKAGE_PATH_NOT_EXPORTED — every openapi-typescript 7.x imports the v1 subpath ./lib/ref-utils.js); upgrading vue-tsc 2 -> 3 (surfaces a new TS6133 in Phase 21S ClientSms.vue, and the scoped override achieves the same audit result with zero feature-code change)."
+    migration_impact: "none — frontend dependency manifests, one lint config and one statement in one SPA component."
+    test_plan: "npm audit --audit-level=high (the exact CI command) must exit 0; the full CI Frontend sequence npm ci -> lint -> typecheck -> api:contract:check -> test -> build -> audit must pass; ESLint error/warning counts must match the ESLint 9 baseline rule-for-rule; Vitest and Playwright counts must match the Phase 21S baseline (501 / 453) with no test changed, skipped or weakened; the OpenAPI contract must stay byte-identical; backend gates run to prove no collateral damage. ALL PASSED — see docs/proof/rem-dep-002.md."
+    proof_artifact: "docs/proof/rem-dep-002.md; docs/governance/solo-maintainer-review-exception-pr-46.md"
+    owner: "dependency remediation (own branch remediation/rem-dep-002-npm-audit, base d8a7a15)"
+    completion_commit: "1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408 (PR #46 squash merge to main on 2026-07-26; final PR head b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d)"
+    blocks: "closed — PR #46 merged and REM-DEP-002 no longer blocks Phase 22. phase-22-search retains implementation commit edff8c059671b551eec1e6f9617ea3ae6add0d7b and must finish the origin/main refresh and rerun all Phase 22 gates, including npm audit --audit-level=high, before push and PR creation."
+    rollback_forward_repair: "Revert the single remediation commit to restore the previous package.json/package-lock.json/eslint.config.js; this reintroduces the 15 high findings and the failing Frontend job (emergency-only). Forward repair: drop the @redocly/openapi-core override once openapi-typescript supports @redocly/openapi-core v2 upstream."
+    reviewer: "PR #46 merged with Backend, Frontend, Docker, Security and E2E checks successful; reviewDecision intentionally blank under docs/governance/solo-maintainer-review-exception-pr-46.md — not independent reviewer approval."
+    status: verified_complete   # PR #46 merged as 1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408 on 2026-07-26; final PR head b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d; local and remote remediation branches deleted.

@@ -6,6 +6,103 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### REM-DEP-002 — npm audit high-severity remediation (`remediation/rem-dep-002-npm-audit`) — verified_complete (PR #46 merged)
+
+Off `main` = `d8a7a15603c22e41354e570f4d2735935468d973` (the Phase 21S PR #45 merge commit).
+A **dependency remediation**, not a Plan §80 feature phase, carried on its own branch so the
+Phase 22 PR is never asked to absorb an unrelated fix and the audit gate is never weakened.
+Register item **REM-DEP-002** is closed. Proof: `docs/proof/rem-dep-002.md`. Governance:
+`docs/governance/solo-maintainer-review-exception-pr-46.md`. PR #46
+**"REM-DEP-002: Fix npm audit dependency chain"** merged into `main` on 2026-07-26 as squash
+commit `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408` from final PR head
+`b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d`. Backend, Frontend, Docker, Security and E2E
+checks passed. `reviewDecision` remained intentionally blank under the PR-specific
+solo-maintainer governance exception; this is not independent reviewer approval. The local and
+remote `remediation/rem-dep-002-npm-audit` branches were deleted.
+
+CI's Frontend job ends with `npm audit --audit-level=high` (`.github/workflows/ci.yml:184`),
+which exited 1 on `main` with **15 high-severity findings**, failing the Frontend check on every
+branch cut from `main`. There were only **two** published advisories —
+[GHSA-mh99-v99m-4gvg](https://github.com/advisories/GHSA-mh99-v99m-4gvg) (`brace-expansion <=5.0.7`)
+and [GHSA-r28c-9q8g-f849](https://github.com/advisories/GHSA-r28c-9q8g-f849) (`postcss <=8.5.17`);
+the remaining 13 entries were transitive propagation through `minimatch`. Exposure was
+**devDependencies only** (`axios`, `pinia`, `vue`, `vue-router` are the sole production
+dependencies and appear in neither chain); the material impact was CI integrity.
+
+#### Changed
+
+- **ESLint stack upgraded to v10** — the one chain no override can fix, because ESLint 9 pins
+  `minimatch@^3.1.5` and `@eslint/eslintrc`, which default-imports it:
+  `eslint` `^9.13.0 → ^10.8.0`, `@eslint/js` `^9.13.0 → ^10.0.1`,
+  `eslint-plugin-vue` `^9.30.0 → ^10.10.0`, `typescript-eslint` `^8.12.0 → ^8.65.0`.
+- **`postcss`** resolved `8.5.15 → 8.5.23` by lockfile refresh; the declared `^8.4.47` range
+  already admitted the patched release and is unchanged.
+- **`package-lock.json` regenerated** — npm could not transition `eslint-plugin-vue` 9 → 10 in
+  place (`ERESOLVE`). Nine further packages re-resolved **within ranges already declared in
+  `package.json`**; no range was widened. Full before/after table in the proof.
+- **`eslint.config.js`** now declares `globals.browser` explicitly. `eslint-plugin-vue@9`
+  supplied it implicitly from its flat base config and v10 does not, which surfaced 74
+  `no-undef` errors for `document`, `window`, `HTMLElement`, … This restores the previous
+  semantics; `no-undef` remains enabled everywhere.
+- **`BillingSettings.vue`** — `let next = index` → `let next: number` in `onKeydown`, where the
+  initialiser was dead (every branch reassigns or returns). ESLint 10 promotes
+  `no-useless-assignment` into `js.configs.recommended`. Behaviour unchanged.
+
+#### Added
+
+- `vue-eslint-parser` `^10.4.1` — a **peer** of `eslint-plugin-vue@10`, so it must be declared.
+- `globals` `^17.7.0` — promoted from transitive (14.0.0) to a direct devDependency.
+- Scoped `minimatch: ^10.2.5` **overrides** for `@redocly/openapi-core`, `@vue/language-core`,
+  `editorconfig` and `glob` — each verified to use minimatch's *named* exports. These avoid four
+  otherwise-forced majors: **`vue-tsc` (2.2.12), `openapi-typescript` (7.4.4), `@vue/test-utils`
+  (2.4.11) and `glob` are all unchanged.**
+- `docs/proof/rem-dep-002.md`; `REM-DEP-002` in `docs/remediation/register.yaml`.
+
+#### Rejected (with evidence, recorded in the proof)
+
+- `npm audit fix --force` — **downgrades** contract-critical tooling
+  (`openapi-typescript@6.7.6`, `@vue/test-utils@2.4.0`).
+- Overriding `@redocly/openapi-core` to `^2.40.0` — breaks every `openapi-typescript@7.x`
+  with `ERR_PACKAGE_PATH_NOT_EXPORTED: './lib/ref-utils.js'`.
+- `vue-tsc` 2 → 3 — surfaces a new `TS6133` in Phase 21S `ClientSms.vue`; the scoped override
+  achieves the same audit result with zero feature-code change.
+
+#### Verification
+
+`npm audit --audit-level=high` → **0 vulnerabilities** (exit 0), and 0 at every severity.
+ESLint **0 errors / 138 warnings**, *rule-for-rule identical* to the ESLint 9 baseline measured
+in a throwaway worktree — the upgrade adds no new error or warning. `vue-tsc` clean;
+`api:contract:check` **OK — 242 paths / 288 operations** (byte-identical contract);
+Vitest **501/501**; Vite build OK; Playwright **453 passed**; gitleaks no leaks;
+`git diff --check` clean; `composer validate --strict` OK; Pint 1611 files; Larastan L8 clean
+(1257 files). Vitest and Playwright match the Phase 21S baseline exactly — no test was
+changed, skipped or weakened, and **`.github/workflows/ci.yml` is not in the diff**: the audit
+step and its `--audit-level=high` threshold are untouched.
+
+**The backend suite is not green, and this change is not the cause.** `php artisan test` reports
+**24 failed / 7 skipped / 1982 passed**. Proven pre-existing: `git diff origin/main` contains
+**zero** backend files (no PHP, migration, test or composer manifest), and re-running the failing
+file against a stashed, byte-identical `origin/main` checkout reproduces **the same 6 failed /
+1 passed**. Proximate cause is the `tests/Pest.php:444` helper calling
+`POST /queue-entries/{id}/call` on an entry still in `waiting` — a transition
+`QueueEntryStatus::allowedTransitions()` forbids by design (`waiting → assigned → called`). The
+trigger appears environmental (likely time-of-day personnel availability; these runs executed
+23:00–00:00 `Africa/Nairobi`), since Phase 21S recorded 2006 passed / 0 failed on the same
+unchanged code days earlier. Flagged for separate investigation and deliberately **not** fixed
+here; it does not affect the Frontend job this remediation exists to unblock.
+
+**Residual risk.** `@redocly/openapi-core@1.34.17` is the one consumer left on a `minimatch`
+call style incompatible with v10. Its only call site (`readFileFromUrl` → per-URL header
+matching) is reachable only for remote HTTP `$ref`s; `docs/api/openapi.json` has **0** remote
+`$ref`s and there is no `redocly.yaml`, and it would fail loudly rather than match incorrectly.
+Drop the override once `openapi-typescript` supports `@redocly/openapi-core` v2 upstream.
+
+**Follow-on.** REM-DEP-002 no longer blocks Phase 22. The original Phase 22 implementation
+commit `edff8c059671b551eec1e6f9617ea3ae6add0d7b` remains preserved while `origin/main` is merged
+into `phase-22-search`. The complete Phase 22 gates, including
+`npm audit --audit-level=high`, must pass on the refreshed head before push and before the
+Phase 22 pull request is created.
+
 ### Phase 22 — Search (`phase-22-search`) — in_progress
 
 Off `main` = `d8a7a15603c22e41354e570f4d2735935468d973` (the Phase 21S PR #45 merge commit).
@@ -131,16 +228,17 @@ zoom; `composer audit` no advisories; `gitleaks` no leaks; Docker dev app + prod
 built. The 7 skips are the pre-existing baseline (3 ClamAV opt-in-profile + 4 threat-model
 placeholders); Phase 22 adds none. **No migration and no table.**
 
-#### Blocked — not caused by this phase (`REM-DEP-002`)
-`npm audit --audit-level=high` reports **15 high findings** where Phase 21S recorded 0, against a
-`package.json`/`package-lock.json` that Phase 22 **did not touch**. Two upstream advisories published
-since the 21S closure run: `brace-expansion` GHSA-mh99-v99m-4gvg reached through `minimatch` by 12
-packages (npm's only published fix is **`eslint@10.8.0`, a semver-major**; a `--dry-run` confirms all
-15 survive a non-breaking pass) and `postcss` GHSA-r28c-9q8g-f849. Every affected package is a
-**devDependency**, so production exposure is nil — but CI runs this gate in the Frontend job, so it
-will fail the Phase 22 PR until a dedicated dependency-remediation branch clears it (the pattern PR
-#42 already established). Fixing it here would breach scope purity and fold a breaking lint-toolchain
-major into a security-feature PR.
+#### Dependency gate resolved; post-refresh verification pending (`REM-DEP-002`)
+
+REM-DEP-002 is `verified_complete`. PR #46 merged into `main` on 2026-07-26 as squash
+commit `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408` from final PR head
+`b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d`. The remediation branches were deleted and
+`reviewDecision` remained intentionally blank under the PR-specific solo-maintainer
+governance exception. This is not independent reviewer approval.
+
+The Phase 22 implementation commit `edff8c059671b551eec1e6f9617ea3ae6add0d7b` remains
+preserved. All Phase 22 gates, including `npm audit --audit-level=high`, must pass on the
+refreshed merge head before push and before the Phase 22 pull request is created.
 
 ### Phase 21S — Personnel Bulk SMS to Personally Served Clients (`phase-21s-personnel-bulk-sms`) — verified_complete
 

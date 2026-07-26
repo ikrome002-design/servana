@@ -84,12 +84,12 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 21R-B | R&E subscription events, qualification engine, inbound reconciliation | ⛔ Blocked — entry criteria require 21R-A **and** 20D-W (payment received/cleared sources), and 20D-W is blocked by Gate W. Not started. |
 | 21N | Queues / notifications / scheduled reports | ⛔ Blocked — Plan §80.1 dependency `(17,18,20D-W) → 21N`; 20D-W is blocked by Gate W. Not started. |
 | 21S | Personnel bulk SMS to personally served clients | ✅ `verified_complete` — **PR #45** "Phase 21S: Implement personnel bulk SMS" MERGED into `main` (merge commit `d8a7a15603c22e41354e570f4d2735935468d973` == `origin/main`; implementation commit `9d2c547a4a8e8af76a80bc138ae0b608e448dfe7`; CI-fix commit `34a5921ca5b2f4502e20172c10ed472d7d416954`; final PR head / empty PR-ref resync commit `dc48d095529757dd1282ad5a8659e8e087cbc2a8`; base `main`; merged `2026-07-23T09:13:10Z`). Final CI run **29992575586** on head `dc48d09…`, event `pull_request`, conclusion `success` — five required jobs all SUCCESS (Backend — Pint, Larastan, Pest; Frontend — ESLint, vue-tsc, Vitest, build; Docker — build images; Security — gitleaks; E2E — Playwright). `reviewDecision` **blank** under the PR-specific solo-maintainer governance exception recorded at [PR #45 comment 5056479540](https://github.com/ikrome002-design/servana/pull/45#issuecomment-5056479540) — **not** independent reviewer approval. Local **and** remote `phase-21s-personnel-bulk-sms` branches deleted. **REM-SMS-001** closed `verified_complete` on the merge; **REM-SMS-002** remains open (deferred live SMS provider/callback verification, must close before Phase 25). (Reconciled from `local_complete` on the `phase-22-search` branch, per the established convention that the next branch reconciles the previous phase.) Branch was off `b5a8733…` (PR #44 merge commit). Executable because Plan §80.1 lists `16C + 15A(consent) → 21S` and both are `verified_complete` with live `client_consents` + `service_sessions` substrate; Gate W remains CLOSED so 20D-W / 21R-B / 21N stay blocked. Closes **REM-SMS-001** (final closure on merge); opens **REM-SMS-002** (deferred live-provider verification, before Phase 25). Final local gates: composer validate OK; Pint 1611 clean; Larastan L8 0 errors (1257); **full backend serial 2006 passed / 7 skipped / 0 failed / 12414 assertions** and **`--parallel` identical 2006/7/0 (4 procs)**; disposable PG16.14 proof `servana_p21s_proof_*` (118 migrations from zero, 97 tables, 4/4 SMS tables, phone_encrypted nullable, 5 triggers, 0 forbidden tables, dropped, dev DB untouched); OpenAPI **242 paths / 288 operations** deterministic (openapi.json/api.ts/permissions.ts byte-identical 2×), `permission-types --check` + `api:contract:check` green; ESLint 0 errors / 138 baseline warnings; vue-tsc clean; Vitest 501/501; build OK; Playwright 21S 21/21 + full **453 passed / 0 failed** (one unrelated appointments load-flake reran clean, isolated 13/13); npm audit 0 vulnerabilities; composer audit no advisories; gitleaks no leaks; Docker dev app + prod app + prod nginx built. Closure-session fixes: F1 Pint CRLF/style on two 21S test files; F2 stale committed OpenAPI still carried `phone_encrypted` after the Form Requests moved denylist→allowlist (regenerated, counts unchanged 242/288); F3 Playwright load-flake (no code change). **Not** `verified_complete`/`ci_passed`/`merged` — no PR exists. See the Phase 21S section + `docs/proof/phase-21s.md`. |
-| 22 | Search | 🟡 `local_complete pending PR CI/review/merge` — branch `phase-22-search` off `d8a7a15…` (the verified PR #45 merge commit), single completion commit, pushed; `origin/main…HEAD = 0 1`. **One gate is BLOCKED by a pre-existing dependency condition Phase 22 did not cause — see REM-DEP-002 and the Phase 22 section below.** Executable because Plan §80.1 line 2517 places `→ 22` after the 21S clause and 21S is `verified_complete`; **External Gate W re-verified CLOSED before branch creation** (`docs/integrations/wallet/gate-w-evidence.md`, `docs/integrations/wallet/` and `docs/proof/phase-20d-w.md` all absent; `docs/integrations/` holds only `refer-earn/`), so 20D-W stays blocked, 21R-B stays blocked behind 20D-W, and 21N stays blocked behind `(17,18,20D-W) → 21N` — Phase 22 is the next executable non-Wallet phase. Implements Plan **§68** + **§80 Phase 22**, under the **§64/§73 RK-05/§74/ADR-010** contact-protection invariants. **Decision D-22-01:** no global search permission exists or is added — `GET /api/v1/search` is an authenticated, tenant-scoped **aggregator** whose results are the intersection of the authority already governing each result type's own list/detail route; callers with no searchable authority receive a 200 empty collection (never 403, to avoid a catalogue existence oracle). See the Phase 22 section + [phase-22.md](proof/phase-22.md). |
+| 22 | Search | 🟡 `in_progress` — implementation commit `edff8c059671b551eec1e6f9617ea3ae6add0d7b` remains preserved. REM-DEP-002 PR #46 merged into `main` as squash commit `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408`. The normal refresh merge is active and uncommitted; the complete Phase 22 gates must rerun before push and before PR creation. No Phase 22 pull request exists. Executable because Plan §80.1 line 2517 places `→ 22` after the 21S clause and 21S is `verified_complete`; **External Gate W re-verified CLOSED before branch creation** (`docs/integrations/wallet/gate-w-evidence.md`, `docs/integrations/wallet/` and `docs/proof/phase-20d-w.md` all absent; `docs/integrations/` holds only `refer-earn/`), so 20D-W stays blocked, 21R-B stays blocked behind 20D-W, and 21N stays blocked behind `(17,18,20D-W) → 21N` — Phase 22 is the next executable non-Wallet phase. Implements Plan **§68** + **§80 Phase 22**, under the **§64/§73 RK-05/§74/ADR-010** contact-protection invariants. **Decision D-22-01:** no global search permission exists or is added — `GET /api/v1/search` is an authenticated, tenant-scoped **aggregator** whose results are the intersection of the authority already governing each result type's own list/detail route; callers with no searchable authority receive a 200 empty collection (never 403, to avoid a catalogue existence oracle). See the Phase 22 section + [phase-22.md](proof/phase-22.md). |
 | 23 | Security hardening + responsive/dark/a11y release audit + threat-model | ⬜ Not started. Also inherits **REM-DEP-002** (npm high-severity advisory gate) if the dedicated dependency-remediation branch has not closed it by then. |
 | 24 | Performance optimization | ⬜ Not started |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
-## Phase 22 — Search (local_complete pending PR)
+## Phase 22 — Search (in_progress — post-REM-DEP-002 refresh and gate rerun)
 
 Implements Plan **§68** (Search) and **§80 Phase 22**, under **§64**, **§73** (RK-05 personnel
 contact exfiltration), **§74**, **§24.5**, **§23/§24.1–24.2**, **§19.4** and **ADR-010**.
@@ -152,16 +152,87 @@ ESLint **0 errors / 138 baseline warnings** (no new warning); vue-tsc clean; Vit
 Docker dev app + prod app + prod nginx all built. The 7 skips are the pre-existing baseline (3
 ClamAV opt-in-profile + 4 threat-model placeholders). **No migration and no table.**
 
-**⛔ One gate is BLOCKED and it is NOT a Phase 22 regression — `REM-DEP-002`.**
-`npm audit --audit-level=high` reports **15 high findings** where Phase 21S recorded 0, against a
-`package.json`/`package-lock.json` that Phase 22 **did not touch**. Two upstream advisories published
-since the 21S run: `brace-expansion` GHSA-mh99-v99m-4gvg reached through `minimatch` by 12 packages
-(npm's only published fix is **eslint@10.8.0, a semver-major**, so a non-breaking `npm audit fix`
-cannot clear it — dry-run confirms 15 remain), and `postcss` GHSA-r28c-9q8g-f849 (non-breaking).
-Every affected package is a **devDependency** — production exposure is nil — but CI runs this gate in
-the Frontend job, so **it will fail the Phase 22 PR until remediated on its own authorized branch**
-(the pattern PR #42 already set for this repository). Fixing it inside Phase 22 would breach the
-scope-purity rule and ride a breaking lint-toolchain major along in a security-feature PR.
+**REM-DEP-002 is resolved; post-refresh verification is pending.** PR #46
+**"REM-DEP-002: Fix npm audit dependency chain"** merged into `main` on 2026-07-26 as
+squash commit `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408` from final PR head
+`b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d`. The remediation branches were deleted and
+`reviewDecision` remained intentionally blank under the PR-specific solo-maintainer
+governance exception. This is not independent reviewer approval.
+
+The original Phase 22 implementation commit
+`edff8c059671b551eec1e6f9617ea3ae6add0d7b` remains preserved. All Phase 22 gates, including
+`npm audit --audit-level=high`, must rerun on the refreshed merge head before push and before
+the Phase 22 pull request is created.
+
+## REM-DEP-002 — npm audit high-severity remediation (verified_complete — PR #46 merged)
+
+Not a Plan §80 feature phase — a **dependency remediation** carried on its own branch
+`remediation/rem-dep-002-npm-audit`, cut from `origin/main` = `d8a7a15…` (Phase 21S PR #45
+merge). Register item **REM-DEP-002** (added 2026-07-25; it had never been recorded in
+`docs/remediation/register.yaml` before). Proof: `docs/proof/rem-dep-002.md`.
+
+- **Why it exists.** CI's Frontend job ends with `npm audit --audit-level=high`
+  (`.github/workflows/ci.yml:184`). On `main` that command exits 1 with **15 high-severity
+  findings**, so the job fails on *any* branch cut from `main` — including the pending
+  Phase 22 PR — for a reason unrelated to the phase under review. Fixed on its own branch
+  so the audit gate is never weakened and Phase 22 is never asked to carry an unrelated fix.
+- **Root cause.** Only **two** published advisories, not fifteen:
+  `GHSA-mh99-v99m-4gvg` (`brace-expansion <=5.0.7`) and `GHSA-r28c-9q8g-f849`
+  (`postcss <=8.5.17`); the other 13 entries are transitive propagation through `minimatch`.
+  The only patched `brace-expansion` is **5.0.8**, reachable only via `minimatch >= 10.0.3`.
+  ESLint 9 pins `minimatch@^3.1.5` and `@eslint/eslintrc` (which default-imports it), so that
+  chain cannot be cleared by an override — npm's own `fixAvailable` is `eslint@10.8.0`,
+  `isSemVerMajor: true`.
+- **Fix.** Semver-major upgrade *only* where an override is provably unsafe — `eslint`
+  `^9.13.0 → ^10.8.0`, `@eslint/js → ^10.0.1`, `eslint-plugin-vue → ^10.10.0`,
+  `typescript-eslint → ^8.65.0`, plus `vue-eslint-parser ^10.4.1` (now a peer) and
+  `globals ^17.7.0` (now direct). Everywhere the consumer uses minimatch's **named** exports,
+  a **scoped `minimatch ^10.2.5` override** (`@redocly/openapi-core`, `@vue/language-core`,
+  `editorconfig`, `glob`) avoids four further majors — `vue-tsc`, `openapi-typescript`,
+  `@vue/test-utils` and `glob` are **unchanged**. `postcss` cleared by lockfile refresh inside
+  the existing `^8.4.47` range. Rejected with evidence: `npm audit fix --force` (downgrades
+  `openapi-typescript` to 6.7.6 and `@vue/test-utils` to 2.4.0), `@redocly/openapi-core@2`
+  (`ERR_PACKAGE_PATH_NOT_EXPORTED` against every `openapi-typescript@7.x`), and `vue-tsc@3`
+  (new `TS6133` in Phase 21S `ClientSms.vue`).
+- **Consequential edits.** `eslint.config.js` re-declares `globals.browser`
+  (eslint-plugin-vue 9 injected it implicitly from its flat base config; v10 does not — a
+  restoration, not a relaxation), and `BillingSettings.vue` changes `let next = index` to
+  `let next: number` for `no-useless-assignment`, promoted into `js.configs.recommended` by
+  ESLint 10. **Four files changed**; no backend file, route, table, permission key, policy,
+  migration, generated artifact or CI configuration touched.
+- **Gates (all green).** `npm audit --audit-level=high` → **0 vulnerabilities** (and 0 at every
+  severity); ESLint **0 errors / 138 warnings — rule-for-rule identical to the ESLint 9
+  baseline** measured in a throwaway worktree, so no lint regression; `vue-tsc` clean;
+  `api:contract:check` **OK 242 paths / 288 operations** (unchanged); Vitest **501/501**;
+  Vite build OK; Playwright **453 passed**; gitleaks no leaks; `git diff --check` clean;
+  `composer validate --strict` OK; Pint 1611 files; Larastan L8 clean (1257 files).
+  Vitest/Playwright counts match the Phase 21S baseline exactly — no test changed, skipped or
+  weakened.
+- **Backend suite is NOT green, and it is not this change's doing.** `php artisan test` reports
+  **24 failed / 7 skipped / 1982 passed**. Proven pre-existing: `git diff origin/main` contains
+  **zero** backend files, and re-running the failing file on a stashed, byte-identical
+  `origin/main` checkout reproduces **exactly the same 6 failed / 1 passed**. Proximate cause is
+  the `tests/Pest.php:444` helper calling `POST /queue-entries/{id}/call` on an entry still in
+  `waiting`, a transition `QueueEntryStatus::allowedTransitions()` forbids by design
+  (`waiting → assigned → called`); the trigger looks environmental (likely time-of-day personnel
+  availability — these runs executed 23:00–00:00 `Africa/Nairobi`), since Phase 21S recorded
+  2006 passed / 0 failed on the same unchanged code days earlier. **Flagged for separate
+  investigation; deliberately not fixed here** — backend behaviour is outside REM-DEP-002's scope,
+  and it does not affect the Frontend job this remediation exists to unblock.
+- **Lifecycle.** ✅ **`verified_complete`** — PR #46
+  **"REM-DEP-002: Fix npm audit dependency chain"** merged into `main` on 2026-07-26 as
+  squash commit `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408` from final PR head
+  `b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d`. Backend, Frontend, Docker, Security and E2E
+  checks passed. `reviewDecision` remained intentionally blank under
+  `docs/governance/solo-maintainer-review-exception-pr-46.md`; this is not independent
+  reviewer approval. Local and remote `remediation/rem-dep-002-npm-audit` branches were
+  deleted.
+- **Follow-on.** REM-DEP-002 no longer blocks Phase 22. The original Phase 22 implementation
+  commit `edff8c059671b551eec1e6f9617ea3ae6add0d7b` remains preserved while `origin/main` is
+  merged into `phase-22-search`. The complete Phase 22 gates, including
+  `npm audit --audit-level=high`, must pass on the refreshed head before push and before the
+  Phase 22 pull request is created. Gate W remains **CLOSED**; 20D-W, 21R-B and 21N remain
+  blocked, and Phase 23 is not started.
 
 ## Phase 21S — Personnel Bulk SMS to Personally Served Clients (verified_complete)
 
