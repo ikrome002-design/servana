@@ -45,6 +45,7 @@ class Client extends Model
 {
     use BelongsToBranch;
     use BelongsToMerchant;
+
     /** @use HasFactory<ClientFactory> */
     use HasFactory;
 

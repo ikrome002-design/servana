@@ -54,6 +54,7 @@ class ServiceSession extends Model
 {
     use BelongsToBranch;
     use BelongsToMerchant;
+
     /** @use HasFactory<ServiceSessionFactory> */
     use HasFactory;
 

@@ -510,3 +510,80 @@ performance work beyond Phase 22's own checks, no Phase 25 deployment work.
 
 Phase 22 adds **no migration and no table** — it is additive behaviour over existing substrate, which
 is why there is no disposable-PostgreSQL schema proof in this phase.
+
+## Refreshed-head local verification — 2026-07-26
+
+- **Lifecycle.** `local_complete pending PR`.
+- **Repository.** `C:\Users\nderu\Documents\Development\Product\Servana`.
+- **Branch.** `phase-22-search`.
+- **Refreshed HEAD.** `e5df1834ab4cd726cfc501b20a177f8ab6d85a35`.
+- **Refresh subject.** `merge: refresh Phase 22 from REM-DEP-002 main`.
+- **First parent.** Phase 22 implementation `edff8c059671b551eec1e6f9617ea3ae6add0d7b`.
+- **Second parent.** REM-DEP-002 squash merge `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408`.
+- **REM-DEP-002 final PR head.** `b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d`.
+
+### Backend static and test evidence
+
+- `composer validate --strict`: passed.
+- Pint `v1.29.1`: 1,655 files passed.
+- Larastan level 8: 1,287 files passed with no errors.
+- Selected Phase 22 backend suite: 223 passed, 908 assertions.
+- Selected real-engine coverage: 27 tests.
+- Complete backend serial suite: 2,229 passed, 7 skipped, 13,336 assertions.
+- Complete backend parallel suite: 2,229 passed, 7 skipped, 13,336 assertions across 4 processes.
+- Meilisearch remained healthy and reachable from the application container.
+
+### Generator and API-contract evidence
+
+- OpenAPI, API TypeScript and permission TypeScript generators ran twice.
+- Baseline, pass-1 and pass-2 SHA-256 hashes were identical.
+- OpenAPI paths: 243.
+- OpenAPI HTTP operations: 289.
+- Permission type check: passed twice.
+- API contract check: passed twice.
+- `docs/api/openapi.json`: `2CE8955AAF4D926880A3575F26AD2FDA50C3A09429142BB4B3272EB8CDC6974F`.
+- `resources/spa/src/types/generated/api.ts`: `C204FC79852699A0494B5BA5471ACCC5E1F1A4C3526603ED16F4B71486691BB6`.
+- `resources/spa/src/types/generated/permissions.ts`: `D849F3565FB73EA3CCFBD3E14DF172D7595E723AB4ABC52A4E8D5245D7C22C17`.
+
+### Frontend and security evidence
+
+- ESLint: 0 errors and the established 138-warning baseline.
+- vue-tsc: passed.
+- Vitest: 98 passed files and 519 passed tests.
+- Vite production build: passed.
+- Composer audit: no security vulnerability advisories.
+- `npm audit --audit-level=high`: 0 vulnerabilities.
+- gitleaks: no leaks found.
+
+### Browser evidence and cross-phase reconciliation
+
+- Selected Phase 22 Playwright suite: 26 passed, 0 failed.
+- The selected suite includes responsive, theme, 200% zoom, keyboard, live-region, axe and direct-Meilisearch-request protections.
+- Initial complete-suite run exposed one stale Phase 20F assertion that claimed the Phase 20H compensation-summary route was absent.
+- `tests/e2e/phase-20f.spec.ts` was updated in exactly three lines to record current Phase 20H ownership; no test was removed.
+- Affected Phase 20F plus Phase 20H specifications: 59 passed, 0 failed.
+- Complete Playwright suite after reconciliation: 479 passed, 0 failed.
+
+### Docker image-build evidence
+
+- PHP development target: passed.
+- PHP production target: passed.
+- nginx production target: passed.
+- `servana-phase22-php-dev:e5df1834`: `sha256:dac07f323aea8c1945887aa6bc6647dfa9a048b93362561ea99f159b043d376d`, 782,896,908 bytes.
+- `servana-phase22-php-prod:e5df1834`: `sha256:7b6d31fa477585aeeb25350880a27d5aa89c3765084b81dcde19aa162907edee`, 845,448,982 bytes.
+- `servana-phase22-nginx-prod:e5df1834`: `sha256:9f16626cc1cec77a12edfd5b3477427fdb127756e403c97506a52a5420c7b45b`, 185,270,051 bytes.
+- Docker images pushed: 0.
+- Containers started, stopped or recreated by the image-build checkpoint: 0.
+
+### Authorized local correction scope
+
+- Seven model files contain one Pint-only blank-line insertion each.
+- `tests/e2e/phase-20f.spec.ts` contains the three-line cross-phase truth update.
+- Application-code files changed by the Playwright reconciliation: 0.
+- No generated file differs from HEAD.
+- No dependency manifest or lock file changed.
+- No file is staged.
+- No Git push was performed.
+- No Phase 22 pull request exists.
+
+Phase 22 is locally complete and is awaiting the separately authorized proof/progress staging, closeout commit, push, pull-request creation, remote CI, governance evidence, merge, synchronization and cleanup checkpoints.

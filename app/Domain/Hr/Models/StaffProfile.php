@@ -49,6 +49,7 @@ class StaffProfile extends Model
 {
     use BelongsToBranch;
     use BelongsToMerchant;
+
     /** @use HasFactory<StaffProfileFactory> */
     use HasFactory;
 

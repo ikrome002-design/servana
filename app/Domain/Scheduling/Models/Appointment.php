@@ -54,6 +54,7 @@ class Appointment extends Model
 {
     use BelongsToBranch;
     use BelongsToMerchant;
+
     /** @use HasFactory<AppointmentFactory> */
     use HasFactory;
 

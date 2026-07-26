@@ -69,6 +69,7 @@ class QueueEntry extends Model
 {
     use BelongsToBranch;
     use BelongsToMerchant;
+
     /** @use HasFactory<QueueEntryFactory> */
     use HasFactory;
 

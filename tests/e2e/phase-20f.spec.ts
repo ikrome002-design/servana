@@ -377,12 +377,12 @@ test.describe('Role boundaries', () => {
     await expect(page.getByRole('button', { name: 'Submit' })).toHaveCount(0);
   });
 
-  test('the Merchant Administrator compensation summary is not built in Phase 20F', async ({ page }) => {
+  test('the Merchant Administrator compensation summary is supplied by Phase 20H', async ({ page }) => {
     await stubMe(page, { role: 'merchant_admin', permissions: ['merchant.compensation_summary.view'] });
     await stubCompensation(page);
     await page.goto('/merchant/compensation-summary');
-    // Phase 20H owns this surface; the nav item is planned and no route exists.
-    await expect(page.getByRole('heading', { name: 'Compensation summary' })).toHaveCount(0);
+    // Phase 20H now owns this surface; keep the cross-phase ownership truth current.
+    await expect(page.getByRole('heading', { name: 'Compensation summary' })).toHaveCount(1);
   });
 });
 

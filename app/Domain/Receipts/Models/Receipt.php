@@ -49,6 +49,7 @@ class Receipt extends Model
 {
     use BelongsToBranch;
     use BelongsToMerchant;
+
     /** @use HasFactory<ReceiptFactory> */
     use HasFactory;
 

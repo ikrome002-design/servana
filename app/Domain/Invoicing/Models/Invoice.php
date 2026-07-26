@@ -65,6 +65,7 @@ class Invoice extends Model
 {
     use BelongsToBranch;
     use BelongsToMerchant;
+
     /** @use HasFactory<InvoiceFactory> */
     use HasFactory;
 
