@@ -15,15 +15,9 @@ uses()->group('files', 'security');
 /** @return list<string> */
 function phpSources(): array
 {
-    $dir = new RecursiveDirectoryIterator(app_path(), FilesystemIterator::SKIP_DOTS);
-    $files = [];
-    foreach (new RecursiveIteratorIterator($dir) as $file) {
-        if ($file->isFile() && $file->getExtension() === 'php') {
-            $files[] = $file->getPathname();
-        }
-    }
-
-    return $files;
+    // sourceFilesUnder() replaces RecursiveDirectoryIterator, which silently truncated this
+    // §65 storage-boundary scan to ~89% of app/ on the dev bind mount (PH23-SCAN-001).
+    return sourceFilesUnder(app_path(), ['php']);
 }
 
 it('confines private-file writes, promotion and signing to the file domain', function (): void {

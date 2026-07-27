@@ -24,6 +24,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $closes_at
  * @property string|null $reason
  * @property int|null $created_by
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class BranchCalendarException extends Model
 {

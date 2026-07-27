@@ -38,7 +38,13 @@ final class ExpireSignedExport implements ShouldQueue
         $expired = 0;
 
         UploadedFile::query()
-            ->where('lifecycle_status', FileLifecycleStatus::Available->value)
+            // `revoked` is swept too (PH23-EXP-001): a revoked export's object must still be
+            // removed at its retention window. Revoked rows converge to `expired` here, so the
+            // sweep never re-selects them and stays bounded.
+            ->whereIn('lifecycle_status', [
+                FileLifecycleStatus::Available->value,
+                FileLifecycleStatus::Revoked->value,
+            ])
             ->whereNotNull('retention_until')
             ->where('retention_until', '<', now())
             ->limit($this->batch)

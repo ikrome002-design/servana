@@ -2111,6 +2111,8 @@
                                 "branch.profile_updated",
                                 "branch.archived",
                                 "branch.operating_hours_updated",
+                                "branch.calendar_exception_set",
+                                "branch.calendar_exception_removed",
                                 "branch.day_opened",
                                 "branch.day_closed",
                                 "branch.day_reopened",
@@ -2255,6 +2257,7 @@
                                 "subscription.plan_change_scheduled",
                                 "subscription.plan_change_applied",
                                 "subscription.plan_change_cancelled",
+                                "merchant.profile_updated",
                                 "merchant.suspended",
                                 "merchant.reactivated",
                                 "merchant.deactivated",
@@ -2645,6 +2648,8 @@
                                 "branch.profile_updated",
                                 "branch.archived",
                                 "branch.operating_hours_updated",
+                                "branch.calendar_exception_set",
+                                "branch.calendar_exception_removed",
                                 "branch.day_opened",
                                 "branch.day_closed",
                                 "branch.day_reopened",
@@ -2789,6 +2794,7 @@
                                 "subscription.plan_change_scheduled",
                                 "subscription.plan_change_applied",
                                 "subscription.plan_change_cancelled",
+                                "merchant.profile_updated",
                                 "merchant.suspended",
                                 "merchant.reactivated",
                                 "merchant.deactivated",
@@ -3179,6 +3185,8 @@
                                 "branch.profile_updated",
                                 "branch.archived",
                                 "branch.operating_hours_updated",
+                                "branch.calendar_exception_set",
+                                "branch.calendar_exception_removed",
                                 "branch.day_opened",
                                 "branch.day_closed",
                                 "branch.day_reopened",
@@ -3323,6 +3331,7 @@
                                 "subscription.plan_change_scheduled",
                                 "subscription.plan_change_applied",
                                 "subscription.plan_change_cancelled",
+                                "merchant.profile_updated",
                                 "merchant.suspended",
                                 "merchant.reactivated",
                                 "merchant.deactivated",
@@ -4473,6 +4482,75 @@
                 ]
             }
         },
+        "/api/v1/branch/personnel-options": {
+            "get": {
+                "operationId": "branch.personnel-options.index",
+                "tags": [
+                    "BranchPersonnelOption"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `BranchPersonnelOptionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BranchPersonnelOptionResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/branch/preferred-personnel-fee-rule": {
             "get": {
                 "operationId": "branch.preferred-personnel-fee-rule.show",
@@ -5081,6 +5159,373 @@
                                 }
                             }
                         }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/branches/{branch}/calendar-exceptions": {
+            "get": {
+                "operationId": "branches.calendar-exceptions.index",
+                "tags": [
+                    "BranchCalendarException"
+                ],
+                "parameters": [
+                    {
+                        "name": "branch",
+                        "in": "path",
+                        "required": true,
+                        "description": "The branch ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `BranchCalendarExceptionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BranchCalendarExceptionResource"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "from": {
+                                                    "type": "string"
+                                                },
+                                                "to": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "from",
+                                                "to"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "An error\n\nAn error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Error overview.",
+                                                    "example": "The end of the range must not precede its start."
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "Error overview."
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "branches.calendar-exceptions.store",
+                "tags": [
+                    "BranchCalendarException"
+                ],
+                "parameters": [
+                    {
+                        "name": "branch",
+                        "in": "path",
+                        "required": true,
+                        "description": "The branch ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreBranchCalendarExceptionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`BranchCalendarExceptionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/BranchCalendarExceptionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/branches/{branch}/calendar-exceptions/{date}": {
+            "delete": {
+                "operationId": "branches.calendar-exceptions.destroy",
+                "tags": [
+                    "BranchCalendarException"
+                ],
+                "parameters": [
+                    {
+                        "name": "branch",
+                        "in": "path",
+                        "required": true,
+                        "description": "The branch ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "patch": {
+                "operationId": "branches.calendar-exceptions.update",
+                "tags": [
+                    "BranchCalendarException"
+                ],
+                "parameters": [
+                    {
+                        "name": "branch",
+                        "in": "path",
+                        "required": true,
+                        "description": "The branch ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateBranchCalendarExceptionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`BranchCalendarExceptionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/BranchCalendarExceptionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "429": {
                         "description": "Rate limited",
@@ -14675,6 +15120,114 @@
                 ]
             }
         },
+        "/api/v1/merchant/profile": {
+            "get": {
+                "operationId": "merchant.profile.show",
+                "tags": [
+                    "MerchantProfile"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`MerchantProfileResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MerchantProfileResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            },
+            "patch": {
+                "operationId": "merchant.profile.update",
+                "tags": [
+                    "MerchantProfile"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateMerchantProfileRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`MerchantProfileResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MerchantProfileResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/payment-recording-groups": {
             "get": {
                 "operationId": "payment-recording-groups.index",
@@ -20091,6 +20644,8 @@
                                 "branch.profile_updated",
                                 "branch.archived",
                                 "branch.operating_hours_updated",
+                                "branch.calendar_exception_set",
+                                "branch.calendar_exception_removed",
                                 "branch.day_opened",
                                 "branch.day_closed",
                                 "branch.day_reopened",
@@ -20235,6 +20790,7 @@
                                 "subscription.plan_change_scheduled",
                                 "subscription.plan_change_applied",
                                 "subscription.plan_change_cancelled",
+                                "merchant.profile_updated",
                                 "merchant.suspended",
                                 "merchant.reactivated",
                                 "merchant.deactivated",
@@ -29152,14 +29708,7 @@
                         "$ref": "#/components/responses/AuthenticationException"
                     },
                     "403": {
-                        "description": "Permission denied",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorEnvelope"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/AuthorizationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -32282,6 +32831,67 @@
                 ],
                 "title": "AuthenticatedUserResource"
             },
+            "BranchCalendarExceptionResource": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "closes_branch": {
+                        "type": "boolean"
+                    },
+                    "opens_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "closes_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "date",
+                    "type",
+                    "closes_branch",
+                    "opens_at",
+                    "closes_at",
+                    "reason",
+                    "created_at"
+                ],
+                "title": "BranchCalendarExceptionResource"
+            },
+            "BranchPersonnelOptionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "display_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "display_name"
+                ],
+                "title": "BranchPersonnelOptionResource"
+            },
             "BranchResource": {
                 "type": "object",
                 "properties": {
@@ -34877,6 +35487,121 @@
                     "reason"
                 ],
                 "title": "MerchantGovernanceRequest"
+            },
+            "MerchantProfileResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "business_category": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Editable business profile (Scope §3.2 step 2 field contract)."
+                    },
+                    "contact_email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "contact_phone": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "receipt_display_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "town": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "timezone": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string",
+                        "description": "Fixed at registration / owned elsewhere — displayed, never writable here."
+                    },
+                    "merchant": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "slug": {
+                                "type": "string"
+                            },
+                            "status": {
+                                "type": "string"
+                            },
+                            "service_fee_tier": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "slug",
+                            "status",
+                            "service_fee_tier"
+                        ]
+                    },
+                    "logo": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "Current logo: public file id + safe filename only. No path, no URL, no signature.",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "filename": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "filename"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "business_category",
+                    "contact_email",
+                    "contact_phone",
+                    "receipt_display_name",
+                    "address",
+                    "town",
+                    "timezone",
+                    "country",
+                    "merchant",
+                    "logo"
+                ],
+                "title": "MerchantProfileResource"
             },
             "MerchantRegistrationMonitorResource": {
                 "type": "object",
@@ -38905,6 +39630,49 @@
                 ],
                 "title": "StoreAppointmentRequest"
             },
+            "StoreBranchCalendarExceptionRequest": {
+                "type": "object",
+                "description": "Validates a new branch calendar exception (REM-SCR-002B).\n\nEvery rule is derived from the shipped schema and the shipped runtime consumer, not invented:\n  - `type` mirrors the `branch_calendar_exceptions_type_check` DB CHECK via the enum;\n  - `opens_at`/`closes_at` are `time(0)` columns → `H:i` / `H:i:s`;\n  - `modified_hours` REQUIRES both times, because\n    AppointmentBranchScheduleValidator::windowFromException() treats a modified-hours row with\n    a null window as fully closed — which would silently contradict the operator's intent;\n  - a closure type must NOT carry times, for the mirror reason (they would be ignored);\n  - `reason` stays optional: the column is nullable and no active source requires it.\n\nAuthorization is `EnsurePermission:branch.calendar.manage` + `BranchCalendarExceptionPolicy`.",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "public_holiday",
+                            "special_closure",
+                            "emergency_closure",
+                            "modified_hours"
+                        ]
+                    },
+                    "opens_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "closes_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "date",
+                    "type"
+                ],
+                "title": "StoreBranchCalendarExceptionRequest"
+            },
             "StoreClientRequest": {
                 "type": "object",
                 "description": "Create-client validation (Plan §35). Phone is required and normalized/encrypted/\nindexed in the action; email is optional and encrypted. `branch_id` is an\noptional branch ULID resolved in the controller.",
@@ -40592,6 +41360,32 @@
                 ],
                 "title": "UpdateAvailabilityRequest"
             },
+            "UpdateBranchCalendarExceptionRequest": {
+                "type": "object",
+                "description": "Validates an update to an existing branch calendar exception (REM-SCR-002B).\n\n`date` and `type` are deliberately NOT updatable: together they are the identity that both\n`UNIQUE(branch_id, date, type)` and AppointmentBranchScheduleValidator key on. Re-pointing them\nwould be an implicit delete-and-create with a different audit meaning, so the operator deletes\nand re-creates instead. Only the window and the reason change here.",
+                "properties": {
+                    "opens_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "closes_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    }
+                },
+                "title": "UpdateBranchCalendarExceptionRequest"
+            },
             "UpdateBranchRequest": {
                 "type": "object",
                 "description": "Validate a branch profile update (Scope §3.3). Code stays unique per merchant,\nignoring the current branch.",
@@ -40985,6 +41779,57 @@
                     "service_session_ids"
                 ],
                 "title": "UpdateInvoiceRequest"
+            },
+            "UpdateMerchantProfileRequest": {
+                "type": "object",
+                "description": "Validates a merchant business-profile update (REM-SCR-002A).\n\nRules mirror `CompleteFirstTimeSetupRequest` exactly, so the field contract is identical\nwhether a value is first supplied at setup or later edited — with one deliberate\ndifference: every field is `sometimes` because this is a PATCH, and `business_category` /\n`contact_phone` may not be BLANKED once set (they are `required` at setup, so allowing a\nlater update to null would let the profile regress below the setup contract).\n\nAuthorization is the route's `EnsurePermission:merchant.profile.update` plus\n`MerchantProfilePolicy::update` in the controller — never this request.",
+                "properties": {
+                    "business_category": {
+                        "type": "string",
+                        "description": "Required at setup, so present-but-empty is rejected here rather than silently\nregressing the profile.",
+                        "minLength": 2,
+                        "maxLength": 80
+                    },
+                    "contact_phone": {
+                        "type": "string",
+                        "minLength": 7,
+                        "maxLength": 32
+                    },
+                    "contact_email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email",
+                        "description": "Optional at setup, so clearable here.",
+                        "maxLength": 255
+                    },
+                    "receipt_display_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 160
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "town": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 80
+                    },
+                    "timezone": {
+                        "type": "string"
+                    }
+                },
+                "title": "UpdateMerchantProfileRequest"
             },
             "UpdateOperatingHoursRequest": {
                 "type": "object",

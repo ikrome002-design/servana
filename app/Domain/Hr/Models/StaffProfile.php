@@ -26,7 +26,11 @@ use Illuminate\Support\Str;
  *
  * `is_active` is the denormalized flag that backs the partial unique phone index
  * (Duplicate Staff Prevention); StaffLifecycleService keeps it in sync with the
- * membership status. `profile_photo_path` is a Phase 23 upload seam.
+ * membership status. `profile_photo_path` is the metadata column for the `profile_photo`
+ * file purpose, whose upload pipeline (magic-byte MIME, ClamAV, private signed download)
+ * is owned and already delivered by Phase 10F — see FilePurposeRegistry. The older
+ * "Phase 23 upload seam" note was written under the pre-v4 phase numbering; the v4 Phase 23
+ * is a release-audit phase and owns no upload workflow (corrected in Phase 23).
  *
  * @property int $id
  * @property string $ulid

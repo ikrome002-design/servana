@@ -752,18 +752,150 @@ items:
     classification: C1
     gating_category: FEATURE_DELIVERY_OBLIGATION
     scope_requirement: "Requirement traceability matrix + CI enforcement (Correction 23; Plan §85)."
-    repository_evidence: "docs/traceability/servana-requirements.csv seeded in Phase V (foundation rows); CI enforcement not yet wired."
-    root_cause: "Traceability matrix introduced by v3 plan; CI gate is Phase 23."
-    affected_files_tables_routes: "docs/traceability/servana-requirements.csv; CI."
-    security_data_business_impact: "Launch requirements could lack test/evidence mapping."
-    precise_correction: "Maintain CSV every feature PR; enforce in CI; gate at Phase 23."
+    repository_evidence: >
+      Closed locally in Phase 23 Increment 5. Entering the increment the CSV had 53 rows and had
+      drifted in five distinct ways, each verified live rather than assumed:
+      (a) 18 rows sat at `implemented` although every owning phase (3-9, R2-R4) is merged with green
+      CI, a proof file, Phase V as-built verification (PR #12, c58b64a) and gate closure (PR #20,
+      7ac20a5) - R2/R3/R4 are recorded `verified_complete` verbatim in docs/PROGRESS.md;
+      (b) 5 rows were stale against merged owners (SRV-PERM-002 / SRV-AUDIT-005 `local_complete`
+      after Phase 19 PR #32; SRV-COMPENSATION-001/002 `local_complete pending PR ...` after 20F PR #39
+      and 20G PR #41);
+      (c) SRV-AUDIT-004 claimed `not_implemented` under phase 25 while the scheduled chain
+      verification AND its bounded redacted failure signal actually shipped in Phase 19 Increment 7
+      (routes/console.php `audit:verify-chain` daily/withoutOverlapping/onOneServer, proven by
+      AuditChainScheduleTest + AuditChainFailureSignalTest) - only the CENTRALIZED alert transport is
+      Phase 25, now split out as SRV-AUDIT-006;
+      (d) SRV-PAYMENT-001/002 carried multi-clause narrative PROSE inside the `status` cell;
+      (e) 41 entries in `automated_tests` named suites that DO NOT EXIST on disk (e.g.
+      PayoutRunStateMachineTest, PromotionStateMachineTest, LargestRemainderAllocationTest) - they
+      were aspirational names written when the row was drafted and never reconciled to the suites that
+      shipped. Every one was replaced with the real suite list for that domain.
+      No row modelled the deliberately-absent Gate-W work; SRV-WAL-002, SRV-RE-002 and SRV-REPORT-001
+      now do, each naming its blocking gate and its absence test. The CSV is 60 rows.
+    root_cause: >
+      The matrix was hand-maintained with no gate, so it recorded intent at drafting time and was
+      never reconciled when an owning phase merged, when a requirement was actually delivered by a
+      different phase, or when the test suite that shipped differed from the one planned. A document
+      that nothing verifies degrades into a claim.
+    affected_files_tables_routes: >
+      docs/traceability/servana-requirements.csv; tests/Feature/Traceability/Phase23TraceabilityTest.php
+      (new); resources/spa/src/screens/screenInventory.spec.ts (extended);
+      docs/traceability/README.md (new - the controlled vocabulary); .github/workflows/ci.yml.
+    security_data_business_impact: >
+      A launch requirement could claim coverage from a test suite that does not exist, and a
+      deliberately-absent Gate-W capability was indistinguishable from an unbuilt one. Both are
+      release-evidence integrity problems rather than runtime vulnerabilities.
+    precise_correction: >
+      Adopt a closed 7-value status vocabulary (verified_complete, local_complete, implemented,
+      architecture_adopted, blocked_external_gate, deferred_future_phase, not_applicable), reject
+      `not_implemented`/`partially_implemented` and any prose or multiline status, move evidence detail
+      into the `evidence` column, and enforce all of it plus column completeness, phase validity,
+      test-reference resolvability, endpoint/screen-inventory mapping and blocked-gate truthfulness in
+      an automated guard that CI invokes.
     migration_impact: "none."
-    test_plan: "traceability coverage report."
-    proof_artifact: "docs/proof/phase-23.md"
-    owner: "continuous; gated at Phase 23"
+    test_plan: >
+      tests/Feature/Traceability/Phase23TraceabilityTest.php (14 cases) +
+      resources/spa/src/screens/screenInventory.spec.ts (13 cases), both invoked by CI - the Backend
+      job runs the Pest guard as a named step and again in the parallel suite; the Frontend job runs
+      the Vitest guard.
+    proof_artifact: "docs/proof/phase-23.md#10-increment-5--requirement-traceability-and-ci-enforcement"
+    owner: "Phase 23"
     completion_commit: null
     reviewer: "TBD"
-    status: in_progress
+    status: local_complete   # guard green locally + wired into CI; promotes to verified_complete on the Phase 23 PR merge
+
+  - id: REM-SCR-002
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: >
+      Plan §27.3 (Minimum Screen Inventory, Correction 22.4) lists "merchant profile" among the
+      Merchant Administrator launch screens and "branch profile/calendar" among the Branch Manager
+      launch screens. Plan §27.1 requires a specification for every launch screen.
+    repository_evidence: >
+      Proven live during Phase 23 Increment 5 by the new screen-inventory release-gap guard.
+      MERCHANT PROFILE: `docs/frontend/screens/inventory.json` carries `merchant-profile` as
+      `planned` with `route: null` and no spec, owning phase **15A which is verified_complete**.
+      `merchant.profile.manage` is an ACTIVE permission key (docs/auth/permission-matrix.yaml,
+      implementation_status: active) whose ONLY consumer in the whole codebase is the `merchant_logo`
+      entry in FilePurposeRegistry - `php artisan route:list` contains no merchant-profile route.
+      BRANCH CALENDAR: `branch-calendar` is `planned` with `route: null` and no spec, owning phase
+      **16A which is verified_complete**. `branch.calendar.manage` is an ACTIVE canonical key
+      (owning_phase: null) AND the `branch_calendar_exceptions` table EXISTS in the live schema
+      (Schema::hasTable confirmed), yet there is no route, no controller, no policy call and no
+      screen anywhere. An active permission plus a live table plus zero surface is a shipped-schema,
+      unshipped-feature gap, not a deferral.
+      Both keys appear in the Phase 23 audit of ACTIVE permission keys with no enforcement site:
+      `branch.calendar.manage` and `exports.staff_roster` are the only two active keys with no
+      consumer of any kind (`reports.view` is consumed as a file-purpose authority only).
+    root_cause: >
+      Phases 15A and 16A were closed against their own increment checklists rather than against the
+      Plan §27.3 launch-screen list, and no guard compared the two. `branch.calendar.manage` and the
+      `branch_calendar_exceptions` table were delivered by the Phase 7 branch work as schema/permission
+      groundwork; the screen and API that consume them were never built, and because the inventory
+      entry was marked `planned` the omission read as an intentional future item.
+    affected_files_tables_routes: >
+      docs/frontend/screens/inventory.json (merchant-profile, branch-calendar entries);
+      docs/auth/permission-matrix.yaml (merchant.profile.manage, branch.calendar.manage);
+      table branch_calendar_exceptions (exists, unconsumed); absent routes
+      merchant profile read/update and branch calendar-exception CRUD; absent screens
+      docs/frontend/screens/merchant/merchant-profile.md and branch/branch-calendar.md.
+    security_data_business_impact: >
+      No vulnerability and no data exposure: the capability is absent, not unguarded, and both keys
+      are `revocable_only` so no caller can reach anything. The impact is RELEASE COMPLETENESS - two
+      Plan §27.3 launch screens do not exist, so a Merchant Administrator cannot maintain the merchant
+      profile and a Branch Manager cannot manage branch calendar exceptions (closures / special hours),
+      which also means `BranchClosureGuard` and day-open logic have no operator-facing exception path.
+    precise_correction: >
+      PRODUCT-OWNER DECISION 2026-07-27: Option A — build both screens now, on the Phase 23 branch, as
+      bounded corrective remediation for the omitted owning-phase deliverables, so that the remaining
+      responsive / dark-mode / accessibility / E2E release audits can include them. Explicitly NOT
+      accepted as an open pre-release gap, and Plan §27.3 was explicitly NOT amended.
+      DELIVERED:
+      (A) MERCHANT PROFILE — canonical §19.3 keys `merchant.profile.view` (M|-|A|n/a|Y|-|info) and
+      `merchant.profile.update` (M|-|R|n/a|Y|-|high) ACTIVATED (Merchant Administrator only); the legacy
+      duplicate `merchant.profile.manage` RETIRED outright following the Phase 20A/20B/20E/20F
+      precedent (its `merchant_logo` file purpose moved to the canonical write key; the dead
+      `MerchantPolicy::manageProfile`, which had no caller, was deleted).
+      `GET|PATCH /api/v1/merchant/profile` with no `{merchant}` binding, `MerchantProfilePolicy`,
+      `UpdateMerchantProfile` (row lock, 7-field allowlist, `merchant.profile_updated` audit carrying
+      changed FIELD NAMES only), `MerchantProfileResource` (ULIDs only; the logo is a file id +
+      filename, never a path/URL/signature), `pages/merchant/MerchantProfile.vue` +
+      `merchantProfileStore`. The logo continues to use the Phase 10F scanned pipeline
+      (`POST /api/v1/files`, purpose `merchant_logo`) — no second upload path was created, and the
+      legacy unwritten `merchant_profiles.logo_path` column was deliberately left untouched.
+      (B) BRANCH CALENDAR — no key activated or invented (`branch.calendar.manage` was already
+      active). Four routes under `EnsureBranchScope`
+      (`GET|POST /branches/{branch}/calendar-exceptions`,
+      `PATCH|DELETE /branches/{branch}/calendar-exceptions/{date}`) with `EnsureBillingMutable` on
+      every write, `BranchCalendarExceptionPolicy`, `SetBranchCalendarException` /
+      `DeleteBranchCalendarException`, `BranchCalendarExceptionResource`,
+      `pages/branch/BranchCalendar.vue` + `branchCalendarStore`, linked from `BranchDetail.vue`
+      beside operating hours. `(branch, date)` is the public identity (the row has no ULID) and
+      exactly ONE exception per date is permitted — which also removes a latent non-determinism in
+      the pre-existing `AppointmentBranchScheduleValidator`, whose date lookup takes the first
+      matching row and would have been order-dependent with two.
+    migration_impact: "none — no migration was added. Both surfaces write existing as-built tables."
+    test_plan: >
+      DELIVERED: tests/Feature/Merchants/MerchantProfileApiTest.php (12 cases) and
+      tests/Feature/Branches/BranchCalendarExceptionApiTest.php (19 cases, including five that prove
+      the calendar drives the EXISTING AppointmentBranchScheduleValidator and one that pins the
+      Nairobi-vs-UTC business date), plus MerchantProfile.spec.ts (6) and BranchCalendar.spec.ts (11).
+      DELIVERED in Increments 6-9: both screens are enrolled in the whole-product release-audit matrix
+      (tests/e2e/phase-23-release-audit.spec.ts + support/releaseAudit.ts), which proves them
+      responsive at 360/768/1280, correct in light and dark, free of serious/critical axe violations
+      in four viewport/theme combinations, keyboard-operable and usable at 200% zoom, and
+      deterministic end to end (merchant profile: update one authorized field -> save -> reload ->
+      verify persisted; branch calendar: create a future full-day closure and a modified-hours
+      exception -> reload -> verify normalized hours, on a pinned Africa/Nairobi clock).
+      Increment 6 found and fixed PH23-RSP-001 on these two screens: their hand-rolled inputs omitted
+      the `w-full` that the shared SvInput carries, so a 241px intrinsic input width propagated up the
+      layout and scrolled the whole page at 360px.
+    proof_artifact: "docs/proof/phase-23.md#12-rem-scr-002--the-two-omitted-plan-273-launch-screens"
+    owner: "Phase 23 (corrective remediation for omitted Phase 15A/16A/20A deliverables), on product-owner authorization"
+    completion_commit: null
+    reviewer: "TBD"
+    status: local_complete   # both screens delivered and green locally; promotes to verified_complete on the Phase 23 PR merge
 
   - id: REM-PRODOPS-001
     classification: C1
@@ -847,3 +979,95 @@ items:
     rollback_forward_repair: "Revert the single remediation commit to restore the previous package.json/package-lock.json/eslint.config.js; this reintroduces the 15 high findings and the failing Frontend job (emergency-only). Forward repair: drop the @redocly/openapi-core override once openapi-typescript supports @redocly/openapi-core v2 upstream."
     reviewer: "PR #46 merged with Backend, Frontend, Docker, Security and E2E checks successful; reviewDecision intentionally blank under docs/governance/solo-maintainer-review-exception-pr-46.md — not independent reviewer approval."
     status: verified_complete   # PR #46 merged as 1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408 on 2026-07-26; final PR head b97340802ff8d142f0f7b0d8c0d7e4e65f28ea3d; local and remote remediation branches deleted.
+
+  - id: REM-PERM-002
+    classification: C1
+    gating_category: FEATURE_DELIVERY_OBLIGATION
+    scope_requirement: >
+      Plan §19.2 defines the Merchant Administrator's staff-lifecycle authority as the canonical keys
+      `merchant.user.suspend` / `merchant.user.deactivate`. The runtime still grants the LEGACY
+      `branches.manage_users_lifecycle`, which `StaffProfilePolicy::manage` accepts.
+    repository_evidence: >
+      Surfaced by the Phase 23 §14.1 closure of PH23-SEC-001. Phase 23 activated the canonical READ
+      key `staff.view` (HR-only, Plan §19.3:1481) and enforced it on `staff.index` + `staff.show` via
+      `StaffProfilePolicy::viewAny`/`view`. The MANAGE authority was deliberately left untouched, so a
+      Merchant Administrator holding only `branches.manage_users_lifecycle` can still suspend,
+      activate and deactivate a staff profile it may no longer READ (403 on GET
+      /api/v1/staff/{staff}). Proven by tests/Feature/Hr/StaffReadAuthorizationTest.php (Merchant
+      Admin denied on both read routes) and tests/Feature/Search/SearchTenantIsolationTest.php
+      ("withholds staff results from a Merchant Admin, which cannot open a staff profile").
+    root_cause: >
+      The legacy Phase 8 key `branches.manage_users_lifecycle` was never reconciled to its canonical
+      §19.2 successors. Phase 19 closed the matrix for the keys it owned; this legacy grant survived
+      because no phase since has owned the Merchant-Administrator staff-lifecycle reconciliation.
+    affected_files_tables_routes: >
+      app/Domain/Auth/Services/PermissionRegistry.php (ROLE_MERCHANT_ADMIN grants);
+      app/Policies/StaffProfilePolicy.php::manage; docs/auth/permission-matrix.yaml
+      (merchant.user.suspend / merchant.user.deactivate rows); routes staff.suspend / staff.activate /
+      staff.deactivate.
+    security_data_business_impact: >
+      No new exposure and no privilege ESCALATION — Phase 23 strictly reduced what the Merchant
+      Administrator can read. The defect is a coherence gap: a role can mutate a record it cannot
+      view, which contradicts the §19.3 authority model and makes the audit trail harder to reason
+      about. Read exposure of personnel contact data is already closed.
+    precise_correction: >
+      Reconcile `branches.manage_users_lifecycle` to `merchant.user.suspend` /
+      `merchant.user.deactivate` (activate, grant, retire the legacy key with no alias) and decide
+      explicitly whether the Merchant Administrator receives a scoped staff READ. This CHANGES the
+      permission matrix role grants, so it requires product-owner authorization (CLAUDE.md §9) and is
+      NOT Phase 23 scope.
+    migration_impact: "none (permission projection is reseeded from the registry)."
+    test_plan: >
+      Extend PermissionMatrixTest / PermissionRoleBoundaryTest / PermissionLegacyKeyReconciliationTest
+      for the retirement, and StaffReadAuthorizationTest for the resulting Merchant-Administrator
+      posture on both the read and the mutation routes.
+    proof_artifact: "docs/proof/phase-23.md#4-defect-ph23-sec-001"
+    owner: "product-owner decision required; candidate owner is a dedicated permission-reconciliation remediation before Phase 25 exit"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started
+
+  - id: REM-EXP-001
+    classification: C3
+    gating_category: OPERATIONAL_HARDENING
+    scope_requirement: >
+      Plan §65 makes the file domain the single owner of private-object storage and gives
+      `ExpireSignedExport` the retention sweep; Plan §74 requires finance/audit exports to expire and
+      be revocable, and quarantine/orphan files to be cleaned by scheduled jobs.
+    repository_evidence: >
+      Surfaced while fixing PH23-EXP-001 in Phase 23 Increment 4. The export expiry actions
+      `ExpireFinanceExport` / `ExpireAuditExport` now mark the attached UploadedFile `expired` so the
+      Phase 10F routes stop serving it. `ExpireSignedExport` selects only `available` and (as of this
+      phase) `revoked` rows, so a file already marked `expired` by the domain action is never
+      re-selected and its bytes are not deleted by the sweep. Neither expiry action is scheduled in
+      bootstrap/app.php today (only `ExpireSignedExport`, hourly), and `expires_at` is written from
+      the same retention window as `retention_until`, so the sweep reaches every production file
+      first — the gap is latent, not live.
+    root_cause: >
+      Two expiry authorities exist for the same object: the export aggregate's `expires_at` and the
+      file's `retention_until`. They are computed from the same retention window but are advanced by
+      different code paths, and the sweep's selection predicate assumes it is the only writer of the
+      terminal file lifecycle.
+    affected_files_tables_routes: >
+      app/Domain/Files/Jobs/ExpireSignedExport.php; app/Domain/FinanceOps/Actions/ExpireFinanceExport.php;
+      app/Domain/Audit/Actions/ExpireAuditExport.php; table uploaded_files (lifecycle_status,
+      retention_until, final_path). No route is affected.
+    security_data_business_impact: >
+      No unauthorized access: an `expired` file is not downloadable through any route (PH23-EXP-001
+      is closed). The residual risk is storage retention only — a private object could outlive its
+      retention window if a future phase schedules the domain expiry ahead of the file sweep.
+    precise_correction: >
+      Give the file domain one unambiguous retention predicate — sweep any non-deleted row past
+      `retention_until` and clear `final_path` after removing the object so the sweep converges — or
+      have the export expiry actions delegate to a file-domain service instead of writing the
+      lifecycle directly. Owning phase is 21N (Plan §67 scheduler), which is where the export expiry
+      would be scheduled.
+    migration_impact: "none."
+    test_plan: >
+      Extend FileRetentionCleanupTest with a domain-expired export whose object must still be removed
+      at retention, and assert the sweep is idempotent and converges (a second run selects nothing).
+    proof_artifact: "docs/proof/phase-23.md#9-increment-4--finance-and-audit-export-hardening"
+    owner: "Phase 21N (queues and scheduled tasks, Plan §67)"
+    completion_commit: null
+    reviewer: "TBD"
+    status: not_started

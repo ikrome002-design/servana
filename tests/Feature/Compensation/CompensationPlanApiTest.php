@@ -12,6 +12,7 @@ use App\Domain\Compensation\Models\PersonnelCompensationPlan;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Models\Merchant;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
@@ -55,7 +56,7 @@ function postPlan(array $scn, array $body = [], ?User $actor = null)
             'staff_profile_id' => $scn['subject']->ulid,
             'compensation_model' => 'commission_only',
             'commission_rule_id' => apiRule($scn)->ulid,
-            'effective_from' => today()->toDateString(),
+            'effective_from' => businessToday()->toDateString(),
             'change_reason' => 'Initial compensation plan.',
         ], $body));
 }
@@ -210,7 +211,7 @@ it('rejects a plan with no change reason', function (): void {
 it('rejects an effective_to that is not after effective_from', function (): void {
     $scn = planApiScenario();
 
-    postPlan($scn, ['effective_to' => today()->toDateString()])
+    postPlan($scn, ['effective_to' => businessToday()->toDateString()])
         ->assertStatus(422)->assertJsonPath('error.code', 'validation_failed')->assertJsonStructure(['error' => ['fields' => ['effective_to']]]);
 });
 
@@ -260,7 +261,7 @@ it('lets HR update a draft in place', function (): void {
             'salary_amount_minor' => 4500000,
             'salary_currency' => 'KES',
             'salary_period' => 'monthly',
-            'effective_from' => today()->toDateString(),
+            'effective_from' => businessToday()->toDateString(),
             'change_reason' => 'Switched to salary only.',
         ])
         ->assertOk()
@@ -276,7 +277,7 @@ it('refuses to update a submitted plan (supersede, never edit)', function (): vo
         ->patchJson("/api/v1/compensation-plans/{$ulid}/draft", [
             'compensation_model' => 'commission_only',
             'commission_rule_id' => apiRule($scn)->ulid,
-            'effective_from' => today()->toDateString(),
+            'effective_from' => businessToday()->toDateString(),
             'change_reason' => 'Should be rejected.',
         ])
         ->assertStatus(422)
@@ -311,7 +312,7 @@ it('approves a current-dated plan to active with a fresh step-up and a distinct 
 
 it('approves a future-dated plan into scheduled', function (): void {
     $scn = planApiScenario();
-    $ulid = pendingPlanApi($scn, ['effective_from' => today()->addDays(14)->toDateString()]);
+    $ulid = pendingPlanApi($scn, ['effective_from' => businessToday()->addDays(14)->toDateString()]);
 
     approvePlanApi($scn, $ulid)
         ->assertOk()
@@ -370,7 +371,7 @@ it('writes no success audit when approval is denied', function (): void {
 
 it('denies a backdated approval without an acknowledged impact preview', function (): void {
     $scn = planApiScenario();
-    $ulid = pendingPlanApi($scn, ['effective_from' => today()->subDays(30)->toDateString()]);
+    $ulid = pendingPlanApi($scn, ['effective_from' => businessToday()->subDays(30)->toDateString()]);
 
     approvePlanApi($scn, $ulid)
         ->assertStatus(422)
@@ -382,7 +383,7 @@ it('denies a backdated approval without an acknowledged impact preview', functio
 
 it('approves a backdated plan with reason + impact preview + fresh step-up and audits it CRITICAL', function (): void {
     $scn = planApiScenario();
-    $ulid = pendingPlanApi($scn, ['effective_from' => today()->subDays(30)->toDateString()]);
+    $ulid = pendingPlanApi($scn, ['effective_from' => businessToday()->subDays(30)->toDateString()]);
 
     approvePlanApi($scn, $ulid, ['acknowledge_impact_preview' => true])
         ->assertOk()
@@ -426,7 +427,7 @@ it('lets HR cancel a draft', function (): void {
 it('lets HR cancel a scheduled plan but never an active one', function (): void {
     $scn = planApiScenario();
 
-    $scheduled = pendingPlanApi($scn, ['effective_from' => today()->addDays(14)->toDateString()]);
+    $scheduled = pendingPlanApi($scn, ['effective_from' => businessToday()->addDays(14)->toDateString()]);
     approvePlanApi($scn, $scheduled)->assertOk();
 
     test()->actingAs($scn['maker'], 'sanctum')
@@ -457,7 +458,7 @@ it('forbids every non-HR role from configuring compensation', function (Merchant
             'staff_profile_id' => $scn['subject']->ulid,
             'compensation_model' => 'commission_only',
             'commission_rule_id' => apiRule($scn)->ulid,
-            'effective_from' => today()->toDateString(),
+            'effective_from' => businessToday()->toDateString(),
             'change_reason' => 'Should be denied.',
         ])
         ->assertStatus(403)
@@ -507,7 +508,7 @@ it('forbids Personnel from self-editing their own compensation', function (): vo
             'salary_amount_minor' => 99000000,
             'salary_currency' => 'KES',
             'salary_period' => 'monthly',
-            'effective_from' => today()->toDateString(),
+            'effective_from' => businessToday()->toDateString(),
             'change_reason' => 'Giving myself a raise.',
         ])
         ->assertStatus(403);
@@ -585,4 +586,39 @@ it('creates no ledger, payout, or earnings runtime through the API', function ()
 
     // The Phase 18B hand-off seam exists but Phase 20F never writes to it.
     expect(CommissionHandoffEvent::query()->count())->toBe(0);
+});
+
+// ---- Phase 23 PH23-DET-001: business-date determinism -----------------------------
+//
+// The suite used to depend on the WALL CLOCK: `app.timezone` is UTC but the domain decides business
+// DAYS in Africa/Nairobi, so between 21:00 and 23:59 UTC a fixture dated with the UTC `today()`
+// helper was evaluated as YESTERDAY and approval failed closed as a backdated change. The fixtures
+// now use `businessToday()`; these two cases pin the clock INSIDE that window so the guard holds
+// year-round rather than depending on when the suite happens to run.
+
+/** 22:30 UTC on 2026-07-26 == 01:30 on 2026-07-27 in Africa/Nairobi. */
+const PH23_DIVERGENT_INSTANT = '2026-07-26 22:30:00';
+
+it('approves a plan effective on the business date inside the UTC/Nairobi divergent window', function (): void {
+    CarbonImmutable::setTestNow(CarbonImmutable::parse(PH23_DIVERGENT_INSTANT, 'UTC'));
+
+    // Before the fix this returned 422 at this instant, because `today()` (UTC) was already yesterday.
+    $scn = planApiScenario();
+    $ulid = pendingPlanApi($scn, ['effective_from' => businessToday()->toDateString()]);
+
+    approvePlanApi($scn, $ulid)->assertOk();
+
+    CarbonImmutable::setTestNow();
+});
+
+it('still refuses a genuinely backdated plan without an impact preview inside that window', function (): void {
+    CarbonImmutable::setTestNow(CarbonImmutable::parse(PH23_DIVERGENT_INSTANT, 'UTC'));
+
+    // The determinism fix must not weaken the F8 backdating control.
+    $scn = planApiScenario();
+    $ulid = pendingPlanApi($scn, ['effective_from' => businessToday()->subDays(30)->toDateString()]);
+
+    approvePlanApi($scn, $ulid)->assertStatus(422);
+
+    CarbonImmutable::setTestNow();
 });

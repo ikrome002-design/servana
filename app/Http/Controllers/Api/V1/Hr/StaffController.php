@@ -17,11 +17,19 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 /**
  * Staff roster + lifecycle (Scope §3.4, Plan §10.2/§10.3).
  *
- * Authority is StaffProfilePolicy (the §10.3 permission registry): HR manages
- * operational staff in its own branch scope (`staff.suspend`); Merchant Admin
- * manages branch-user lifecycle merchant-wide (`branches.manage_users_lifecycle`).
- * Cross-merchant staff is 404'd (no existence leak) before authorization. The
- * Phase 7 coarse `assertManages` role check is replaced by the policy.
+ * Authority is StaffProfilePolicy (the §10.3 permission registry), and READ is a
+ * distinct authority from MANAGE (Phase 23 security remediation):
+ *   - READ  (`index`/`show`) → `staff.view`, HR-only, branch-scoped.
+ *   - MANAGE (`suspend`/`activate`/`deactivate`) → unchanged `staff.suspend` (HR,
+ *     own branch) or `branches.manage_users_lifecycle` (Merchant Admin, merchant-wide).
+ *
+ * `index` previously authorized NOTHING — no permission middleware, no policy call —
+ * so any authenticated merchant member could enumerate the branch roster including
+ * personnel phone numbers (Plan §9.1 personnel-contact extraction; RK-05). The
+ * Branch Manager's read-only schedule picker is served by the narrow
+ * `branch.personnel-options.index` endpoint, never by widening `staff.view`.
+ *
+ * Cross-merchant staff is 404'd (no existence leak) before authorization.
  */
 final class StaffController extends Controller
 {
@@ -29,6 +37,10 @@ final class StaffController extends Controller
 
     public function index(StaffIndexRequest $request): AnonymousResourceCollection
     {
+        // The collection READ boundary. Without this the route has none: GET carries no
+        // RouteClass and no EnsurePermission, so the policy IS the server-side authority.
+        $this->authorize('viewAny', StaffProfile::class);
+
         $filters = $request->validated();
 
         $query = StaffProfile::query()
@@ -56,14 +68,15 @@ final class StaffController extends Controller
 
     public function show(StaffProfile $staff): StaffProfileResource
     {
-        $this->authorizeManages('view', $staff);
+        // READ authority (`staff.view`) — deliberately NOT the mutation authority.
+        $this->authorizeScoped('view', $staff);
 
         return StaffProfileResource::make($staff->load(['merchantUser', 'primaryBranch']));
     }
 
     public function suspend(Request $request, StaffProfile $staff, StaffLifecycleService $service): StaffProfileResource
     {
-        $this->authorizeManages('manage', $staff);
+        $this->authorizeScoped('manage', $staff);
         $membership = $staff->merchantUser;
         abort_if($membership === null, 404);
 
@@ -75,7 +88,7 @@ final class StaffController extends Controller
 
     public function activate(Request $request, StaffProfile $staff, StaffLifecycleService $service): StaffProfileResource
     {
-        $this->authorizeManages('manage', $staff);
+        $this->authorizeScoped('manage', $staff);
         $membership = $staff->merchantUser;
         abort_if($membership === null, 404);
 
@@ -86,7 +99,7 @@ final class StaffController extends Controller
 
     public function deactivate(Request $request, StaffProfile $staff, StaffLifecycleService $service): StaffProfileResource
     {
-        $this->authorizeManages('manage', $staff);
+        $this->authorizeScoped('manage', $staff);
         $membership = $staff->merchantUser;
         abort_if($membership === null, 404);
 
@@ -99,8 +112,10 @@ final class StaffController extends Controller
     /**
      * 404 a foreign-merchant staff profile (no existence leak), then authorize
      * the given ability via StaffProfilePolicy (the §10.3 permission registry).
+     * Used for BOTH the record read (`view` → `staff.view`) and the lifecycle
+     * mutations (`manage`) — the policy keeps the two authorities separate.
      */
-    private function authorizeManages(string $ability, StaffProfile $staff): void
+    private function authorizeScoped(string $ability, StaffProfile $staff): void
     {
         abort_if($staff->merchant_id !== $this->context->merchantId(), 404);
 

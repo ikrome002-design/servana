@@ -6,6 +6,7 @@ namespace App\Domain\FinanceOps\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Files\Enums\FileLifecycleStatus;
 use App\Domain\FinanceOps\Enums\FinanceExportStatus;
 use App\Domain\FinanceOps\Models\FinanceExport;
 use App\Domain\FinanceOps\Services\FinanceExportStateMachine;
@@ -33,6 +34,11 @@ final class ExpireFinanceExport
             $this->machine->ensure($locked->status, FinanceExportStatus::Expired);
 
             $locked->forceFill(['status' => FinanceExportStatus::Expired->value])->save();
+
+            // PH23-EXP-001: carry the terminal state onto the file the Phase 10F boundary
+            // inspects, so the CSV stops being downloadable through the generic file routes
+            // too. Byte removal stays with the file-domain retention sweep (ExpireSignedExport).
+            $locked->file?->markLifecycle(FileLifecycleStatus::Expired);
 
             $this->audit->record(AuditEvent::FinanceExportExpired, $actor, $locked->merchant_id, $locked->branch_id, $locked, [
                 'export_id' => $locked->ulid,

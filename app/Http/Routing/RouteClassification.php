@@ -42,6 +42,10 @@ final class RouteClassification
         'branches.archive' => 'No request body; state transition authorized by branches.create permission + BranchPolicy.',
         'branches.day.open' => 'No request body; authorized by day.open_close permission.',
         'branches.day.close' => 'No request body; authorized by day.open_close permission.',
+        // REM-SCR-002B: the exception is addressed entirely by the route ({branch} + a {date}
+        // constrained to \d{4}-\d{2}-\d{2}); there is no body to validate. Authorized by
+        // EnsureBranchScope + branch.calendar.manage + BranchCalendarExceptionPolicy::manage.
+        'branches.calendar-exceptions.destroy' => 'No request body; {branch} + regex-constrained {date} identify the row; BranchCalendarExceptionPolicy.',
         'staff-invitations.resend' => 'No request body; {invitation} binding + StaffInvitationPolicy.',
         'staff-invitations.revoke' => 'No request body; {invitation} binding + StaffInvitationPolicy.',
         'staff.suspend' => 'No request body; {staff} binding + StaffProfilePolicy.',

@@ -70,7 +70,28 @@ final class PermissionRegistry
      */
     private const PERMISSIONS = [
         // Merchant.
-        'merchant.profile.manage' => ['merchant', 'Edit merchant profile.', true],
+        // REM-SCR-002A (Phase 23) — canonical §19.3 merchant-profile keys, activated as a
+        // corrective remediation for an omitted Phase 15A/20A deliverable. Plan §27.3 lists
+        // "merchant profile" among the Merchant Administrator launch screens, and Plan §19.3:1444
+        // defines `merchant.profile.view  M|-|A|n/a|Y|-|info|-` and :1445
+        // `merchant.profile.update  M|-|R|n/a|Y|-|high|-`. Both were left `planned` after their
+        // owning phase completed, so the surface could not be built: no key meant no
+        // EnsurePermission. Granted to the Merchant Administrator only.
+        //
+        //
+        // The LEGACY `merchant.profile.manage` is RETIRED here, not carried alongside: the matrix
+        // invariant (PermissionLegacyKeyReconciliationTest) is that a legacy key's
+        // `canonical_successor` must still be PLANNED, because an active legacy key plus an active
+        // successor would be two names for one authority. This follows the established precedent
+        // applied four times already — Phase 20A (platform.settings.manage,
+        // platform.billing.configure, platform.fee_rules.manage), Phase 20B (merchant.tier.update,
+        // platform.merchants.govern), Phase 20E and Phase 20F all activated the canonical successor
+        // and deleted the legacy row outright, taking the catalogue 17 → 8 legacy keys.
+        // Its two consumers move to the canonical WRITE key: the `merchant_logo` file purpose
+        // (FilePurposeRegistry) and the dead `MerchantPolicy::manageProfile` (removed — it had no
+        // caller anywhere). A read key never grants a write.
+        'merchant.profile.view' => ['merchant', 'View the merchant business profile.', false],
+        'merchant.profile.update' => ['merchant', 'Update the merchant business profile.', true],
         // Merchant subscription self-service (Plan §22, §48, §49; Phase 20B canonical keys —
         // reconciled from the retired legacy `merchant.tier.update`, which mis-modelled billing as a
         // one-shot tier flag). The Merchant Administrator views the subscription/dashboard + invoices,
@@ -136,6 +157,15 @@ final class PermissionRegistry
         // cash_up.approve` (maker/checker separation).
         'branch.cash_up.submit' => ['branch', 'Create/update and submit a branch cash-up (Branch Manager maker).', true],
         // Staff.
+        // Phase 23 — canonical §19.3 READ key, activated as a security remediation. It was left
+        // `planned` (owning_phase "Phase 20F") after 20F completed, so `GET /api/v1/staff` shipped
+        // with NO permission middleware and NO controller authorize() call: every authenticated
+        // merchant member could enumerate the branch roster INCLUDING personnel phone numbers
+        // (Plan §9.1 personnel-contact extraction; RK-05). Plan §19.3 grants it to HR ONLY — the
+        // Branch Manager's read-only personnel-schedule picker is served by the narrow
+        // `branch.personnel-options.index` endpoint under its existing `branch.dashboard.view`,
+        // never by widening this key.
+        'staff.view' => ['staff', 'View the HR staff roster and staff detail (branch-scoped read).', false],
         'staff.invite' => ['staff', 'Invite operational staff (same branch).', true],
         'staff.edit' => ['staff', 'Edit staff profiles.', true],
         'staff.suspend' => ['staff', 'Suspend/deactivate operational staff.', true],
@@ -373,7 +403,10 @@ final class PermissionRegistry
      */
     private const DEFAULT_GRANTS = [
         self::ROLE_MERCHANT_ADMIN => [
-            'merchant.profile.manage',
+            // REM-SCR-002A — canonical merchant-profile authority (Plan §19.3 "default_roles:
+            // merchant_admin"), replacing the retired legacy `merchant.profile.manage`. No other
+            // role receives either key.
+            'merchant.profile.view', 'merchant.profile.update',
             // Phase 20B — subscription self-service (replaces the retired `merchant.tier.update`).
             'merchant.subscription.view', 'merchant.subscription.plan_change',
             'merchant.subscription.invoice.view', 'merchant.subscription.invoice.download',
@@ -424,6 +457,10 @@ final class PermissionRegistry
             'preferred_personnel_fee.view_branch_rule',
         ],
         self::ROLE_HR => [
+            // Phase 23 — `staff.view` is the roster/detail READ authority (Plan §19.3 "HR and Staff
+            // (default_roles: hr)"). No other role receives it: Branch Manager reads personnel
+            // options through the narrow branch.personnel-options endpoint.
+            'staff.view',
             'staff.invite', 'staff.edit', 'staff.suspend',
             'personnel.eligibility.manage', 'personnel.availability.manage',
             // Phase 20F — HR owns compensation CONFIGURATION end to end (Plan §59; branch-scoped).

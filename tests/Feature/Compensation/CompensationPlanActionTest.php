@@ -75,7 +75,7 @@ function createDraft(array $scn, array $overrides = []): PersonnelCompensationPl
         branchId: $scn['branch']->id,
         actor: $scn['maker'],
         model: $overrides['model'] ?? CompensationModel::CommissionOnly,
-        effectiveFrom: $overrides['effective_from'] ?? today()->toDateString(),
+        effectiveFrom: $overrides['effective_from'] ?? businessToday()->toDateString(),
         changeReason: $overrides['change_reason'] ?? 'Initial plan.',
         commissionRule: array_key_exists('rule', $overrides) ? $overrides['rule'] : compRule($scn),
         salaryAmountMinor: $overrides['salary_amount_minor'] ?? null,
@@ -145,7 +145,7 @@ it('rejects a draft for personnel in another branch', function (): void {
         branchId: $otherBranch->id,
         actor: $scn['maker'],
         model: CompensationModel::SalaryOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Cross-branch attempt.',
         salaryAmountMinor: 5000000,
         salaryCurrency: 'KES',
@@ -244,7 +244,7 @@ it('updates a draft in place and records the masked diff', function (): void {
         plan: $plan,
         actor: $scn['maker'],
         model: CompensationModel::SalaryOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Switched to salary only.',
         salaryAmountMinor: 4500000,
         salaryCurrency: 'KES',
@@ -271,7 +271,7 @@ it('refuses to update a non-draft plan', function (): void {
         plan: $plan,
         actor: $scn['maker'],
         model: CompensationModel::CommissionOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Should not be allowed.',
         commissionRule: $plan->commissionRule,
     );
@@ -287,7 +287,7 @@ it('refuses to update an active plan (supersede, never edit)', function (): void
         plan: $plan,
         actor: $scn['maker'],
         model: CompensationModel::CommissionOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Should not be allowed.',
         commissionRule: $plan->commissionRule,
     );
@@ -323,7 +323,7 @@ it('submits the draft commission rule with its plan', function (): void {
 it('computes is_backdated at submission from the Africa/Nairobi business date', function (): void {
     $scn = compScenario();
 
-    $backdated = submittedPlan($scn, ['effective_from' => today()->subDays(30)->toDateString()]);
+    $backdated = submittedPlan($scn, ['effective_from' => businessToday()->subDays(30)->toDateString()]);
 
     expect($backdated->is_backdated)->toBeTrue();
 });
@@ -338,7 +338,7 @@ it('does not supersede the incumbent at submission time', function (): void {
     $scn = compScenario();
     $incumbent = approve($scn, submittedPlan($scn));
 
-    submittedPlan($scn, ['effective_from' => today()->addDays(10)->toDateString()]);
+    submittedPlan($scn, ['effective_from' => businessToday()->addDays(10)->toDateString()]);
 
     expect($incumbent->refresh()->status)->toBe(CompensationPlanStatus::Active);
 });
@@ -363,7 +363,7 @@ it('approves a current-dated plan straight to active', function (): void {
 
 it('approves a future-dated plan to scheduled, not active', function (): void {
     $scn = compScenario();
-    $plan = approve($scn, submittedPlan($scn, ['effective_from' => today()->addDays(14)->toDateString()]));
+    $plan = approve($scn, submittedPlan($scn, ['effective_from' => businessToday()->addDays(14)->toDateString()]));
 
     expect($plan->status)->toBe(CompensationPlanStatus::Scheduled);
 });
@@ -423,7 +423,7 @@ it('renders maker/checker and step-up failures as 403 with typed codes', functio
 
 it('refuses to approve a backdated plan without an impact preview', function (): void {
     $scn = compScenario();
-    $plan = submittedPlan($scn, ['effective_from' => today()->subDays(30)->toDateString()]);
+    $plan = submittedPlan($scn, ['effective_from' => businessToday()->subDays(30)->toDateString()]);
 
     expect($plan->is_backdated)->toBeTrue();
 
@@ -439,7 +439,7 @@ it('refuses to approve without a reason', function (): void {
 
 it('approves a backdated plan with a preview and emits the CRITICAL audit event', function (): void {
     $scn = compScenario();
-    $plan = submittedPlan($scn, ['effective_from' => today()->subDays(30)->toDateString()]);
+    $plan = submittedPlan($scn, ['effective_from' => businessToday()->subDays(30)->toDateString()]);
 
     $preview = app(BuildCompensationPlanImpactPreview::class)->handle($plan);
     $approved = approve($scn, $plan, $preview);
@@ -462,7 +462,7 @@ it('does not emit the critical backdated event for an ordinary approval', functi
 
 it('records the impact preview in the approval history and audit context', function (): void {
     $scn = compScenario();
-    $plan = submittedPlan($scn, ['effective_from' => today()->subDays(10)->toDateString()]);
+    $plan = submittedPlan($scn, ['effective_from' => businessToday()->subDays(10)->toDateString()]);
 
     $preview = app(BuildCompensationPlanImpactPreview::class)->handle($plan);
     approve($scn, $plan, $preview);
@@ -483,7 +483,7 @@ it('supersedes the incumbent when a successor is approved active', function (): 
     $scn = compScenario();
     $incumbent = approve($scn, submittedPlan($scn));
 
-    $successorFrom = today()->addDays(10);
+    $successorFrom = businessToday()->addDays(10);
     $successor = submittedPlan($scn, ['effective_from' => $successorFrom->toDateString()]);
 
     // Approve the successor as of its own start date so it becomes active over the incumbent.
@@ -503,7 +503,7 @@ it('writes a superseded history row and audit event on the incumbent', function 
     $scn = compScenario();
     $incumbent = approve($scn, submittedPlan($scn));
 
-    $successorFrom = today()->addDays(10);
+    $successorFrom = businessToday()->addDays(10);
     $successor = submittedPlan($scn, ['effective_from' => $successorFrom->toDateString()]);
     $this->travelTo($successorFrom->copy()->addDay());
     approve($scn, $successor);
@@ -529,7 +529,7 @@ it('never rewrites the superseded plan monetary terms', function (): void {
         'rule' => null,
     ]));
 
-    $successorFrom = today()->addDays(10);
+    $successorFrom = businessToday()->addDays(10);
     $successor = submittedPlan($scn, [
         'model' => CompensationModel::SalaryOnly,
         'salary_amount_minor' => 9000000,
@@ -550,7 +550,7 @@ it('ends the incumbent commission rule without deleting it', function (): void {
     $incumbent = approve($scn, submittedPlan($scn));
     $oldRule = $incumbent->commissionRule;
 
-    $successorFrom = today()->addDays(10);
+    $successorFrom = businessToday()->addDays(10);
     $successor = submittedPlan($scn, ['effective_from' => $successorFrom->toDateString()]);
     $this->travelTo($successorFrom->copy()->addDay());
     approve($scn, $successor);
@@ -567,7 +567,7 @@ it('ends the incumbent commission rule without deleting it', function (): void {
 
 it('activates a scheduled plan at its boundary and writes an activated history row', function (): void {
     $scn = compScenario();
-    $from = today()->addDays(7);
+    $from = businessToday()->addDays(7);
     $plan = approve($scn, submittedPlan($scn, ['effective_from' => $from->toDateString()]));
 
     expect($plan->status)->toBe(CompensationPlanStatus::Scheduled);
@@ -589,7 +589,7 @@ it('activates a scheduled plan at its boundary and writes an activated history r
 
 it('refuses to activate a scheduled plan before its boundary', function (): void {
     $scn = compScenario();
-    $plan = approve($scn, submittedPlan($scn, ['effective_from' => today()->addDays(7)->toDateString()]));
+    $plan = approve($scn, submittedPlan($scn, ['effective_from' => businessToday()->addDays(7)->toDateString()]));
 
     app(ActivateScheduledCompensationPlan::class)->handle($plan, $scn['checker']);
 })->throws(CompensationStateException::class);
@@ -602,7 +602,7 @@ it('refuses to activate a draft plan', function (): void {
 
 it('does not touch monetary terms when activating', function (): void {
     $scn = compScenario();
-    $from = today()->addDays(7);
+    $from = businessToday()->addDays(7);
     $plan = approve($scn, submittedPlan($scn, [
         'model' => CompensationModel::SalaryOnly,
         'salary_amount_minor' => 5000000,
@@ -625,7 +625,7 @@ it('rejects a pending plan and leaves the incumbent untouched', function (): voi
     $scn = compScenario();
     $incumbent = approve($scn, submittedPlan($scn));
 
-    $candidate = submittedPlan($scn, ['effective_from' => today()->addDays(10)->toDateString()]);
+    $candidate = submittedPlan($scn, ['effective_from' => businessToday()->addDays(10)->toDateString()]);
     $rejected = app(RejectCompensationPlan::class)->handle($candidate, $scn['checker'], 'Rate too high.');
 
     $history = CompensationPlanHistory::query()
@@ -668,7 +668,7 @@ it('cancels a draft plan', function (): void {
 
 it('cancels a scheduled plan before it takes effect', function (): void {
     $scn = compScenario();
-    $plan = approve($scn, submittedPlan($scn, ['effective_from' => today()->addDays(14)->toDateString()]));
+    $plan = approve($scn, submittedPlan($scn, ['effective_from' => businessToday()->addDays(14)->toDateString()]));
 
     $cancelled = app(CancelCompensationPlan::class)->handle($plan, $scn['maker'], 'Superseded by a new offer.');
 
@@ -692,7 +692,7 @@ it('requires a reason to cancel', function (): void {
 
 it('expires an active plan once its effective_to is reached', function (): void {
     $scn = compScenario();
-    $to = today()->addDays(30);
+    $to = businessToday()->addDays(30);
     $plan = approve($scn, submittedPlan($scn, ['effective_to' => $to->toDateString()]));
 
     $this->travelTo($to->copy()->addDay());
@@ -708,7 +708,7 @@ it('expires an active plan once its effective_to is reached', function (): void 
 
 it('refuses to expire a plan still inside its window', function (): void {
     $scn = compScenario();
-    $plan = approve($scn, submittedPlan($scn, ['effective_to' => today()->addDays(30)->toDateString()]));
+    $plan = approve($scn, submittedPlan($scn, ['effective_to' => businessToday()->addDays(30)->toDateString()]));
 
     app(ExpireCompensationPlan::class)->handle($plan, $scn['checker']);
 })->throws(CompensationStateException::class);
@@ -729,7 +729,7 @@ it('records one history row per lifecycle moment', function (): void {
         plan: $plan,
         actor: $scn['maker'],
         model: CompensationModel::CommissionOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Tweaked.',
         commissionRule: $plan->commissionRule,
     );

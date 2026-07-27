@@ -52,8 +52,13 @@ onMounted(() => {
         class="flex flex-col gap-4"
       >
         <header>
+          <!--
+            The action is a machine token (`branch.calendar_exception_set`) with no space to
+            break at. At 24px it is wider than a 360px viewport, so it must be allowed to wrap;
+            without this the whole document scrolls horizontally (Plan §28).
+          -->
           <h1
-            class="font-display text-2xl font-bold text-heading"
+            class="font-display text-2xl font-bold text-heading break-words"
             data-testid="audit-detail-action"
           >
             {{ store.current.action }}

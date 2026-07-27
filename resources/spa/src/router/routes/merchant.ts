@@ -37,6 +37,14 @@ export const merchantRoutes: RouteRecordRaw[] = [
         name: 'merchant.period-reopen-approvals',
         component: () => import('@/pages/merchant/PeriodReopenApprovals.vue'),
       },
+      // REM-SCR-002A — merchant business profile (Plan §27.3 Merchant Administrator "merchant
+      // profile"). Backend authoritative: `merchant.profile.view` / `merchant.profile.update` +
+      // MerchantProfilePolicy + EnsureBillingMutable on the write.
+      {
+        path: 'profile',
+        name: 'merchant.profile',
+        component: () => import('@/pages/merchant/MerchantProfile.vue'),
+      },
       // Phase 20B — subscription self-service (Merchant Administrator). Backend remains
       // authoritative (MerchantSubscriptionPolicy + EnsureBillingMutable); these are UX surfaces.
       {

@@ -6,6 +6,305 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase 23 — Security hardening, responsive/dark/a11y release audit, threat model, traceability (`phase-23-release-hardening-audit`) — local_complete pending PR
+
+Off `main` = `d010ec50f412dfe97ee1c412362e16bf263c2a4d` (the Phase 22 PR #47 squash-merge).
+Proof: `docs/proof/phase-23.md`. **No PR yet** — product-owner authorization required.
+
+**Phase 22 reconciled to `verified_complete`** from live Git/GitHub evidence: PR #47 MERGED,
+final head `8dbb2740c9603a75392a32139270f518eb789839`, squash-merge
+`d010ec50f412dfe97ee1c412362e16bf263c2a4d`, single squash parent
+`1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408` (the REM-DEP-002 merge), merged 2026-07-26T20:39:50Z,
+final CI run `30218560304` with Backend/Frontend/Docker/Security/E2E all SUCCESS, governance
+comment `5085264996`, `reviewDecision` blank under the PR-specific solo-maintainer exception
+(**not** independent reviewer approval), `0` submitted reviews, both branches deleted.
+
+**External Gate W re-checked and remains CLOSED** — `docs/integrations/wallet/` does not exist and
+neither gate-evidence file is present. Phases **20D-W**, **21R-B** and **21N** stay truthfully
+blocked; nothing they own is stubbed or simulated here.
+
+#### Security — PH23-SEC-001: `GET /api/v1/staff` had no authorization boundary
+
+`staff.index` carried **no** `EnsurePermission` middleware and `StaffController::index()` made **no**
+`authorize()` call, while `StaffProfileResource` returns an **unmasked `phone`** from a plaintext
+column. Every authenticated merchant member — Front Office, Personnel, the read-only **Audit** role,
+Finance and Branch Manager — could enumerate the branch staff roster **with personnel phone numbers**
+(Plan §9.1 personnel-contact extraction; RK-05; §9 rule 17). Root cause: Phase 20F completed without
+performing the `staff.view` activation it owned, so the canonical key stayed `implementation_status:
+planned` with `owning_phase: Phase 20F` and could not be referenced by middleware; the route, the Form
+Request and the policy each deferred authorization to one of the others and none performed it.
+
+Resolved per the **product-owner decision (narrow options endpoint, Phase 20G precedent)**:
+
+- **Activated `staff.view`** across `docs/auth/permission-matrix.yaml` → `PermissionRegistry` → DB
+  projection → generated `permissions.ts`, granted to **`hr` only** exactly as Plan §19.3:1481
+  specifies (`B|-|A|n/a|-|-|info|-`). `owning_phase` becomes `null` because the schema requires an
+  active canonical key to carry none — the historical Phase 20F ownership is recorded here and in the
+  proof, not erased. Active **130 → 131**, planned **38 → 37**, catalogue size **168 unchanged**.
+- **`StaffProfilePolicy`** gained `viewAny(User)`; `view(User, StaffProfile)` now requires
+  `staff.view` + same merchant + accessible branch. `manage()` is **unchanged** — a read key never
+  became a management key, and mutations still require `staff.suspend` /
+  `branches.manage_users_lifecycle`.
+- **New `GET /api/v1/branch/personnel-options`** (`branch.personnel-options.index`), inside the
+  existing `EnsureBranchScope` group, gated by the `branch.dashboard.view` the Branch Manager already
+  holds — the same key `PersonnelAvailabilityPolicy::view` accepts. Returns **only**
+  `{id, display_name}` via a dedicated `BranchPersonnelOptionResource`. **No permission key was
+  created and no role grant was widened.**
+- **`PersonnelSchedule.vue`** migrated off the HR roster; it now clears options *and* the selection
+  when branch context changes. Branch Manager data exposure shrank from the full `StaffProfileResource`
+  (with `phone`, `role`, `status`, `primary_branch_id`) to two fields.
+- **Search anchor corrected.** `StaffSearchDefinition::canSearch()` moved from
+  `branches.manage_users_lifecycle` OR `staff.suspend` to **`staff.view`**, so the type gate and the
+  per-record `passesRecheck()` are provably the same authority. A Merchant Admin can no longer open
+  `hr.staff-profile` and therefore no longer receives staff results — **search is never a wider
+  surface than the page its results link to**. Caught as a real regression (the isolation test passed
+  on the pristine base under `git stash` and failed with the change), root-caused, and fixed at the
+  source rather than in the test.
+
+Gates on this change: Pint PASS (1 660 files) · Larastan level 8 **[OK] No errors** ·
+affected-group backend run **616 passed / 4 skipped / 0 failed** (6 486 assertions) ·
+`tests/Feature/Search/` **173 passed** · Vitest **522 passed / 98 files** · ESLint **0 errors,
+138 warnings** (exact documented baseline, no new warning) · `vue-tsc` clean ·
+`servana:permission-types --check` up to date · `api:contract:check` OK (244 paths, 290 operations) ·
+`npm audit` **0 vulnerabilities**.
+
+#### Documentation corrections
+
+- `StaffProfile::$profile_photo_path` is no longer described as "a Phase 23 upload seam": the
+  `profile_photo` upload pipeline (magic-byte MIME, ClamAV, private signed download) is **owned and
+  already delivered by Phase 10F** (`FilePurposeRegistry`). The note dated from the pre-v4 phase
+  numbering; the v4 Phase 23 is a release-audit phase owning no upload workflow.
+- `docs/architecture/search/search-catalogue.md` staff row and notes updated to the resolved authority.
+
+#### Security — PH23-EXP-001: export revocation and expiry never reached the file domain
+
+Revoking (or expiring) a finance or audit export set the **export aggregate's** status only. The
+generated CSV's `uploaded_files` row stayed `available`/`clean`, and the Phase 10F file routes
+authorize on the **file's** lifecycle — so `POST /api/v1/files/{ulid}/download-link` re-issued a
+fresh short-lived signed URL for a **revoked** export indefinitely, and an in-flight signed URL kept
+streaming it. No guessing is involved: `issueSignedUrl()` returns
+`…/files/{uploadedFile}/download?signature=…`, so the caller learns the file ULID from the very link
+it was legitimately issued, and the purpose permission it must hold (`finance_export.download`,
+`audit.export`) is the one it already used to request the export. Plan §74 requires finance/audit
+exports to be revocable; §65 makes "available status" part of download authorization.
+
+Root cause: revocation/expiry was modelled purely on the export aggregate, but the file domain is a
+**separate authorization boundary with its own routes** that decides on the file's lifecycle. The
+`FileLifecycleStatus::Revoked`/`Expired` states exist for exactly this and nothing wired the export
+lifecycle into them — a repository-wide search found one production writer,
+`GenerateSubscriptionInvoicePdf` (superseding an old PDF).
+
+Fixed by propagating the terminal state onto the file **inside the same transaction** as the export
+transition — `RevokeFinanceExport`, `ExpireFinanceExport`, `RevokeAuditExport`, `ExpireAuditExport`
+now call `markLifecycle(Revoked|Expired)` on the attached file, following the existing
+`GenerateSubscriptionInvoicePdf` pattern. `ExpireSignedExport` additionally sweeps `revoked` rows past
+their retention window so byte cleanup is **not** regressed (revoked rows converge to `expired`, so
+the sweep stays bounded). Byte deletion remains solely in the file domain per the §65 storage
+boundary. Residual: **REM-EXP-001** — a domain-triggered expiry marks the file `expired`, which the
+sweep does not re-select; inert today because neither expiry action is scheduled and the hourly sweep
+fires at the same retention instant. Owner **Phase 21N** (§67).
+
+#### Security — PH23-EXP-002: the billing invoice PDF purpose declared no resource permission
+
+`FilePurpose::BillingInvoicePdf` was registered with `permission => null`, `requiresBranch => false`
+and `requiresOwner => false`, so `FileAccessService::authorizeView` skipped the permission check
+entirely and **tenant membership alone** authorized it. **Front Office and Personnel could download
+the merchant's platform subscription invoice PDF** through the generic file routes, bypassing the
+Merchant-Administrator-only `merchant.subscription.invoice.download` that guards the domain route.
+Every comparable financial purpose declares one (`InvoicePdf → invoice.view`,
+`ReceiptPdf → receipt.view`, `FinanceExport → finance_export.download`, `AuditExport → audit.export`,
+`DayCloseReport`/`CashUpReport → reports.view`), and Plan §65 lists "resource permission" as a
+required component of download authorization.
+
+Root cause: Phase 20B attached the PDF generator and gated the **domain** route but left the registry
+entry at its Phase 10F `null` placeholder, and nothing mechanically required a generated purpose to
+declare a download authority. Fixed by declaring the **existing** key on the purpose — no permission
+was invented and no grant was widened — plus a new guard that fails for **any** generated
+(non-uploadable) purpose with neither a resource permission nor owner scope. `EarningsStatement`
+passes it legitimately, since `requiresOwner` is its authority.
+
+Three `SubscriptionInvoicePdfDownloadTest` cases then failed. That was a **test-fixture** artefact,
+not a product defect: they called `FileAccessService` directly under `TenantContext::bindForJob()`,
+which by design carries **no permissions**, with a bare `User::factory()` holding no membership — a
+context no download request can have, since every caller of `authorizeDownload` is a controller behind
+`ResolveTenantContext`. The fixture now builds a real Merchant Administrator via `activeAdmin()` and
+binds through `TenantContextResolver::populate()`, exactly as the middleware does. This strengthens
+the tests; no assertion was weakened.
+
+#### Export hardening matrix (Increment 4)
+
+`docs/security/phase-23-export-hardening.md` renders the machine-checked matrix whose source of truth
+is `P23_EXPORT_SURFACES` / `P23_NON_DOCUMENT_ROUTES` in
+`tests/Feature/Security/Phase23ExportHardeningTest.php`. **22 document surfaces** classified with
+their controls, **13 shaped-but-not-document routes** recorded with reasons rather than ignored, and
+exactly **2** byte-serving routes — both signature-gated, authenticated, and re-authorized at stream
+time. No report-download route exists: `DayCloseReport`/`CashUpReport` generators belong to Phase 21N
+(Plan §69), recorded as truthful absence. All 22 required controls carry automated evidence.
+
+Gates on this change: export-hardening guard **12 passed** (59 assertions) ·
+export/file/finance/audit/billing/receipt/isolation directories **714 passed / 7 skipped / 0 failed**
+(3 287 assertions) · combined 14-group regression **898 passed / 7 skipped / 0 failed**
+(8 455 assertions) · Pint PASS (1 666 files) · Larastan level 8 **[OK] No errors** ·
+`git diff --check` clean.
+
+#### Traceability — REM-TRACE-001 closed locally; the requirement matrix is now a checked contract
+
+`docs/traceability/servana-requirements.csv` was hand-maintained with no gate, so it recorded intent
+at drafting time and was never reconciled. Five distinct drifts were found and fixed against **live**
+evidence (routes, policies, tests, proof files, merge commits) rather than historical prose:
+
+- **18 rows** sat at `implemented` although every owning phase (3–9, R2–R4) is merged **and** verified —
+  PRs #3–#9/#14–#16 with green CI, a proof file each, Phase V as-built verification (PR #12,
+  `c58b64a`) and pre-feature gate closure (PR #20, `7ac20a5`); `docs/PROGRESS.md` records R2/R3/R4 as
+  `verified_complete` verbatim.
+- **4 rows** were stale against a merged owner: `SRV-PERM-002` and `SRV-AUDIT-005` (Phase 19 PR #32
+  `7ef259e2`), `SRV-COMPENSATION-001` (20F PR #39 `f4bc664`), `SRV-COMPENSATION-002` (20G PR #41
+  `dcdbfb6`).
+- **`SRV-AUDIT-003`** was `partially_implemented` for outstanding Wallet audit emissions, but Plan §70
+  states *"integration audit events land with their owning phases (20D-W, 21R-A, 21R-B)"* — they are
+  not in this row's scope, and `AuditMutationCoverageTest` mechanically proves every live mutating
+  route emits a typed event. **`SRV-AUDIT-004`** claimed `not_implemented` under Phase 25 while the
+  scheduled chain verification *and* its bounded redacted failure signal had actually shipped in Phase
+  19 Increment 7 (`routes/console.php` registers `audit:verify-chain`
+  `->daily()->withoutOverlapping()->onOneServer()`, proven by `AuditChainScheduleTest` and
+  `AuditChainFailureSignalTest`). Only the centralized alert transport is Phase 25 — split out as the
+  new `SRV-AUDIT-006` rather than left overstating absence.
+- **`SRV-PAYMENT-001/002`** carried whole CI histories as narrative prose *inside the `status` cell*;
+  moved verbatim into `evidence`.
+- **41 references in `automated_tests` named test suites that do not exist** across 6 rows
+  (`PayoutRunStateMachineTest`, `PromotionStateMachineTest`, `LargestRemainderAllocationTest`,
+  `SalaryProrationTest`, `CommissionCalculationTest`, …) — aspirational names never reconciled to the
+  suites that shipped. Each was replaced with the real per-domain suite list. A requirement claiming
+  coverage from a non-existent suite is worse than an empty cell.
+
+A **closed seven-value vocabulary** now applies — `verified_complete`, `local_complete`,
+`implemented`, `architecture_adopted`, `blocked_external_gate`, `deferred_future_phase`,
+`not_applicable` — reusing the lifecycle names the remediation register already uses instead of
+inventing wording. `not_implemented`, `partially_implemented` and any prose or multiline status are
+rejected. Five new rows model deliberately-absent work with a **named gate and a named absence test**:
+`SRV-WAL-002` (20D-W), `SRV-RE-002` (21R-B), `SRV-REPORT-001` (21N), plus `SRV-PERF-001` (24) and
+`SRV-DEPLOY-001` (25) as future deferrals and `SRV-SEC-001` for Phase 23 itself. CSV **53 → 60 rows**.
+
+Enforced by new `tests/Feature/Traceability/Phase23TraceabilityTest.php` (14 cases) and the extended
+`resources/spa/src/screens/screenInventory.spec.ts` (8 → 13 cases), both added to CI as **named steps**
+in the existing Backend and Frontend jobs — no job removed, no check made optional, no network call.
+Vocabulary and rules documented in `docs/traceability/README.md`.
+
+#### Security-evidence integrity — PH23-SCAN-001: five static guards were scanning ~89% of the code
+
+`RecursiveIteratorIterator(RecursiveDirectoryIterator(...))` **truncates directory listings** on the
+Docker Desktop bind mount this project develops against. Measured in-container: it returned **970 of
+1 087** PHP files under `app/` — **117 files, 10.8%, never opened** — and in `tests/Feature/Auth/` it
+returned 15 of ~40 starting mid-alphabet, so `PermissionMatrixTest` was invisible while
+`file_exists()` returned true for it. `scandir()` recursion and Symfony Finder both enumerate
+correctly, which is how the discrepancy was isolated.
+
+Five static-analysis guards were built on it and therefore reported clean results while never reading
+part of the code they claimed to cover: the **TM-29 SSRF absence proof** (which asserts it walks every
+PHP file under `app/`), `NoDirectProviderIntegrationTest` (Plan §9 rule 20), `FileStorageBoundaryTest`
+(Plan §65 storage boundary), the forbidden-capability SPA credential scan, and
+`ReferEarnScopePurityTest`. No production code is affected — the defect is in the *evidence*.
+
+Fixed with one shared, deterministic enumeration, `sourceFilesUnder()` in `tests/Pest.php` (scandir
+recursion, sorted), adopted by all five guards, **plus a coverage self-check**: the SSRF absence proof
+now asserts its own walked count equals an independent Symfony Finder count, so a truncated scan can
+never again pass as a clean result. All five guards still pass with 117 more files in scope.
+
+#### Screen inventory and §27.1 specifications
+
+Three metadata defects proven from live evidence and fixed (inventory **124 → 123** entries; **116**
+specs on disk = 116 referenced, **0 orphans**, 0 missing):
+
+- **deleted** the orphan generated spec `docs/frontend/screens/finance/finance-dashboard.md` — proven
+  stale rather than merely unreferenced: a Phase 11 stub (PR #23, `d098f37`) whose inventory key was
+  **renamed** to `finance-task-inbox` by Phase 18B (PR #31, `64bd0a1`), which generated the replacement
+  for the same route/layout/roles and left the superseded file behind;
+- **removed** the duplicate planned entry `hr-eligibility` — identical domain, layout, roles and
+  permissions to the **implemented** `service-eligibility`, which already owns the route name
+  `hr.eligibility`; the "availability" half of its title is the implemented `personnel-schedule` (15B);
+- **re-attributed** `platform-audit-reports` from Phase 19 to **Phase 21N** — Plan §69 places the whole
+  reporting catalogue in 21N, and every Plan §27.3 Audit-role screen is already implemented by Phase 19.
+
+New guard cases: no orphan spec · no **unregistered** planned screen owned by a verified-complete phase ·
+the registered release-gap list is **exact** (it fails when the owning phase delivers, forcing removal) ·
+every other planned screen names a genuinely unshipped phase · a route-less live screen only for the
+declared access-state boundaries.
+
+#### REM-SCR-002 RESOLVED — the two omitted Plan §27.3 launch screens were built
+
+**Product-owner decision 2026-07-27: Option A.** Accepting the gap and closing Phase 23 (Option B) was
+declined, and Plan §27.3 was **not** amended. Both screens were delivered on this branch as bounded
+corrective remediation for omitted owning-phase deliverables, deliberately **before** the release-wide
+responsive / dark-mode / accessibility / E2E audits so those audits cover them rather than an absent
+surface. **No migration was added** — both write existing as-built tables.
+
+**Merchant business profile (REM-SCR-002A).** Activated the canonical Plan §19.3 pair
+`merchant.profile.view` (`M|-|A|n/a|Y|-|info`) and `merchant.profile.update` (`M|-|R|n/a|Y|-|high`),
+Merchant Administrator only, and **retired the legacy duplicate `merchant.profile.manage`**: the matrix
+invariant (`PermissionLegacyKeyReconciliationTest`) forbids a legacy key whose canonical successor is
+already active, and retirement-on-activation is the precedent Phases 20A, 20B, 20E and 20F each applied
+(legacy keys 8 → **7**). Its `merchant_logo` file purpose moved to the canonical write key, and the
+dead `MerchantPolicy::manageProfile` — which had no caller anywhere — was deleted.
+`GET|PATCH /api/v1/merchant/profile` carry **no `{merchant}` binding**: the tenant is resolved from the
+caller's membership, so no request can name another. `UpdateMerchantProfile` locks the row, writes a
+7-field allowlist (the same fields first-time setup supplies), and audits `merchant.profile_updated`
+(high) with the changed **field names only — never the values**, since the profile carries the
+merchant's contact of record. `MerchantProfileResource` exposes ULIDs only and surfaces the logo as
+`{id, filename}` — never a path, URL or signature. Uploading continues to use the **existing Phase 10F
+scanned pipeline** (`POST /api/v1/files`, purpose `merchant_logo`); no second, unscanned path was
+created, and the legacy never-written `merchant_profiles.logo_path` column was deliberately left alone.
+
+**Branch calendar (REM-SCR-002B).** **No permission was activated or invented** —
+`branch.calendar.manage` was already active, and was one of only two active keys in the whole matrix
+with no consumer anywhere. Four routes inside `EnsureBranchScope`
+(`GET|POST /api/v1/branches/{branch}/calendar-exceptions`,
+`PATCH|DELETE /api/v1/branches/{branch}/calendar-exceptions/{date}`), each gated by that key, with
+`EnsureBillingMutable` on every write and `BranchMutation` classification. `(branch, date)` is the
+row's public identity — it has no ULID — and **exactly one exception per date** is permitted. That last
+rule is substantive, not cosmetic: `AppointmentBranchScheduleValidator::openWindowFor()` resolves a
+date with `whereDate('date', …)->first()`, so two exceptions on one date (which
+`UNIQUE(branch_id, date, type)` would permit) would have made the scheduling decision
+**order-dependent**; constraining the only surface able to create one keeps that pre-existing latent
+ambiguity unreachable. Closure types normalise to a null window and reject supplied times, while
+`modified_hours` requires an ordered window — because the validator treats a windowless modified-hours
+row as fully **closed**, which would silently contradict the operator.
+
+Nineteen backend cases cover the calendar, including **five runtime-integration cases** proving the new
+surface drives the already-shipped scheduling gate (closure blocks, modified hours are honoured
+exactly, removal stops blocking, a closure is confined to its own branch and tenant) and one that pins
+resolution to the **Nairobi business date rather than the UTC date**, guarding against a
+PH23-DET-001-style regression.
+
+Counts: permissions active 131 → **132**, planned 37 → **35**, catalogue 168 → **167** (shrank only by
+the retired legacy duplicate), legacy 8 → **7**. Routes 295 → **301**; OpenAPI **247 paths / 296
+operations**. Screens `implemented` 98 → **100**, `planned` 7 → **5**, specs 116 → **118**, 0 orphans;
+the screen guard's registered-release-gap list is now **empty** and asserted exact, so it fails if
+either screen regresses.
+
+Gates: `tests/Feature/Merchants/` + `tests/Feature/Branches/` **67 passed** (301 assertions) · the two
+component specs **17 passed** · combined 16-group backend regression **680 passed, 7 skipped, 0
+failed** (7 824 assertions) · Vitest **544 passed / 100 files** · ESLint **0 errors, 138 warnings**
+(exact baseline) · vue-tsc clean · production build OK · Pint PASS (1 682 files) · Larastan level 8
+**[OK] No errors** · `api:contract:check` OK · `git diff --check` clean.
+
+#### REM-SCR-002 as originally opened — two Plan §27.3 launch screens did not exist
+
+Plan §27.3 lists *"merchant profile"* among the Merchant Administrator launch screens and
+*"branch profile/**calendar**"* among the Branch Manager launch screens. Neither exists:
+`merchant-profile` (owner **Phase 15A**, `verified_complete`) and `branch-calendar` (owner **Phase
+16A**, `verified_complete`) are both `planned` with `route: null` and no spec.
+`merchant.profile.manage` is an **active** permission key whose only consumer anywhere is the
+`merchant_logo` file purpose, and `branch.calendar.manage` is an **active canonical** key with a
+**live `branch_calendar_exceptions` table** and zero route, controller, policy call or screen — a
+shipped-schema, unshipped-feature gap. No vulnerability and no data exposure: the capability is absent,
+not unguarded, and both keys are `revocable_only`. The impact is release completeness — a Merchant
+Administrator cannot maintain the merchant profile, and a Branch Manager has no operator-facing path
+for branch closures / special hours, which `BranchClosureGuard` and day-open logic depend on.
+
+Building either is Phase 15A/16A feature scope, not release hardening, so **Phase 23 does not invent
+it**. Both are registered in the screen guard keyed to REM-SCR-002 so the gap cannot be overlooked, and
+Phase 23 remains `in_progress` pending a product-owner decision.
+
 ### REM-DEP-002 — npm audit high-severity remediation (`remediation/rem-dep-002-npm-audit`) — verified_complete (PR #46 merged)
 
 Off `main` = `d8a7a15603c22e41354e570f4d2735935468d973` (the Phase 21S PR #45 merge commit).
@@ -102,6 +401,64 @@ commit `edff8c059671b551eec1e6f9617ea3ae6add0d7b` remains preserved while `origi
 into `phase-22-search`. The complete Phase 22 gates, including
 `npm audit --audit-level=high`, must pass on the refreshed head before push and before the
 Phase 22 pull request is created.
+
+#### Increments 6–9 — whole-product responsive, dark-mode, accessibility and determinism release audit
+
+One data-driven matrix — `tests/e2e/phase-23-release-audit.spec.ts` with
+`tests/e2e/support/releaseAudit.ts` — audits **every live screen in the inventory**: 100
+`implemented` + 18 `phase_11` = **118 screens**, including both REM-SCR-002 screens. The matrix is
+derived from `docs/frontend/screens/inventory.json` at run time and a coverage guard fails in both
+directions, so a screen delivered later cannot escape the audit and no invented key can pass. The
+5 `planned` screens are owned by phases that genuinely have not shipped and are not audited.
+
+Determinism is built in, not retrofitted: a pinned `2026-07-15T09:00:00Z` (12:00 Africa/Nairobi)
+clock, fixed 26-character identifiers, and stubbed responses that are pure functions of the
+request. No wall-clock date, random value or ambient database state reaches a screen, and
+`retries` stays `0` locally so a pass is never retry-masked.
+
+**Responsive (Increment 6)** — 118 screens at 360 / 768 / 1280, navigating once and then resizing
+so a live re-layout is proven too. Two defects found and fixed:
+
+- **PH23-RSP-001** — `MerchantProfile.vue` and `BranchCalendar.vue` hand-rolled their inputs and
+  omitted the `w-full` the shared `SvInput` carries. A 241 px intrinsic input width propagated up
+  `form → SvCard → section → main` and scrolled the whole page at 360 px. Fixed with `w-full` on all
+  15 inputs/selects plus `min-w-[8rem] flex-1` on the wrappers of the `flex-wrap` time/reason rows.
+- **PH23-RSP-002 (pre-existing)** — `main#main-content` is a flex item with the default
+  `min-width: auto`, so it could not shrink below its content and one wide child widened the whole
+  document; the audit action heading `branch.calendar_exception_set` is 376 px of unbreakable
+  machine token. Fixed with `min-w-0` on `main` in `AppShell.vue` **and** `break-words` on the
+  heading in `AuditEventDetail.vue` — `overflow-wrap: break-word` does not reduce min-content width,
+  so neither fix works alone.
+
+**Dark mode (Increment 7)** — 118 screens in light and dark; the theme is proven to have actually
+applied, no text is transparent or equal to its composited backdrop, and neither theme introduces
+overflow. **No product theme defect was found**; no brand token was replaced.
+
+**Accessibility (Increment 8)** — 118 screens × {mobile, desktop} × {light, dark} = **472 axe
+analyses under `wcag2a` + `wcag2aa`: 0 serious, 0 critical**, with no rule suppressed anywhere. One
+defect found and fixed:
+
+- **PH23-A11Y-001** — on `RegistrationMonitoring.vue` both `role="tabpanel"` elements lived inside
+  `SvStateBoundary`, which renders its slot only in the `success` state, so in the loading, empty
+  and error states the tabs' `aria-controls` referenced nothing (axe `aria-valid-attr-value`,
+  critical). Both panels now always exist with the inactive one `hidden`, the boundary renders
+  inside each, and the directory grid moved to an inner wrapper because a `display: grid` class
+  outranks the `hidden` attribute.
+
+Behavioural coverage: skip link first and functional, unique landmarks, drawer initial focus /
+`Escape` / focus restoration, a visible indicator at every real `Tab` stop, 200 % zoom with no
+overflow, and `prefers-reduced-motion` honoured.
+
+**Determinism (Increment 9)** — the audit passes repeated serially, passes concurrently, and the
+whole Playwright suite passes. Merchant Profile proves update → save → reload → persisted value;
+Branch Calendar proves a future full-day closure and a modified-hours exception survive a reload
+with normalized hours, on the pinned Nairobi clock. No sleep, no raised timeout, no retry and no
+weakened assertion was added anywhere.
+
+Two findings were **defects in the new audit harness, not in the product**, and were corrected there
+with no product change: a contrast probe that read `bg-white/15` over the dark brand header as solid
+white, and a focus-ring probe that used programmatic `element.focus()` (which never matches
+`:focus-visible`) instead of a real `Tab` traversal.
 
 ### Phase 22 — Search (`phase-22-search`) — in_progress
 

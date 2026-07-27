@@ -68,7 +68,8 @@ const BRANCH = {
 } as const;
 
 const ADMIN_PERMISSIONS = [
-    "merchant.profile.manage",
+    "merchant.profile.view",
+    "merchant.profile.update",
     "merchant.tier.update",
     "branches.create",
     "branches.manage_users_lifecycle",

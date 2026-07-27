@@ -55,6 +55,11 @@ async function stubAvailability(page: Page, opts: { canUpdate?: boolean } = {}):
   const canUpdate = opts.canUpdate ?? true;
   await page.route('**/api/v1/staff?**', (r) => r.fulfill(ok({ data: [{ id: 'p1', display_name: 'Jane Doe' }] })));
   await page.route('**/api/v1/staff', (r) => r.fulfill(ok({ data: [{ id: 'p1', display_name: 'Jane Doe' }] })));
+  // Phase 23 §14.1 — the Branch Manager screen reads the NARROW personnel-options endpoint
+  // ({id, display_name}) instead of the HR roster, which is now gated by the HR-only `staff.view`.
+  await page.route('**/api/v1/branch/personnel-options', (r) =>
+    r.fulfill(ok({ data: [{ id: 'p1', display_name: 'Jane Doe' }] })),
+  );
   // Specific routes registered AFTER the broad ones take precedence in Playwright.
   await page.route('**/api/v1/staff/p1/availability/emergency-unavailable', (r) =>
     r.fulfill(ok({ data: schedule('unavailable', canUpdate) })),
@@ -161,6 +166,12 @@ test.describe('Branch Manager read-only personnel schedule', () => {
     await stubMe(page, 'branch_manager', ['branch.dashboard.view', 'service.view']);
     await stubAvailability(page, { canUpdate: false });
 
+    // Phase 23 §14.1 — the Branch Manager holds NO `staff.view`; the screen must never
+    // request the HR roster (which carries personnel phone numbers). Record every request
+    // so the assertion proves absence, not just a passing render.
+    const requested: string[] = [];
+    page.on('request', (req) => requested.push(new URL(req.url()).pathname));
+
     await page.goto('/branch/personnel-schedule');
     await expect(page.getByRole('heading', { name: 'Personnel schedule' })).toBeVisible();
     await page.selectOption('#bm-staff', 'p1');
@@ -172,6 +183,10 @@ test.describe('Branch Manager read-only personnel schedule', () => {
     await expect(page.getByTestId('save-availability')).toHaveCount(0);
     await expect(page.getByTestId('open-emergency')).toHaveCount(0);
     await expect(page.getByTestId('add-working-1')).toHaveCount(0);
+
+    // The picker came from the narrow options endpoint, and the HR roster was never touched.
+    expect(requested).toContain('/api/v1/branch/personnel-options');
+    expect(requested).not.toContain('/api/v1/staff');
 
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
     expect(results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);

@@ -188,18 +188,24 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
         </button>
       </div>
 
-      <SvStateBoundary
-        :state="boundaryState"
-        :error-message="store.error ?? undefined"
-        :empty-message="tab === 'monitoring' ? 'No merchant registrations to monitor.' : 'No merchants found.'"
-        @retry="tab === 'monitoring' ? store.fetchRegistrations() : store.fetchMerchants()"
+      <!--
+        Both tabpanels stay in the DOM (the inactive one `hidden`) so each tab's
+        `aria-controls` always resolves. Rendering the panel INSIDE the state boundary made the
+        reference dangle whenever the boundary showed its loading, empty or error state — a
+        reachable state on every page load (Plan §30; axe aria-valid-attr-value).
+      -->
+      <!-- Registration monitoring -->
+      <section
+        id="panel-monitoring"
+        role="tabpanel"
+        aria-labelledby="tab-monitoring"
+        :hidden="tab !== 'monitoring'"
       >
-        <!-- Registration monitoring -->
-        <section
-          v-if="tab === 'monitoring'"
-          id="panel-monitoring"
-          role="tabpanel"
-          aria-labelledby="tab-monitoring"
+        <SvStateBoundary
+          :state="boundaryState"
+          :error-message="store.error ?? undefined"
+          empty-message="No merchant registrations to monitor."
+          @retry="store.fetchRegistrations()"
         >
           <div class="overflow-x-auto">
             <table class="w-full min-w-[40rem] text-left text-sm">
@@ -262,121 +268,129 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
               </tbody>
             </table>
           </div>
-        </section>
+        </SvStateBoundary>
+      </section>
 
-        <!-- Merchant directory + detail -->
-        <section
-          v-else
-          id="panel-directory"
-          role="tabpanel"
-          aria-labelledby="tab-directory"
-          class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]"
+      <!-- Merchant directory + detail -->
+      <section
+        id="panel-directory"
+        role="tabpanel"
+        aria-labelledby="tab-directory"
+        :hidden="tab !== 'directory'"
+      >
+        <SvStateBoundary
+          :state="boundaryState"
+          :error-message="store.error ?? undefined"
+          empty-message="No merchants found."
+          @retry="store.fetchMerchants()"
         >
-          <SvCard>
-            <h2 class="sr-only">
-              Merchants
-            </h2>
-            <ul
-              role="list"
-              class="flex flex-col divide-y divide-border"
-            >
-              <li
-                v-for="m in store.merchants"
-                :key="m.id"
+          <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
+            <SvCard>
+              <h2 class="sr-only">
+                Merchants
+              </h2>
+              <ul
+                role="list"
+                class="flex flex-col divide-y divide-border"
               >
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-between gap-3 px-1 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  :class="{ 'font-semibold text-heading': selected?.id === m.id }"
-                  :aria-current="selected?.id === m.id ? 'true' : undefined"
-                  :data-testid="`merchant-row-${m.id}`"
-                  @click="openMerchant(m.id)"
+                <li
+                  v-for="m in store.merchants"
+                  :key="m.id"
                 >
-                  <span>{{ m.name }}</span>
-                  <span class="text-xs text-text-muted">
-                    {{ STATUS_LABELS[m.operational_status] ?? m.operational_status }}
-                  </span>
-                </button>
-              </li>
-            </ul>
-          </SvCard>
+                  <button
+                    type="button"
+                    class="flex w-full items-center justify-between gap-3 px-1 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    :class="{ 'font-semibold text-heading': selected?.id === m.id }"
+                    :aria-current="selected?.id === m.id ? 'true' : undefined"
+                    :data-testid="`merchant-row-${m.id}`"
+                    @click="openMerchant(m.id)"
+                  >
+                    <span>{{ m.name }}</span>
+                    <span class="text-xs text-text-muted">
+                      {{ STATUS_LABELS[m.operational_status] ?? m.operational_status }}
+                    </span>
+                  </button>
+                </li>
+              </ul>
+            </SvCard>
 
-          <SvCard v-if="selected">
-            <h2
-              class="font-display text-lg font-bold text-heading"
-              data-testid="merchant-detail-name"
-            >
-              {{ selected.name }}
-            </h2>
-            <dl class="mt-4 grid gap-3 sm:grid-cols-2">
-              <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Operational status
-                </dt>
-                <dd
-                  class="mt-1 font-semibold text-heading"
-                  data-testid="operational-status"
+            <SvCard v-if="selected">
+              <h2
+                class="font-display text-lg font-bold text-heading"
+                data-testid="merchant-detail-name"
+              >
+                {{ selected.name }}
+              </h2>
+              <dl class="mt-4 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    Operational status
+                  </dt>
+                  <dd
+                    class="mt-1 font-semibold text-heading"
+                    data-testid="operational-status"
+                  >
+                    {{ STATUS_LABELS[selected.operational_status] ?? selected.operational_status }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    Billing status
+                  </dt>
+                  <dd
+                    class="mt-1 font-semibold text-heading"
+                    data-testid="detail-billing-status"
+                  >
+                    {{ BILLING_LABELS[selected.billing_status] ?? selected.billing_status }}
+                  </dd>
+                </div>
+                <div v-if="selected.suspension_reason">
+                  <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    Last governance reason
+                  </dt>
+                  <dd class="mt-1 text-text">
+                    {{ selected.suspension_reason }}
+                  </dd>
+                </div>
+              </dl>
+
+              <p
+                v-if="actionError && pendingAction === null"
+                class="mt-4 text-sm text-error"
+                role="alert"
+              >
+                {{ actionError }}
+              </p>
+
+              <div class="mt-6 flex flex-wrap gap-3">
+                <SvButton
+                  v-if="canGovern(selected, 'suspend')"
+                  variant="destructive"
+                  data-testid="action-suspend"
+                  @click="openGovernance('suspend', $event)"
                 >
-                  {{ STATUS_LABELS[selected.operational_status] ?? selected.operational_status }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Billing status
-                </dt>
-                <dd
-                  class="mt-1 font-semibold text-heading"
-                  data-testid="detail-billing-status"
+                  Suspend
+                </SvButton>
+                <SvButton
+                  v-if="canGovern(selected, 'reactivate')"
+                  data-testid="action-reactivate"
+                  @click="openGovernance('reactivate', $event)"
                 >
-                  {{ BILLING_LABELS[selected.billing_status] ?? selected.billing_status }}
-                </dd>
+                  Reactivate
+                </SvButton>
+                <SvButton
+                  v-if="canGovern(selected, 'deactivate')"
+                  variant="destructive"
+                  data-testid="action-deactivate"
+                  @click="openGovernance('deactivate', $event)"
+                >
+                  Deactivate
+                </SvButton>
               </div>
-              <div v-if="selected.suspension_reason">
-                <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                  Last governance reason
-                </dt>
-                <dd class="mt-1 text-text">
-                  {{ selected.suspension_reason }}
-                </dd>
-              </div>
-            </dl>
-
-            <p
-              v-if="actionError && pendingAction === null"
-              class="mt-4 text-sm text-error"
-              role="alert"
-            >
-              {{ actionError }}
-            </p>
-
-            <div class="mt-6 flex flex-wrap gap-3">
-              <SvButton
-                v-if="canGovern(selected, 'suspend')"
-                variant="destructive"
-                data-testid="action-suspend"
-                @click="openGovernance('suspend', $event)"
-              >
-                Suspend
-              </SvButton>
-              <SvButton
-                v-if="canGovern(selected, 'reactivate')"
-                data-testid="action-reactivate"
-                @click="openGovernance('reactivate', $event)"
-              >
-                Reactivate
-              </SvButton>
-              <SvButton
-                v-if="canGovern(selected, 'deactivate')"
-                variant="destructive"
-                data-testid="action-deactivate"
-                @click="openGovernance('deactivate', $event)"
-              >
-                Deactivate
-              </SvButton>
-            </div>
-          </SvCard>
-        </section>
-      </SvStateBoundary>
+            </SvCard>
+          </div>
+        </SvStateBoundary>
+      </section>
     </template>
 
     <!-- Governance confirmation with mandatory reason -->

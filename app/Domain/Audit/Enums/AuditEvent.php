@@ -52,6 +52,12 @@ enum AuditEvent: string
     case BranchProfileUpdated = 'branch.profile_updated';
     case BranchArchived = 'branch.archived';
     case BranchOperatingHoursUpdated = 'branch.operating_hours_updated';
+    // REM-SCR-002B (Phase 23) — date-specific calendar exceptions. The weekly hours above are the
+    // default schedule; these are the per-date overrides AppointmentBranchScheduleValidator already
+    // honours (closure types → branch_closed; modified_hours → the modified window). Severity
+    // `warn`, matching `branch.calendar.manage` in the permission matrix (Plan §19.3:1465).
+    case BranchCalendarExceptionSet = 'branch.calendar_exception_set';
+    case BranchCalendarExceptionRemoved = 'branch.calendar_exception_removed';
     case BranchDayOpened = 'branch.day_opened';
     case BranchDayClosed = 'branch.day_closed';
     case BranchDayReopened = 'branch.day_reopened';
@@ -281,6 +287,9 @@ enum AuditEvent: string
     // events on the platform/governance chain (null merchant/branch). Each mutates `merchants.status`
     // only (never billing) and carries a redacted context (merchant ULID + prev/new status + reason);
     // never a raw reason beyond the sanitised governance note, internal id, or session detail.
+    // REM-SCR-002A (Phase 23) — merchant business-profile change. Severity `high`, matching
+    // `merchant.profile.update` in the permission matrix (Plan §19.3:1445).
+    case MerchantProfileUpdated = 'merchant.profile_updated';
     case MerchantSuspended = 'merchant.suspended';
     case MerchantReactivated = 'merchant.reactivated';
     case MerchantDeactivated = 'merchant.deactivated';
@@ -763,6 +772,10 @@ enum AuditEvent: string
             self::PersonnelSmsCampaignConfirmed,
             self::PersonnelSmsCampaignCancelled,
             self::PersonnelSmsBillingEntryCreated,
+            // REM-SCR-002B — a calendar exception closes the branch or changes its hours for a
+            // date, so it is an operational change worth surfacing (`warn` per the matrix).
+            self::BranchCalendarExceptionSet,
+            self::BranchCalendarExceptionRemoved,
             self::PersonnelSmsDeliveryFailed => AuditSeverity::Warning,
 
             self::FileScanInfected,
@@ -801,6 +814,9 @@ enum AuditEvent: string
             self::BillingEscalationSuspended,
             // Platform merchant governance (Phase 20B): operational suspension/reactivation are
             // high-severity governance actions; deactivation is the terminal state (Critical below).
+            // REM-SCR-002A — the merchant profile carries the business identity used on receipts
+            // and the merchant contact of record, so a change is `high` per the matrix.
+            self::MerchantProfileUpdated,
             self::MerchantSuspended,
             self::MerchantReactivated,
             // Phase 20C — platform-governed promotion + free-period offer management (Plan §53).

@@ -39,7 +39,10 @@ function expectedMatrix(): array
 {
     return [
         'merchant_admin' => [
-            'merchant.profile.manage',
+            // REM-SCR-002A: the canonical §19.3 pair, replacing the RETIRED legacy
+            // `merchant.profile.manage` — same Merchant Administrator authority, canonically named
+            // and split into read/write (the merchant-profile screen was the missing launch surface).
+            'merchant.profile.view', 'merchant.profile.update',
             // Phase 20B: subscription self-service (replaces the retired `merchant.tier.update`).
             'merchant.subscription.view', 'merchant.subscription.plan_change',
             'merchant.subscription.invoice.view', 'merchant.subscription.invoice.download',
@@ -78,6 +81,10 @@ function expectedMatrix(): array
             'preferred_personnel_fee.view_branch_rule',
         ],
         'hr' => [
+            // Phase 23: `staff.view` — the roster/detail READ authority, activated as a security
+            // remediation (it was left `planned` after Phase 20F, leaving GET /api/v1/staff with no
+            // authorization at all). HR-only per Plan §19.3.
+            'staff.view',
             'staff.invite', 'staff.edit', 'staff.suspend',
             'personnel.eligibility.manage', 'personnel.availability.manage',
             // Phase 20F: HR owns compensation CONFIGURATION end to end (canonical successors of the

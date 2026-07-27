@@ -117,21 +117,10 @@ function providerGuardScanExecutableSurfaces(): array
             continue;
         }
 
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)
-        );
-
-        foreach ($iterator as $file) {
-            if (! $file->isFile()) {
-                continue;
-            }
-
-            $path = $file->getPathname();
-            $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-            if (! in_array($ext, providerGuardScanExtensions(), true)) {
-                continue;
-            }
-
+        // sourceFilesUnder() replaces RecursiveDirectoryIterator, which truncates directory
+        // listings on the dev bind mount: this §9 rule 20 guard was scanning ~89% of app/
+        // while reporting a clean result (PH23-SCAN-001).
+        foreach (sourceFilesUnder($root, providerGuardScanExtensions()) as $path) {
             $relative = str_replace('\\', '/', substr($path, strlen(base_path()) + 1));
             if (in_array($relative, $excluded, true)) {
                 continue;

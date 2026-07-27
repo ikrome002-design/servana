@@ -309,10 +309,10 @@ screens:
     spec: access-state/no-branch-assignment.md
   - key: merchant-profile
     domain: merchant
-    route: ~
-    status: planned
-    phase: Phase 15A
-    spec: ~
+    route: merchant.profile
+    status: implemented
+    phase: Phase 23
+    spec: merchant/merchant-profile.md
   - key: subscription-dashboard
     domain: merchant
     route: merchant.subscription
@@ -393,10 +393,10 @@ screens:
     spec: branch/branch-queue-configuration.md
   - key: branch-calendar
     domain: branch
-    route: ~
-    status: planned
-    phase: Phase 16A
-    spec: ~
+    route: branch.calendar
+    status: implemented
+    phase: Phase 23
+    spec: branch/branch-calendar.md
   - key: branch-cash-up
     domain: branch
     route: branch.cash-up
@@ -408,12 +408,6 @@ screens:
     route: ~
     status: planned
     phase: Phase 21N
-    spec: ~
-  - key: hr-eligibility
-    domain: hr
-    route: ~
-    status: planned
-    phase: Phase 15B
     spec: ~
   - key: hr-compensation
     domain: hr
@@ -707,7 +701,7 @@ screens:
     domain: platform
     route: ~
     status: planned
-    phase: Phase 19
+    phase: Phase 21N
     spec: ~
   - key: merchant-platform-fees
     domain: merchant

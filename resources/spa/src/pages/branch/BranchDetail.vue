@@ -27,6 +27,13 @@ onMounted(() => {
         >
           Operating hours
         </RouterLink>
+        <!-- REM-SCR-002B — the date-specific calendar overrides sit beside the weekly hours. -->
+        <RouterLink
+          :to="{ name: 'branch.calendar', params: { id } }"
+          class="text-sm font-semibold text-heading underline"
+        >
+          Branch calendar
+        </RouterLink>
       </div>
       <SvCard
         as="div"

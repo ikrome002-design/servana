@@ -78,6 +78,15 @@ export const branchRoutes: RouteRecordRaw[] = [
         name: 'branch.operating-hours',
         component: () => import('@/pages/branch/OperatingHours.vue'),
       },
+      // REM-SCR-002B — branch CALENDAR: the date-specific overrides on top of the weekly operating
+      // hours above (Plan §27.3 Branch Manager "branch profile/calendar"). Backend authoritative:
+      // EnsureBranchScope + `branch.calendar.manage` + BranchCalendarExceptionPolicy, and
+      // EnsureBillingMutable on every write.
+      {
+        path: ':id/calendar',
+        name: 'branch.calendar',
+        component: () => import('@/pages/branch/BranchCalendar.vue'),
+      },
     ],
   },
 ];

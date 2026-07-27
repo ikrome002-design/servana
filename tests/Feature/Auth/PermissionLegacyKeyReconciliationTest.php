@@ -47,7 +47,7 @@ function legacyActiveKeys(PermissionMatrix $matrix): array
     ));
 }
 
-it('carries exactly the 8 known legacy-active keys', function (): void {
+it('carries exactly the 7 known legacy-active keys', function (): void {
     // Phase 20A retired 3 legacy platform keys (platform.settings.manage,
     // platform.billing.configure, platform.fee_rules.manage) by activating their canonical
     // successors and deleting the legacy rows — 17 → 14. Phase 20B retired 2 more
@@ -62,10 +62,15 @@ it('carries exactly the 8 known legacy-active keys', function (): void {
     // outright (commissions.manage → compensation.plan.update_draft; commissions.view →
     // compensation.history.view, whose HR-only authority means the old Merchant-Admin/Branch-Manager/
     // Personnel/Audit grants and the Finance grantable override are RETIRED, not carried over
-    // — Plan §10.2) — 10 → 8.
+    // — Plan §10.2) — 10 → 8. REM-SCR-002A (Phase 23) retired `merchant.profile.manage` the same
+    // way: delivering the omitted Plan §27.3 merchant-profile launch screen required activating its
+    // canonical successors `merchant.profile.view` + `merchant.profile.update`, and an active legacy
+    // key alongside an active successor would be two names for one authority — precisely what the
+    // next case forbids. Its consumers moved to the canonical write key (the `merchant_logo` file
+    // purpose) and the dead `MerchantPolicy::manageProfile` was deleted — 8 → 7.
     $legacy = legacyActiveKeys(app(PermissionMatrix::class));
 
-    expect($legacy)->toHaveCount(8);
+    expect($legacy)->toHaveCount(7);
 });
 
 it('reconciles every legacy key to a PLANNED successor (or null) and a valid owning phase', function (): void {

@@ -101,6 +101,12 @@ merchant_administrator:
     availability: live
     route: merchant.dashboard
     phase: Phase 6
+  - key: merchant.profile
+    label: Business profile
+    availability: live
+    route: merchant.profile
+    permission: merchant.profile.view
+    phase: Phase 23
   - key: merchant.branches
     label: Branches
     availability: live

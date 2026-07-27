@@ -54,7 +54,7 @@ it('rejects a plan draft for a staff profile from another merchant', function ()
         branchId: $branch->id,
         actor: User::factory()->create(),
         model: CompensationModel::SalaryOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Cross-merchant attempt.',
         salaryAmountMinor: 5000000,
         salaryCurrency: 'KES',
@@ -72,7 +72,7 @@ it('rejects a plan draft for a staff profile from another branch of the same mer
         branchId: $branch->id,
         actor: User::factory()->create(),
         model: CompensationModel::SalaryOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Cross-branch attempt.',
         salaryAmountMinor: 5000000,
         salaryCurrency: 'KES',
@@ -108,7 +108,7 @@ it('rejects a plan draft referencing a rule from another merchant', function ():
         branchId: $branch->id,
         actor: User::factory()->create(),
         model: CompensationModel::CommissionOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Foreign rule attempt.',
         commissionRule: CommissionRule::factory()->create(), // another merchant entirely
     );
@@ -123,7 +123,7 @@ it('rejects a plan draft referencing a rule from another branch of the same merc
         branchId: $branch->id,
         actor: User::factory()->create(),
         model: CompensationModel::CommissionOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Cross-branch rule attempt.',
         commissionRule: CommissionRule::factory()->create([
             'merchant_id' => $branch->merchant_id,
@@ -142,7 +142,7 @@ it('rejects a draft update that swaps in a foreign commission rule', function ()
         branchId: $branch->id,
         actor: $actor,
         model: CompensationModel::CommissionOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Initial.',
         commissionRule: CommissionRule::factory()->create([
             'merchant_id' => $branch->merchant_id,
@@ -154,7 +154,7 @@ it('rejects a draft update that swaps in a foreign commission rule', function ()
         plan: $plan,
         actor: $actor,
         model: CompensationModel::CommissionOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Swapping in a foreign rule.',
         commissionRule: CommissionRule::factory()->create(),
     );
@@ -170,7 +170,7 @@ it('rejects a commission rule draft bound to a service category from another bra
         calculationType: CommissionCalculationType::Percentage,
         calculationBasis: CommissionCalculationBasis::ServicePrice,
         appliesTo: CommissionAppliesTo::ServiceCategory,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Cross-branch category attempt.',
         percentageBasisPoints: 1000,
         serviceCategory: ServiceCategory::factory()->create([
@@ -215,7 +215,7 @@ it('keeps history inside the branch of the plan it describes', function (): void
         branchId: $branch->id,
         actor: User::factory()->create(),
         model: CompensationModel::SalaryOnly,
-        effectiveFrom: today()->toDateString(),
+        effectiveFrom: businessToday()->toDateString(),
         changeReason: 'Initial.',
         salaryAmountMinor: 5000000,
         salaryCurrency: 'KES',

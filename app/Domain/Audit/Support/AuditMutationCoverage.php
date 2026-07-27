@@ -72,6 +72,13 @@ final class AuditMutationCoverage
         'branches.update' => ['branch.profile_updated'],
         'branches.archive' => ['branch.archived'],
         'branches.operating-hours.update' => ['branch.operating_hours_updated'],
+        // REM-SCR-002B — date-specific calendar exceptions (the missing Plan §27.3 Branch Manager
+        // calendar surface). Create and update both emit `set`; removal emits `removed`.
+        'branches.calendar-exceptions.store' => ['branch.calendar_exception_set'],
+        'branches.calendar-exceptions.update' => ['branch.calendar_exception_set'],
+        'branches.calendar-exceptions.destroy' => ['branch.calendar_exception_removed'],
+        // REM-SCR-002A — the missing Plan §27.3 Merchant Administrator merchant-profile surface.
+        'merchant.profile.update' => ['merchant.profile_updated'],
         'branches.day.open' => ['branch.day_opened', 'branch.day_reopened'],
         'branches.day.close' => ['branch.day_closed'],
 

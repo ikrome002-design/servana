@@ -9,6 +9,7 @@ use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Audit\Enums\AuditExportStatus;
 use App\Domain\Audit\Models\AuditExport;
 use App\Domain\Audit\Services\AuditExportStateMachine;
+use App\Domain\Files\Enums\FileLifecycleStatus;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -36,6 +37,11 @@ final class RevokeAuditExport
                 'status' => AuditExportStatus::Revoked->value,
                 'revoked_at' => now(),
             ])->save();
+
+            // PH23-EXP-001: the audit-export stream route honoured revocation, but the generic
+            // Phase 10F file routes authorize on the FILE's lifecycle and kept serving the CSV.
+            // The terminal state must reach the object that boundary inspects.
+            $locked->file?->markLifecycle(FileLifecycleStatus::Revoked);
 
             $this->audit->record(AuditEvent::AuditExportRevoked, $actor, $locked->merchant_id, $locked->branch_id, $locked, [
                 'export_id' => $locked->ulid,

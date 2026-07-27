@@ -22,7 +22,11 @@ const schedule = {
 
 function mockLoaded(): void {
   get.mockImplementation((url: string) => {
-    if (url === '/staff') return Promise.resolve({ data: { data: [{ id: 'p1', display_name: 'Jane Doe' }] } });
+    // Phase 23 §14.1 — the picker is fed by the NARROW branch personnel-options endpoint,
+    // never by the HR roster `/staff` (now gated by the HR-only `staff.view`).
+    if (url === '/branch/personnel-options') {
+      return Promise.resolve({ data: { data: [{ id: 'p1', display_name: 'Jane Doe' }] } });
+    }
     return Promise.resolve({ data: { data: structuredClone(schedule) } });
   });
 }
@@ -62,6 +66,49 @@ describe('PersonnelSchedule.vue (Branch Manager read-only)', () => {
     expect(wrapper.find('[data-testid="bm-today"]').exists()).toBe(true);
     expect(wrapper.text()).toContain('Haircut');
     expect(wrapper.text()).toContain('Jane Doe');
+  });
+
+  it('loads the picker from the narrow personnel-options endpoint and NEVER from the HR roster', async () => {
+    mockLoaded();
+    mountPage();
+    await flushPromises();
+
+    const urls = get.mock.calls.map((c) => c[0] as string);
+    expect(urls).toContain('/branch/personnel-options');
+    expect(urls).not.toContain('/staff');
+    expect(urls.some((u) => u.startsWith('/staff'))).toBe(false);
+  });
+
+  it('clears stale options and the selection when the branch context changes', async () => {
+    mockLoaded();
+    const wrapper = mountPage();
+    await flushPromises();
+    await selectStaff(wrapper);
+    expect(wrapper.text()).toContain('Jane Doe');
+
+    const auth = useAuthStore();
+    get.mockImplementation((url: string) => {
+      if (url === '/branch/personnel-options') {
+        return Promise.resolve({ data: { data: [{ id: 'p2', display_name: 'Other Branch Person' }] } });
+      }
+      return Promise.resolve({ data: { data: structuredClone(schedule) } });
+    });
+    auth.branchIds = ['b2'];
+    await flushPromises();
+
+    // The previous branch's personnel must not remain selectable or selected.
+    expect(wrapper.text()).not.toContain('Jane Doe');
+    expect((wrapper.find('#bm-staff').element as HTMLSelectElement).value).toBe('');
+  });
+
+  it('never renders a personnel phone number (the options payload carries none)', async () => {
+    mockLoaded();
+    const wrapper = mountPage();
+    await flushPromises();
+    await selectStaff(wrapper);
+
+    expect(wrapper.html()).not.toMatch(/\+?254\d{6,}/);
+    expect(wrapper.html()).not.toContain('phone');
   });
 
   it('exposes NO edit, save, emergency, or eligibility controls', async () => {
