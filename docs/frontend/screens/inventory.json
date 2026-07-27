@@ -812,19 +812,20 @@
     {
       "key": "merchant-profile",
       "domain": "merchant",
-      "route": null,
+      "route": "merchant.profile",
       "layout": "MerchantLayout",
-      "status": "planned",
-      "phase": "Phase 15A",
-      "spec": null,
-      "title": "Merchant profile",
+      "status": "implemented",
+      "phase": "Phase 23",
+      "spec": "merchant/merchant-profile.md",
+      "title": "Business profile",
       "roles": [
         "merchant_administrator"
       ],
       "permissions": [
-        "merchant.profile.view"
+        "merchant.profile.view",
+        "merchant.profile.update"
       ],
-      "summary": "Merchant profile management."
+      "summary": "Merchant Administrator views and edits the merchant BUSINESS profile — business category, contact phone/email, receipt display name, address, town and timezone — and sees the current logo. Delivered by REM-SCR-002A as a corrective remediation for a Plan §27.3 launch screen omitted by its owning phase. Business name, slug, country, service-fee tier and every billing/lifecycle column are read-only context; the logo is uploaded through the existing Phase 10F scanned pipeline, never a second path."
     },
     {
       "key": "subscription-dashboard",
@@ -1055,19 +1056,19 @@
     {
       "key": "branch-calendar",
       "domain": "branch",
-      "route": null,
+      "route": "branch.calendar",
       "layout": "BranchLayout",
-      "status": "planned",
-      "phase": "Phase 16A",
-      "spec": null,
-      "title": "Branch calendar / day open-close",
+      "status": "implemented",
+      "phase": "Phase 23",
+      "spec": "branch/branch-calendar.md",
+      "title": "Branch calendar",
       "roles": [
         "merchant_branch"
       ],
       "permissions": [
         "branch.calendar.manage"
       ],
-      "summary": "Calendar and day open/pause/close."
+      "summary": "Branch Manager creates, edits and removes date-specific calendar exceptions — public holiday, special closure, emergency closure (all full-day) and modified hours — over the existing branch_calendar_exceptions table. Exactly one exception per date. Delivered by REM-SCR-002B as a corrective remediation for a Plan §27.3 launch screen omitted by its owning phase: the table, model and the AppointmentBranchScheduleValidator that honours these dates all already shipped, but no operator surface existed. Day open/pause/close remains the separate Branch Day workflow."
     },
     {
       "key": "branch-cash-up",
@@ -1102,23 +1103,6 @@
         "branch.report.view"
       ],
       "summary": "Branch reports."
-    },
-    {
-      "key": "hr-eligibility",
-      "domain": "hr",
-      "route": null,
-      "layout": "BranchLayout",
-      "status": "planned",
-      "phase": "Phase 15B",
-      "spec": null,
-      "title": "Eligibility and availability",
-      "roles": [
-        "merchant_human_resource"
-      ],
-      "permissions": [
-        "personnel.eligibility.manage"
-      ],
-      "summary": "Personnel service eligibility and availability."
     },
     {
       "key": "hr-compensation",
@@ -1993,7 +1977,7 @@
       "route": null,
       "layout": "PlatformAdminLayout",
       "status": "planned",
-      "phase": "Phase 19",
+      "phase": "Phase 21N",
       "spec": null,
       "title": "Platform audit / reports",
       "roles": [
@@ -2002,7 +1986,7 @@
       "permissions": [
         "platform.audit.view"
       ],
-      "summary": "Platform audit and reports."
+      "summary": "Super Administrator platform audit REPORTS (Plan §27.3 Super Administrator list). Re-attributed from Phase 19 to Phase 21N in Phase 23: Plan §69 places the whole reporting catalogue in Phase 21N, and every §27.3 Audit-role screen (branch audit log, flagged-event review, compensation/finance audit, masked export) is already implemented by Phase 19. Blocked while 21N is blocked."
     },
     {
       "key": "merchant-platform-fees",

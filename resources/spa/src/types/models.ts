@@ -106,6 +106,72 @@ export interface BranchOperatingHour {
   break_end: string | null;
 }
 
+/**
+ * REM-SCR-002B — date-specific branch calendar exception (Plan §7.2, Scope §3.3). The three
+ * closure types carry no window; `modified_hours` requires both times. `(date, type)` is the row's
+ * public identity — it has no ULID — and there is exactly one exception per date.
+ */
+export type CalendarExceptionType =
+  | 'public_holiday'
+  | 'special_closure'
+  | 'emergency_closure'
+  | 'modified_hours';
+
+export interface BranchCalendarException {
+  date: string;
+  type: CalendarExceptionType;
+  /** Server-derived: true for every closure type, false for `modified_hours`. */
+  closes_branch: boolean;
+  opens_at: string | null;
+  closes_at: string | null;
+  reason: string | null;
+  created_at: string | null;
+}
+
+export interface BranchCalendarExceptionInput {
+  date: string;
+  type: CalendarExceptionType;
+  opens_at?: string | null;
+  closes_at?: string | null;
+  reason?: string | null;
+}
+
+/**
+ * REM-SCR-002A — merchant business profile (Plan §27.3 Merchant Administrator "merchant profile").
+ * `country` and the nested `merchant` block are read-only context; only the fields in
+ * {@link MerchantProfileUpdate} are writable, and the backend allowlist is what enforces it.
+ */
+export interface MerchantProfile {
+  id: string;
+  business_category: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  receipt_display_name: string | null;
+  address: string | null;
+  town: string | null;
+  timezone: string;
+  country: string;
+  merchant: {
+    id: string;
+    name: string;
+    slug: string;
+    status: string;
+    service_fee_tier: string | null;
+  } | null;
+  /** Current logo: public file id + safe filename only. Never a path, URL or signature. */
+  logo: { id: string; filename: string } | null;
+}
+
+export interface MerchantProfileUpdate {
+  business_category?: string;
+  contact_email?: string | null;
+  contact_phone?: string;
+  receipt_display_name?: string | null;
+  address?: string | null;
+  town?: string | null;
+  timezone?: string;
+}
+
 export type StaffInvitationStatus = 'pending' | 'accepted' | 'revoked' | 'expired';
 
 export interface StaffInvitation {
@@ -133,6 +199,20 @@ export interface StaffProfile {
   employment_status: string;
   primary_branch_id: string | null;
   is_active: boolean;
+}
+
+/**
+ * Response row of GET /api/v1/branch/personnel-options (Plan §80 Phase 15B screen,
+ * Phase 23 §14.1 security remediation). The MINIMAL branch-scoped personnel option the
+ * Branch Manager's read-only schedule picker needs.
+ *
+ * Deliberately NOT a `StaffProfile`: the HR roster carries `phone`, `role`, `status`,
+ * `employment_*` and `primary_branch_id`, and is authorized by the HR-only `staff.view`.
+ * This screen must never receive personnel contact data (Plan §9.1; RK-05).
+ */
+export interface BranchPersonnelOption {
+  id: string;
+  display_name: string;
 }
 
 /**

@@ -1,0 +1,445 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Domain\Auth\Services\PermissionMatrix;
+use Illuminate\Support\Facades\Route;
+
+uses()->group('traceability', 'phase23', 'contracts');
+
+/*
+ |==============================================================================
+ | Phase 23 Increment 5 — requirement-traceability enforcement (Plan §85; REM-TRACE-001).
+ |
+ | `docs/traceability/servana-requirements.csv` was maintained by hand and never gated, so
+ | it drifted: statuses went stale when an owning phase merged, one launch requirement sat at
+ | `not_implemented`, and two rows carried narrative PROSE in the `status` column. This guard
+ | makes the CSV a checked contract instead of a document.
+ |
+ | It is deliberately OFFLINE and deterministic: it reads the CSV, the live route table, the
+ | screen inventory and the filesystem. It never calls a network service, and it never
+ | requires a route that a documented external gate keeps deliberately absent.
+ */
+
+/** The closed status vocabulary (Plan §85; documented in docs/traceability/README.md). */
+const P23_TRACE_STATUSES = [
+    // Owning phase merged with green CI and phase-completion evidence.
+    'verified_complete',
+    // Implemented and green locally; the owning phase's PR is not merged yet.
+    'local_complete',
+    // Code is present but the owning phase has produced no completion evidence yet.
+    'implemented',
+    // Only the architecture/contract is adopted; no runtime exists by design.
+    'architecture_adopted',
+    // Deliberately absent behind a NAMED external gate (Gate W and its dependents).
+    'blocked_external_gate',
+    // Deliberately deferred to a NAMED later phase.
+    'deferred_future_phase',
+    // Genuinely not applicable.
+    'not_applicable',
+];
+
+/** Every §85 column, in order. */
+const P23_TRACE_COLUMNS = [
+    'scope_section', 'requirement_id', 'description', 'phase', 'db_objects', 'service_or_action',
+    'controller_or_endpoint', 'policy_and_permission', 'frontend_route_and_component',
+    'queue_or_scheduler', 'audit_event', 'automated_tests', 'manual_verification', 'status', 'evidence',
+];
+
+/**
+ * Phases whose work is MERGED and verified, so a `verified_complete` row may name them.
+ * Sourced from docs/PROGRESS.md phase lifecycle entries; a phase absent here may not carry
+ * `verified_complete`, which is what caught the stale Phase 19/20F/20G rows.
+ *
+ * @var list<string>
+ */
+const P23_VERIFIED_PHASES = [
+    '3', '4', '5', '5-7', '6', '7', '7-9', '8', '8/R2', '9',
+    'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'gate', 'v4-adoption',
+    '10', '10F', '11', '15A', '15B', '16A', '16B', '16C', '17',
+    '18A', '18B', '19', '20A', '20B', '20C', '20E', '20F', '20G', '20H',
+    '21R-A', '21S', '22',
+];
+
+/** Phases that exist but are NOT verified complete — the only phases a non-verified row may name. */
+const P23_UNVERIFIED_PHASES = ['23', '20D-W', '21R-B', '21N', '24', '25'];
+
+/** @return list<array<string, string>> */
+function p23TraceRows(): array
+{
+    $path = base_path('docs/traceability/servana-requirements.csv');
+    $handle = fopen($path, 'r');
+    if ($handle === false) {
+        throw new RuntimeException('Unable to open the traceability CSV.');
+    }
+
+    $header = fgetcsv($handle);
+    $rows = [];
+    while (($line = fgetcsv($handle)) !== false) {
+        if ($line === [null] || $line === []) {
+            continue;
+        }
+        /** @var list<string> $header */
+        $rows[] = array_combine($header, $line);
+    }
+    fclose($handle);
+
+    return $rows;
+}
+
+/** @return list<string> the CSV header, read exactly as written */
+function p23TraceHeader(): array
+{
+    $handle = fopen(base_path('docs/traceability/servana-requirements.csv'), 'r');
+    if ($handle === false) {
+        throw new RuntimeException('Unable to open the traceability CSV.');
+    }
+    $header = fgetcsv($handle);
+    fclose($handle);
+
+    /** @var list<string> $header */
+    return $header;
+}
+
+it('carries every Plan §85 column, in order', function (): void {
+    expect(p23TraceHeader())->toBe(P23_TRACE_COLUMNS);
+});
+
+it('gives every row a unique, non-blank requirement id', function (): void {
+    $ids = [];
+    $problems = [];
+
+    foreach (p23TraceRows() as $index => $row) {
+        $id = trim($row['requirement_id']);
+        if ($id === '') {
+            $problems[] = 'row '.($index + 2).': blank requirement_id';
+
+            continue;
+        }
+        if (isset($ids[$id])) {
+            $problems[] = "duplicate requirement_id: {$id}";
+        }
+        $ids[$id] = true;
+    }
+
+    expect($problems)->toBe([], implode("\n", $problems));
+    expect(count($ids))->toBeGreaterThan(50);
+});
+
+it('fills every required cell — a blank is an unproven claim', function (): void {
+    // Every column must carry SOMETHING (an explicit `n/a` where genuinely not applicable);
+    // `automated_tests` and `evidence` may never be blank because they are the proof.
+    $problems = [];
+
+    foreach (p23TraceRows() as $row) {
+        $id = $row['requirement_id'];
+        foreach (P23_TRACE_COLUMNS as $column) {
+            if (trim((string) $row[$column]) === '') {
+                $problems[] = "{$id}: {$column} is blank";
+            }
+        }
+    }
+
+    expect($problems)->toBe([], implode("\n", $problems));
+});
+
+it('uses only the closed status vocabulary — no prose, no invented status', function (): void {
+    $problems = [];
+
+    foreach (p23TraceRows() as $row) {
+        $id = $row['requirement_id'];
+        $status = $row['status'];
+
+        if (preg_match('/[\r\n]/', $status) === 1) {
+            $problems[] = "{$id}: status contains a line break (narrative belongs in `evidence`)";
+
+            continue;
+        }
+        if ($status !== trim($status)) {
+            $problems[] = "{$id}: status has surrounding whitespace";
+        }
+        if (! in_array($status, P23_TRACE_STATUSES, true)) {
+            $problems[] = sprintf('%s: status %s is not in the closed vocabulary', $id, var_export($status, true));
+        }
+    }
+
+    expect($problems)->toBe([], implode("\n", array_merge(
+        $problems,
+        ['', 'Allowed: '.implode(' · ', P23_TRACE_STATUSES)],
+        ['Evidence detail belongs in the `evidence` column, never in `status`.'],
+    )));
+});
+
+it('never leaves a launch requirement `not_implemented` at the Phase 23 gate', function (): void {
+    // Phase 23 is the release-audit gate. A launch requirement is either delivered, locally
+    // complete, deliberately blocked behind a NAMED gate, deliberately deferred to a NAMED
+    // phase, or not applicable. `not_implemented` / `partially_implemented` say nothing about
+    // ownership and were how SRV-AUDIT-004 stayed wrong while the work was actually shipped.
+    $offenders = [];
+
+    foreach (p23TraceRows() as $row) {
+        if (in_array($row['status'], ['not_implemented', 'partially_implemented'], true)) {
+            $offenders[] = $row['requirement_id'];
+        }
+    }
+
+    expect($offenders)->toBe([], 'Rows still using a rejected status: '.implode(', ', $offenders));
+});
+
+it('names a known phase on every row', function (): void {
+    $known = array_merge(P23_VERIFIED_PHASES, P23_UNVERIFIED_PHASES);
+    $problems = [];
+
+    foreach (p23TraceRows() as $row) {
+        $phase = trim($row['phase']);
+        if ($phase === '') {
+            $problems[] = "{$row['requirement_id']}: blank phase";
+
+            continue;
+        }
+        if (! in_array($phase, $known, true)) {
+            $problems[] = "{$row['requirement_id']}: unknown phase '{$phase}'";
+        }
+    }
+
+    expect($problems)->toBe([], implode("\n", $problems));
+});
+
+it('never claims `verified_complete` for a phase that is not verified complete', function (): void {
+    $problems = [];
+
+    foreach (p23TraceRows() as $row) {
+        if ($row['status'] !== 'verified_complete') {
+            continue;
+        }
+        if (! in_array(trim($row['phase']), P23_VERIFIED_PHASES, true)) {
+            $problems[] = sprintf(
+                '%s: verified_complete but owning phase %s is not verified complete',
+                $row['requirement_id'],
+                $row['phase'],
+            );
+        }
+    }
+
+    expect($problems)->toBe([], implode("\n", $problems));
+});
+
+it('keeps Phase 23 itself honest — never verified_complete before its PR merges', function (): void {
+    $phase23 = array_values(array_filter(
+        p23TraceRows(),
+        static fn (array $row): bool => trim($row['phase']) === '23',
+    ));
+
+    expect($phase23)->not->toBe([], 'Phase 23 must have its own traceability row');
+
+    foreach ($phase23 as $row) {
+        expect($row['status'])->not->toBe(
+            'verified_complete',
+            $row['requirement_id'].': Phase 23 cannot be verified_complete before PR merge and CI/governance verification',
+        );
+    }
+});
+
+it('proves a blocked requirement is blocked by a NAMED gate with real absence evidence', function (): void {
+    $problems = [];
+
+    foreach (p23TraceRows() as $row) {
+        if ($row['status'] !== 'blocked_external_gate') {
+            continue;
+        }
+        $id = $row['requirement_id'];
+
+        // The owning phase must be one of the genuinely blocked phases.
+        if (! in_array(trim($row['phase']), ['20D-W', '21R-B', '21N'], true)) {
+            $problems[] = "{$id}: blocked_external_gate but phase {$row['phase']} is not a gate-blocked phase";
+        }
+
+        // The block must be named, not implied.
+        $haystack = $row['evidence'].' '.$row['manual_verification'];
+        if (! preg_match('/Gate W|External Gate|§80\.1|§80\.2/u', $haystack)) {
+            $problems[] = "{$id}: does not name the blocking gate in evidence/manual_verification";
+        }
+
+        // And it must carry an ABSENCE proof, not a promise.
+        if (trim($row['automated_tests']) === '' || ! preg_match('/Test|guard/i', $row['automated_tests'])) {
+            $problems[] = "{$id}: a blocked requirement must still name the absence/non-regression test";
+        }
+    }
+
+    expect($problems)->toBe([], implode("\n", $problems));
+
+    // Gate W is genuinely closed right now — the rows above must not be a stale claim.
+    expect(is_dir(base_path('docs/integrations/wallet')))->toBeFalse(
+        'docs/integrations/wallet/ now exists — Gate W may have opened; re-evaluate every blocked_external_gate row.',
+    );
+    expect(file_exists(base_path('docs/proof/phase-20d-w.md')))->toBeFalse(
+        'docs/proof/phase-20d-w.md now exists — re-evaluate every blocked_external_gate row.',
+    );
+});
+
+it('names a real later phase on every deferred requirement', function (): void {
+    $problems = [];
+
+    foreach (p23TraceRows() as $row) {
+        if ($row['status'] !== 'deferred_future_phase') {
+            continue;
+        }
+        if (! in_array(trim($row['phase']), ['24', '25', '21N'], true)) {
+            $problems[] = sprintf(
+                '%s: deferred_future_phase must name a later phase, found %s',
+                $row['requirement_id'],
+                $row['phase'],
+            );
+        }
+    }
+
+    expect($problems)->toBe([], implode("\n", $problems));
+});
+
+it('resolves every referenced test that looks like a suite name', function (): void {
+    // sourceFilesUnder() (never RecursiveDirectoryIterator — PH23-SCAN-001) so a truncated
+    // listing can never make a real suite look missing.
+    $existing = [];
+    foreach ([base_path('tests'), base_path('resources/spa/src')] as $root) {
+        foreach (sourceFilesUnder($root, ['php', 'ts']) as $path) {
+            $filename = basename($path);
+            if (str_ends_with($filename, '.spec.ts')) {
+                // Vitest/component specs are referenced as `Foo.spec` or `Foo`.
+                $existing[str_replace('.spec.ts', '.spec', $filename)] = true;
+                $existing[str_replace('.spec.ts', '', $filename)] = true;
+
+                continue;
+            }
+            // e2e specs are referenced as `audit.spec` / `audit`; PHP suites by class name.
+            $base = preg_replace('/\.(php|ts)$/', '', $filename) ?? $filename;
+            $existing[$base] = true;
+            $existing[str_replace('.spec', '', $base)] = true;
+        }
+    }
+
+    $missing = [];
+    foreach (p23TraceRows() as $row) {
+        foreach (preg_split('/[;,]/', $row['automated_tests']) ?: [] as $reference) {
+            $reference = trim($reference);
+            // Only resolvable, suite-shaped references are checked. Prose ("n/a at this gate
+            // …", "see Plan §75") is intentionally allowed for deferred/blocked rows, which
+            // have no suite to name yet — the blocked-row case above still requires an
+            // absence test for anything claiming to be blocked.
+            if ($reference === '' || ! preg_match('/^[A-Za-z][A-Za-z0-9]*(Test|Spec)$|^e2e\/|Test$|\.spec$/', $reference)) {
+                continue;
+            }
+            $name = preg_replace('/\(.*$/', '', $reference);
+            $name = str_replace(['e2e/', 'tests/'], '', (string) $name);
+            // A reference may carry the real file suffix (`e2e/mfa.spec.ts`); normalise it.
+            $name = preg_replace('/\.(ts|php)$/', '', trim($name)) ?? '';
+            if ($name === '' || isset($existing[$name])) {
+                continue;
+            }
+            $missing[] = "{$row['requirement_id']}: automated_tests references '{$reference}' which does not exist";
+        }
+    }
+
+    expect($missing)->toBe([], implode("\n", $missing));
+});
+
+it('maps every implemented endpoint claim onto a live route', function (): void {
+    $live = [];
+    foreach (Route::getRoutes()->getRoutes() as $route) {
+        $live[] = '/'.ltrim($route->uri(), '/');
+    }
+
+    $delivered = ['verified_complete', 'local_complete', 'implemented'];
+    $problems = [];
+
+    foreach (p23TraceRows() as $row) {
+        if (! in_array($row['status'], $delivered, true)) {
+            continue; // blocked/deferred rows legitimately name no route
+        }
+
+        // Extract concrete `/api/v1/...` paths the row claims to have delivered.
+        preg_match_all('#/api/v1/[a-z0-9\-/{}\.]+#i', $row['controller_or_endpoint'], $matches);
+        foreach ($matches[0] as $claimed) {
+            $needle = rtrim($claimed, '/.,;');
+            $found = false;
+            foreach ($live as $uri) {
+                if (str_starts_with($uri, $needle) || str_starts_with($needle, $uri)) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (! $found) {
+                $problems[] = "{$row['requirement_id']}: claims endpoint {$needle} which is not in the live route table";
+            }
+        }
+    }
+
+    expect($problems)->toBe([], implode("\n", $problems));
+});
+
+it('maps every implemented frontend route claim onto the screen inventory', function (): void {
+    /** @var array{screens: list<array<string, mixed>>} $inventory */
+    $inventory = json_decode(
+        (string) file_get_contents(base_path('docs/frontend/screens/inventory.json')),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+
+    $routes = [];
+    foreach ($inventory['screens'] as $screen) {
+        if (is_string($screen['route'] ?? null)) {
+            $routes[$screen['route']] = true;
+        }
+    }
+
+    // Permission keys are ALSO dotted lowercase tokens and legitimately appear in this column
+    // (a row names the key that gates its screen). Excluding the canonical catalogue is what
+    // keeps `audit.export` / `service.view` / `compensation.plan.view` from reading as routes.
+    $permissionKeys = array_fill_keys(app(PermissionMatrix::class)->keys(), true);
+
+    $delivered = ['verified_complete', 'local_complete', 'implemented'];
+    $problems = [];
+
+    foreach (p23TraceRows() as $row) {
+        if (! in_array($row['status'], $delivered, true)) {
+            continue;
+        }
+        // Route NAMES are dotted lowercase tokens; only check ones that look like a route name.
+        preg_match_all('/\b([a-z][a-z0-9\-]*(?:\.[a-z0-9\-]+)+)\b/', $row['frontend_route_and_component'], $matches);
+        foreach ($matches[1] as $candidate) {
+            // Skip filenames and paths (they contain an extension or a slash).
+            if (str_contains($candidate, '/') || preg_match('/\.(vue|ts|md|json|yaml|php|js|mjs|spec)$/', $candidate)) {
+                continue;
+            }
+            if (isset($routes[$candidate]) || isset($permissionKeys[$candidate])) {
+                continue;
+            }
+            // Unknown dotted token: only fail when it really is a router route name.
+            if (Route::has($candidate)) {
+                continue;
+            }
+            $problems[] = "{$row['requirement_id']}: frontend route '{$candidate}' is in no screen-inventory entry";
+        }
+    }
+
+    expect($problems)->toBe([], implode("\n", $problems));
+});
+
+it('reports the status distribution so drift is visible, not assumed', function (): void {
+    $counts = array_fill_keys(P23_TRACE_STATUSES, 0);
+    foreach (p23TraceRows() as $row) {
+        $counts[$row['status']]++;
+    }
+
+    // Every row landed in exactly one bucket of the closed vocabulary.
+    expect(array_sum($counts))->toBe(count(p23TraceRows()));
+
+    // The three gate-blocked phases (20D-W, 21R-B, 21N) must each be represented, so the
+    // CSV can never quietly stop modelling deliberately-absent work.
+    $blockedPhases = [];
+    foreach (p23TraceRows() as $row) {
+        if ($row['status'] === 'blocked_external_gate') {
+            $blockedPhases[trim($row['phase'])] = true;
+        }
+    }
+    expect(array_keys($blockedPhases))->toEqualCanonicalizing(['20D-W', '21R-B', '21N']);
+});

@@ -331,8 +331,8 @@ it('rejects an all_services rule that carries a category', function (): void {
 
 it('rejects an effective_to that is not after effective_from', function (): void {
     PersonnelCompensationPlan::factory()->create([
-        'effective_from' => today(),
-        'effective_to' => today(),
+        'effective_from' => businessToday(),
+        'effective_to' => businessToday(),
     ]);
 })->throws(QueryException::class);
 
@@ -389,35 +389,35 @@ it('rejects a plan whose commission rule belongs to another merchant', function 
 
 it('rejects two overlapping active plans for the same personnel in the same branch', function (): void {
     $first = PersonnelCompensationPlan::factory()->active()->create([
-        'effective_from' => today(), 'effective_to' => null,
+        'effective_from' => businessToday(), 'effective_to' => null,
     ]);
 
     PersonnelCompensationPlan::factory()->active()->create([
         'merchant_id' => $first->merchant_id,
         'branch_id' => $first->branch_id,
         'staff_profile_id' => $first->staff_profile_id,
-        'effective_from' => today()->addDays(5),
+        'effective_from' => businessToday()->addDays(5),
         'effective_to' => null,
     ]);
 })->throws(QueryException::class);
 
 it('rejects an active plan overlapping a scheduled plan for the same personnel', function (): void {
     $active = PersonnelCompensationPlan::factory()->active()->create([
-        'effective_from' => today(), 'effective_to' => null,
+        'effective_from' => businessToday(), 'effective_to' => null,
     ]);
 
     PersonnelCompensationPlan::factory()->scheduled()->create([
         'merchant_id' => $active->merchant_id,
         'branch_id' => $active->branch_id,
         'staff_profile_id' => $active->staff_profile_id,
-        'effective_from' => today()->addDays(10),
+        'effective_from' => businessToday()->addDays(10),
         'effective_to' => null,
     ]);
 })->throws(QueryException::class);
 
 it('accepts adjacent effective windows for the same personnel (half-open ranges)', function (): void {
     $first = PersonnelCompensationPlan::factory()->active()->create([
-        'effective_from' => today(), 'effective_to' => today()->addDays(10),
+        'effective_from' => businessToday(), 'effective_to' => businessToday()->addDays(10),
     ]);
 
     // Starts exactly where the incumbent ends — adjacent, not overlapping.
@@ -425,7 +425,7 @@ it('accepts adjacent effective windows for the same personnel (half-open ranges)
         'merchant_id' => $first->merchant_id,
         'branch_id' => $first->branch_id,
         'staff_profile_id' => $first->staff_profile_id,
-        'effective_from' => today()->addDays(10),
+        'effective_from' => businessToday()->addDays(10),
         'effective_to' => null,
     ]);
 
@@ -436,7 +436,7 @@ it('allows the same personnel an active plan in each of two different branches',
     // The exclusion is keyed on (branch_id, staff_profile_id): scope is PER BRANCH (F2), so the
     // SAME personnel may hold one active plan in each of two branches of the same merchant.
     $first = PersonnelCompensationPlan::factory()->active()->create([
-        'effective_from' => today(), 'effective_to' => null,
+        'effective_from' => businessToday(), 'effective_to' => null,
     ]);
 
     $otherBranch = MerchantBranch::factory()->create(['merchant_id' => $first->merchant_id]);
@@ -445,7 +445,7 @@ it('allows the same personnel an active plan in each of two different branches',
         'merchant_id' => $first->merchant_id,
         'branch_id' => $otherBranch->id,
         'staff_profile_id' => $first->staff_profile_id, // the SAME personnel
-        'effective_from' => today(),
+        'effective_from' => businessToday(),
         'effective_to' => null,
     ]);
 
@@ -456,7 +456,7 @@ it('allows the same personnel an active plan in each of two different branches',
 
 it('lets no non-effective status block a window', function (string $status): void {
     $incumbent = PersonnelCompensationPlan::factory()->active()->create([
-        'effective_from' => today(), 'effective_to' => null,
+        'effective_from' => businessToday(), 'effective_to' => null,
     ]);
 
     // A draft/pending/terminal row over the SAME window must never block a new active plan.
@@ -464,7 +464,7 @@ it('lets no non-effective status block a window', function (string $status): voi
         'merchant_id' => $incumbent->merchant_id,
         'branch_id' => $incumbent->branch_id,
         'staff_profile_id' => $incumbent->staff_profile_id,
-        'effective_from' => today(),
+        'effective_from' => businessToday(),
         'effective_to' => null,
     ]);
 
@@ -497,7 +497,7 @@ it('blocks a raw UPDATE of an active plan effective_from', function (): void {
     $plan = PersonnelCompensationPlan::factory()->active()->create();
 
     DB::table('personnel_compensation_plans')->where('id', $plan->id)
-        ->update(['effective_from' => today()->subDays(30)]);
+        ->update(['effective_from' => businessToday()->subDays(30)]);
 })->throws(QueryException::class);
 
 it('blocks a raw UPDATE of an active plan subject', function (): void {
@@ -521,14 +521,14 @@ it('allows a draft plan to be edited in place', function (): void {
 
 it('allows the approved supersede transition to close an open-ended active window', function (): void {
     $plan = PersonnelCompensationPlan::factory()->active()->create([
-        'effective_from' => today(), 'effective_to' => null,
+        'effective_from' => businessToday(), 'effective_to' => null,
     ]);
 
     // active → superseded closing the window at the successor's effective_from is the ONE
     // permitted mutation of a non-draft row's effective_to.
     DB::table('personnel_compensation_plans')->where('id', $plan->id)->update([
         'status' => 'superseded',
-        'effective_to' => today()->addDays(10),
+        'effective_to' => businessToday()->addDays(10),
     ]);
 
     $row = DB::table('personnel_compensation_plans')->where('id', $plan->id)->first();
@@ -539,11 +539,11 @@ it('allows the approved supersede transition to close an open-ended active windo
 
 it('blocks re-opening or rewriting an already closed effective window', function (): void {
     $plan = PersonnelCompensationPlan::factory()->active()->create([
-        'effective_from' => today(), 'effective_to' => today()->addDays(10),
+        'effective_from' => businessToday(), 'effective_to' => businessToday()->addDays(10),
     ]);
 
     DB::table('personnel_compensation_plans')->where('id', $plan->id)
-        ->update(['status' => 'superseded', 'effective_to' => today()->addDays(20)]);
+        ->update(['status' => 'superseded', 'effective_to' => businessToday()->addDays(20)]);
 })->throws(QueryException::class);
 
 it('blocks a raw UPDATE of an active commission rule rate', function (): void {
@@ -571,11 +571,11 @@ it('allows a draft commission rule to be edited in place', function (): void {
 it('ends an active commission rule without deleting it or changing its terms', function (): void {
     // Scope §12.7 Step 3C: a previously active rule is ENDED, not deleted.
     $rule = CommissionRule::factory()->active()->create([
-        'effective_from' => today(), 'effective_to' => null,
+        'effective_from' => businessToday(), 'effective_to' => null,
     ]);
 
     DB::table('commission_rules')->where('id', $rule->id)
-        ->update(['status' => 'superseded', 'effective_to' => today()->addDays(10)]);
+        ->update(['status' => 'superseded', 'effective_to' => businessToday()->addDays(10)]);
 
     $ended = CommissionRule::query()->withoutGlobalScopes()->find($rule->id);
 

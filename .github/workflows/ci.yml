@@ -167,6 +167,23 @@ jobs:
       - name: Static analysis — Larastan level 8
         run: composer stan
 
+      # Phase 23 / REM-TRACE-001 (Plan §85): fail FAST and with a named step when the
+      # requirement-traceability contract drifts — stale statuses, prose in `status`, a
+      # requirement claiming a suite that does not exist, an untruthful external-gate row, or a
+      # claimed endpoint/screen that is not in the live inventory. These suites also run inside
+      # the parallel suite below; this step exists so the failure is unambiguous in CI.
+      - name: Contract — requirement traceability (Plan §85)
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: servana_test
+          DB_USERNAME: servana
+          DB_PASSWORD: servana
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: php artisan test tests/Feature/Traceability --fail-on-skipped
+
       - name: Tests — Pest on PostgreSQL (parallel)
         env:
           DB_CONNECTION: pgsql
@@ -212,6 +229,13 @@ jobs:
 
       - name: API contract check — OpenAPI ⇄ generated TypeScript parity (Phase 10)
         run: npm run api:contract:check
+
+      # Phase 23 / REM-TRACE-001: the screen-inventory + §27.1 specification contract
+      # (orphan specs, planned screens owned by a verified-complete phase, registered release
+      # gaps, route-less entries). Runs again inside the full Vitest suite below; this step
+      # names the failure explicitly.
+      - name: Contract — screen inventory and §27.1 specifications
+        run: npx vitest run src/screens/screenInventory.spec.ts
 
       - name: Unit tests — Vitest
         run: npm run test

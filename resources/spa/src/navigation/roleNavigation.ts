@@ -67,6 +67,9 @@ const merchantAdministrator: NavItem[] = [
   // authority sees the server-authoritative empty state.
   { key: 'merchant.search', label: 'Search', routeName: 'search', phase: 'Phase 22', availability: 'live' },
   { key: 'merchant.dashboard', label: 'Dashboard', routeName: 'merchant.dashboard', phase: 'Phase 6', availability: 'live' },
+  // REM-SCR-002A — the Plan §27.3 Merchant Administrator "merchant profile" launch screen. Gated on
+  // the canonical read key; the write is separately gated server-side by merchant.profile.update.
+  { key: 'merchant.profile', label: 'Business profile', routeName: 'merchant.profile', permission: 'merchant.profile.view', phase: 'Phase 23', availability: 'live' },
   { key: 'merchant.branches', label: 'Branches', routeName: 'branch.list', permission: 'merchant.branch.view_all', phase: 'Phase 7', availability: 'live' },
   { key: 'merchant.period-reopen-approvals', label: 'Period-reopen approvals', routeName: 'merchant.period-reopen-approvals', permission: 'merchant.period_reopen.approve_exception', phase: 'Phase 18B', availability: 'live' },
   { key: 'merchant.subscription', label: 'Subscription and billing', routeName: 'merchant.subscription', permission: 'merchant.subscription.view', phase: 'Phase 20B', availability: 'live' },

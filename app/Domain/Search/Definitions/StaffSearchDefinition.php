@@ -16,13 +16,20 @@ use RuntimeException;
 /**
  * `staff` — branch-scoped staff search by name and role title (Phase 22).
  *
- * AUTHORITY ANCHOR. `StaffProfilePolicy` has no `viewAny`, and `GET /api/v1/staff` performs no
- * `authorize()` call at all — only the DETAIL route is policy-gated. Search therefore anchors on the
- * stricter detail-route authority (`StaffProfilePolicy::manage`: `branches.manage_users_lifecycle`
- * for Merchant Admin, or `staff.suspend` within branch scope for HR), not on the unguarded list
- * route. That the list route is unguarded and that `staff.view` still carries
- * `owning_phase: Phase 20F` while 20F is `verified_complete` are both PRE-EXISTING conditions
- * outside Phase 22's scope; anchoring on the stricter of the two neither relies on nor widens them.
+ * AUTHORITY ANCHOR. Phase 22 recorded that `StaffProfilePolicy` had no `viewAny` and that
+ * `GET /api/v1/staff` performed no `authorize()` call, so it anchored on the stricter
+ * `StaffProfilePolicy::manage` and flagged the unguarded list route + the `planned` `staff.view`
+ * (`owning_phase: Phase 20F`, while 20F was already `verified_complete`) as PRE-EXISTING conditions
+ * outside its scope.
+ *
+ * Phase 23 §14.1 RESOLVED both conditions: `staff.view` is active, and it now authorizes BOTH
+ * `staff.index` (new `StaffProfilePolicy::viewAny`) and `staff.show`. The anchor therefore moves to
+ * `staff.view` — exactly the authority governing this type's own list and detail routes, which is
+ * what the catalogue rule requires. This TIGHTENS the type: a Merchant Admin holding only the legacy
+ * `branches.manage_users_lifecycle` can no longer open `hr.staff-profile` (the `routeName` every
+ * result links to), so it must not receive staff results either — search must never be a wider
+ * surface than the page it points at. `passesRecheck()` calls the same `view` ability, so the gate
+ * and the per-record check are now provably the same authority.
  *
  * CONTACT PROTECTION. `staff_profiles.phone` is a PLAINTEXT column and `StaffProfileResource`
  * returns it. Search deliberately does neither: `phone` is not indexed, not searchable and not
@@ -51,7 +58,7 @@ final class StaffSearchDefinition extends AbstractSearchDocumentDefinition
 
     public function canSearch(SearchContext $context): bool
     {
-        return $context->can('branches.manage_users_lifecycle') || $context->can('staff.suspend');
+        return $context->can('staff.view');
     }
 
     protected function table(): string

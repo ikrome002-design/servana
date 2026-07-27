@@ -9,6 +9,7 @@ use App\Domain\Audit\Enums\AuditEvent;
 use App\Domain\Audit\Enums\AuditExportStatus;
 use App\Domain\Audit\Models\AuditExport;
 use App\Domain\Audit\Services\AuditExportStateMachine;
+use App\Domain\Files\Enums\FileLifecycleStatus;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -35,6 +36,10 @@ final class ExpireAuditExport
                 'status' => AuditExportStatus::Expired->value,
                 'expired_at' => now(),
             ])->save();
+
+            // PH23-EXP-001: carry the terminal state onto the file the Phase 10F boundary
+            // inspects. Byte removal stays with the file-domain retention sweep.
+            $locked->file?->markLifecycle(FileLifecycleStatus::Expired);
 
             $this->audit->record(AuditEvent::AuditExportExpired, null, $locked->merchant_id, $locked->branch_id, $locked, [
                 'export_id' => $locked->ulid,

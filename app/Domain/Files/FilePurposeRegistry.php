@@ -62,9 +62,12 @@ final class FilePurposeRegistry
         $defs = [];
 
         // --- Active uploadable image purposes (Phase 10F) ---------------------
+        // REM-SCR-002A retired the legacy `merchant.profile.manage` and activated the canonical
+        // §19.3 pair. Uploading a logo IS a merchant-profile write, so this purpose moves to
+        // `merchant.profile.update` — the same Merchant Administrator authority, canonically named.
         $defs[] = new FilePurposeDefinition(
             FilePurpose::MerchantLogo, true, '10F', self::IMAGE_EXT, self::IMAGE_MIME,
-            $imageMax, true, false, false, 'merchant.profile.manage', true, null, false,
+            $imageMax, true, false, false, 'merchant.profile.update', true, null, false,
         );
         $defs[] = new FilePurposeDefinition(
             FilePurpose::ProfilePhoto, true, '10F', self::IMAGE_EXT, self::IMAGE_MIME,
@@ -97,8 +100,14 @@ final class FilePurposeRegistry
         $defs[] = new FilePurposeDefinition(
             FilePurpose::ReceiptPdf, false, '18', [], [], 0, true, true, false, 'receipt.view', false, null, true,
         );
+        // Billing invoice PDF (Phase 20B): a merchant-scope financial document. PH23-EXP-002 —
+        // this purpose carried NO resource permission, so tenant membership alone authorised the
+        // generic file routes and any member (Front Office, Personnel, …) could pull the
+        // subscription invoice the domain route reserves for the Merchant Administrator. Plan §65
+        // requires "resource permission" in download authorization; the key already exists.
         $defs[] = new FilePurposeDefinition(
-            FilePurpose::BillingInvoicePdf, false, '20A/20B', [], [], 0, true, false, false, null, false, null, true,
+            FilePurpose::BillingInvoicePdf, false, '20A/20B', [], [], 0, true, false, false,
+            'merchant.subscription.invoice.download', false, null, true,
         );
         // Personnel earnings statement: own-scope is the authority (owner_user_id
         // must equal the caller). No extra permission key; billing read-only blocks

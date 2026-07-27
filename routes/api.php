@@ -12,9 +12,11 @@ use App\Http\Controllers\Api\V1\Auth\MfaController;
 use App\Http\Controllers\Api\V1\Billing\PlatformFeeDisputeController;
 use App\Http\Controllers\Api\V1\Billing\PlatformFeeLedgerController;
 use App\Http\Controllers\Api\V1\Branch\PreferredPersonnelFeeRuleReadController;
+use App\Http\Controllers\Api\V1\Branches\BranchCalendarExceptionController;
 use App\Http\Controllers\Api\V1\Branches\BranchController;
 use App\Http\Controllers\Api\V1\Branches\BranchDayController;
 use App\Http\Controllers\Api\V1\Branches\BranchOperatingHoursController;
+use App\Http\Controllers\Api\V1\Branches\BranchPersonnelOptionController;
 use App\Http\Controllers\Api\V1\CashUps\CashUpController;
 use App\Http\Controllers\Api\V1\Catalogue\ServiceCategoryController;
 use App\Http\Controllers\Api\V1\Catalogue\ServiceController;
@@ -44,6 +46,7 @@ use App\Http\Controllers\Api\V1\Invoicing\InvoiceAdjustmentController;
 use App\Http\Controllers\Api\V1\Invoicing\InvoiceController;
 use App\Http\Controllers\Api\V1\Invoicing\InvoiceVoidController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantDashboardController;
+use App\Http\Controllers\Api\V1\Merchant\MerchantProfileController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantSubscriptionController;
 use App\Http\Controllers\Api\V1\Merchant\SubscriptionInvoiceController;
 use App\Http\Controllers\Api\V1\Messaging\PersonnelServedClientController;
@@ -222,6 +225,24 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('merchant/dashboard', [MerchantDashboardController::class, 'show'])
                 ->name('merchant.dashboard');
 
+            // REM-SCR-002A — merchant BUSINESS PROFILE (Plan §27.3 Merchant Administrator
+            // "merchant profile"). The 1:1 profile row is created at registration and filled by
+            // first-time setup (Scope §3.2 step 2); this is the post-setup view/edit path that was
+            // never built, which is why the canonical §19.3 keys sat `planned` after Phase 20A
+            // completed. There is NO `{merchant}` binding — the merchant is resolved from the
+            // caller's membership, so no request can name another tenant. Read carries
+            // `merchant.profile.view` (matrix `allow_read`); the update carries
+            // `merchant.profile.update` + EnsureBillingMutable (matrix `block`). The LOGO is not
+            // uploaded here: `POST /api/v1/files` with `purpose=merchant_logo` is the Phase 10F
+            // scanned pipeline, and a second upload path would be an unscanned one.
+            Route::get('merchant/profile', [MerchantProfileController::class, 'show'])
+                ->middleware(EnsurePermission::class.':merchant.profile.view')
+                ->name('merchant.profile.show');
+            Route::patch('merchant/profile', [MerchantProfileController::class, 'update'])
+                ->middleware([EnsureBillingMutable::class, EnsurePermission::class.':merchant.profile.update'])
+                ->defaults(RouteClassification::KEY, RouteClass::TenantMutation->value)
+                ->name('merchant.profile.update');
+
             // Search (Plan §68; Phase 22; decision D-22-01). A tenant-scoped, permission-aware
             // AGGREGATOR: it grants access to no document type. Authentication + tenant context +
             // active membership + `throttle:search` gate the ROUTE; every result type is admitted
@@ -342,6 +363,18 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 Route::get('branch/preferred-personnel-fee-rule', [PreferredPersonnelFeeRuleReadController::class, 'show'])
                     ->middleware(EnsurePermission::class.':preferred_personnel_fee.view_branch_rule')
                     ->name('branch.preferred-personnel-fee-rule.show');
+
+                // Phase 23 §14.1 — Branch Manager personnel OPTIONS (product-owner decision). A narrow,
+                // read-only branch read model: the acting branch's personnel as {id, display_name},
+                // authorized by the `branch.dashboard.view` the Branch Manager ALREADY holds — NOT by
+                // `staff.view`, which Plan §19.3 grants to HR only. It exists because the HR roster route
+                // `GET /api/v1/staff` is now correctly gated by `staff.view`, and the shipped Phase 15B
+                // read-only personnel-schedule screen must keep its picker without widening a permission
+                // or re-exposing `phone`/`role`/`status`. Same shape as the preferred-personnel-fee read:
+                // branch derived from context (no {branch} binding), inside EnsureBranchScope.
+                Route::get('branch/personnel-options', [BranchPersonnelOptionController::class, 'index'])
+                    ->middleware(EnsurePermission::class.':branch.dashboard.view')
+                    ->name('branch.personnel-options.index');
                 Route::patch('branches/{branch}', [BranchController::class, 'update'])
                     ->middleware(EnsurePermission::class.':branch.profile.manage')
                     ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
@@ -357,6 +390,35 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                     ->middleware(EnsurePermission::class.':branch.profile.manage')
                     ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                     ->name('branches.operating-hours.update');
+
+                // REM-SCR-002B — branch CALENDAR exceptions: the date-specific overrides on top of
+                // the weekly operating hours above (Plan §7.2, §27.3 Branch Manager "branch
+                // profile/calendar", Scope §3.3). The table, model and runtime consumer
+                // (AppointmentBranchScheduleValidator) all shipped long ago; only this operator
+                // surface was missing, so a branch could never be closed for a public holiday.
+                // Plan §19.3 defines a single key for the calendar — `branch.calendar.manage`
+                // (B|-|R|n/a|-|-|warn|-) — so it gates the read too; no `branch.calendar.view`
+                // key exists and none is invented. Writes are branch mutations blocked in billing
+                // read-only, matching the matrix's `R`. The row has no ULID (as-built branch
+                // configuration), so `(branch, date)` is its public identity — exactly one
+                // exception per date, which also keeps the scheduling lookup deterministic.
+                Route::get('branches/{branch}/calendar-exceptions', [BranchCalendarExceptionController::class, 'index'])
+                    ->middleware(EnsurePermission::class.':branch.calendar.manage')
+                    ->name('branches.calendar-exceptions.index');
+                Route::post('branches/{branch}/calendar-exceptions', [BranchCalendarExceptionController::class, 'store'])
+                    ->middleware([EnsureBillingMutable::class, EnsurePermission::class.':branch.calendar.manage'])
+                    ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                    ->name('branches.calendar-exceptions.store');
+                Route::patch('branches/{branch}/calendar-exceptions/{date}', [BranchCalendarExceptionController::class, 'update'])
+                    ->middleware([EnsureBillingMutable::class, EnsurePermission::class.':branch.calendar.manage'])
+                    ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                    ->where('date', '\d{4}-\d{2}-\d{2}')
+                    ->name('branches.calendar-exceptions.update');
+                Route::delete('branches/{branch}/calendar-exceptions/{date}', [BranchCalendarExceptionController::class, 'destroy'])
+                    ->middleware([EnsureBillingMutable::class, EnsurePermission::class.':branch.calendar.manage'])
+                    ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
+                    ->where('date', '\d{4}-\d{2}-\d{2}')
+                    ->name('branches.calendar-exceptions.destroy');
 
                 Route::post('branches/{branch}/day/open', [BranchDayController::class, 'open'])
                     ->middleware(EnsurePermission::class.':day.open_close')

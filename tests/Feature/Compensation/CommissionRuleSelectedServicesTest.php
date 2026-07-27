@@ -43,7 +43,7 @@ function postSelectedRule(array $scn, array $ulids, array $override = [])
         'calculation_basis' => 'service_price',
         'applies_to' => 'selected_services',
         'percentage_basis_points' => 1000,
-        'effective_from' => today()->toDateString(),
+        'effective_from' => businessToday()->toDateString(),
         'change_reason' => 'Selected-services rule.',
         'selected_service_ulids' => $ulids,
     ], $override));
@@ -55,7 +55,7 @@ function patchRuleDraft(array $scn, string $ulid, array $body)
         'calculation_type' => 'percentage',
         'calculation_basis' => 'service_price',
         'percentage_basis_points' => 1000,
-        'effective_from' => today()->toDateString(),
+        'effective_from' => businessToday()->toDateString(),
         'change_reason' => 'Edit draft.',
     ], $body));
 }
@@ -91,7 +91,7 @@ it('returns an empty selected-services array for an all_services rule', function
 
     test()->actingAs($scn['hr'], 'sanctum')->postJson('/api/v1/commission-rules', [
         'calculation_type' => 'percentage', 'calculation_basis' => 'service_price', 'applies_to' => 'all_services',
-        'percentage_basis_points' => 1000, 'effective_from' => today()->toDateString(), 'change_reason' => 'All.',
+        'percentage_basis_points' => 1000, 'effective_from' => businessToday()->toDateString(), 'change_reason' => 'All.',
     ])->assertCreated()
         ->assertJsonStructure(['data' => ['selected_service_ulids', 'selected_services']])
         ->assertJsonPath('data.selected_service_ulids', [])
@@ -141,7 +141,7 @@ it('inserts memberships when a draft moves all_services -> selected_services', f
     $scn = selScenario();
     $ulid = test()->actingAs($scn['hr'], 'sanctum')->postJson('/api/v1/commission-rules', [
         'calculation_type' => 'percentage', 'calculation_basis' => 'service_price', 'applies_to' => 'all_services',
-        'percentage_basis_points' => 1000, 'effective_from' => today()->toDateString(), 'change_reason' => 'All.',
+        'percentage_basis_points' => 1000, 'effective_from' => businessToday()->toDateString(), 'change_reason' => 'All.',
     ])->assertCreated()->json('data.id');
 
     patchRuleDraft($scn, $ulid, ['applies_to' => 'selected_services', 'selected_service_ulids' => [$scn['serviceA']->ulid]])

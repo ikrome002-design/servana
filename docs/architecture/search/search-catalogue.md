@@ -80,7 +80,7 @@ would be an own-scope leak. The 21S selector is already the authoritative, teste
 | `document_type` | Authority (existing keys only — no new key) | Anchor | Scope | Sync trigger | Target route |
 |---|---|---|---|---|---|
 | `client` | `ClientPolicy::viewAny` (= `client.view`) **AND** `front_office.search` | `GET /api/v1/clients?q=` requires both today (`ClientController::index`) | merchant + branch | Scout observer (queued) | `clients.show` |
-| `staff` | `branches.manage_users_lifecycle` **OR** `staff.suspend` | `StaffProfilePolicy::manage`, the authority on `GET /api/v1/staff/{staff}` | merchant + branch (`primary_branch_id`) | Scout observer (queued) | `staff.show` |
+| `staff` | `staff.view` (Phase 23; was `branches.manage_users_lifecycle` **OR** `staff.suspend`) | `StaffProfilePolicy::view`, the authority on `GET /api/v1/staff/{staff}` **and** `GET /api/v1/staff` | merchant + branch (`primary_branch_id`) | Scout observer (queued) | `staff.show` |
 | `service` | `ServicePolicy::viewAny` (= `service.view`) | `GET /api/v1/services` | merchant + branch | Scout observer (queued) | `services.show` |
 | `appointment` | `AppointmentPolicy::viewAny` (`appointment.view` **OR** `branch.dashboard.view`) | `GET /api/v1/appointments` | merchant + branch | Scout observer (queued) | `appointments.show` |
 | `queue_entry` | `QueueEntryPolicy::viewAny` (`queue.view` **OR** `branch.dashboard.view`) | `GET /api/v1/queue-entries` | merchant + branch | Scout observer (queued) | `queue.show` |
@@ -95,13 +95,20 @@ Notes on two rows that are not a plain `viewAny`:
   *searching* as a capability distinct from *listing*
   (`ClientController::index` aborts 403 on `q` without it). Search honours that split exactly: a
   role that may list clients but not search them gets no `client` results.
-- **`staff`** has no `viewAny` on `StaffProfilePolicy`. Search anchors on the **detail-route**
-  authority (`view`/`manage`) rather than the list route, because `GET /api/v1/staff` currently
-  performs no `authorize()` call at all. Anchoring on the *stricter* of the two is the
-  conservative reading of Rule 2. (The unauthorized `staff.index` list route and the
-  `staff.view` key still carrying `owning_phase: Phase 20F` while 20F is `verified_complete` are
-  both **pre-existing** conditions outside Phase 22's scope; Phase 22 neither relies on nor
-  worsens them.)
+- **`staff`** anchored on the **detail-route** authority (`view`/`manage`) during Phase 22, because
+  `StaffProfilePolicy` had no `viewAny` and `GET /api/v1/staff` performed no `authorize()` call at
+  all. Phase 22 recorded the unauthorized `staff.index` route and the `staff.view` key still
+  carrying `owning_phase: Phase 20F` (while 20F was `verified_complete`) as **pre-existing**
+  conditions outside its scope.
+
+  **Phase 23 §14.1 resolved both.** `staff.view` is active and HR-only, and it now authorizes both
+  `staff.index` (via the new `StaffProfilePolicy::viewAny`) and `staff.show`. The catalogue anchor
+  is therefore `staff.view` — exactly the authority governing this type's own list and detail
+  routes, which is what Rule 2 asks for. This **tightens** the type: a Merchant Admin holding only
+  the legacy `branches.manage_users_lifecycle` can no longer open `hr.staff-profile` (the
+  `routeName` every staff result links to), so it no longer receives staff results either — search
+  is never a wider surface than the page it points at. `canSearch()` and `passesRecheck()` are now
+  provably the same authority.
 
 ### 3.4 Rate limiter, index name and commands (all types)
 

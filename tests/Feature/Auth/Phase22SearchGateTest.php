@@ -95,9 +95,13 @@ it('keeps the active and planned key counts unchanged by Phase 22', function ():
         static fn (array $row): bool => ($row['implementation_status'] ?? null) === 'planned',
     ));
 
-    // Phase 21S exit state, carried forward untouched: Phase 22 activates nothing.
-    expect($active)->toBe(130)
-        ->and($planned)->toBe(38);
+    // Phase 22 activates NOTHING — but the absolute split moves with every LATER phase
+    // (21S left 130/38; Phase 23 activated `staff.view` → 131/37 and the merchant-profile pair
+    // → 133/35, then retired the legacy duplicate `merchant.profile.manage` → 132/35, catalogue
+    // 167), so — following the Phase 20H precedent — assert the invariant the Phase 22 claim
+    // actually rests on: no phase INVENTS a canonical key, and no key is owned by Phase 22
+    // (proven exhaustively by the `no Phase 22 owned key at all` case below).
+    expect($active + $planned)->toBe(167, 'the catalogue only ever shrinks by a retired legacy duplicate — never grows');
 });
 
 it('leaves the matrix with no Phase 22 owned key at all', function (): void {

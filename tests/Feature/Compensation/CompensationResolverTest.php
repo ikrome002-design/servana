@@ -69,7 +69,7 @@ function resolvePlan(array $scn, $date = null): ?PersonnelCompensationPlan
 
 it('resolves the active plan effective on the date', function (): void {
     $scn = resolverScenario();
-    $plan = activePlanFor($scn, ['effective_from' => today()->subDays(5), 'effective_to' => null]);
+    $plan = activePlanFor($scn, ['effective_from' => businessToday()->subDays(5), 'effective_to' => null]);
 
     expect(resolvePlan($scn)?->id)->toBe($plan->id);
 });
@@ -85,7 +85,7 @@ it('ignores every non-active status', function (string $status): void {
         'merchant_id' => $scn['branch']->merchant_id,
         'branch_id' => $scn['branch']->id,
         'staff_profile_id' => $scn['staff']->id,
-        'effective_from' => today()->subDays(5),
+        'effective_from' => businessToday()->subDays(5),
         'effective_to' => null,
     ]);
 
@@ -101,7 +101,7 @@ it('ignores scheduled, superseded and expired plans', function (string $status):
         'merchant_id' => $scn['branch']->merchant_id,
         'branch_id' => $scn['branch']->id,
         'staff_profile_id' => $scn['staff']->id,
-        'effective_from' => today()->subDays(5),
+        'effective_from' => businessToday()->subDays(5),
         'effective_to' => null,
     ]);
 
@@ -110,19 +110,19 @@ it('ignores scheduled, superseded and expired plans', function (string $status):
 
 it('does not resolve a plan before its effective_from', function (): void {
     $scn = resolverScenario();
-    $plan = activePlanFor($scn, ['effective_from' => today()->addDays(5), 'effective_to' => null]);
+    $plan = activePlanFor($scn, ['effective_from' => businessToday()->addDays(5), 'effective_to' => null]);
 
-    expect(resolvePlan($scn, today()))->toBeNull()
-        ->and(resolvePlan($scn, today()->addDays(5))?->id)->toBe($plan->id);
+    expect(resolvePlan($scn, businessToday()))->toBeNull()
+        ->and(resolvePlan($scn, businessToday()->addDays(5))?->id)->toBe($plan->id);
 });
 
 it('stops resolving a plan ON its effective_to (half-open window)', function (): void {
     $scn = resolverScenario();
-    $plan = activePlanFor($scn, ['effective_from' => today(), 'effective_to' => today()->addDays(10)]);
+    $plan = activePlanFor($scn, ['effective_from' => businessToday(), 'effective_to' => businessToday()->addDays(10)]);
 
-    expect(resolvePlan($scn, today()->addDays(9))?->id)->toBe($plan->id)
+    expect(resolvePlan($scn, businessToday()->addDays(9))?->id)->toBe($plan->id)
         // [from, to) — the end date itself is NOT covered.
-        ->and(resolvePlan($scn, today()->addDays(10)))->toBeNull();
+        ->and(resolvePlan($scn, businessToday()->addDays(10)))->toBeNull();
 });
 
 it('resolves per branch: another branch plan never leaks in', function (): void {
@@ -133,7 +133,7 @@ it('resolves per branch: another branch plan never leaks in', function (): void 
         'merchant_id' => $scn['branch']->merchant_id,
         'branch_id' => $otherBranch->id,
         'staff_profile_id' => $scn['staff']->id,
-        'effective_from' => today(),
+        'effective_from' => businessToday(),
     ]);
 
     // Same personnel, different branch → nothing resolves in THIS branch.
@@ -149,7 +149,7 @@ it('resolves per personnel: another personnel plan never leaks in', function ():
         'primary_branch_id' => $scn['branch']->id,
     ]);
 
-    activePlanFor($scn, ['staff_profile_id' => $colleague->id, 'effective_from' => today()]);
+    activePlanFor($scn, ['staff_profile_id' => $colleague->id, 'effective_from' => businessToday()]);
 
     expect(resolvePlan($scn))->toBeNull();
 });
@@ -162,8 +162,8 @@ it('fails closed when the one-active-plan invariant is violated', function (): v
     // picking one. RefreshDatabase restores the constraint afterwards.
     DB::statement('ALTER TABLE personnel_compensation_plans DROP CONSTRAINT personnel_compensation_plans_no_overlap');
 
-    activePlanFor($scn, ['effective_from' => today()->subDays(5), 'effective_to' => null]);
-    activePlanFor($scn, ['effective_from' => today()->subDays(3), 'effective_to' => null]);
+    activePlanFor($scn, ['effective_from' => businessToday()->subDays(5), 'effective_to' => null]);
+    activePlanFor($scn, ['effective_from' => businessToday()->subDays(3), 'effective_to' => null]);
 
     resolvePlan($scn);
 })->throws(CompensationResolutionException::class);
@@ -189,7 +189,7 @@ it('resolves the active rule for a salary_plus_commission plan', function (): vo
     $rule = CommissionRule::factory()->active()->create([
         'merchant_id' => $scn['branch']->merchant_id,
         'branch_id' => $scn['branch']->id,
-        'effective_from' => today()->subDay(),
+        'effective_from' => businessToday()->subDay(),
     ]);
     $plan = PersonnelCompensationPlan::factory()->salaryPlusCommission()->create([
         'merchant_id' => $scn['branch']->merchant_id,
@@ -222,8 +222,8 @@ it('fails closed when the rule has been ended before the date', function (): voi
     $rule = CommissionRule::factory()->active()->create([
         'merchant_id' => $scn['branch']->merchant_id,
         'branch_id' => $scn['branch']->id,
-        'effective_from' => today()->subDays(10),
-        'effective_to' => today()->subDays(2),
+        'effective_from' => businessToday()->subDays(10),
+        'effective_to' => businessToday()->subDays(2),
     ]);
     $plan = PersonnelCompensationPlan::factory()->commissionOnly()->create([
         'merchant_id' => $scn['branch']->merchant_id,
@@ -248,7 +248,7 @@ it('computes no money while resolving', function (): void {
     $rule = CommissionRule::factory()->active()->percentage(1500)->create([
         'merchant_id' => $scn['branch']->merchant_id,
         'branch_id' => $scn['branch']->id,
-        'effective_from' => today()->subDay(),
+        'effective_from' => businessToday()->subDay(),
     ]);
     $plan = PersonnelCompensationPlan::factory()->commissionOnly()->create([
         'merchant_id' => $scn['branch']->merchant_id,

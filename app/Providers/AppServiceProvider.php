@@ -22,6 +22,7 @@ use App\Domain\Billing\Models\SubscriptionInvoice;
 use App\Domain\Billing\Models\SubscriptionPlan;
 use App\Domain\Billing\Models\SubscriptionPlanPrice;
 use App\Domain\Billing\Services\SubscriptionPlanContextResolver;
+use App\Domain\Branches\Models\BranchCalendarException;
 use App\Domain\Branches\Models\BranchCashUp;
 use App\Domain\Branches\Models\BranchDayRecord;
 use App\Domain\Branches\Models\BranchOperatingHour;
@@ -55,6 +56,7 @@ use App\Domain\Invoicing\Contracts\PreferredPersonnelFeeResolver;
 use App\Domain\Invoicing\Models\Invoice;
 use App\Domain\Invoicing\Services\RuleBasedPreferredPersonnelFeeResolver;
 use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Merchants\Models\MerchantProfile;
 use App\Domain\Merchants\Models\MerchantUser;
 use App\Domain\Messaging\Sms\Clients\FakeSmsProviderClient;
 use App\Domain\Messaging\Sms\Clients\HttpSmsProviderClient;
@@ -73,6 +75,7 @@ use App\Policies\AppointmentPolicy;
 use App\Policies\AuditExportPolicy;
 use App\Policies\AuditFlaggedEventPolicy;
 use App\Policies\AuditLogPolicy;
+use App\Policies\BranchCalendarExceptionPolicy;
 use App\Policies\BranchDayRecordPolicy;
 use App\Policies\BranchOperatingHourPolicy;
 use App\Policies\CashUpPolicy;
@@ -88,6 +91,7 @@ use App\Policies\FreePeriodOfferPolicy;
 use App\Policies\InvoicePolicy;
 use App\Policies\MerchantBranchPolicy;
 use App\Policies\MerchantPolicy;
+use App\Policies\MerchantProfilePolicy;
 use App\Policies\MerchantSubscriptionPolicy;
 use App\Policies\MerchantUserPolicy;
 use App\Policies\PaymentRecordingGroupPolicy;
@@ -136,6 +140,9 @@ class AppServiceProvider extends ServiceProvider
         StaffInvitation::class => StaffInvitationPolicy::class,
         StaffProfile::class => StaffProfilePolicy::class,
         BranchOperatingHour::class => BranchOperatingHourPolicy::class,
+        // REM-SCR-002 — the two omitted Plan §27.3 launch surfaces.
+        BranchCalendarException::class => BranchCalendarExceptionPolicy::class,
+        MerchantProfile::class => MerchantProfilePolicy::class,
         BranchDayRecord::class => BranchDayRecordPolicy::class,
         AuditLog::class => AuditLogPolicy::class,
         AuditFlaggedEvent::class => AuditFlaggedEventPolicy::class,

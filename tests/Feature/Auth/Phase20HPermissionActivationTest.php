@@ -64,8 +64,11 @@ it('keeps its sixteen keys active as later phases extend the matrix', function (
         expect($active)->toHaveKey($key);
     }
 
+    // Phase 23 / REM-SCR-002A retired the legacy duplicate `merchant.profile.manage` when it
+    // activated the canonical successors, so the catalogue is 167 — it shrank by one legacy
+    // duplicate and has never grown.
     expect(count($matrix->activeKeys()) + count($matrix->plannedKeys()))
-        ->toBe(168, 'the canonical catalogue size is unchanged — phases activate, never invent');
+        ->toBe(167, 'the catalogue only ever shrinks by a retired legacy duplicate — never grows');
 });
 
 it('grants the payout/earnings keys to exactly the right roles and no others', function (): void {

@@ -1,17 +1,17 @@
-# Screen specification — Finance dashboard (stub)
+# Screen specification — Branch calendar
 
-> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 4**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
+> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 23**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
-- **Screen key:** `finance-dashboard`
-- **Route name and URL:** `finance.dashboard`
-- **Layout:** `FinanceLayout`
-- **Allowed roles:** `merchant_finance`
-- **Required permissions:** — (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Screen key:** `branch-calendar`
+- **Route name and URL:** `branch.calendar`
+- **Layout:** `BranchLayout`
+- **Allowed roles:** `merchant_branch`
+- **Required permissions:** `branch.calendar.manage` (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Finance dashboard shell; workflows owned by Phases 18A/18B.
+- **Fields and displayed data:** Branch Manager creates, edits and removes date-specific calendar exceptions — public holiday, special closure, emergency closure (all full-day) and modified hours — over the existing branch_calendar_exceptions table. Exactly one exception per date. Delivered by REM-SCR-002B as a corrective remediation for a Plan §27.3 launch screen omitted by its owning phase: the table, model and the AppointmentBranchScheduleValidator that honours these dates all already shipped, but no operator surface existed. Day open/pause/close remains the separate Branch Day workflow.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

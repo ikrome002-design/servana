@@ -130,17 +130,7 @@ it('introduces no qualification, reward or reconciliation symbol', function (): 
 /** @return list<string> every PHP file under the ReferEarn bounded context, recursively. */
 function referEarnSourceFiles(): array
 {
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator(app_path('Domain/Integrations/ReferEarn'), FilesystemIterator::SKIP_DOTS)
-    );
-
-    $files = [];
-
-    foreach ($iterator as $file) {
-        if ($file instanceof SplFileInfo && $file->getExtension() === 'php') {
-            $files[] = $file->getPathname();
-        }
-    }
-
-    return $files;
+    // sourceFilesUnder() replaces RecursiveDirectoryIterator, which truncates directory listings
+    // on the dev bind mount and silently under-scanned this guard (PH23-SCAN-001).
+    return sourceFilesUnder(app_path('Domain/Integrations/ReferEarn'), ['php']);
 }

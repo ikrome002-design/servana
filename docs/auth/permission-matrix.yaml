@@ -354,9 +354,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: none
+    audit_event: branch.calendar_exception_removed; branch.calendar_exception_set
     audit_severity: warn
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: BranchCalendarExceptionPolicy::view/manage (branches.calendar-exceptions.*)
     frontend_ux_usage: visibility_only
     default_roles:
       - branch_manager
@@ -1671,35 +1671,11 @@ keys:
       - PermissionMatrix/merchant.period_reopen.approve_exception_allows
     negative_tests:
       - PermissionMatrix/merchant.period_reopen.approve_exception_denies
-  merchant.profile.manage:
-    key: merchant.profile.manage
-    description: Edit merchant profile.
-    implementation_status: active
-    owning_phase: Phase 20A
-    canonical_successor: merchant.profile.update
-    override_policy: revocable_only
-    scope: merchant
-    billing_read_only_behavior: block
-    period_lock_behavior: n/a
-    entitlement_key: null
-    mfa_required: false
-    step_up_required: false
-    audit_event: none
-    audit_severity: warn
-    backend_policy_or_service: legacy runtime key pending §19 reconciliation
-    frontend_ux_usage: visibility_only
-    default_roles:
-      - merchant_admin
-    maker_checker_incompatibilities: []
-    positive_tests:
-      - PermissionMatrix/merchant.profile.manage_allows
-    negative_tests:
-      - PermissionMatrix/merchant.profile.manage_denies
   merchant.profile.update:
     key: merchant.profile.update
-    description: Update (merchant / profile).
-    implementation_status: planned
-    owning_phase: Phase 20A
+    description: Update the merchant business profile.
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -1708,9 +1684,9 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: merchant.profile_updated
     audit_severity: high
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: MerchantProfilePolicy::update (merchant.profile.update route + UpdateMerchantProfile action)
     frontend_ux_usage: visibility_only
     default_roles:
       - merchant_admin
@@ -1721,9 +1697,9 @@ keys:
       - PermissionMatrix/merchant.profile.update_denies
   merchant.profile.view:
     key: merchant.profile.view
-    description: View (merchant / profile).
-    implementation_status: planned
-    owning_phase: Phase 20A
+    description: View the merchant business profile.
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: merchant
@@ -1732,9 +1708,9 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: MerchantProfilePolicy::view (merchant.profile.show)
     frontend_ux_usage: visibility_only
     default_roles:
       - merchant_admin
@@ -4028,9 +4004,9 @@ keys:
       - PermissionMatrix/staff.suspend_denies
   staff.view:
     key: staff.view
-    description: View (staff).
-    implementation_status: planned
-    owning_phase: Phase 20F
+    description: View the HR staff roster and staff detail (branch-scoped read).
+    implementation_status: active
+    owning_phase: null
     canonical_successor: null
     override_policy: revocable_only
     scope: branch
@@ -4039,9 +4015,9 @@ keys:
     entitlement_key: null
     mfa_required: false
     step_up_required: false
-    audit_event: pending
+    audit_event: none
     audit_severity: info
-    backend_policy_or_service: enforced by policy/registry
+    backend_policy_or_service: StaffProfilePolicy::viewAny/view (staff.index + staff.show)
     frontend_ux_usage: visibility_only
     default_roles:
       - hr

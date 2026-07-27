@@ -49,12 +49,21 @@ it('activates exactly the two canonical Phase 21S keys across YAML + PHP registr
     }
 });
 
-it('lifts the active count to 130 and drops planned to 38 with no legacy retirement', function (): void {
+it('keeps its two keys active as later phases extend the matrix, with no legacy retirement', function (): void {
     $matrix = app(PermissionMatrix::class);
+    $active = array_fill_keys($matrix->activeKeys(), true);
 
-    // Phase 20H left 128 active / 40 planned; 21S activates the two Personnel SMS keys.
-    expect($matrix->activeKeys())->toHaveCount(130);
-    expect($matrix->plannedKeys())->toHaveCount(38);
+    // The absolute counts move with every phase (20H left 128/40; 21S activated 2 more → 130/38;
+    // Phase 23 activated `staff.view` → 131/37 and the merchant-profile pair → 133/35, then retired
+    // the legacy duplicate `merchant.profile.manage` → 132/35 with the catalogue at 167), so —
+    // following the Phase 20H precedent — this asserts what Phase 21S actually OWNS: its own two
+    // keys, still active, and the invariant that no phase INVENTS a canonical key.
+    foreach (P21S_ACTIVATED as $key) {
+        expect($active)->toHaveKey($key);
+    }
+
+    expect(count($matrix->activeKeys()) + count($matrix->plannedKeys()))
+        ->toBe(167, 'the catalogue only ever shrinks by a retired legacy duplicate — never grows');
 });
 
 it('grants both keys to PERSONNEL and to no other role, by default or by override', function (): void {

@@ -69,7 +69,8 @@ export const PERMISSION_KEYS = [
   'merchant.compensation_summary.view',
   'merchant.payout.approve_high_value',
   'merchant.period_reopen.approve_exception',
-  'merchant.profile.manage',
+  'merchant.profile.update',
+  'merchant.profile.view',
   'merchant.subscription.invoice.download',
   'merchant.subscription.invoice.view',
   'merchant.subscription.plan_change',
@@ -140,6 +141,7 @@ export const PERMISSION_KEYS = [
   'staff.edit',
   'staff.invite',
   'staff.suspend',
+  'staff.view',
 ] as const;
 
 export type PermissionKey = (typeof PERMISSION_KEYS)[number];
@@ -204,7 +206,8 @@ export const PERMISSION_METADATA: Record<PermissionKey, PermissionMetadata> = {
   'merchant.compensation_summary.view': { key: 'merchant.compensation_summary.view', scope: 'merchant', mfaRequired: true, stepUpRequired: false },
   'merchant.payout.approve_high_value': { key: 'merchant.payout.approve_high_value', scope: 'merchant', mfaRequired: true, stepUpRequired: true },
   'merchant.period_reopen.approve_exception': { key: 'merchant.period_reopen.approve_exception', scope: 'merchant', mfaRequired: true, stepUpRequired: true },
-  'merchant.profile.manage': { key: 'merchant.profile.manage', scope: 'merchant', mfaRequired: false, stepUpRequired: false },
+  'merchant.profile.update': { key: 'merchant.profile.update', scope: 'merchant', mfaRequired: true, stepUpRequired: false },
+  'merchant.profile.view': { key: 'merchant.profile.view', scope: 'merchant', mfaRequired: true, stepUpRequired: false },
   'merchant.subscription.invoice.download': { key: 'merchant.subscription.invoice.download', scope: 'merchant', mfaRequired: true, stepUpRequired: false },
   'merchant.subscription.invoice.view': { key: 'merchant.subscription.invoice.view', scope: 'merchant', mfaRequired: true, stepUpRequired: false },
   'merchant.subscription.plan_change': { key: 'merchant.subscription.plan_change', scope: 'merchant', mfaRequired: true, stepUpRequired: false },
@@ -275,4 +278,5 @@ export const PERMISSION_METADATA: Record<PermissionKey, PermissionMetadata> = {
   'staff.edit': { key: 'staff.edit', scope: 'merchant', mfaRequired: false, stepUpRequired: false },
   'staff.invite': { key: 'staff.invite', scope: 'branch', mfaRequired: false, stepUpRequired: false },
   'staff.suspend': { key: 'staff.suspend', scope: 'branch', mfaRequired: false, stepUpRequired: false },
+  'staff.view': { key: 'staff.view', scope: 'branch', mfaRequired: false, stepUpRequired: false },
 };

@@ -16,6 +16,7 @@ use App\Domain\Files\Models\UploadedFile;
 use App\Domain\Files\Services\FileAccessService;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Tenancy\TenantContext;
+use App\Domain\Tenancy\TenantContextResolver;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,14 +25,25 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 uses(RefreshDatabase::class)->group('billing', 'phase20b-invoice-pdf', 'subscription-invoice');
 
-/** @return array{0:Merchant,1:User,2:UploadedFile} merchant, its admin user, generated PDF file. */
+/**
+ * Merchant + a REAL Merchant Administrator membership + a generated PDF file.
+ *
+ * The actor must be a genuine membership, not a bare user under a job-bound context:
+ * `FilePurpose::BillingInvoicePdf` is permission-gated on
+ * `merchant.subscription.invoice.download` (PH23-EXP-002), and a job context carries no
+ * permissions by design (TenantContext::bindForJob). Binding through
+ * TenantContextResolver reproduces exactly what ResolveTenantContext does on a request,
+ * so these tests exercise the authority a real caller actually holds.
+ *
+ * @return array{0:Merchant,1:User,2:UploadedFile} merchant, its admin user, generated PDF file.
+ */
 function p20bpddInvoiceFile(): array
 {
     Storage::fake((string) config('files.disk'));
     PlatformBillingSettings::factory()->create(['billing_mode' => BillingMode::FixedAmount, 'effective_from' => CarbonImmutable::now()->subYear()]);
 
-    $user = User::factory()->create();
-    $merchant = Merchant::factory()->create(['billing_status' => MerchantBillingStatus::Active]);
+    [$user, $merchant] = activeAdmin();
+    $merchant->forceFill(['billing_status' => MerchantBillingStatus::Active->value])->save();
     app(TenantContext::class)->bindForJob($merchant);
     $plan = SubscriptionPlan::factory()->create();
     $price = SubscriptionPlanPrice::factory()->create(['plan_id' => $plan->id, 'billing_interval' => 'monthly', 'currency' => 'KES', 'amount_minor' => 500000]);
@@ -42,7 +54,17 @@ function p20bpddInvoiceFile(): array
     $invoice = app(IssueSubscriptionInvoice::class)->handle($sub, $user);
     $result = app(GenerateSubscriptionInvoicePdf::class)->handle($invoice, $user);
 
+    // Leave the context as an authenticated Merchant Administrator, the way a download
+    // request arrives, rather than as the job context the generator ran under.
+    p20bpddActAs($user);
+
     return [$merchant, $user, $result->file()->first()];
+}
+
+/** Bind the tenant context for $user exactly as ResolveTenantContext would on a request. */
+function p20bpddActAs(User $user): void
+{
+    app(TenantContextResolver::class)->populate(app(TenantContext::class), $user);
 }
 
 it('authorizes download of a generated invoice PDF for the owning merchant', function (): void {
@@ -60,7 +82,7 @@ it('keeps an existing PDF downloadable in read_only_grace and suspended_billing'
 
     foreach ([MerchantBillingStatus::ReadOnlyGrace, MerchantBillingStatus::SuspendedBilling] as $status) {
         $merchant->update(['billing_status' => $status]);
-        app(TenantContext::class)->bindForJob($merchant->fresh());
+        p20bpddActAs($user);
         app(FileAccessService::class)->authorizeDownload($file, $user); // no throw — billing state is not a download gate
     }
     expect(true)->toBeTrue();
@@ -78,9 +100,9 @@ it('denies cross-tenant download of an invoice PDF (404, no existence leak)', fu
 });
 
 it('denies download of a revoked (superseded) PDF version', function (): void {
-    [$merchant, $user, $file] = p20bpddInvoiceFile();
+    [, $user, $file] = p20bpddInvoiceFile();
     $file->markLifecycle(FileLifecycleStatus::Revoked);
-    app(TenantContext::class)->bindForJob($merchant->fresh());
+    p20bpddActAs($user);
 
     expect(fn () => app(FileAccessService::class)->authorizeDownload($file->fresh(), $user))
         ->toThrow(NotFoundHttpException::class);

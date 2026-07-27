@@ -40,7 +40,7 @@ function postRule(array $scn, array $body = [], ?User $actor = null)
             'calculation_basis' => 'service_price',
             'applies_to' => 'all_services',
             'percentage_basis_points' => 1000,
-            'effective_from' => today()->toDateString(),
+            'effective_from' => businessToday()->toDateString(),
             'change_reason' => 'Initial commission rule.',
         ], $body));
 }
@@ -243,7 +243,7 @@ it('lets HR update a draft rule in place', function (): void {
             'applies_to' => 'all_services',
             'percentage_basis_points' => 2500,
             'applies_to_preferred_personnel_fee' => true,
-            'effective_from' => today()->toDateString(),
+            'effective_from' => businessToday()->toDateString(),
             'change_reason' => 'Raised the rate.',
         ])
         ->assertOk()
@@ -265,7 +265,7 @@ it('refuses to edit an active rule (supersede, never edit)', function (): void {
             'calculation_basis' => 'service_price',
             'applies_to' => 'all_services',
             'percentage_basis_points' => 5000,
-            'effective_from' => today()->toDateString(),
+            'effective_from' => businessToday()->toDateString(),
             'change_reason' => 'Should be rejected.',
         ])
         ->assertStatus(422)

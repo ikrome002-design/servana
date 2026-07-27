@@ -6,6 +6,7 @@ namespace App\Domain\FinanceOps\Actions;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Files\Enums\FileLifecycleStatus;
 use App\Domain\FinanceOps\Enums\FinanceExportStatus;
 use App\Domain\FinanceOps\Models\FinanceExport;
 use App\Domain\FinanceOps\Services\FinanceExportStateMachine;
@@ -33,6 +34,12 @@ final class RevokeFinanceExport
             $this->machine->ensure($locked->status, FinanceExportStatus::Revoked);
 
             $locked->forceFill(['status' => FinanceExportStatus::Revoked->value])->save();
+
+            // PH23-EXP-001: the file domain authorizes on the FILE's lifecycle, and it is
+            // reachable by its own routes (files.show / files.download-link / files.download).
+            // Revoking only the export aggregate left the CSV fully downloadable there, so the
+            // terminal state must land on the object the boundary actually inspects.
+            $locked->file?->markLifecycle(FileLifecycleStatus::Revoked);
 
             $this->audit->record(AuditEvent::FinanceExportRevoked, $actor, $locked->merchant_id, $locked->branch_id, $locked, [
                 'export_id' => $locked->ulid,

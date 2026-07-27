@@ -32,6 +32,7 @@ use App\Domain\Compensation\Actions\CreatePayoutRunDraft;
 use App\Domain\Compensation\Models\CommissionLedgerEntry;
 use App\Domain\Compensation\Models\PersonnelPayoutRun;
 use App\Domain\Compensation\Models\SalaryLedgerEntry;
+use App\Domain\Compensation\Services\CompensationBusinessDate;
 use App\Domain\Files\Enums\FileLifecycleStatus;
 use App\Domain\Files\Enums\FilePurpose;
 use App\Domain\Files\Enums\FileScanStatus;
@@ -95,6 +96,27 @@ function specOperationIds(array $spec): array
     }
 
     return $ids;
+}
+
+/*
+ | "Today" as the DOMAIN sees it: the `Africa/Nairobi` business day.
+ |
+ | CLAUDE.md §1 and Plan §59 are explicit — timestamps are UTC, but every business-DAY decision is
+ | made in `Africa/Nairobi`. `app.timezone` is `UTC`, so Laravel's global `today()`/`now()` helpers
+ | resolve in UTC and are THREE HOURS BEHIND the business day. Between 21:00 and 23:59 UTC the UTC
+ | calendar date is still yesterday while Nairobi has already rolled over, so a fixture built from
+ | `today()` is evaluated by the domain as YESTERDAY — e.g. `CompensationBusinessDate::isBackdated()`
+ | returns true for a plan the test means to be effective today, and approval then fails closed with
+ | "A backdated compensation change requires an impact preview before approval."
+ |
+ | That is a wall-clock dependency in the FIXTURE, not a product defect: the domain is correct, and
+ | production code routes every business-date decision through `CompensationBusinessDate`. Any test
+ | fixture whose date is compared against a business date must therefore use this helper, never the
+ | UTC `today()`. (Phase 23, defect PH23-DET-001.)
+ */
+function businessToday(): CarbonImmutable
+{
+    return CarbonImmutable::now(CompensationBusinessDate::TIMEZONE)->startOfDay();
 }
 
 /*
@@ -1064,6 +1086,57 @@ function searchResultUlids(TestResponse $response, ?string $type = null): array
         : array_filter($data, static fn (array $row): bool => ($row['type'] ?? null) === $type);
 
     return array_values(array_map(static fn (array $row): string => (string) $row['ulid'], $rows));
+}
+
+/**
+ * Every file under $dir, recursively, restricted to $extensions (lowercase, no dot).
+ *
+ * The single enumeration used by every static-analysis guard. It uses `scandir()` recursion
+ * DELIBERATELY, never `RecursiveDirectoryIterator`: on the Docker Desktop bind mount this
+ * project develops against, `RecursiveDirectoryIterator` TRUNCATES directory listings
+ * mid-traversal (PH23-SCAN-001). It returned **970 of 1 087** PHP files under `app/` — so every
+ * guard built on it was silently scanning ~89% of the codebase while claiming to be exhaustive.
+ * A security guard that can pass because it never read the offending file is worse than none.
+ *
+ * `sourceFileEnumerationIsExhaustive()` cross-checks this walker against Symfony Finder so the
+ * under-scan can never come back silently.
+ *
+ * @param  list<string>  $extensions
+ * @return list<string> absolute paths, sorted for deterministic output
+ */
+function sourceFilesUnder(string $dir, array $extensions): array
+{
+    if (! is_dir($dir)) {
+        return [];
+    }
+
+    $files = [];
+    $walk = static function (string $current) use (&$walk, &$files, $extensions): void {
+        $entries = scandir($current);
+        if ($entries === false) {
+            throw new RuntimeException("Unable to read directory: {$current}");
+        }
+
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            $path = $current.'/'.$entry;
+            if (is_dir($path)) {
+                $walk($path);
+
+                continue;
+            }
+            if (in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), $extensions, true)) {
+                $files[] = $path;
+            }
+        }
+    };
+
+    $walk(rtrim($dir, '/\\'));
+    sort($files);
+
+    return $files;
 }
 
 /**

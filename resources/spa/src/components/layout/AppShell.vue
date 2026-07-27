@@ -207,10 +207,17 @@ const isHeaderNav = computed(() => placement.value === 'header');
         <RoleNavigation :items="items" />
       </nav>
 
+      <!--
+        `min-w-0` is load-bearing (Plan §28). As a flex item, `main` defaults to
+        `min-width: auto`, so it cannot shrink below its content's min-content width — one wide
+        child (an unbreakable machine token, an intrinsically sized control, a table) then widens
+        the WHOLE document instead of being contained here. Without it, page-level horizontal
+        overflow is reachable from any screen.
+      -->
       <main
         id="main-content"
         tabindex="-1"
-        class="flex-1 p-4 focus:outline-none md:p-6"
+        class="min-w-0 flex-1 p-4 focus:outline-none md:p-6"
       >
         <slot />
       </main>

@@ -11,13 +11,18 @@ import {
   useAvailabilityStore,
 } from '@/stores/availabilityStore';
 import { usePermissionStore } from '@/stores/permissionStore';
-import type { StaffProfile } from '@/types/models';
+import type { BranchPersonnelOption } from '@/types/models';
 
 // Branch Manager READ-ONLY personnel schedule (Plan §80 Phase 15B). The Branch
 // Manager has branch-scoped visibility (`branch.dashboard.view`) into personnel
 // working days, breaks, temporary unavailability, current state, and eligible
 // services — but NEVER edits them. Mutation is HR-only and is rejected by the
 // backend regardless of the UI (these checks are UX only).
+//
+// Phase 23 §14.1: the picker is populated from the NARROW
+// `GET /api/v1/branch/personnel-options` ({id, display_name}) — never from the HR
+// roster `GET /api/v1/staff`, which is now correctly gated by the HR-only
+// `staff.view` and carries personnel phone numbers this screen must never receive.
 const availability = useAvailabilityStore();
 const permissions = usePermissionStore();
 const auth = useAuthStore();
@@ -34,7 +39,7 @@ const STATE_LABELS: Record<string, string> = {
 const canView = computed(() => permissions.can('branch.dashboard.view'));
 const hasBranch = computed(() => auth.branchIds.length > 0);
 
-const staff = ref<StaffProfile[]>([]);
+const staff = ref<BranchPersonnelOption[]>([]);
 const selectedStaff = ref('');
 
 const staffOptions = computed(() => staff.value.map((s) => ({ value: s.id, label: s.display_name })));
@@ -64,12 +69,24 @@ watch(selectedStaff, async (id) => {
   if (id !== '') await availability.fetch(id);
 });
 
-onMounted(async () => {
-  if (canView.value && hasBranch.value) {
-    const { data } = await apiClient.get<{ data: StaffProfile[] }>('/staff');
-    staff.value = data.data;
-  }
-});
+async function loadPersonnelOptions(): Promise<void> {
+  if (!canView.value || !hasBranch.value) return;
+  const { data } = await apiClient.get<{ data: BranchPersonnelOption[] }>('/branch/personnel-options');
+  staff.value = data.data;
+}
+
+onMounted(loadPersonnelOptions);
+
+// Branch context is server-derived, so a branch change must never leave the previous
+// branch's personnel selectable: clear the options AND the selection before reloading.
+watch(
+  () => auth.branchIds.join(','),
+  async () => {
+    staff.value = [];
+    selectedStaff.value = '';
+    await loadPersonnelOptions();
+  },
+);
 </script>
 
 <template>

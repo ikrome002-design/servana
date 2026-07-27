@@ -18,7 +18,7 @@ uses(RefreshDatabase::class)->group('auth', 'permissions', 'matrix');
  | permission middleware.
  */
 
-it('keeps all 38 planned keys out of every runtime projection', function (): void {
+it('keeps all 35 planned keys out of every runtime projection', function (): void {
     $this->seed(PermissionSeeder::class);
     $matrix = app(PermissionMatrix::class);
     $registry = app(PermissionRegistry::class);
@@ -30,10 +30,16 @@ it('keeps all 38 planned keys out of every runtime projection', function (): voi
     // compensation-financial canonical keys compensation.liability.view + compensation.adjustment.create
     // (58 → 56); Phase 20H activated the 16 payout-run / earnings / merchant-compensation-summary
     // canonical keys (56 → 40); Phase 21S activated the 2 Personnel SMS canonical keys
-    // personnel.my_served_clients.view + personnel.my_sms.send (40 → 38). The remaining planned
-    // families belong to Phase 20D-W / 21N / 21R-B / 22 / 23 / 24 / 25.
+    // personnel.my_served_clients.view + personnel.my_sms.send (40 → 38); Phase 22 activated NOTHING
+    // (38); Phase 23 activated the canonical read key staff.view as a security remediation —
+    // it was left `planned` with owning_phase "Phase 20F" after 20F completed, leaving
+    // GET /api/v1/staff with no authorization boundary at all (38 → 37) — and then activated
+    // merchant.profile.view + merchant.profile.update for REM-SCR-002A, the omitted Plan §27.3
+    // Merchant Administrator merchant-profile launch screen, retiring the legacy duplicate
+    // merchant.profile.manage outright (37 → 35). The remaining planned families belong to
+    // Phase 20D-W / 21N / 21R-B / 24 / 25.
     $planned = $matrix->plannedKeys();
-    expect($planned)->toHaveCount(38);
+    expect($planned)->toHaveCount(35);
 
     $registryKeys = array_fill_keys($registry->permissionKeys(), true);
     $dbKeys = array_fill_keys(Permission::query()->pluck('key')->all(), true);

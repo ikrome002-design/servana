@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Tenancy\TenantContext;
 use App\Models\User;
 
 /**
- * Merchant-level authority (Plan §10.2/§10.3). Profile management is a Merchant
- * Admin capability, scoped to the actor's own merchant. (The legacy `updateTier`
- * capability was retired in Phase 20B: billing is a subscription lifecycle, not a
- * one-shot tier flag — see the `merchant.subscription.*` keys.)
+ * Merchant-level authority (Plan §10.2/§10.3).
+ *
+ * (The legacy `updateTier` capability was retired in Phase 20B: billing is a subscription
+ * lifecycle, not a one-shot tier flag — see the `merchant.subscription.*` keys. The legacy
+ * `manageProfile` capability was retired by REM-SCR-002A: it had no caller anywhere, and the
+ * canonical merchant-profile authority now lives in {@see MerchantProfilePolicy} against the
+ * `merchant_profiles` row the surface actually edits, under the canonical §19.3
+ * `merchant.profile.view` / `merchant.profile.update` keys.)
  */
 final class MerchantPolicy
 {
     public function __construct(private readonly TenantContext $context) {}
-
-    public function manageProfile(User $user, Merchant $merchant): bool
-    {
-        return $this->sameMerchant($merchant) && $this->context->can('merchant.profile.manage');
-    }
 
     /*
      | Platform merchant governance (Plan §22, §24.1; Phase 20B). Super-Admin platform scope —
@@ -53,10 +51,5 @@ final class MerchantPolicy
     public function deactivate(User $user): bool
     {
         return $this->context->can('platform.merchant.deactivate');
-    }
-
-    private function sameMerchant(Merchant $merchant): bool
-    {
-        return $merchant->id === $this->context->merchantId();
     }
 }

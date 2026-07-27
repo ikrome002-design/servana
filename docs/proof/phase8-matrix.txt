@@ -74,7 +74,8 @@ branches.manage_users_lifecycle       ✓           ·            ·            
 merchant.compensation_summary.view    ✓           ·            ·            ·            ·            ·            ·            ·
 merchant.payout.approve_high_value    ✓           ·            ·            ·            ·            ·            ·            ·
 merchant.period_reopen.approve_exception✓           ·            ·            ·            ·            ·            ·            ·
-merchant.profile.manage               ✓           ·            ·            ·            ·            ·            ·            ·
+merchant.profile.update               ✓           ·            ·            ·            ·            ·            ·            ·
+merchant.profile.view                 ✓           ·            ·            ·            ·            ·            ·            ·
 merchant.subscription.invoice.download✓           ·            ·            ·            ·            ·            ·            ·
 merchant.subscription.invoice.view    ✓           ·            ·            ·            ·            ·            ·            ·
 merchant.subscription.plan_change     ✓           ·            ·            ·            ·            ·            ·            ·
@@ -89,7 +90,9 @@ personnel.my_earnings.view            ·            ·            ·            
 personnel.my_earnings_query.create    ·            ·            ·            ·            ·            ✓           ·            ·
 personnel.my_payouts.view             ·            ·            ·            ·            ·            ✓           ·            ·
 personnel.my_queue.view               ·            ·            ·            ·            ·            ✓           ·            ·
+personnel.my_served_clients.view      ·            ·            ·            ·            ·            ✓           ·            ·
 personnel.my_sessions.view            ·            ·            ·            ·            ·            ✓           ·            ·
+personnel.my_sms.send                 ·            ·            ·            ·            ·            ✓           ·            ·
 personnel.my_statements.download      ·            ·            ·            ·            ·            ✓           ·            ·
 platform.audit.view                   ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing_settings.update      ·            ·            ·            ·            ·            ·            ·            ✓
@@ -130,3 +133,4 @@ personnel.eligibility.manage          ·            ·            ✓           
 staff.edit                            ·            ·            ✓           ·            ·            ·            ·            ·
 staff.invite                          ·            ·            ✓           ·            ·            ·            ·            ·
 staff.suspend                         ·            ·            ✓           ·            ·            ·            ·            ·
+staff.view                            ·            ·            ✓           ·            ·            ·            ·            ·

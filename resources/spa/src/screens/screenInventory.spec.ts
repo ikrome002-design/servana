@@ -1,5 +1,5 @@
-import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, readdirSync } from 'node:fs';
+import { relative, resolve, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import inventoryJson from '@docs/frontend/screens/inventory.json';
 import { router } from '@/router';
@@ -24,6 +24,43 @@ interface Screen {
 
 const screens = (inventoryJson as { screens: Screen[] }).screens;
 const SCREENS_DIR = resolve(import.meta.dirname, '../../../../docs/frontend/screens');
+
+/**
+ * Phases recorded `verified_complete` in docs/PROGRESS.md. A `planned` screen may never name
+ * one of these — that combination is a release gap, not a deferral.
+ */
+const VERIFIED_PHASES = new Set([
+  'Phase 1', 'Phase 2', 'Phase 3', 'Phase 4', 'Phase 5', 'Phase 6', 'Phase 7', 'Phase 8',
+  'Phase 9', 'Phase 10', 'Phase 10F', 'Phase 11', 'Phase 15A', 'Phase 15B', 'Phase 16A',
+  'Phase 16B', 'Phase 16C', 'Phase 17', 'Phase 18A', 'Phase 18B', 'Phase 19', 'Phase 20A',
+  'Phase 20B', 'Phase 20C', 'Phase 20E', 'Phase 20F', 'Phase 20G', 'Phase 20H',
+  'Phase 21R-A', 'Phase 21S', 'Phase 22',
+]);
+
+/** Phases that genuinely have not shipped — the only owners a `planned` screen may name. */
+const UNSHIPPED_PHASES = new Set([
+  'Phase 20D-W', // blocked: External Gate W is closed
+  'Phase 21R-B', // blocked: depends on 20D-W
+  'Phase 21N', // blocked: depends on (17, 18, 20D-W)
+  'Phase 23',
+  'Phase 24',
+  'Phase 25',
+]);
+
+/**
+ * REGISTERED release gaps: a `planned` screen whose owning phase is already verified complete.
+ *
+ * Each entry is a launch screen Plan §27.3 requires that was never built, and each MUST be tracked
+ * in `docs/remediation/register.yaml` with an owner and a blocker. This is an explicit register,
+ * not an exemption: a new occurrence still fails the guard, and the "keeps the registered list
+ * exact" case below fails the moment a registered screen is delivered, forcing its removal.
+ *
+ * The list is EMPTY because both entries it originally held — `merchant-profile` (Plan §27.3
+ * Merchant Administrator) and `branch-calendar` (Plan §27.3 Branch Manager) — were **delivered**
+ * by REM-SCR-002A/B under explicit product-owner authorization, rather than accepted as an open
+ * pre-release gap. They are now `implemented` with routes, specs and tests.
+ */
+const REGISTERED_RELEASE_GAPS = new Map<string, string>();
 
 function routerNames(): Set<string> {
   return new Set(
@@ -88,6 +125,120 @@ describe('screen inventory coverage', () => {
     for (const name of routerNames()) {
       expect(covered.has(name), `route ${name} has an inventory entry`).toBe(true);
     }
+  });
+
+  /*
+   * Phase 23 Increment 5 additions. The cases above proved every inventory entry maps to
+   * something real; these prove the reverse direction and the ownership truth, which is how a
+   * stale generated spec (`finance/finance-dashboard.md`, orphaned by the Phase 18B key rename)
+   * and a duplicate planned entry (`hr-eligibility`, whose route `hr.eligibility` was already
+   * owned by the implemented `service-eligibility`) both survived unnoticed.
+   */
+
+  it('has no orphan spec file — every generated spec is owned by an inventory entry', () => {
+    const owned = new Set(
+      screens.map((s) => s.spec).filter((s): s is string => typeof s === 'string'),
+    );
+
+    const onDisk: string[] = [];
+    const walk = (dir: string): void => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const full = resolve(dir, entry.name);
+        if (entry.isDirectory()) {
+          walk(full);
+        } else if (entry.name.endsWith('.md')) {
+          onDisk.push(relative(SCREENS_DIR, full).split(sep).join('/'));
+        }
+      }
+    };
+    walk(SCREENS_DIR);
+
+    const orphans = onDisk.filter((p) => !owned.has(p));
+    expect(
+      orphans,
+      `Spec files with no inventory entry (a renamed/removed screen leaves its generated spec behind):\n${orphans.join('\n')}`,
+    ).toEqual([]);
+  });
+
+  it('never lets an UNREGISTERED planned screen be owned by a verified-complete phase', () => {
+    // A planned screen owned by a merged, verified phase is a RELEASE GAP, not a deferral. It
+    // must be delivered, re-attributed to the phase that genuinely owns it, or registered as a
+    // tracked gap. Anything unregistered fails here.
+    const gaps = screens
+      .filter(
+        (s) =>
+          s.status === 'planned'
+          && VERIFIED_PHASES.has(s.phase)
+          && !REGISTERED_RELEASE_GAPS.has(s.key),
+      )
+      .map((s) => `${s.key} → ${s.phase}`);
+
+    expect(
+      gaps,
+      [
+        'Planned screens owned by a VERIFIED-COMPLETE phase and NOT registered as release gaps:',
+        ...gaps,
+        '',
+        'Deliver the screen, re-attribute it to its real owning phase, or add it to',
+        'REGISTERED_RELEASE_GAPS *and* docs/remediation/register.yaml with an owner and blocker.',
+      ].join('\n'),
+    ).toEqual([]);
+  });
+
+  it('keeps the registered release-gap list exact — no stale and no silent entry', () => {
+    // Every registered gap must still BE a gap (planned, owned by a verified phase). When the
+    // owning phase finally delivers the screen, this fails and forces the entry's removal.
+    const stale: string[] = [];
+    for (const [key, reason] of REGISTERED_RELEASE_GAPS) {
+      const screen = screens.find((s) => s.key === key);
+      if (!screen) {
+        stale.push(`${key}: registered as a release gap but absent from the inventory`);
+        continue;
+      }
+      if (screen.status !== 'planned') {
+        stale.push(`${key}: now '${screen.status}' — delivered, so remove it from the register`);
+      }
+      if (!VERIFIED_PHASES.has(screen.phase)) {
+        stale.push(`${key}: owning phase ${screen.phase} is no longer verified complete`);
+      }
+      expect(reason, `${key}: the registered reason must name its remediation item`).toContain(
+        'REM-',
+      );
+    }
+
+    expect(stale, stale.join('\n')).toEqual([]);
+  });
+
+  it('keeps every other planned screen owned by a phase that genuinely has not shipped', () => {
+    const unknown = screens
+      .filter(
+        (s) =>
+          s.status === 'planned'
+          && !UNSHIPPED_PHASES.has(s.phase)
+          && !REGISTERED_RELEASE_GAPS.has(s.key),
+      )
+      .map((s) => `${s.key} → ${s.phase}`);
+
+    expect(
+      unknown,
+      `Planned screens naming a phase that is neither blocked nor a future phase:\n${unknown.join('\n')}`,
+    ).toEqual([]);
+  });
+
+  it('allows a route-less live screen only when it is a declared access-state boundary', () => {
+    // `unsupported-role` and `no-branch-assignment` are rendered access states, not routes.
+    // Anything else without a route would be an entry that silently maps to nothing.
+    const ACCESS_STATE_SCREENS = new Set(['unsupported-role', 'no-branch-assignment']);
+
+    const routeless = screens
+      .filter((s) => s.status !== 'planned' && !s.route)
+      .map((s) => s.key)
+      .filter((k) => !ACCESS_STATE_SCREENS.has(k));
+
+    expect(
+      routeless,
+      `Live screens with no route that are not declared access-state boundaries:\n${routeless.join('\n')}`,
+    ).toEqual([]);
   });
 
   it('matches the generated inventory.yaml fixture', async () => {
