@@ -184,6 +184,23 @@ jobs:
           REDIS_PORT: 6379
         run: php artisan test tests/Feature/Traceability --fail-on-skipped
 
+      # Phase 24 (Plan §72). Deterministic performance invariants ONLY: SQL query-count/N+1
+      # budgets, cache-scope declarations and OPcache/preload configuration. No wall-clock
+      # threshold runs here — ApiLatencyBenchmarkTest is skipped unless SERVANA_RUN_BENCHMARK=1,
+      # so shared-runner timing variance can never make this job flaky. `--fail-on-skipped` is
+      # deliberately NOT used for the same reason.
+      - name: Contract — performance guards (Plan §72; N+1, cache scope, OPcache preload)
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: servana_test
+          DB_USERNAME: servana
+          DB_PASSWORD: servana
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: php artisan test tests/Feature/Performance
+
       - name: Tests — Pest on PostgreSQL (parallel)
         env:
           DB_CONNECTION: pgsql

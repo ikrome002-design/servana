@@ -801,9 +801,9 @@ items:
       the Vitest guard.
     proof_artifact: "docs/proof/phase-23.md#10-increment-5--requirement-traceability-and-ci-enforcement"
     owner: "Phase 23"
-    completion_commit: null
-    reviewer: "TBD"
-    status: local_complete   # guard green locally + wired into CI; promotes to verified_complete on the Phase 23 PR merge
+    completion_commit: "13f54a4df54a46abb2928783373383a87ba301d2"
+    reviewer: "none (PR-specific solo-maintainer governance exception; reviewDecision blank, 0 submitted reviews - NOT independent approval)"
+    status: verified_complete   # PR #48 MERGED into main as 13f54a4df54a46abb2928783373383a87ba301d2 (squash parent d010ec50f412dfe97ee1c412362e16bf263c2a4d, final PR head ee2dc2b48d50ff156f8034552d9965bbb4186967) on 2026-07-27T19:18:34Z; final CI run 30296509464 conclusion success with all five required checks SUCCESS; governance comment 5095716132; local + remote phase-23-release-hardening-audit branches deleted; promoted on the phase-24-performance-optimization branch per the convention that the next branch reconciles the previous phase
 
   - id: REM-SCR-002
     classification: C1
@@ -893,9 +893,9 @@ items:
       layout and scrolled the whole page at 360px.
     proof_artifact: "docs/proof/phase-23.md#12-rem-scr-002--the-two-omitted-plan-273-launch-screens"
     owner: "Phase 23 (corrective remediation for omitted Phase 15A/16A/20A deliverables), on product-owner authorization"
-    completion_commit: null
-    reviewer: "TBD"
-    status: local_complete   # both screens delivered and green locally; promotes to verified_complete on the Phase 23 PR merge
+    completion_commit: "13f54a4df54a46abb2928783373383a87ba301d2"
+    reviewer: "none (PR-specific solo-maintainer governance exception; reviewDecision blank, 0 submitted reviews - NOT independent approval)"
+    status: verified_complete   # PR #48 MERGED into main as 13f54a4df54a46abb2928783373383a87ba301d2 (squash parent d010ec50f412dfe97ee1c412362e16bf263c2a4d, final PR head ee2dc2b48d50ff156f8034552d9965bbb4186967) on 2026-07-27T19:18:34Z; final CI run 30296509464 conclusion success with all five required checks SUCCESS; governance comment 5095716132; local + remote phase-23-release-hardening-audit branches deleted; promoted on the phase-24-performance-optimization branch per the convention that the next branch reconciles the previous phase
 
   - id: REM-PRODOPS-001
     classification: C1

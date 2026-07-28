@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
 import FaqAccordion from '@/components/support/FaqAccordion.vue';
-import { getFaq, getLandingHero, heroImage, LEGAL_DOCS } from '@/content/roleContent';
+import { heroImage, LEGAL_DOCS } from '@/content/roleContent';
+import { loadFaq, loadLandingHero } from '@/content/roleDocuments';
+import type { FaqItem, HeroContent } from '@/content/markdown';
 import { navigationFor } from '@/navigation/roleNavigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useGetStartedStore } from '@/stores/getStartedStore';
@@ -24,9 +26,51 @@ const router = useRouter();
 const getStarted = useGetStartedStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
-const hero = computed(() => getLandingHero(props.identity));
-const faq = computed(() => getFaq(props.identity));
 const nav = computed(() => navigationFor(props.identity));
+
+/*
+ * Phase 24 (PH24-BUNDLE-001): this role's landing + FAQ markdown is fetched lazily, so only the
+ * signed-in role's two documents are downloaded rather than all eight roles' copy. The content is
+ * byte-identical to what was previously bundled statically — only WHEN it arrives changed.
+ *
+ * The hero falls back to an empty shape while loading, which the template already handles (it
+ * renders a personalised welcome when `hero.title` is empty), so there is no layout shift and no
+ * blank flash. A load failure leaves that same safe fallback and surfaces a status message rather
+ * than breaking the role's entry surface.
+ */
+const EMPTY_HERO: HeroContent = { title: '', body: [] };
+
+const hero = ref<HeroContent>(EMPTY_HERO);
+const faq = ref<FaqItem[]>([]);
+const contentLoading = ref(true);
+const contentFailed = ref(false);
+
+watch(
+  () => props.identity,
+  (identity) => {
+    contentLoading.value = true;
+    contentFailed.value = false;
+    hero.value = EMPTY_HERO;
+    faq.value = [];
+
+    Promise.all([loadLandingHero(identity), loadFaq(identity)])
+      .then(([loadedHero, loadedFaq]) => {
+        // A slower earlier request must never overwrite a newer role's content.
+        if (props.identity !== identity) return;
+        hero.value = loadedHero;
+        faq.value = loadedFaq;
+      })
+      .catch(() => {
+        if (props.identity !== identity) return;
+        contentFailed.value = true;
+      })
+      .finally(() => {
+        if (props.identity !== identity) return;
+        contentLoading.value = false;
+      });
+  },
+  { immediate: true },
+);
 
 const liveActions = computed(() =>
   nav.value.filter(
@@ -222,6 +266,22 @@ function goGetStarted(): void {
         </li>
       </ul>
     </section>
+
+    <!-- Lazily-loaded role content status (Phase 24, PH24-BUNDLE-001). -->
+    <p
+      v-if="contentLoading"
+      role="status"
+      class="text-sm text-text-muted"
+    >
+      Loading your guidance…
+    </p>
+    <p
+      v-else-if="contentFailed"
+      role="status"
+      class="text-sm text-text-muted"
+    >
+      Your guidance could not be loaded. Refresh the page to try again.
+    </p>
 
     <!-- FAQ -->
     <section

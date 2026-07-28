@@ -1,9 +1,45 @@
 # Phase 23 — Security Hardening, Responsive/Dark/Accessibility Release Audit, Threat-Model Verification, and Requirement Traceability Enforcement
 
-> **Lifecycle status: `in_progress`.**
-> Branch `phase-23-release-hardening-audit`, based on `d010ec50f412dfe97ee1c412362e16bf263c2a4d`
-> (the verified Phase 22 squash-merge). Plan authority: §80 Phase 23 entry, §9/§9.1, §19, §23–§24,
-> §27, §64, §65, §68, §70, §73, §74, §75, §76, §85.
+> **Lifecycle status: `verified_complete`.**
+> Branch `phase-23-release-hardening-audit` (deleted local + remote), based on
+> `d010ec50f412dfe97ee1c412362e16bf263c2a4d` (the verified Phase 22 squash-merge). Plan authority:
+> §80 Phase 23 entry, §9/§9.1, §19, §23–§24, §27, §64, §65, §68, §70, §73, §74, §75, §76, §85.
+
+## 0. Merge closure (reconciled live on the `phase-24-performance-optimization` branch)
+
+The technical evidence in §§1–N below was written while Phase 23 was in flight; any
+`in_progress` / `local_complete` / "no PR" phrasing inside it is **historical** and is superseded by
+this section. No technical proof has been rewritten — only the lifecycle facts are added.
+
+| Item | Verified value (live Git/GitHub, 2026-07-27) |
+|---|---|
+| PR | [#48 — Phase 23: Complete release hardening and audits](https://github.com/ikrome002-design/servana/pull/48) — `MERGED`, not draft |
+| Base ← head | `main` ← `phase-23-release-hardening-audit` |
+| Final PR head | `ee2dc2b48d50ff156f8034552d9965bbb4186967` |
+| Squash-merge commit | `13f54a4df54a46abb2928783373383a87ba301d2` (== `origin/main`) |
+| Squash-merge parent (single ⇒ squash) | `d010ec50f412dfe97ee1c412362e16bf263c2a4d` (the Phase 22 PR #47 merge) |
+| Merged at | `2026-07-27T19:18:34Z` |
+| **Final successful CI run** | **`30296509464`**, `conclusion: success`, head == the final PR head |
+| Backend — Pint, Larastan, Pest | SUCCESS |
+| Frontend — ESLint, vue-tsc, Vitest, build | SUCCESS |
+| Docker — build images | SUCCESS |
+| Security — gitleaks | SUCCESS |
+| E2E — Playwright | SUCCESS |
+| Required checks | exactly five, all SUCCESS |
+| Governance comment | id `5095716132`, present exactly once (the PR has exactly 1 comment); names the final head + final CI run and states no independent reviewer approval is claimed |
+| `reviewDecision` | **blank** — PR-specific solo-maintainer exception. **Not** independent reviewer approval. |
+| Submitted reviews | `0` |
+| Branch cleanup | `phase-23-release-hardening-audit` absent locally and on `origin` |
+| `git fsck --full` | exit 0 (dangling objects only; not corruption) |
+
+**Remediation promoted on this merge:** `REM-SCR-002` → `verified_complete`;
+`REM-TRACE-001` → `verified_complete`. **Traceability rows promoted:** `SRV-SEC-001`,
+`SRV-MERCHANT-PROFILE-001`, `SRV-BRANCH-CALENDAR-001` → `verified_complete`.
+**Left open and unchanged:** `REM-PERM-002`, `REM-EXP-001`.
+
+**Gate W re-verified CLOSED** at Phase 24 entry — `docs/integrations/wallet/`,
+`docs/integrations/wallet/gate-w-evidence.md` and `docs/proof/phase-20d-w.md` are all absent, so
+**20D-W**, **21R-B** and **21N** remain truthfully blocked.
 
 ---
 

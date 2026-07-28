@@ -6,10 +6,165 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 23 — Security hardening, responsive/dark/a11y release audit, threat model, traceability (`phase-23-release-hardening-audit`) — local_complete pending PR
+### Phase 24 — Performance optimization (`phase-24-performance-optimization`) — local_complete pending PR CI/review/merge
+
+Off `main` = `13f54a4df54a46abb2928783373383a87ba301d2` (the Phase 23 PR #48 squash-merge).
+Proof: `docs/proof/phase-24.md`; benchmark documents under `docs/performance/`.
+Plan authority: §80 Phase 24 entry (Correction 24.2), §72, §69, §67, §71, §13, §19, §23–§25,
+§28–§30, §64–§65, §68, §73–§76, §80.1, §85.
+
+**Phase 23 reconciled to `verified_complete`** from live Git/GitHub evidence: PR #48 MERGED, final
+head `ee2dc2b48d50ff156f8034552d9965bbb4186967`, squash-merge
+`13f54a4df54a46abb2928783373383a87ba301d2`, single squash parent
+`d010ec50f412dfe97ee1c412362e16bf263c2a4d` (the Phase 22 PR #47 merge), merged
+2026-07-27T19:18:34Z, final CI run `30296509464` with Backend/Frontend/Docker/Security/E2E all
+SUCCESS, governance comment `5095716132`, `reviewDecision` blank under the PR-specific
+solo-maintainer exception (**not** independent reviewer approval), `0` submitted reviews, local and
+remote Phase 23 branches deleted. `REM-SCR-002` and `REM-TRACE-001` promoted to `verified_complete`,
+along with the three Phase 23 traceability rows. `REM-PERM-002` and `REM-EXP-001` stay open.
+
+**External Gate W re-checked and remains CLOSED** — `docs/integrations/wallet/` does not exist and
+neither gate-evidence file is present. Phases **20D-W**, **21R-B** and **21N** stay truthfully
+blocked; Phase 24 benchmarks only shipped code and creates no blocked runtime. The §80.1 launch rule
+binding 20D-W and 21R-B applies at **Phase 25 exit**, so Phase 24 is executable now.
+
+#### Performance — deterministic dataset harness (Increment 2)
+
+`database/seeders/Performance/PerformanceDatasetSeeder.php` builds a tenant-separated, multi-branch
+dataset from the repository's own factories in three documented tiers (`baseline` / `representative`
+/ `stress`), selected by the new `config/servana.php → performance.tier`. It refuses to run outside
+`local`/`testing` and refuses any database whose name is not disposable, and is deliberately not
+wired into `DatabaseSeeder`. Proven on a disposable PostgreSQL 16.14 database `servana_p24_perf`
+(118 migrations from zero → seed → measure → dropped; dev database untouched); the `baseline` tier
+generated **933 rows**.
+
+#### Performance — queue wait estimator (Increment 4)
+
+**PH24-QUEUE-002 (correctness).** `QueueWaitEstimator` counted personnel who were mid-session as
+free capacity, so the advertised wait was **under-estimated**: with one of two eligible personnel in
+an `in_progress` session the estimate stayed **45** instead of 90, and with both busy **30** instead
+of 60. Capacity was derived from the schedule-only `AvailabilityResolver`, which documents that
+"`busy` is NOT computed here"; the authoritative `PersonnelStateProjector` — already used by the
+availability read — was never consulted. The estimator now excludes busy personnel from
+`active_capacity`. `busy` remains derived and never stored, completing a session restores capacity
+automatically, and the deterministic formula, the "Estimate" label, the branch/service/eligibility/
+lifecycle constraints and the divide-by-zero floor are unchanged. No state-machine change.
+
+**PH24-QUEUE-001 (N+1).** Measured before the fix: `estimateFor()` **14 queries**;
+`recalculateBranch()` **60 queries** for 4 entries and **252** for 16. Capacity was re-resolved per
+entry, and `AvailabilityResolver::currentState()` issued one availability query per personnel
+because the `$rows` argument it already supports was never passed. Added
+`AvailabilityResolver::rowsForMany()` and `PersonnelStateProjector::busyAmong()` — each rule stays
+owned by its own service — so capacity costs a **constant four queries** regardless of the eligible
+set; `recalculateBranch()` resolves capacity once per distinct service and computes work-ahead by an
+in-memory prefix scan over one ordered load. `estimateFor()` **14 → ≤6**.
+
+**PH24-QUEUE-003 (newly discovered).** A statement-level capture then showed three extra SELECTs per
+saved entry: Phase 22 made `QueueEntry` searchable, and Scout indexes one model per save,
+eager-loading that document's index relations each time. Changed entries are now persisted inside
+`QueueEntry::withoutSyncingToSearch()` and the whole set is re-indexed **once**. Search indexing is
+not disabled and the index ends in exactly the same state. A 5-entry recalculation went from **22 to
+13 statements**; the cost is now `9 + C` for `C` changed entries.
+
+New guards in `tests/Feature/Performance/QueueWaitEstimatorQueryBudgetTest.php` (6 cases): query
+count flat in eligible-personnel count, marginal cost ≤1 query per extra entry, search index synced
+once per recalculation, constant single-estimate budget, busy exclusion with restoration on
+completion, and a finite estimate when every eligible member is busy. Regression: `Scheduling`
+**176 passed**, `Search` **173 passed**, Pint **PASS (1684)**, Larastan L8 **no errors (1303)**.
+
+#### Performance — query, index, pagination and N+1 review (Increment 3)
+
+All 70 parameterless `api/v1` collection endpoints were inventoried and grouped by query pattern,
+and five `EXPLAIN (ANALYZE, BUFFERS)` plans were captured against a 15 360-row representative
+PostgreSQL 16.14 database. Worst query execution **3.025 ms** (merchant-wide client list at deep
+offset 400); no disk sort anywhere.
+
+**No index was added and no migration was written.** Every measured filter and sort is already
+index-backed or trivially bounded, and the one sequential scan is on a 90-row table where it is the
+cheaper plan. A `(branch_id, full_name)` covering index would have saved roughly 0.3 ms per read
+while adding write amplification to every client write, so it was rejected on the evidence.
+
+Pagination was proven bounded on every collection: 23 of 44 paginating files use the shared
+`ApiPagination` contract (default 25, maximum 100, allowlisted sorts, stable tiebreaker) and the
+remaining 21 apply the same bounds via a duplicated clamp. Recorded but deliberately not changed:
+the shared contract rejects an over-limit `per_page` with 422 while the duplicated clamp silently
+clamps — an API-contract inconsistency rather than a performance defect. Offset pagination is
+retained; cursor pagination was not introduced because nothing measured needs it.
+
+New guard `CollectionQueryBudgetTest` asserts query-count **equality** across two result
+cardinalities for clients, queue entries, service sessions and appointments, so an N+1 fails on any
+hardware.
+
+#### Performance — cache scope (Increment 5)
+
+Re-verified that Servana performs **no application data caching**: the only cache/Redis call sites
+in `app/` are the three in `HealthController`, and all 11 named rate limiters are keyed by principal
+or IP rather than sharing a global bucket. No cache was introduced. New `CacheScopeGuardTest` fails
+if any future phase adds a cache call site without declaring and justifying it, and records the key
+dimensions Plan §69 requires.
+
+#### Frontend — per-role content is no longer bundled for every role (PH24-BUNDLE-001)
+
+`content/roleContent.ts` statically imported all sixteen role landing and FAQ documents, so every
+importer — including two components that only needed the `LEGAL_DOCS` constant — shipped all eight
+roles' copy. Landing and FAQ text now loads lazily per role from the new `content/roleDocuments.ts`
+via `import.meta.glob`, the same pattern `content/legalContent.ts` already used for the legal
+documents; `roleContent.ts` keeps only constants and image helpers.
+
+A signed-in role now downloads **2** documents instead of 16: **484.3 KB raw / 144.7 KB gzip →
+54.8 KB raw / 16.5 KB gzip, a 88.6 % gzip reduction**, with the shared `roleContent` chunk falling
+to 0.2 KB. Content is byte-identical and still sourced verbatim from `docs/**`; no legal copy,
+branding, navigation or permission changed. `RoleLandingScaffold.vue` gained loading and error
+states plus a stale-response guard so a slower request for one role can never overwrite another's.
+
+#### Runtime — production OPcache preloading now actually happens (PH24-OPCACHE-001, -002)
+
+The Dockerfile and `opcache.ini` both claimed production preloading while no `opcache.preload`
+directive existed anywhere — `php -i` reported `opcache.preload => no value`. The production image
+now preloads via the new deterministic `docker/php/preload.php`, which uses `opcache_compile_file()`
+(never `require`) so no top-level application code runs at pool start, sorts its file list for
+reproducibility, excludes test/migration/seeder/factory/console code, reads no environment value,
+opens no connection, and fails loudly on a broken image. Development is unchanged: preloading is
+disabled there so bind-mounted edits stay live.
+
+Verified by running the built image: non-root `uid=1000(servana)`, `validate_timestamps => Off`,
+preload file readable, php-fpm reaching `ready to handle connections`, and the pool logging
+`compiled 2522 files, skipped 0`.
+
+A second defect was found only by booting that image: the first implementation logged through
+`fwrite(STDERR, …)`, but `STDERR` exists only in the CLI SAPI, so under php-fpm the script fataled
+and preloaded nothing while still appearing correctly configured. Fixed with `error_log()`, and a
+guard now rejects CLI-only constructs in that script. Cold-start timing on this host is reported as
+**inconclusive** rather than as an improvement — container boot is dominated by host contention and
+the paired runs contradicted each other.
+
+#### Performance — Section 72 verification
+
+Worst-case p95 across three complete runs on the documented representative profile: **reads
+120.31 ms against the ≤500 ms target, writes 58.22 ms against the ≤800 ms target**, with a **0 %
+error rate over 630 measured requests**. Percentiles are reported per run plus the conservative
+worst-run figure, never averaged. Wallet targets remain `blocked_external_gate` and the
+availability/RPO/RTO targets remain deferred to Phase 25; none is recorded as a pass, and no Plan
+target was lowered.
+
+The latency harness is opt-in (`SERVANA_RUN_BENCHMARK=1`) so shared CI never gates on laptop
+wall-clock. CI instead gained a Backend step running the deterministic performance guards
+(query-count/N+1 budgets, cache scope, OPcache/preload configuration). No existing required job was
+removed or weakened.
+
+**Traceability guard retargeted.** `tests/Feature/Traceability/Phase23TraceabilityTest.php` moved
+`23` into `P23_VERIFIED_PHASES` and introduced `P23_IN_FLIGHT_PHASE = '24'`, so the "never
+`verified_complete` before the PR merges" invariant now guards Phase 24 instead of the merged Phase
+23, plus a new case asserting the in-flight phase is never listed as verified. 14 → 15 cases.
+
+### Phase 23 — Security hardening, responsive/dark/a11y release audit, threat model, traceability (`phase-23-release-hardening-audit`) — verified_complete
 
 Off `main` = `d010ec50f412dfe97ee1c412362e16bf263c2a4d` (the Phase 22 PR #47 squash-merge).
-Proof: `docs/proof/phase-23.md`. **No PR yet** — product-owner authorization required.
+Proof: `docs/proof/phase-23.md`. **PR #48 MERGED** as squash
+`13f54a4df54a46abb2928783373383a87ba301d2`; final CI run `30296509464`, five required checks
+SUCCESS; governance comment `5095716132`; `reviewDecision` blank, 0 submitted reviews (**not**
+independent approval); branches deleted. (The entry below was written in flight; its
+"no PR yet" phrasing is superseded by these merge facts.)
 
 **Phase 22 reconciled to `verified_complete`** from live Git/GitHub evidence: PR #47 MERGED,
 final head `8dbb2740c9603a75392a32139270f518eb789839`, squash-merge

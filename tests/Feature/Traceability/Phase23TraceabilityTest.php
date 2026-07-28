@@ -58,11 +58,19 @@ const P23_VERIFIED_PHASES = [
     'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'gate', 'v4-adoption',
     '10', '10F', '11', '15A', '15B', '16A', '16B', '16C', '17',
     '18A', '18B', '19', '20A', '20B', '20C', '20E', '20F', '20G', '20H',
-    '21R-A', '21S', '22',
+    '21R-A', '21S', '22', '23',
 ];
 
 /** Phases that exist but are NOT verified complete — the only phases a non-verified row may name. */
-const P23_UNVERIFIED_PHASES = ['23', '20D-W', '21R-B', '21N', '24', '25'];
+const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '24', '25'];
+
+/**
+ * The phase currently IN FLIGHT — its rows may never claim `verified_complete`, because a phase is
+ * only verified once its PR is merged with green CI and recorded governance evidence. Advance this
+ * constant when the in-flight phase merges and the next phase's branch reconciles it (the same
+ * convention that promoted Phase 23 after PR #48 merged as 13f54a4).
+ */
+const P23_IN_FLIGHT_PHASE = '24';
 
 /** @return list<array<string, string>> */
 function p23TraceRows(): array
@@ -224,20 +232,26 @@ it('never claims `verified_complete` for a phase that is not verified complete',
     expect($problems)->toBe([], implode("\n", $problems));
 });
 
-it('keeps Phase 23 itself honest — never verified_complete before its PR merges', function (): void {
-    $phase23 = array_values(array_filter(
+it('keeps the in-flight phase honest — never verified_complete before its PR merges', function (): void {
+    $inFlight = array_values(array_filter(
         p23TraceRows(),
-        static fn (array $row): bool => trim($row['phase']) === '23',
+        static fn (array $row): bool => trim($row['phase']) === P23_IN_FLIGHT_PHASE,
     ));
 
-    expect($phase23)->not->toBe([], 'Phase 23 must have its own traceability row');
-
-    foreach ($phase23 as $row) {
+    // Rows appear as the in-flight phase's work lands; the invariant that matters is that none of
+    // them may claim verification before the PR merges with green CI and governance evidence.
+    foreach ($inFlight as $row) {
         expect($row['status'])->not->toBe(
             'verified_complete',
-            $row['requirement_id'].': Phase 23 cannot be verified_complete before PR merge and CI/governance verification',
+            $row['requirement_id'].': Phase '.P23_IN_FLIGHT_PHASE
+                .' cannot be verified_complete before PR merge and CI/governance verification',
         );
     }
+});
+
+it('holds the in-flight phase out of the verified-phase list', function (): void {
+    expect(P23_VERIFIED_PHASES)->not->toContain(P23_IN_FLIGHT_PHASE);
+    expect(P23_UNVERIFIED_PHASES)->toContain(P23_IN_FLIGHT_PHASE);
 });
 
 it('proves a blocked requirement is blocked by a NAMED gate with real absence evidence', function (): void {

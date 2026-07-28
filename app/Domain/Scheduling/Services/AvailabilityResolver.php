@@ -57,6 +57,42 @@ final class AvailabilityResolver
     }
 
     /**
+     * Canonical availability rows for MANY staff members in a single query, grouped by
+     * `staff_profile_id` (Phase 24, PH24-QUEUE-001).
+     *
+     * Callers that resolve a set of personnel — the queue wait estimator's capacity count, for
+     * example — must use this and pass each member's rows into {@see currentState()}/
+     * {@see isIntervalAvailable()} via their `$rows` argument, instead of calling
+     * {@see rowsFor()} once per member. Availability reads stay owned by this resolver either way.
+     *
+     * Missing members are returned as empty collections, so a caller never has to distinguish
+     * "no rows" from "not fetched" (no rows correctly derives `offline`).
+     *
+     * @param  list<int>  $staffProfileIds
+     * @return array<int, Collection<int, PersonnelAvailability>>
+     */
+    public function rowsForMany(array $staffProfileIds): array
+    {
+        if ($staffProfileIds === []) {
+            return [];
+        }
+
+        $grouped = PersonnelAvailability::query()
+            ->whereIn('staff_profile_id', $staffProfileIds)
+            ->get()
+            ->groupBy('staff_profile_id');
+
+        $rows = [];
+        foreach ($staffProfileIds as $id) {
+            /** @var Collection<int, PersonnelAvailability> $forStaff */
+            $forStaff = $grouped->get($id) ?? collect();
+            $rows[$id] = $forStaff;
+        }
+
+        return $rows;
+    }
+
+    /**
      * Is the entire proposed half-open interval available on $businessDate?
      *
      * @param  Collection<int, PersonnelAvailability>|null  $rows  preloaded rows (avoids re-query)

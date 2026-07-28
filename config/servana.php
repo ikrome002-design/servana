@@ -145,4 +145,21 @@ return [
     'scheduling' => [
         'business_timezone' => env('SCHEDULING_BUSINESS_TIMEZONE', 'Africa/Nairobi'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Performance benchmarking (Plan §72; Phase 24)
+    |--------------------------------------------------------------------------
+    |
+    | Selects which documented dataset tier `PerformanceDatasetSeeder` builds.
+    | Tiers and their engineering basis are defined in
+    | `docs/performance/phase-24-benchmark-profile.md`. This only ever affects a
+    | disposable benchmark database - the seeder refuses to run outside
+    | local/testing and against any database whose name is not disposable.
+    |
+    */
+
+    'performance' => [
+        'tier' => env('SERVANA_PERF_TIER', 'baseline'),
+    ],
 ];

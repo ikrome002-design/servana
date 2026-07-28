@@ -85,15 +85,227 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 21N | Queues / notifications / scheduled reports | ⛔ Blocked — Plan §80.1 dependency `(17,18,20D-W) → 21N`; 20D-W is blocked by Gate W. Not started. |
 | 21S | Personnel bulk SMS to personally served clients | ✅ `verified_complete` — **PR #45** "Phase 21S: Implement personnel bulk SMS" MERGED into `main` (merge commit `d8a7a15603c22e41354e570f4d2735935468d973` == `origin/main`; implementation commit `9d2c547a4a8e8af76a80bc138ae0b608e448dfe7`; CI-fix commit `34a5921ca5b2f4502e20172c10ed472d7d416954`; final PR head / empty PR-ref resync commit `dc48d095529757dd1282ad5a8659e8e087cbc2a8`; base `main`; merged `2026-07-23T09:13:10Z`). Final CI run **29992575586** on head `dc48d09…`, event `pull_request`, conclusion `success` — five required jobs all SUCCESS (Backend — Pint, Larastan, Pest; Frontend — ESLint, vue-tsc, Vitest, build; Docker — build images; Security — gitleaks; E2E — Playwright). `reviewDecision` **blank** under the PR-specific solo-maintainer governance exception recorded at [PR #45 comment 5056479540](https://github.com/ikrome002-design/servana/pull/45#issuecomment-5056479540) — **not** independent reviewer approval. Local **and** remote `phase-21s-personnel-bulk-sms` branches deleted. **REM-SMS-001** closed `verified_complete` on the merge; **REM-SMS-002** remains open (deferred live SMS provider/callback verification, must close before Phase 25). (Reconciled from `local_complete` on the `phase-22-search` branch, per the established convention that the next branch reconciles the previous phase.) Branch was off `b5a8733…` (PR #44 merge commit). Executable because Plan §80.1 lists `16C + 15A(consent) → 21S` and both are `verified_complete` with live `client_consents` + `service_sessions` substrate; Gate W remains CLOSED so 20D-W / 21R-B / 21N stay blocked. Closes **REM-SMS-001** (final closure on merge); opens **REM-SMS-002** (deferred live-provider verification, before Phase 25). Final local gates: composer validate OK; Pint 1611 clean; Larastan L8 0 errors (1257); **full backend serial 2006 passed / 7 skipped / 0 failed / 12414 assertions** and **`--parallel` identical 2006/7/0 (4 procs)**; disposable PG16.14 proof `servana_p21s_proof_*` (118 migrations from zero, 97 tables, 4/4 SMS tables, phone_encrypted nullable, 5 triggers, 0 forbidden tables, dropped, dev DB untouched); OpenAPI **242 paths / 288 operations** deterministic (openapi.json/api.ts/permissions.ts byte-identical 2×), `permission-types --check` + `api:contract:check` green; ESLint 0 errors / 138 baseline warnings; vue-tsc clean; Vitest 501/501; build OK; Playwright 21S 21/21 + full **453 passed / 0 failed** (one unrelated appointments load-flake reran clean, isolated 13/13); npm audit 0 vulnerabilities; composer audit no advisories; gitleaks no leaks; Docker dev app + prod app + prod nginx built. Closure-session fixes: F1 Pint CRLF/style on two 21S test files; F2 stale committed OpenAPI still carried `phone_encrypted` after the Form Requests moved denylist→allowlist (regenerated, counts unchanged 242/288); F3 Playwright load-flake (no code change). **Not** `verified_complete`/`ci_passed`/`merged` — no PR exists. See the Phase 21S section + `docs/proof/phase-21s.md`. |
 | 22 | Search | ✅ `verified_complete` — **PR #47** "Phase 22: Implement scoped search" MERGED into `main` (squash-merge commit `d010ec50f412dfe97ee1c412362e16bf263c2a4d` == `origin/main`; single squash parent `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408` = the REM-DEP-002 merge; final PR head `8dbb2740c9603a75392a32139270f518eb789839`; original implementation commit `edff8c059671b551eec1e6f9617ea3ae6add0d7b` preserved in the refreshed history; merged 2026-07-26T20:39:50Z by ikrome002-design). Final CI run **`30218560304`** — five required checks (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS. Governance: PR-specific solo-maintainer exception, comment id `5085264996` (<https://github.com/ikrome002-design/servana/pull/47#issuecomment-5085264996>); `reviewDecision` blank — **not** independent reviewer approval; submitted reviews `0`. Local **and** remote `phase-22-search` branches deleted. Reconciled from live Git/GitHub evidence on the `phase-23-release-hardening-audit` branch, per the convention that the next phase reconciles the previous one. |
-| 23 | Security hardening + responsive/dark/a11y release audit + threat-model | 🟡 `in_progress` — branch `phase-23-release-hardening-audit`, base `d010ec5`. **REM-DEP-002 is closed** (PR #46, merge `1e1b0fd`; `npm audit` re-verified live at **0 vulnerabilities**), so it is no longer inherited. Defect **PH23-SEC-001** (unauthorized `GET /api/v1/staff` leaking personnel phone numbers) is fixed and proven; increments 2–9 not started. See [phase-23.md](proof/phase-23.md). |
-| 24 | Performance optimization | ⬜ Not started |
+| 23 | Security hardening + responsive/dark/a11y release audit + threat-model | ✅ `verified_complete` — **PR #48** "Phase 23: Complete release hardening and audits" MERGED into `main` (squash merge `13f54a4df54a46abb2928783373383a87ba301d2` == `origin/main`; squash parent `d010ec50f412dfe97ee1c412362e16bf263c2a4d` = the Phase 22 PR #47 merge; final PR head `ee2dc2b48d50ff156f8034552d9965bbb4186967`; head branch `phase-23-release-hardening-audit`, base `main`; merged `2026-07-27T19:18:34Z`). Final CI run **`30296509464`** on head `ee2dc2b…`, conclusion `success` — five required checks all SUCCESS (Backend — Pint, Larastan, Pest; Frontend — ESLint, vue-tsc, Vitest, build; Docker — build images; Security — gitleaks; E2E — Playwright). Governance: PR-specific solo-maintainer exception, comment id **`5095716132`** (present exactly once; names the final head and final CI run and explicitly claims no independent reviewer approval); `reviewDecision` **blank**; submitted reviews **0** — **not** independent approval. Local **and** remote `phase-23-release-hardening-audit` branches deleted; `git fsck --full` exit 0 (dangling objects only). **REM-SCR-002** and **REM-TRACE-001** promoted `local_complete → verified_complete` on this merge, together with the three Phase 23 traceability rows (`SRV-SEC-001`, `SRV-MERCHANT-PROFILE-001`, `SRV-BRANCH-CALENDAR-001`). **REM-PERM-002** and **REM-EXP-001** remain **open and unchanged**. (Reconciled from live Git/GitHub evidence on the `phase-24-performance-optimization` branch, per the convention that the next branch reconciles the previous phase.) See [phase-23.md](proof/phase-23.md). |
+| 24 | Performance optimization | 🟡 `local_complete pending PR CI/review/merge` — branch `phase-24-performance-optimization`, base `13f54a4` (the verified Phase 23 squash merge). Executable under the live §80.1 chain `… → 22 → 23 → 24 → 25`; the launch rule binding 20D-W and 21R-B applies at **Phase 25 exit**, not at Phase 24 entry. Gate W re-verified **CLOSED**. See the Phase 24 section below and [phase-24.md](proof/phase-24.md). |
 | 25 | Deployment pipeline & production readiness | ⬜ Not started |
 
-## Phase 23 — Security hardening, responsive/dark/a11y release audit, threat model, traceability (`local_complete pending PR`)
+## Phase 24 — Performance optimization (`local_complete pending PR CI/review/merge`)
 
-**Branch** `phase-23-release-hardening-audit` · **base** `d010ec50f412dfe97ee1c412362e16bf263c2a4d`
-(the verified Phase 22 squash-merge) · **no PR** (product-owner authorization required) ·
+**Branch** `phase-24-performance-optimization` · **base**
+`13f54a4df54a46abb2928783373383a87ba301d2` (the verified Phase 23 PR #48 squash-merge) ·
+**no PR** · proof: [phase-24.md](proof/phase-24.md) ·
+benchmark profile: [phase-24-benchmark-profile.md](performance/phase-24-benchmark-profile.md) ·
+baseline: [phase-24-baseline.md](performance/phase-24-baseline.md).
+
+**Plan sections:** §80 Phase 24 entry (Correction 24.2), **§72**, §69, §67, §71, §13, §19, §23–§25,
+§28–§30, §64–§65, §68, §73–§76, §80.1, §85.
+
+### Entry gates (both passed, verified live)
+
+- **Gate A — Phase 23 PR #48 verified MERGED.** Squash `13f54a4…` == `origin/main`, squash parent
+  `d010ec5…`, final head `ee2dc2b…`, merged 2026-07-27T19:18:34Z; final CI run **`30296509464`**
+  five required checks SUCCESS; governance comment **`5095716132`** present exactly once;
+  `reviewDecision` blank, **0** submitted reviews (**not** independent approval); both Phase 23
+  branches deleted; `git fsck --full` exit 0; divergence `0 0`; tree clean.
+- **Gate B — External Gate W remains CLOSED.** `docs/integrations/wallet/`,
+  `docs/integrations/wallet/gate-w-evidence.md` and `docs/proof/phase-20d-w.md` are all absent, so
+  **20D-W / 21R-B / 21N stay blocked**. The live §80.1 chain `… → 22 → 23 → 24 → 25` makes Phase 24
+  executable; the launch rule binding 20D-W and 21R-B applies at **Phase 25 exit**, not Phase 24
+  entry.
+
+### Phase 23 reconciliation performed on this branch
+
+Roadmap row + section header + `docs/CHANGELOG.md` + `docs/proof/phase-23.md` (new §0 merge-closure
+table; no technical proof rewritten) + `docs/remediation/register.yaml`
+(**REM-SCR-002**, **REM-TRACE-001** → `verified_complete`, each with `completion_commit 13f54a4…`)
++ `docs/traceability/servana-requirements.csv` (`SRV-SEC-001`, `SRV-MERCHANT-PROFILE-001`,
+`SRV-BRANCH-CALENDAR-001` → `verified_complete`, 62 rows: 54 verified / 3 blocked_external_gate /
+3 deferred_future_phase / 2 architecture_adopted). **REM-PERM-002** and **REM-EXP-001** left open
+and unchanged. The traceability guard was retargeted (`23` → verified list;
+`P23_IN_FLIGHT_PHASE = '24'`), 14 → 15 cases, re-run **15 passed / 20 assertions**.
+
+### Baseline inventory (measured, not quoted)
+
+Routes **301** (126 GET; **70** parameterless `api/v1` collection endpoints); paginated call sites
+**51 / 45 files**; migrations **118**; factories **80**; **application data-cache call sites = 2**,
+both the `HealthController` deep probe — Servana performs **no** response/data caching today;
+**11** named rate limiters; **0** pre-existing performance/query-count tests; `DatabaseSeeder` has
+no demo tenant volume, so a perf dataset must be constructed. Env: 4 CPU / 7.90 GiB host, Docker
+4 CPU / ≈3.77 GiB, PHP 8.3.32, PG 16.14, Redis 7.4.9, Node 24.15.0.
+
+### Carried-work table (each verified live, not trusted from the old note)
+
+| Historical item | Live finding | Phase 24 action | Result/evidence |
+|---|---|---|---|
+| OPcache/preload (Phases 2–5) | **GAP** — `docker/php.Dockerfile:3,76` and `opcache.ini:1` claim prod preload; **no `opcache.preload` directive exists anywhere**. OPcache itself is correctly on (`validate_timestamps` 0 prod / 1 dev). | implement deterministic prod preload | Increment 7 → PH24-OPCACHE-001 |
+| Per-role `roleContent` split (Phase 11) | **GAP** — 16 markdown files (8 landing + 8 FAQ) statically imported into one module; 4 consumers pull all eight roles' copy. Legal docs already lazy. | role-level lazy split + bundle guard | Increment 6 → PH24-BUNDLE-001 |
+| Estimator recomputation (Phase 16B) | **GAP** — `recalculateBranch()` ≈ **E × (4 + S)** queries; eligibility/staff/availability re-resolved per entry; `currentState()` re-queries because its existing `$rows` argument is never passed. | eliminate the amplification | Increment 4 → PH24-QUEUE-001 |
+| Busy personnel in wait estimate (Phase 16C) | **GAP** — estimator uses `AvailabilityResolver` (schedule only, "`busy` is NOT computed here"); the authoritative `PersonnelStateProjector` is never consulted, so mid-session personnel inflate `active_capacity` and the advertised wait is **under-estimated**. | align denominator with the authoritative busy projection | Increment 4 → PH24-QUEUE-002 |
+| p95/load proof (Phase 23 handoff) | **ABSENT** — no harness, dataset, query-count guard or p95 record. | deliver | Increments 2–3, 8 |
+
+### Skipped / deferred work (verified live, not copied forward)
+
+| Work | Reason not done in Phase 24 | Correct owner | Risk if forgotten |
+|---|---|---|---|
+| Wallet performance (initiation ≤2 s, webhook ack p95 ≤250 ms) | Gate W CLOSED; no runtime exists | 20D-W → Phase 25 production recheck | integration performance unverified at launch |
+| R&E inbound/qualification performance | dependency blocked behind 20D-W | 21R-B | runtime unverified |
+| Horizon, class-separated queue topology, notifications, scheduled reports | 21N blocked behind 20D-W | 21N | no production queue/report topology |
+| Production availability / RPO / RTO | operational proof; not establishable locally | Phase 25 | launch readiness incomplete |
+| Deployment, secrets manager, backups/PITR, restore drill, runbooks, alerts | out of Phase 24 scope | Phase 25 | no production readiness |
+| REM-EXP-001 export-retention scheduling | owner blocked | 21N | retention convergence stays open |
+| REM-PERM-002 lifecycle-vs-read authority asymmetry | product-owner permission decision required | authorized future remediation | Merchant Admin can still manage a staff profile it cannot read |
+| `exports.staff_roster` disposition | no Plan definition | product owner / authorized permission remediation | inert key remains |
+| Tenant/branch switcher | no Plan §27.3 launch specification | product decision | no switcher surface |
+| Live SMS provider (REM-SMS-002), live R&E sandbox (REM-RE-002) | external onboarding | external | must close before Phase 25 exit |
+
+### Increments
+
+- **Increment 1 — predecessor reconciliation + baseline plan: COMPLETE.** Gate A + Gate W verified
+  live; Phase 23 reconciled across six files; runtime/surface inventory captured; all four carried
+  items proven still open against current code; §72 ownership matrix recorded;
+  `docs/proof/phase-24.md`, `docs/performance/phase-24-benchmark-profile.md` and
+  `docs/performance/phase-24-baseline.md` created. Verification: `Phase23TraceabilityTest` 15
+  passed / 20 assertions. No product code changed; no migration; no commit.
+- **Increment 2 — deterministic dataset harness: COMPLETE.** `PerformanceDatasetSeeder` (3 tiers,
+  built from the repo's own 80 factories) + `config/servana.php → performance.tier`. Two safety
+  guards: refuses to run outside local/testing, and refuses any database whose name is not
+  disposable; not wired into `DatabaseSeeder`. Proven on disposable **PG 16.14 `servana_p24_perf`**
+  (118 migrations from zero → seed → measure → **dropped**, verified absent; dev DB untouched).
+  `baseline` generated **933 rows** (3 merchants / 6 branches / 48 services / 36 staff / 240 clients
+  / 216 availability / 144 eligibility / 72 queue entries / 18 in-progress sessions). One **fixture**
+  defect of mine found and fixed: a `called` entry written without `assigned_at` was correctly
+  rejected by `queue_entries_assigned_at_check` — the schema was right, the fixture was wrong; no
+  constraint weakened.
+- **Increment 4 — queue estimator + busy projection: COMPLETE.** Taken before Increment 3 because
+  one carry-forward is a **correctness** defect. Three defects fixed:
+  - **PH24-QUEUE-002 (correctness).** Estimator counted mid-session personnel as capacity. Measured:
+    with 1 of 2 busy the estimate stayed **45** (expected 90); with both busy **30** (expected 60).
+    Root cause — capacity used the schedule-only `AvailabilityResolver` ("`busy` is NOT computed
+    here"), never the authoritative `PersonnelStateProjector` already used by the availability read.
+    Fixed → 45→**90**, 30→**60**, completion restores 45. `busy` stays derived, never stored;
+    formula, label, scopes and the `max(1,…)` floor unchanged; no state-machine change.
+  - **PH24-QUEUE-001 (N+1).** Measured pre-fix: `estimateFor` **14 queries**; `recalculateBranch`
+    **60** (4 entries) and **252** (16 entries). Root cause — capacity re-resolved per entry and
+    `AvailabilityResolver::currentState()` queried once per personnel because its existing `$rows`
+    argument was never passed. Fixed with `AvailabilityResolver::rowsForMany()` +
+    `PersonnelStateProjector::busyAmong()` (each rule stays with its owner), capacity resolved once
+    per distinct service, work-ahead by in-memory prefix scan. `estimateFor` **14 → ≤6**; capacity
+    cost now **constant (4)** regardless of eligible-personnel count.
+  - **PH24-QUEUE-003 (newly discovered).** Statement capture then showed **3 extra SELECTs per saved
+    entry** — Phase 22 made `QueueEntry` searchable and Scout indexes per save, eager-loading that
+    document's relations each time. Fixed by persisting inside `withoutSyncingToSearch()` and
+    re-indexing the changed set **once**; indexing is not disabled and the index ends identical.
+    **22 → 13 statements** for a 5-entry recalculation. Final shape `9 + C` for `C` changed entries.
+  - Gates: `QueueWaitEstimatorQueryBudgetTest` **6 passed/11 assertions**; `tests/Feature/Scheduling`
+    **176 passed/474**; `tests/Feature/Search` **173 passed/808**; Pint **PASS (1684)**;
+    Larastan L8 **no errors (1303)**. No migration, no index (none yet justified by a plan), no
+    authorization/tenant/masking/state-machine/financial change.
+- **Increment 3 — query/index/pagination/N+1 review: COMPLETE.** Representative tier built on
+  disposable **PG 16.14** (`servana_p24_perf_rep_20260728064707`, 118 migrations from zero,
+  **15 360 rows**, dropped + verified absent, dev DB untouched; seed 744 s). **70** parameterless
+  `api/v1` collection endpoints inventoried and grouped by query pattern. Five
+  `EXPLAIN (ANALYZE, BUFFERS)` plans captured — worst **3.025 ms** (merchant-wide clients, deep
+  offset 400); no disk sort. **No index added, no migration**: every filter/sort is index-backed or
+  trivially bounded, and the single Seq Scan is on a 90-row table (cheaper plan — documented
+  justified exception). **Pagination bounded everywhere** (23/44 files use the shared `ApiPagination`
+  contract, the other 21 apply identical `min(max(per_page,1),100)` bounds) — recorded, not changed:
+  the shared contract 422s an over-limit `per_page` while the duplicated clamp silently clamps (API
+  contract inconsistency, not a perf defect). **No N+1 remains** — 4 collection guards assert query
+  count *equality* across two cardinalities. One false positive dismissed with evidence (7
+  controllers lack eager loads because their Resources serialize only own-row columns). Two harness
+  defects of mine found + fixed: `ServiceCategoryFactory`'s global `fake()->unique()` over a 6-name
+  pool capped the dataset at 6 branches (worked around in the seeder, shared factory untouched); and
+  Scout was syncing seeded rows into the **developer's** Meilisearch indexes because `scout.prefix`
+  is `servana_{APP_ENV}_`, not database-derived — seeding now runs inside `withoutSyncingToSearch`
+  and the polluted indexes were flushed.
+- **Increment 5 — cache-scope audit + forward guard: COMPLETE.** Re-verified live: **0 application
+  data caches**, 3 cache/Redis sites (all `HealthController`), **11** rate limiters all keyed by
+  principal/IP, **0 unsafe keys**. **No cache added.** New forward guard
+  `CacheScopeGuardTest` (4 cases) fails on any undeclared new cache site, keeps the allowlist
+  honest, records the Plan §69 key dimensions, and rejects a global-bucket rate limiter.
+- **Increment 6 — role content lazy split: COMPLETE (PH24-BUNDLE-001).** New
+  `content/roleDocuments.ts` loads landing+FAQ via `import.meta.glob` (the pattern `legalContent.ts`
+  already used); `roleContent.ts` is now markdown-free; `RoleLandingScaffold.vue` loads its role's
+  two documents async with loading/error states + stale-response guard. **484.3 KB raw / 144.7 KB
+  gzip → 54.8 KB raw / 16.5 KB gzip per role (-88.6 %)**; `roleContent` chunk **→ 0.2 KB**; 16
+  independently-fetched chunks; a role downloads **2** documents, not 16. Content verbatim, no
+  legal/branding/nav/permission change. Guard `roleDocuments.spec.ts` (5 cases). Bug caught while
+  implementing: my glob used `docs/landing page/` (stale CLAUDE.md path note) — real directory is
+  `docs/landing_page/`.
+- **Increment 7 — production OPcache preload: COMPLETE (PH24-OPCACHE-001 + -002).** New
+  `docker/php/preload.php`; `opcache.preload = ${PHP_OPCACHE_PRELOAD}` in the shared ini; prod points
+  at it, dev empty; `preload_user` deliberately unset (pool is non-root). Prod image verified by
+  **running it**: `uid=1000(servana)`, `opcache.preload` resolved, `validate_timestamps => Off`,
+  `[servana-preload] compiled 2522 files, skipped 0`, pool `ready to handle connections`.
+  **PH24-OPCACHE-002 found only by booting the image**: the first version used `fwrite(STDERR,…)`,
+  but STDERR is CLI-only, so under php-fpm it fataled and preloaded **nothing** while still looking
+  correctly configured — fixed with `error_log()`, plus a guard rejecting CLI-only constructs.
+  **Cold-start timing reported as inconclusive** (13.41 s vs 38.73 s with preload; 32.19 s vs 5.79 s
+  without) — host contention dominates; no improvement claimed. Guard
+  `OpcachePreloadConfigurationTest` (11 cases). No deployment performed.
+- **Increment 8 — §72 proof + global gates: COMPLETE.** Three complete benchmark runs, 0 errors
+  across 630 requests. **Worst read p95 120.31 ms** (≤500) · **worst write p95 58.22 ms** (≤800);
+  p95 reported per run + conservative worst-run, never averaged. Harness defect caught first: one
+  principal exhausted the 120/min `api` limiter so four surfaces timed fast **429s** at ~5 ms with a
+  100 % error rate — fixed with a per-endpoint principal (throttle stays in the measured path) plus
+  a status precondition. Blocked/deferred §72 targets recorded as such, never as passes.
+
+**Full measurements:** [phase-24-results.md](performance/phase-24-results.md).
+
+### Final local gates (all sequential on the 4-CPU / 7.90 GiB host)
+
+composer validate OK · Pint **PASS 1 689** · Larastan L8 **0 errors / 1 303 files** ·
+**backend serial 2 368 passed / 8 skipped / 0 failed / 14 106 assertions** and
+**`--parallel` identical 2 368 / 8 / 0 (4 procs)** · Phase 24 perf suites **25 passed / 1 skipped**
+(skip = opt-in latency benchmark) · ESLint **0 errors / 138 warnings** (= Phase 23 baseline) ·
+vue-tsc clean · **Vitest 551 / 101 files** (was 544 / 100) · build PASS ·
+**full Playwright 846 passed / 0 failed** (= Phase 23 baseline, no retries) ·
+OpenAPI **247 paths / 296 operations unchanged**, contract + permission-types checks green ·
+**generator determinism 5/5 byte-identical over two passes** · composer audit clean ·
+**npm audit 0 vulnerabilities** · gitleaks no leaks · Docker dev + php-prod + nginx-prod all build ·
+**disposable PG 16.14 proof**: 118 migrations from zero, 97 tables, 0 forbidden Wallet/21N tables,
+audit-chain verifier clean, dropped + verified absent, dev DB untouched · `git diff --check` clean.
+
+**No migration added** — count unchanged at 118, consistent with the index review's conclusion.
+
+### Failed runs and classification
+
+| Run | Classification | Resolution |
+|---|---|---|
+| Representative seed — Faker `OverflowException` | harness defect (mine) | seeder creates the category directly; shared factory untouched |
+| Representative seed — polluted dev Meilisearch index | harness defect (mine) | seed inside `withoutSyncingToSearch`; indexes flushed |
+| Benchmark attempt 1 — ~5 ms p95 with 100 % errors | harness defect (mine) — rate limiter exhausted, timing 429s | per-endpoint principal + status precondition |
+| Prod image boot — `Undefined constant "STDERR"` | **product defect in new Phase 24 code** (PH24-OPCACHE-002) | `error_log()`; guard rejects CLI-only constructs |
+| Playwright run 1 — webServer 120 s timeout | environment/load flake (backend suite running concurrently) | isolated re-run **846 passed**; no code/timeout/retry/assertion changed |
+
+### Residual risks
+
+Laptop wall-clock is not a production guarantee (Phase 25 owns production verification) · preload
+cold-start benefit unquantified (host contention) · search latency not benchmarked on the
+representative dataset (Scout deliberately skipped during seeding) · the `per_page` 422-vs-clamp
+contract inconsistency remains across 21 controllers (no unbounded collection either way) ·
+benchmark cardinality is split between per-branch end-to-end latency and whole-database `EXPLAIN`
+evidence.
+
+**Exact next human action:** open the pull request for `phase-24-performance-optimization` → `main`,
+let the five required checks run, and record the governance evidence. **Phase 25 must not begin
+before Phase 24 merges.** Gate W remains CLOSED → 20D-W / 21R-B / 21N stay blocked, and §80.1 still
+requires 20D-W and 21R-B to complete before **Phase 25 exit**.
+
+## Phase 23 — Security hardening, responsive/dark/a11y release audit, threat model, traceability (`verified_complete`)
+
+**Branch** `phase-23-release-hardening-audit` (deleted local + remote) · **base**
+`d010ec50f412dfe97ee1c412362e16bf263c2a4d` (the verified Phase 22 squash-merge) ·
+**PR #48 MERGED** as squash `13f54a4df54a46abb2928783373383a87ba301d2` (final head
+`ee2dc2b48d50ff156f8034552d9965bbb4186967`, merged `2026-07-27T19:18:34Z`) · final CI run
+`30296509464`, five required checks SUCCESS · governance comment `5095716132`,
+`reviewDecision` blank, 0 submitted reviews (**not** independent approval) ·
 proof: [phase-23.md](proof/phase-23.md).
+
+> Lifecycle note: the increment narrative below was written while Phase 23 was in flight and is
+> preserved as historical technical evidence. Its `local_complete` / "no PR" statements are
+> superseded by the merge facts in this header, reconciled from live Git/GitHub evidence on the
+> `phase-24-performance-optimization` branch.
 
 ### Entry gates (both passed, verified live)
 
