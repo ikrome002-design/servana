@@ -25,9 +25,9 @@ surrounding cells) where a column genuinely does not apply — never a blank.
 | `verified_complete` | The owning phase is merged with green CI and phase-completion evidence. | The phase must appear in the guard's verified-phase list. |
 | `local_complete` | Implemented and green locally; the owning phase's PR is not merged. | Names the branch/state in `evidence`. |
 | `implemented` | Code is present but the owning phase has produced no completion evidence yet. | Used for the phase currently in flight. |
-| `architecture_adopted` | Only the architecture/contract is adopted; no runtime exists by design. | The adoption PR in `evidence`. |
+| `architecture_adopted` | Only the architecture/contract is adopted; no runtime exists by design. | The adoption PR in `evidence` — or, before that PR merges, the adoption **branch** and the fact that no PR exists yet. |
 | `blocked_external_gate` | Deliberately absent behind a **named** external gate. | Owning phase ∈ {20D-W, 21R-B, 21N}; names the gate; names an **absence/non-regression test**. |
-| `deferred_future_phase` | Deliberately deferred to a **named** later phase. | Owning phase ∈ {21N, 24, 25}. |
+| `deferred_future_phase` | Deliberately deferred to a **named** later phase. | Owning phase ∈ `P23_DEFERRABLE_PHASES` — currently {21N, 25, UI-01 … UI-17}. |
 | `not_applicable` | Genuinely not applicable. | Reason in `evidence`. |
 
 **Rejected outright:**
@@ -57,6 +57,19 @@ surrounding cells) where a column genuinely does not apply — never a blank.
 - **Gate-blocked work must stay modelled.** The guard requires all three blocked phases (20D-W,
   21R-B, 21N) to be represented, so deliberately-absent work can never quietly disappear from the
   matrix.
+
+## 3A. Phase vocabulary
+
+`phase` must name a phase the guard knows: `P23_VERIFIED_PHASES` (merged and verified) or
+`P23_UNVERIFIED_PHASES` (exists, not verified). `P23_IN_FLIGHT_PHASE` names the phase whose branch
+is open; its rows may never claim `verified_complete`. Advance that constant when the in-flight
+phase merges and the next phase's branch reconciles it — the convention that promoted Phase 23 after
+PR #48 (`13f54a4`) and Phase 24 after PR #49 (`db3827b`).
+
+Since Phase UI-00 the matrix also models the **corrective UI programme** (`UI-00` … `UI-17`, from
+`Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md` §25). UI phases are sequenced
+independently of the backend roadmap, and a UI requirement deferred to a later UI phase names that
+phase exactly, so it can never become an unowned promise.
 
 ## 4. Screen inventory
 

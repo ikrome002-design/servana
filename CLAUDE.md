@@ -42,13 +42,29 @@ material.
    only when the Plan requires additional business context or when a material
    business-rule ambiguity remains
    (root folder)
-3. The actual repository — implementation evidence for routes, middleware,
+3. `Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md` (root)
+   — the binding delivery authority for **UI-00 … UI-17 only** (see §3A). It
+   governs frontend information architecture, role hosts, navigation
+   placement, landing-page structure, content mapping, visual identity
+   application, responsive/theme/accessibility behavior, browser evidence,
+   visual regression, and UI production acceptance. It **never** overrides
+   items 1–2 on business, security, financial, tenancy, data-integrity, or
+   partner-integration rules.
+4. `servana-user-account-navigation-maps.md`, registered at
+   `docs/frontend/navigation/servana-user-account-navigation-maps.md` — the
+   binding human-readable frontend page and workflow specification (160
+   authenticated pages across eight accounts). Generated verbatim from
+   Appendix A of item 3; never hand-edit.
+5. `docs/auth/permission-matrix.yaml` — canonical permission keys and
+   assignment
+6. The actual repository — implementation evidence for routes, middleware,
    controllers, policies, migrations, tests, generated artifacts, and CI
-4. `docs/PROGRESS.md`, `docs/CHANGELOG.md`, and `docs/proof/` — historical
-   context and evidence records, not source-of-truth substitutes
-5. `CLAUDE.md` (this file) — IDE workflow guide only; it never overrides,
+7. `docs/PROGRESS.md`, `docs/CHANGELOG.md`, and `docs/proof/` — historical
+   context and evidence records, not source-of-truth substitutes. **Never**
+   proof that a browser route or page works.
+8. `CLAUDE.md` (this file) — IDE workflow guide only; it never overrides,
    replaces, or competes with the Development Plan
-6. `docs/brand/Servana Brand Identity.md` — colors, typography, tone, logo
+9. `docs/brand/Servana Brand Identity.md` — colors, typography, tone, logo
    usage
 
 ## 3. Project Document Map
@@ -66,14 +82,17 @@ document already defines — read the file.
 | R&E integration authority | `Refer_and_Earn_Project_Scope.md` + `Citrus_Refer_and_Earn_Production_Software_Development_Plan.md` — **not present in this repository** |
 | Engineering corrections (historical) | `SERVANA_DEVELOPMENT_PLAN_CORRECTIONS.md` — **not present**; content folded into the v4 plan |
 | Brand identity | `docs/brand/Servana Brand Identity.md` |
-| Landing page copy (one file per account user) | `docs/landing page/{role}_landing_page_content.md` |
+| **UI/UX delivery plan (UI-00 … UI-17)** | `Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md` (root) |
+| **Binding navigation map (160 pages)** | `docs/frontend/navigation/servana-user-account-navigation-maps.md` — generated; edit Appendix A of the UI/UX plan instead |
+| UI source inventories (generated) | `docs/frontend/source-inventory/{navigation-map,role-content,brand-assets,landing-images}.json` |
+| UI source generator | `node scripts/generate-ui-source-inventory.mjs` (`--check` for staleness) |
+| Landing page copy (one file per account user) | `docs/landing_page/{role}_landing_page_content.md` |
 | Data policies (per account user) | `docs/legal/data_policy/{role}_data_policy.md` |
 | Privacy policies (per account user) | `docs/legal/privacy_policy/{role}_privacy_policy.md` |
 | Terms of service (per account user) | `docs/legal/terms_of_service/{role}_terms_of_service.md` |
 | FAQs (per account user) | `docs/support/faq/{role}_faq.md` |
-| Logo (SVG) | `public/assets/brand/Logo.svg` |
-| Logo (PNG, for PDFs/emails) | `public/assets/brand/Logo.png` |
-| Favicon | `public/assets/brand/Favicon.ico` |
+| **Approved primary logo** | `public/assets/brand/Logo.png` (500×500 PNG) |
+| Favicons (exact lowercase casing) | `public/assets/brand/favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `android-chrome-192x192.png`, `android-chrome-512x512.png` |
 | Landing page images (per account user) | `public/assets/landing_page_images/{role}/` |
 
 `{role}` ∈ `merchant_administrator`, `merchant_audit`, `merchant_branch`,
@@ -83,11 +102,91 @@ landing page, data policy, privacy policy, terms of service, and FAQ — build
 one route/view per role and source copy **verbatim** from these files; never
 paraphrase legal text.
 
-> Path notes: (a) the `docs/landing page` folder name contains a space —
-> quote it in shell commands; (b) if
-> `merchant_human_resource_terms_of_service.md` is found under
-> `docs/landing page/` instead of `docs/legal/terms_of_service/`, treat that
-> as a misfile: move it to the legal folder and record the move in the PR.
+> **Path and asset notes (corrected in Phase UI-00 — verified against the
+> repository, not assumed):**
+>
+> - The canonical landing-copy directory is `docs/landing_page/` with an
+>   **underscore**. A space-named `docs/landing page/` directory has never
+>   existed here; earlier revisions of this file claimed it did and the wrong
+>   glob has already cost time in Phase 24. Do not recreate it.
+> - `public/assets/brand/Logo.svg` was **deleted under product-owner
+>   authority** (commit `49160cd`, 2026-07-07). It must not be restored,
+>   referenced, or treated as required. Historical documents may still mention
+>   it as fact; no active workflow may depend on it.
+> - Favicon filenames are **lowercase**. Linux and CI are case-sensitive, so
+>   `Favicon.ico` (as earlier revisions of this file claimed) resolves to
+>   nothing.
+> - Final landing-page image selection belongs to later UI phases and should
+>   normally use approximately **two to four** supplied images per account —
+>   never every image in the directory.
+> - Legal text is rendered **verbatim** and is never paraphrased.
+>
+> All of the above are enforced by `tests/Feature/Docs/UiSourceContractTest.php`.
+
+## 3A. Corrective UI/UX Programme (Phases UI-00 … UI-17)
+
+Frontend, role-host, landing-page, navigation, design-system, theme,
+responsive, accessibility, and UI remediation work is governed by the
+**corrective UI programme**, adopted in Phase UI-00.
+
+**Before any such task, read:**
+
+1. the complete active UI phase in
+   `Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md`;
+2. that plan's cross-cutting sections (§2 hierarchy, §4 hosts, §6 frontend
+   architecture, §7 navigation/screen contract, §9 design system, §11 footer,
+   §12 theme, §13 responsive, §17 content integrity, §18 security, §19
+   accessibility, §21 testing);
+3. the binding navigation map at
+   `docs/frontend/navigation/servana-user-account-navigation-maps.md`;
+4. `docs/brand/Servana Brand Identity.md`;
+5. the relevant role landing/legal/FAQ sources listed in §3.
+
+Backend and cross-platform invariants remain governed by
+`Servana Software Development Plan.md`. The UI plan never relaxes §6 below.
+
+### Binding UI decisions (ADR-016 … ADR-025)
+
+- **Eight account hosts, one application.** `servana.ke` (Merchant
+  Administrator), `citrus.servana.ke`, `branch.`, `finance.`, `hr.`,
+  `office.`, `staff.`, `audit.` — all served by one Laravel + Vue app.
+- **Hostnames are routing/context inputs, never authorization.** The host
+  selects the *experience*; every protected request re-evaluates identity,
+  membership, role, permission, tenant, branch, own-scope, and MFA from the
+  database. UI visibility stays UX only; server authorization is the boundary.
+- **Navigation placement.** The **Super Administrator** uses **header**
+  primary navigation on desktop. **Every other authenticated account** uses
+  **left** primary navigation on desktop, a collapsible rail on tablet, and an
+  accessible left-anchored drawer on mobile. This supersession changes
+  placement **only** — never ownership, routes, permissions, or scope.
+- **Light mode is the default.** `prefers-color-scheme` must not select the
+  theme. Dark mode is explicit and persistent (per browser when anonymous;
+  per user record when authenticated), applied before hydration.
+- **Fixed footer** on every page, with the layout reserving its block size so
+  it never obstructs actions, fields, validation, pagination, records, focused
+  controls, or mobile safe areas.
+- **Icons:** Heroicons for Vue. No emoji icons.
+- **Every account** has a role-specific public landing page, FAQ, Data Policy,
+  Privacy Policy, and Terms of Service.
+- **160 authenticated pages** are required across the eight accounts
+  (22/23/18/19/24/19/20/15). The current screen inventory records what is
+  *built*; the navigation map records what is *required*. Never conflate them,
+  and never mark a page implemented to satisfy a count.
+
+### Phase ownership
+
+`UI-00` source adoption (this contract) · `UI-01` as-built browser audit ·
+`UI-02` multi-host foundation · `UI-03` auth/session/account switching ·
+`UI-04` design system and shared components · `UI-05` content and asset
+pipeline · `UI-06` eight landing pages · `UI-07` navigation registry and
+screen contracts · `UI-08 … UI-15` the eight account experiences
+(Super Admin, Merchant Admin, Branch, HR, Finance, Front Office, Personnel,
+Audit) · `UI-16` responsive/accessibility/theme/visual-regression audit ·
+`UI-17` performance, security, deployment, closeout.
+
+UI-00 is source adoption only. **UI-01 owns the browser audit** — no UI phase
+may cite `PROGRESS.md`, `CHANGELOG.md`, or an old screenshot as proof that a
+page renders.
 
 ## 4. The AI Manifesto (apply in every phase, every task)
 
@@ -122,12 +221,20 @@ Test result · Proof of resolution · Remaining risk.
   plan-adoption PR** (mandatory before Phase 20) → feature phases (10, 10F, 11,
   15A…25, §80). The pre-feature gate (§5.4) is **closed and satisfied** (all
   PRE_FEATURE_REMEDIATION items `verified_complete`). One phase = one reviewed
-  branch/PR. Do not start Phase 20A until the v4 plan-adoption PR is reviewed and
-  merged. Do not start Phase 20D-W until External Gate W (§80.2) is open.
+  branch/PR. Do not start Phase 20D-W until External Gate W (§80.2) is open.
+- Backend roadmap position: Phase **24 is verified_complete** (PR #49 merged as
+  `db3827b`). Phase **25** (deployment) is the only remaining backend phase and
+  needs its own authorization. Phases **20D-W**, **21R-B**, **21N** stay blocked
+  behind Gate W.
+- The **corrective UI programme (UI-00 … UI-17, §3A)** runs against the UI/UX
+  plan and is sequenced independently of the backend roadmap. Execute UI phases
+  strictly in order; one UI phase = one branch = one reviewed PR = one proof
+  file. Do not start UI-01 until the UI-00 adoption PR is merged.
 - At phase start: restate the phase objective, list the Plan sections it
   implements, list files to create/modify, and the tests you will write.
-- At phase end: run the full suite, write `docs/proof/phase-{n}.md`, update
-  `docs/CHANGELOG.md`, summarize residual risks.
+- At phase end: run the full suite, write `docs/proof/phase-{n}.md` (UI phases
+  use `docs/proof/ui-{nn}.md`), update `docs/CHANGELOG.md`, summarize residual
+  risks.
 - Track progress in `docs/PROGRESS.md` (phase, status, PR, proof link).
 
 ## 6. Non-Negotiable Guardrails (reject your own work if violated)
@@ -162,6 +269,14 @@ Test result · Proof of resolution · Remaining risk.
     44px targets, axe clean on gated pages, AA contrast light + dark.
 12. Never edit a shipped migration; expand/contract for schema changes.
 13. Tests run against PostgreSQL (service container), never SQLite.
+14. **Hostnames are never authorization.** The account host selects the
+    experience; it is never an input to a policy, gate, or query scope
+    (ADR-017).
+15. **Light mode is the default** and `prefers-color-scheme` must not select
+    the theme (ADR-021). No emoji icons in UI source.
+16. **A page is not "implemented" without browser proof.** `PROGRESS.md`,
+    `CHANGELOG.md`, and old screenshots are never evidence that a route
+    renders (ADR-025).
 
 ## 7. Commands
 
@@ -172,6 +287,8 @@ make test         # composer pint --test && composer stan && php artisan test --
 npm run test      # vitest
 npm run e2e       # playwright (critical tag)
 php artisan test --filter={TestName}   # targeted
+node scripts/generate-ui-source-inventory.mjs           # regenerate UI source inventories
+node scripts/generate-ui-source-inventory.mjs --check   # fail if they are stale
 ```
 Quality gates before any commit: Pint clean · Larastan level 8 · all tests
 green · no `npm audit`/`composer audit` high+critical · gitleaks clean.

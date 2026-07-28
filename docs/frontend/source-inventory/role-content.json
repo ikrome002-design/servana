@@ -1,0 +1,335 @@
+{
+  "generated_by": "scripts/generate-ui-source-inventory.mjs",
+  "canonical_directories": {
+    "landing_page": "docs/landing_page",
+    "data_policy": "docs/legal/data_policy",
+    "privacy_policy": "docs/legal/privacy_policy",
+    "terms_of_service": "docs/legal/terms_of_service",
+    "faq": "docs/support/faq"
+  },
+  "note": "docs/landing page/ (with a space) does not exist; docs/landing_page/ is the sole canonical landing-content directory.",
+  "required_per_role": 5,
+  "total_documents": 40,
+  "documents": [
+    {
+      "role_key": "merchant_administrator",
+      "account": "Merchant Administrator",
+      "category": "landing_page",
+      "path": "docs/landing_page/merchant_administrator_landing_page_content.md",
+      "bytes": 9154,
+      "sha256": "fe773073d31313c12f1dc2822ca7a51e7e371c7c9ba796bd7e33f67f7d501ea0"
+    },
+    {
+      "role_key": "merchant_audit",
+      "account": "Audit",
+      "category": "landing_page",
+      "path": "docs/landing_page/merchant_audit_landing_page_content.md",
+      "bytes": 11032,
+      "sha256": "c55ec7bcc6a7f5ab86078b3774eaa73f3660bdc475154256eb75d69406db2a4d"
+    },
+    {
+      "role_key": "merchant_branch",
+      "account": "Branch",
+      "category": "landing_page",
+      "path": "docs/landing_page/merchant_branch_landing_page_content.md",
+      "bytes": 11623,
+      "sha256": "011108b56d2014a7b7a8d5609d127e8cef80cd9aa256c30641e271e21180b871"
+    },
+    {
+      "role_key": "merchant_finance",
+      "account": "Finance",
+      "category": "landing_page",
+      "path": "docs/landing_page/merchant_finance_landing_page_content.md",
+      "bytes": 11384,
+      "sha256": "1f541f8dadda5cf3e69078909766403f8951e69198e4a3545278e616b00b39ab"
+    },
+    {
+      "role_key": "merchant_front_office",
+      "account": "Front Office",
+      "category": "landing_page",
+      "path": "docs/landing_page/merchant_front_office_landing_page_content.md",
+      "bytes": 9666,
+      "sha256": "d7a92869cfd51fbdca1539d34d16f0f0a27827726f6db49cbcff68b34ba700e5"
+    },
+    {
+      "role_key": "merchant_human_resource",
+      "account": "Human Resource",
+      "category": "landing_page",
+      "path": "docs/landing_page/merchant_human_resource_landing_page_content.md",
+      "bytes": 9979,
+      "sha256": "963c0c3cfed4cc431d86263664a299af1456b40cfc067776316382d8ab94ef1f"
+    },
+    {
+      "role_key": "merchant_personnel",
+      "account": "Personnel",
+      "category": "landing_page",
+      "path": "docs/landing_page/merchant_personnel_landing_page_content.md",
+      "bytes": 12913,
+      "sha256": "989feac29af02b918d33f93a49096edcccda38a7a1450c68079f6c0eb6ff0015"
+    },
+    {
+      "role_key": "super_administrator",
+      "account": "Super Administrator",
+      "category": "landing_page",
+      "path": "docs/landing_page/super_administrator_landing_page_content.md",
+      "bytes": 7855,
+      "sha256": "45cd84b941ec1486a9a994f7d023e07ae8c97661aa3386936207ea73c60144f4"
+    },
+    {
+      "role_key": "merchant_administrator",
+      "account": "Merchant Administrator",
+      "category": "data_policy",
+      "path": "docs/legal/data_policy/merchant_administrator_data_policy.md",
+      "bytes": 127104,
+      "sha256": "5c61c2c342f1e2db299b30fe1a1e48fc4e52fd887e1e22d51aa0210fb18c47e6"
+    },
+    {
+      "role_key": "merchant_audit",
+      "account": "Audit",
+      "category": "data_policy",
+      "path": "docs/legal/data_policy/merchant_audit_data_policy.md",
+      "bytes": 143197,
+      "sha256": "3500dbfa093f549eac88e1d32d1f0614eb650c53cd40b1c3288a312deba50850"
+    },
+    {
+      "role_key": "merchant_branch",
+      "account": "Branch",
+      "category": "data_policy",
+      "path": "docs/legal/data_policy/merchant_branch_data_policy.md",
+      "bytes": 149108,
+      "sha256": "c471397eaf1c5601decdff96bbebf3a77b0a747545fac220a974ee202383d025"
+    },
+    {
+      "role_key": "merchant_finance",
+      "account": "Finance",
+      "category": "data_policy",
+      "path": "docs/legal/data_policy/merchant_finance_data_policy.md",
+      "bytes": 162309,
+      "sha256": "12b8e075824a75212c1d614b92d2d3e62190955b94bb7c24bad966f440d2579e"
+    },
+    {
+      "role_key": "merchant_front_office",
+      "account": "Front Office",
+      "category": "data_policy",
+      "path": "docs/legal/data_policy/merchant_front_office_data_policy.md",
+      "bytes": 164694,
+      "sha256": "0e3292ec214fa450e7c8134dc2cd18ce363b8d0db5ea0f0f5121bd0251e08759"
+    },
+    {
+      "role_key": "merchant_human_resource",
+      "account": "Human Resource",
+      "category": "data_policy",
+      "path": "docs/legal/data_policy/merchant_human_resource_data_policy.md",
+      "bytes": 191184,
+      "sha256": "680bc160594d4e9e5dbf966058171dcaa607e0b48ca57ae281a40b0f9521e59d"
+    },
+    {
+      "role_key": "merchant_personnel",
+      "account": "Personnel",
+      "category": "data_policy",
+      "path": "docs/legal/data_policy/merchant_personnel_data_policy.md",
+      "bytes": 127184,
+      "sha256": "2f1aa70d9551213df577df4e6fdd46d973e699ebb902a27e36295e2735112ebd"
+    },
+    {
+      "role_key": "super_administrator",
+      "account": "Super Administrator",
+      "category": "data_policy",
+      "path": "docs/legal/data_policy/super_administrator_data_policy.md",
+      "bytes": 112444,
+      "sha256": "324118c50648f5c98949b5210204170152fd4135249485ed2b261d6d7dcdbbd0"
+    },
+    {
+      "role_key": "merchant_administrator",
+      "account": "Merchant Administrator",
+      "category": "privacy_policy",
+      "path": "docs/legal/privacy_policy/merchant_administrator_privacy_policy.md",
+      "bytes": 87867,
+      "sha256": "b19391393d67fbb3aa242f0fc4925ae566b9bcd948b4b3c4201e375d26d53aba"
+    },
+    {
+      "role_key": "merchant_audit",
+      "account": "Audit",
+      "category": "privacy_policy",
+      "path": "docs/legal/privacy_policy/merchant_audit_privacy_policy.md",
+      "bytes": 87491,
+      "sha256": "c7b5454197cf8a058fec63df1fc1cdc6496094c57ab01a3384ea9bc9a5c57c45"
+    },
+    {
+      "role_key": "merchant_branch",
+      "account": "Branch",
+      "category": "privacy_policy",
+      "path": "docs/legal/privacy_policy/merchant_branch_privacy_policy.md",
+      "bytes": 94772,
+      "sha256": "c79e194b4e3444ff86ba0e32596fa343e02a13c01df976c9015fbfb9460ea7b4"
+    },
+    {
+      "role_key": "merchant_finance",
+      "account": "Finance",
+      "category": "privacy_policy",
+      "path": "docs/legal/privacy_policy/merchant_finance_privacy_policy.md",
+      "bytes": 102271,
+      "sha256": "7ddb57e87cb1805348ff0779dc6996b28b635d580c8afbefd2af01b3a403062f"
+    },
+    {
+      "role_key": "merchant_front_office",
+      "account": "Front Office",
+      "category": "privacy_policy",
+      "path": "docs/legal/privacy_policy/merchant_front_office_privacy_policy.md",
+      "bytes": 101458,
+      "sha256": "a0474f976aa15aef1816c696843433eb8a965bd6ed48ffa4bffbfdac3b531847"
+    },
+    {
+      "role_key": "merchant_human_resource",
+      "account": "Human Resource",
+      "category": "privacy_policy",
+      "path": "docs/legal/privacy_policy/merchant_human_resource_privacy_policy.md",
+      "bytes": 105551,
+      "sha256": "25568d42a7e408f333df6efa3684b2aef7304bdf53321b309a097aae3c4ebd7b"
+    },
+    {
+      "role_key": "merchant_personnel",
+      "account": "Personnel",
+      "category": "privacy_policy",
+      "path": "docs/legal/privacy_policy/merchant_personnel_privacy_policy.md",
+      "bytes": 109678,
+      "sha256": "54cb2921858dcf9a9917f9676662964375cf12681c35aa31aa2fdd3388319d6d"
+    },
+    {
+      "role_key": "super_administrator",
+      "account": "Super Administrator",
+      "category": "privacy_policy",
+      "path": "docs/legal/privacy_policy/super_administrator_privacy_policy.md",
+      "bytes": 74424,
+      "sha256": "ee8e4d717ba0dd100c12f46766a2bf84df0202f2e96cf0d022dc9da0235bdc44"
+    },
+    {
+      "role_key": "merchant_administrator",
+      "account": "Merchant Administrator",
+      "category": "terms_of_service",
+      "path": "docs/legal/terms_of_service/merchant_administrator_terms_of_service.md",
+      "bytes": 145742,
+      "sha256": "21f8e61119280fb78f05a202a595c913e2a73c6f9776511f04169f2c5b48e701"
+    },
+    {
+      "role_key": "merchant_audit",
+      "account": "Audit",
+      "category": "terms_of_service",
+      "path": "docs/legal/terms_of_service/merchant_audit_terms_of_service.md",
+      "bytes": 134785,
+      "sha256": "b19410d4167b872a34058be8d4bf0484770fc2d1235a7c0137fc5a227523f0b8"
+    },
+    {
+      "role_key": "merchant_branch",
+      "account": "Branch",
+      "category": "terms_of_service",
+      "path": "docs/legal/terms_of_service/merchant_branch_terms_of_service.md",
+      "bytes": 144272,
+      "sha256": "cc793102c4a683a0b41ddc7f33fff8261da8dbe6fbf25c24d80f4e697569848c"
+    },
+    {
+      "role_key": "merchant_finance",
+      "account": "Finance",
+      "category": "terms_of_service",
+      "path": "docs/legal/terms_of_service/merchant_finance_terms_of_service.md",
+      "bytes": 145922,
+      "sha256": "2e9086ea211493e3cd3bfd228ec36002b64312f9b3a3b8fd2ca9bff65648dda3"
+    },
+    {
+      "role_key": "merchant_front_office",
+      "account": "Front Office",
+      "category": "terms_of_service",
+      "path": "docs/legal/terms_of_service/merchant_front_office_terms_of_service.md",
+      "bytes": 137768,
+      "sha256": "4596a98daa27297b5e46856d511cc7f083dcc45596c93d17f6c0052452f09ab4"
+    },
+    {
+      "role_key": "merchant_human_resource",
+      "account": "Human Resource",
+      "category": "terms_of_service",
+      "path": "docs/legal/terms_of_service/merchant_human_resource_terms_of_service.md",
+      "bytes": 128197,
+      "sha256": "78fcf266bc50a517030f568e6b190272c78ccc842415c18f1eaf24d2729329ec"
+    },
+    {
+      "role_key": "merchant_personnel",
+      "account": "Personnel",
+      "category": "terms_of_service",
+      "path": "docs/legal/terms_of_service/merchant_personnel_terms_of_service.md",
+      "bytes": 112390,
+      "sha256": "0c5a1e2bb3f68d397d281ccfa7c4ea409b90630e98577678d8a5bc299eee3c29"
+    },
+    {
+      "role_key": "super_administrator",
+      "account": "Super Administrator",
+      "category": "terms_of_service",
+      "path": "docs/legal/terms_of_service/super_administrator_terms_of_service.md",
+      "bytes": 126352,
+      "sha256": "3f90ad3fae4ea40743b96c4d864d9da9e9e8d416ba168dcc22e5fb9188a4fe3a"
+    },
+    {
+      "role_key": "merchant_administrator",
+      "account": "Merchant Administrator",
+      "category": "faq",
+      "path": "docs/support/faq/merchant_administrator_faq.md",
+      "bytes": 75712,
+      "sha256": "a2b264e99a5391af3d4ca126b59c9d04027c6958c345d5c41cf8cbbfa7ae36d9"
+    },
+    {
+      "role_key": "merchant_audit",
+      "account": "Audit",
+      "category": "faq",
+      "path": "docs/support/faq/merchant_audit_faq.md",
+      "bytes": 48321,
+      "sha256": "00647d34e8cef63272745f9dd6c7605a7113766ab7e9fe06d3732f777335cd0f"
+    },
+    {
+      "role_key": "merchant_branch",
+      "account": "Branch",
+      "category": "faq",
+      "path": "docs/support/faq/merchant_branch_faq.md",
+      "bytes": 49279,
+      "sha256": "12e2a14d6ae03bc70db3829f3b4e577b7effbb304956e319626da18130e53d11"
+    },
+    {
+      "role_key": "merchant_finance",
+      "account": "Finance",
+      "category": "faq",
+      "path": "docs/support/faq/merchant_finance_faq.md",
+      "bytes": 54639,
+      "sha256": "7b8c7405de629489fe45436b7cc277b4da671ef578e70cf7a7124b020022f5f6"
+    },
+    {
+      "role_key": "merchant_front_office",
+      "account": "Front Office",
+      "category": "faq",
+      "path": "docs/support/faq/merchant_front_office_faq.md",
+      "bytes": 46407,
+      "sha256": "ef43ece0257779a4a6c8a2f3ef99265064ee5ea1d5209d038ea118421156b633"
+    },
+    {
+      "role_key": "merchant_human_resource",
+      "account": "Human Resource",
+      "category": "faq",
+      "path": "docs/support/faq/merchant_human_resource_faq.md",
+      "bytes": 40593,
+      "sha256": "f08589a395e442c38a0e5c22fbd375d4d692d838b8fee5ff259f6631dd396a70"
+    },
+    {
+      "role_key": "merchant_personnel",
+      "account": "Personnel",
+      "category": "faq",
+      "path": "docs/support/faq/merchant_personnel_faq.md",
+      "bytes": 42643,
+      "sha256": "9b66f7000a84b16bf0ce31871eb9b54dd2d80eceb987890b97e0956504e75b41"
+    },
+    {
+      "role_key": "super_administrator",
+      "account": "Super Administrator",
+      "category": "faq",
+      "path": "docs/support/faq/super_administrator_faq.md",
+      "bytes": 54286,
+      "sha256": "5e60f59aca7df21520c1451d01d7f86eaec7703b284c5ad7d1499154461ee65d"
+    }
+  ]
+}

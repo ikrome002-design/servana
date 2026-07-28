@@ -34,14 +34,31 @@ material.
    only when the Plan requires additional business context or when a material
    business-rule ambiguity remains
    (root folder)
-3. The actual repository — implementation evidence for routes, middleware,
+3. `Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md` (root)
+   — binding delivery authority for **UI-00 … UI-17 only**; governs frontend
+   information architecture, role hosts, navigation placement, landing pages,
+   content mapping, theme, responsive, accessibility, and browser evidence. It
+   never overrides items 1–2 on business, security, financial, tenancy, or
+   partner-integration rules.
+4. `docs/frontend/navigation/servana-user-account-navigation-maps.md` — the
+   binding frontend page and workflow specification (160 authenticated pages
+   across eight accounts). Generated from Appendix A of item 3; never
+   hand-edit.
+5. `docs/auth/permission-matrix.yaml` — canonical permission keys
+6. The actual repository — implementation evidence for routes, middleware,
    controllers, policies, migrations, tests, generated artifacts, and CI
-4. `docs/PROGRESS.md`, `docs/CHANGELOG.md`, and `docs/proof/` — historical
-   context and evidence records, not source-of-truth substitutes
-5. `AGENTS.md` (this file) — IDE workflow guide only; it never overrides,
+7. `docs/PROGRESS.md`, `docs/CHANGELOG.md`, and `docs/proof/` — historical
+   context and evidence records, not source-of-truth substitutes, and never
+   proof that a browser route or page works
+8. `AGENTS.md` (this file) — IDE workflow guide only; it never overrides,
    replaces, or competes with the Development Plan
-6. `docs/brand/Servana Brand Identity.md` — colors, typography, tone, logo
+9. `docs/brand/Servana Brand Identity.md` — colors, typography, tone, logo
    usage
+
+> The full corrective UI programme brief — binding UI decisions (ADR-016 …
+> ADR-025), navigation placement, light-mode default, fixed footer, and
+> UI-00 … UI-17 phase ownership — is in `CLAUDE.md` §3A. Read it before any
+> frontend, role-host, landing-page, navigation, or design-system task.
 
 ## 3. Project Document Map
 
@@ -54,14 +71,17 @@ document already defines — read the file.
 | Development plan | `Servana Software Development Plan.md` (root) |
 | Project scope | `Servana Project Scope.md` (root) |
 | Brand identity | `docs/brand/Servana Brand Identity.md` |
-| Landing page copy (one file per account user) | `docs/landing page/{role}_landing_page_content.md` |
+| **UI/UX delivery plan (UI-00 … UI-17)** | `Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md` (root) |
+| **Binding navigation map (160 pages)** | `docs/frontend/navigation/servana-user-account-navigation-maps.md` — generated; edit Appendix A of the UI/UX plan instead |
+| UI source inventories (generated) | `docs/frontend/source-inventory/{navigation-map,role-content,brand-assets,landing-images}.json` |
+| UI source generator | `node scripts/generate-ui-source-inventory.mjs` (`--check` for staleness) |
+| Landing page copy (one file per account user) | `docs/landing_page/{role}_landing_page_content.md` |
 | Data policies (per account user) | `docs/legal/data_policy/{role}_data_policy.md` |
 | Privacy policies (per account user) | `docs/legal/privacy_policy/{role}_privacy_policy.md` |
 | Terms of service (per account user) | `docs/legal/terms_of_service/{role}_terms_of_service.md` |
 | FAQs (per account user) | `docs/support/faq/{role}_faq.md` |
-| Logo (SVG) | `public/assets/brand/Logo.svg` |
-| Logo (PNG, for PDFs/emails) | `public/assets/brand/Logo.png` |
-| Favicon | `public/assets/brand/Favicon.ico` |
+| **Approved primary logo** | `public/assets/brand/Logo.png` (500×500 PNG) |
+| Favicons (exact lowercase casing) | `public/assets/brand/favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `android-chrome-192x192.png`, `android-chrome-512x512.png` |
 | Landing page images (per account user) | `public/assets/landing_page_images/{role}/` |
 
 `{role}` ∈ `merchant_administrator`, `merchant_audit`, `merchant_branch`,
@@ -71,11 +91,23 @@ landing page, data policy, privacy policy, terms of service, and FAQ — build
 one route/view per role and source copy **verbatim** from these files; never
 paraphrase legal text.
 
-> Path notes: (a) the `docs/landing page` folder name contains a space —
-> quote it in shell commands; (b) if
-> `merchant_human_resource_terms_of_service.md` is found under
-> `docs/landing page/` instead of `docs/legal/terms_of_service/`, treat that
-> as a misfile: move it to the legal folder and record the move in the PR.
+> **Path and asset notes (corrected in Phase UI-00 — verified against the
+> repository, not assumed):**
+>
+> - The canonical landing-copy directory is `docs/landing_page/` with an
+>   **underscore**. A space-named `docs/landing page/` directory has never
+>   existed here; earlier revisions of this file claimed it did. Do not
+>   recreate it.
+> - `public/assets/brand/Logo.svg` was **deleted under product-owner
+>   authority** (commit `49160cd`, 2026-07-07). Never restore, reference, or
+>   require it.
+> - Favicon filenames are **lowercase** — Linux and CI are case-sensitive, so
+>   `Favicon.ico` resolves to nothing.
+> - Final landing-page image selection belongs to later UI phases and should
+>   normally use approximately **two to four** supplied images per account.
+> - Legal text is rendered **verbatim** and is never paraphrased.
+>
+> All of the above are enforced by `tests/Feature/Docs/UiSourceContractTest.php`.
 
 ## 4. The AI Manifesto (apply in every phase, every task)
 
