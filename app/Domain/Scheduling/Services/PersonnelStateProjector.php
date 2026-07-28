@@ -53,6 +53,35 @@ final class PersonnelStateProjector
         return $this->hasActiveSession($staff);
     }
 
+    /**
+     * Which of the given personnel are busy, resolved in a SINGLE query (Phase 24, PH24-QUEUE-001).
+     *
+     * `busy` keeps exactly the same meaning as {@see isBusy()} — a live `in_progress` service
+     * session — so this projector stays the single owner of the rule. Callers that need the state
+     * for a SET of personnel (the queue wait estimator's capacity count) must use this rather than
+     * calling {@see isBusy()} in a loop.
+     *
+     * @param  list<int>  $staffProfileIds
+     * @return array<int, bool> keyed by `staff_profile_id`; present keys are busy, absent are not
+     */
+    public function busyAmong(array $staffProfileIds): array
+    {
+        if ($staffProfileIds === []) {
+            return [];
+        }
+
+        /** @var list<int> $busyIds */
+        $busyIds = ServiceSession::query()
+            ->whereIn('staff_profile_id', $staffProfileIds)
+            ->where('status', ServiceSessionStatus::InProgress->value)
+            ->distinct()
+            ->pluck('staff_profile_id')
+            ->map(static fn ($id): int => (int) $id)
+            ->all();
+
+        return array_fill_keys($busyIds, true);
+    }
+
     private function hasActiveSession(StaffProfile $staff): bool
     {
         return ServiceSession::query()

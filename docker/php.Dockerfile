@@ -62,6 +62,9 @@ FROM base AS dev
 ENV APP_ENV=local
 # Revalidate opcache on every request so code edits are picked up live.
 ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
+# Empty disables preloading: dev bind-mounts the source, so preloaded (and therefore frozen)
+# classes would mask live edits. Phase 24, PH24-OPCACHE-001.
+ENV PHP_OPCACHE_PRELOAD=""
 
 # Seed vendor/ into the image so the named volume is populated on first run.
 COPY --chown=servana:servana composer.json composer.lock ./
@@ -78,6 +81,11 @@ FROM base AS prod
 
 ENV APP_ENV=production
 ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
+# Phase 24 (PH24-OPCACHE-001): the image is immutable and validate_timestamps is 0, so preloading
+# the application + framework class files at pool start is safe and removes their parse cost from
+# the first request that touches them. The script only ever calls opcache_compile_file(), so no
+# top-level code runs at boot. Readable by the non-root `servana` runtime via the COPY --chown below.
+ENV PHP_OPCACHE_PRELOAD=/var/www/html/docker/php/preload.php
 
 COPY --chown=servana:servana . /var/www/html
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-progress --prefer-dist \

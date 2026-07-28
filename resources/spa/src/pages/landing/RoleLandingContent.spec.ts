@@ -1,9 +1,9 @@
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createMemoryHistory, createRouter, type Router } from 'vue-router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import RoleLandingScaffold from '@/components/layout/RoleLandingScaffold.vue';
-import { getFaq, getLandingHero } from '@/content/roleContent';
+import { loadFaq, loadLandingHero } from '@/content/roleDocuments';
 import { loadLegalDoc } from '@/content/legalContent';
 import { useAuthStore } from '@/stores/authStore';
 import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
@@ -40,11 +40,34 @@ function login(identity: RoleIdentity): void {
 describe('role landing content sources', () => {
   beforeEach(() => setActivePinia(createPinia()));
 
-  it('parses verbatim hero + FAQ content for every role', () => {
+  it('parses verbatim hero + FAQ content for every role', async () => {
     for (const identity of ROLE_IDENTITIES) {
-      expect(getLandingHero(identity).title.length, `${identity} hero`).toBeGreaterThan(0);
-      expect(getFaq(identity).length, `${identity} faq`).toBeGreaterThan(0);
+      const hero = await loadLandingHero(identity);
+      const faq = await loadFaq(identity);
+      expect(hero.title.length, `${identity} hero`).toBeGreaterThan(0);
+      expect(faq.length, `${identity} faq`).toBeGreaterThan(0);
     }
+  });
+
+  it('gives each role its own hero copy, never another role\'s (Phase 24 lazy split)', async () => {
+    const fo = await loadLandingHero('merchant_front_office');
+    const personnel = await loadLandingHero('merchant_personnel');
+    const audit = await loadLandingHero('merchant_audit');
+
+    expect(fo.title).not.toEqual(personnel.title);
+    expect(fo.title).not.toEqual(audit.title);
+
+    // The loader is keyed strictly by identity, so a role can never resolve a sibling's document.
+    for (const identity of ROLE_IDENTITIES) {
+      await expect(loadLandingHero(identity)).resolves.toBeDefined();
+      await expect(loadFaq(identity)).resolves.toBeDefined();
+    }
+  });
+
+  it('fails safely for an unknown role identity', async () => {
+    await expect(
+      loadLandingHero('not_a_role' as unknown as RoleIdentity),
+    ).rejects.toThrow(/not found/i);
   });
 
   it('uses each role its own legal documents (never another role\'s)', async () => {
@@ -55,13 +78,18 @@ describe('role landing content sources', () => {
     expect(personnel).toContain('Personnel');
   });
 
-  it('renders the role\'s own hero, FAQ, and legal links', () => {
+  it('renders the role\'s own hero, FAQ, and legal links', async () => {
     login('merchant_front_office');
     const router = makeRouter();
     const wrapper = mount(RoleLandingScaffold, {
       props: { identity: 'merchant_front_office' },
       global: { plugins: [router] },
     });
+
+    // Phase 24: hero + FAQ now arrive from lazily-imported per-role chunks, so the dynamic imports
+    // must settle before the rendered copy is asserted.
+    await flushPromises();
+    await wrapper.vm.$nextTick();
 
     // Verbatim hero copy from the front-office landing doc.
     expect(wrapper.text()).toContain('Serve clients faster');
