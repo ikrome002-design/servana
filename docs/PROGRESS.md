@@ -111,8 +111,8 @@ while the repository records said the work was complete.
 
 | Phase | Title | Status | Branch | Proof | Key gate / dependency |
 |---|---|---|---|---|---|
-| UI-00 | Plan adoption and source reconciliation | 🟡 `local_complete pending PR CI/review/merge` | `plan/role-ui-ux-subdomains` (base `db3827b`, **no PR**) | [ui-00.md](proof/ui-00.md) | Phase 24 merge verified live |
-| UI-01 | As-built browser and repository audit | ⬜ Not started | — | — | UI-00 PR merged |
+| UI-00 | Plan adoption and source reconciliation | ✅ `verified_complete` | PR [#50](https://github.com/ikrome002-design/servana/pull/50) merged — squash `d3f6e10`, branch deleted | [ui-00.md](proof/ui-00.md) | Phase 24 merge verified live |
+| UI-01 | As-built browser and repository audit | 🟡 `local_complete pending PR CI/review/merge` | `phase-ui-01-as-built-browser-audit` (base `d3f6e10`, **no PR**) | [ui-01.md](proof/ui-01.md) | UI-00 PR merged and reconciled live |
 | UI-02 | Multi-host foundation | ⬜ Not started | — | — | UI-01 defect register complete |
 | UI-03 | Authentication, session family, account switching | ⬜ Not started | — | — | UI-02 merged |
 | UI-04 | Design system and shared components | ⬜ Not started | — | — | UI-03 merged |
@@ -181,11 +181,71 @@ blocked; Wallet-owned money movement, Refer & Earn-owned rewards, notification/r
 external-onboarding items are untouched. UI-00 closes none of them. `REM-PERM-002`, `REM-EXP-001`,
 `REM-SMS-002` and `REM-RE-002` stay open.
 
+## Phase UI-01 — As-built browser and repository audit (`local_complete pending PR CI/review/merge`)
+
+**Branch** `phase-ui-01-as-built-browser-audit` · **base** `d3f6e10` · **no PR** ·
+**proof** [ui-01.md](proof/ui-01.md) · **artifacts** [`docs/frontend/audits/ui-01/`](frontend/audits/ui-01/)
+
+### UI-00 closure, verified live before any UI-01 work
+
+PR **#50** *Phase UI-00: Adopt role-specific UI/UX subdomain plan* is **MERGED**: base `main` ←
+head `plan/role-ui-ux-subdomains`; final PR head `c09adbaf479d62e5db839ca6dd99fd42d31df57b`; squash
+merge `d3f6e10c1ff9490bc558199940f76fbec9497272`; sole parent `db3827be40194c4a3905679e5d182f014113641b`
+(Phase 24, PR #49); merge tree `360278dbc9172384e4f8d290f882c421aa794dac` **equal** to the final
+PR-head tree; merged `2026-07-29T06:35:40Z`; final successful CI run **30425113792** with **exactly
+five** required checks all `SUCCESS`; governance comment **5114064349** present once, naming that
+head and run; `reviewDecision` **blank**; **0 submitted reviews** — no independent reviewer approval
+exists or is claimed; UI-00 branch absent local and remote. UI-00 is **verified_complete**.
+
+### What UI-01 delivered
+
+Evidence and classification only — **no corrective runtime product code**. Served-build provenance
+proven end to end (commit → tree → Docker image → Vite manifest → emitted asset → browser-loaded
+asset); the repository's route, component, navigation, page-claim and content graph audited as it
+stands; 141 provenanced baseline screenshots; and a 27-defect register, all open, each with a
+future owner phase and an acceptance test.
+
+| Measure | Result |
+|---|---|
+| Implementation claims classified | 123 → **95 true · 4 false · 1 unreachable · 0 stale · 23 not_claimed** |
+| Required 160-page contract | **42 claimed_by_route · 118 not_claimed** |
+| Router records / named routes / layout shells | 126 / 116 / 10, **0 duplicate names, 0 duplicate paths** |
+| Navigation registry vs generated fixture | 102 vs 102 items, **0 drift, 0 dead links** |
+| Navigation placement vs contract | **8 of 8 match** (Super Admin header, seven sidebar) |
+| Baseline screenshots | **141 captured, 0 unreachable, 0 failed** across 360/767/768/1024/1025/1280/1440 |
+| Defects | **27 open** — 2 critical, 7 high, 10 medium, 3 low, 5 observation |
+
+**Two critical findings.** The deployed application serves no working Servana frontend: `/` returns
+the stock Laravel welcome page, and `/spa/` mounts nothing because `vite base: '/'` conflicts with
+the nginx `/spa/` alias so every chunk 404s. Both were invisible to 846 passing Playwright tests,
+because the entire existing browser suite runs against `vite preview` — an origin that exists in no
+deployment.
+
+### Skipped work, owners, risk and entry conditions
+
+| Item | Owner | Why skipped | Risk if forgotten | Entry condition |
+|---|---|---|---|---|
+| Eight production hosts, nginx, URL generation | UI-02 | out of UI-01 scope; the audit must not create hosts | contracted account separation never arrives; the two critical serving defects persist | UI-02 start |
+| Magic Link host binding, session families, account switching | UI-03 | out of scope | cross-host session behaviour and the `/platform` role guard stay unproven | UI-03 start |
+| Design tokens, shared components, theme, footer, icons | UI-04 | out of scope | dark-by-OS default, emoji icons and unguarded money rendering persist | UI-04 start |
+| Content compiler, legal compilation, image manifest | UI-05 | out of scope | 11 unapproved brand files keep shipping publicly | UI-05 start |
+| Eight public landing pages and FAQ surfaces | UI-06 | out of scope | no public entry point; 8 FAQ paths render a broken state | UI-06 start |
+| Full 160-page runtime route contract | UI-07 | out of scope | 118 contract paths stay unrouted behind a silent catch-all | UI-07 start |
+| Eight account experiences | UI-08 … UI-15 | out of scope | account pages stay incomplete; 4 dashboards remain stubs | each phase start |
+| Release responsive / accessibility / theme / visual audit | UI-16 | UI-01 captured a baseline only and made **no** accessibility verdict | UI-01 images mistaken for approved baselines | UI-16 start |
+| Frontend performance, security, deployment closeout | UI-17 | out of scope | build-integrity and Node-engine gaps persist | UI-17 start |
+| **Backend Phase 25** production deployment | Phase 25 | needs its own product-owner authorization | — | separate authorization |
+
+**External gates unchanged.** `docs/integrations/wallet/gate-w-evidence.md` and
+`docs/proof/phase-20d-w.md` are both **absent**, so Gate W remains **CLOSED** and **20D-W**,
+**21R-B** and **21N** remain blocked. `REM-PERM-002`, `REM-EXP-001`, `REM-SMS-002` and
+`REM-RE-002` stay open and unchanged; no `REM-*` item was manufactured for a UI-01 finding.
+
 ### Next exact action
 
-Review the pushed branch `plan/role-ui-ux-subdomains`, create the UI-00 pull request into `main`,
-allow the five required checks and review/governance to complete, merge, then reconcile UI-00 to
-`verified_complete` before beginning UI-01.
+Review the pushed branch `phase-ui-01-as-built-browser-audit`, create the UI-01 pull request into
+`main`, allow the five required checks and the review/governance process to complete, merge, then
+reconcile UI-01 to `verified_complete` before beginning UI-02.
 
 ## Phase 24 — Performance optimization (`verified_complete`)
 

@@ -1,0 +1,89 @@
+{
+  "schema": "ui-01.audit.v1.audit-manifest",
+  "phase": "UI-01",
+  "phase_title": "As-built browser and repository audit",
+  "generated_by": "scripts/audit-ui-as-built.mjs",
+  "boundary": "Audit and classification only. No corrective runtime product code is part of this phase.",
+  "determinism": "Every artifact is sorted; a second generation pass produces no diff. Volatile host state lives in the committed capture files below.",
+  "evidence_inputs": [
+    {
+      "path": "docs/proof/ui-01/network/browser-evidence.json",
+      "present": true,
+      "captured_at_utc": "2026-07-15T09:00:00.000Z"
+    },
+    {
+      "path": "docs/proof/ui-01/network/environment-capture.json",
+      "present": true,
+      "captured_at_utc": "2026-07-29T08:14:13.399Z"
+    }
+  ],
+  "source_inputs": [
+    {
+      "path": "docs/frontend/navigation/role-navigation.yaml",
+      "present": true,
+      "sha256": "76fd26cf73f91b30431b5971501f80d0315e3f73642e4ed4a4170352dec13ed0"
+    },
+    {
+      "path": "docs/frontend/screens/inventory.json",
+      "present": true,
+      "sha256": "552e85970200e5b327eb8a97277db1fde06e1b364275e5e70aae7ea2747c0513"
+    },
+    {
+      "path": "docs/frontend/source-inventory/brand-assets.json",
+      "present": true,
+      "sha256": "dd377dd1922c1ea85aa119202217c55d22906139e599d95acefb49b8be7d9061"
+    },
+    {
+      "path": "docs/frontend/source-inventory/landing-images.json",
+      "present": true,
+      "sha256": "381d9b6f2bc2b0508c895749b6bc6b4274d59a9184b1c39cefbcf745a39599e0"
+    },
+    {
+      "path": "docs/frontend/source-inventory/navigation-map.json",
+      "present": true,
+      "sha256": "e69a737a11dab27459ab4a80f8122c05871f9b8d591519595ef41dc18a4e71dc"
+    },
+    {
+      "path": "docs/frontend/source-inventory/role-content.json",
+      "present": true,
+      "sha256": "3aba25dee773fb9fad6a60f8741abe8b9c4ad1541cbb835e0f77923e45cff308"
+    },
+    {
+      "path": "resources/spa/index.html",
+      "present": true,
+      "sha256": "00a58c8816ee53bd6913efa541a9db85bf9cf9247226420eeadc0246dced6c0c"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/frontend/audits/ui-01/baseline-screenshot-manifest.json",
+      "sha256": "c2abf5348fbc03e28bba9ba3e81220e79da0e1e2f9dc31dbdc6bdcb4d4960094",
+      "bytes": 134458
+    },
+    {
+      "path": "docs/frontend/audits/ui-01/defect-register.csv",
+      "sha256": "4565adfd0014b89f14bf257c31fdd10e0460757a288d4a5086eb2d6276ad2cf3",
+      "bytes": 40829
+    },
+    {
+      "path": "docs/frontend/audits/ui-01/navigation-role-audit.json",
+      "sha256": "b9efb6e3a5dd4d9fafa7a5ae860f30f2b5b5dced7dbed9f4c66ef47405e0711e",
+      "bytes": 58510
+    },
+    {
+      "path": "docs/frontend/audits/ui-01/route-component-page-audit.json",
+      "sha256": "53c93b41b15f4e70cc16879c40d6eabeaf2f746ff1628a276edc41abb7d24e26",
+      "bytes": 315299
+    },
+    {
+      "path": "docs/frontend/audits/ui-01/served-build-provenance.json",
+      "sha256": "90f429c7cf0ccd26bf9e9d97b0aa51f2ce2d8da10b79651f798ff7a51d953e31",
+      "bytes": 128301
+    },
+    {
+      "path": "docs/frontend/audits/ui-01/theme-asset-legal-audit.json",
+      "sha256": "59f5a77a3e6a4daa9fbc1e205cfeabc71c45ca333d70c30930c269278280ebd7",
+      "bytes": 60281
+    }
+  ]
+}
