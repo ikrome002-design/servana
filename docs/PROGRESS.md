@@ -86,14 +86,123 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 | 21S | Personnel bulk SMS to personally served clients | ✅ `verified_complete` — **PR #45** "Phase 21S: Implement personnel bulk SMS" MERGED into `main` (merge commit `d8a7a15603c22e41354e570f4d2735935468d973` == `origin/main`; implementation commit `9d2c547a4a8e8af76a80bc138ae0b608e448dfe7`; CI-fix commit `34a5921ca5b2f4502e20172c10ed472d7d416954`; final PR head / empty PR-ref resync commit `dc48d095529757dd1282ad5a8659e8e087cbc2a8`; base `main`; merged `2026-07-23T09:13:10Z`). Final CI run **29992575586** on head `dc48d09…`, event `pull_request`, conclusion `success` — five required jobs all SUCCESS (Backend — Pint, Larastan, Pest; Frontend — ESLint, vue-tsc, Vitest, build; Docker — build images; Security — gitleaks; E2E — Playwright). `reviewDecision` **blank** under the PR-specific solo-maintainer governance exception recorded at [PR #45 comment 5056479540](https://github.com/ikrome002-design/servana/pull/45#issuecomment-5056479540) — **not** independent reviewer approval. Local **and** remote `phase-21s-personnel-bulk-sms` branches deleted. **REM-SMS-001** closed `verified_complete` on the merge; **REM-SMS-002** remains open (deferred live SMS provider/callback verification, must close before Phase 25). (Reconciled from `local_complete` on the `phase-22-search` branch, per the established convention that the next branch reconciles the previous phase.) Branch was off `b5a8733…` (PR #44 merge commit). Executable because Plan §80.1 lists `16C + 15A(consent) → 21S` and both are `verified_complete` with live `client_consents` + `service_sessions` substrate; Gate W remains CLOSED so 20D-W / 21R-B / 21N stay blocked. Closes **REM-SMS-001** (final closure on merge); opens **REM-SMS-002** (deferred live-provider verification, before Phase 25). Final local gates: composer validate OK; Pint 1611 clean; Larastan L8 0 errors (1257); **full backend serial 2006 passed / 7 skipped / 0 failed / 12414 assertions** and **`--parallel` identical 2006/7/0 (4 procs)**; disposable PG16.14 proof `servana_p21s_proof_*` (118 migrations from zero, 97 tables, 4/4 SMS tables, phone_encrypted nullable, 5 triggers, 0 forbidden tables, dropped, dev DB untouched); OpenAPI **242 paths / 288 operations** deterministic (openapi.json/api.ts/permissions.ts byte-identical 2×), `permission-types --check` + `api:contract:check` green; ESLint 0 errors / 138 baseline warnings; vue-tsc clean; Vitest 501/501; build OK; Playwright 21S 21/21 + full **453 passed / 0 failed** (one unrelated appointments load-flake reran clean, isolated 13/13); npm audit 0 vulnerabilities; composer audit no advisories; gitleaks no leaks; Docker dev app + prod app + prod nginx built. Closure-session fixes: F1 Pint CRLF/style on two 21S test files; F2 stale committed OpenAPI still carried `phone_encrypted` after the Form Requests moved denylist→allowlist (regenerated, counts unchanged 242/288); F3 Playwright load-flake (no code change). **Not** `verified_complete`/`ci_passed`/`merged` — no PR exists. See the Phase 21S section + `docs/proof/phase-21s.md`. |
 | 22 | Search | ✅ `verified_complete` — **PR #47** "Phase 22: Implement scoped search" MERGED into `main` (squash-merge commit `d010ec50f412dfe97ee1c412362e16bf263c2a4d` == `origin/main`; single squash parent `1e1b0fd3c9ed76a50e9d47adf1cea0c0222c1408` = the REM-DEP-002 merge; final PR head `8dbb2740c9603a75392a32139270f518eb789839`; original implementation commit `edff8c059671b551eec1e6f9617ea3ae6add0d7b` preserved in the refreshed history; merged 2026-07-26T20:39:50Z by ikrome002-design). Final CI run **`30218560304`** — five required checks (Backend, Frontend, Docker, Security, E2E — Playwright) all SUCCESS. Governance: PR-specific solo-maintainer exception, comment id `5085264996` (<https://github.com/ikrome002-design/servana/pull/47#issuecomment-5085264996>); `reviewDecision` blank — **not** independent reviewer approval; submitted reviews `0`. Local **and** remote `phase-22-search` branches deleted. Reconciled from live Git/GitHub evidence on the `phase-23-release-hardening-audit` branch, per the convention that the next phase reconciles the previous one. |
 | 23 | Security hardening + responsive/dark/a11y release audit + threat-model | ✅ `verified_complete` — **PR #48** "Phase 23: Complete release hardening and audits" MERGED into `main` (squash merge `13f54a4df54a46abb2928783373383a87ba301d2` == `origin/main`; squash parent `d010ec50f412dfe97ee1c412362e16bf263c2a4d` = the Phase 22 PR #47 merge; final PR head `ee2dc2b48d50ff156f8034552d9965bbb4186967`; head branch `phase-23-release-hardening-audit`, base `main`; merged `2026-07-27T19:18:34Z`). Final CI run **`30296509464`** on head `ee2dc2b…`, conclusion `success` — five required checks all SUCCESS (Backend — Pint, Larastan, Pest; Frontend — ESLint, vue-tsc, Vitest, build; Docker — build images; Security — gitleaks; E2E — Playwright). Governance: PR-specific solo-maintainer exception, comment id **`5095716132`** (present exactly once; names the final head and final CI run and explicitly claims no independent reviewer approval); `reviewDecision` **blank**; submitted reviews **0** — **not** independent approval. Local **and** remote `phase-23-release-hardening-audit` branches deleted; `git fsck --full` exit 0 (dangling objects only). **REM-SCR-002** and **REM-TRACE-001** promoted `local_complete → verified_complete` on this merge, together with the three Phase 23 traceability rows (`SRV-SEC-001`, `SRV-MERCHANT-PROFILE-001`, `SRV-BRANCH-CALENDAR-001`). **REM-PERM-002** and **REM-EXP-001** remain **open and unchanged**. (Reconciled from live Git/GitHub evidence on the `phase-24-performance-optimization` branch, per the convention that the next branch reconciles the previous phase.) See [phase-23.md](proof/phase-23.md). |
-| 24 | Performance optimization | 🟡 `local_complete pending PR CI/review/merge` — branch `phase-24-performance-optimization`, base `13f54a4` (the verified Phase 23 squash merge). Executable under the live §80.1 chain `… → 22 → 23 → 24 → 25`; the launch rule binding 20D-W and 21R-B applies at **Phase 25 exit**, not at Phase 24 entry. Gate W re-verified **CLOSED**. See the Phase 24 section below and [phase-24.md](proof/phase-24.md). |
-| 25 | Deployment pipeline & production readiness | ⬜ Not started |
+| 24 | Performance optimization | ✅ `verified_complete` — **PR #49** "Phase 24: Optimize performance and scalability" MERGED into `main` (squash merge `db3827be40194c4a3905679e5d182f014113641b` == `origin/main`; squash parent `13f54a4df54a46abb2928783373383a87ba301d2` = the Phase 23 PR #48 merge; final PR head `46bed762f3e9afadce920ba9376bf6bc6f9b6e5e`; head branch `phase-24-performance-optimization`, base `main`; merged `2026-07-28T08:19:47Z` by ikrome002-design). Final CI run **`30340905747`** on head `46bed76…`, conclusion `success` — five required checks all SUCCESS (Backend — Pint, Larastan, Pest; Frontend — ESLint, vue-tsc, Vitest, build; Docker — build images; Security — gitleaks; E2E — Playwright); the required check set was **not** weakened. Governance: PR-specific solo-maintainer exception comment recorded on the PR (names the final head and CI run and explicitly claims no independent reviewer approval); `reviewDecision` **blank**; submitted reviews **0** — **not** independent approval. Local **and** remote `phase-24-performance-optimization` branches deleted; `git fsck --full` exit 0 (dangling objects only). Traceability rows `SRV-OPS-003/004/005` promoted `local_complete → verified_complete`, and the stale **`SRV-PERF-001`** row promoted `deferred_future_phase → verified_complete` — it had been deferring to a phase that already delivered it. Phase 24 opened **no** remediation item. (Reconciled from live Git/GitHub evidence on the `plan/role-ui-ux-subdomains` branch, per the convention that the next branch reconciles the previous phase.) See the Phase 24 section below and [phase-24.md](proof/phase-24.md). |
+| 25 | Deployment pipeline & production readiness | ⬜ **Not started** — the only remaining backend phase; needs its own product-owner authorization. Not started in the Phase UI-00 session. |
 
-## Phase 24 — Performance optimization (`local_complete pending PR CI/review/merge`)
+## Corrective UI/UX programme (UI-00 … UI-17)
+
+A product-owner-directed remediation programme for the frontend, run **independently of the backend
+roadmap above**. It exists because the browser experience was jumbled, role-confused and dark-first
+while the repository records said the work was complete.
+
+### Programme authority
+
+| Item | Value |
+|---|---|
+| **Canonical UI/UX plan** | `Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md` (repository root) · `sha256:2cea4ddded905b634a2f5a9d7739ba421b227304ba681dbee5b710e5782e7903` |
+| **Canonical navigation map** | `docs/frontend/navigation/servana-user-account-navigation-maps.md` (generated verbatim from plan Appendix A) · `sha256:1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37` |
+| **Relationship to the backend plan** | `Servana Software Development Plan.md` remains authoritative for architecture, business behaviour, security, tenancy, financial invariants, integrations, data integrity and backend phase ownership. The UI/UX plan binds **UI-00 … UI-17 only** and never overrides those rules. |
+| **Starting baseline** | `db3827b` — the Phase 24 PR #49 merge |
+| **Backend Phase 25** | **Not started** |
+| **Generator** | `node scripts/generate-ui-source-inventory.mjs` (`--check` for staleness) |
+| **Guard** | `tests/Feature/Docs/UiSourceContractTest.php` — 22 tests, 453 assertions |
+
+### UI roadmap
+
+| Phase | Title | Status | Branch | Proof | Key gate / dependency |
+|---|---|---|---|---|---|
+| UI-00 | Plan adoption and source reconciliation | 🟡 `local_complete pending PR CI/review/merge` | `plan/role-ui-ux-subdomains` (base `db3827b`, **no PR**) | [ui-00.md](proof/ui-00.md) | Phase 24 merge verified live |
+| UI-01 | As-built browser and repository audit | ⬜ Not started | — | — | UI-00 PR merged |
+| UI-02 | Multi-host foundation | ⬜ Not started | — | — | UI-01 defect register complete |
+| UI-03 | Authentication, session family, account switching | ⬜ Not started | — | — | UI-02 merged |
+| UI-04 | Design system and shared components | ⬜ Not started | — | — | UI-03 merged |
+| UI-05 | Content and asset pipeline | ⬜ Not started | — | — | UI-04 merged |
+| UI-06 | Eight public landing pages | ⬜ Not started | — | — | UI-05 merged |
+| UI-07 | Navigation registry and screen contracts | ⬜ Not started | — | — | UI-06 merged |
+| UI-08 | Super Administrator experience (22 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-09 | Merchant Administrator experience (23 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-10 | Branch experience (18 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-11 | Human Resource experience (19 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-12 | Finance experience (24 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-13 | Front Office experience (19 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-14 | Personnel experience (20 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-15 | Audit experience (15 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-16 | Responsive, accessibility, theme, visual regression | ⬜ Not started | — | — | UI-08…UI-15 merged |
+| UI-17 | Performance, security, production deployment, closeout | ⬜ Not started | — | — | UI-16 merged |
+
+### Source inventory summary (proven in UI-00, not assumed)
+
+| Item | Value |
+|---|---|
+| Canonical landing directory | `docs/landing_page/` (underscore). `docs/landing page/` (space) **has never existed** — the old `CLAUDE.md`/`AGENTS.md` path was wrong and is corrected |
+| Canonical legal directories | `docs/legal/data_policy/`, `docs/legal/privacy_policy/`, `docs/legal/terms_of_service/` |
+| Canonical FAQ directory | `docs/support/faq/` |
+| Role source documents | **40** = 8 roles × 5 categories (8 landing / 8 data policy / 8 privacy policy / 8 terms / 8 FAQ) |
+| Approved logo | `public/assets/brand/Logo.png` — PNG 500×500, `sha256:ada6fb03…` |
+| `Logo.svg` | **Deleted under product-owner authority** in `49160cd` (2026-07-07). Absent; must never be restored or referenced |
+| Favicons | All six present with **lowercase** names (`favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `android-chrome-192x192.png`, `android-chrome-512x512.png`). The old `Favicon.ico` reference was a case bug |
+| Landing images | **61** total — super_administrator 10 · merchant_administrator 8 · merchant_branch 9 · merchant_finance 5 · merchant_human_resource 8 · merchant_front_office 6 · merchant_personnel 7 · merchant_audit 8. All valid PNG, 0 cross-role duplicates. **No selection made** (UI-05/UI-06 own it) |
+| Navigation page counts | **160** — 22 / 23 / 18 / 19 / 24 / 19 / 20 / 15. §30 register parity **exact** |
+| ADR range | **ADR-016 … ADR-025** (next available after the existing 0015) |
+| Generated artifacts | `docs/frontend/source-inventory/{navigation-map,role-content,brand-assets,landing-images}.json` |
+
+### Existing substrate — evidence, not acceptance
+
+The repository already contains frontend substrate from Phase 11, corrected in Phase 23 and extended
+in Phase 24:
+
+- eight role shells and eight role landing surfaces, plus get-started pages;
+- legal/FAQ rendering;
+- a role navigation registry (`resources/spa/src/navigation/roleNavigation.ts`,
+  `docs/frontend/navigation/role-navigation.yaml`);
+- a screen inventory (`docs/frontend/screens/inventory.json` + `.yaml`) guarded by
+  `screenInventory.spec.ts`;
+- Phase 24's per-role lazy landing/FAQ content split (`resources/spa/src/content/roleDocuments.ts`).
+
+**Existence is not final UI acceptance.** None of it was rebuilt, replaced or re-audited in UI-00.
+The screen inventory records what is **built**; the navigation map records what is **required**;
+UI-00 keeps them as two separate registers and conflates neither. **UI-01 owns the browser audit** —
+no served-build provenance was even available at UI-00 kickoff, because no Vite manifest exists.
+
+### Skipped work and exact owners
+
+Recorded in full, with reason, current evidence, owner phase, risk and entry condition, in
+[ui-00.md](proof/ui-00.md) § *Skipped work and owners*. Summary of owners:
+
+`UI-01` as-built browser audit · `UI-02` eight-host runtime foundation · `UI-03` Magic Link host
+binding, session family, account switching · `UI-04` design tokens and shared components ·
+`UI-05` content compiler and asset pipeline · `UI-06` eight production landing pages ·
+`UI-07` full machine-verifiable 160-page runtime contract · `UI-08 … UI-15` the eight account
+experiences · `UI-16` responsive/accessibility/theme/visual release audit · `UI-17` UI performance,
+security, deployment and closeout · **Backend Phase 25** production deployment — *not started here*.
+
+**External gates unchanged.** Gate W remains **CLOSED**; **20D-W**, **21R-B** and **21N** remain
+blocked; Wallet-owned money movement, Refer & Earn-owned rewards, notification/reporting and
+external-onboarding items are untouched. UI-00 closes none of them. `REM-PERM-002`, `REM-EXP-001`,
+`REM-SMS-002` and `REM-RE-002` stay open.
+
+### Next exact action
+
+Review the pushed branch `plan/role-ui-ux-subdomains`, create the UI-00 pull request into `main`,
+allow the five required checks and review/governance to complete, merge, then reconcile UI-00 to
+`verified_complete` before beginning UI-01.
+
+## Phase 24 — Performance optimization (`verified_complete`)
+
+> **Lifecycle closure (reconciled live on the `plan/role-ui-ux-subdomains` branch, 2026-07-28).**
+> PR [#49](https://github.com/ikrome002-design/servana/pull/49) MERGED into `main` as squash commit
+> `db3827be40194c4a3905679e5d182f014113641b` (== `origin/main`), squash parent
+> `13f54a4df54a46abb2928783373383a87ba301d2`, final PR head
+> `46bed762f3e9afadce920ba9376bf6bc6f9b6e5e`, head branch `phase-24-performance-optimization`,
+> merged `2026-07-28T08:19:47Z`. Final CI run `30340905747` conclusion `success` with all five
+> required checks SUCCESS. `reviewDecision` blank under the PR-specific solo-maintainer exception
+> with **0** submitted reviews — **not** independent reviewer approval. Local and remote Phase 24
+> branches deleted. The section below is preserved as written during the phase; the
+> "no PR" / "local_complete" wording in it is historical.
 
 **Branch** `phase-24-performance-optimization` · **base**
 `13f54a4df54a46abb2928783373383a87ba301d2` (the verified Phase 23 PR #48 squash-merge) ·
-**no PR** · proof: [phase-24.md](proof/phase-24.md) ·
+**PR #49 merged** · proof: [phase-24.md](proof/phase-24.md) ·
 benchmark profile: [phase-24-benchmark-profile.md](performance/phase-24-benchmark-profile.md) ·
 baseline: [phase-24-baseline.md](performance/phase-24-baseline.md).
 

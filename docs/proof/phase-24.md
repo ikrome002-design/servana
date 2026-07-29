@@ -450,3 +450,72 @@ The next human action is to open the PR for `phase-24-performance-optimization` 
 five required checks run, and record the governance evidence. Phase 25 must not begin before Phase
 24 merges. Gate W remains **CLOSED**, so **20D-W**, **21R-B** and **21N** stay blocked, and the
 §80.1 launch rule still requires 20D-W and 21R-B to complete before **Phase 25 exit**.
+
+---
+
+## 10. Lifecycle closure — Phase 24 verified complete
+
+*Appended during Phase UI-00 on branch `plan/role-ui-ux-subdomains`, per the convention that the
+next branch reconciles the previous phase from live Git/GitHub evidence. Sections 1-9 above are
+preserved exactly as written during Phase 24; their "no PR" and "local_complete" wording is
+historical.*
+
+| Field | Value |
+|---|---|
+| Pull request | [#49 - Phase 24: Optimize performance and scalability](https://github.com/ikrome002-design/servana/pull/49) |
+| State | `MERGED` (not draft) |
+| Base <- head | `main` <- `phase-24-performance-optimization` |
+| Final PR head | `46bed762f3e9afadce920ba9376bf6bc6f9b6e5e` |
+| Merge commit | `db3827be40194c4a3905679e5d182f014113641b` (== `origin/main`) |
+| Squash parent | `13f54a4df54a46abb2928783373383a87ba301d2` (the Phase 23 PR #48 merge) |
+| Merged at | `2026-07-28T08:19:47Z` |
+| Merged by | `ikrome002-design` |
+| Final CI run | `30340905747` - conclusion `success` |
+| Required checks | **5 of 5 SUCCESS** on the final head |
+| `reviewDecision` | *(blank)* |
+| Submitted reviews | `0` |
+| Governance | Solo-maintainer governance exception comment recorded on the PR |
+| Branch cleanup | Complete - local and remote `phase-24-performance-optimization` deleted |
+| Repository integrity | `git fsck --full` exit `0` (dangling unreachable objects only) |
+
+Required checks at `46bed76`:
+
+```text
+Backend - Pint, Larastan, Pest              completed  success
+Frontend - ESLint, vue-tsc, Vitest, build   completed  success
+Docker - build images                       completed  success
+Security - gitleaks                          completed  success
+E2E - Playwright                             completed  success
+```
+
+The required check set was **not** weakened - the same five checks that gated Phases 22, 23 and 24
+gated this head. `reviewDecision` is blank under the PR-specific solo-maintainer exception recorded
+in the PR governance comment; **no independent reviewer approval exists and none is claimed.**
+
+### Records reconciled
+
+- `docs/PROGRESS.md` - Phase 24 roadmap row and section heading promoted to `verified_complete`.
+- `docs/CHANGELOG.md` - Unreleased entry restated with the live merge, CI and governance evidence.
+- `docs/traceability/servana-requirements.csv` - `SRV-OPS-003`, `SRV-OPS-004`, `SRV-OPS-005`
+  promoted `local_complete -> verified_complete`; **`SRV-PERF-001` promoted
+  `deferred_future_phase -> verified_complete`**, which was stale: it deferred to Phase 24 while
+  Phase 24 had already delivered exactly that work. Its `automated_tests` now names the real
+  suites (`CollectionQueryBudgetTest`, `QueueWaitEstimatorQueryBudgetTest`,
+  `ApiLatencyBenchmarkTest`, `CacheScopeGuardTest`, `OpcachePreloadConfigurationTest`).
+- `tests/Feature/Traceability/Phase23TraceabilityTest.php` - `24` added to `P23_VERIFIED_PHASES`;
+  `P23_IN_FLIGHT_PHASE` advanced from `24` to `UI-00`.
+- `docs/remediation/register.yaml` - `meta` reconciliation note. Phase 24 opened **no** remediation
+  item, so no `REM-*` status changed merely because CI passed.
+
+### Unchanged by this merge
+
+External **Gate W** was re-checked and remains **CLOSED** (`docs/integrations/wallet/` and
+`docs/proof/phase-20d-w.md` are both absent, asserted by the traceability guard). Phases **20D-W**,
+**21R-B** and **21N** stay truthfully blocked. `REM-PERM-002`, `REM-EXP-001`, `REM-SMS-002` and
+`REM-RE-002` stay open and must close before Phase 25 exit.
+
+**Backend Phase 25 has not started.** It is the only remaining backend phase and requires its own
+product-owner authorization.
+
+The corrective UI/UX programme (`UI-00` ... `UI-17`) was adopted separately in Phase UI-00 - see
+[`docs/proof/ui-00.md`](ui-00.md).

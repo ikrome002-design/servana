@@ -58,19 +58,41 @@ const P23_VERIFIED_PHASES = [
     'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'gate', 'v4-adoption',
     '10', '10F', '11', '15A', '15B', '16A', '16B', '16C', '17',
     '18A', '18B', '19', '20A', '20B', '20C', '20E', '20F', '20G', '20H',
-    '21R-A', '21S', '22', '23',
+    '21R-A', '21S', '22', '23', '24',
+];
+
+/**
+ * The corrective UI/UX programme (Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md
+ * §25). UI-00 is in flight; UI-01 … UI-17 have not started. They are listed here so a UI
+ * requirement can be deferred to a NAMED owner phase instead of disappearing from the matrix.
+ *
+ * @var list<string>
+ */
+const P23_UI_PHASES = [
+    'UI-00', 'UI-01', 'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06', 'UI-07', 'UI-08',
+    'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17',
 ];
 
 /** Phases that exist but are NOT verified complete — the only phases a non-verified row may name. */
-const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '24', '25'];
+const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '25', ...P23_UI_PHASES];
 
 /**
  * The phase currently IN FLIGHT — its rows may never claim `verified_complete`, because a phase is
  * only verified once its PR is merged with green CI and recorded governance evidence. Advance this
  * constant when the in-flight phase merges and the next phase's branch reconciles it (the same
- * convention that promoted Phase 23 after PR #48 merged as 13f54a4).
+ * convention that promoted Phase 23 after PR #48 merged as 13f54a4, and Phase 24 after PR #49
+ * merged as db3827b).
  */
-const P23_IN_FLIGHT_PHASE = '24';
+const P23_IN_FLIGHT_PHASE = 'UI-00';
+
+/**
+ * Phases a `deferred_future_phase` row may name: the remaining backend phases plus every UI phase
+ * that has not started. UI-00 is excluded — it is in flight, so its own work is not "deferred".
+ *
+ * @var list<string>
+ */
+const P23_DEFERRABLE_PHASES = ['21N', '25', 'UI-01', 'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06',
+    'UI-07', 'UI-08', 'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17'];
 
 /** @return list<array<string, string>> */
 function p23TraceRows(): array
@@ -298,11 +320,12 @@ it('names a real later phase on every deferred requirement', function (): void {
         if ($row['status'] !== 'deferred_future_phase') {
             continue;
         }
-        if (! in_array(trim($row['phase']), ['24', '25', '21N'], true)) {
+        if (! in_array(trim($row['phase']), P23_DEFERRABLE_PHASES, true)) {
             $problems[] = sprintf(
-                '%s: deferred_future_phase must name a later phase, found %s',
+                '%s: deferred_future_phase must name a later phase, found %s (allowed: %s)',
                 $row['requirement_id'],
                 $row['phase'],
+                implode(', ', P23_DEFERRABLE_PHASES),
             );
         }
     }

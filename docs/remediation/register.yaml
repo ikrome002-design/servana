@@ -9,6 +9,21 @@
 meta:
   generated: "2026-06-21"
   last_updated: "2026-07-02 (Phase 18A merchant-client payment recording verified_complete on PR #30 merge 4a489d04156aec8348eda9a968f830da31668c87; implementation baa3678, local-completion doc 24ae7e8, CI-correction aef8d51, governance/final head 0e36641; initial CI run 28574550657 FAILED (Backend Pint in PaymentRecordingGroupResource.php + E2E body-copy assertion, corrected without weakening behavior/assertions/role boundary), corrected-head run 28575564965 SUCCESS (Docker reran once, no code change), final governance-head run 28576226830 five required checks Backend/Frontend/Docker/Security/E2E—Playwright all SUCCESS; reviewDecision blank, not independent approval — reconciled PROGRESS/CHANGELOG/proof-18a/traceability from local_complete to verified_complete; no new remediation item created merely because CI passed. REM-PAY-001 stays open (spans 18A+18B). Phase 18B validation/receipts/refunds/disputes/cash-up/period-locks/finance-exports in progress on branch phase-18b-financial-validation-controls, base 4a489d0 — see REM-PAY-001, REM-ENT-001 (finance_exports evidence), REM-SM-001/REM-DDL-001 (18B state machines + tables). REM-PERM-001 (full §19.3/§19.5 matrix closure + per-key parity tests) remains open, Phase 19)"
+  # 2026-07-28 (Phase UI-00, branch plan/role-ui-ux-subdomains, base db3827b):
+  #   Phase 24 reconciled to verified_complete from live GitHub evidence — PR #49 MERGED as
+  #   squash db3827be40194c4a3905679e5d182f014113641b (final PR head 46bed762f3e9afadce920ba9376
+  #   bc6f9b6e5e, head branch phase-24-performance-optimization, merged 2026-07-28T08:19:47Z);
+  #   final CI run 30340905747 with all five required checks SUCCESS; reviewDecision blank under
+  #   the PR-specific solo-maintainer exception with 0 submitted reviews — NOT independent
+  #   approval; local and remote Phase 24 branches deleted.
+  #   Phase 24 opened NO remediation item, so no item changed status on this reconciliation.
+  #   External Gate W re-checked and remains CLOSED (docs/integrations/wallet/ and
+  #   docs/proof/phase-20d-w.md both absent), so REM-WALLET-001, REM-RE-001 (21R-B half) and
+  #   REM-REP-001 stay blocked/open. REM-PERM-002, REM-EXP-001, REM-SMS-002 and REM-RE-002 stay
+  #   open and must close before Phase 25 exit. Backend Phase 25 has NOT started.
+  #   Phase UI-00 adopts the corrective UI programme (UI-00 … UI-17) and opens no REM item: it
+  #   corrected stale CLAUDE.md/AGENTS.md source paths inside the adoption itself rather than
+  #   deferring them. See docs/proof/ui-00.md.
   branch: docs/pre-feature-remediation-gate-closure
   base: 4f0d4f3   # merged main (PR #19, R7)
   # §5.4 — CLOSED decision: all PRE_FEATURE_REMEDIATION items are verified_complete

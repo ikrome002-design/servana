@@ -6,7 +6,133 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase 24 — Performance optimization (`phase-24-performance-optimization`) — local_complete pending PR CI/review/merge
+### Phase UI-00 — Plan adoption and source reconciliation (`plan/role-ui-ux-subdomains`) — local_complete pending PR CI/review/merge
+
+Off `main` = `db3827be40194c4a3905679e5d182f014113641b` (the Phase 24 PR #49 squash-merge).
+Proof: `docs/proof/ui-00.md`. Plan authority:
+`Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md` §0, §1, §2, §3.2, §3.3, §4,
+§7, §8, §9, §11, §12, §17, §25 (Phase UI-00), §26, §28, §30, Appendix A.
+
+**Phase 24 reconciled to `verified_complete`** from live Git/GitHub evidence: PR #49 MERGED, final
+head `46bed762f3e9afadce920ba9376bf6bc6f9b6e5e`, squash-merge
+`db3827be40194c4a3905679e5d182f014113641b`, single squash parent
+`13f54a4df54a46abb2928783373383a87ba301d2` (the Phase 23 PR #48 merge), merged
+2026-07-28T08:19:47Z, final CI run `30340905747` with Backend/Frontend/Docker/Security/E2E all
+SUCCESS (the required check set was not weakened), solo-maintainer governance comment recorded,
+`reviewDecision` blank with `0` submitted reviews (**not** independent reviewer approval), local and
+remote Phase 24 branches deleted, `git fsck --full` exit 0. Traceability rows `SRV-OPS-003`,
+`SRV-OPS-004` and `SRV-OPS-005` promoted `local_complete → verified_complete`; the stale
+**`SRV-PERF-001`** row promoted `deferred_future_phase → verified_complete` — it was still deferring
+to a phase that had already delivered it. Phase 24 opened no remediation item, so no `REM-*` status
+changed. **External Gate W re-checked and remains CLOSED** — Phases **20D-W**, **21R-B** and **21N**
+stay truthfully blocked, and `REM-PERM-002`, `REM-EXP-001`, `REM-SMS-002`, `REM-RE-002` stay open.
+**Backend Phase 25 was not started.**
+
+#### Adopted
+
+- **Canonical UI/UX plan** registered at the product-owner-supplied root path
+  `Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md`
+  (`sha256:2cea4ddd…`). Plan §3.2's `docs/plans/…` path is an example ("such as"), not a mandate; no
+  second copy was created and a guard asserts none exists.
+- **Canonical navigation map** materialised verbatim from plan Appendix A to
+  `docs/frontend/navigation/servana-user-account-navigation-maps.md` (`sha256:1f69a7bb…`, 7 043
+  lines), with a provenance header naming the source plan, section, plan hash, extracted hash and
+  generation command. No independent copy existed. Nothing was paraphrased.
+- **Ten ADRs, `ADR-016` … `ADR-025`** (next available after the existing `0015`): eight account hosts
+  on one application · host context versus authorization context · cross-subdomain account-context
+  switching · Magic Link host binding · role-navigation registry and navigation-map parity ·
+  design tokens with light-mode default and dark-mode persistence · static content and
+  legal-document compilation · role-specific landing-image manifest · fixed-footer layout and
+  obstruction prevention · visual-regression and browser-proof policy.
+
+#### Corrected — proven stale source paths
+
+- **`docs/landing page/` → `docs/landing_page/`** in `CLAUDE.md` and `AGENTS.md`. The space-named
+  directory **has never existed** in this repository; the underscore directory is canonical and is
+  what the implementation reads. The stale path had already caused a real defect (recorded in
+  `docs/proof/phase-24.md`), and `docs/PROGRESS.md` had noted "repository wins" without the workflow
+  document ever being fixed.
+- **`Logo (SVG)` row removed** from both workflow guides. `public/assets/brand/Logo.svg` was deleted
+  under product-owner authority in `49160cd` (2026-07-07) and must never be restored, referenced or
+  treated as required. Historical references in `PROGRESS.md`, `docs/proof/phase-1.md` and this
+  changelog are retained as factual history.
+- **`Favicon.ico` → the six exact lowercase favicon filenames.** The documentation was corrected to
+  match the files; **no filename was re-cased**, so no HTML, manifest, Nginx, Vite, test or
+  documentation reference needed to change. On Linux and CI the old path resolved to nothing.
+
+#### Navigation contract
+
+`node scripts/generate-ui-source-inventory.mjs` parses **160** authenticated pages across the eight
+accounts — Super Administrator 22 · Merchant Administrator 23 · Branch 18 · Human Resource 19 ·
+Finance 24 · Front Office 19 · Personnel 20 · Audit 15 — each with section identifier, account, host,
+page title, required route, navigation placement and purpose. The parser fails hard on an incomplete
+page. Validated: no duplicate section identifier, no duplicate account/route pair, every route
+rooted, every account key canonical. The plan **§30 register was parsed independently (160 rows) and
+reconciled field-by-field: parity exact.** Every page is recorded `planned`, owned by **UI-07**;
+**no route, component or page was created and nothing was marked implemented.**
+
+#### Source inventories
+
+Generated, deterministic and sorted under `docs/frontend/source-inventory/`:
+
+- `role-content.json` — **40** role documents (8 landing · 8 data policy · 8 privacy policy · 8
+  terms of service · 8 FAQ), each with path, byte size and SHA-256. All eight canonical role keys
+  have all five categories; no role maps to another role's source.
+- `brand-assets.json` — the approved primary logo `public/assets/brand/Logo.png` (PNG 500×500,
+  `sha256:ada6fb03…`), all six favicons, the `Logo.svg` deletion recorded as `deleted_by_authority`,
+  and the eleven remaining files under `public/assets/brand/` classified `present_unreferenced` so
+  the inventory is a true statement about the filesystem.
+- `landing-images.json` — all **61** supplied images (10/8/9/5/8/6/7/8) with dimensions, aspect
+  ratio, byte size, SHA-256 and cross-role duplicate detection. All valid PNG; **0 duplicates**;
+  counts match the product-owner baseline exactly.
+
+#### Traceability
+
+`docs/traceability/servana-requirements.csv` 65 → 80 rows. Fifteen UI rows added using the existing
+`SRV-*` ID pattern and the closed status vocabulary: four `local_complete` UI-00 deliverables, ten
+`architecture_adopted` ADR decisions, and `SRV-UI-AUDIT-001` `deferred_future_phase` to **UI-01**.
+No UI-00 row is `verified_complete`. The Phase 23 guard was **extended, not weakened**: `24` joins
+the verified phases, `UI-00` … `UI-17` join the known-phase set, `P23_DEFERRABLE_PHASES` replaces the
+hard-coded `['24','25','21N']` so UI work can name a real owner phase, and `P23_IN_FLIGHT_PHASE`
+advances to `UI-00`. Every existing invariant still passes.
+
+#### Consistency guards added
+
+`tests/Feature/Docs/UiSourceContractTest.php` — **22 tests, 453 assertions**, offline and
+deterministic: one canonical plan and one canonical navigation map with provenance; workflow guides
+point at the UI authorities and never at a stale path; eight accounts with exact counts; exactly 160
+pages; complete unique page specifications; exact §30 parity; **no implementation claimed**; 40 role
+documents at canonical directories with no misfiled legal document; the duplicate-landing-directory
+question closed permanently; source content matching the inventoried hashes; approved logo with
+exact case; `Logo.svg` deletion still in force; six lowercase favicons; brand inventory equal to the
+filesystem; 61 images against the approved baseline, each a real PNG correctly filed with no
+duplicate; **no landing-image selection made** (the manifest's absence is asserted); all ten ADRs
+complete with unique numbers; the binding UI decisions recorded rather than implied; and generated
+artifacts reproducible and current against the plan hash.
+
+#### No runtime or visual change
+
+**No route, API, policy, permission, migration, component, style, token, asset or legal byte was
+modified.** OpenAPI is untouched. No screenshot was captured and no visual baseline was created.
+
+#### Skipped work and future owners
+
+`UI-01` as-built browser audit (also the owner of the finding that **no served-build provenance was
+available at UI-00 kickoff** — `public/build/manifest.json` does not exist) · `UI-02` eight-host
+runtime foundation · `UI-03` Magic Link host binding, session family, account switching ·
+`UI-04` design tokens, shared components, theme initialiser, fixed footer · `UI-05` content compiler
+and asset pipeline · `UI-06` eight production landing pages and the curated image manifest ·
+`UI-07` full machine-verifiable 160-page runtime contract · `UI-08 … UI-15` the eight account
+experiences · `UI-16` responsive/accessibility/theme/visual release audit · `UI-17` UI performance,
+security, deployment and closeout · **Backend Phase 25** — not started.
+
+#### Lifecycle
+
+`UI-00 = local_complete pending PR CI/review/merge`. One atomic completion commit; branch
+`plan/role-ui-ux-subdomains` pushed; **no pull request created**; UI-01 not started; backend Phase 25
+not started.
+
+### Phase 24 — Performance optimization (`phase-24-performance-optimization`) — `verified_complete` (PR #49 merged `db3827b`)
 
 Off `main` = `13f54a4df54a46abb2928783373383a87ba301d2` (the Phase 23 PR #48 squash-merge).
 Proof: `docs/proof/phase-24.md`; benchmark documents under `docs/performance/`.
