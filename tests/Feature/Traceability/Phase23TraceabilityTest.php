@@ -59,39 +59,49 @@ const P23_VERIFIED_PHASES = [
     '10', '10F', '11', '15A', '15B', '16A', '16B', '16C', '17',
     '18A', '18B', '19', '20A', '20B', '20C', '20E', '20F', '20G', '20H',
     '21R-A', '21S', '22', '23', '24',
+    // UI-00 merged as PR #50, squash d3f6e10, parent db3827b, CI run 30425113792 (five checks
+    // SUCCESS). Reconciled live on the phase-ui-01-as-built-browser-audit branch.
+    'UI-00',
 ];
 
 /**
  * The corrective UI/UX programme (Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md
- * §25). UI-00 is in flight; UI-01 … UI-17 have not started. They are listed here so a UI
- * requirement can be deferred to a NAMED owner phase instead of disappearing from the matrix.
+ * §25). UI-00 is merged and verified; UI-01 is in flight; UI-02 … UI-17 have not started. They are
+ * listed here so a UI requirement can be deferred to a NAMED owner phase instead of disappearing
+ * from the matrix.
  *
  * @var list<string>
  */
-const P23_UI_PHASES = [
-    'UI-00', 'UI-01', 'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06', 'UI-07', 'UI-08',
+const P23_UI_PHASES_VERIFIED = ['UI-00'];
+
+/** @var list<string> */
+const P23_UI_PHASES_UNVERIFIED = [
+    'UI-01', 'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06', 'UI-07', 'UI-08',
     'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17',
 ];
 
+/** Every UI phase, verified or not — the known-phase set a UI row may name. */
+const P23_UI_PHASES = [...P23_UI_PHASES_VERIFIED, ...P23_UI_PHASES_UNVERIFIED];
+
 /** Phases that exist but are NOT verified complete — the only phases a non-verified row may name. */
-const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '25', ...P23_UI_PHASES];
+const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '25', ...P23_UI_PHASES_UNVERIFIED];
 
 /**
  * The phase currently IN FLIGHT — its rows may never claim `verified_complete`, because a phase is
  * only verified once its PR is merged with green CI and recorded governance evidence. Advance this
  * constant when the in-flight phase merges and the next phase's branch reconciles it (the same
- * convention that promoted Phase 23 after PR #48 merged as 13f54a4, and Phase 24 after PR #49
- * merged as db3827b).
+ * convention that promoted Phase 23 after PR #48 merged as 13f54a4, Phase 24 after PR #49 merged
+ * as db3827b, and Phase UI-00 after PR #50 merged as d3f6e10).
  */
-const P23_IN_FLIGHT_PHASE = 'UI-00';
+const P23_IN_FLIGHT_PHASE = 'UI-01';
 
 /**
  * Phases a `deferred_future_phase` row may name: the remaining backend phases plus every UI phase
- * that has not started. UI-00 is excluded — it is in flight, so its own work is not "deferred".
+ * that has not started. The in-flight phase is excluded — its own work is not "deferred".
  *
  * @var list<string>
  */
-const P23_DEFERRABLE_PHASES = ['21N', '25', 'UI-01', 'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06',
+const P23_DEFERRABLE_PHASES = ['21N', '25', 'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06',
     'UI-07', 'UI-08', 'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17'];
 
 /** @return list<array<string, string>> */

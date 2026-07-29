@@ -6,7 +6,70 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-00 — Plan adoption and source reconciliation (`plan/role-ui-ux-subdomains`) — local_complete pending PR CI/review/merge
+### Phase UI-01 — As-built browser and repository audit (`phase-ui-01-as-built-browser-audit`) — local_complete pending PR CI/review/merge
+
+Off `main` = `d3f6e10c1ff9490bc558199940f76fbec9497272` (the Phase UI-00 PR #50 squash-merge).
+Proof: `docs/proof/ui-01.md`. Artifacts: `docs/frontend/audits/ui-01/`. Methodology:
+`docs/frontend/audits/ui-01/README.md`. Plan authority:
+`Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md` §25 (Phase UI-01), plus §0–§3.1,
+§6–§9, §11–§19, §21, §23–§25, §28, §30 and Appendix A.
+
+**Phase UI-00 reconciled to `verified_complete`** from live Git/GitHub evidence: PR #50 MERGED, final
+head `c09adbaf479d62e5db839ca6dd99fd42d31df57b`, squash-merge
+`d3f6e10c1ff9490bc558199940f76fbec9497272`, single squash parent
+`db3827be40194c4a3905679e5d182f014113641b` (the Phase 24 PR #49 merge), merge tree equal to the
+final PR-head tree at `360278dbc9172384e4f8d290f882c421aa794dac`, merged 2026-07-29T06:35:40Z, final
+CI run `30425113792` with Backend/Frontend/Docker/Security/E2E all `SUCCESS`, governance comment
+`5114064349` present exactly once, `reviewDecision` blank and **0 submitted reviews** — no
+independent reviewer approval exists or is claimed. Both UI-00 branches are deleted.
+
+#### Added
+
+- `scripts/audit-ui-as-built.mjs` — deterministic as-built audit collector. `--capture` records
+  volatile host evidence once; the default pass regenerates six sorted artifacts from it; `--check`
+  proves a second pass produces no diff.
+- `tests/e2e/ui-01-as-built-audit.spec.ts` — audit-only browser harness (16 tests) that probes both
+  the `vite preview` origin and the real production nginx image, and emits sanitized evidence.
+- `tests/Feature/Docs/Ui01AuditContractTest.php` — 15 tests enforcing evidence completeness,
+  artifact hashing, classification vocabulary, screenshot provenance, register well-formedness,
+  sanitization, and the phase boundary (every product defect must remain open).
+- `docs/frontend/audits/ui-01/` — README, `audit-manifest.json`, `served-build-provenance.json`,
+  `route-component-page-audit.json`, `navigation-role-audit.json`, `theme-asset-legal-audit.json`,
+  `baseline-screenshot-manifest.json`, `defect-register.csv`.
+- `docs/proof/ui-01.md`, `docs/proof/ui-01/network/` (sanitized capture and browser evidence) and
+  `docs/proof/ui-01/screenshots/` (141 baseline images).
+
+#### Proven current state — recorded, not corrected
+
+- **Served-build provenance closed end to end.** Commit `d3f6e10`, tree `360278d`, Vite manifest
+  `43a1608a…` byte-identical between the local Node 24 build and the `node:20-alpine` production
+  image, 259 emitted assets, no service worker and no Cache Storage anywhere.
+- **123 implementation claims classified** — 95 `true`, 4 `false`, 1 `unreachable`, 0 `stale`,
+  23 `not_claimed`. **All 160 required contract pages reconciled** — 42 `claimed_by_route`,
+  118 `not_claimed`. The two registers are kept separate and never summed.
+- **Navigation:** 102 registry items against 102 fixture items with zero drift and zero dead links;
+  placement matches the contract for all eight accounts.
+- **27 defects, all open** — 2 critical, 7 high, 10 medium, 3 low, 5 observation — each with
+  evidence, a proven-or-unproven root cause, a first-actor owner phase, an entry condition and a
+  future acceptance test. The two critical ones: the deployed root serves the stock Laravel welcome
+  page, and the deployed SPA mounts nothing because every emitted chunk 404s under the `/spa/`
+  alias. Neither was visible to the existing browser suite, which only ever ran against
+  `vite preview`.
+
+#### Unchanged by design
+
+No runtime Vue component, router file, layout, stylesheet, theme initializer, host resolver,
+controller, middleware, policy, permission key, migration, legal document, brand asset or landing
+image was modified. The existing screen inventory and navigation registry were read as evidence and
+left untouched. No product defect was fixed. Gate W remains closed; 20D-W, 21R-B and 21N remain
+blocked; backend Phase 25 was not started; `REM-PERM-002`, `REM-EXP-001`, `REM-SMS-002` and
+`REM-RE-002` are unchanged.
+
+### Phase UI-00 — Plan adoption and source reconciliation (`plan/role-ui-ux-subdomains`) — verified_complete (PR #50 merged as `d3f6e10`)
+
+> Historical record. The local-completion narrative below is preserved as written; the phase was
+> subsequently merged and reconciled during UI-01. See the UI-01 entry above for the closure
+> evidence.
 
 Off `main` = `db3827be40194c4a3905679e5d182f014113641b` (the Phase 24 PR #49 squash-merge).
 Proof: `docs/proof/ui-00.md`. Plan authority:

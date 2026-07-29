@@ -1,0 +1,1259 @@
+{
+  "schema": "ui-01.audit.v1.theme-asset-legal-audit",
+  "phase": "UI-01",
+  "generated_by": "scripts/audit-ui-as-built.mjs",
+  "boundary": "Theme code, brand assets and legal source text were read only. UI-01 edited, replaced, cropped, restored or reformatted none of them.",
+  "theme": {
+    "bootstrap_source": "resources/spa/index.html",
+    "bootstrap_runs_before_hydration": true,
+    "storage_key": "servana.theme",
+    "uses_prefers_color_scheme": true,
+    "prefers_color_scheme_selects_dark": true,
+    "contract": "ADR-021 — light mode is the default; prefers-color-scheme must not select the theme.",
+    "contract_satisfied": false,
+    "browser_observations": [
+      {
+        "scenario": "clean-browser-no-preference",
+        "os_color_scheme": "light",
+        "stored_preference": null,
+        "root_class_at_first_paint": "",
+        "root_class_after_hydration": "",
+        "stored_after_load": null,
+        "body_background": "rgb(249, 250, 251)",
+        "rendered_theme": "light",
+        "contract_expected_theme": "light",
+        "contract_satisfied": true,
+        "contract": "ADR-021 — light is the default; prefers-color-scheme must not select the theme."
+      },
+      {
+        "scenario": "prefers-color-scheme-dark-no-stored-value",
+        "os_color_scheme": "dark",
+        "stored_preference": null,
+        "root_class_at_first_paint": "dark",
+        "root_class_after_hydration": "dark",
+        "stored_after_load": null,
+        "body_background": "rgb(17, 24, 39)",
+        "rendered_theme": "dark",
+        "contract_expected_theme": "light",
+        "contract_satisfied": false,
+        "contract": "ADR-021 — light is the default; prefers-color-scheme must not select the theme."
+      },
+      {
+        "scenario": "prefers-color-scheme-light-no-stored-value",
+        "os_color_scheme": "light",
+        "stored_preference": null,
+        "root_class_at_first_paint": "",
+        "root_class_after_hydration": "",
+        "stored_after_load": null,
+        "body_background": "rgb(249, 250, 251)",
+        "rendered_theme": "light",
+        "contract_expected_theme": "light",
+        "contract_satisfied": true,
+        "contract": "ADR-021 — light is the default; prefers-color-scheme must not select the theme."
+      },
+      {
+        "scenario": "stored-dark-preference",
+        "os_color_scheme": "light",
+        "stored_preference": "dark",
+        "root_class_at_first_paint": "dark",
+        "root_class_after_hydration": "dark",
+        "stored_after_load": "dark",
+        "body_background": "rgb(17, 24, 39)",
+        "rendered_theme": "dark",
+        "contract_expected_theme": "dark",
+        "contract_satisfied": true,
+        "contract": "ADR-021 — light is the default; prefers-color-scheme must not select the theme."
+      },
+      {
+        "scenario": "stored-light-preference-under-dark-os",
+        "os_color_scheme": "dark",
+        "stored_preference": "light",
+        "root_class_at_first_paint": "",
+        "root_class_after_hydration": "",
+        "stored_after_load": "light",
+        "body_background": "rgb(249, 250, 251)",
+        "rendered_theme": "light",
+        "contract_expected_theme": "light",
+        "contract_satisfied": true,
+        "contract": "ADR-021 — light is the default; prefers-color-scheme must not select the theme."
+      }
+    ]
+  },
+  "brand_assets": {
+    "approved_inventory": [
+      {
+        "path": "public/assets/brand/android-chrome-192x192.png",
+        "approval": "approved",
+        "present": true,
+        "sha256": "697d5208c6184030c06edec64668696595c97df8a64a3e629ea7830cbdb829af",
+        "served_url": "/assets/brand/android-chrome-192x192.png",
+        "served_status": 200,
+        "served_content_type": "image/png",
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/android-chrome-512x512.png",
+        "approval": "approved",
+        "present": true,
+        "sha256": "07ce38401f1526fbe9963b0273792d0a9223c9824969334c678a677ef094baf6",
+        "served_url": "/assets/brand/android-chrome-512x512.png",
+        "served_status": 200,
+        "served_content_type": "image/png",
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/apple-touch-icon.png",
+        "approval": "approved",
+        "present": true,
+        "sha256": "724b16391e38f6791fbbc05582292bb441214aa7f5767e3c97ba200959f08824",
+        "served_url": "/assets/brand/apple-touch-icon.png",
+        "served_status": 200,
+        "served_content_type": "image/png",
+        "referenced_in_source": [
+          "resources/spa/index.html"
+        ],
+        "referenced": true
+      },
+      {
+        "path": "public/assets/brand/favicon-16x16.png",
+        "approval": "approved",
+        "present": true,
+        "sha256": "c061fd29d1a319192830158b5fcde362640181c865a96b23f34b2fa0e0f0fb08",
+        "served_url": "/assets/brand/favicon-16x16.png",
+        "served_status": 200,
+        "served_content_type": "image/png",
+        "referenced_in_source": [
+          "resources/spa/index.html"
+        ],
+        "referenced": true
+      },
+      {
+        "path": "public/assets/brand/favicon-32x32.png",
+        "approval": "approved",
+        "present": true,
+        "sha256": "079cd5e615689c009e34472e6784dfad18c032c26ad0bdb13b4754ba6b86650a",
+        "served_url": "/assets/brand/favicon-32x32.png",
+        "served_status": 200,
+        "served_content_type": "image/png",
+        "referenced_in_source": [
+          "resources/spa/index.html"
+        ],
+        "referenced": true
+      },
+      {
+        "path": "public/assets/brand/favicon.ico",
+        "approval": "approved",
+        "present": true,
+        "sha256": "29c90ffa6384f8df4b893957688389d5ac97cf42b9212b007cd944cc6abc5d4b",
+        "served_url": "/assets/brand/favicon.ico",
+        "served_status": 200,
+        "served_content_type": "image/x-icon",
+        "referenced_in_source": [
+          "resources/spa/index.html"
+        ],
+        "referenced": true
+      },
+      {
+        "path": "public/assets/brand/Logo.png",
+        "approval": "approved",
+        "present": true,
+        "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035",
+        "served_url": "/assets/brand/Logo.png",
+        "served_status": 200,
+        "served_content_type": "image/png",
+        "referenced_in_source": [
+          "resources/spa/src/components/layout/AppShell.vue",
+          "resources/spa/src/layouts/AuthLayout.vue",
+          "resources/spa/src/pages/Home.vue"
+        ],
+        "referenced": true
+      },
+      {
+        "path": "public/assets/brand/Logo.svg",
+        "approval": "deleted_by_authority",
+        "present": false,
+        "sha256": null,
+        "served_url": "/assets/brand/Logo.svg",
+        "served_status": 404,
+        "served_content_type": "text/html; charset=utf-8",
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/PNG.png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "5347cdc6f439438e1940147ea15b2f2d548bf4e654f7a258cbe24215236b8ae0",
+        "served_url": "/assets/brand/PNG.png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_31 PM.png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "e708c9d89c2ba220cfe5abbe84e99068661b5cb4b65cba77109a0a7de3aaa7ba",
+        "served_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_31 PM.png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_42 PM.png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "632a9aac5ee08d08bf5d85f190471331a6e264ac2174279bfddbfa1886386563",
+        "served_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_42 PM.png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_00 PM.png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "e708c9d89c2ba220cfe5abbe84e99068661b5cb4b65cba77109a0a7de3aaa7ba",
+        "served_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_00 PM.png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_15 PM.png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "632a9aac5ee08d08bf5d85f190471331a6e264ac2174279bfddbfa1886386563",
+        "served_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_15 PM.png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_07 PM (1).png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "5347cdc6f439438e1940147ea15b2f2d548bf4e654f7a258cbe24215236b8ae0",
+        "served_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_07 PM (1).png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (2).png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "cfba6fa52b17bd408338882a6c9375ec0c3d2896947fc53992a2d42f2301ed6c",
+        "served_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (2).png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (3).png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "3614c1a4df60532e2cc7d76a68f57cf769b04c8e2e4e5be25b6c9c9761644376",
+        "served_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (3).png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_09 PM (4).png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "1df576d4d5821e2616b9d317f266cd310d80d486a54982e631ef42320e2cfa8d",
+        "served_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_09 PM (4).png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_49_32 PM.png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "92a7037a93243dc50c681588d0a81558ab0a515d61269b3b08c26c948d018233",
+        "served_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_49_32 PM.png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      },
+      {
+        "path": "public/assets/brand/v1/ChatGPT_Image_Jun_8__2026__05_50_13_PM-removebg-preview.png",
+        "approval": "present_unreferenced",
+        "present": true,
+        "sha256": "1ccb1a5b426d2e8ff098728f2ed14a50cea3959e72f4e4e8f0c1b397df25b6e1",
+        "served_url": "/assets/brand/v1/ChatGPT_Image_Jun_8__2026__05_50_13_PM-removebg-preview.png",
+        "served_status": null,
+        "served_content_type": null,
+        "referenced_in_source": [],
+        "referenced": false
+      }
+    ],
+    "unapproved_files_present": [],
+    "logo_svg_present": false,
+    "logo_svg_referenced_in_source": [],
+    "totals": {
+      "inventoried": 19,
+      "by_approval": {
+        "approved": 7,
+        "deleted_by_authority": 1,
+        "present_unreferenced": 11
+      },
+      "referenced_in_source": 5,
+      "unreferenced_in_source": [
+        "public/assets/brand/Logo.svg",
+        "public/assets/brand/PNG.png",
+        "public/assets/brand/android-chrome-192x192.png",
+        "public/assets/brand/android-chrome-512x512.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_31 PM.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_42 PM.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_00 PM.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_15 PM.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_07 PM (1).png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (2).png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (3).png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_09 PM (4).png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_49_32 PM.png",
+        "public/assets/brand/v1/ChatGPT_Image_Jun_8__2026__05_50_13_PM-removebg-preview.png"
+      ],
+      "approved_but_unreferenced": [
+        "public/assets/brand/android-chrome-192x192.png",
+        "public/assets/brand/android-chrome-512x512.png"
+      ],
+      "unapproved_but_publicly_served": [
+        "public/assets/brand/PNG.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_31 PM.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_42 PM.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_00 PM.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_15 PM.png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_07 PM (1).png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (2).png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (3).png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_09 PM (4).png",
+        "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_49_32 PM.png",
+        "public/assets/brand/v1/ChatGPT_Image_Jun_8__2026__05_50_13_PM-removebg-preview.png"
+      ],
+      "served_ok": 7,
+      "outside_inventory": 0
+    }
+  },
+  "landing_images": {
+    "total": 61,
+    "per_account": [
+      {
+        "account_key": "super_administrator",
+        "supplied": 10,
+        "referenced_in_source": 0
+      },
+      {
+        "account_key": "merchant_administrator",
+        "supplied": 8,
+        "referenced_in_source": 0
+      },
+      {
+        "account_key": "merchant_branch",
+        "supplied": 9,
+        "referenced_in_source": 0
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "supplied": 8,
+        "referenced_in_source": 0
+      },
+      {
+        "account_key": "merchant_finance",
+        "supplied": 5,
+        "referenced_in_source": 0
+      },
+      {
+        "account_key": "merchant_front_office",
+        "supplied": 6,
+        "referenced_in_source": 0
+      },
+      {
+        "account_key": "merchant_personnel",
+        "supplied": 7,
+        "referenced_in_source": 0
+      },
+      {
+        "account_key": "merchant_audit",
+        "supplied": 8,
+        "referenced_in_source": 0
+      }
+    ],
+    "selection_owner_phase": "UI-05 compiles the image manifest; UI-06 selects the two-to-four images each landing page uses."
+  },
+  "role_content": {
+    "renderer": {
+      "path": "resources/spa/src/pages/legal/LegalDocument.vue",
+      "present": true,
+      "loader": "resources/spa/src/content/legalContent.ts",
+      "loads_verbatim_from_docs": true,
+      "lazy": true,
+      "route_name": "legal.document",
+      "renders_faq": false,
+      "faq_note": "No FAQ route or renderer exists. `/legal/{role}/faq` matches the legal.document route, fails to resolve a document and renders a landmark-less error state rather than a 404. UI-06 owns FAQ surfaces."
+    },
+    "documents": [
+      {
+        "account_key": "merchant_administrator",
+        "category": "data_policy",
+        "source_path": "docs/legal/data_policy/merchant_administrator_data_policy.md",
+        "source_present": true,
+        "source_sha256": "5c61c2c342f1e2db299b30fe1a1e48fc4e52fd887e1e22d51aa0210fb18c47e6",
+        "bytes": 127104,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_administrator",
+        "category": "faq",
+        "source_path": "docs/support/faq/merchant_administrator_faq.md",
+        "source_present": true,
+        "source_sha256": "a2b264e99a5391af3d4ca126b59c9d04027c6958c345d5c41cf8cbbfa7ae36d9",
+        "bytes": 75712,
+        "reachable_route": "no_faq_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_administrator",
+        "category": "landing_page",
+        "source_path": "docs/landing_page/merchant_administrator_landing_page_content.md",
+        "source_present": true,
+        "source_sha256": "fe773073d31313c12f1dc2822ca7a51e7e371c7c9ba796bd7e33f67f7d501ea0",
+        "bytes": 9154,
+        "reachable_route": "no_public_landing_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_administrator",
+        "category": "privacy_policy",
+        "source_path": "docs/legal/privacy_policy/merchant_administrator_privacy_policy.md",
+        "source_present": true,
+        "source_sha256": "b19391393d67fbb3aa242f0fc4925ae566b9bcd948b4b3c4201e375d26d53aba",
+        "bytes": 87867,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_administrator",
+        "category": "terms_of_service",
+        "source_path": "docs/legal/terms_of_service/merchant_administrator_terms_of_service.md",
+        "source_present": true,
+        "source_sha256": "21f8e61119280fb78f05a202a595c913e2a73c6f9776511f04169f2c5b48e701",
+        "bytes": 145742,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_audit",
+        "category": "data_policy",
+        "source_path": "docs/legal/data_policy/merchant_audit_data_policy.md",
+        "source_present": true,
+        "source_sha256": "3500dbfa093f549eac88e1d32d1f0614eb650c53cd40b1c3288a312deba50850",
+        "bytes": 143197,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_audit",
+        "category": "faq",
+        "source_path": "docs/support/faq/merchant_audit_faq.md",
+        "source_present": true,
+        "source_sha256": "00647d34e8cef63272745f9dd6c7605a7113766ab7e9fe06d3732f777335cd0f",
+        "bytes": 48321,
+        "reachable_route": "no_faq_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_audit",
+        "category": "landing_page",
+        "source_path": "docs/landing_page/merchant_audit_landing_page_content.md",
+        "source_present": true,
+        "source_sha256": "c55ec7bcc6a7f5ab86078b3774eaa73f3660bdc475154256eb75d69406db2a4d",
+        "bytes": 11032,
+        "reachable_route": "no_public_landing_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_audit",
+        "category": "privacy_policy",
+        "source_path": "docs/legal/privacy_policy/merchant_audit_privacy_policy.md",
+        "source_present": true,
+        "source_sha256": "c7b5454197cf8a058fec63df1fc1cdc6496094c57ab01a3384ea9bc9a5c57c45",
+        "bytes": 87491,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_audit",
+        "category": "terms_of_service",
+        "source_path": "docs/legal/terms_of_service/merchant_audit_terms_of_service.md",
+        "source_present": true,
+        "source_sha256": "b19410d4167b872a34058be8d4bf0484770fc2d1235a7c0137fc5a227523f0b8",
+        "bytes": 134785,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_branch",
+        "category": "data_policy",
+        "source_path": "docs/legal/data_policy/merchant_branch_data_policy.md",
+        "source_present": true,
+        "source_sha256": "c471397eaf1c5601decdff96bbebf3a77b0a747545fac220a974ee202383d025",
+        "bytes": 149108,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_branch",
+        "category": "faq",
+        "source_path": "docs/support/faq/merchant_branch_faq.md",
+        "source_present": true,
+        "source_sha256": "12e2a14d6ae03bc70db3829f3b4e577b7effbb304956e319626da18130e53d11",
+        "bytes": 49279,
+        "reachable_route": "no_faq_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_branch",
+        "category": "landing_page",
+        "source_path": "docs/landing_page/merchant_branch_landing_page_content.md",
+        "source_present": true,
+        "source_sha256": "011108b56d2014a7b7a8d5609d127e8cef80cd9aa256c30641e271e21180b871",
+        "bytes": 11623,
+        "reachable_route": "no_public_landing_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_branch",
+        "category": "privacy_policy",
+        "source_path": "docs/legal/privacy_policy/merchant_branch_privacy_policy.md",
+        "source_present": true,
+        "source_sha256": "c79e194b4e3444ff86ba0e32596fa343e02a13c01df976c9015fbfb9460ea7b4",
+        "bytes": 94772,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_branch",
+        "category": "terms_of_service",
+        "source_path": "docs/legal/terms_of_service/merchant_branch_terms_of_service.md",
+        "source_present": true,
+        "source_sha256": "cc793102c4a683a0b41ddc7f33fff8261da8dbe6fbf25c24d80f4e697569848c",
+        "bytes": 144272,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_finance",
+        "category": "data_policy",
+        "source_path": "docs/legal/data_policy/merchant_finance_data_policy.md",
+        "source_present": true,
+        "source_sha256": "12b8e075824a75212c1d614b92d2d3e62190955b94bb7c24bad966f440d2579e",
+        "bytes": 162309,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_finance",
+        "category": "faq",
+        "source_path": "docs/support/faq/merchant_finance_faq.md",
+        "source_present": true,
+        "source_sha256": "7b8c7405de629489fe45436b7cc277b4da671ef578e70cf7a7124b020022f5f6",
+        "bytes": 54639,
+        "reachable_route": "no_faq_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_finance",
+        "category": "landing_page",
+        "source_path": "docs/landing_page/merchant_finance_landing_page_content.md",
+        "source_present": true,
+        "source_sha256": "1f541f8dadda5cf3e69078909766403f8951e69198e4a3545278e616b00b39ab",
+        "bytes": 11384,
+        "reachable_route": "no_public_landing_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_finance",
+        "category": "privacy_policy",
+        "source_path": "docs/legal/privacy_policy/merchant_finance_privacy_policy.md",
+        "source_present": true,
+        "source_sha256": "7ddb57e87cb1805348ff0779dc6996b28b635d580c8afbefd2af01b3a403062f",
+        "bytes": 102271,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_finance",
+        "category": "terms_of_service",
+        "source_path": "docs/legal/terms_of_service/merchant_finance_terms_of_service.md",
+        "source_present": true,
+        "source_sha256": "2e9086ea211493e3cd3bfd228ec36002b64312f9b3a3b8fd2ca9bff65648dda3",
+        "bytes": 145922,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_front_office",
+        "category": "data_policy",
+        "source_path": "docs/legal/data_policy/merchant_front_office_data_policy.md",
+        "source_present": true,
+        "source_sha256": "0e3292ec214fa450e7c8134dc2cd18ce363b8d0db5ea0f0f5121bd0251e08759",
+        "bytes": 164694,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_front_office",
+        "category": "faq",
+        "source_path": "docs/support/faq/merchant_front_office_faq.md",
+        "source_present": true,
+        "source_sha256": "ef43ece0257779a4a6c8a2f3ef99265064ee5ea1d5209d038ea118421156b633",
+        "bytes": 46407,
+        "reachable_route": "no_faq_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_front_office",
+        "category": "landing_page",
+        "source_path": "docs/landing_page/merchant_front_office_landing_page_content.md",
+        "source_present": true,
+        "source_sha256": "d7a92869cfd51fbdca1539d34d16f0f0a27827726f6db49cbcff68b34ba700e5",
+        "bytes": 9666,
+        "reachable_route": "no_public_landing_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_front_office",
+        "category": "privacy_policy",
+        "source_path": "docs/legal/privacy_policy/merchant_front_office_privacy_policy.md",
+        "source_present": true,
+        "source_sha256": "a0474f976aa15aef1816c696843433eb8a965bd6ed48ffa4bffbfdac3b531847",
+        "bytes": 101458,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_front_office",
+        "category": "terms_of_service",
+        "source_path": "docs/legal/terms_of_service/merchant_front_office_terms_of_service.md",
+        "source_present": true,
+        "source_sha256": "4596a98daa27297b5e46856d511cc7f083dcc45596c93d17f6c0052452f09ab4",
+        "bytes": 137768,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "category": "data_policy",
+        "source_path": "docs/legal/data_policy/merchant_human_resource_data_policy.md",
+        "source_present": true,
+        "source_sha256": "680bc160594d4e9e5dbf966058171dcaa607e0b48ca57ae281a40b0f9521e59d",
+        "bytes": 191184,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "category": "faq",
+        "source_path": "docs/support/faq/merchant_human_resource_faq.md",
+        "source_present": true,
+        "source_sha256": "f08589a395e442c38a0e5c22fbd375d4d692d838b8fee5ff259f6631dd396a70",
+        "bytes": 40593,
+        "reachable_route": "no_faq_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "category": "landing_page",
+        "source_path": "docs/landing_page/merchant_human_resource_landing_page_content.md",
+        "source_present": true,
+        "source_sha256": "963c0c3cfed4cc431d86263664a299af1456b40cfc067776316382d8ab94ef1f",
+        "bytes": 9979,
+        "reachable_route": "no_public_landing_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "category": "privacy_policy",
+        "source_path": "docs/legal/privacy_policy/merchant_human_resource_privacy_policy.md",
+        "source_present": true,
+        "source_sha256": "25568d42a7e408f333df6efa3684b2aef7304bdf53321b309a097aae3c4ebd7b",
+        "bytes": 105551,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "category": "terms_of_service",
+        "source_path": "docs/legal/terms_of_service/merchant_human_resource_terms_of_service.md",
+        "source_present": true,
+        "source_sha256": "78fcf266bc50a517030f568e6b190272c78ccc842415c18f1eaf24d2729329ec",
+        "bytes": 128197,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_personnel",
+        "category": "data_policy",
+        "source_path": "docs/legal/data_policy/merchant_personnel_data_policy.md",
+        "source_present": true,
+        "source_sha256": "2f1aa70d9551213df577df4e6fdd46d973e699ebb902a27e36295e2735112ebd",
+        "bytes": 127184,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_personnel",
+        "category": "faq",
+        "source_path": "docs/support/faq/merchant_personnel_faq.md",
+        "source_present": true,
+        "source_sha256": "9b66f7000a84b16bf0ce31871eb9b54dd2d80eceb987890b97e0956504e75b41",
+        "bytes": 42643,
+        "reachable_route": "no_faq_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_personnel",
+        "category": "landing_page",
+        "source_path": "docs/landing_page/merchant_personnel_landing_page_content.md",
+        "source_present": true,
+        "source_sha256": "989feac29af02b918d33f93a49096edcccda38a7a1450c68079f6c0eb6ff0015",
+        "bytes": 12913,
+        "reachable_route": "no_public_landing_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "merchant_personnel",
+        "category": "privacy_policy",
+        "source_path": "docs/legal/privacy_policy/merchant_personnel_privacy_policy.md",
+        "source_present": true,
+        "source_sha256": "54cb2921858dcf9a9917f9676662964375cf12681c35aa31aa2fdd3388319d6d",
+        "bytes": 109678,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "merchant_personnel",
+        "category": "terms_of_service",
+        "source_path": "docs/legal/terms_of_service/merchant_personnel_terms_of_service.md",
+        "source_present": true,
+        "source_sha256": "0c5a1e2bb3f68d397d281ccfa7c4ea409b90630e98577678d8a5bc299eee3c29",
+        "bytes": 112390,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "super_administrator",
+        "category": "data_policy",
+        "source_path": "docs/legal/data_policy/super_administrator_data_policy.md",
+        "source_present": true,
+        "source_sha256": "324118c50648f5c98949b5210204170152fd4135249485ed2b261d6d7dcdbbd0",
+        "bytes": 112444,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "super_administrator",
+        "category": "faq",
+        "source_path": "docs/support/faq/super_administrator_faq.md",
+        "source_present": true,
+        "source_sha256": "5e60f59aca7df21520c1451d01d7f86eaec7703b284c5ad7d1499154461ee65d",
+        "bytes": 54286,
+        "reachable_route": "no_faq_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "super_administrator",
+        "category": "landing_page",
+        "source_path": "docs/landing_page/super_administrator_landing_page_content.md",
+        "source_present": true,
+        "source_sha256": "45cd84b941ec1486a9a994f7d023e07ae8c97661aa3386936207ea73c60144f4",
+        "bytes": 7855,
+        "reachable_route": "no_public_landing_route_exists",
+        "render_owner_phase": "UI-06"
+      },
+      {
+        "account_key": "super_administrator",
+        "category": "privacy_policy",
+        "source_path": "docs/legal/privacy_policy/super_administrator_privacy_policy.md",
+        "source_present": true,
+        "source_sha256": "ee8e4d717ba0dd100c12f46766a2bf84df0202f2e96cf0d022dc9da0235bdc44",
+        "bytes": 74424,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      },
+      {
+        "account_key": "super_administrator",
+        "category": "terms_of_service",
+        "source_path": "docs/legal/terms_of_service/super_administrator_terms_of_service.md",
+        "source_present": true,
+        "source_sha256": "3f90ad3fae4ea40743b96c4d864d9da9e9e8d416ba168dcc22e5fb9188a4fe3a",
+        "bytes": 126352,
+        "reachable_route": "legal.document",
+        "render_owner_phase": "UI-05"
+      }
+    ],
+    "totals": {
+      "documents": 40,
+      "present": 40,
+      "by_category": {
+        "data_policy": 8,
+        "faq": 8,
+        "landing_page": 8,
+        "privacy_policy": 8,
+        "terms_of_service": 8
+      }
+    },
+    "legal_render_observations": [
+      {
+        "account_key": "merchant_administrator",
+        "document": "data-policy",
+        "path": "/legal/merchant_administrator/data-policy",
+        "result": "rendered",
+        "landmark": "Data Policy",
+        "rendered_text_length": 125810,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_administrator",
+        "document": "faq",
+        "path": "/legal/merchant_administrator/faq",
+        "result": "error",
+        "landmark": null,
+        "rendered_text_length": 71,
+        "renders_role_specific_content": false,
+        "note": "No FAQ route exists; the router catch-all renders the Home entry card instead of a 404. UI-06 owns FAQ surfaces."
+      },
+      {
+        "account_key": "merchant_administrator",
+        "document": "privacy-policy",
+        "path": "/legal/merchant_administrator/privacy-policy",
+        "result": "rendered",
+        "landmark": "Privacy Policy",
+        "rendered_text_length": 86537,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_administrator",
+        "document": "terms-of-service",
+        "path": "/legal/merchant_administrator/terms-of-service",
+        "result": "rendered",
+        "landmark": "Terms of Service",
+        "rendered_text_length": 144522,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_audit",
+        "document": "data-policy",
+        "path": "/legal/merchant_audit/data-policy",
+        "result": "rendered",
+        "landmark": "Data Policy",
+        "rendered_text_length": 141830,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_audit",
+        "document": "faq",
+        "path": "/legal/merchant_audit/faq",
+        "result": "error",
+        "landmark": null,
+        "rendered_text_length": 71,
+        "renders_role_specific_content": false,
+        "note": "No FAQ route exists; the router catch-all renders the Home entry card instead of a 404. UI-06 owns FAQ surfaces."
+      },
+      {
+        "account_key": "merchant_audit",
+        "document": "privacy-policy",
+        "path": "/legal/merchant_audit/privacy-policy",
+        "result": "rendered",
+        "landmark": "Privacy Policy",
+        "rendered_text_length": 86142,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_audit",
+        "document": "terms-of-service",
+        "path": "/legal/merchant_audit/terms-of-service",
+        "result": "rendered",
+        "landmark": "Terms of Service",
+        "rendered_text_length": 133675,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_branch",
+        "document": "data-policy",
+        "path": "/legal/merchant_branch/data-policy",
+        "result": "rendered",
+        "landmark": "Data Policy",
+        "rendered_text_length": 147739,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_branch",
+        "document": "faq",
+        "path": "/legal/merchant_branch/faq",
+        "result": "error",
+        "landmark": null,
+        "rendered_text_length": 71,
+        "renders_role_specific_content": false,
+        "note": "No FAQ route exists; the router catch-all renders the Home entry card instead of a 404. UI-06 owns FAQ surfaces."
+      },
+      {
+        "account_key": "merchant_branch",
+        "document": "privacy-policy",
+        "path": "/legal/merchant_branch/privacy-policy",
+        "result": "rendered",
+        "landmark": "Privacy Policy",
+        "rendered_text_length": 93383,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_branch",
+        "document": "terms-of-service",
+        "path": "/legal/merchant_branch/terms-of-service",
+        "result": "rendered",
+        "landmark": "Terms of Service",
+        "rendered_text_length": 143106,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_finance",
+        "document": "data-policy",
+        "path": "/legal/merchant_finance/data-policy",
+        "result": "rendered",
+        "landmark": "Data Policy",
+        "rendered_text_length": 160846,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_finance",
+        "document": "faq",
+        "path": "/legal/merchant_finance/faq",
+        "result": "error",
+        "landmark": null,
+        "rendered_text_length": 71,
+        "renders_role_specific_content": false,
+        "note": "No FAQ route exists; the router catch-all renders the Home entry card instead of a 404. UI-06 owns FAQ surfaces."
+      },
+      {
+        "account_key": "merchant_finance",
+        "document": "privacy-policy",
+        "path": "/legal/merchant_finance/privacy-policy",
+        "result": "rendered",
+        "landmark": "Privacy Policy",
+        "rendered_text_length": 100851,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_finance",
+        "document": "terms-of-service",
+        "path": "/legal/merchant_finance/terms-of-service",
+        "result": "rendered",
+        "landmark": "Terms of Service",
+        "rendered_text_length": 144734,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_front_office",
+        "document": "data-policy",
+        "path": "/legal/merchant_front_office/data-policy",
+        "result": "rendered",
+        "landmark": "Data Policy",
+        "rendered_text_length": 163250,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_front_office",
+        "document": "faq",
+        "path": "/legal/merchant_front_office/faq",
+        "result": "error",
+        "landmark": null,
+        "rendered_text_length": 71,
+        "renders_role_specific_content": false,
+        "note": "No FAQ route exists; the router catch-all renders the Home entry card instead of a 404. UI-06 owns FAQ surfaces."
+      },
+      {
+        "account_key": "merchant_front_office",
+        "document": "privacy-policy",
+        "path": "/legal/merchant_front_office/privacy-policy",
+        "result": "rendered",
+        "landmark": "Privacy Policy",
+        "rendered_text_length": 100057,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_front_office",
+        "document": "terms-of-service",
+        "path": "/legal/merchant_front_office/terms-of-service",
+        "result": "rendered",
+        "landmark": "Terms of Service",
+        "rendered_text_length": 136598,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "document": "data-policy",
+        "path": "/legal/merchant_human_resource/data-policy",
+        "result": "rendered",
+        "landmark": "Data Policy",
+        "rendered_text_length": 190441,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "document": "faq",
+        "path": "/legal/merchant_human_resource/faq",
+        "result": "error",
+        "landmark": null,
+        "rendered_text_length": 71,
+        "renders_role_specific_content": false,
+        "note": "No FAQ route exists; the router catch-all renders the Home entry card instead of a 404. UI-06 owns FAQ surfaces."
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "document": "privacy-policy",
+        "path": "/legal/merchant_human_resource/privacy-policy",
+        "result": "rendered",
+        "landmark": "Privacy Policy",
+        "rendered_text_length": 104119,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_human_resource",
+        "document": "terms-of-service",
+        "path": "/legal/merchant_human_resource/terms-of-service",
+        "result": "rendered",
+        "landmark": "Terms of Service",
+        "rendered_text_length": 127076,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_personnel",
+        "document": "data-policy",
+        "path": "/legal/merchant_personnel/data-policy",
+        "result": "rendered",
+        "landmark": "Data Policy",
+        "rendered_text_length": 125044,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_personnel",
+        "document": "faq",
+        "path": "/legal/merchant_personnel/faq",
+        "result": "error",
+        "landmark": null,
+        "rendered_text_length": 71,
+        "renders_role_specific_content": false,
+        "note": "No FAQ route exists; the router catch-all renders the Home entry card instead of a 404. UI-06 owns FAQ surfaces."
+      },
+      {
+        "account_key": "merchant_personnel",
+        "document": "privacy-policy",
+        "path": "/legal/merchant_personnel/privacy-policy",
+        "result": "rendered",
+        "landmark": "Privacy Policy",
+        "rendered_text_length": 108239,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "merchant_personnel",
+        "document": "terms-of-service",
+        "path": "/legal/merchant_personnel/terms-of-service",
+        "result": "rendered",
+        "landmark": "Terms of Service",
+        "rendered_text_length": 111342,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "super_administrator",
+        "document": "data-policy",
+        "path": "/legal/super_administrator/data-policy",
+        "result": "rendered",
+        "landmark": "Data Policy",
+        "rendered_text_length": 111241,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "super_administrator",
+        "document": "faq",
+        "path": "/legal/super_administrator/faq",
+        "result": "error",
+        "landmark": null,
+        "rendered_text_length": 71,
+        "renders_role_specific_content": false,
+        "note": "No FAQ route exists; the router catch-all renders the Home entry card instead of a 404. UI-06 owns FAQ surfaces."
+      },
+      {
+        "account_key": "super_administrator",
+        "document": "privacy-policy",
+        "path": "/legal/super_administrator/privacy-policy",
+        "result": "rendered",
+        "landmark": "Privacy Policy",
+        "rendered_text_length": 73227,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      },
+      {
+        "account_key": "super_administrator",
+        "document": "terms-of-service",
+        "path": "/legal/super_administrator/terms-of-service",
+        "result": "rendered",
+        "landmark": "Terms of Service",
+        "rendered_text_length": 125235,
+        "renders_role_specific_content": true,
+        "note": "Rendered from docs/legal via the legal.document route."
+      }
+    ]
+  },
+  "browser_errors": {
+    "console_errors": [
+      "http://localhost:4173/ :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/auth/check-email :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/auth/login :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/auth/register :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/auth/verify?token=[REDACTED] :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/branch/cash-up :: TypeError: Cannot read properties of undefined (reading 'find')\n    at K (http://localhost:4173/assets/CashUp-BQsKleFU.js:1:2364)\n    at http://localhost:4173/assets/CashUp-BQsKleFU.js:1:4280\n    at Ar (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:29560)\n    at http://localhost:4173/assets/CashUp-BQsKleFU.js:1:4050\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/as",
+      "http://localhost:4173/branch/cash-up :: TypeError: Cannot read properties of undefined (reading 'find')\n    at Z (http://localhost:4173/assets/CashUp-BQsKleFU.js:1:2637)\n    at Q (http://localhost:4173/assets/CashUp-BQsKleFU.js:1:2774)",
+      "http://localhost:4173/dev/design-system :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/finance/cash-up/01HZZCASHUP000000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/CashUpDetail-BsruzQrA.js:1:3814\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler",
+      "http://localhost:4173/finance/invoices/01HZZINVOICE00000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/InvoiceDetail-D_WRirpI.js:1:4576\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundl",
+      "http://localhost:4173/finance/payment-records/01HZZPAYGROUP0000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/PaymentGroupDetail-CkA68RaT.js:1:4188\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-co",
+      "http://localhost:4173/finance/receipts/01HZZRECEIPT00000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/ReceiptDetail--u576Vc-.js:1:2198\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundl",
+      "http://localhost:4173/finance/refunds/01HZZREFUND000000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/RefundDetail-OJ5yNkiq.js:1:2223\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler",
+      "http://localhost:4173/front-office/invoices/01HZZINVOICE00000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/InvoiceDetail-D_WRirpI.js:1:4576\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-",
+      "http://localhost:4173/front-office/payments/record/01HZZINVOICE00000000000000 :: TypeError: Cannot read properties of undefined (reading 'amount')\n    at Zt.fn (http://localhost:4173/assets/RecordPayment-B4fYvf92.js:1:1784)\n    at ze (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:6622)\n    at get value (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:17904)\n    at Zt.fn (http://localhost:4173/assets/RecordPayment-B4fYvf92.js:1:1903)\n    at ze (http://loc",
+      "http://localhost:4173/front-office/receipts/01HZZRECEIPT00000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/ReceiptDetail--u576Vc-.js:1:2198\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-",
+      "http://localhost:4173/legal/merchant_administrator/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_administrator/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_administrator/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_administrator/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_audit/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_audit/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_audit/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_audit/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_branch/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_branch/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_branch/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_branch/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_finance/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_finance/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_finance/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_finance/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_front_office/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_front_office/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_front_office/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_front_office/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_human_resource/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_human_resource/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_human_resource/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_human_resource/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_personnel/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_personnel/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_personnel/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_personnel/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/super_administrator/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/super_administrator/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/super_administrator/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/super_administrator/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/merchant/compensation-summary :: TypeError: Cannot read properties of undefined (reading 'length')\n    at http://localhost:4173/assets/CompensationSummary-JlJfpG2x.js:1:6449\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at Proxy.<anonymous> (http://localhost:4173/assets/SvStateBoundary-DrbSAj7q.js:1:2037)\n    at si (http://localhost:4173/assets/ru",
+      "http://localhost:4173/merchant/subscription :: TypeError: Cannot read properties of undefined (reading 'name')\n    at http://localhost:4173/assets/SubscriptionDashboard-aiYGtmsc.js:1:3777\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21",
+      "http://localhost:4173/no-such-page-01hzz :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/personnel/earnings :: TypeError: Cannot read properties of undefined (reading 'length')\n    at Zt.fn (http://localhost:4173/assets/Earnings-D3GRREru.js:1:5662)\n    at ze (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:6622)\n    at Re (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:6330)\n    at ke.runIfDirty (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:5524)\n    at on (http://localhost:4173/assets/runtime-core",
+      "http://localhost:4173/staff/accept?token=[REDACTED] :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:8099/spa/ :: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "http://localhost:8099/spa/ :: Refused to apply style from 'http://localhost:8099/assets/index-CHjna778.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled."
+    ],
+    "unhandled_rejections": [],
+    "failed_requests": [
+      {
+        "url": "http://localhost:4173/api/v1/me",
+        "status": 401,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/apiClient-B_JkGpjw.js",
+        "status": 404,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/apiClient-B_JkGpjw.js",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:8099/assets/index-BF8ocT4d.js",
+        "status": 404,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/index-BF8ocT4d.js",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:8099/assets/index-CHjna778.css",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:8099/assets/pinia-gD712R58.js",
+        "status": 404,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/pinia-gD712R58.js",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:8099/assets/runtime-core.esm-bundler-DClBC82D.js",
+        "status": 404,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/runtime-core.esm-bundler-DClBC82D.js",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      }
+    ]
+  }
+}

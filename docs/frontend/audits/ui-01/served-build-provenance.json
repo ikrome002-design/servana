@@ -1,0 +1,3091 @@
+{
+  "schema": "ui-01.audit.v1.served-build-provenance",
+  "phase": "UI-01",
+  "generated_by": "scripts/audit-ui-as-built.mjs",
+  "boundary": "Evidence only. UI-01 changed no runtime source, route, asset, policy or migration.",
+  "environment_capture": {
+    "path": "docs/proof/ui-01/network/environment-capture.json",
+    "captured_at_utc": "2026-07-29T08:14:13.399Z"
+  },
+  "git": {
+    "branch": "phase-ui-01-as-built-browser-audit",
+    "head": "d3f6e10c1ff9490bc558199940f76fbec9497272",
+    "head_tree": "360278dbc9172384e4f8d290f882c421aa794dac",
+    "origin_main": "d3f6e10c1ff9490bc558199940f76fbec9497272",
+    "merge_base_origin_main": "d3f6e10c1ff9490bc558199940f76fbec9497272",
+    "divergence_origin_main_vs_head": "0\t0",
+    "dirty_paths": [
+      "?? docs/proof/ui-01/network/browser-evidence.json",
+      "?? docs/proof/ui-01/network/environment-capture.json",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--access-state-unsupported-role--merchant--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--dashboard--merchant-dashboard--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--dashboard--merchant-dashboard--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--dashboard--merchant-dashboard--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--dashboard--merchant-dashboard--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--dashboard--merchant-dashboard--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--dashboard--merchant-dashboard--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--get-started--merchant-get-started--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--get-started--merchant-get-started--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--get-started--merchant-get-started--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--landing--merchant--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--landing--merchant--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--landing--merchant--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--landing--merchant--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--landing--merchant--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_administrator--landing--merchant--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--dashboard--audit-dashboard--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--dashboard--audit-dashboard--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--dashboard--audit-dashboard--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--dashboard--audit-dashboard--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--dashboard--audit-dashboard--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--dashboard--audit-dashboard--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--footer-and-shell--audit-events--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--footer-and-shell--audit-events--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--footer-and-shell--audit-events--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--get-started--audit-get-started--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--get-started--audit-get-started--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--get-started--audit-get-started--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--landing--audit--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--landing--audit--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--landing--audit--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--landing--audit--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--landing--audit--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_audit--landing--audit--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--dashboard--branch-dashboard--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--dashboard--branch-dashboard--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--dashboard--branch-dashboard--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--dashboard--branch-dashboard--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--dashboard--branch-dashboard--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--dashboard--branch-dashboard--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--get-started--branch-get-started--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--get-started--branch-get-started--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--get-started--branch-get-started--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--landing--branch--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--landing--branch--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--landing--branch--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--landing--branch--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--landing--branch--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_branch--landing--branch--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--dashboard--finance-dashboard--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--dashboard--finance-dashboard--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--dashboard--finance-dashboard--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--dashboard--finance-dashboard--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--dashboard--finance-dashboard--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--dashboard--finance-dashboard--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--get-started--finance-get-started--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--get-started--finance-get-started--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--get-started--finance-get-started--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--landing--finance--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--landing--finance--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--landing--finance--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--landing--finance--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--landing--finance--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--landing--finance--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--mobile-navigation--finance--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--table--finance-invoices--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--table--finance-invoices--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_finance--table--finance-invoices--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--dashboard--front-office-dashboard--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--dashboard--front-office-dashboard--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--dashboard--front-office-dashboard--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--dashboard--front-office-dashboard--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--dashboard--front-office-dashboard--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--dashboard--front-office-dashboard--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--detail--front-office-appointments--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--form--front-office-clients-new--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--form--front-office-clients-new--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--form--front-office-clients-new--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--get-started--front-office-get-started--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--get-started--front-office-get-started--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--get-started--front-office-get-started--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--landing--front-office--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--landing--front-office--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--landing--front-office--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--landing--front-office--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--landing--front-office--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--landing--front-office--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--list--front-office-clients--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--list--front-office-clients--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_front_office--list--front-office-clients--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--dashboard--hr-dashboard--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--dashboard--hr-dashboard--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--dashboard--hr-dashboard--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--dashboard--hr-dashboard--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--dashboard--hr-dashboard--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--dashboard--hr-dashboard--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--get-started--hr-get-started--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--get-started--hr-get-started--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--get-started--hr-get-started--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--landing--hr--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--landing--hr--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--landing--hr--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--landing--hr--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--landing--hr--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_human_resource--landing--hr--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--dashboard--personnel-dashboard--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--dashboard--personnel-dashboard--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--dashboard--personnel-dashboard--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--dashboard--personnel-dashboard--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--dashboard--personnel-dashboard--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--dashboard--personnel-dashboard--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--get-started--personnel-get-started--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--get-started--personnel-get-started--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--get-started--personnel-get-started--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--landing--personnel--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--landing--personnel--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--landing--personnel--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--landing--personnel--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--landing--personnel--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/merchant_personnel--landing--personnel--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/public--design-system--dev-design-system--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/public--login--auth-login--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/public--login--auth-login--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/public--not-found--no-such-page-01hzz--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/served_origin--served-root--root--1280x900--default--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/served_origin--served-spa-shell--spa--1280x900--default--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--dashboard--platform-dashboard--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--dashboard--platform-dashboard--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--dashboard--platform-dashboard--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--dashboard--platform-dashboard--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--dashboard--platform-dashboard--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--dashboard--platform-dashboard--768x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--get-started--platform-get-started--1024x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--get-started--platform-get-started--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--get-started--platform-get-started--767x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--landing--platform--1025x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--landing--platform--1280x900--dark--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--landing--platform--1280x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--landing--platform--1440x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--landing--platform--360x900--light--d3f6e10.png",
+      "?? docs/proof/ui-01/screenshots/super_administrator--landing--platform--768x900--light--d3f6e10.png",
+      "?? scripts/audit-ui-as-built.mjs",
+      "?? tests/e2e/ui-01-as-built-audit.spec.ts"
+    ],
+    "fsck_non_dangling": []
+  },
+  "toolchain": {
+    "node": "v24.15.0",
+    "npm": "",
+    "docker": "Docker version 29.6.2, build dfc4efb",
+    "docker_compose": "5.3.1",
+    "php_in_container": "8.3.32",
+    "composer_in_container": "Composer version 2.10.2 2026-07-01 11:24:45"
+  },
+  "vite": {
+    "config_root": "resources/spa",
+    "config_base": "/",
+    "config_out_dir": "public/spa",
+    "manifest_path": "public/spa/.vite/manifest.json",
+    "manifest_present": true,
+    "manifest_sha256": "43a1608ab0945da6c50d122f892afe6e49bd343317c5f976ffb5d0b2851b3f81",
+    "entry_count": 257,
+    "entrypoints": [
+      "index.html"
+    ],
+    "emitted_asset_count": 259,
+    "emitted_assets": [
+      {
+        "path": "public/spa/.vite/manifest.json",
+        "bytes": 97127,
+        "sha256": "43a1608ab0945da6c50d122f892afe6e49bd343317c5f976ffb5d0b2851b3f81"
+      },
+      {
+        "path": "public/spa/assets/_plugin-vue_export-helper-BDNMzG2s.js",
+        "bytes": 84,
+        "sha256": "27e87fe62aa760227b7529576953d8314891fd2aec28e0a3f03aece406f2d7d7"
+      },
+      {
+        "path": "public/spa/assets/apiClient-B_JkGpjw.js",
+        "bytes": 45705,
+        "sha256": "997b18c5d6f3d32f57056ebe9c4c6f3822b724686d72c303948d44c63935d181"
+      },
+      {
+        "path": "public/spa/assets/appointment-BGvNfu-P.js",
+        "bytes": 2198,
+        "sha256": "e2974b7e6d6ae906233a46ac6512316ef11d222fa6f60e7adfcd737b85d58614"
+      },
+      {
+        "path": "public/spa/assets/AppointmentCreate-Dhj9Ffj6.js",
+        "bytes": 3415,
+        "sha256": "345b0a4a8e45188d44073fe4464bd3c8a54b81b5e8fadd111395779414d0c868"
+      },
+      {
+        "path": "public/spa/assets/AppointmentDetail-Bf5n-pBJ.js",
+        "bytes": 7245,
+        "sha256": "748074ac2d924497e5399dd2e830791030950bec1c52f9fbd2ce479f71452b8e"
+      },
+      {
+        "path": "public/spa/assets/AppointmentList-Cy4PmavE.js",
+        "bytes": 3483,
+        "sha256": "b0d4b238ae7dac58e681c38fec432417bfde7d781aabe6eeb1f29731e7d1a6b7"
+      },
+      {
+        "path": "public/spa/assets/AppointmentsReadOnly-CDTtCcxV.js",
+        "bytes": 2439,
+        "sha256": "f893c29fb439183b77530b6f64808535ca89a34733af5e7c4ff66d43f92bc18a"
+      },
+      {
+        "path": "public/spa/assets/AuditDomainEvents-CunAwRHC.js",
+        "bytes": 2747,
+        "sha256": "c7edb9a83e749f75261ef17113cb3a7e148925a15d526a374cabc5119fb61a83"
+      },
+      {
+        "path": "public/spa/assets/AuditEventDetail-BhCug8Ld.js",
+        "bytes": 3065,
+        "sha256": "ea639d65e311dd87c3d49f588a350dfdcaae587adb0bf98e16ab42df31183697"
+      },
+      {
+        "path": "public/spa/assets/AuditEventList-BrARFyo3.js",
+        "bytes": 4141,
+        "sha256": "e40cbdd262ad857a3e0c6290445a88bf9612fe050f5370e139ec768c9883fc12"
+      },
+      {
+        "path": "public/spa/assets/auditEventStore-BkTq1Jo3.js",
+        "bytes": 1179,
+        "sha256": "29620c97f6d14f8835b345860a026d7373871e05aff543528022a7f93f4b54b9"
+      },
+      {
+        "path": "public/spa/assets/AuditExportDetail-CdH82ILD.js",
+        "bytes": 5421,
+        "sha256": "08afec4c8710305c35adf2202746413bf9bbf88c833eef3f4f368ad3f56ee4fc"
+      },
+      {
+        "path": "public/spa/assets/AuditExportList-DrjIDFLI.js",
+        "bytes": 6775,
+        "sha256": "632d303256d228749db66e0db3c5ddce2809259d490c51e4e0607f2f4cf38871"
+      },
+      {
+        "path": "public/spa/assets/auditExportStore-DzYjiI-e.js",
+        "bytes": 1545,
+        "sha256": "0a1e965ecb867942fca18f15bd2cb95ed16a36fde125f7c8f87a341f8e7d9535"
+      },
+      {
+        "path": "public/spa/assets/AuditLayout-B7bXaMHq.js",
+        "bytes": 204,
+        "sha256": "211bc70360c5ebb6559f46a8447b2502ed348397095f22002ab37c5cc9f5798e"
+      },
+      {
+        "path": "public/spa/assets/AuthLayout-BrZ7VznK.js",
+        "bytes": 849,
+        "sha256": "8ad74138a578816baa1ff66d2fcfcbcfe97bf5715ed4078fb7f2fb37a8d9fc25"
+      },
+      {
+        "path": "public/spa/assets/availabilityStore-BnP_P2rH.js",
+        "bytes": 863,
+        "sha256": "3dbbd5516f7871d5ebb3004478be722113b20020a5bfd57567fd10094cc4c696"
+      },
+      {
+        "path": "public/spa/assets/BillingSettings-CAQLtRW7.js",
+        "bytes": 56213,
+        "sha256": "f4b496f892b857855c957bc2ff1d1c2e0b535529962cae1287650fa9d795127f"
+      },
+      {
+        "path": "public/spa/assets/BranchCalendar-iWud7-uM.js",
+        "bytes": 12816,
+        "sha256": "4be2ef72c60305562858d485ec8bce1b78383228b0cce355a94d67bf1168ebf6"
+      },
+      {
+        "path": "public/spa/assets/BranchCreate-CHIodPhD.js",
+        "bytes": 2262,
+        "sha256": "f306b6f195701f2f0012dc8ba91cd0d48c4dd3618bcdf9c7471b439784b1e725"
+      },
+      {
+        "path": "public/spa/assets/BranchDetail-BlgB6fZu.js",
+        "bytes": 1579,
+        "sha256": "0702d672606fdaf8f61fcddd929d11341ca0239f9f9c109d069a57a6a105e6f7"
+      },
+      {
+        "path": "public/spa/assets/BranchLayout-BEIS277f.js",
+        "bytes": 205,
+        "sha256": "0d090d518504856e842278b14b0c53e6459c6b32a0b100d7b8ee87ecc1395b3a"
+      },
+      {
+        "path": "public/spa/assets/BranchList-Ckrb1enX.js",
+        "bytes": 1839,
+        "sha256": "abba7bb9f337d098d55a35f54a2c3705421bb74d515511b19f8910992b34b671"
+      },
+      {
+        "path": "public/spa/assets/branchStore-CFe3fJnF.js",
+        "bytes": 929,
+        "sha256": "4546400177ab2bd8cc5d37314ac8e8839a3a1bf7fbfb873631b0e3122a083610"
+      },
+      {
+        "path": "public/spa/assets/CashUp-BQsKleFU.js",
+        "bytes": 7016,
+        "sha256": "100e9410ef8d975dee750da18b130f49a1dc97dcacdf5042c070fef96a1f041e"
+      },
+      {
+        "path": "public/spa/assets/CashUpDetail-BsruzQrA.js",
+        "bytes": 5488,
+        "sha256": "96033286f08fbfe56f19be381782f9b57cabcf5b33490e904434712734670d0f"
+      },
+      {
+        "path": "public/spa/assets/CashUpReviewList-DJzSXKjb.js",
+        "bytes": 2340,
+        "sha256": "d2b5e44bc94cf1aa0888b6a836e970605e0cc08bd15bf068313af850e433fc77"
+      },
+      {
+        "path": "public/spa/assets/cashUpStore-rYB-lP6h.js",
+        "bytes": 1489,
+        "sha256": "0fa5b84af1d224c74fa136032ddf4071eaafa5a8afa390ce0a5d8dd9ec805b31"
+      },
+      {
+        "path": "public/spa/assets/catalogueStore-Cqo_yLyy.js",
+        "bytes": 1609,
+        "sha256": "d91d2e474f172520beaf276348e2010879db1e04d2726f40f4d011e167db144d"
+      },
+      {
+        "path": "public/spa/assets/CheckEmail-DsWO-WKf.js",
+        "bytes": 1670,
+        "sha256": "0064f09ef39d6825f5ef143ab9482bd4415585eb19798e723c6c05ea7b91c8d7"
+      },
+      {
+        "path": "public/spa/assets/ClientCreate-CyENwR41.js",
+        "bytes": 3111,
+        "sha256": "5bea80eeedbba1835e50c756bdc065e8341aa839402200188ac5ca6e45cc37ed"
+      },
+      {
+        "path": "public/spa/assets/ClientDetail-YiA4EEr4.js",
+        "bytes": 4667,
+        "sha256": "441f54b58990cefce12d5fc4eec638649ae4bc4e3ff1fa106682f7d427ec0b61"
+      },
+      {
+        "path": "public/spa/assets/ClientList-BtlJo87N.js",
+        "bytes": 2644,
+        "sha256": "80aafff9bcd12b80b434df98fd91387c554f0e41f17fb3bcd09161c92a1281ea"
+      },
+      {
+        "path": "public/spa/assets/ClientSms-CHr9hDe0.js",
+        "bytes": 13187,
+        "sha256": "2fa049989ff0e67c02ea7204cf1b2b7b09d1d424838f05de050ed17d49c40647"
+      },
+      {
+        "path": "public/spa/assets/clientStore-piuTNxjm.js",
+        "bytes": 924,
+        "sha256": "bc27875bef1fb7578222b025db10ccf424164be790183670af8fa3e685652867"
+      },
+      {
+        "path": "public/spa/assets/Compensation-aYeipgz7.js",
+        "bytes": 38159,
+        "sha256": "590c06bd26e1e6c2a0d7e47ed94b06d3dd491f6d82cfbec69aa8a1af24a0917d"
+      },
+      {
+        "path": "public/spa/assets/CompensationAudit-KptvZdc8.js",
+        "bytes": 529,
+        "sha256": "ab8814c5ca2b2700ca07c8a55b6f1cd1bbb9c5b0ce219be509f3bd8be1b203c4"
+      },
+      {
+        "path": "public/spa/assets/CompensationLiabilities-D7f23yub.js",
+        "bytes": 26053,
+        "sha256": "67c792e795999576d1adb8b226fb91362d1eee6456ba57aca9925cb5a2c43cfd"
+      },
+      {
+        "path": "public/spa/assets/CompensationSummary-JlJfpG2x.js",
+        "bytes": 9737,
+        "sha256": "fe320c5c82e1aba8f4c4ecabca5134e4f53189efcf24f2509e82cedc9979affe"
+      },
+      {
+        "path": "public/spa/assets/Dashboard-BkULZrK6.js",
+        "bytes": 973,
+        "sha256": "0f0599e52dc59ebf812bfdfb551fd6390cfdae1ae70eb95e23737bf2dd3be18d"
+      },
+      {
+        "path": "public/spa/assets/DashboardStub-BLf9Z9W9.js",
+        "bytes": 431,
+        "sha256": "a9ea9816c4bdb1bad5586edba38d85363a569053c6ce0220623e652404cb2cf8"
+      },
+      {
+        "path": "public/spa/assets/DashboardStub-Di1CLRZM.js",
+        "bytes": 431,
+        "sha256": "a9ea9816c4bdb1bad5586edba38d85363a569053c6ce0220623e652404cb2cf8"
+      },
+      {
+        "path": "public/spa/assets/DashboardStub-DMX85HK6.js",
+        "bytes": 431,
+        "sha256": "a9ea9816c4bdb1bad5586edba38d85363a569053c6ce0220623e652404cb2cf8"
+      },
+      {
+        "path": "public/spa/assets/DashboardStub-DRAFZTm2.js",
+        "bytes": 431,
+        "sha256": "a9ea9816c4bdb1bad5586edba38d85363a569053c6ce0220623e652404cb2cf8"
+      },
+      {
+        "path": "public/spa/assets/DesignSystemDemo-Cu-19ykg.js",
+        "bytes": 5994,
+        "sha256": "df01d5a3d83038d2f400d36a421bde557db08267a6eee5a1588366011c5b9c3f"
+      },
+      {
+        "path": "public/spa/assets/destinations-BsPlpLBu.js",
+        "bytes": 298,
+        "sha256": "08a161c218204c035c3786f42a828c4b8316a90e5cf2f372ce7524e780b7bf6c"
+      },
+      {
+        "path": "public/spa/assets/DisputeDetail-CQ8PbvlZ.js",
+        "bytes": 3825,
+        "sha256": "f14b729dfe00c1418d2c77a8156ca9049e9a694724b5c4c2a0297712b8c66bb0"
+      },
+      {
+        "path": "public/spa/assets/DisputeList-BJ7mgQSs.js",
+        "bytes": 4481,
+        "sha256": "ace652c0e4d74ab002dbcc85c7d446881608ba69ce428dd37ecc2d38cbe39a25"
+      },
+      {
+        "path": "public/spa/assets/Earnings-D3GRREru.js",
+        "bytes": 17720,
+        "sha256": "d99196b99b61acd059b9d1bc300f905adb4761d75aaa0da53eae70a21092cda7"
+      },
+      {
+        "path": "public/spa/assets/EarningsQueries-CBWo4ngv.js",
+        "bytes": 11511,
+        "sha256": "30c1b9925190bda42677e53df39363fea11be3444fb7f15cd2aa4a04a75c4eeb"
+      },
+      {
+        "path": "public/spa/assets/earningsQueryStore-6OEkzVzY.js",
+        "bytes": 1810,
+        "sha256": "9d78d9c6e9a019853bdddc2e02ba8256e022bca3b842d69406a82113b68ed4de"
+      },
+      {
+        "path": "public/spa/assets/FinanceAudit-7YYNCU3S.js",
+        "bytes": 440,
+        "sha256": "7029ae04552be3c41f1a5d865839c42eb5c385e8616670ac81972f4e5c17479a"
+      },
+      {
+        "path": "public/spa/assets/FinanceAuditView-C7KXnSi4.js",
+        "bytes": 417,
+        "sha256": "7c23e28d4eb2cf7acb45b28018ef25111e2761d6e8207519a59171f16fb7b791"
+      },
+      {
+        "path": "public/spa/assets/financeDisputeStore-DJVOAgAZ.js",
+        "bytes": 1197,
+        "sha256": "7aac82d8ed1b3303910a99473e60ef61efcb7ff1780387973fdf827492fefe1f"
+      },
+      {
+        "path": "public/spa/assets/FinanceExportList-CoOt_TJS.js",
+        "bytes": 4734,
+        "sha256": "4f93950b782a4c48ffb26376374758cd038795a188d85a35b743569cc9b4aebd"
+      },
+      {
+        "path": "public/spa/assets/financeExportStore-Bd_QXaLm.js",
+        "bytes": 1382,
+        "sha256": "227e474664cc1f22a9222e8fcfc9cfb09a52435ddfbf29a6d3dc237439887b2b"
+      },
+      {
+        "path": "public/spa/assets/FinanceLayout-CGjjWE3f.js",
+        "bytes": 206,
+        "sha256": "d17324bafe782cfef2c90028b6f5584db1d01e101a398b95403ec6d5f905ef89"
+      },
+      {
+        "path": "public/spa/assets/FirstTimeSetup-BOPd87Sq.js",
+        "bytes": 8217,
+        "sha256": "410bc82ad693f15cdcbcd58a9beb7e7204357f088c2a127a46dc1053e54f3e0b"
+      },
+      {
+        "path": "public/spa/assets/FlaggedEventDetail-CHKS4MwH.js",
+        "bytes": 6043,
+        "sha256": "9a9873a65f40291d1f7ab72ca0e19e967714ebdff8820b0dccaa7633cd8b3bf2"
+      },
+      {
+        "path": "public/spa/assets/FlaggedEventQueue-CeURqrWx.js",
+        "bytes": 2787,
+        "sha256": "3e35adaf2f4a7cfc504a5cb99b85108c8c1ca2bfa7dc779f0e03ae8bd90a07d4"
+      },
+      {
+        "path": "public/spa/assets/flaggedEventStore-BH32q1o5.js",
+        "bytes": 1081,
+        "sha256": "f5a91a3b9c8b15dcf4ec30de1ab7032d4de3dbb959728b037ac5e3e4cd927760"
+      },
+      {
+        "path": "public/spa/assets/FrontOfficeLayout-Bf62Us3l.js",
+        "bytes": 210,
+        "sha256": "00d3862f508f8782d20fd0a66ca8a4a90d1df0fb28766945cab2b409bb88b279"
+      },
+      {
+        "path": "public/spa/assets/getStartedStore-CXuPTMYn.js",
+        "bytes": 6506,
+        "sha256": "e29d8d57fdf561a8ee6eafcfe788f8fbbc5e5724ca1dfa5c8e072573bcab7ab7"
+      },
+      {
+        "path": "public/spa/assets/GlobalSearch-BdxfUcSN.js",
+        "bytes": 5901,
+        "sha256": "aa9a6d50daeb389ed286569d04cb344315507d572d076bddfbd743af54c6a87e"
+      },
+      {
+        "path": "public/spa/assets/Home-CArV8c3V.js",
+        "bytes": 880,
+        "sha256": "b2187d9873c0d31a9da0422ee22523678c59da5c0beb580895b057d8fa29f255"
+      },
+      {
+        "path": "public/spa/assets/index-BF8ocT4d.js",
+        "bytes": 68340,
+        "sha256": "28ceb14412e20c1d610e2ac0c6c5d787ebc4e13168daebecc0b047b23ef6555a"
+      },
+      {
+        "path": "public/spa/assets/index-CHjna778.css",
+        "bytes": 44402,
+        "sha256": "5371d7ebec3d087cd98323c679b7617bdf8972faf084663ff80d45c68b0d3de9"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-400-normal-HOLc17fK.woff",
+        "bytes": 9780,
+        "sha256": "6e441a6c94788318fa02b6d0a633aa29eebe27b69c6567eb1e59b4edc68ed70e"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-400-normal-obahsSVq.woff2",
+        "bytes": 7712,
+        "sha256": "f0bb586459ce8f09b238285040f17e3e9e9538b2c5a7aae0775194e33c36c3c3"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-500-normal-BasfLYem.woff2",
+        "bytes": 7900,
+        "sha256": "b77a86ec16aadc157f4a99e8898d71cd75ea264753d9bdf13f962f8c3988cbb0"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-500-normal-CxZf_p3X.woff",
+        "bytes": 9940,
+        "sha256": "5be18e0345781cb882a267798518553c0e915174fc70731ab5f085ca64ba1ebc"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-600-normal-4D_pXhcN.woff",
+        "bytes": 9936,
+        "sha256": "cc190ed1b64eb650a4ad7e97c7a668cb8b34acd9c4c7f7bf4372c0cbacd35795"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-600-normal-CWCymEST.woff2",
+        "bytes": 7972,
+        "sha256": "6c2a37f82a676bcd441b735e4e2cda4edb8873a059ab9c362a84f0711f257041"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-ext-400-normal-BQZuk6qB.woff2",
+        "bytes": 10232,
+        "sha256": "ef572f9187a8be018d9d9c2c6b77c1f6cb2af4199f02fc16c292ea10ab25a2cc"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-ext-400-normal-DQukG94-.woff",
+        "bytes": 13336,
+        "sha256": "5cb2f1cc0936f89a42ceae34f5a5720248dc5b8114c12b1c33a7d2ef01a9b6b9"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-ext-500-normal-B0yAr1jD.woff2",
+        "bytes": 10432,
+        "sha256": "1c2db92d3cd9b237ca7c9c07af556d542f28ded1db54cd4382cf776501c5291f"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-ext-500-normal-BmqWE9Dz.woff",
+        "bytes": 13452,
+        "sha256": "e250c05aebcf49971e0b25f476992dd463c28c0292ebb204d9db542fb5066ca7"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-ext-600-normal-Bcila6Z-.woff",
+        "bytes": 13464,
+        "sha256": "a5073285409443f4653c858de58c5dc0bfc2fd33e60d8747388345e7c5ab1ab3"
+      },
+      {
+        "path": "public/spa/assets/inter-cyrillic-ext-600-normal-Dfes3d0z.woff2",
+        "bytes": 10484,
+        "sha256": "509fca9c59564f9a846fa69bc647f9b050fc11abf1c9f6f3da71fb2d5ed425bd"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-400-normal-B4URO6DV.woff2",
+        "bytes": 7776,
+        "sha256": "c15ddd00a9927b56f5c655a41f976f79bd848a20cce91fc14227751872a1cc27"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-400-normal-q2sYcFCs.woff",
+        "bytes": 9924,
+        "sha256": "bdae9d28729e8c68587d5d54e216d771a40d7a6800e824586a6e2f570c2f10df"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-500-normal-BIZE56-Y.woff2",
+        "bytes": 7920,
+        "sha256": "cc197d79d33a3615a047baae85f4d1957f6f98b8898313658e160b1d519b1b6f"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-500-normal-Xzm54t5V.woff",
+        "bytes": 9980,
+        "sha256": "86d55a4b1b9cbced7e61e76d5d44cf49d0bd1c814d3df2de67b7136ab4fdcece"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-600-normal-BZpKdvQh.woff",
+        "bytes": 10032,
+        "sha256": "090b24e22fc4ddf41450d13bdec81c8a74808b9fc7edaf8df06c909b177a8992"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-600-normal-plRanbMR.woff2",
+        "bytes": 7944,
+        "sha256": "9c5a897f9d9fcfe60d90631d766ae62b4bf1edd76633fa7a4b2f8c87e036789b"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-ext-400-normal-DGGRlc-M.woff2",
+        "bytes": 5264,
+        "sha256": "eadedd9e13c2582430a9fb1519eb86152fdabb483a6f66d90f8d8a52e977a1b7"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-ext-400-normal-KugGGMne.woff",
+        "bytes": 7064,
+        "sha256": "4f2b6f92ddfece8812e79774d446218aa6e0773ff8c2d31130fe2bdc23bd22d0"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-ext-500-normal-2j5mBUwD.woff",
+        "bytes": 7192,
+        "sha256": "c85d11bde719108cc9a4f6f5b008087f6c36493b47395580d4f5336182b0f0c7"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-ext-500-normal-C4iEst2y.woff2",
+        "bytes": 5428,
+        "sha256": "75a9ec9383a3b7a7bf7cfb94f64edf38d9cfdc5f7ffa0cbed2733627a6e4426d"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-ext-600-normal-B8X0CLgF.woff",
+        "bytes": 7212,
+        "sha256": "efc7aa9cce5c505dd8cc4c4daf00247fa805f37bcda96079239ba3358ab27dfb"
+      },
+      {
+        "path": "public/spa/assets/inter-greek-ext-600-normal-DRtmH8MT.woff2",
+        "bytes": 5432,
+        "sha256": "399f94d75aa73403e40e2353e8c0cc75c38f7362a6ca263b3b02d9723157ffe5"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-400-normal-C38fXH4l.woff2",
+        "bytes": 23664,
+        "sha256": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-400-normal-CyCys3Eg.woff",
+        "bytes": 30696,
+        "sha256": "e20fa0b4fd2dd26e4d14b3ac3cc922509c3a63fa5e910e90c614544aa042dd45"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-500-normal-BL9OpVg8.woff",
+        "bytes": 31284,
+        "sha256": "9b42c108da48b5ed55a3072e815ffee2d271562e6c0dd6998910e8f9c09e0a3d"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-500-normal-Cerq10X2.woff2",
+        "bytes": 24272,
+        "sha256": "f3779f1efccc4bdcdf9c0a02ab95bf6bd092ed09c48c08cedc725889edd1d19f"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-600-normal-CiBQ2DWP.woff",
+        "bytes": 31260,
+        "sha256": "6a9cb3a509b4eeaf12b7dda6c4aacac3e85d07f4201bf4dd716e332e692b87bd"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-600-normal-LgqL8muc.woff2",
+        "bytes": 24452,
+        "sha256": "f9a06e79cd3a2a20951c0f0e28f66dd0e6d3fda73911d640a2125c8fcb78f21a"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-ext-400-normal-77YHD8bZ.woff",
+        "bytes": 47560,
+        "sha256": "22ae8360fbad24d2af7c6c9898a346c881774dc87f7cf94bd262c48ad58d7116"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-ext-400-normal-C1nco2VV.woff2",
+        "bytes": 35000,
+        "sha256": "6744a7f509ebc6ab220a6cd4ea77e898adf014f03d88dcda5d45d8a9feefb4e9"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-ext-500-normal-BxGbmqWO.woff",
+        "bytes": 48492,
+        "sha256": "30d2903ce97f8a89ea0e9c083b42cb8bf97e7bbb5607e7f00352815f19cb0d5b"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-ext-500-normal-CV4jyFjo.woff2",
+        "bytes": 36024,
+        "sha256": "2c6fbc42d315528beb06c1096df45487bf4186c4b78b8111d12c9c951f8acca2"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-ext-600-normal-CIVaiw4L.woff",
+        "bytes": 48668,
+        "sha256": "22ff20a6170674fb9637c2a072227be86303bb6ec52b829b9d7077405f7196a6"
+      },
+      {
+        "path": "public/spa/assets/inter-latin-ext-600-normal-D2bJ5OIk.woff2",
+        "bytes": 36260,
+        "sha256": "e4bdf67b0cd15ca9e184509275be95db942195d3cc2b17f6a0452f2adf75d0bf"
+      },
+      {
+        "path": "public/spa/assets/inter-vietnamese-400-normal-Bbgyi5SW.woff",
+        "bytes": 6500,
+        "sha256": "54aa42d325bcdfd623ecb9eac4a5e3c6420c63d7b86e9d8545fb479f653beb57"
+      },
+      {
+        "path": "public/spa/assets/inter-vietnamese-400-normal-DMkecbls.woff2",
+        "bytes": 4972,
+        "sha256": "547ad9fdaeb0ae43487f4b8a02e47c36553c0c0cb73c8aa98f93b7b615f6b55d"
+      },
+      {
+        "path": "public/spa/assets/inter-vietnamese-500-normal-DOriooB6.woff2",
+        "bytes": 5112,
+        "sha256": "44e36aa5a8f12130029a29bb0e6695d0262b67446ce321e878b1fb56162b5de6"
+      },
+      {
+        "path": "public/spa/assets/inter-vietnamese-500-normal-mJboJaSs.woff",
+        "bytes": 6596,
+        "sha256": "18a4a09f751671cd8929d7c66e8fe7d820b511c36e51cf6047ffceab88eec4a4"
+      },
+      {
+        "path": "public/spa/assets/inter-vietnamese-600-normal-BuLX-rYi.woff",
+        "bytes": 6640,
+        "sha256": "24a01e7bd947aeef91ae8f7b8edeb23fadaf5ceda34a610ce62d2bbdaea57e83"
+      },
+      {
+        "path": "public/spa/assets/inter-vietnamese-600-normal-Cc8MFFhd.woff2",
+        "bytes": 5100,
+        "sha256": "1aeb94ae9db052a4a2fe6f3046f928cff1fdbd7abdf870a9a01c13cae6faeba5"
+      },
+      {
+        "path": "public/spa/assets/invoice-ghbmTtv4.js",
+        "bytes": 292,
+        "sha256": "13632109af4fc614a70d9b2ce6e23bb8ce6cb9880645d28b6d55944269e2b1b4"
+      },
+      {
+        "path": "public/spa/assets/InvoiceCreate-B-unJ2OC.js",
+        "bytes": 3177,
+        "sha256": "54e7e66e90c83eecceba803a6326790554276c415fb4ac0366108f7be4870734"
+      },
+      {
+        "path": "public/spa/assets/InvoiceDetail-D_WRirpI.js",
+        "bytes": 8571,
+        "sha256": "faf3a094ea98d885a6ff05edad9791f431c4ecfc75b1a697ec0473cf789cc828"
+      },
+      {
+        "path": "public/spa/assets/InvoiceList-Bl5dykAq.js",
+        "bytes": 2840,
+        "sha256": "82563b2b681d12329e25fcb0a2c90dc0b2f9b6b543f0e2eff1e08dc903f05986"
+      },
+      {
+        "path": "public/spa/assets/invoiceStore-DERrucJ5.js",
+        "bytes": 1499,
+        "sha256": "ff94654a389c033bcddbdb51ecdfc75e8acee75b05e2f6b121769d30ad9b9ffe"
+      },
+      {
+        "path": "public/spa/assets/LegalDocument-DDFVrPlq.js",
+        "bytes": 5739,
+        "sha256": "f0a3de0f72fb8a58eecbe22cf938ece0593e3a78fb4e367276f52db503c9d911"
+      },
+      {
+        "path": "public/spa/assets/Login-D3nv4wxR.js",
+        "bytes": 2098,
+        "sha256": "220fd24819185c9a392c679c3107cbcfcb6b46c2d0267b4e470bfaf0a8f2bfd3"
+      },
+      {
+        "path": "public/spa/assets/manrope-cyrillic-700-normal-7JNVKxyl.woff",
+        "bytes": 10004,
+        "sha256": "64d81d2579261c073c8e7ed0964f7b1735707ac3afc6c60a49531918e1cb128f"
+      },
+      {
+        "path": "public/spa/assets/manrope-cyrillic-700-normal-Dw_fZAg2.woff2",
+        "bytes": 7852,
+        "sha256": "2ad647b9159d27d27f4999b30598f92e60449fb20d80803bc7b85afafbb446d5"
+      },
+      {
+        "path": "public/spa/assets/manrope-cyrillic-800-normal-AvdZ5mAV.woff2",
+        "bytes": 7588,
+        "sha256": "e76a69e66b624abdb84cdda1e96b04417afbfb1f3cb684488a867b29bcb3870c"
+      },
+      {
+        "path": "public/spa/assets/manrope-cyrillic-800-normal-BuEMjQU-.woff",
+        "bytes": 9784,
+        "sha256": "fad28539e6148e092554064a0eaa3c72d71355e0fcaeddcf6a3407233d6620b3"
+      },
+      {
+        "path": "public/spa/assets/manrope-greek-700-normal-CHUG9PD8.woff2",
+        "bytes": 5236,
+        "sha256": "b37807fe106dc58c57642635ae7ea172abe65b380fea7b8894615a5883b26ec5"
+      },
+      {
+        "path": "public/spa/assets/manrope-greek-700-normal-DyfsrCpP.woff",
+        "bytes": 6744,
+        "sha256": "caefb2ca9d80515325f901a72b5f3a88a6cb23b603a7aa2ed25e07133214aeb3"
+      },
+      {
+        "path": "public/spa/assets/manrope-greek-800-normal-Bw-67qu9.woff",
+        "bytes": 6628,
+        "sha256": "04f7139c9f19fe1c1520de820733db3c2a65958db1f405a1f6cb336d10852487"
+      },
+      {
+        "path": "public/spa/assets/manrope-greek-800-normal-CDvU698_.woff2",
+        "bytes": 5184,
+        "sha256": "5db05b4f78d65931127f8a8d13cd1a6dfd69a17ec2122146cc324cb7fa3deadb"
+      },
+      {
+        "path": "public/spa/assets/manrope-latin-700-normal-BZp_XxE4.woff2",
+        "bytes": 14212,
+        "sha256": "d2a12c85a831e4b5db341767d0347fa3d1361d22a1fcb3e361a16b6c90080f71"
+      },
+      {
+        "path": "public/spa/assets/manrope-latin-700-normal-DGRFkw-m.woff",
+        "bytes": 18412,
+        "sha256": "e5d35fda4759b0d63ebcc6cca0627d98d9208254ce851c85df29e4d12aeafb61"
+      },
+      {
+        "path": "public/spa/assets/manrope-latin-800-normal-BfWYOv1c.woff2",
+        "bytes": 13648,
+        "sha256": "74c161dbcbce7c3590803cc72dc1f63313c360e13367aba5075a7b7b3818ea49"
+      },
+      {
+        "path": "public/spa/assets/manrope-latin-800-normal-uHUdIJgA.woff",
+        "bytes": 17912,
+        "sha256": "ce954acb78379d559111a15d29925f3390b69161b2b1365c38b0f19c76991bac"
+      },
+      {
+        "path": "public/spa/assets/manrope-latin-ext-700-normal-DYOwVNan.woff2",
+        "bytes": 8276,
+        "sha256": "dc7c46d7eb269cc90650d7f70cf49aafa39a98444e6882cc84096acbc156bfcd"
+      },
+      {
+        "path": "public/spa/assets/manrope-latin-ext-700-normal-eVCcYqtJ.woff",
+        "bytes": 11352,
+        "sha256": "b707ffc6454e54831a69d6c7db32d427b4a2bb914153c1f850fc4f888be7c35f"
+      },
+      {
+        "path": "public/spa/assets/manrope-latin-ext-800-normal-BQAQsuQc.woff",
+        "bytes": 11108,
+        "sha256": "283da63611967513d643fdfb2d8e4ffa33cce5b8baef5ae06eb117d9327e771e"
+      },
+      {
+        "path": "public/spa/assets/manrope-latin-ext-800-normal-DdFx7KEb.woff2",
+        "bytes": 8032,
+        "sha256": "262536c3018a0830a4d3d1b1a8096ac0d53dbd059f6271cca121272ba9d4f948"
+      },
+      {
+        "path": "public/spa/assets/manrope-vietnamese-700-normal-CUqMx5-1.woff2",
+        "bytes": 4552,
+        "sha256": "36c3f8e0a1c59e1bc2fd2a9cabab5b478b488882beebb534e4bd1a8360bf845b"
+      },
+      {
+        "path": "public/spa/assets/manrope-vietnamese-700-normal-pt65Fn2Z.woff",
+        "bytes": 6364,
+        "sha256": "19bc9ab84376bb2f88eb858d4293c75dad965c70df7755d0a7f03d10080174b2"
+      },
+      {
+        "path": "public/spa/assets/manrope-vietnamese-800-normal-bvg7iBCV.woff",
+        "bytes": 6128,
+        "sha256": "fd1d4d56aa1628213705cb4506ec8b9dfc9f68f3a9ec1fb136fdfaf651f4891e"
+      },
+      {
+        "path": "public/spa/assets/manrope-vietnamese-800-normal-ClPWri-A.woff2",
+        "bytes": 4156,
+        "sha256": "00842d448a57e2d1f513265e2b51248e4e91665b4d010a9c5ba9e72d45d1943f"
+      },
+      {
+        "path": "public/spa/assets/markdown-CmbZ6ERH.js",
+        "bytes": 2484,
+        "sha256": "2a09ac8dd506acf292288fc30c54407ee7b72b5c75a07e68a3c54c41b73a787f"
+      },
+      {
+        "path": "public/spa/assets/merchant_administrator_data_policy-Q97WbQPP.js",
+        "bytes": 127134,
+        "sha256": "6bacb49ffc5f532cf11934e980963bda15aba8cb36ff6e233e45e9d8a2459b8e"
+      },
+      {
+        "path": "public/spa/assets/merchant_administrator_faq-Bu-4Kwtq.js",
+        "bytes": 75742,
+        "sha256": "4867189e573f9c5d5d820cdf0884f40fb8e7a1a499771b8f55c20f17ff117132"
+      },
+      {
+        "path": "public/spa/assets/merchant_administrator_landing_page_content-Cs_bSPxa.js",
+        "bytes": 9184,
+        "sha256": "cf8171ce79cdef9734cf19335746899bd3038e7d14c7061895c12021b28e6506"
+      },
+      {
+        "path": "public/spa/assets/merchant_administrator_privacy_policy-BiKO-EJw.js",
+        "bytes": 87897,
+        "sha256": "14c835e59fb95ef394a254c45d556020414b33477c5865a3104f7f94afc3ea28"
+      },
+      {
+        "path": "public/spa/assets/merchant_administrator_terms_of_service-CNE8qMdw.js",
+        "bytes": 145772,
+        "sha256": "6e0ae1d6fdd15ef442cdd7ae3a06ec09acfac7c4474d9c0ef8f45556fadfb5b4"
+      },
+      {
+        "path": "public/spa/assets/merchant_audit_data_policy-BmhkVfF2.js",
+        "bytes": 143227,
+        "sha256": "761e47c9064e87ed48289d417951310a1ab8ef38ddf7ecf599f68687d94faa26"
+      },
+      {
+        "path": "public/spa/assets/merchant_audit_faq-B1Z_cN5-.js",
+        "bytes": 48351,
+        "sha256": "ff6d64c6adc7f46fa224a766d9a9bd9680e9be92ae763c2c5942d88cdd85903a"
+      },
+      {
+        "path": "public/spa/assets/merchant_audit_landing_page_content-ugscGjAl.js",
+        "bytes": 11062,
+        "sha256": "54019dc7b39041494d40dbacccd98ad104d49be43013482c8b547f3420644f50"
+      },
+      {
+        "path": "public/spa/assets/merchant_audit_privacy_policy-DuU6qpLz.js",
+        "bytes": 87521,
+        "sha256": "d24dcee23ebcae456cb47a4c255f258b18aadde063896f13ef84a0ff8c8cec14"
+      },
+      {
+        "path": "public/spa/assets/merchant_audit_terms_of_service-D8_Z9KWz.js",
+        "bytes": 134815,
+        "sha256": "27d59e066dda0e10b33da4707761354616478e3ae3b826acc4383b7b9ce16f24"
+      },
+      {
+        "path": "public/spa/assets/merchant_branch_data_policy-COxfeQqY.js",
+        "bytes": 149138,
+        "sha256": "b9584720dab3d245af25cad40273c22e45da9a9cb90e4e651c6216796ecb4eb1"
+      },
+      {
+        "path": "public/spa/assets/merchant_branch_faq-QzIzlVwL.js",
+        "bytes": 49309,
+        "sha256": "8f39e91e2373494f753448c140e8af0cec8e0caa5fb08f295c0bce3c11195c8e"
+      },
+      {
+        "path": "public/spa/assets/merchant_branch_landing_page_content-DWnHInMk.js",
+        "bytes": 11653,
+        "sha256": "3569b7de09c03d26ed7538f141a2b2b84e05bd3c5b6c6a9c88557e7897fb33b6"
+      },
+      {
+        "path": "public/spa/assets/merchant_branch_privacy_policy-zK9DxrW8.js",
+        "bytes": 94802,
+        "sha256": "6d80a678f780c90937ebae87aea6a5b2eb1a7dd7c7a6e43500acfe09145ea2ba"
+      },
+      {
+        "path": "public/spa/assets/merchant_branch_terms_of_service-RLP4pnac.js",
+        "bytes": 144302,
+        "sha256": "e624bfa9b4b49d8af4113de8215ee68092b3ef8084641e44a73e494778391e1f"
+      },
+      {
+        "path": "public/spa/assets/merchant_finance_data_policy-gwKn4DvO.js",
+        "bytes": 162339,
+        "sha256": "afd1f63198128854d053a35281635fe5b9326fe37503de0018ebd9e8e0b7d667"
+      },
+      {
+        "path": "public/spa/assets/merchant_finance_faq-DosY1aXv.js",
+        "bytes": 54669,
+        "sha256": "31b133e5b816620139a6a0e4d9407a5414426ba87a794d71bc22f7a4ebc31129"
+      },
+      {
+        "path": "public/spa/assets/merchant_finance_landing_page_content-BSHJj6RS.js",
+        "bytes": 11414,
+        "sha256": "ba3d6a4267db64ad2944ef6dfce84f6dd267cb97219df846988a6c2949d334c4"
+      },
+      {
+        "path": "public/spa/assets/merchant_finance_privacy_policy-OOf5q_S9.js",
+        "bytes": 102301,
+        "sha256": "e0b89a96a2dcf66dec605238cca8f9326bfbe6c485494483abe15f71190513d8"
+      },
+      {
+        "path": "public/spa/assets/merchant_finance_terms_of_service-yfOQTsmL.js",
+        "bytes": 145952,
+        "sha256": "9dd04cd9305aaceb94f0869e9ffca4c56660b4ea1767eba5d8c16202f9f73aaf"
+      },
+      {
+        "path": "public/spa/assets/merchant_front_office_data_policy-B5kQPxdG.js",
+        "bytes": 164724,
+        "sha256": "d1bb79bd2447baaa3611c6e4c0773c59ebae031a5a0c7045245342ea8cbeaf51"
+      },
+      {
+        "path": "public/spa/assets/merchant_front_office_faq-QTEek8Qd.js",
+        "bytes": 46437,
+        "sha256": "05dbe0e169723786603cfe4be24a2a39a6a234f60d426cdb060e359d3fd0d257"
+      },
+      {
+        "path": "public/spa/assets/merchant_front_office_landing_page_content-CRdZv2Hg.js",
+        "bytes": 9696,
+        "sha256": "3e6f0353621658d5635bc775d74874b49f1cd615e8ce791864adf12d107ea168"
+      },
+      {
+        "path": "public/spa/assets/merchant_front_office_privacy_policy-ByMpmnMg.js",
+        "bytes": 101488,
+        "sha256": "eb495424e8f686cd55858ec8dbd907561b7262a3eef8b32af628d81dbf2c6fd0"
+      },
+      {
+        "path": "public/spa/assets/merchant_front_office_terms_of_service-Cp-neNxb.js",
+        "bytes": 137798,
+        "sha256": "bdee4b6af73dc9b63e9e62f039f6a7cf03bb75da0c0a0740e558765b7c4a2765"
+      },
+      {
+        "path": "public/spa/assets/merchant_human_resource_data_policy-wFbL1Kgk.js",
+        "bytes": 191214,
+        "sha256": "0d6501161f3e53a89ce2e2b9b86bede69b6e3f533cc4197ca8329c62a2df8ea8"
+      },
+      {
+        "path": "public/spa/assets/merchant_human_resource_faq-D7GKzO4U.js",
+        "bytes": 40623,
+        "sha256": "6904dd774e96f218fc7f67a26495cc2f3b894556a3a637c2fea121c02a6bf845"
+      },
+      {
+        "path": "public/spa/assets/merchant_human_resource_landing_page_content-CiIK6PEg.js",
+        "bytes": 10009,
+        "sha256": "9d97119aedf0f50e8ded09645c3a66a67b7af583ddd95702b8bcbdaedf893f9c"
+      },
+      {
+        "path": "public/spa/assets/merchant_human_resource_privacy_policy-BIg1k4cJ.js",
+        "bytes": 105581,
+        "sha256": "3997456994f25e9824bcb5f394f74de0af9b4b845ef145b20fbe94df1cd19f52"
+      },
+      {
+        "path": "public/spa/assets/merchant_human_resource_terms_of_service-DQN2yzcf.js",
+        "bytes": 128227,
+        "sha256": "3bdca6d591a58ab3c6b8234440c32171671e2a06707d9affa06c8f10dbd01fbe"
+      },
+      {
+        "path": "public/spa/assets/merchant_personnel_data_policy-8BE9FSUs.js",
+        "bytes": 127214,
+        "sha256": "188ee0343e1edaf23356c838784ce3683e4086b25bbdc09203cf35c6e40c22b3"
+      },
+      {
+        "path": "public/spa/assets/merchant_personnel_faq-C-ZfdS7V.js",
+        "bytes": 42673,
+        "sha256": "c0f1bd119574262146c9e73058545bef83de7e621dbe5bba554cec6594f7b9ce"
+      },
+      {
+        "path": "public/spa/assets/merchant_personnel_landing_page_content-Df_CuKhv.js",
+        "bytes": 12943,
+        "sha256": "314f12058e218446143c1c0e6827feb7fb281df0d5bb2b399509aab79e94dab4"
+      },
+      {
+        "path": "public/spa/assets/merchant_personnel_privacy_policy-BPRPozDG.js",
+        "bytes": 109708,
+        "sha256": "69d9e8d445874c7f3ec57fdc79f2ddf0db6e075232103a073e58223ecc3f1657"
+      },
+      {
+        "path": "public/spa/assets/merchant_personnel_terms_of_service-BPIO7Wyr.js",
+        "bytes": 112420,
+        "sha256": "845d0f1e0cae0a418a7d826b87479024f9dc5e24e3aaf5489e8e7e3e14e5b46d"
+      },
+      {
+        "path": "public/spa/assets/MerchantLayout-D7BM83Cl.js",
+        "bytes": 207,
+        "sha256": "77b75d0c1446c9dcd66eaf8796ff75756e133282276337319944f5ce59e0b4d4"
+      },
+      {
+        "path": "public/spa/assets/MerchantProfile-BShOSzbm.js",
+        "bytes": 8391,
+        "sha256": "e166dce0e5f7acb7151f4f825d3dada6848aa9163e76b7befa41f44774f0cf93"
+      },
+      {
+        "path": "public/spa/assets/MfaChallenge-CvI_AmGZ.js",
+        "bytes": 2472,
+        "sha256": "8d9271eac441ba6e66fc9fd42fa3c8ba9922b30153756436dc6dbbf6fc4d161b"
+      },
+      {
+        "path": "public/spa/assets/MfaSetup-YA_cGI8d.js",
+        "bytes": 4105,
+        "sha256": "50bad537fd20ad6e1b77500b923a40d73ac75cd63597deb14b7dac01cf9c3480"
+      },
+      {
+        "path": "public/spa/assets/money-Yn-L7QL9.js",
+        "bytes": 151,
+        "sha256": "97eebc127bc5704dca3b4fc26c5fd3efbe92709373f734ed96fe5ae7546427e9"
+      },
+      {
+        "path": "public/spa/assets/MyAppointments-CeUWfkan.js",
+        "bytes": 1574,
+        "sha256": "4092fecdebf52ad52e68b547b59246e0b44191ddcee5e6a0c534125cbf876d49"
+      },
+      {
+        "path": "public/spa/assets/MyQueue-B66WnLoW.js",
+        "bytes": 1772,
+        "sha256": "c06224ad0724f1d543e7b223bddf4ffe8da803ddad3c6f1c08195a1259296cd2"
+      },
+      {
+        "path": "public/spa/assets/MyServiceSessions-B9WiRRiV.js",
+        "bytes": 1654,
+        "sha256": "dba7bdd1e72e19cfdb218fd11b06e83743e08c10fff98724828b3ee8d13f7787"
+      },
+      {
+        "path": "public/spa/assets/OperatingHours-B2FpqG3L.js",
+        "bytes": 2685,
+        "sha256": "2b438f59452a93b25f903aa4989fad6d4ba8397f366dace9af68dc7ce3bb14bd"
+      },
+      {
+        "path": "public/spa/assets/PaymentGroupDetail-CkA68RaT.js",
+        "bytes": 8837,
+        "sha256": "cdf2e77abe4207feb925acc38cae257ef4056be9226da29080abad85d8047194"
+      },
+      {
+        "path": "public/spa/assets/PaymentGroupList-BUJV1yGS.js",
+        "bytes": 2101,
+        "sha256": "edc6b2313e3eb96625f4a197ba8b75810ce4885768b120bbc5eb0d2796746524"
+      },
+      {
+        "path": "public/spa/assets/paymentStore-CN5gbqpN.js",
+        "bytes": 2421,
+        "sha256": "c42492715183f3339fdc962c0c52489a8fc668553b4fdaf9eb01bb0e5d9657a5"
+      },
+      {
+        "path": "public/spa/assets/payout-BbgiSLWG.js",
+        "bytes": 1218,
+        "sha256": "24da13aa98e9bf600862611a6981d8fb8b6c59ae9d074bae28b7d02a24c10360"
+      },
+      {
+        "path": "public/spa/assets/PayoutRuns-DvPOLFYa.js",
+        "bytes": 15205,
+        "sha256": "c8e1f17e55f5b9c826fd9c084f3e53a296550ccdd7d90a9b2dbda147f8f4daa6"
+      },
+      {
+        "path": "public/spa/assets/PayoutRuns-GQHqEzQt.js",
+        "bytes": 16288,
+        "sha256": "a25d08a8b68c8b3bafbbe7cb2f327ef69ce48dc505112bcaee4cbefcafb58433"
+      },
+      {
+        "path": "public/spa/assets/payoutRunStore-CeT5wtVY.js",
+        "bytes": 3011,
+        "sha256": "bcb9120fc2bd73f3b22bf50508cca99a37588ab6299eda9e5fdda2630c58b374"
+      },
+      {
+        "path": "public/spa/assets/PeriodLockList-C6QPKTGq.js",
+        "bytes": 5955,
+        "sha256": "41632412a56222d4d853bfa020711157a91464bd9c43b5a8db72398a367ce96f"
+      },
+      {
+        "path": "public/spa/assets/periodLockStore-0ZhT2I0g.js",
+        "bytes": 1319,
+        "sha256": "fa134b9c6635dc7920e4a259e3d5085c07dd6be1b387e0325efd5a4c26f060f6"
+      },
+      {
+        "path": "public/spa/assets/PeriodReopenApprovals-Cz9mb1I5.js",
+        "bytes": 2475,
+        "sha256": "a80d90d4430c94784369b82263b93eb9b2932f46bbd12eae50a28b5a43bce6ba"
+      },
+      {
+        "path": "public/spa/assets/PermissionGate-1_m_fWo9.js",
+        "bytes": 498,
+        "sha256": "139eeb535bd63c2d21d83eaa65d6530576a14ad9c3ce91e52b5fed931e80662f"
+      },
+      {
+        "path": "public/spa/assets/PermissionPreview-DoSpIsWk.js",
+        "bytes": 2361,
+        "sha256": "a372beb39bd3ec0e288a3026e339fdaac3a7489391b54fdbd4672e7613456a71"
+      },
+      {
+        "path": "public/spa/assets/PersonnelAvailability-Dl1vRm6d.js",
+        "bytes": 12414,
+        "sha256": "e4a7d35b96bfb8a134fdef4f73c9eb125fe3a45d5f4f9b6cea17b08773c2d25e"
+      },
+      {
+        "path": "public/spa/assets/PersonnelLayout-B2AagcG9.js",
+        "bytes": 208,
+        "sha256": "9fecfadbe6514ac3d664947c7c8486a10d1562bf39ce66c92389965631191f61"
+      },
+      {
+        "path": "public/spa/assets/PersonnelSchedule-hjXJBSqd.js",
+        "bytes": 5546,
+        "sha256": "7bf5f0ee12f1d88c5f7fb3c689fb886f49dda82125905be6d0141d53d00799cb"
+      },
+      {
+        "path": "public/spa/assets/pinia-gD712R58.js",
+        "bytes": 5936,
+        "sha256": "f34896bf4dd2cd2edaf044a5680027d465d737853d5b761f98715183d2b772d0"
+      },
+      {
+        "path": "public/spa/assets/PlanManagement-DQclvLbM.js",
+        "bytes": 5706,
+        "sha256": "e171a67a0249eae4e4863d51329e7ca8edd3349c0ae431ac61d17be6ff529198"
+      },
+      {
+        "path": "public/spa/assets/PlatformAdminLayout-BPzez7YT.js",
+        "bytes": 212,
+        "sha256": "ba29d92af1b3ffa17df85e1ce31648602fd5a7e86c2a2746052cc7a081971e35"
+      },
+      {
+        "path": "public/spa/assets/platformFee-CYWDYjaZ.js",
+        "bytes": 2106,
+        "sha256": "bffcd411da8acf010682572a9e95094f1955aaaa5961db2030dd53a760f91a21"
+      },
+      {
+        "path": "public/spa/assets/PlatformFees-HMic9hoS.js",
+        "bytes": 15693,
+        "sha256": "740f77fffcc895dbca4882a2cb3efa7b3d280a0a0035516b5ce19710027e2d7a"
+      },
+      {
+        "path": "public/spa/assets/Promotions-BWK-dmaf.js",
+        "bytes": 13845,
+        "sha256": "7bc337fb266c92b5fc3f665e21f0621a66d9e34a6c31573e04fc47d6a2db4308"
+      },
+      {
+        "path": "public/spa/assets/Promotions-D8QdIE2n.css",
+        "bytes": 1420,
+        "sha256": "5f821126ed461937fa7e0a7ee15d08e2430a44da6ffdf108f934a7077a92d0ee"
+      },
+      {
+        "path": "public/spa/assets/queue-BZlU0tOY.js",
+        "bytes": 374,
+        "sha256": "f510aedf761bd31ae50dde5e7a698df39eb71deac2ee48f1de3584a687ef2cef"
+      },
+      {
+        "path": "public/spa/assets/QueueBoard-DoP6rU0t.js",
+        "bytes": 5965,
+        "sha256": "4a92e0bc9c8a2c05c940cd6ccd0b53d96f2d31e6076117673d8f8fa91f364ede"
+      },
+      {
+        "path": "public/spa/assets/QueueConfiguration-T3GTQ9dX.js",
+        "bytes": 3020,
+        "sha256": "9c2e51e865387f85339d92fa75d4062f0c401e7210b7ce9c672608de53890fa4"
+      },
+      {
+        "path": "public/spa/assets/QueueEntryDetail-C_r_890a.js",
+        "bytes": 7211,
+        "sha256": "c3129cb833573be246e8700bbef7220564e967e931ea9f6baf737928473cb728"
+      },
+      {
+        "path": "public/spa/assets/QueueReadOnly-CX0tlX35.js",
+        "bytes": 2086,
+        "sha256": "f5931b66a3ae8763e43570c859a51f2d73c4cd317d5cd8c57a0800c38f1a011d"
+      },
+      {
+        "path": "public/spa/assets/queueStore-vTjAav7B.js",
+        "bytes": 2234,
+        "sha256": "7bd4652f35a28eb3799cfb2d12981e9720d17aace5e83201ce222c72b3857fc4"
+      },
+      {
+        "path": "public/spa/assets/ReceiptDetail--u576Vc-.js",
+        "bytes": 3716,
+        "sha256": "42c356b8b4a031c7052e04e51bb58449c9ec0f647ab15c005cd1ff20fcb6c05c"
+      },
+      {
+        "path": "public/spa/assets/ReceiptList-DHFpo8PF.js",
+        "bytes": 1933,
+        "sha256": "8d655fb1a7a5f1ce40395c0b2d5efb4526c65bb58b1827847c8c0887cc9b2e28"
+      },
+      {
+        "path": "public/spa/assets/receiptStore-DQXgnN2V.js",
+        "bytes": 1011,
+        "sha256": "c76d20958d2b51077332fa0b92cf5d3ccc9486d36eb75a6b7057f7c32470dd5b"
+      },
+      {
+        "path": "public/spa/assets/RecordPayment-B4fYvf92.js",
+        "bytes": 7328,
+        "sha256": "fda090bcd9ae76f60fbea75791e06abb2de33a7dafad60fca5291598d13db1a6"
+      },
+      {
+        "path": "public/spa/assets/RecordPaymentEntry-DhnPdAEO.js",
+        "bytes": 1873,
+        "sha256": "52a9cb451d723c7b456740e7806d1daac346b17590d4fe91030bd1b05955e29d"
+      },
+      {
+        "path": "public/spa/assets/RefundDetail-OJ5yNkiq.js",
+        "bytes": 3723,
+        "sha256": "0cba1c9f34007bc1ee25fb2e5fb1203b9a2a41169106f02edb9a73485506b9b1"
+      },
+      {
+        "path": "public/spa/assets/RefundList-DPZ3GbYr.js",
+        "bytes": 5025,
+        "sha256": "36eb9bbf64561a28bcce40165a3ec2e425c62db353ba90601c647d7a7dc908a5"
+      },
+      {
+        "path": "public/spa/assets/refundStore-Bm_UD0vF.js",
+        "bytes": 1100,
+        "sha256": "1a2f4be495b33ec64b47d7302d3c30f1cb8dbfb83efd5ba5c989fa26e13b7e18"
+      },
+      {
+        "path": "public/spa/assets/RegisterMerchant-lBtU3WZ3.js",
+        "bytes": 4606,
+        "sha256": "4fe51a03a2f904b4034d3249890210aaa8ffa2d22a13a0e861646ce83a32dc96"
+      },
+      {
+        "path": "public/spa/assets/RegistrationMonitoring-9nsWrTeZ.js",
+        "bytes": 10818,
+        "sha256": "20d2f21e679cb347dda75d397d26c32107c06cd283d1c5d1f7fd07854c61d579"
+      },
+      {
+        "path": "public/spa/assets/roleContent-ChEK4jSR.js",
+        "bytes": 230,
+        "sha256": "df3fac5fb324eaf8aaef90a19e4d0d48a2f2bb966b98c23f3ceac6427ab6fcd0"
+      },
+      {
+        "path": "public/spa/assets/RoleGetStarted-CyPfzo3w.js",
+        "bytes": 7786,
+        "sha256": "4ef868e68ca1d0e5cb739ed5f9bda5774a44d20ec9f6a17e6bd5acd9dc1f197a"
+      },
+      {
+        "path": "public/spa/assets/RoleLanding-BWy3veNS.js",
+        "bytes": 11665,
+        "sha256": "edfa3914a8abc237d04e7f5133b06bbde0c8bba2ed0306c589c93be7cce6a1b7"
+      },
+      {
+        "path": "public/spa/assets/roleNavigation-BJCbKt_W.js",
+        "bytes": 14408,
+        "sha256": "01ee3d74f6b8f8d794de6f08ee975dcaeb16459714422e8b94061566d0ee7caf"
+      },
+      {
+        "path": "public/spa/assets/roles-zLVhb2mU.js",
+        "bytes": 2409,
+        "sha256": "a5252ca339fda670a9deb70c04adc657f1533dda45fed607901bdcaa3346a733"
+      },
+      {
+        "path": "public/spa/assets/RoleShell-DXGReKlN.js",
+        "bytes": 8307,
+        "sha256": "5c37291021af15737ed70e43371df75612d03732ab05cc0cfe188f3fda9c49ad"
+      },
+      {
+        "path": "public/spa/assets/runtime-core.esm-bundler-DClBC82D.js",
+        "bytes": 60093,
+        "sha256": "9ce5d8c92d874a29889585e61ee7cfde8f70ec971a58b9702e15e4f03265db67"
+      },
+      {
+        "path": "public/spa/assets/ServiceCatalogue-BspmChNz.js",
+        "bytes": 9620,
+        "sha256": "678144c16d30bd70e800f571040e6c9a62681c281e77b5f83e77428f103eb518"
+      },
+      {
+        "path": "public/spa/assets/ServiceEligibility-Bd5S38d9.js",
+        "bytes": 3457,
+        "sha256": "2eb0e40c6b2da58034c7ff7a9c505f44ce5be32f58aa1a13b5cf28416cce9d32"
+      },
+      {
+        "path": "public/spa/assets/serviceSession-Dxo9-UeK.js",
+        "bytes": 581,
+        "sha256": "578926f4eb851ac91acfc1a3986aa6e8363ed48e206155401aa7e08f75853f7a"
+      },
+      {
+        "path": "public/spa/assets/ServiceSessionList-Bdd4K9I-.js",
+        "bytes": 5324,
+        "sha256": "6b281509b0c4bb7ebc5415501546df64a9a0becf543140e5a211819122208525"
+      },
+      {
+        "path": "public/spa/assets/serviceSessionStore-DsvDDxJb.js",
+        "bytes": 1338,
+        "sha256": "5dc18acb4f5739e71ccbcf1965b3d7bb1b469daa266ba531b5f6a647f90afbbb"
+      },
+      {
+        "path": "public/spa/assets/StaffInvitationAccept-Bsv6F4bZ.js",
+        "bytes": 2948,
+        "sha256": "376904e1c8111338144cffa3cfa609d66d1b4ad81bff37386c87f1753d63c25b"
+      },
+      {
+        "path": "public/spa/assets/StaffInvitations-DY_o9xWr.js",
+        "bytes": 3550,
+        "sha256": "0e7669512141d281365999c33977aa86e1791227c9c643e1c20b1dd81a05fdf5"
+      },
+      {
+        "path": "public/spa/assets/StaffList-lbXjHdfy.js",
+        "bytes": 1589,
+        "sha256": "f383f0561d564a962c4a5d70f1484d8df84ecdeb6584a1c11b195d60027dae78"
+      },
+      {
+        "path": "public/spa/assets/StaffProfile-DcXhZdQ6.js",
+        "bytes": 1495,
+        "sha256": "6a87a13523f13ce028e883b12de5c27c96108c0343470453f1072c43ebcf04d2"
+      },
+      {
+        "path": "public/spa/assets/staffStore-bMJFSkXF.js",
+        "bytes": 1435,
+        "sha256": "0c9036bbb35789271168c46bd9c0efa9d594ad8735d82b484f2febcdd72e2817"
+      },
+      {
+        "path": "public/spa/assets/SubscriptionDashboard-aiYGtmsc.js",
+        "bytes": 6447,
+        "sha256": "0bee07bc1161b7742fff869bb80a9e823868a693f6866de8d12953501dff99d0"
+      },
+      {
+        "path": "public/spa/assets/SubscriptionInvoices-Cs-xr1GP.js",
+        "bytes": 6399,
+        "sha256": "0cafa73ef538e909ab3b39800fb23d0fc43756d64ec790785404cd232f1c7478"
+      },
+      {
+        "path": "public/spa/assets/subscriptionInvoiceStore-B2Rlvk-7.js",
+        "bytes": 1099,
+        "sha256": "b02f47a80a1539426b2a28b3ae33e146dc54c915232c46f5a258cdb417fb3d86"
+      },
+      {
+        "path": "public/spa/assets/subscriptionStore-C31nKfIH.js",
+        "bytes": 1168,
+        "sha256": "049d0aea8f4adfd2e1d9ae4ec06a48ae22bbb0fc0dfc43c0e87888ccdc2d4b9b"
+      },
+      {
+        "path": "public/spa/assets/super_administrator_data_policy-DYb35v9d.js",
+        "bytes": 112474,
+        "sha256": "0edcaaa99d1aa3736018604e1f1780700de516424a49780051ae266ac1912ab8"
+      },
+      {
+        "path": "public/spa/assets/super_administrator_faq-Bpa4mcPa.js",
+        "bytes": 54316,
+        "sha256": "b2f73db80a5c4a37012d867473d94e70377bc361042d9c5ddf605241bf8434c1"
+      },
+      {
+        "path": "public/spa/assets/super_administrator_landing_page_content-Dz_YSOD6.js",
+        "bytes": 7885,
+        "sha256": "460ae226794442aecb4d68757daf6543414a1ef3cf037d0cb96924a72dbc07a0"
+      },
+      {
+        "path": "public/spa/assets/super_administrator_privacy_policy-GBzcAKFK.js",
+        "bytes": 74454,
+        "sha256": "cbeadc004965b087acb9fa031b9e1395f2e576e151016f0cd67684e5108bcff3"
+      },
+      {
+        "path": "public/spa/assets/super_administrator_terms_of_service-Dipk4tNI.js",
+        "bytes": 126382,
+        "sha256": "bdede48f9da4d8005352c2bcefe78b3655af8ffb71bc3903bbe3399967ee4269"
+      },
+      {
+        "path": "public/spa/assets/SvButton-D68aT68l.js",
+        "bytes": 1252,
+        "sha256": "388bfbc648b1b7f3ed42224f35d84c7ecb76f3a27e43f177223bda75fd943762"
+      },
+      {
+        "path": "public/spa/assets/SvCard-BH3uk3-o.js",
+        "bytes": 454,
+        "sha256": "468c421312205472f0414a17354ac9d1955bd20ea65a595106eaa75bdd76d000"
+      },
+      {
+        "path": "public/spa/assets/SvEmptyState-BgDd4aM9.js",
+        "bytes": 1029,
+        "sha256": "09fd15370a6edb589887ff8be42e540f36f80d1a3a5b47f9184b84e60dfae5f9"
+      },
+      {
+        "path": "public/spa/assets/SvInput-CtJQtFjQ.js",
+        "bytes": 1650,
+        "sha256": "778866d384418af0528795faf29bbe436fc74ae9850ba1d8184883e3ae6a8e7a"
+      },
+      {
+        "path": "public/spa/assets/SvModal-DbVevmCE.js",
+        "bytes": 2021,
+        "sha256": "bf8b69c6c0c1d0480947daeb6c0b56b61372b554a896b9e3d01a3d8d665772db"
+      },
+      {
+        "path": "public/spa/assets/SvSelect-N7xIIrW2.js",
+        "bytes": 1554,
+        "sha256": "f9e73a1bd6a2bddabe2e92742fcc04f28ec9e5ee6aad9782ba12b3ff36ef852b"
+      },
+      {
+        "path": "public/spa/assets/SvStateBoundary-DrbSAj7q.js",
+        "bytes": 2103,
+        "sha256": "725701143fb7279a5e55ebe6135a17e5cdfc45917d0e8846e15ea63a74bd85f7"
+      },
+      {
+        "path": "public/spa/assets/SvTextarea-Bxh7x6ty.js",
+        "bytes": 1422,
+        "sha256": "bad0a3adaaa1dcbb79c79bb945a24f8ab53b9e266b6fb129a45581f31d4e38e0"
+      },
+      {
+        "path": "public/spa/assets/TaskInbox-DnLYdVRX.js",
+        "bytes": 3661,
+        "sha256": "8ea5328d6ed74ce3d0da95734843d797466a6fa15c814caaca965bf60683ca6b"
+      },
+      {
+        "path": "public/spa/assets/themeStore-zJbe8ST7.js",
+        "bytes": 616,
+        "sha256": "b587cc4a7adf56cf39d6e3bd79ae8444291c7a718ef05757b544261b0c30f4bd"
+      },
+      {
+        "path": "public/spa/assets/useCan-BD35WgyS.js",
+        "bytes": 238,
+        "sha256": "649e56ddeffad1ace0079f6baee7cc9a6c0d9b4be4bc0ef9dc63a323e1ef9c81"
+      },
+      {
+        "path": "public/spa/assets/useForm-CMLHxOW4.js",
+        "bytes": 633,
+        "sha256": "472a0aba3aff2c2f5ec63f21bdc1d7310420bcb23e8b300d3272dad27703372b"
+      },
+      {
+        "path": "public/spa/assets/Verify-DljjbFxx.js",
+        "bytes": 1157,
+        "sha256": "76669362a3a218bdbee7a5919c1655eb5b61a7ffbbbcf79ceae0f2cb9ba5e0df"
+      },
+      {
+        "path": "public/spa/assets/WalkInCreate-BCiWs9me.js",
+        "bytes": 5020,
+        "sha256": "dbad1da794679bb3cd3b4f34eb9a92e71fffbe14472c65ad4e456aa03f6ff9e8"
+      },
+      {
+        "path": "public/spa/index.html",
+        "bytes": 1554,
+        "sha256": "b2b6c5514635fdd66dcbad49664bbb8caa996bb8442e341467ffe93148e0c74f"
+      }
+    ]
+  },
+  "served_origin": "http://localhost:8099",
+  "index_html": {
+    "source_path": "resources/spa/index.html",
+    "built_path": "public/spa/index.html",
+    "built_sha256": "b2b6c5514635fdd66dcbad49664bbb8caa996bb8442e341467ffe93148e0c74f",
+    "referenced_urls": [
+      "/assets/apiClient-B_JkGpjw.js",
+      "/assets/brand/apple-touch-icon.png",
+      "/assets/brand/favicon-16x16.png",
+      "/assets/brand/favicon-32x32.png",
+      "/assets/brand/favicon.ico",
+      "/assets/index-BF8ocT4d.js",
+      "/assets/index-CHjna778.css",
+      "/assets/pinia-gD712R58.js",
+      "/assets/runtime-core.esm-bundler-DClBC82D.js"
+    ],
+    "referenced_url_resolution": [
+      {
+        "referenced_url": "/assets/apiClient-B_JkGpjw.js",
+        "served_status": 404,
+        "served_reachable": false,
+        "exists_under_public_spa": true,
+        "exists_under_public_root": false,
+        "sha256": "997b18c5d6f3d32f57056ebe9c4c6f3822b724686d72c303948d44c63935d181"
+      },
+      {
+        "referenced_url": "/assets/brand/apple-touch-icon.png",
+        "served_status": 200,
+        "served_reachable": true,
+        "exists_under_public_spa": false,
+        "exists_under_public_root": true,
+        "sha256": "724b16391e38f6791fbbc05582292bb441214aa7f5767e3c97ba200959f08824"
+      },
+      {
+        "referenced_url": "/assets/brand/favicon-16x16.png",
+        "served_status": 200,
+        "served_reachable": true,
+        "exists_under_public_spa": false,
+        "exists_under_public_root": true,
+        "sha256": "c061fd29d1a319192830158b5fcde362640181c865a96b23f34b2fa0e0f0fb08"
+      },
+      {
+        "referenced_url": "/assets/brand/favicon-32x32.png",
+        "served_status": 200,
+        "served_reachable": true,
+        "exists_under_public_spa": false,
+        "exists_under_public_root": true,
+        "sha256": "079cd5e615689c009e34472e6784dfad18c032c26ad0bdb13b4754ba6b86650a"
+      },
+      {
+        "referenced_url": "/assets/brand/favicon.ico",
+        "served_status": 200,
+        "served_reachable": true,
+        "exists_under_public_spa": false,
+        "exists_under_public_root": true,
+        "sha256": "29c90ffa6384f8df4b893957688389d5ac97cf42b9212b007cd944cc6abc5d4b"
+      },
+      {
+        "referenced_url": "/assets/index-BF8ocT4d.js",
+        "served_status": 404,
+        "served_reachable": false,
+        "exists_under_public_spa": true,
+        "exists_under_public_root": false,
+        "sha256": "28ceb14412e20c1d610e2ac0c6c5d787ebc4e13168daebecc0b047b23ef6555a"
+      },
+      {
+        "referenced_url": "/assets/index-CHjna778.css",
+        "served_status": 404,
+        "served_reachable": false,
+        "exists_under_public_spa": true,
+        "exists_under_public_root": false,
+        "sha256": "5371d7ebec3d087cd98323c679b7617bdf8972faf084663ff80d45c68b0d3de9"
+      },
+      {
+        "referenced_url": "/assets/pinia-gD712R58.js",
+        "served_status": 404,
+        "served_reachable": false,
+        "exists_under_public_spa": true,
+        "exists_under_public_root": false,
+        "sha256": "f34896bf4dd2cd2edaf044a5680027d465d737853d5b761f98715183d2b772d0"
+      },
+      {
+        "referenced_url": "/assets/runtime-core.esm-bundler-DClBC82D.js",
+        "served_status": 404,
+        "served_reachable": false,
+        "exists_under_public_spa": true,
+        "exists_under_public_root": false,
+        "sha256": "9ce5d8c92d874a29889585e61ee7cfde8f70ec971a58b9702e15e4f03265db67"
+      }
+    ]
+  },
+  "http_probes": [
+    {
+      "url": "http://localhost:8099/",
+      "reachable": true,
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 39263
+    },
+    {
+      "url": "http://localhost:8099/assets/apiClient-B_JkGpjw.js",
+      "reachable": true,
+      "status": 404,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 6659
+    },
+    {
+      "url": "http://localhost:8099/assets/brand/android-chrome-192x192.png",
+      "reachable": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 36627
+    },
+    {
+      "url": "http://localhost:8099/assets/brand/android-chrome-512x512.png",
+      "reachable": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 192711
+    },
+    {
+      "url": "http://localhost:8099/assets/brand/apple-touch-icon.png",
+      "reachable": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 32716
+    },
+    {
+      "url": "http://localhost:8099/assets/brand/favicon-16x16.png",
+      "reachable": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 706
+    },
+    {
+      "url": "http://localhost:8099/assets/brand/favicon-32x32.png",
+      "reachable": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 1909
+    },
+    {
+      "url": "http://localhost:8099/assets/brand/favicon.ico",
+      "reachable": true,
+      "status": 200,
+      "content_type": "image/x-icon",
+      "bytes": 15406
+    },
+    {
+      "url": "http://localhost:8099/assets/brand/Logo.png",
+      "reachable": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 162570
+    },
+    {
+      "url": "http://localhost:8099/assets/brand/Logo.svg",
+      "reachable": true,
+      "status": 404,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 6659
+    },
+    {
+      "url": "http://localhost:8099/assets/index-BF8ocT4d.js",
+      "reachable": true,
+      "status": 404,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 6659
+    },
+    {
+      "url": "http://localhost:8099/assets/index-CHjna778.css",
+      "reachable": true,
+      "status": 404,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 6659
+    },
+    {
+      "url": "http://localhost:8099/assets/pinia-gD712R58.js",
+      "reachable": true,
+      "status": 404,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 6659
+    },
+    {
+      "url": "http://localhost:8099/assets/runtime-core.esm-bundler-DClBC82D.js",
+      "reachable": true,
+      "status": 404,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 6659
+    },
+    {
+      "url": "http://localhost:8099/health",
+      "reachable": true,
+      "status": 200,
+      "content_type": "application/json",
+      "bytes": 75
+    },
+    {
+      "url": "http://localhost:8099/spa/",
+      "reachable": true,
+      "status": 200,
+      "content_type": "text/html",
+      "bytes": 1554
+    }
+  ],
+  "containers": [
+    {
+      "name": "servana-app-1",
+      "present": true,
+      "detail": {
+        "container_id": "4e7158503e291d1babf2fe09a5c04e1fa7804175b59303b8a533d83c3306866e",
+        "image_digest": "sha256:1d0e7e750cbbc05f61f7bd7afe2de0e8552179c3ed785f9a0c7ee4a98b78fd48",
+        "image_tag": "servana-app:dev",
+        "created": "2026-07-26T21:37:27.637293203Z",
+        "status": "running",
+        "user": "servana",
+        "mounts": [
+          {
+            "type": "bind",
+            "source": "C:\\Users\\nderu\\Documents\\Development\\Product\\Servana",
+            "destination": "/var/www/html",
+            "read_only": false
+          },
+          {
+            "type": "volume",
+            "source": "/var/lib/docker/volumes/servana_servana-vendor/_data",
+            "destination": "/var/www/html/vendor",
+            "read_only": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "servana-nginx-1",
+      "present": true,
+      "detail": {
+        "container_id": "e686d9e2f21fc1ba58a069553151b808426ab9e759d78f740dc0131e3624012b",
+        "image_digest": "sha256:47ce8258a10e28ce4b4498588c25ef77ae328f4c56cbe3e8d5dcf4f6d8019997",
+        "image_tag": "nginxinc/nginx-unprivileged:1.27-alpine",
+        "created": "2026-07-07T11:12:37.336976057Z",
+        "status": "running",
+        "user": "101",
+        "mounts": [
+          {
+            "type": "bind",
+            "source": "C:\\Users\\nderu\\Documents\\Development\\Product\\Servana\\docker\\nginx\\default.conf",
+            "destination": "/etc/nginx/conf.d/default.conf",
+            "read_only": true
+          },
+          {
+            "type": "bind",
+            "source": "C:\\Users\\nderu\\Documents\\Development\\Product\\Servana\\public",
+            "destination": "/var/www/html/public",
+            "read_only": true
+          }
+        ]
+      }
+    }
+  ],
+  "linux_image_case_probes": [
+    {
+      "path": "docs/landing page",
+      "image": "servana-ui01-php:audit",
+      "image_role": "php-application",
+      "result": "absent",
+      "error": null
+    },
+    {
+      "path": "docs/landing_page",
+      "image": "servana-ui01-php:audit",
+      "image_role": "php-application",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "docs/legal/data_policy",
+      "image": "servana-ui01-php:audit",
+      "image_role": "php-application",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "docs/legal/privacy_policy",
+      "image": "servana-ui01-php:audit",
+      "image_role": "php-application",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "docs/legal/terms_of_service",
+      "image": "servana-ui01-php:audit",
+      "image_role": "php-application",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "docs/support/faq",
+      "image": "servana-ui01-php:audit",
+      "image_role": "php-application",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/android-chrome-192x192.png",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/android-chrome-512x512.png",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/apple-touch-icon.png",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/favicon-16x16.png",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/favicon-32x32.png",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/favicon.ico",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/logo.png",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "absent",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/Logo.png",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/Logo.png",
+      "image": "servana-ui01-php:audit",
+      "image_role": "php-application",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/Logo.svg",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "absent",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/Logo.svg",
+      "image": "servana-ui01-php:audit",
+      "image_role": "php-application",
+      "result": "absent",
+      "error": null
+    },
+    {
+      "path": "public/assets/brand/PNG.png",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/spa/.vite/manifest.json",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    },
+    {
+      "path": "public/spa/index.html",
+      "image": "servana-ui01-nginx:audit",
+      "image_role": "nginx-edge",
+      "result": "present",
+      "error": null
+    }
+  ],
+  "browser": {
+    "evidence_path": "docs/proof/ui-01/network/browser-evidence.json",
+    "captured_at_utc": "2026-07-15T09:00:00.000Z",
+    "base_url": "http://localhost:4173",
+    "base_url_kind": "vite preview serving public/spa as the web root, with a fully stubbed API — a test harness, not a deployment",
+    "user_agent": "chromium (Playwright Desktop Chrome device profile)",
+    "service_worker_registrations": 0,
+    "service_worker_controller": null,
+    "cache_storage_keys": [],
+    "loaded_first_party_assets": [
+      {
+        "url": "http://localhost:4173/assets/_plugin-vue_export-helper-BDNMzG2s.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/apiClient-B_JkGpjw.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/appointment-BGvNfu-P.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AppointmentCreate-Dhj9Ffj6.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AppointmentDetail-Bf5n-pBJ.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AppointmentList-Cy4PmavE.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AppointmentsReadOnly-CDTtCcxV.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AuditDomainEvents-CunAwRHC.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AuditEventDetail-BhCug8Ld.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AuditEventList-BrARFyo3.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/auditEventStore-BkTq1Jo3.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AuditExportDetail-CdH82ILD.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AuditExportList-DrjIDFLI.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/auditExportStore-DzYjiI-e.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AuditLayout-B7bXaMHq.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/AuthLayout-BrZ7VznK.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/availabilityStore-BnP_P2rH.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/BillingSettings-CAQLtRW7.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/BranchCalendar-iWud7-uM.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/BranchCreate-CHIodPhD.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/BranchDetail-BlgB6fZu.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/BranchLayout-BEIS277f.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/BranchList-Ckrb1enX.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/branchStore-CFe3fJnF.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/brand/Logo.png",
+        "status": 200,
+        "resource_type": "image"
+      },
+      {
+        "url": "http://localhost:4173/assets/CashUp-BQsKleFU.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/CashUpDetail-BsruzQrA.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/CashUpReviewList-DJzSXKjb.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/cashUpStore-rYB-lP6h.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/catalogueStore-Cqo_yLyy.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/CheckEmail-DsWO-WKf.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/ClientCreate-CyENwR41.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/ClientDetail-YiA4EEr4.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/ClientList-BtlJo87N.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/ClientSms-CHr9hDe0.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/clientStore-piuTNxjm.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/Compensation-aYeipgz7.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/CompensationAudit-KptvZdc8.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/CompensationLiabilities-D7f23yub.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/CompensationSummary-JlJfpG2x.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/Dashboard-BkULZrK6.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/DashboardStub-BLf9Z9W9.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/DashboardStub-Di1CLRZM.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/DashboardStub-DMX85HK6.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/DashboardStub-DRAFZTm2.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/DesignSystemDemo-Cu-19ykg.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/destinations-BsPlpLBu.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/DisputeDetail-CQ8PbvlZ.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/DisputeList-BJ7mgQSs.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/Earnings-D3GRREru.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/EarningsQueries-CBWo4ngv.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/earningsQueryStore-6OEkzVzY.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/FinanceAudit-7YYNCU3S.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/FinanceAuditView-C7KXnSi4.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/financeDisputeStore-DJVOAgAZ.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/FinanceExportList-CoOt_TJS.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/financeExportStore-Bd_QXaLm.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/FinanceLayout-CGjjWE3f.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/FirstTimeSetup-BOPd87Sq.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/FlaggedEventDetail-CHKS4MwH.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/FlaggedEventQueue-CeURqrWx.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/flaggedEventStore-BH32q1o5.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/FrontOfficeLayout-Bf62Us3l.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/getStartedStore-CXuPTMYn.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/GlobalSearch-BdxfUcSN.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/Home-CArV8c3V.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/index-BF8ocT4d.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/index-CHjna778.css",
+        "status": 200,
+        "resource_type": "stylesheet"
+      },
+      {
+        "url": "http://localhost:4173/assets/inter-latin-400-normal-C38fXH4l.woff2",
+        "status": 200,
+        "resource_type": "font"
+      },
+      {
+        "url": "http://localhost:4173/assets/inter-latin-500-normal-Cerq10X2.woff2",
+        "status": 200,
+        "resource_type": "font"
+      },
+      {
+        "url": "http://localhost:4173/assets/inter-latin-600-normal-LgqL8muc.woff2",
+        "status": 200,
+        "resource_type": "font"
+      },
+      {
+        "url": "http://localhost:4173/assets/invoice-ghbmTtv4.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/InvoiceCreate-B-unJ2OC.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/InvoiceDetail-D_WRirpI.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/InvoiceList-Bl5dykAq.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/invoiceStore-DERrucJ5.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/landing_page_images/merchant_administrator/1.png",
+        "status": 200,
+        "resource_type": "image"
+      },
+      {
+        "url": "http://localhost:4173/assets/landing_page_images/merchant_audit/1.png",
+        "status": 200,
+        "resource_type": "image"
+      },
+      {
+        "url": "http://localhost:4173/assets/landing_page_images/merchant_branch/1.png",
+        "status": 200,
+        "resource_type": "image"
+      },
+      {
+        "url": "http://localhost:4173/assets/landing_page_images/merchant_finance/1.png",
+        "status": 200,
+        "resource_type": "image"
+      },
+      {
+        "url": "http://localhost:4173/assets/landing_page_images/merchant_front_office/1.png",
+        "status": 200,
+        "resource_type": "image"
+      },
+      {
+        "url": "http://localhost:4173/assets/landing_page_images/merchant_human_resource/1.png",
+        "status": 200,
+        "resource_type": "image"
+      },
+      {
+        "url": "http://localhost:4173/assets/landing_page_images/merchant_personnel/1.png",
+        "status": 200,
+        "resource_type": "image"
+      },
+      {
+        "url": "http://localhost:4173/assets/landing_page_images/super_administrator/1.png",
+        "status": 200,
+        "resource_type": "image"
+      },
+      {
+        "url": "http://localhost:4173/assets/LegalDocument-DDFVrPlq.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/Login-D3nv4wxR.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/manrope-latin-700-normal-BZp_XxE4.woff2",
+        "status": 200,
+        "resource_type": "font"
+      },
+      {
+        "url": "http://localhost:4173/assets/manrope-latin-800-normal-BfWYOv1c.woff2",
+        "status": 200,
+        "resource_type": "font"
+      },
+      {
+        "url": "http://localhost:4173/assets/markdown-CmbZ6ERH.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_administrator_data_policy-Q97WbQPP.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_administrator_faq-Bu-4Kwtq.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_administrator_landing_page_content-Cs_bSPxa.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_administrator_privacy_policy-BiKO-EJw.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_administrator_terms_of_service-CNE8qMdw.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_audit_data_policy-BmhkVfF2.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_audit_faq-B1Z_cN5-.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_audit_landing_page_content-ugscGjAl.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_audit_privacy_policy-DuU6qpLz.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_audit_terms_of_service-D8_Z9KWz.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_branch_data_policy-COxfeQqY.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_branch_faq-QzIzlVwL.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_branch_landing_page_content-DWnHInMk.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_branch_privacy_policy-zK9DxrW8.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_branch_terms_of_service-RLP4pnac.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_finance_data_policy-gwKn4DvO.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_finance_faq-DosY1aXv.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_finance_landing_page_content-BSHJj6RS.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_finance_privacy_policy-OOf5q_S9.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_finance_terms_of_service-yfOQTsmL.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_front_office_data_policy-B5kQPxdG.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_front_office_faq-QTEek8Qd.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_front_office_landing_page_content-CRdZv2Hg.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_front_office_privacy_policy-ByMpmnMg.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_front_office_terms_of_service-Cp-neNxb.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_human_resource_data_policy-wFbL1Kgk.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_human_resource_faq-D7GKzO4U.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_human_resource_landing_page_content-CiIK6PEg.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_human_resource_privacy_policy-BIg1k4cJ.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_human_resource_terms_of_service-DQN2yzcf.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_personnel_data_policy-8BE9FSUs.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_personnel_faq-C-ZfdS7V.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_personnel_landing_page_content-Df_CuKhv.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_personnel_privacy_policy-BPRPozDG.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/merchant_personnel_terms_of_service-BPIO7Wyr.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/MerchantLayout-D7BM83Cl.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/MerchantProfile-BShOSzbm.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/MfaChallenge-CvI_AmGZ.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/MfaSetup-YA_cGI8d.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/money-Yn-L7QL9.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/MyAppointments-CeUWfkan.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/MyQueue-B66WnLoW.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/MyServiceSessions-B9WiRRiV.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/OperatingHours-B2FpqG3L.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PaymentGroupDetail-CkA68RaT.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PaymentGroupList-BUJV1yGS.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/paymentStore-CN5gbqpN.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/payout-BbgiSLWG.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PayoutRuns-DvPOLFYa.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PayoutRuns-GQHqEzQt.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/payoutRunStore-CeT5wtVY.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PeriodLockList-C6QPKTGq.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/periodLockStore-0ZhT2I0g.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PeriodReopenApprovals-Cz9mb1I5.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PermissionGate-1_m_fWo9.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PermissionPreview-DoSpIsWk.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PersonnelAvailability-Dl1vRm6d.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PersonnelLayout-B2AagcG9.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PersonnelSchedule-hjXJBSqd.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/pinia-gD712R58.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PlanManagement-DQclvLbM.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PlatformAdminLayout-BPzez7YT.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/platformFee-CYWDYjaZ.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/PlatformFees-HMic9hoS.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/Promotions-BWK-dmaf.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/Promotions-D8QdIE2n.css",
+        "status": 200,
+        "resource_type": "stylesheet"
+      },
+      {
+        "url": "http://localhost:4173/assets/queue-BZlU0tOY.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/QueueBoard-DoP6rU0t.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/QueueConfiguration-T3GTQ9dX.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/QueueEntryDetail-C_r_890a.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/QueueReadOnly-CX0tlX35.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/queueStore-vTjAav7B.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/ReceiptDetail--u576Vc-.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/ReceiptList-DHFpo8PF.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/receiptStore-DQXgnN2V.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/RecordPayment-B4fYvf92.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/RecordPaymentEntry-DhnPdAEO.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/RefundDetail-OJ5yNkiq.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/RefundList-DPZ3GbYr.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/refundStore-Bm_UD0vF.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/RegisterMerchant-lBtU3WZ3.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/RegistrationMonitoring-9nsWrTeZ.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/roleContent-ChEK4jSR.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/RoleGetStarted-CyPfzo3w.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/RoleLanding-BWy3veNS.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/roleNavigation-BJCbKt_W.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/roles-zLVhb2mU.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/RoleShell-DXGReKlN.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/ServiceCatalogue-BspmChNz.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/ServiceEligibility-Bd5S38d9.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/serviceSession-Dxo9-UeK.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/ServiceSessionList-Bdd4K9I-.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/serviceSessionStore-DsvDDxJb.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/StaffInvitationAccept-Bsv6F4bZ.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/StaffInvitations-DY_o9xWr.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/StaffList-lbXjHdfy.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/StaffProfile-DcXhZdQ6.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/staffStore-bMJFSkXF.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SubscriptionDashboard-aiYGtmsc.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SubscriptionInvoices-Cs-xr1GP.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/subscriptionInvoiceStore-B2Rlvk-7.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/subscriptionStore-C31nKfIH.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/super_administrator_data_policy-DYb35v9d.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/super_administrator_faq-Bpa4mcPa.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/super_administrator_landing_page_content-Dz_YSOD6.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/super_administrator_privacy_policy-GBzcAKFK.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/super_administrator_terms_of_service-Dipk4tNI.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SvButton-D68aT68l.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SvCard-BH3uk3-o.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SvEmptyState-BgDd4aM9.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SvInput-CtJQtFjQ.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SvModal-DbVevmCE.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SvSelect-N7xIIrW2.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SvStateBoundary-DrbSAj7q.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/SvTextarea-Bxh7x6ty.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/TaskInbox-DnLYdVRX.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/themeStore-zJbe8ST7.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/useCan-BD35WgyS.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/useForm-CMLHxOW4.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/Verify-DljjbFxx.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:4173/assets/WalkInCreate-BCiWs9me.js",
+        "status": 200,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:8099/assets/apiClient-B_JkGpjw.js",
+        "status": 404,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:8099/assets/index-BF8ocT4d.js",
+        "status": 404,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:8099/assets/pinia-gD712R58.js",
+        "status": 404,
+        "resource_type": "script"
+      },
+      {
+        "url": "http://localhost:8099/assets/runtime-core.esm-bundler-DClBC82D.js",
+        "status": 404,
+        "resource_type": "script"
+      }
+    ],
+    "failed_requests": [
+      {
+        "url": "http://localhost:4173/api/v1/me",
+        "status": 401,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/apiClient-B_JkGpjw.js",
+        "status": 404,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/apiClient-B_JkGpjw.js",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:8099/assets/index-BF8ocT4d.js",
+        "status": 404,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/index-BF8ocT4d.js",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:8099/assets/index-CHjna778.css",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:8099/assets/pinia-gD712R58.js",
+        "status": 404,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/pinia-gD712R58.js",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:8099/assets/runtime-core.esm-bundler-DClBC82D.js",
+        "status": 404,
+        "failure": null
+      },
+      {
+        "url": "http://localhost:8099/assets/runtime-core.esm-bundler-DClBC82D.js",
+        "status": null,
+        "failure": "net::ERR_ABORTED"
+      }
+    ],
+    "console_errors": [
+      "http://localhost:4173/ :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/auth/check-email :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/auth/login :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/auth/register :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/auth/verify?token=[REDACTED] :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/branch/cash-up :: TypeError: Cannot read properties of undefined (reading 'find')\n    at K (http://localhost:4173/assets/CashUp-BQsKleFU.js:1:2364)\n    at http://localhost:4173/assets/CashUp-BQsKleFU.js:1:4280\n    at Ar (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:29560)\n    at http://localhost:4173/assets/CashUp-BQsKleFU.js:1:4050\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/as",
+      "http://localhost:4173/branch/cash-up :: TypeError: Cannot read properties of undefined (reading 'find')\n    at Z (http://localhost:4173/assets/CashUp-BQsKleFU.js:1:2637)\n    at Q (http://localhost:4173/assets/CashUp-BQsKleFU.js:1:2774)",
+      "http://localhost:4173/dev/design-system :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/finance/cash-up/01HZZCASHUP000000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/CashUpDetail-BsruzQrA.js:1:3814\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler",
+      "http://localhost:4173/finance/invoices/01HZZINVOICE00000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/InvoiceDetail-D_WRirpI.js:1:4576\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundl",
+      "http://localhost:4173/finance/payment-records/01HZZPAYGROUP0000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/PaymentGroupDetail-CkA68RaT.js:1:4188\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-co",
+      "http://localhost:4173/finance/receipts/01HZZRECEIPT00000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/ReceiptDetail--u576Vc-.js:1:2198\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundl",
+      "http://localhost:4173/finance/refunds/01HZZREFUND000000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/RefundDetail-OJ5yNkiq.js:1:2223\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler",
+      "http://localhost:4173/front-office/invoices/01HZZINVOICE00000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/InvoiceDetail-D_WRirpI.js:1:4576\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-",
+      "http://localhost:4173/front-office/payments/record/01HZZINVOICE00000000000000 :: TypeError: Cannot read properties of undefined (reading 'amount')\n    at Zt.fn (http://localhost:4173/assets/RecordPayment-B4fYvf92.js:1:1784)\n    at ze (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:6622)\n    at get value (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:17904)\n    at Zt.fn (http://localhost:4173/assets/RecordPayment-B4fYvf92.js:1:1903)\n    at ze (http://loc",
+      "http://localhost:4173/front-office/receipts/01HZZRECEIPT00000000000000 :: TypeError: Cannot read properties of undefined (reading 'formatted')\n    at http://localhost:4173/assets/ReceiptDetail--u576Vc-.js:1:2198\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-",
+      "http://localhost:4173/legal/merchant_administrator/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_administrator/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_administrator/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_administrator/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_audit/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_audit/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_audit/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_audit/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_branch/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_branch/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_branch/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_branch/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_finance/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_finance/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_finance/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_finance/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_front_office/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_front_office/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_front_office/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_front_office/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_human_resource/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_human_resource/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_human_resource/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_human_resource/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_personnel/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_personnel/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_personnel/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/merchant_personnel/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/super_administrator/data-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/super_administrator/faq :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/super_administrator/privacy-policy :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/legal/super_administrator/terms-of-service :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/merchant/compensation-summary :: TypeError: Cannot read properties of undefined (reading 'length')\n    at http://localhost:4173/assets/CompensationSummary-JlJfpG2x.js:1:6449\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at Proxy.<anonymous> (http://localhost:4173/assets/SvStateBoundary-DrbSAj7q.js:1:2037)\n    at si (http://localhost:4173/assets/ru",
+      "http://localhost:4173/merchant/subscription :: TypeError: Cannot read properties of undefined (reading 'name')\n    at http://localhost:4173/assets/SubscriptionDashboard-aiYGtmsc.js:1:3777\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21780)\n    at jr (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:30217)\n    at http://localhost:4173/assets/SvCard-BH3uk3-o.js:1:394\n    at r (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:21",
+      "http://localhost:4173/no-such-page-01hzz :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:4173/personnel/earnings :: TypeError: Cannot read properties of undefined (reading 'length')\n    at Zt.fn (http://localhost:4173/assets/Earnings-D3GRREru.js:1:5662)\n    at ze (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:6622)\n    at Re (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:6330)\n    at ke.runIfDirty (http://localhost:4173/assets/runtime-core.esm-bundler-DClBC82D.js:1:5524)\n    at on (http://localhost:4173/assets/runtime-core",
+      "http://localhost:4173/staff/accept?token=[REDACTED] :: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "http://localhost:8099/spa/ :: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "http://localhost:8099/spa/ :: Refused to apply style from 'http://localhost:8099/assets/index-CHjna778.css' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled."
+    ]
+  }
+}
