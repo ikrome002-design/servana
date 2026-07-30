@@ -1,0 +1,93 @@
+{
+  "generated_by": "Phase UI-03",
+  "purpose": "Machine-verifiable closure record for the defects Phase UI-03 owns. The UI-01 audit register (docs/frontend/audits/ui-01/defect-register.csv) is a historical evidence snapshot and is deliberately NOT rewritten.",
+  "lifecycle_rule": "A local correction is NOT verified_complete. These closures stay `local_complete pending PR CI/review/merge` until the UI-03 pull request merges with green required checks and recorded governance evidence, at which point the next branch reconciles them.",
+  "ui03_branch": "phase-ui-03-auth-session-account-switching",
+  "ui03_base": "fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
+  "ui03_pull_request": "NOT CREATED — UI-03 stops at a pushed branch by instruction",
+  "closures": [
+    {
+      "defect_id": "UI01-ROLE-001",
+      "prior_severity": "high",
+      "owner_phase": "UI-03",
+      "observed_ui01_evidence": "All seven merchant-side account fixtures could request /platform and the router rendered the Super Administrator landing. The /platform tree used only `requiresAuth`; an existing `requiresRole` guard was never attached. Backend platform APIs remained independently protected.",
+      "root_cause": "The route tree declared no owning account, so nothing could check one. `requiresRole` would have been the wrong instrument anyway: it compares a client-held role string rather than asking the server which accounts the user may enter.",
+      "why_this_is_the_root_cause": "Removing the navigation entry would have hidden the door, not locked it — the route was reachable by typing the URL. Only a guard that consults the server-resolved host AND the server-derived account list can refuse it.",
+      "correct_fix": "A new `requiresAccount(accountKey)` route guard requiring three things to agree before an account surface mounts: the route's own account, the account the SERVER resolved for the host, and an account the SERVER says the user currently holds (`/me.account_keys`, derived by AccountContextResolver from live membership rows). A mismatch renders the role-safe `access-denied` state and never redirects to another account.",
+      "files_changed": [
+        "resources/spa/src/router/guards.ts",
+        "resources/spa/src/router/routes/platform.ts",
+        "resources/spa/src/router/index.ts",
+        "resources/spa/src/pages/auth/AccessDenied.vue",
+        "resources/spa/src/stores/authStore.ts",
+        "resources/spa/src/types/models.ts",
+        "app/Http/Resources/Auth/AuthenticatedUserResource.php",
+        "app/Domain/Sessions/Services/AccountContextResolver.php"
+      ],
+      "tests": [
+        "accountRouteGuard.spec — denies each of the seven merchant accounts the platform surface, on the platform host",
+        "accountRouteGuard.spec — admits a genuine platform user; denies a platform user on a merchant host",
+        "accountRouteGuard.spec — fails closed with no host context and with no account keys",
+        "accountRouteGuard.spec — no client-side role mapping or permission computation",
+        "AccountHostDoesNotAuthorizeTest (unchanged) — the Host header alone still grants nothing"
+      ],
+      "before": "Any authenticated user rendered the Super Administrator shell at /platform.",
+      "after": "The surface does not mount unless route account, server-resolved host account and a server-derived held account all agree; otherwise the role-safe denial renders. No redirect to a broader account occurs in any case.",
+      "browser_proof": "NOT CAPTURED — see remaining_risk. The fix is proven by unit tests only.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "The guard is UX; the backend remains the security boundary. It is attached to /platform (where the proven exposure was); UI-07 attaches it to the remaining seven account trees as it builds their route contracts. No deployed-origin browser evidence was captured in UI-03."
+    },
+    {
+      "defect_id": "UI03-AUTH-001",
+      "prior_severity": "medium",
+      "owner_phase": "UI-03",
+      "first_observed": "Phase UI-02 (docs/proof/ui-02.md, 'Pre-existing issue observed, not owned, not fixed')",
+      "observed_ui02_evidence": "An HTML-accept (browser-navigation) request to an auth-protected /api/v1 route returned 500. Proven pre-existing: `git show origin/main:routes/web.php` contained no `login` route, and the same endpoint returned 401 for JSON callers.",
+      "reproduced_in_ui03": "tests/Feature/Auth/Ui03GapReproductionTest.php asserted the 500 and passed before any fix; the harness was deleted once the permanent suite replaced it.",
+      "root_cause": "Laravel's exception handler falls back to `route('login')` when an AuthenticationException carries no redirect target. Servana is an SPA and has never had a named `login` route, so the fallback raised RouteNotFoundException. JSON callers were unaffected because Authenticate::unauthenticated() passes null for them.",
+      "why_this_is_the_root_cause": "The route genuinely does not exist — `Route::has('login') === false` is now asserted permanently — so nothing downstream of that fallback could have produced a correct answer.",
+      "correct_fix": "`Authenticate::redirectUsing()` — the framework's own hook — supplies a destination, so `route('login')` is never reached. The destination is a RELATIVE path by construction: it cannot leave the origin the request arrived on, cannot be steered by an attacker-controlled Host or X-Forwarded-Host, cannot move a user toward a broader account host, and cannot loop. Backend-owned and authentication paths are dropped from the preserved intended path rather than echoed back.",
+      "files_changed": [
+        "app/Providers/AppServiceProvider.php",
+        "app/Http/Middleware/ResolveAccountHost.php",
+        "app/Enums/ErrorCode.php",
+        "app/Exceptions/ApiErrorRenderer.php"
+      ],
+      "tests": [
+        "UnauthenticatedBrowserRedirectTest — no named login route exists (the fix supplies a destination, it does not add a route)",
+        "UnauthenticatedBrowserRedirectTest — JSON request returns the standard 401 envelope",
+        "UnauthenticatedBrowserRedirectTest — HTML-accept request to /api/v1 no longer 500s on any account host",
+        "UnauthenticatedBrowserRedirectTest — browser page navigation redirects to the same host's /auth/login with a safe intended path",
+        "UnauthenticatedBrowserRedirectTest — an untrusted forwarded host cannot steer the destination",
+        "UnauthenticatedBrowserRedirectTest — machine routes unaffected; unapproved host denied, not redirected"
+      ],
+      "before": "HTML-accept request to an auth-protected /api/v1 route → 500 (RouteNotFoundException).",
+      "after": "HTML-accept request to /api/v1 → 401 with the standard envelope (an endpoint is not a page). Browser page navigation → 302 to the same host's /auth/login?redirect=<safe path>. No missing-route exception, no redirect loop, no cross-host redirect.",
+      "browser_proof": "NOT CAPTURED — see remaining_risk.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "No authenticated PAGE route exists yet, so the redirect path is proven against a route registered inside the test. UI-07 owns the real authenticated page contract; the guard is in place before those pages arrive rather than after."
+    }
+  ],
+  "explicitly_left_open": [
+    { "defect_id": "UI01-PROV-003", "owner_phase": "UI-16", "reason": "The Playwright suite still runs against a Vite preview origin. UI-03 captured no browser evidence at all and does not claim any part of this." },
+    { "defect_id": "UI01-PROV-004", "owner_phase": "UI-17", "reason": "Out of UI-03 scope." },
+    { "defect_id": "UI01-PROV-005", "owner_phase": "UI-17", "reason": "Out of UI-03 scope." }
+  ],
+  "not_done_in_ui03": [
+    {
+      "item": "Deployed-origin browser proof (phase brief Increment 7)",
+      "status": "NOT PERFORMED",
+      "detail": "The focused cross-host Playwright suite, the production-image smoke and the targeted UI-03 screenshot set were not run. No screenshot index exists and no browser evidence is claimed anywhere in this phase.",
+      "consequence": "The switch flow's issuance half, the cross-host cookie separation, the target-host MFA challenge and the global-logout-across-two-hosts scenario are proven server-side and in unit tests, but not against a real browser.",
+      "owner": "UI-03 follow-up before the pull request is considered complete"
+    }
+  ],
+  "permission_matrix_changed": false,
+  "new_permission_keys": [],
+  "blocked_decision": {
+    "item": "Cross-user administrative session inspection and revocation",
+    "reason": "docs/auth/permission-matrix.yaml contains no canonical authority for it, and UI-03 does not invent a grant.",
+    "smallest_required_decision": "Whether to add a permission key (e.g. `security.session.revoke`) and which roles hold it. Until then, session management stays own-scope only.",
+    "current_behaviour": "Every session read and revoke is filtered by the authenticated user's own user_id; a foreign session ULID returns 404, never 403."
+  }
+}

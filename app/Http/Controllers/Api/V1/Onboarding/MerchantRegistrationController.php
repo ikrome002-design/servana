@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api\V1\Onboarding;
 use App\Domain\Auth\Actions\RequestMagicLink;
 use App\Domain\Onboarding\Actions\RegisterMerchant;
 use App\Http\Controllers\Controller;
+use App\Http\Hosts\AccountHostRegistry;
 use App\Http\Requests\Onboarding\RegisterMerchantRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -24,10 +25,14 @@ use Illuminate\Http\Response;
  */
 final class MerchantRegistrationController extends Controller
 {
+    /** Self-registration produces a Merchant Administrator, and only ever that (Scope §3.1). */
+    private const SELF_REGISTRATION_ACCOUNT_KEY = 'merchant_administrator';
+
     public function selfRegister(
         RegisterMerchantRequest $request,
         RegisterMerchant $register,
         RequestMagicLink $requestMagicLink,
+        AccountHostRegistry $hosts,
     ): JsonResponse {
         $merchant = $register->handle(
             $request->ownerName(),
@@ -43,7 +48,20 @@ final class MerchantRegistrationController extends Controller
         // merchant was created and no link is sent. Either way the response is
         // identical (no enumeration).
         if ($merchant !== null) {
-            $requestMagicLink->handle($request->email(), $request->ip(), $request->userAgent());
+            // Phase UI-03 (ADR-019): the registration link is bound like any other. The account is
+            // NOT taken from the request — self-registration creates exactly one kind of principal,
+            // a Merchant Administrator, so the account key and its host come from the registry.
+            // That also means a registration link cannot be replayed on a staff host.
+            $environment = $hosts->environment();
+
+            $requestMagicLink->handle(
+                email: $request->email(),
+                accountKey: self::SELF_REGISTRATION_ACCOUNT_KEY,
+                host: $hosts->hostForAccount(self::SELF_REGISTRATION_ACCOUNT_KEY, $environment),
+                environment: $environment,
+                ipAddress: $request->ip(),
+                userAgent: $request->userAgent(),
+            );
         }
 
         return response()->json([

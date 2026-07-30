@@ -2,8 +2,52 @@
   "generated_by": "Phase UI-02",
   "purpose": "Machine-verifiable closure record for the four UI-01 defects Phase UI-02 owns. The UI-01 audit register (docs/frontend/audits/ui-01/defect-register.csv) is a historical evidence snapshot and is deliberately NOT rewritten — it records what was true at audit time.",
   "lifecycle_rule": "A local correction is NOT verified_complete. These four defects stay `local_complete pending PR CI/review/merge` until the UI-02 pull request merges with green required checks and recorded governance evidence, at which point the next branch reconciles them.",
-  "ui02_commit": "PENDING — recorded in docs/proof/ui-02.md at local completion",
-  "ui02_pull_request": "PENDING — not created; UI-02 stops at a pushed branch by instruction",
+  "lifecycle_reconciliation": {
+    "reconciled_by": "Phase UI-03",
+    "reconciled_on_branch": "phase-ui-03-auth-session-account-switching",
+    "reconciled_at": "2026-07-30",
+    "outcome": "The lifecycle_rule above is satisfied. All four closures are promoted to verified_complete.",
+    "pull_request": 52,
+    "pull_request_title": "Phase UI-02: Implement multi-host foundation",
+    "pull_request_url": "https://github.com/ikrome002-design/servana/pull/52",
+    "pull_request_state": "MERGED",
+    "is_draft": false,
+    "base_ref": "main",
+    "head_ref": "phase-ui-02-multi-host-foundation",
+    "implementation_commit": "db3ace4912acd569433216db137671a672276033",
+    "implementation_commit_subject": "ui-02: implement multi-host foundation",
+    "final_head": "5add80c41a9f59c9350b148ef95aaa260a486cd7",
+    "final_head_subject": "ci: build SPA before backend shell tests",
+    "final_head_classification": "product-lifecycle CI-contract correction (one file: .github/workflows/ci.yml) — NOT a governance-only commit",
+    "squash_merge": "fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
+    "squash_merge_sole_parent": "413c1466be96373a408954c3813b982241b25273",
+    "source_tree": "442ed1df21bf35fafb949e69bd256f884624d38d",
+    "merge_tree": "442ed1df21bf35fafb949e69bd256f884624d38d",
+    "trees_equal": true,
+    "merged_at": "2026-07-30T10:38:01Z",
+    "final_ci_run": 30532318808,
+    "final_ci_attempt": 1,
+    "final_ci_conclusion": "success",
+    "final_ci_url": "https://github.com/ikrome002-design/servana/actions/runs/30532318808",
+    "required_checks": [
+      "Backend — Pint, Larastan, Pest",
+      "Frontend — ESLint, vue-tsc, Vitest, build",
+      "Docker — build images",
+      "Security — gitleaks",
+      "E2E — Playwright"
+    ],
+    "required_checks_all_successful": true,
+    "governance_comment_id": 5129527972,
+    "governance_comment_url": "https://github.com/ikrome002-design/servana/pull/52#issuecomment-5129527972",
+    "submitted_reviews": 0,
+    "review_decision": "",
+    "independent_reviewer_approval": false,
+    "independent_reviewer_approval_claimed": false,
+    "branches_deleted_local_and_remote": true,
+    "historical_ui01_register_rewritten": false
+  },
+  "ui02_commit": "db3ace4912acd569433216db137671a672276033 (implementation) + 5add80c41a9f59c9350b148ef95aaa260a486cd7 (CI-contract correction); squash-merged as fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
+  "ui02_pull_request": "https://github.com/ikrome002-design/servana/pull/52 — MERGED 2026-07-30T10:38:01Z",
   "audited_defect_total": 27,
   "closed_by_ui02": 4,
   "left_open": 23,
@@ -31,7 +75,7 @@
       "production_image_proof": "servana-ui02-nginx:audit on port 8081 — all 8 hosts return 200 with `<title>Servana by Citrus</title>`, zero occurrences of the Laravel title or laravel.com assets.",
       "before": "HTTP 200, `<title>Laravel</title>`, stock scaffold, remote laravel.com images.",
       "after": "HTTP 200, `<title>Servana by Citrus</title>`, Servana shell carrying the resolved account key, `Cache-Control: no-cache, must-revalidate`.",
-      "closure_status": "local_complete pending PR CI/review/merge",
+      "closure_status": "verified_complete",
       "remaining_risk": "The shell is now rendered by PHP on every browser route rather than served as a static file. That is the standard Laravel+Vite arrangement and the cost is one PHP request per navigation, but it does mean an application-layer outage now also removes the shell. UI-17 owns production performance and resilience."
     },
     {
@@ -56,7 +100,7 @@
       "before": "`/assets/index-*.js` → Laravel 404 HTML; `/spa/` rendered a blank `#app`.",
       "after": "`/spa-assets/index-*.js` → 200 JavaScript, immutable; the SPA mounts and renders on all 8 hosts (asserted by the screenshot script's mount selector).",
       "remaining_risk": "`/spa/` now 301s to the account root. A deep bookmark such as `/spa/dashboard` redirects to `/` rather than to `/dashboard`, which is a deliberate simplification — `/spa/` was never a product route and only ever served a blank page.",
-      "closure_status": "local_complete pending PR CI/review/merge"
+      "closure_status": "verified_complete"
     },
     {
       "defect_id": "UI01-HOST-001",
@@ -97,7 +141,7 @@
       "before": "`server_name _`; every Host accepted; no account concept anywhere in the runtime.",
       "after": "24 approved hosts (8 accounts x 3 environments) on an exact allowlist; unknown hosts closed at the edge; a typed account context resolved server-side and handed to the SPA; host context proven to grant nothing.",
       "remaining_risk": "The registry currently derives staging hosts from a configured suffix with no DNS behind it. That is intentional — DNS, TLS and HSTS are UI-17 — but it means the staging map is unexercised against a real origin.",
-      "closure_status": "local_complete pending PR CI/review/merge"
+      "closure_status": "verified_complete"
     },
     {
       "defect_id": "UI01-ASSET-005",
@@ -120,7 +164,7 @@
       "before": "`/assets/brand/*` 404 on an origin that served only the SPA bundle.",
       "after": "Favicons and Logo.png resolve at stable canonical-case URLs on every approved host; Logo.svg remains absent as the product owner directed.",
       "remaining_risk": "The brand tree is now duplicated into the SPA build output for preview parity. It is copied at build time from the one source and `emptyOutDir` clears it each build, so it cannot go stale — but a future phase must not start treating the copy as authoritative.",
-      "closure_status": "local_complete pending PR CI/review/merge"
+      "closure_status": "verified_complete"
     }
   ],
   "explicitly_left_open": [

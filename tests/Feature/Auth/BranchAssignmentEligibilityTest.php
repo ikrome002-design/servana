@@ -25,7 +25,7 @@ it('sends a link to a branch-scoped user with an active assignment', function ()
     [$user] = branchStaff($merchant, $branch, MerchantUserRole::FrontOffice, assigned: true);
     $user->update(['email' => 'fo@salon.co.ke']);
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'fo@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'fo@salon.co.ke'])->assertStatus(202);
 
     Notification::assertSentTo($user, MagicLoginLinkNotification::class);
 });
@@ -37,7 +37,7 @@ it('sends no link to a branch-scoped user without an active assignment', functio
     [$user] = branchStaff($merchant, $branch, MerchantUserRole::FrontOffice, assigned: false);
     $user->update(['email' => 'unassigned@salon.co.ke']);
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'unassigned@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'unassigned@salon.co.ke'])->assertStatus(202);
 
     Notification::assertNothingSent();
 });
@@ -46,7 +46,7 @@ it('sends a link to a merchant admin without any branch assignment', function ()
     Notification::fake();
     $user = eligibleOwner('admin@salon.co.ke'); // admin, no assignment
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'admin@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'admin@salon.co.ke'])->assertStatus(202);
 
     Notification::assertSentTo($user, MagicLoginLinkNotification::class);
 });
@@ -63,7 +63,7 @@ it('stops sending a link once the branch assignment is revoked', function (): vo
         'revoked_at' => now(),
     ]);
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'revoked@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'revoked@salon.co.ke'])->assertStatus(202);
 
     Notification::assertNothingSent();
 });

@@ -6,6 +6,8 @@ use App\Domain\Auth\Mfa\StepUpAction;
 use App\Http\Controllers\Api\V1\Audit\AuditExportController;
 use App\Http\Controllers\Api\V1\Audit\AuditFlaggedEventController;
 use App\Http\Controllers\Api\V1\Audit\AuditLogController;
+use App\Http\Controllers\Api\V1\Auth\AccountContextController;
+use App\Http\Controllers\Api\V1\Auth\HostSessionController;
 use App\Http\Controllers\Api\V1\Auth\MagicLinkController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\MfaController;
@@ -90,6 +92,7 @@ use App\Http\Middleware\EnsureMerchantActive;
 use App\Http\Middleware\EnsurePermission;
 use App\Http\Middleware\EnsurePrivilegedMfa;
 use App\Http\Middleware\RequireFreshMfa;
+use App\Http\Middleware\ResolveAccountHost;
 use App\Http\Middleware\ResolvePlatformContext;
 use App\Http\Middleware\ResolveTenantContext;
 use App\Http\Routing\RouteClass;
@@ -117,20 +120,62 @@ Route::middleware('throttle:api')->group(function (): void {
  | unauthenticated. Authenticated endpoints require the Sanctum session guard.
  */
 Route::prefix('auth')->group(function (): void {
-    Route::post('magic-link', [MagicLinkController::class, 'request'])
-        ->middleware('throttle:magic-link-request')
-        ->defaults(RouteClassification::KEY, RouteClass::PublicMutation->value)
-        ->name('auth.magic-link.request');
+    /*
+     | Phase UI-03 (ADR-019): the two Magic Link endpoints are HOST-BOUND. ResolveAccountHost runs
+     | first, so a request on an unapproved host is refused with a safe 421 before any
+     | authentication work happens, and the controller receives the resolved AccountHost as a
+     | BINDING input. Resolving a host still grants nothing (ADR-017).
+     */
+    Route::middleware(ResolveAccountHost::class)->group(function (): void {
+        Route::post('magic-link', [MagicLinkController::class, 'request'])
+            ->middleware('throttle:magic-link-request')
+            ->defaults(RouteClassification::KEY, RouteClass::PublicMutation->value)
+            ->name('auth.magic-link.request');
 
-    Route::post('magic-link/verify', [MagicLinkController::class, 'verify'])
-        ->middleware('throttle:magic-link-verify')
-        ->defaults(RouteClassification::KEY, RouteClass::PublicMutation->value)
-        ->name('auth.magic-link.verify');
+        Route::post('magic-link/verify', [MagicLinkController::class, 'verify'])
+            ->middleware('throttle:magic-link-verify')
+            ->defaults(RouteClassification::KEY, RouteClass::PublicMutation->value)
+            ->name('auth.magic-link.verify');
+    });
 
     Route::post('logout', [MagicLinkController::class, 'logout'])
         ->middleware('auth:sanctum')
         ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
         ->name('auth.logout');
+
+    /*
+     | Phase UI-03 (ADR-018) — session family, own-session management and account switching.
+     |
+     | All of these are IDENTITY-level, so they sit outside ResolveTenantContext exactly like the
+     | MFA group: a user's sessions and available contexts legitimately span merchants, and forcing
+     | a single tenant context here would hide half of them. Authorization is OWNERSHIP: every
+     | query is scoped to the authenticated user, and no new permission key is introduced (the
+     | permission matrix governs cross-user administration, which UI-03 deliberately does not add).
+     */
+    Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrincipal::class, 'throttle:api'])
+        ->group(function (): void {
+            Route::get('account-contexts', [AccountContextController::class, 'index'])
+                ->name('auth.account-contexts.index');
+
+            // Mints a single-use handoff. Host-bound: the SOURCE host is recorded on the token, so
+            // a switch request forged from an unapproved origin cannot mint one at all.
+            Route::post('account-contexts/switch', [AccountContextController::class, 'switch'])
+                ->middleware([ResolveAccountHost::class, 'throttle:context-switch'])
+                ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
+                ->name('auth.account-contexts.switch');
+
+            Route::get('sessions', [HostSessionController::class, 'index'])
+                ->name('auth.sessions.index');
+
+            Route::delete('sessions/{hostSession}', [HostSessionController::class, 'destroy'])
+                ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
+                ->name('auth.sessions.destroy');
+
+            // Global logout — revokes the whole session family across every host at once.
+            Route::post('logout-all', [HostSessionController::class, 'destroyAll'])
+                ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
+                ->name('auth.logout-all');
+        });
 
     /*
      | MFA enrollment / challenge (Plan §17, §18; Phase R3). Authenticated but

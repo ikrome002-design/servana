@@ -21,7 +21,18 @@ $forcedTestEnv = [
     'SESSION_DRIVER' => 'array',
     'QUEUE_CONNECTION' => 'sync',
     'MAIL_MAILER' => 'array',
-    'SANCTUM_STATEFUL_DOMAINS' => 'localhost',
+    // Phase UI-03: SANCTUM_STATEFUL_DOMAINS is deliberately NOT forced here.
+    //
+    // It used to be pinned to `localhost`, which made every one of the eight account hosts
+    // NON-stateful under test: a Magic Link verify on `finance.servana.test` returned 200 with no
+    // session cookie at all, because Sanctum never applied StartSession. That silently disabled
+    // the exact behaviour the host-scoped session tests exist to prove. The value now comes from
+    // config/sanctum.php, which derives it from the canonical account-host registry (and still
+    // includes `localhost` for the pre-UI-03 call sites).
+    //
+    // The local port must be pinned instead, so the derived `host:port` forms match the absolute
+    // URLs the test helpers build.
+    'ACCOUNT_HOST_LOCAL_PORT' => '8080',
     // The readiness probe must not make a live object-store round-trip during
     // tests (CI has no MinIO). Clearing the S3 endpoint makes the s3 probe report
     // configured-disk readiness ('ok') without a network call (Plan §79 R7); the

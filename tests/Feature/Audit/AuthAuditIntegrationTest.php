@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Domain\Audit\Enums\AuditSeverity;
 use App\Domain\Audit\Models\AuditLog;
-use App\Domain\Auth\Services\MagicLinkTokenService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 
@@ -21,7 +20,7 @@ it('audits a magic link request with a masked email and no actor/merchant', func
     Notification::fake();
     eligibleOwner('owner@salon.co.ke');
 
-    postStateful('/api/v1/auth/magic-link', ['email' => 'owner@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'owner@salon.co.ke'])->assertStatus(202);
 
     $log = AuditLog::query()->where('action', 'login_link_requested')->latest('id')->firstOrFail();
 
@@ -34,7 +33,7 @@ it('audits a magic link request with a masked email and no actor/merchant', func
 });
 
 it('audits a denied request for an unknown email without leaking it', function (): void {
-    postStateful('/api/v1/auth/magic-link', ['email' => 'ghost@nowhere.test'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'ghost@nowhere.test'])->assertStatus(202);
 
     $log = AuditLog::query()->where('action', 'login_link_denied')->latest('id')->firstOrFail();
 
@@ -44,7 +43,7 @@ it('audits a denied request for an unknown email without leaking it', function (
 });
 
 it('audits a failed verify for an invalid token and stores no token value', function (): void {
-    postStateful('/api/v1/auth/magic-link/verify', ['token' => 'totally-invalid-token'])->assertStatus(422);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link/verify', ['token' => 'totally-invalid-token'])->assertStatus(422);
 
     $log = AuditLog::query()->where('action', 'login_link_failed')->latest('id')->firstOrFail();
 
@@ -56,9 +55,9 @@ it('audits a failed verify for an invalid token and stores no token value', func
 
 it('audits a successful login on token consume', function (): void {
     eligibleOwner('login@salon.co.ke');
-    $raw = app(MagicLinkTokenService::class)->issue('login@salon.co.ke');
+    $raw = issueBoundMagicLink('login@salon.co.ke');
 
-    postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw])->assertStatus(200);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link/verify', ['token' => $raw])->assertStatus(200);
 
     $log = AuditLog::query()->where('action', 'login_success')->latest('id')->firstOrFail();
 

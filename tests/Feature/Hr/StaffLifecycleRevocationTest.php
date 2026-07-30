@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Domain\Auth\Models\MagicLoginToken;
-use App\Domain\Auth\Services\MagicLinkTokenService;
 use App\Domain\Branches\Enums\BranchUserAssignmentStatus;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Hr\Enums\StaffInvitationStatus;
@@ -29,7 +28,7 @@ it('revokes sessions and unused magic links when suspending a staff member', fun
         'payload' => 'x',
         'last_activity' => now()->getTimestamp(),
     ]);
-    app(MagicLinkTokenService::class)->issue($staffUser->email);
+    issueBoundMagicLink($staffUser->email);
 
     app(StaffLifecycleService::class)->suspend($membership, $admin);
 

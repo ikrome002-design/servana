@@ -24,6 +24,12 @@ final class RequestMagicLinkRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email:rfc', 'max:255'],
+            // The deep link the user was heading for before being asked to sign in. Shape only:
+            // whether it is SAFE is decided by AccountHostUrlGenerator::safeRelativePath() in the
+            // action, so there is exactly one place that judges a redirect (UI/UX plan §10.6).
+            // 512 matches the bound column, so an over-long value fails validation rather than
+            // being silently truncated into a different path.
+            'redirect' => ['sometimes', 'nullable', 'string', 'max:512'],
         ];
     }
 
@@ -38,5 +44,13 @@ final class RequestMagicLinkRequest extends FormRequest
     public function email(): string
     {
         return (string) $this->validated()['email'];
+    }
+
+    /** The requested post-auth path, unvalidated for safety — the action decides that. */
+    public function redirectPath(): ?string
+    {
+        $redirect = $this->validated()['redirect'] ?? null;
+
+        return is_string($redirect) && $redirect !== '' ? $redirect : null;
     }
 }

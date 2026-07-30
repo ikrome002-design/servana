@@ -67,21 +67,29 @@ const P23_VERIFIED_PHASES = [
     // SUCCESS), governance comment 5117766612, reviewDecision blank with 0 submitted reviews.
     // Reconciled live on the phase-ui-02-multi-host-foundation branch.
     'UI-01',
+    // UI-02 merged as PR #52, squash fb64ba6, sole parent 413c146, implementation commit
+    // db3ace4, final head 5add80c (`ci: build SPA before backend shell tests` — a tested
+    // CI-contract correction touching only .github/workflows/ci.yml, NOT a governance-only
+    // commit), source tree == merge tree 442ed1d, merged 2026-07-30T10:38:01Z, CI run
+    // 30532318808 attempt 1 (five checks SUCCESS), governance comment 5129527972,
+    // reviewDecision blank with 0 submitted reviews. Reconciled live on the
+    // phase-ui-03-auth-session-account-switching branch.
+    'UI-02',
 ];
 
 /**
  * The corrective UI/UX programme (Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md
- * §25). UI-00 and UI-01 are merged and verified; UI-02 is in flight; UI-03 … UI-17 have not
- * started. They are listed here so a UI requirement can be deferred to a NAMED owner phase
+ * §25). UI-00, UI-01 and UI-02 are merged and verified; UI-03 is in flight; UI-04 … UI-17 have
+ * not started. They are listed here so a UI requirement can be deferred to a NAMED owner phase
  * instead of disappearing from the matrix.
  *
  * @var list<string>
  */
-const P23_UI_PHASES_VERIFIED = ['UI-00', 'UI-01'];
+const P23_UI_PHASES_VERIFIED = ['UI-00', 'UI-01', 'UI-02'];
 
 /** @var list<string> */
 const P23_UI_PHASES_UNVERIFIED = [
-    'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06', 'UI-07', 'UI-08',
+    'UI-03', 'UI-04', 'UI-05', 'UI-06', 'UI-07', 'UI-08',
     'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17',
 ];
 
@@ -97,9 +105,9 @@ const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '25', ...P23_UI_PHASES_U
  * constant when the in-flight phase merges and the next phase's branch reconciles it (the same
  * convention that promoted Phase 23 after PR #48 merged as 13f54a4, Phase 24 after PR #49 merged
  * as db3827b, Phase UI-00 after PR #50 merged as d3f6e10, and Phase UI-01 after PR #51 merged
- * as 413c146).
+ * as 413c146, and Phase UI-02 after PR #52 merged as fb64ba6).
  */
-const P23_IN_FLIGHT_PHASE = 'UI-02';
+const P23_IN_FLIGHT_PHASE = 'UI-03';
 
 /**
  * Phases a `deferred_future_phase` row may name: the remaining backend phases plus every UI phase
@@ -107,7 +115,7 @@ const P23_IN_FLIGHT_PHASE = 'UI-02';
  *
  * @var list<string>
  */
-const P23_DEFERRABLE_PHASES = ['21N', '25', 'UI-03', 'UI-04', 'UI-05', 'UI-06',
+const P23_DEFERRABLE_PHASES = ['21N', '25', 'UI-04', 'UI-05', 'UI-06',
     'UI-07', 'UI-08', 'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17'];
 
 /** @return list<array<string, string>> */

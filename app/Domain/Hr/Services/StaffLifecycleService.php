@@ -161,6 +161,12 @@ final class StaffLifecycleService
             $assignment->revoked_at = now();
             $assignment->save();
 
+            // Phase UI-03 (UI/UX plan §5.2): a branch-bound host session is only valid while the
+            // assignment behind it is. Revoking the assignment therefore revokes the sessions that
+            // were entered FOR that branch — and only those, so a manager covering two branches
+            // keeps the session for the branch they still hold.
+            $this->revocation->revokeForBranchAssignment($assignment->branch_id, $assignment->merchant_user_id);
+
             $membership = $assignment->merchantUser;
             if ($membership !== null) {
                 $this->recordBranchHistory($membership, $assignment->branch_id, null, $actor);

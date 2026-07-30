@@ -30,6 +30,25 @@ enum AuditEvent: string
     case LoginSuccess = 'login_success';
     case Logout = 'logout';
 
+    // --- Host-bound authentication, session families and account switching
+    // (Phase UI-03; ADR-018, ADR-019; UI/UX plan §5.1–§5.4). Every one of these
+    // is written through AuthAuditLogger, so the context is a masked email, a
+    // rejection category and safe ULIDs — never a token, cookie, session id or
+    // permission set (guardrail §6.4, UI/UX plan §18.7).
+    case MagicLinkHostBindingRejected = 'auth.magic_link.host_binding_rejected';
+    case MagicLinkEnvironmentBindingRejected = 'auth.magic_link.environment_binding_rejected';
+    case SessionFamilyCreated = 'auth.session_family.created';
+    case SessionFamilyRevoked = 'auth.session_family.revoked';
+    case HostSessionCreated = 'auth.host_session.created';
+    case HostSessionRevoked = 'auth.host_session.revoked';
+    case GlobalLogout = 'auth.global_logout';
+    case AccountContextsViewed = 'auth.account_contexts.viewed';
+    case ContextHandoffIssued = 'auth.context_handoff.issued';
+    case ContextHandoffConsumed = 'auth.context_handoff.consumed';
+    case ContextHandoffRejected = 'auth.context_handoff.rejected';
+    case ContextHandoffReplayRejected = 'auth.context_handoff.replay_rejected';
+    case WrongAccountDeepLinkRejected = 'auth.account_deep_link.rejected';
+
     // --- Staff invitations (Scope §3.4).
     case InvitationCreated = 'invitation.created';
     case InvitationResent = 'invitation.resent';
@@ -619,6 +638,12 @@ enum AuditEvent: string
             self::PersonnelSmsCampaignCreated,
             self::PersonnelSmsRecipientSuppressed,
             self::PersonnelSmsDeliverySucceeded,
+            // Phase UI-03 — ordinary, expected authentication transitions.
+            self::SessionFamilyCreated,
+            self::HostSessionCreated,
+            self::AccountContextsViewed,
+            self::ContextHandoffIssued,
+            self::ContextHandoffConsumed,
             self::LoginLinkRequested => AuditSeverity::Info,
 
             self::BranchDayOpened,
@@ -776,6 +801,12 @@ enum AuditEvent: string
             // date, so it is an operational change worth surfacing (`warn` per the matrix).
             self::BranchCalendarExceptionSet,
             self::BranchCalendarExceptionRemoved,
+            // Phase UI-03 — expected-but-notable session lifecycle. A revocation is how a
+            // suspension, role removal or branch removal becomes visible in the trail, and a
+            // global logout is a deliberate security action worth surfacing.
+            self::SessionFamilyRevoked,
+            self::HostSessionRevoked,
+            self::GlobalLogout,
             self::PersonnelSmsDeliveryFailed => AuditSeverity::Warning,
 
             self::FileScanInfected,
@@ -862,6 +893,16 @@ enum AuditEvent: string
             // from the Plan §73 threat model, even though the request always 404s.
             self::PersonnelSmsDeliveryDeadLettered,
             self::PersonnelSmsExportAttemptBlocked,
+            // Phase UI-03 — every one of these is an ATTACK SHAPE, not a user mistake. A Magic
+            // Link or handoff token presented on the wrong host or in the wrong environment is
+            // credential substitution; a replayed handoff is a stolen bearer credential in use;
+            // a wrong-account deep link is a privilege-escalation probe (UI01-ROLE-001's class).
+            // The user sees the same uniform failure either way — the severity lives here.
+            self::MagicLinkHostBindingRejected,
+            self::MagicLinkEnvironmentBindingRejected,
+            self::ContextHandoffRejected,
+            self::ContextHandoffReplayRejected,
+            self::WrongAccountDeepLinkRejected,
             self::UnauthorizedAccess => AuditSeverity::High,
 
             // Plan §59 requires CRITICAL severity for an approved BACKDATED compensation change:

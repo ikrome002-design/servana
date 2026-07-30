@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\Auth\Services\MagicLinkTokenService;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Hr\Services\StaffLifecycleService;
 use App\Domain\Merchants\Enums\MerchantUserRole;
@@ -36,10 +35,13 @@ beforeEach(function (): void {
  *
  * @return array{0: string, 1: string}
  */
-function r6RealLogin(string $email): array
+function r6RealLogin(string $email, string $accountKey = 'merchant_administrator'): array
 {
-    $raw = app(MagicLinkTokenService::class)->issue($email);
-    $response = postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw]);
+    // Phase UI-03: a Magic Link is bound to ONE account host, so the sign-in has to name the
+    // account the fixture actually holds. A Front Office user cannot sign in on the Merchant
+    // Administrator host — that is the control under test elsewhere, not a fixture detail.
+    $raw = issueBoundMagicLink($email, $accountKey);
+    $response = postOnHost($accountKey, '/api/v1/auth/magic-link/verify', ['token' => $raw]);
     $response->assertStatus(200);
 
     $name = (string) config('session.cookie');
@@ -76,7 +78,7 @@ function r6FrontOffice(): array
 
 it('authenticates a follow-up request with a real database session', function (): void {
     [$user] = r6FrontOffice();
-    [$name, $value] = r6RealLogin($user->email);
+    [$name, $value] = r6RealLogin($user->email, 'merchant_front_office');
 
     // A genuine session row now exists on Postgres.
     expect(DB::table('sessions')->where('user_id', $user->id)->count())->toBeGreaterThanOrEqual(1);
@@ -88,7 +90,7 @@ it('authenticates a follow-up request with a real database session', function ()
 
 it('deletes the real database session on membership suspension', function (): void {
     [$user, $membership] = r6FrontOffice();
-    r6RealLogin($user->email);
+    r6RealLogin($user->email, 'merchant_front_office');
 
     // A real session row backs the signed-in session before revocation.
     expect(DB::table('sessions')->where('user_id', $user->id)->count())->toBeGreaterThanOrEqual(1);
@@ -105,7 +107,7 @@ it('denies the next request when the user is suspended even if the session row s
     // Defence in depth: a session that outlived revocation must still be rejected
     // by the per-request active-principal gate (EnsureActivePrincipal).
     [$user] = r6FrontOffice();
-    [$name, $value] = r6RealLogin($user->email);
+    [$name, $value] = r6RealLogin($user->email, 'merchant_front_office');
 
     // Flip the user to suspended WITHOUT deleting the session row.
     DB::table('users')->where('id', $user->id)->update(['status' => User::STATUS_SUSPENDED]);
@@ -118,7 +120,7 @@ it('denies the next request when the user is suspended even if the session row s
 
 it('denies platform access after a platform user is deactivated mid-session', function (): void {
     $platform = User::factory()->create(['is_platform_staff' => true]);
-    [$name, $value] = r6RealLogin($platform->email);
+    [$name, $value] = r6RealLogin($platform->email, 'super_administrator');
 
     r6Replay($name, $value, '/api/v1/me')->assertStatus(200);
 

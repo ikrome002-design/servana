@@ -42,6 +42,13 @@ export const router = createRouter({
     ...personnelRoutes,
     ...auditRoutes,
     {
+      // Role-safe denial state (Phase UI-03; UI/UX plan §5.4). Reached by the account-entry guard
+      // instead of a redirect to another account.
+      path: '/access-denied',
+      name: 'access-denied',
+      component: () => import('@/pages/auth/AccessDenied.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/pages/Home.vue'),

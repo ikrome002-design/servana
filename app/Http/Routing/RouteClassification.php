@@ -37,6 +37,12 @@ final class RouteClassification
      */
     public const VALIDATION_EXEMPT = [
         'auth.logout' => 'No request body; tears down the authenticated session.',
+        // Phase UI-03 (ADR-018). Both act on the AUTHENTICATED principal's own session state and
+        // take nothing from the caller — there is literally no input a Form Request could validate.
+        // Authorization is ownership: every query is scoped to the requesting user, and the
+        // session is identified by the browser's own cookie, never by a body field.
+        'auth.logout-all' => 'No request body; revokes the requesting user’s own session family across every host.',
+        'auth.sessions.destroy' => 'No request body; {hostSession} ULID is resolved within the requesting user’s own sessions (foreign ULID → 404).',
         'auth.mfa.enroll' => 'No request body; provisions and returns a new TOTP secret/Qns.',
         'auth.mfa.recovery-codes.regenerate' => 'No request body; gated by RequireFreshMfa step-up.',
         'branches.archive' => 'No request body; state transition authorized by branches.create permission + BranchPolicy.',

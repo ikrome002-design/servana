@@ -43,6 +43,13 @@ const P23_READ_BOUNDARIES = [
 const P23_DOCUMENTED_READ_EXCEPTIONS = [
     'me' => 'Authenticated-self bootstrap (Plan §6.2). Returns only the caller\'s own identity, memberships, resolved permissions and branch ids — there is no other subject to authorize against. Tenant context is resolved, never accepted from input.',
     'auth.mfa.status' => 'Authenticated-self MFA state (Plan §18). Returns only the caller\'s own enrollment/challenge flags — never a secret, never another user\'s state.',
+    // Phase UI-03 (ADR-018). Both are authenticated-SELF reads whose subject is the caller: there
+    // is no other principal to authorize against, and no caller-supplied scope parameter exists.
+    // A permission key would be the wrong instrument — it would imply the read could ever be about
+    // someone else. Cross-user session inspection is deliberately absent and is recorded as a
+    // blocked decision (docs/frontend/audits/ui-03/defect-closure.json).
+    'auth.account-contexts.index' => 'Authenticated-self account contexts (UI/UX plan §5.3). Derived from the caller\'s own membership rows by AccountContextResolver, which filters on the authenticated user_id alone; an inactive merchant, a non-active membership or a branch-scoped role with no assignment simply produces no entry. No foreign tenant name and no internal id is ever returned.',
+    'auth.sessions.index' => 'Authenticated-self session list (UI/UX plan §5.2). Filtered by the caller\'s own user_id end to end and sanitized — no raw session id, IP, user agent or permission set leaves the server. A foreign session ULID returns 404 on the sibling destroy route, never 403.',
     'search.index' => 'Documented permission INTERSECTION (Plan §68; decision D-22-01). The aggregator grants access to no document type: each type is admitted only when the caller already holds that type\'s own list/detail authority, and every record re-passes that type\'s policy. A caller with no searchable authority receives 200 + an empty collection — a 403 would be an existence oracle over the catalogue.',
     'branches.index' => 'Policy-gated scoped query (Plan §8.2). Returns only the caller\'s own merchant, narrowed to assigned branches for a branch-scoped membership; a merchant-wide membership legitimately sees all own-merchant branches. There is no unscoped read path and no caller-supplied scope parameter.',
     'merchant.dashboard' => 'Authenticated own-merchant summary behind ResolveTenantContext + EnsureMerchantActive (Plan §8.1). The merchant is resolved from the caller\'s membership and never accepted from input, so there is no foreign subject to authorize against; a caller with no active merchant is aborted before any data is read.',
@@ -259,5 +266,9 @@ it('reports the read-boundary distribution so coverage is visible, not assumed',
 
     // A tripwire: the documented-exception list must stay small. Growing it is a design smell
     // and should be a deliberate, reviewed decision rather than a quiet accumulation.
-    expect($counts['documented_exception'])->toBeLessThanOrEqual(6);
+    // The cap exists so "documented exception" cannot quietly become the default boundary. It
+    // rises only when a phase adds a genuinely self-scoped read and says why: Phase UI-03 added
+    // `auth.account-contexts.index` and `auth.sessions.index`, both of which have the caller as
+    // their only possible subject (7 → 8). Every other read must still carry a real boundary.
+    expect($counts['documented_exception'])->toBeLessThanOrEqual(8);
 });

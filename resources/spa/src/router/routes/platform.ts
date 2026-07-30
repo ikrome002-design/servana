@@ -1,11 +1,15 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { requiresAuth } from '@/router/guards';
+import { requiresAccount, requiresAuth } from '@/router/guards';
 
 export const platformRoutes: RouteRecordRaw[] = [
   {
     path: '/platform',
     component: () => import('@/layouts/PlatformAdminLayout.vue'),
-    beforeEnter: [requiresAuth],
+    // Phase UI-03 closes `UI01-ROLE-001`. This tree previously carried `requiresAuth` alone, so
+    // ANY authenticated user — Personnel included — rendered the Super Administrator shell. The
+    // account guard now requires the route's account, the server-resolved host account and a
+    // context the user actually holds to agree before anything mounts.
+    beforeEnter: [requiresAuth, requiresAccount('super_administrator')],
     children: [
       {
         path: '',

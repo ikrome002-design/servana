@@ -119,6 +119,7 @@ use App\Policies\SubscriptionPlanPolicy;
 use App\Policies\SubscriptionPlanPricePolicy;
 use App\Support\CorrelationId;
 use Dedoc\Scramble\Scramble;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
@@ -345,6 +346,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->registerRateLimiters();
         $this->registerPolicies();
+        $this->registerUnauthenticatedRedirect();
 
         // Phase 21R-A (Plan §58B.1). There is no merchant identity-update route as-built, so the
         // identity-change event is emitted by observing the identity columns themselves — see
@@ -352,6 +354,69 @@ class AppServiceProvider extends ServiceProvider
         foreach (MerchantIdentityObserver::observedModels() as $model) {
             $model::observe(MerchantIdentityObserver::class);
         }
+    }
+
+    /**
+     * Where an unauthenticated BROWSER navigation is sent (Phase UI-03; UI/UX plan §5.4).
+     *
+     * ROOT CAUSE THIS FIXES. Laravel's exception handler falls back to `route('login')` when an
+     * `AuthenticationException` carries no redirect target. Servana is an SPA and has never had a
+     * named `login` route, so an HTML-accept request to any auth-protected `/api/v1` route raised
+     * `RouteNotFoundException` and returned **500** (observed and recorded in `docs/proof/ui-02.md`).
+     * JSON callers were unaffected because `Authenticate::unauthenticated()` passes `null` for
+     * them and `ApiErrorRenderer` maps the exception to the standard 401 envelope.
+     *
+     * `Authenticate::redirectUsing()` is the framework's own hook for this. Registering it means
+     * the exception always carries a target, so `route('login')` is never reached — the fix is a
+     * supplied destination, not a swallowed exception.
+     *
+     * The returned path is RELATIVE, always. That is deliberate and load-bearing:
+     *   - it cannot leave the host the request arrived on, so an attacker-controlled `Host` or
+     *     `X-Forwarded-Host` cannot steer the login destination;
+     *   - it cannot move a user toward a broader account host;
+     *   - it cannot loop, because `/auth/login` is a public SPA route on every account host.
+     *
+     * Machine routes are unaffected: health probes, queue workers, schedulers and webhooks either
+     * carry no `auth` middleware or send JSON, so neither path reaches this callback.
+     */
+    private function registerUnauthenticatedRedirect(): void
+    {
+        Authenticate::redirectUsing(function (Request $request): string {
+            $intended = $this->safeIntendedPath($request);
+
+            return $intended === null
+                ? '/auth/login'
+                : '/auth/login?redirect='.rawurlencode($intended);
+        });
+    }
+
+    /**
+     * The path to hand back to the SPA after sign-in, or null when there is nothing safe to keep.
+     *
+     * Backend-owned prefixes are dropped rather than preserved: `/api/v1/me` is not a page, and
+     * echoing it back would put a non-navigable value into a redirect parameter. Anything with a
+     * scheme, a backslash, a control character or an over-long body is dropped for the same reason
+     * every other redirect in UI-03 is — an unsafe value is never "cleaned".
+     */
+    private function safeIntendedPath(Request $request): ?string
+    {
+        $path = '/'.ltrim($request->path(), '/');
+
+        if ($path === '/' || mb_strlen($path) > 256) {
+            return null;
+        }
+        if (preg_match('#^/(api|health|up|sanctum|storage|spa-assets|assets|build)(/|$)#', $path) === 1) {
+            return null;
+        }
+        // Never bounce a user back into an authentication or token-consumption route.
+        if (preg_match('#^/auth(/|$)#', $path) === 1) {
+            return null;
+        }
+        if (str_contains($path, '\\') || preg_match('/[\x00-\x1F\x7F]/', $path) === 1) {
+            return null;
+        }
+
+        return $path;
     }
 
     /**
@@ -424,6 +489,20 @@ class AppServiceProvider extends ServiceProvider
 
         // File uploads (Plan §65; Phase 10F) — per-user upload throttle.
         RateLimiter::for('file-upload', fn (Request $request) => Limit::perMinute(20)->by($this->identify($request)));
+
+        // Account-context switching (Phase UI-03; ADR-018). Minting a handoff is a real security
+        // operation, so it is throttled well below the general `api` limit: a legitimate human
+        // switches contexts a handful of times an hour, while an attacker probing target
+        // substitution wants volume. Per-user AND per-IP so neither axis alone is enough.
+        RateLimiter::for('context-switch', fn (Request $request) => [
+            Limit::perMinute(10)->by($this->identify($request)),
+            Limit::perMinute(30)->by('ip:'.(string) $request->ip()),
+        ]);
+
+        // Consuming a handoff on the TARGET host (Phase UI-03). Unauthenticated on that host by
+        // definition, so keyed by IP: a token is single-use, and a burst of consume attempts from
+        // one source is a replay/guessing pattern, not normal navigation.
+        RateLimiter::for('context-handoff-consume', fn (Request $request) => Limit::perMinute(20)->by('ip:'.(string) $request->ip()));
     }
 
     /** Per-user key when authenticated, otherwise per-IP. */

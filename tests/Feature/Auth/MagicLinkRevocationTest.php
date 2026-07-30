@@ -26,7 +26,7 @@ it('invalidates the previous unconsumed link when a new one is requested', funct
     $tokens = app(MagicLinkTokenService::class);
 
     // First link minted directly.
-    $raw1 = $tokens->issue('rotate@salon.co.ke');
+    $raw1 = issueBoundMagicLink('rotate@salon.co.ke');
     expect(MagicLoginToken::query()->where('email', 'rotate@salon.co.ke')->whereNull('invalidated_at')->count())->toBe(1);
 
     // Requesting a fresh link supersedes the first.
@@ -40,7 +40,7 @@ it('invalidates the previous unconsumed link when a new one is requested', funct
 it('invalidates unconsumed links on logout', function (): void {
     $user = eligibleOwner('logout@salon.co.ke');
     $tokens = app(MagicLinkTokenService::class);
-    $raw = $tokens->issue('logout@salon.co.ke');
+    $raw = issueBoundMagicLink('logout@salon.co.ke');
 
     $this->actingAs($user, 'sanctum')->postJson('/api/v1/auth/logout')->assertNoContent();
 
@@ -52,7 +52,7 @@ it('invalidates unconsumed links on suspension', function (): void {
     $branch = MerchantBranch::factory()->create(['merchant_id' => $merchant->id]);
     [$staffUser, $membership] = branchStaff($merchant, $branch, MerchantUserRole::FrontOffice);
     $tokens = app(MagicLinkTokenService::class);
-    $raw = $tokens->issue($staffUser->email);
+    $raw = issueBoundMagicLink($staffUser->email);
 
     app(StaffLifecycleService::class)->suspend($membership);
 
@@ -62,17 +62,17 @@ it('invalidates unconsumed links on suspension', function (): void {
 it('returns the uniform 422 when verifying an invalidated link', function (): void {
     eligibleOwner('uniform@salon.co.ke');
     $tokens = app(MagicLinkTokenService::class);
-    $raw = $tokens->issue('uniform@salon.co.ke');
+    $raw = issueBoundMagicLink('uniform@salon.co.ke');
     $tokens->invalidateUnconsumedForEmail('uniform@salon.co.ke');
 
-    postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw])
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link/verify', ['token' => $raw])
         ->assertStatus(422)
         ->assertJsonPath('error.code', 'invalid_or_expired_token');
 });
 
 it('stores only the SHA-256 hash of a Magic Link, never the raw token', function (): void {
     $tokens = app(MagicLinkTokenService::class);
-    $raw = $tokens->issue('hash@salon.co.ke');
+    $raw = issueBoundMagicLink('hash@salon.co.ke');
 
     $row = MagicLoginToken::query()->where('email', 'hash@salon.co.ke')->firstOrFail();
     expect($row->token_hash)->toBe(hash('sha256', $raw))
