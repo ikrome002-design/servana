@@ -201,6 +201,21 @@ jobs:
           REDIS_PORT: 6379
         run: php artisan test tests/Feature/Performance
 
+      # Phase UI-02 CI remediation: the Backend shell feature tests execute the
+      # production manifest contract, so this isolated job must create the real
+      # Vite manifest before it starts the parallel PHP suite.
+      - name: Set up Node 20 for Backend SPA shell contracts
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install npm dependencies for Backend SPA shell contracts
+        run: npm ci
+
+      - name: Build SPA for Backend shell contracts
+        run: npm run build
+
       - name: Tests — Pest on PostgreSQL (parallel)
         env:
           DB_CONNECTION: pgsql
@@ -254,6 +269,12 @@ jobs:
       - name: Contract — screen inventory and §27.1 specifications
         run: npx vitest run src/screens/screenInventory.spec.ts
 
+      # Phase UI-02: the account-host registry has one authority
+      # (config/account-hosts.json) and two generated consumers. Fail the build when
+      # either has drifted rather than discovering it at deploy time.
+      - name: Contract — account-host registry is current (Phase UI-02)
+        run: node scripts/generate-account-hosts.mjs --check
+
       - name: Unit tests — Vitest
         run: npm run test
 
@@ -291,9 +312,79 @@ jobs:
           file: docker/nginx.Dockerfile
           target: prod
           push: false
+          # `load` so the image is available to the local daemon for the host smoke below.
+          load: true
           tags: servana-nginx:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # ---------------------------------------------------------------------------
+      # Phase UI-02 — account-host smoke against the BUILT production image.
+      #
+      # UI-01 found the deployed root serving Laravel's scaffold and the SPA chunks
+      # 404ing, while every existing browser test passed against a Vite preview
+      # origin. This step probes the real Nginx image so that class of defect cannot
+      # ship again. It is NOT the release-wide browser gate — UI01-PROV-003 stays
+      # open and is owned by UI-16.
+      # ---------------------------------------------------------------------------
+      # The PROD php target is used deliberately: it is self-contained (`COPY . /var/www/html`),
+      # whereas the dev target expects a bind-mounted source and would serve nothing here.
+      - name: Build app image (prod target) for the host smoke
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/php.Dockerfile
+          target: prod
+          push: false
+          load: true
+          tags: servana-app:ci-prod
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Start the built images
+        run: |
+          docker network create servana-ci
+          # The upstream MUST be named `app` — docker/nginx/default.conf does `fastcgi_pass app:9000`.
+          # Session/cache are forced to array so the smoke needs no database or Redis; the SPA
+          # shell route touches neither.
+          docker run -d --name app --network servana-ci \
+            -e SESSION_DRIVER=array -e CACHE_STORE=array -e QUEUE_CONNECTION=sync \
+            servana-app:ci-prod
+          docker run -d --name edge --network servana-ci -p 8080:8080 servana-nginx:ci
+          for i in $(seq 1 40); do
+            if curl -fsS -H 'Host: localhost' http://127.0.0.1:8080/health >/dev/null 2>&1; then
+              echo "edge ready"; break
+            fi
+            sleep 2
+          done
+          curl -fsS -H 'Host: localhost' http://127.0.0.1:8080/health
+
+      - name: Extract the built SPA manifest for the smoke matrix
+        run: |
+          mkdir -p public/spa/.vite
+          docker cp edge:/var/www/html/public/spa/.vite/manifest.json public/spa/.vite/manifest.json
+
+      - name: Smoke — eight account hosts on the built image (Phase UI-02)
+        run: node scripts/ui02-host-smoke.mjs --origin http://127.0.0.1:8080
+
+      - name: Upload host matrix
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui02-host-matrix
+          path: docs/frontend/audits/ui-02/host-matrix.json
+          if-no-files-found: warn
+
+      - name: Tear down smoke containers
+        if: always()
+        run: |
+          docker rm -f edge app || true
+          docker network rm servana-ci || true
 
   security:
     name: Security — gitleaks

@@ -1,0 +1,153 @@
+{
+  "generated_by": "Phase UI-02",
+  "purpose": "Machine-verifiable closure record for the four UI-01 defects Phase UI-02 owns. The UI-01 audit register (docs/frontend/audits/ui-01/defect-register.csv) is a historical evidence snapshot and is deliberately NOT rewritten — it records what was true at audit time.",
+  "lifecycle_rule": "A local correction is NOT verified_complete. These four defects stay `local_complete pending PR CI/review/merge` until the UI-02 pull request merges with green required checks and recorded governance evidence, at which point the next branch reconciles them.",
+  "ui02_commit": "PENDING — recorded in docs/proof/ui-02.md at local completion",
+  "ui02_pull_request": "PENDING — not created; UI-02 stops at a pushed branch by instruction",
+  "audited_defect_total": 27,
+  "closed_by_ui02": 4,
+  "left_open": 23,
+  "closures": [
+    {
+      "defect_id": "UI01-PROV-001",
+      "prior_severity": "critical",
+      "owner_phase": "UI-02",
+      "observed_ui01_evidence": "Production Nginx returned HTTP 200 at `/` with `<title>Laravel</title>` — the stock Laravel scaffold, which also loaded remote images from laravel.com. No working public Servana entry point was deployed at the root of any host.",
+      "root_cause": "`routes/web.php` bound `/` to `view('welcome')`, Laravel's untouched scaffold view. The SPA was never wired to the root; the only mount was Nginx's `/spa/` alias.",
+      "why_this_is_the_root_cause": "The scaffold is what the route returned, so no Nginx or Vite change could have altered the response body. Replacing the route is the smallest change that makes `/` Servana.",
+      "correct_fix": "Laravel renders the Servana SPA shell for every browser route on a resolved account host. `routes/web.php` binds a negative-lookahead path pattern to `SpaShellController`, guarded by `ResolveAccountHost`; `resources/views/spa.blade.php` is the shell; the stock `welcome.blade.php` was deleted.",
+      "files_changed": [
+        "routes/web.php",
+        "app/Http/Controllers/SpaShellController.php",
+        "resources/views/spa.blade.php",
+        "resources/views/welcome.blade.php (deleted)",
+        "docker/nginx/default.conf"
+      ],
+      "tests": [
+        "AccountHostShellContractTest::it serves the Servana shell — never the Laravel scaffold — on every account host",
+        "AccountHostShellContractTest::it keeps backend routes out of the SPA fallback",
+        "scripts/ui02-host-smoke.mjs (root status, title, no laravel.com reference)"
+      ],
+      "production_image_proof": "servana-ui02-nginx:audit on port 8081 — all 8 hosts return 200 with `<title>Servana by Citrus</title>`, zero occurrences of the Laravel title or laravel.com assets.",
+      "before": "HTTP 200, `<title>Laravel</title>`, stock scaffold, remote laravel.com images.",
+      "after": "HTTP 200, `<title>Servana by Citrus</title>`, Servana shell carrying the resolved account key, `Cache-Control: no-cache, must-revalidate`.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "The shell is now rendered by PHP on every browser route rather than served as a static file. That is the standard Laravel+Vite arrangement and the cost is one PHP request per navigation, but it does mean an application-layer outage now also removes the shell. UI-17 owns production performance and resilience."
+    },
+    {
+      "defect_id": "UI01-PROV-002",
+      "prior_severity": "critical",
+      "owner_phase": "UI-02",
+      "observed_ui01_evidence": "Vite emitted with `base: '/'` while Nginx mounted the SPA beneath `/spa/`. The shell requested `/assets/*`, those requests fell through to Laravel and returned HTML/404, and `/spa/` loaded an empty `#app`.",
+      "root_cause": "A path-ownership collision. Vite's default `assetsDir` is `assets`, and Laravel's own public tree already owns `public/assets` (brand files, landing images). One `/assets/` prefix therefore had two owners, and the Laravel front controller won — so every chunk resolved to Laravel's 404 HTML.",
+      "why_this_is_the_root_cause": "The chunks existed on disk at `public/spa/assets/*` and were reachable at `/spa/assets/*`; only the URL the shell asked for was wrong. Changing `base` alone would have moved the collision rather than removed it, because both owners still wanted the same prefix.",
+      "correct_fix": "One prefix per owner. Vite now emits to `spa-assets/` (`build.assetsDir`), Nginx serves `/spa-assets/` from `public/spa/spa-assets/` with immutable caching, and `/assets/` continues to serve Laravel's public tree. The shell names the fingerprinted entry from the real Vite manifest, so the two can never disagree.",
+      "files_changed": [
+        "vite.config.ts",
+        "docker/nginx/default.conf",
+        "app/Http/Controllers/SpaShellController.php",
+        "resources/views/spa.blade.php"
+      ],
+      "tests": [
+        "AccountHostShellContractTest::it names the fingerprinted Vite entry from the real manifest",
+        "scripts/ui02-host-smoke.mjs (entry JS/CSS status, content-type, cache-control)"
+      ],
+      "production_image_proof": "servana-ui02-nginx:audit — entry JS 200 `application/javascript` with `public, max-age=31536000, immutable`; entry CSS 200 `text/css`; on all 8 hosts.",
+      "before": "`/assets/index-*.js` → Laravel 404 HTML; `/spa/` rendered a blank `#app`.",
+      "after": "`/spa-assets/index-*.js` → 200 JavaScript, immutable; the SPA mounts and renders on all 8 hosts (asserted by the screenshot script's mount selector).",
+      "remaining_risk": "`/spa/` now 301s to the account root. A deep bookmark such as `/spa/dashboard` redirects to `/` rather than to `/dashboard`, which is a deliberate simplification — `/spa/` was never a product route and only ever served a blank page.",
+      "closure_status": "local_complete pending PR CI/review/merge"
+    },
+    {
+      "defect_id": "UI01-HOST-001",
+      "prior_severity": "high",
+      "owner_phase": "UI-02",
+      "observed_ui01_evidence": "Nginx used `server_name _`, accepting any Host. No Laravel host resolver, route domain mapping or account-host registry existed. One origin served every account experience, and host context was not a governed runtime concept.",
+      "root_cause": "The eight-host architecture was adopted as a decision in UI-00 (ADR-016/ADR-017) but had no runtime. Nothing in the stack modelled 'which account is this request for'.",
+      "why_this_is_the_root_cause": "Every downstream symptom — one shared landing surface, no per-account entry point, no unknown-host denial — follows from the absence of a host concept, not from any individual page.",
+      "correct_fix": "One canonical registry (`config/account-hosts.json`) with generated consumers: Laravel config, a typed frontend registry, and the Nginx `server_name` allowlist. `AccountHostResolver` performs exact-allowlist resolution with normalization and injection rejection; `ResolveAccountHost` denies unapproved hosts with a safe 421; Nginx's `default_server` returns 444; machine hosts are modelled in a separate server block.",
+      "files_changed": [
+        "config/account-hosts.json",
+        "config/account_hosts.php",
+        "scripts/generate-account-hosts.mjs",
+        "app/Http/Hosts/AccountHost.php",
+        "app/Http/Hosts/AccountHostRegistry.php",
+        "app/Http/Hosts/AccountHostResolver.php",
+        "app/Http/Hosts/AccountHostUrlGenerator.php",
+        "app/Http/Middleware/ResolveAccountHost.php",
+        "app/Http/Controllers/HealthController.php",
+        "bootstrap/app.php",
+        "docker/nginx/default.conf",
+        "docker/nginx.Dockerfile",
+        "docker/nginx/account-hosts.generated.conf",
+        "docker-compose.yml",
+        "resources/spa/src/host/accountHosts.generated.ts",
+        "resources/spa/src/host/accountHostContext.ts",
+        "resources/spa/src/main.ts",
+        ".env.example"
+      ],
+      "tests": [
+        "AccountHostResolutionTest (12 tests — production/local/staging maps, normalization, deceptive suffixes, injection, forwarded hosts, config cache)",
+        "AccountHostDoesNotAuthorizeTest (5 tests)",
+        "AccountHostRegistryParityTest (5 tests)",
+        "MachineRoutesIgnoreBrowserAccountContextTest (7 tests)",
+        "accountHostContext.spec (17 tests)"
+      ],
+      "production_image_proof": "servana-ui02-nginx:audit — 8 approved hosts resolve to their own account key; 4 unknown/deceptive hosts (attacker.test, evil-servana.ke, servana.ke.attacker.test, unknown.servana.test) are refused by connection close; the machine host serves /health 200 but / 404.",
+      "before": "`server_name _`; every Host accepted; no account concept anywhere in the runtime.",
+      "after": "24 approved hosts (8 accounts x 3 environments) on an exact allowlist; unknown hosts closed at the edge; a typed account context resolved server-side and handed to the SPA; host context proven to grant nothing.",
+      "remaining_risk": "The registry currently derives staging hosts from a configured suffix with no DNS behind it. That is intentional — DNS, TLS and HSTS are UI-17 — but it means the staging map is unexercised against a real origin.",
+      "closure_status": "local_complete pending PR CI/review/merge"
+    },
+    {
+      "defect_id": "UI01-ASSET-005",
+      "prior_severity": "low",
+      "owner_phase": "UI-02",
+      "observed_ui01_evidence": "The preview origin did not own the Laravel public asset tree, so favicon URLs under `/assets/brand/*` failed wherever the SPA bundle was served as a separate root.",
+      "root_cause": "Two roots. The SPA bundle (`public/spa`) and Laravel's public tree (`public/`) were separate origins, and the shell referenced brand assets with root-absolute URLs that only one of them could satisfy.",
+      "why_this_is_the_root_cause": "The files were present and correctly named the whole time; only the origin serving the shell lacked them.",
+      "correct_fix": "In production Nginx serves `/assets/` from Laravel's public root — the authoritative copy — with `Cache-Control: public, max-age=86400`. For parity on a standalone SPA origin (`vite preview`, which the Playwright harness uses), a build-time Vite plugin copies `public/assets` into the bundle from the same single source, so the two cannot drift.",
+      "files_changed": [
+        "docker/nginx/default.conf",
+        "vite.config.ts",
+        "resources/views/spa.blade.php"
+      ],
+      "tests": [
+        "AccountHostShellContractTest::it references approved brand assets with canonical lowercase names",
+        "scripts/ui02-host-smoke.mjs (favicon.ico, Logo.png, Logo.svg absence)"
+      ],
+      "production_image_proof": "servana-ui02-nginx:audit — `/assets/brand/favicon.ico` 200, `/assets/brand/Logo.png` 200 on all 8 hosts; `/assets/brand/Logo.svg` 404 on all 8. A case-sensitive listing inside the image confirms `Logo.png` with its capital L.",
+      "before": "`/assets/brand/*` 404 on an origin that served only the SPA bundle.",
+      "after": "Favicons and Logo.png resolve at stable canonical-case URLs on every approved host; Logo.svg remains absent as the product owner directed.",
+      "remaining_risk": "The brand tree is now duplicated into the SPA build output for preview parity. It is copied at build time from the one source and `emptyOutDir` clears it each build, so it cannot go stale — but a future phase must not start treating the copy as authoritative.",
+      "closure_status": "local_complete pending PR CI/review/merge"
+    }
+  ],
+  "explicitly_left_open": [
+    { "defect_id": "UI01-PROV-003", "owner_phase": "UI-16", "reason": "The Playwright suite still runs against a Vite preview origin rather than the deployed one. UI-02 adds a focused production-origin host smoke; it does not take on the release-wide deployed-origin browser gate." },
+    { "defect_id": "UI01-PROV-004", "owner_phase": "UI-17", "reason": "Out of UI-02 scope." },
+    { "defect_id": "UI01-PROV-005", "owner_phase": "UI-17", "reason": "Out of UI-02 scope." },
+    { "defect_id": "UI01-ROLE-001", "owner_phase": "UI-03", "reason": "Role resolution belongs to the authentication and session phase." }
+  ],
+  "open_defect_owner_distribution_after_ui02": {
+    "UI-03": 1,
+    "UI-04": 5,
+    "UI-05": 2,
+    "UI-06": 3,
+    "UI-07": 5,
+    "UI-08": 1,
+    "UI-10": 1,
+    "UI-12": 1,
+    "UI-16": 2,
+    "UI-17": 2
+  },
+  "newly_observed_not_owned_by_ui02": [
+    {
+      "observation": "An HTML-accept (browser-navigation) request to an auth-protected /api/v1 route returns 500 instead of a redirect, because Laravel's Authenticate middleware resolves `route('login')`, which has never existed.",
+      "classification": "pre-existing, not introduced by UI-02",
+      "evidence": "`git show origin/main:routes/web.php` contains no `login` route; the same code path existed before this phase. With `Accept: application/json` — the header the SPA always sends — the same endpoint correctly returns 401.",
+      "owner_phase": "UI-03",
+      "action_taken": "Recorded only. Not fixed, not closed, and not added to the UI-01 register, which is a historical snapshot."
+    }
+  ]
+}

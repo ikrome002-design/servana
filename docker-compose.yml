@@ -65,6 +65,9 @@ services:
       - "8080:8080"
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # Generated account-host allowlist (Phase UI-02), included by default.conf.
+      # Outside conf.d/ because conf.d/*.conf is auto-included at the http level.
+      - ./docker/nginx/account-hosts.generated.conf:/etc/nginx/servana/account-hosts.generated.conf:ro
       - ./public:/var/www/html/public:ro
     depends_on:
       app:

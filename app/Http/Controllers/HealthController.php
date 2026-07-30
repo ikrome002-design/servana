@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Hosts\AccountHostResolver;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +39,43 @@ final class HealthController extends Controller
             'status' => 'ok',
             'service' => 'servana',
             'timestamp' => now()->toIso8601String(),
+        ]);
+    }
+
+    /**
+     * Host-context probe (Phase UI-02; UI/UX plan §4.7, §23).
+     *
+     * Answers one question for operators and the host smoke matrix: "which account
+     * experience does this edge think this hostname is?". Dependency-free, like live().
+     *
+     * It reports only the requested host, the resolved account key, the environment and
+     * the application status. It deliberately exposes no user, tenant, permission, token,
+     * payment reference or private infrastructure detail, and — because resolving a host
+     * grants nothing (ADR-017) — a 200 here is not evidence of any access.
+     */
+    public function host(Request $request, AccountHostResolver $resolver): JsonResponse
+    {
+        $accountHost = $resolver->resolve($request);
+        $normalized = $resolver->normalize($request->headers->get('host'));
+
+        if ($accountHost === null) {
+            return response()->json([
+                'status' => 'unknown_host',
+                'service' => 'servana',
+                'requested_host' => $normalized,
+                'account_key' => null,
+                'machine_host' => $resolver->isMachineHost($request),
+                'environment' => app()->environment(),
+            ], 421);
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'service' => 'servana',
+            'requested_host' => $accountHost->host,
+            'account_key' => $accountHost->accountKey,
+            'machine_host' => false,
+            'environment' => $accountHost->environment,
         ]);
     }
 

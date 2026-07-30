@@ -19,6 +19,19 @@ it('boots the application and serves a healthy liveness probe', function (): voi
     ]);
 });
 
-it('renders the application root', function (): void {
-    $this->get('/')->assertOk();
+/*
+ | Phase UI-02 changed what "the application root" means. Servana now serves eight account
+ | experiences, one per host (ADR-016), so `/` is only meaningful on an APPROVED account host —
+ | the bare `localhost` this test used to rely on is a machine host and is now correctly
+ | refused. The assertion is therefore split rather than dropped: the root must render on an
+ | approved host, and must NOT render on a non-account host.
+ */
+it('renders the application root on an approved account host', function (): void {
+    $this->get('http://servana.test/')
+        ->assertOk()
+        ->assertSee('Servana by Citrus', escape: false);
+});
+
+it('does not serve the application root on a machine host', function (): void {
+    $this->get('http://localhost/')->assertStatus(421);
 });

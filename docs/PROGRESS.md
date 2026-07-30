@@ -112,8 +112,8 @@ while the repository records said the work was complete.
 | Phase | Title | Status | Branch | Proof | Key gate / dependency |
 |---|---|---|---|---|---|
 | UI-00 | Plan adoption and source reconciliation | ✅ `verified_complete` | PR [#50](https://github.com/ikrome002-design/servana/pull/50) merged — squash `d3f6e10`, branch deleted | [ui-00.md](proof/ui-00.md) | Phase 24 merge verified live |
-| UI-01 | As-built browser and repository audit | 🟡 `local_complete pending PR CI/review/merge` | `phase-ui-01-as-built-browser-audit` (base `d3f6e10`, **no PR**) | [ui-01.md](proof/ui-01.md) | UI-00 PR merged and reconciled live |
-| UI-02 | Multi-host foundation | ⬜ Not started | — | — | UI-01 defect register complete |
+| UI-01 | As-built browser and repository audit | ✅ `verified_complete` | PR [#51](https://github.com/ikrome002-design/servana/pull/51) merged — squash `413c146`, sole parent `d3f6e10`, final head `5c52372`, source tree == merge tree `e00866f`, merged `2026-07-29T12:33:28Z`, CI run `30450612654` five checks SUCCESS, governance comment `5117766612`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted | [ui-01.md](proof/ui-01.md) | Reconciled live on the UI-02 branch |
+| UI-02 | Multi-host foundation | 🟡 `local_complete pending PR CI/review/merge` | `phase-ui-02-multi-host-foundation` (base `413c146`, **no PR**) | [ui-02.md](proof/ui-02.md) | UI-01 PR merged and reconciled live |
 | UI-03 | Authentication, session family, account switching | ⬜ Not started | — | — | UI-02 merged |
 | UI-04 | Design system and shared components | ⬜ Not started | — | — | UI-03 merged |
 | UI-05 | Content and asset pipeline | ⬜ Not started | — | — | UI-04 merged |
@@ -181,9 +181,88 @@ blocked; Wallet-owned money movement, Refer & Earn-owned rewards, notification/r
 external-onboarding items are untouched. UI-00 closes none of them. `REM-PERM-002`, `REM-EXP-001`,
 `REM-SMS-002` and `REM-RE-002` stay open.
 
-## Phase UI-01 — As-built browser and repository audit (`local_complete pending PR CI/review/merge`)
+## Phase UI-02 — Multi-host foundation (`local_complete pending PR CI/review/merge`)
 
-**Branch** `phase-ui-01-as-built-browser-audit` · **base** `d3f6e10` · **no PR** ·
+**Branch** `phase-ui-02-multi-host-foundation` · **base** `413c146` (the verified UI-01 squash
+merge) · **no PR** · **proof** [ui-02.md](proof/ui-02.md) · **artifacts**
+[`docs/frontend/audits/ui-02/`](frontend/audits/ui-02/)
+
+**Plan authority:** UI/UX plan §4.1–§4.7, §6.1–§6.5, §18.1, §18.5–§18.7, §21, §23–§26, §25
+(Phase UI-02), §28; ADR-016, ADR-017.
+
+### What UI-02 built
+
+- **One account-host authority** — `config/account-hosts.json`, with three generated/derived
+  consumers: Laravel config (`config/account_hosts.php`), the typed frontend registry
+  (`resources/spa/src/host/accountHosts.generated.ts`) and the Nginx `server_name` allowlist
+  (`docker/nginx/account-hosts.generated.conf`). Generator:
+  `node scripts/generate-account-hosts.mjs` (`--check` in CI). **24 hosts = 8 accounts × 3
+  environments**; staging is derived from a configured suffix, never hard-coded.
+- **Backend host layer** — `AccountHostRegistry` (exact allowlist), `AccountHostResolver`
+  (normalization, injection/ambiguity rejection, safe denial), `AccountHostUrlGenerator`
+  (allowlist-backed absolute URLs, unsafe-redirect rejection), `ResolveAccountHost` middleware
+  (421 + redacted logging), trusted-proxy configuration.
+- **Deployed serving contract** — Laravel renders the SPA shell on every approved host with a
+  server-resolved account context; Vite emits to `spa-assets/` so it no longer collides with
+  Laravel's `public/assets`; Nginx owns one prefix per owner, default-denies unknown hosts with
+  `444`, and models machine hosts in a separate block.
+- **Frontend context bootstrap** — resolved before the router, validated against the address
+  bar, fails closed on missing/malformed/unknown/mismatched context.
+- **Foundation-only public surface** — each host renders its own account label and the approved
+  logo. Explicitly **not** the finished landing page.
+
+### The four UI-01 defects UI-02 owns (locally closed)
+
+| Defect | Prior severity | Result |
+|---|---|---|
+| `UI01-PROV-001` | critical | Root serves the Servana shell on all 8 hosts; the Laravel scaffold view is deleted |
+| `UI01-PROV-002` | critical | Entry JS/CSS load 200 with correct MIME and immutable caching under `/spa-assets/` |
+| `UI01-HOST-001` | high | 24-host exact allowlist; unknown hosts closed at the edge; host proven non-authorizing |
+| `UI01-ASSET-005` | low | Favicons and `Logo.png` 200 on every host; `Logo.svg` 404 everywhere |
+
+Closure evidence: [`defect-closure.json`](frontend/audits/ui-02/defect-closure.json). They are
+**not** `verified_complete` until the UI-02 PR merges. The other **23** audited defects stay
+open with their original owners (UI-03 … UI-17); the UI-01 register was not rewritten.
+
+### A defect this phase found in its own design
+
+Rehearsing the smoke against the **built images** returned `500` on every browser route: the
+Vite manifest was absent from the application image (`public/spa` is in `.dockerignore`, the SPA
+is built into the nginx image, and prod shares no volume). Fixed with a `spa-manifest` stage in
+`docker/php.Dockerfile`. The dev stack hid it because both containers bind-mount `./public` —
+which is precisely why the host matrix runs against the real production topology.
+
+### Deliberately not done
+
+Magic Link host binding and session families (**UI-03**) · design tokens, shared components,
+theme correction (**UI-04**) · content compilation (**UI-05**) · the eight production landing
+pages (**UI-06**) · the full 160-page runtime route contract (**UI-07**) · account experiences
+(**UI-08 … UI-15**) · release-wide accessibility/visual-regression approval and the
+deployed-origin browser gate, `UI01-PROV-003` (**UI-16**) · production DNS, TLS, HSTS,
+deployment (**UI-17**) · **backend Phase 25** (not started) · Gate-W-blocked work (**still
+blocked**).
+
+### Next exact action
+
+Review the pushed branch `phase-ui-02-multi-host-foundation`, create the UI-02 pull request into
+`main`, allow the five required checks and review/governance to complete, merge, then reconcile
+UI-02 and the four defect closures to `verified_complete` before beginning UI-03.
+
+## Phase UI-01 — As-built browser and repository audit (`verified_complete`)
+
+> **Lifecycle closure (reconciled live on the `phase-ui-02-multi-host-foundation` branch,
+> 2026-07-29).** PR [#51](https://github.com/ikrome002-design/servana/pull/51) MERGED into
+> `main` as squash commit `413c1466be96373a408954c3813b982241b25273` (== `origin/main`), sole
+> parent `d3f6e10c1ff9490bc558199940f76fbec9497272`, final PR head
+> `5c52372e78088ebeb23bcb7d98bbc0d750681149`, source tree == merge tree
+> `e00866fa7839e242baf5b23fc6782413948ea7ff`, merged `2026-07-29T12:33:28Z`. Final CI run
+> `30450612654` conclusion `success` with all five required checks SUCCESS. Governance comment
+> `5117766612` present exactly once; `reviewDecision` blank with **0** submitted reviews —
+> **not** independent reviewer approval. Local and remote UI-01 branches deleted. All UI-01
+> audit artifacts are preserved unmodified. The section below is preserved as written during the
+> phase; its "no PR" / "local_complete" wording is historical.
+
+**Branch** `phase-ui-01-as-built-browser-audit` · **base** `d3f6e10` · **PR #51 merged** ·
 **proof** [ui-01.md](proof/ui-01.md) · **artifacts** [`docs/frontend/audits/ui-01/`](frontend/audits/ui-01/)
 
 ### UI-00 closure, verified live before any UI-01 work

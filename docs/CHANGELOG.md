@@ -6,7 +6,124 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-01 — As-built browser and repository audit (`phase-ui-01-as-built-browser-audit`) — local_complete pending PR CI/review/merge
+### Phase UI-02 — Multi-host foundation (`phase-ui-02-multi-host-foundation`) — local_complete pending PR CI/review/merge
+
+Off `main` = `413c1466be96373a408954c3813b982241b25273` (the Phase UI-01 PR #51 squash-merge).
+Proof: `docs/proof/ui-02.md`. Artifacts: `docs/frontend/audits/ui-02/`.
+Plan authority: UI/UX plan §4.1–§4.7, §6.1–§6.5, §18.1, §18.5–§18.7, §21, §23–§26, §25 (Phase
+UI-02), §28; ADR-016, ADR-017.
+
+**Phase UI-01 reconciled to `verified_complete`** from live Git/GitHub evidence: PR #51 MERGED,
+final head `5c52372e78088ebeb23bcb7d98bbc0d750681149`, squash merge
+`413c1466be96373a408954c3813b982241b25273`, **sole** parent
+`d3f6e10c1ff9490bc558199940f76fbec9497272`, source tree == merge tree
+`e00866fa7839e242baf5b23fc6782413948ea7ff`, merged `2026-07-29T12:33:28Z` (raw GitHub
+`mergedAt`), final CI run `30450612654` with all five required checks SUCCESS, governance
+comment `5117766612` present exactly once, `reviewDecision` blank with `0` submitted reviews
+(**not** independent reviewer approval), local and remote UI-01 branches deleted. All UI-01
+audit artifacts — including the 141 baseline screenshots and the 27-row defect register — are
+preserved unmodified.
+
+#### Added — one account-host authority
+
+- `config/account-hosts.json` is the **single** source for the eight account hosts. Three
+  consumers are derived from it and checked in CI: `config/account_hosts.php` (env-aware,
+  survives `config:cache`), `resources/spa/src/host/accountHosts.generated.ts` and
+  `docker/nginx/account-hosts.generated.conf`. Generator:
+  `node scripts/generate-account-hosts.mjs` (`--check`).
+- **24 hosts = 8 accounts × 3 environments.** Production `servana.ke` + seven subdomains; local
+  `*.servana.test`; staging **derived** from `ACCOUNT_HOST_STAGING_SUFFIX`, never hard-coded.
+- Registry fields cover account key, display name, per-environment hosts, public/legal content
+  keys, landing-image directory, navigation placement, route-name prefix, default authenticated
+  route, setup and MFA requirements, role family, self-registration, invitation acceptance and
+  public CTA category.
+
+#### Added — backend host resolution and URL generation
+
+- `AccountHostRegistry` (**exact** allowlist membership — never a suffix or wildcard match),
+  `AccountHostResolver`, `AccountHostUrlGenerator`, `AccountHost`, and the `ResolveAccountHost`
+  middleware returning a safe non-enumerating `421` with a redacted, correlated log line.
+- Trusted proxies are configured explicitly; empty means trust nothing, so a forwarded host from
+  an untrusted source can never steer host resolution.
+- `GET /health/host` reports requested host, resolved account key, machine-host flag and
+  environment — and nothing else.
+
+#### Fixed — four UI-01 defects (locally closed; not `verified_complete` until the PR merges)
+
+- **`UI01-PROV-001`** (critical) — the deployed root served Laravel's stock scaffold
+  (`<title>Laravel</title>`, remote laravel.com images) because `routes/web.php` returned
+  `view('welcome')`. Laravel now renders the Servana SPA shell on every approved host; the
+  scaffold view is deleted.
+- **`UI01-PROV-002`** (critical) — SPA chunks 404'd. Root cause was a *path-ownership
+  collision*: Vite's default `assetsDir` and Laravel's `public/assets` both claimed `/assets/`.
+  Vite now emits to `spa-assets/`; Nginx serves `/spa-assets/` immutably and `/assets/` from
+  Laravel's public tree; the shell names the entry from the real Vite manifest.
+- **`UI01-HOST-001`** (high) — `server_name _` accepted any Host and no host concept existed in
+  the runtime. Replaced by the generated 24-host allowlist, a `default_server` returning `444`,
+  a typed server-side resolver, and machine hosts modelled in a separate server block.
+- **`UI01-ASSET-005`** (low) — brand assets unreachable on a standalone SPA origin. Nginx serves
+  the authoritative copy; a build-time Vite plugin copies the same source into the bundle for
+  preview parity.
+
+Closure evidence: `docs/frontend/audits/ui-02/defect-closure.json`. The other **23** audited
+defects remain open with their original owner phases; `UI01-PROV-003` (preview-origin browser
+suite) explicitly stays with **UI-16**.
+
+#### Fixed — a defect found in this phase's own design
+
+Rehearsing the host smoke against the **built images** returned `500` on every browser route:
+the Vite manifest was absent from the application image, because `public/spa` is in
+`.dockerignore`, the SPA is built into the nginx image, and `docker-compose.prod.yml` shares no
+volume between `app` and `nginx`. `docker/php.Dockerfile` now copies the manifest (only) from a
+`spa-manifest` stage. The dev stack hid this because both containers bind-mount `./public`.
+
+#### Added — frontend account context and a foundation-only public surface
+
+- `accountHostContext.ts` resolves the **server-provided** context before the router, validates
+  it against `window.location`, and fails closed on `missing`, `malformed`, `unknown_account` or
+  `host_mismatch`. The browser never decides its own account identity.
+- `pages/Home.vue` renders the correct account for each host, marked
+  `data-servana-surface="foundation_only"`. It is explicitly **not** the finished landing page —
+  no hero copy, features, testimonials, pricing, curated imagery or final CTAs (UI-06 owns
+  those, sourced verbatim from approved role content).
+
+#### Security
+
+- **Host context is never authorization** (ADR-017), asserted directly: one unauthenticated
+  protected call swept across all 24 approved hosts returns `401` on every one; platform data is
+  refused identically on the platform host and a merchant host; a structural guard proves no
+  policy, gate or query scope can reference the resolved host; no policy takes a host argument.
+- Resolution rejects deceptive suffixes (`evil-servana.ke`, `servana.ke.attacker.test`),
+  CR/LF and control-character injection, comma-joined proxy chains, ambiguous forwarded hosts,
+  userinfo, wildcards and over-long values.
+- URL generation never derives a target host from the incoming request, and rejects
+  protocol-relative, absolute and backslash-smuggled redirect paths.
+
+#### Testing
+
+46 backend tests across six new host suites, 17 frontend context tests, and `Home.spec.ts`
+expanded 1 → 14. Two deterministic tools: `scripts/ui02-host-smoke.mjs` (probes the **built
+production image** — `fetch` silently drops a custom `Host`, so it uses `node:http`) and
+`scripts/ui02-host-screenshots.mjs` (eight captures via Chromium `--host-resolver-rules`, with
+no hosts-file edit and no elevation). CI gains a registry staleness check in the Frontend job
+and the host smoke in the Docker job; all five required check names are unchanged.
+
+#### Documentation
+
+`docs/frontend/hosts/local-account-hosts.md` (Windows hosts-file entries, validation, removal,
+staging derivation, and an explicit statement that no DNS/TLS/HSTS/deployment is claimed) and
+`.env.example` placeholders for the host map, schemes, local port, machine hosts, trusted
+proxies and Vite HMR.
+
+#### Not done in UI-02
+
+Magic Link host binding and session families (UI-03) · design tokens and theme correction
+(UI-04) · content compilation (UI-05) · the eight landing pages (UI-06) · the 160-page runtime
+contract (UI-07) · account experiences (UI-08…UI-15) · release-wide accessibility and visual
+regression (UI-16) · production DNS, TLS, HSTS and deployment (UI-17) · **backend Phase 25 not
+started** · **Gate W remains closed**, so 20D-W, 21R-B and 21N stay blocked.
+
+### Phase UI-01 — As-built browser and repository audit (`phase-ui-01-as-built-browser-audit`) — `verified_complete` (PR #51 merged `413c146`)
 
 Off `main` = `d3f6e10c1ff9490bc558199940f76fbec9497272` (the Phase UI-00 PR #50 squash-merge).
 Proof: `docs/proof/ui-01.md`. Artifacts: `docs/frontend/audits/ui-01/`. Methodology:
