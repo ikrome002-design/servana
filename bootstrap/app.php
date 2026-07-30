@@ -54,12 +54,40 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::get('/health/deep', [HealthController::class, 'deep'])
                 ->defaults(RouteClassification::KEY, RouteClass::LivenessReadiness->value)
                 ->name('health.deep');
+            // Host-context probe (Phase UI-02): reports which account experience the
+            // edge resolves for the requested hostname. Dependency-free and free of
+            // any user, tenant, permission or infrastructure detail.
+            Route::get('/health/host', [HealthController::class, 'host'])
+                ->defaults(RouteClassification::KEY, RouteClass::LivenessReadiness->value)
+                ->name('health.host');
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Assign the correlation id first so it is available to logging and the
         // error envelope on every request (Plan §11.5, §22.1).
         $middleware->prepend(CorrelationIdMiddleware::class);
+
+        // Trusted proxies (Phase UI-02; UI/UX plan §4.7). The eight account hosts
+        // sit behind the Servana edge, so `X-Forwarded-Host`/`-Proto` must be
+        // honoured — but ONLY from configured proxies. An empty TRUSTED_PROXIES
+        // trusts nothing, which makes Request::getHost() ignore a forwarded host
+        // outright; that is the safe default and the one tests run under.
+        // Forwarded headers from an untrusted source can therefore never steer
+        // account-host resolution (AccountHostResolver, ADR-017).
+        $trustedProxies = array_values(array_filter(array_map(
+            'trim',
+            explode(',', (string) env('TRUSTED_PROXIES', '')),
+        )));
+
+        if ($trustedProxies !== []) {
+            $middleware->trustProxies(
+                at: $trustedProxies === ['*'] ? '*' : $trustedProxies,
+                headers: Request::HEADER_X_FORWARDED_FOR
+                    | Request::HEADER_X_FORWARDED_HOST
+                    | Request::HEADER_X_FORWARDED_PORT
+                    | Request::HEADER_X_FORWARDED_PROTO,
+            );
+        }
 
         // Sanctum SPA mode (Plan §9.2): first-party stateful cookie sessions for
         // the /api/v1 surface. Prepends EnsureFrontendRequestsAreStateful to the

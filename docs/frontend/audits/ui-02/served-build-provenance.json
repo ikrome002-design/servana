@@ -1,0 +1,64 @@
+{
+  "generated_by": "Phase UI-02 (manual capture, docs/proof/ui-02.md)",
+  "captured_at": "2026-07-29T13:58:23Z",
+  "source_commit": "413c1466be96373a408954c3813b982241b25273",
+  "source_tree": "e00866fa7839e242baf5b23fc6782413948ea7ff",
+  "note": "source_commit is the UI-02 branch base (the UI-01 squash merge); the UI-02 completion commit is created after this capture and is recorded in docs/proof/ui-02.md.",
+  "toolchain": {
+    "local_node": "v24.15.0",
+    "local_npm": "11.12.1",
+    "production_build_stage_node": "node:20-alpine (docker/nginx.Dockerfile, stage spa-build)"
+  },
+  "vite": {
+    "base": "/",
+    "root": "resources/spa",
+    "out_dir": "public/spa",
+    "assets_dir": "spa-assets",
+    "manifest_path": "public/spa/.vite/manifest.json",
+    "manifest_sha256": "145fd387a0e0df61a2bb60e2b53d7660c5c027b2bfb9204d14022037fe54c256",
+    "entry_js": "/spa-assets/index-DlAnsXaQ.js",
+    "entry_css": [
+      "/spa-assets/index-V6273dra.css"
+    ],
+    "emitted_asset_count": 259
+  },
+  "account_host_registry": {
+    "canonical_source": "config/account-hosts.json",
+    "canonical_source_sha256": "c51a9318626b3305745f8620ccf64b205951ebefcdc34e2f492147b89140a06e",
+    "backend_config": "config/account_hosts.php",
+    "backend_config_sha256": "6876fc46528786f2d18337f0b741af0b27676e02922b2ca18dcad04a84b9b0f3",
+    "frontend_generated": "resources/spa/src/host/accountHosts.generated.ts",
+    "frontend_generated_sha256": "cf9768f833e1555134e0e1bb635cb7ed6cce7e042aa86e0f653e7cc031083b8a",
+    "nginx_generated": "docker/nginx/account-hosts.generated.conf",
+    "nginx_generated_sha256": "bed73a411fd84b52727c0131d198ccadde9218d55329901968f3c1429b46c0d7"
+  },
+  "nginx": {
+    "config": "docker/nginx/default.conf",
+    "config_sha256": "cb2d73e9fdde52fa3c19b240a69991757efe8e91bdc80a706323cb2c5722cb3b",
+    "config_test": "nginx -t successful inside the built prod image on the servana_default network"
+  },
+  "images": {
+    "nginx_prod": {
+      "tag": "servana-ui02-nginx:audit",
+      "id": "9a0f51ef6ed8",
+      "dockerfile": "docker/nginx.Dockerfile"
+    },
+    "php_prod": {
+      "tag": "servana-ui02-php:audit",
+      "id": "dc49b18bb19a",
+      "dockerfile": "docker/php.Dockerfile (target prod)",
+      "id_note": "Rebuilt during the final sequential gate pass (19.5); the earlier rehearsal id 44f3cd6c56a9 is superseded. Source tree and Vite manifest are unchanged, so the serving contract proven by host-matrix.json still holds."
+    },
+    "php_dev": {
+      "tag": "servana-ui02-phpdev:audit",
+      "id": "94ead6df7b95",
+      "dockerfile": "docker/php.Dockerfile (target dev)"
+    },
+    "php_prod_note": "Rebuilt after the UI-02 rehearsal found the Vite manifest absent from the app image; docker/php.Dockerfile now copies it from a spa-manifest stage."
+  },
+  "image_to_source_correspondence": "Both images were built from this working tree by `docker build` with no build cache override; the nginx image embeds the SPA built in-stage from the same tree, and its /var/www/html/public/spa/.vite/manifest.json matches vite.manifest_sha256 above.",
+  "browser_loaded_entry_asset_proof": "scripts/ui02-host-screenshots.mjs asserts the SPA mounted (data-servana-surface=foundation_only present) on all eight hosts, which is only possible once the entry chunk executed; scripts/ui02-host-smoke.mjs independently proves entry JS/CSS return 200 with correct MIME and immutable caching.",
+  "service_worker_state": "unchanged — Servana registers no service worker; UI-01 recorded none and UI-02 added none.",
+  "screenshot_provenance": "docs/frontend/audits/ui-02/screenshot-index.json",
+  "smoke_origin_note": "The authoritative host matrix in host-matrix.json was captured against the BUILT production nginx image (servana-ui02-nginx:audit) on port 8081, not against vite preview."
+}

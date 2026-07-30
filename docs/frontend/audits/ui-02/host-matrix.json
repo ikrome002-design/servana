@@ -1,0 +1,248 @@
+{
+  "generated_by": "scripts/ui02-host-smoke.mjs",
+  "origin": "http://127.0.0.1:8081",
+  "vite_entry": {
+    "js": "/spa-assets/index-DlAnsXaQ.js",
+    "css": [
+      "/spa-assets/index-V6273dra.css"
+    ]
+  },
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "host": "servana.test",
+      "root_status": 200,
+      "resolved_account_key": "merchant_administrator",
+      "shell_cache_control": "must-revalidate, no-cache, private",
+      "entry_js": {
+        "path": "/spa-assets/index-DlAnsXaQ.js",
+        "status": 200,
+        "content_type": "application/javascript",
+        "cache_control": "public, max-age=31536000, immutable"
+      },
+      "entry_css": {
+        "path": "/spa-assets/index-V6273dra.css",
+        "status": 200,
+        "content_type": "text/css"
+      },
+      "favicon_status": 200,
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "spa_compat": {
+        "status": 301,
+        "location": "http://servana.test:8080/"
+      },
+      "host_health_status": 200
+    },
+    {
+      "account_key": "super_administrator",
+      "host": "citrus.servana.test",
+      "root_status": 200,
+      "resolved_account_key": "super_administrator",
+      "shell_cache_control": "must-revalidate, no-cache, private",
+      "entry_js": {
+        "path": "/spa-assets/index-DlAnsXaQ.js",
+        "status": 200,
+        "content_type": "application/javascript",
+        "cache_control": "public, max-age=31536000, immutable"
+      },
+      "entry_css": {
+        "path": "/spa-assets/index-V6273dra.css",
+        "status": 200,
+        "content_type": "text/css"
+      },
+      "favicon_status": 200,
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "spa_compat": {
+        "status": 301,
+        "location": "http://citrus.servana.test:8080/"
+      },
+      "host_health_status": 200
+    },
+    {
+      "account_key": "merchant_branch",
+      "host": "branch.servana.test",
+      "root_status": 200,
+      "resolved_account_key": "merchant_branch",
+      "shell_cache_control": "must-revalidate, no-cache, private",
+      "entry_js": {
+        "path": "/spa-assets/index-DlAnsXaQ.js",
+        "status": 200,
+        "content_type": "application/javascript",
+        "cache_control": "public, max-age=31536000, immutable"
+      },
+      "entry_css": {
+        "path": "/spa-assets/index-V6273dra.css",
+        "status": 200,
+        "content_type": "text/css"
+      },
+      "favicon_status": 200,
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "spa_compat": {
+        "status": 301,
+        "location": "http://branch.servana.test:8080/"
+      },
+      "host_health_status": 200
+    },
+    {
+      "account_key": "merchant_finance",
+      "host": "finance.servana.test",
+      "root_status": 200,
+      "resolved_account_key": "merchant_finance",
+      "shell_cache_control": "must-revalidate, no-cache, private",
+      "entry_js": {
+        "path": "/spa-assets/index-DlAnsXaQ.js",
+        "status": 200,
+        "content_type": "application/javascript",
+        "cache_control": "public, max-age=31536000, immutable"
+      },
+      "entry_css": {
+        "path": "/spa-assets/index-V6273dra.css",
+        "status": 200,
+        "content_type": "text/css"
+      },
+      "favicon_status": 200,
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "spa_compat": {
+        "status": 301,
+        "location": "http://finance.servana.test:8080/"
+      },
+      "host_health_status": 200
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "host": "hr.servana.test",
+      "root_status": 200,
+      "resolved_account_key": "merchant_human_resource",
+      "shell_cache_control": "must-revalidate, no-cache, private",
+      "entry_js": {
+        "path": "/spa-assets/index-DlAnsXaQ.js",
+        "status": 200,
+        "content_type": "application/javascript",
+        "cache_control": "public, max-age=31536000, immutable"
+      },
+      "entry_css": {
+        "path": "/spa-assets/index-V6273dra.css",
+        "status": 200,
+        "content_type": "text/css"
+      },
+      "favicon_status": 200,
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "spa_compat": {
+        "status": 301,
+        "location": "http://hr.servana.test:8080/"
+      },
+      "host_health_status": 200
+    },
+    {
+      "account_key": "merchant_front_office",
+      "host": "office.servana.test",
+      "root_status": 200,
+      "resolved_account_key": "merchant_front_office",
+      "shell_cache_control": "must-revalidate, no-cache, private",
+      "entry_js": {
+        "path": "/spa-assets/index-DlAnsXaQ.js",
+        "status": 200,
+        "content_type": "application/javascript",
+        "cache_control": "public, max-age=31536000, immutable"
+      },
+      "entry_css": {
+        "path": "/spa-assets/index-V6273dra.css",
+        "status": 200,
+        "content_type": "text/css"
+      },
+      "favicon_status": 200,
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "spa_compat": {
+        "status": 301,
+        "location": "http://office.servana.test:8080/"
+      },
+      "host_health_status": 200
+    },
+    {
+      "account_key": "merchant_personnel",
+      "host": "staff.servana.test",
+      "root_status": 200,
+      "resolved_account_key": "merchant_personnel",
+      "shell_cache_control": "must-revalidate, no-cache, private",
+      "entry_js": {
+        "path": "/spa-assets/index-DlAnsXaQ.js",
+        "status": 200,
+        "content_type": "application/javascript",
+        "cache_control": "public, max-age=31536000, immutable"
+      },
+      "entry_css": {
+        "path": "/spa-assets/index-V6273dra.css",
+        "status": 200,
+        "content_type": "text/css"
+      },
+      "favicon_status": 200,
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "spa_compat": {
+        "status": 301,
+        "location": "http://staff.servana.test:8080/"
+      },
+      "host_health_status": 200
+    },
+    {
+      "account_key": "merchant_audit",
+      "host": "audit.servana.test",
+      "root_status": 200,
+      "resolved_account_key": "merchant_audit",
+      "shell_cache_control": "must-revalidate, no-cache, private",
+      "entry_js": {
+        "path": "/spa-assets/index-DlAnsXaQ.js",
+        "status": 200,
+        "content_type": "application/javascript",
+        "cache_control": "public, max-age=31536000, immutable"
+      },
+      "entry_css": {
+        "path": "/spa-assets/index-V6273dra.css",
+        "status": 200,
+        "content_type": "text/css"
+      },
+      "favicon_status": 200,
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "spa_compat": {
+        "status": 301,
+        "location": "http://audit.servana.test:8080/"
+      },
+      "host_health_status": 200
+    }
+  ],
+  "unknown_host_denials": [
+    {
+      "host": "attacker.test",
+      "connection_closed": true,
+      "status": null
+    },
+    {
+      "host": "evil-servana.ke",
+      "connection_closed": true,
+      "status": null
+    },
+    {
+      "host": "servana.ke.attacker.test",
+      "connection_closed": true,
+      "status": null
+    },
+    {
+      "host": "unknown.servana.test",
+      "connection_closed": true,
+      "status": null
+    }
+  ],
+  "machine_host": {
+    "health_status": 200,
+    "root_status": 404
+  },
+  "passed": true,
+  "failures": []
+}

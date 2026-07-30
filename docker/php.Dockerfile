@@ -76,6 +76,22 @@ ENTRYPOINT ["entrypoint"]
 USER servana
 CMD ["php-fpm", "-F"]
 
+# ---------- SPA manifest source (Phase UI-02) ----------
+# The SPA bundle itself is built into, and served from, the NGINX image. The application
+# image needs exactly one file from that build: the Vite manifest, so SpaShellController can
+# name the fingerprinted entry chunk in the HTML shell.
+#
+# `public/spa` is in .dockerignore and the prod topology shares no volume between app and
+# nginx, so without this stage the manifest is simply absent from the app image and every
+# browser route 500s — which is what a UI-02 rehearsal against the built images proved.
+# Only the manifest is copied; the chunks stay owned by the edge.
+FROM node:20-alpine AS spa-manifest
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
 # ---------- prod: optimized, no dev deps, opcache preload on ----------
 FROM base AS prod
 
@@ -88,6 +104,8 @@ ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
 ENV PHP_OPCACHE_PRELOAD=/var/www/html/docker/php/preload.php
 
 COPY --chown=servana:servana . /var/www/html
+# Phase UI-02: the Vite manifest only — the bundle is served by the nginx image.
+COPY --from=spa-manifest --chown=servana:servana /app/public/spa/.vite/manifest.json /var/www/html/public/spa/.vite/manifest.json
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-progress --prefer-dist \
     && chown -R servana:servana /var/www/html/storage /var/www/html/bootstrap/cache
 
