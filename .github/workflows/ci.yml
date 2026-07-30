@@ -201,6 +201,21 @@ jobs:
           REDIS_PORT: 6379
         run: php artisan test tests/Feature/Performance
 
+      # Phase UI-02 CI remediation: the Backend shell feature tests execute the
+      # production manifest contract, so this isolated job must create the real
+      # Vite manifest before it starts the parallel PHP suite.
+      - name: Set up Node 20 for Backend SPA shell contracts
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install npm dependencies for Backend SPA shell contracts
+        run: npm ci
+
+      - name: Build SPA for Backend shell contracts
+        run: npm run build
+
       - name: Tests — Pest on PostgreSQL (parallel)
         env:
           DB_CONNECTION: pgsql
