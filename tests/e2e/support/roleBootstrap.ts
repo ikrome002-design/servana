@@ -26,7 +26,49 @@ export const ROLES: RoleConfig[] = [
   { identity: 'merchant_audit', path: '/audit', label: 'Audit', role: 'audit', isPlatformStaff: false },
 ];
 
+/**
+ * The account context the LARAVEL SHELL embeds into the document (Phase UI-02/UI-03).
+ *
+ * `vite preview` serves a static `index.html` with no shell, so this element is absent and
+ * `currentAccountContext()` resolves to null. That is fine for a route with no owning account, but
+ * UI-03 attached `requiresAccount('super_administrator')` to the `/platform` tree, and that guard
+ * fails closed when the server established no host context — so every platform spec denied.
+ *
+ * Stubbing it is consistent with what this harness already does for `/api/v1/me` and `/sanctum`:
+ * the backend is stubbed so the REAL frontend can be driven. The guard itself is untouched, and the
+ * genuine server-side boundary is proven by the feature suites and by the UI-03 deployed-origin
+ * browser proof, which exercises the guard against real account hosts.
+ */
+export async function stubAccountContextFor(page: Page, accountKey: string, displayName = accountKey): Promise<void> {
+  await page.addInitScript(
+    ([accountKey, displayName]) => {
+      const inject = (): void => {
+        if (document.getElementById('servana-account-context') !== null) return;
+        const element = document.createElement('script');
+        element.id = 'servana-account-context';
+        element.type = 'application/json';
+        element.textContent = JSON.stringify({
+          account_key: accountKey,
+          display_name: displayName,
+          // `local` matches the preview origin's environment bucket; the hostname is `localhost`,
+          // which maps to no account, so the context/address-bar consistency check does not fire.
+          environment: 'local',
+          host: 'localhost',
+        });
+        document.head.appendChild(element);
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('readystatechange', inject, { once: true });
+      }
+      inject();
+    },
+    [accountKey, displayName] as const,
+  );
+}
+
 export async function stubBootstrap(page: Page, cfg: RoleConfig): Promise<void> {
+  await stubAccountContextFor(page, cfg.identity, cfg.label);
   await page.route('**/sanctum/csrf-cookie', (route) => route.fulfill({ status: 204, body: '' }));
   await page.route('**/api/v1/me', (route) =>
     route.fulfill({
@@ -48,6 +90,10 @@ export async function stubBootstrap(page: Page, cfg: RoleConfig): Promise<void> 
           membership: cfg.role ? { id: 'mm1', role: cfg.role, status: 'active' } : null,
           memberships: cfg.role ? [{ id: 'mm1', role: cfg.role, status: 'active' }] : [],
           permissions: [],
+          // UI-03 added `account_keys` to /me, derived server-side by AccountContextResolver, and
+          // `requiresAccount` asks `holdsAccount()` for it. Without it the guard denies every
+          // account surface it is attached to.
+          account_keys: [cfg.identity],
           setup: { required: false, current_step: null, completed_at: null },
           branch_ids: cfg.isPlatformStaff ? [] : ['b1'],
           mfa: {

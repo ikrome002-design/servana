@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Domain\Sessions\Services\SessionBindingResolver;
 use App\Domain\Tenancy\TenantContext;
 use App\Domain\Tenancy\TenantContextResolver;
 use App\Models\User;
@@ -19,24 +20,37 @@ use Symfony\Component\HttpFoundation\Response;
  * EnsureFirstTimeSetupAccess) and resources (/me) can read a consistent view:
  *
  *   - platform staff  → marked as platform staff, no merchant
- *   - merchant user   → their single active membership + merchant are bound
+ *   - merchant user   → the membership their SESSION is bound to, or their single
+ *                       active membership when the request carries no binding
  *   - neither         → context left empty (downstream gates decide)
  *
  * Keeping denial out of resolution lets /me work for any authenticated state
  * (incl. pending_setup) while the active/pending gates stay explicit per-route.
+ *
+ * Phase UI-03: WHICH membership a browser request operates as is decided by
+ * {@see SessionBindingResolver}, not here. This file deliberately knows nothing
+ * about hosts — `AccountHostDoesNotAuthorizeTest` proves no account-host
+ * reference reaches an authorization layer, because a host that reaches an
+ * authorization decision has become authorization (ADR-017). The binding arrives
+ * as a neutral, already-verified answer.
  */
 final class ResolveTenantContext
 {
     public function __construct(
         private readonly TenantContext $context,
         private readonly TenantContextResolver $resolver,
+        private readonly SessionBindingResolver $bindings,
     ) {}
 
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
-        $this->resolver->populate($this->context, $user instanceof User ? $user : null);
+        $this->resolver->populate(
+            $this->context,
+            $user instanceof User ? $user : null,
+            $user instanceof User ? $this->bindings->forRequest($request, $user) : null,
+        );
 
         return $next($request);
     }

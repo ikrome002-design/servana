@@ -27,6 +27,46 @@ independent reviewer approval), local and remote UI-02 branches deleted. The fou
 UI-02 owns — `UI01-PROV-001`, `UI01-PROV-002`, `UI01-HOST-001`, `UI01-ASSET-005` — are promoted to
 `verified_complete`; the historical UI-01 register is unchanged.
 
+#### Added — deployed-origin browser proof (Increment 7), and the three defects it found
+
+The focused cross-host proof ran against the **built production images** — `servana-ui03-nginx:audit`
+as the edge and `servana-ui03-php:audit` (`--target prod`) as the app — with a real PostgreSQL
+database, a real Mailpit inbox, and Chromium sending genuine `Host` headers for the eight
+`*.servana.test` account hosts. **47 observations, 0 failures.** This closes residual risk R1.
+
+It found three product defects that no other gate could reach, because the backend test client never
+passes through nginx and never carries a host-only cookie:
+
+- **`UI03-EDGE-001` (critical).** `CorrelationIdMiddleware` accepted an inbound `X-Correlation-ID` of
+  up to 64 characters while `audit_logs.correlation_id` is `character(26)`. `docker/nginx/default.conf`
+  supplies nginx's own 32-character `$request_id` when the client sends none, so **every audited
+  request through the real edge failed** with `SQLSTATE[22001]` and returned 500 — and any client
+  could trigger it with a 27-character header. The boundary is now bounded to the storable width and
+  **replaces** an over-wide value rather than truncating it, since truncation would collide traces.
+- **`UI03-CTX-001` (high).** After an authorized switch to a second merchant's account,
+  `/api/v1/me` on the target host still reported the **source** merchant and the source
+  permissions: tenant resolution used `activeMembership()` — the first membership — and never
+  consulted the `host_sessions` binding the switch had just written. A new session/host boundary
+  (`SessionBindingResolver` + a neutral `SessionBinding`) now decides which account the session is
+  operating as, and the tenant layer consumes that verified answer while knowing nothing about
+  hosts. ADR-017 is untouched: the host still grants nothing, the comparison is an
+  anti-substitution check on a server-created binding, and the structural guard
+  `AccountHostDoesNotAuthorizeTest` passes **unweakened**.
+- **`UI03-MFA-001` (high).** The MFA challenge regenerates the Laravel session id but did not follow
+  the `host_sessions` row onto it, orphaning the binding — so every mandatory-MFA role (Super
+  Administrator, Merchant Admin, Finance) received `409` from account switching after completing
+  their challenge. `SessionFamilyService::rebindSessionId()` now re-points the row atomically,
+  never resurrecting a revoked one.
+
+Also recorded: **`UI03-TEST-001`** — seven tests were failing in files **byte-identical to the
+UI-03 implementation commit**, so the previously recorded `2,528 passed / 8 skipped / 0 failed`
+backend figure is **not reproducible** and is marked unverified. All seven are fixed.
+
+Evidence added: `docs/frontend/audits/ui-03/screenshot-index.json` and nine targeted screenshots;
+browser evidence populated into the three UI-03 matrices; `scripts/ui03-auth-browser-proof.mjs` and
+`scripts/ui03-browser-fixture.php`. The UI-01 and UI-02 historical evidence sets (163 files) were
+verified **byte-identical** before and after the run.
+
 #### Added — Magic Link host binding (ADR-019)
 
 - Six expand-only binding columns on `magic_login_tokens` (user, account, exact host, environment,

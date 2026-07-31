@@ -1,0 +1,119 @@
+{
+  "generated_by": "scripts/ui03-auth-browser-proof.mjs",
+  "purpose": "Targeted UI-03 authentication / session / account-switching screenshots captured against the BUILT production nginx + PHP pair. This is deliberately NOT the UI-01 as-built matrix and NOT the UI-02 host matrix — both are historical evidence and are untouched. UI-16 owns reviewed release baselines and the responsive/theme matrix.",
+  "origin": "http://127.0.0.1:8090",
+  "source_commit": "64ca7cc51bd25c19fbb3d9733fd353ec63062c48",
+  "vite_manifest_sha256": "86363229daf61e9e17b71780b509627b2ac536ba663b4baa1968b8955550ac5f",
+  "viewport": "1280x800",
+  "theme": "default (light)",
+  "redaction": "No screenshot was captured on a URL carrying a token, and every capture asserted that the rendered text contains no magic-link token, handoff token, TOTP secret or session id. All fixture data is throwaway; no real customer record appears.",
+  "fixture": "scripts/ui03-browser-fixture.php against the disposable servana_ui03_proof database",
+  "captured_at": "2026-07-31T17:26:32.202Z",
+  "screenshot_count": 9,
+  "screenshots": [
+    {
+      "file": "docs/frontend/audits/ui-03/screenshots/01-source-host-login.png",
+      "account_key": "merchant_front_office",
+      "host": "office.servana.test",
+      "surface": "anonymous login",
+      "auth_state": "anonymous",
+      "url_path": "/auth/login",
+      "url_contains_token": false,
+      "viewport": "1280x800",
+      "image_sha256": "98d9ee8c219d4ff981d8dc90e1f7a0f79d950a8b3898cfccb54d9f4e2d065e9f"
+    },
+    {
+      "file": "docs/frontend/audits/ui-03/screenshots/02-wrong-host-link-denied.png",
+      "account_key": "merchant_audit",
+      "host": "audit.servana.test",
+      "surface": "uniform invalid-link failure (wrong host)",
+      "auth_state": "anonymous",
+      "url_path": "/auth/verify",
+      "url_contains_token": false,
+      "viewport": "1280x800",
+      "image_sha256": "968320745690e07a67f9f4da8e9526e3674d809a5b15984b34d583397be16109"
+    },
+    {
+      "file": "docs/frontend/audits/ui-03/screenshots/03-source-host-authenticated.png",
+      "account_key": "merchant_front_office",
+      "host": "office.servana.test",
+      "surface": "authenticated source account after host-bound sign-in",
+      "auth_state": "authenticated",
+      "url_path": "/dashboard",
+      "url_contains_token": false,
+      "viewport": "1280x800",
+      "image_sha256": "13fdf4483c1ac9ea2ef74c7a557592929d1cf4e1643cf475f574ad2e5818ee58"
+    },
+    {
+      "file": "docs/frontend/audits/ui-03/screenshots/04-replayed-link-denied.png",
+      "account_key": "merchant_front_office",
+      "host": "office.servana.test",
+      "surface": "uniform invalid-link failure (replay) — byte-identical to the wrong-host failure",
+      "auth_state": "anonymous",
+      "url_path": "/auth/verify",
+      "url_contains_token": false,
+      "viewport": "1280x800",
+      "image_sha256": "968320745690e07a67f9f4da8e9526e3674d809a5b15984b34d583397be16109"
+    },
+    {
+      "file": "docs/frontend/audits/ui-03/screenshots/06-target-host-after-switch.png",
+      "account_key": "merchant_audit",
+      "host": "audit.servana.test",
+      "surface": "authenticated target account reached by context handoff (safe deep link preserved)",
+      "auth_state": "authenticated",
+      "url_path": "/audit/events",
+      "url_contains_token": false,
+      "viewport": "1280x800",
+      "image_sha256": "e993ec37fb4c585e3e1a0d074276b57c7eb671ff3bf32026db2d8b87e5294b6d"
+    },
+    {
+      "file": "docs/frontend/audits/ui-03/screenshots/05-wrong-target-host-handoff-denied.png",
+      "account_key": "merchant_human_resource",
+      "host": "hr.servana.test",
+      "surface": "uniform handoff failure on the wrong target host",
+      "auth_state": "anonymous",
+      "url_path": "/auth/login",
+      "url_contains_token": false,
+      "viewport": "1280x800",
+      "image_sha256": "98d9ee8c219d4ff981d8dc90e1f7a0f79d950a8b3898cfccb54d9f4e2d065e9f"
+    },
+    {
+      "file": "docs/frontend/audits/ui-03/screenshots/07-target-host-after-global-logout.png",
+      "account_key": "merchant_audit",
+      "host": "audit.servana.test",
+      "surface": "target host after global logout — session gone",
+      "auth_state": "anonymous",
+      "url_path": "/dashboard",
+      "url_contains_token": false,
+      "viewport": "1280x800",
+      "image_sha256": "bd462d5298db82bd894291349d12ef25033804c2d9e68139236dcf13fa936189"
+    },
+    {
+      "file": "docs/frontend/audits/ui-03/screenshots/08-target-mfa-challenge-required.png",
+      "account_key": "merchant_finance",
+      "host": "finance.servana.test",
+      "surface": "mandatory-MFA target account challenges again after the switch",
+      "auth_state": "authenticated, MFA not asserted",
+      "url_path": "/auth/mfa/challenge",
+      "url_contains_token": false,
+      "viewport": "1280x800",
+      "image_sha256": "e914f2c12a7bf07a6c53a322781743765902236ed3884a66a9db71f14b7d0c8e"
+    },
+    {
+      "file": "docs/frontend/audits/ui-03/screenshots/09-wrong-account-deep-link-denied.png",
+      "account_key": "merchant_personnel",
+      "host": "staff.servana.test",
+      "surface": "foreign-account route on the user's own host — role-safe access-denied",
+      "auth_state": "authenticated as an unrelated account",
+      "url_path": "/access-denied",
+      "url_contains_token": false,
+      "viewport": "1280x800",
+      "image_sha256": "04119268a63a5d1adc11943b27b6aba24ce8eff5cbb7317e96be857487daf6be"
+    }
+  ],
+  "unknown_host_denial": {
+    "host": "unknown-host.test",
+    "screenshot": null,
+    "reason": "nginx answers an unapproved Host with `return 444`, closing the connection with no response. There is no rendered page to capture — the absence IS the evidence."
+  }
+}

@@ -12,6 +12,7 @@ use App\Domain\Auth\Mfa\MfaRequirementResolver;
 use App\Domain\Auth\Services\MagicLinkTokenService;
 use App\Domain\Auth\Support\AuthAuditLogger;
 use App\Domain\Sessions\Enums\SessionRevocationReason;
+use App\Domain\Sessions\Services\SessionBindingResolver;
 use App\Domain\Sessions\Services\SessionFamilyService;
 use App\Domain\Tenancy\TenantContext;
 use App\Domain\Tenancy\TenantContextResolver;
@@ -20,6 +21,7 @@ use App\Http\Hosts\AccountHost;
 use App\Http\Requests\Auth\RequestMagicLinkRequest;
 use App\Http\Requests\Auth\VerifyMagicLinkRequest;
 use App\Http\Resources\Auth\AuthenticatedUserResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -70,6 +72,7 @@ final class MagicLinkController extends Controller
         TenantContext $context,
         TenantContextResolver $resolver,
         SessionFamilyService $families,
+        SessionBindingResolver $bindings,
         MfaRequirementResolver $mfa,
         AccountHost $host,
     ): JsonResponse {
@@ -108,7 +111,11 @@ final class MagicLinkController extends Controller
         // Verify runs outside the ResolveTenantContext middleware group, so
         // populate the context here too — the bootstrap payload must carry the
         // merchant/membership/setup state the SPA routes on (Plan §6.2, §8.1).
-        $resolver->populate($context, $user);
+        //
+        // Phase UI-03: resolved through the SAME session/host boundary the middleware uses, so this
+        // bootstrap answers as the account the user just signed in to rather than as whichever
+        // membership sorts first. The host session was bound moments ago, so the binding agrees.
+        $resolver->populate($context, $user, $bindings->forRequest($request, $user));
 
         return AuthenticatedUserResource::make($user)
             ->additional(['meta' => [

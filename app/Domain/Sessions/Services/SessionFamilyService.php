@@ -104,6 +104,31 @@ final class SessionFamilyService
             ->first();
     }
 
+    /**
+     * Follow a host session onto a REGENERATED Laravel session id.
+     *
+     * `host_sessions` is keyed by `session_id`, so any code that regenerates the session id without
+     * telling us orphans the row: `findBySessionId()` then finds nothing, the session silently
+     * stops being a known host session, and everything keyed off it — account switching, own-session
+     * listing, single-session revocation — breaks for that user.
+     *
+     * Magic Link verify and handoff consume both regenerate and then bind, so they are safe by
+     * construction. The MFA challenge regenerates at its own privilege boundary and must re-point
+     * the existing row instead; that is what this exists for. Returns false when the old id owned
+     * no host session (a token-only or pre-UI-03 session), which is not an error.
+     */
+    public function rebindSessionId(string $previousSessionId, string $newSessionId): bool
+    {
+        if ($previousSessionId === $newSessionId) {
+            return false;
+        }
+
+        return HostSession::query()
+            ->where('session_id', $previousSessionId)
+            ->whereNull('revoked_at')
+            ->update(['session_id' => $newSessionId, 'updated_at' => now()]) === 1;
+    }
+
     /** Stamp activity on a session and its family. Cheap, and only when the value actually moves. */
     public function touch(HostSession $hostSession): void
     {

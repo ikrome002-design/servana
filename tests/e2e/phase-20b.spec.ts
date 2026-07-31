@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { stubAccountContextFor } from './support/roleBootstrap';
 
 /*
  | Phase 20B E2E — merchant subscription self-service (dashboard / plan management / invoices) and
@@ -43,6 +44,9 @@ interface MeOpts {
 
 async function stubMe(page: Page, opts: MeOpts = {}): Promise<void> {
   const isPlatformStaff = opts.isPlatformStaff ?? false;
+  // Phase UI-03: the account context the Laravel shell embeds, which requiresAccount needs.
+  // The preview origin serves no Laravel shell, so without it the /platform guard fails closed.
+  await stubAccountContextFor(page, isPlatformStaff ? 'super_administrator' : 'merchant_administrator');
   await page.route('**/sanctum/csrf-cookie', (r) => r.fulfill({ status: 204, body: '' }));
   await page.route('**/api/v1/me', (r) =>
     r.fulfill(ok({
@@ -53,6 +57,7 @@ async function stubMe(page: Page, opts: MeOpts = {}): Promise<void> {
         memberships: opts.role ? [{ id: 'mm1', role: opts.role, status: 'active' }] : [],
         permissions: opts.permissions ?? [],
         setup: { required: false, current_step: null, completed_at: null },
+        account_keys: [isPlatformStaff ? 'super_administrator' : 'merchant_administrator'],
         branch_ids: [],
         mfa: { required: false, enrolled: false, confirmed: false, verified: false, enrollment_required: false, challenge_required: false, step_up_fresh: false, step_up_fresh_until: null, recovery_codes_remaining: 0, ...(opts.mfa ?? {}) },
       },

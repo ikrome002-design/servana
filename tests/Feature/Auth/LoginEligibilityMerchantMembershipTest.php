@@ -50,7 +50,9 @@ it('sends a link to platform staff with no merchant', function (): void {
     Notification::fake();
     $user = User::factory()->platformStaff()->create(['email' => 'super@servana.africa']);
 
-    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'super@servana.africa'])->assertStatus(202);
+    // Platform staff hold the `super_administrator` account and no merchant account. Asking on the
+    // Merchant Administrator host is correctly answered with the uniform 202 and no email.
+    postOnHost('super_administrator', '/api/v1/auth/magic-link', ['email' => 'super@servana.africa'])->assertStatus(202);
 
     Notification::assertSentTo($user, MagicLoginLinkNotification::class);
 });
