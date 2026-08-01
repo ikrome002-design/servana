@@ -45,7 +45,6 @@ it('snapshots eligible salary + commission + adjustment into one item per staff'
         'amount_minor' => -1000,
         'currency' => 'KES',
         'created_at' => '2026-07-15 09:00:00',
-        'updated_at' => '2026-07-15 09:00:00',
     ]);
 
     $run = draftRun($branch);
