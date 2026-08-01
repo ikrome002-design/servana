@@ -7,6 +7,8 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Domain\Auth\Mfa\MfaManager;
 use App\Domain\Auth\Mfa\MfaSession;
 use App\Domain\Auth\Mfa\MfaStatus;
+use App\Domain\Sessions\Services\SessionBindingResolver;
+use App\Domain\Sessions\Services\SessionFamilyService;
 use App\Domain\Tenancy\TenantContext;
 use App\Domain\Tenancy\TenantContextResolver;
 use App\Http\Controllers\Controller;
@@ -37,6 +39,8 @@ final class MfaController extends Controller
         private readonly MfaSession $session,
         private readonly TenantContext $context,
         private readonly TenantContextResolver $resolver,
+        private readonly SessionFamilyService $families,
+        private readonly SessionBindingResolver $bindings,
     ) {}
 
     /** GET /auth/mfa — safe MFA state for the SPA. */
@@ -123,11 +127,24 @@ final class MfaController extends Controller
     {
         if ($request->hasSession()) {
             $this->session->markVerified($request->session());
+
+            // Regenerating at the MFA privilege boundary changes the session id, and
+            // `host_sessions` is keyed by that id (Phase UI-03). Without following the row onto the
+            // new id the host session is orphaned: the user stays signed in, but the server no
+            // longer recognises the session as a known host session — so account switching answers
+            // 409, own-session listing loses the current entry, and single-session revocation
+            // cannot target it. Found by the UI-03 deployed-origin browser proof, where a
+            // mandatory-MFA user could never switch accounts after satisfying the challenge.
+            $previousSessionId = $request->session()->getId();
             $request->session()->regenerate();
+            $this->families->rebindSessionId($previousSessionId, $request->session()->getId());
         }
 
-        // Populate tenant context so any subsequent bootstrap is consistent.
-        $this->resolver->populate($this->context, $user);
+        // Populate tenant context so any subsequent bootstrap is consistent. Phase UI-03: through
+        // the SAME session/host boundary the middleware uses, so the post-challenge payload cannot
+        // disagree with the very next request for a multi-merchant user. This controller does not
+        // implement a second tenant-resolution authority.
+        $this->resolver->populate($this->context, $user, $this->bindings->forRequest($request, $user));
     }
 
     /** Assert the session, then return the full bootstrap payload. */

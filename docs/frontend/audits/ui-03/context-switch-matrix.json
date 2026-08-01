@@ -1,0 +1,656 @@
+{
+  "generated_by": "Phase UI-03 recovery from committed implementation evidence",
+  "source_branch": "phase-ui-03-auth-session-account-switching",
+  "source_commit": "64ca7cc51bd25c19fbb3d9733fd353ec63062c48",
+  "source_base": "fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
+  "source_integrity": {
+    "proof_blob": "4d1115e6dfc227a7909c8df50524bbe3bf9a7a64",
+    "threat_model_blob": "d77cff2604d60b1d8f8032d4017187ad4f70aeb6",
+    "defect_closure_blob": "eed5e1d17a103cb41d92a29d4b58ae6b632f7aac"
+  },
+  "purpose": "Machine-readable UI-03 account-context switching matrix reconstructed from the immutable implementation commit, ContextHandoffTest, CrossHostRevocationTest, frontend store/route-guard tests, threat model, routes, and services. Completed with deployed-origin browser evidence captured against the built production nginx + PHP pair.",
+  "evidence_scope": {
+    "automated_service_and_http_evidence": "passed as recorded in docs/proof/ui-03.md",
+    "frontend_unit_evidence": "passed as recorded in docs/proof/ui-03.md",
+    "deployed_origin_cross_host_browser_evidence": "passed",
+    "acceptance_status": "deployed_origin_browser_proof_complete"
+  },
+  "endpoint_contracts": [
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/account-contexts",
+      "contract": "Returns only contexts the authenticated user may currently enter; no permission arrays."
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/account-contexts/switch",
+      "contract": "Accepts context_id and optional redirect only; returns a registry-derived target URL."
+    },
+    {
+      "method": "GET",
+      "path": "/auth/switch?token=<opaque>",
+      "contract": "Consumes on the exact target host, re-resolves live target authority, creates target session, and redirects without retaining token in Location."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/auth/sessions/{hostSession}",
+      "contract": "Own-scope single-session revocation only."
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/logout-all",
+      "contract": "Revokes the complete current session family."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "CS-001",
+      "scenario": "List contexts",
+      "expected_contract": "Only currently eligible contexts for the authenticated user are returned; contexts for another tenant are absent.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-15"
+        ],
+        "observed": [
+          "context list returns exactly the contexts this user may currently enter"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-11"
+      ]
+    },
+    {
+      "case_id": "CS-002",
+      "scenario": "Context payload",
+      "expected_contract": "Context list contains no permission array and exposes opaque identifiers rather than numeric merchant identifiers.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-16"
+        ],
+        "observed": [
+          "context payload carries no permission array and no numeric merchant/branch id"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-07",
+        "TM-11"
+      ]
+    },
+    {
+      "case_id": "CS-003",
+      "scenario": "Issue request",
+      "expected_contract": "Browser submits only context_id and optional safe redirect; account key, host, role, permissions, merchant, branch, and MFA are not accepted.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php; resources/spa/src/stores/accountContextStore.spec.ts",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-17"
+        ],
+        "observed": [
+          "switch returns a registry-derived target URL for the requested context; injected role/permission/merchant/MFA fields are not honoured"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-11"
+      ]
+    },
+    {
+      "case_id": "CS-004",
+      "scenario": "Issue target URL",
+      "expected_contract": "Target URL is generated from the approved host registry and contains an opaque token.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-17"
+        ],
+        "observed": [
+          "switch returns a registry-derived target URL for the requested context; injected role/permission/merchant/MFA fields are not honoured"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-10",
+        "TM-13"
+      ]
+    },
+    {
+      "case_id": "CS-005",
+      "scenario": "Token storage",
+      "expected_contract": "Only SHA-256 token hash and hashed request metadata are stored; raw token, IP, and user agent are absent.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-18"
+        ],
+        "observed": [
+          "handoff stores only the hashed token and hashed request metadata"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-12",
+        "TM-21"
+      ]
+    },
+    {
+      "case_id": "CS-006",
+      "scenario": "Unauthorized context id",
+      "expected_contract": "Unknown or other-user context id is rejected and no handoff row is created.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": null,
+      "threat_model_refs": [
+        "TM-11",
+        "TM-14"
+      ]
+    },
+    {
+      "case_id": "CS-007",
+      "scenario": "Successful consume",
+      "expected_contract": "Correct target host creates a new target host session in the same family, with a distinct session id and only the target membership/branch context.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-20",
+          "OBS-21",
+          "OBS-22",
+          "OBS-22b",
+          "OBS-23",
+          "OBS-24"
+        ],
+        "observed": [
+          "handoff consumed on the exact target host; the safe deep link is preserved and the final URL carries no token",
+          "target /api/v1/me reports only the target context — the source merchant is absent",
+          "source-only permissions are absent from the target context, and the target resolves its own",
+          "the target context reports the target merchant, membership and account, never the source merchant",
+          "the target host session is a NEW session id joined to the SAME family, never the source session id",
+          "the source host session survives the switch and still reports only the source context"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-07",
+        "TM-10"
+      ]
+    },
+    {
+      "case_id": "CS-008",
+      "scenario": "Target assurance",
+      "expected_contract": "Target MFA requirement is re-evaluated and mfa_required_at_creation is true when the target role requires it; source assurance is not copied.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php; docs/security/ui-03-auth-session-threat-model.md TM-19",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-32"
+        ],
+        "observed": [
+          "the target session records the freshly resolved MFA requirement and does NOT inherit the source assertion — the mandatory target role is challenged again"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-19"
+      ]
+    },
+    {
+      "case_id": "CS-009",
+      "scenario": "Successful consume response",
+      "expected_contract": "Redirect has Referrer-Policy no-referrer and does not expose the token in the final Location.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-20"
+        ],
+        "observed": [
+          "handoff consumed on the exact target host; the safe deep link is preserved and the final URL carries no token"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-12"
+      ]
+    },
+    {
+      "case_id": "CS-010",
+      "scenario": "Replay",
+      "expected_contract": "Second consume is rejected, only one target session exists, and replay rejection is audited.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-25",
+          "OBS-19b"
+        ],
+        "observed": [
+          "handoff replay is refused and mints no second target session",
+          "a handoff presented on the wrong host is BURNED — retrying it on the correct host also fails"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-09"
+      ]
+    },
+    {
+      "case_id": "CS-011",
+      "scenario": "Wrong target host",
+      "expected_contract": "Consume is rejected, no target host session is created, and reason is wrong_host.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-19",
+          "OBS-19b"
+        ],
+        "observed": [
+          "handoff presented on the wrong target host is refused and mints no session there",
+          "a handoff presented on the wrong host is BURNED — retrying it on the correct host also fails"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-10"
+      ]
+    },
+    {
+      "case_id": "CS-012",
+      "scenario": "Expired token",
+      "expected_contract": "Consume is rejected, no target session is created, and reason is expired.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": null,
+      "threat_model_refs": [
+        "TM-08"
+      ]
+    },
+    {
+      "case_id": "CS-013",
+      "scenario": "Target membership removed",
+      "expected_contract": "Consume re-resolves target authority and rejects target_unavailable.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-27-target-membership-removed"
+        ],
+        "observed": [
+          "target membership removed after issuance: consume re-resolves live authority and refuses"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-08"
+      ]
+    },
+    {
+      "case_id": "CS-014",
+      "scenario": "Target role changed",
+      "expected_contract": "Consume re-resolves target role and rejects stale target authority.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-27-target-role-changed"
+        ],
+        "observed": [
+          "target role changed after issuance: consume re-resolves live authority and refuses"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-08",
+        "TM-19"
+      ]
+    },
+    {
+      "case_id": "CS-015",
+      "scenario": "Target branch withdrawn",
+      "expected_contract": "Consume re-resolves branch assignment and rejects stale target authority.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-27-target-branch-assignment-withdrawn"
+        ],
+        "observed": [
+          "target branch assignment withdrawn after issuance: consume re-resolves live authority and refuses"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-08"
+      ]
+    },
+    {
+      "case_id": "CS-016",
+      "scenario": "User suspended",
+      "expected_contract": "Consume is rejected as user_ineligible and no target session is created.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-28"
+        ],
+        "observed": [
+          "suspended user: handoff consume is refused and mints no target session"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-08"
+      ]
+    },
+    {
+      "case_id": "CS-017",
+      "scenario": "Source family revoked",
+      "expected_contract": "Consume is rejected and no active target session is created.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-29"
+        ],
+        "observed": [
+          "revoked source family: handoff consume is refused and mints no new target session"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-08",
+        "TM-20"
+      ]
+    },
+    {
+      "case_id": "CS-018",
+      "scenario": "Unsafe deep link",
+      "expected_contract": "Unsafe absolute, auth, backend, or hostile redirect is dropped and never followed.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-26"
+        ],
+        "observed": [
+          "an unsafe absolute redirect is dropped: the browser lands on the target account default route, never off-host"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-04"
+      ]
+    },
+    {
+      "case_id": "CS-019",
+      "scenario": "Safe deep link",
+      "expected_contract": "Safe relative route is preserved through the switch.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-20"
+        ],
+        "observed": [
+          "handoff consumed on the exact target host; the safe deep link is preserved and the final URL carries no token"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-04"
+      ]
+    },
+    {
+      "case_id": "CS-020",
+      "scenario": "Concurrent consume",
+      "expected_contract": "Exactly one of two concurrent consumers wins.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": null,
+      "threat_model_refs": [
+        "TM-09"
+      ]
+    },
+    {
+      "case_id": "CS-021",
+      "scenario": "Superseding handoff",
+      "expected_contract": "Issuing a new handoff supersedes the earlier unconsumed handoff.",
+      "automated_evidence": "tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": null,
+      "threat_model_refs": [
+        "TM-09"
+      ]
+    },
+    {
+      "case_id": "CS-022",
+      "scenario": "Frontend switch navigation",
+      "expected_contract": "Frontend navigates only to the server-returned target URL, resets client state before navigation, does not persist context in localStorage, and clears switching state on failure.",
+      "automated_evidence": "resources/spa/src/stores/accountContextStore.spec.ts",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "scope": "wire and storage contract only",
+        "observations": [
+          "OBS-17",
+          "OBS-20",
+          "OBS-34"
+        ],
+        "observed": [
+          "the browser navigated only to the server-returned, registry-derived target URL",
+          "injected role, permission, merchant, branch and MFA fields were not honoured",
+          "no account context was persisted in localStorage, sessionStorage or IndexedDB"
+        ],
+        "limitation": "SvAccountSwitcher is not mounted in any route in UI-03 (UI-04 owns the profile/switch component system), so the component's own reset-before-navigate and clear-on-failure behaviour remains proven by resources/spa/src/stores/accountContextStore.spec.ts, not by this deployed-origin run.",
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-07",
+        "TM-11",
+        "TM-12"
+      ]
+    },
+    {
+      "case_id": "CS-023",
+      "scenario": "Wrong-account deep link",
+      "expected_contract": "Account route guard renders safe access-denied and never redirects to another account.",
+      "automated_evidence": "resources/spa/src/router/accountRouteGuard.spec.ts",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-33",
+          "OBS-33b"
+        ],
+        "observed": [
+          "a foreign-account route on the user's OWN host renders the role-safe access-denied state and never redirects to another account",
+          "the same deep link on ANOTHER account host carries no session at all — host-only cookies leave the user anonymous there"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-15"
+      ]
+    },
+    {
+      "case_id": "CS-024",
+      "scenario": "Global logout after switching",
+      "expected_contract": "All source and target host sessions in the family and their database sessions are invalidated.",
+      "automated_evidence": "tests/Feature/Sessions/CrossHostRevocationTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-30"
+        ],
+        "observed": [
+          "global logout invalidates BOTH the source and the target host session"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-20"
+      ]
+    },
+    {
+      "case_id": "CS-025",
+      "scenario": "Deployed-origin evidence leakage",
+      "expected_contract": "Screenshots, storage, console, network evidence, audit metadata, and logs contain no handoff token, cookie, or raw session id.",
+      "automated_evidence": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+      "automated_status": "browser_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-34",
+          "OBS-35",
+          "OBS-36",
+          "OBS-37",
+          "OBS-38",
+          "OBS-39",
+          "OBS-40"
+        ],
+        "observed": [
+          "no magic-link token, handoff token or raw session id appears in localStorage, sessionStorage or IndexedDB",
+          "the session cookie is HttpOnly — it is not visible to document.cookie",
+          "no credential material appears in browser console output",
+          "no credential material appears in the application or container logs",
+          "no credential material appears in audit metadata",
+          "the committed network evidence carries no credential material (all request bodies sanitized)",
+          "no captured screenshot was taken on a URL still carrying a token, and none renders credential material"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-12",
+        "TM-21"
+      ]
+    }
+  ],
+  "test_results": {
+    "context_handoff": {
+      "tests": 18,
+      "assertions": 173,
+      "status": "passed"
+    },
+    "cross_host_revocation": {
+      "tests": 9,
+      "assertions": 55,
+      "status": "passed"
+    },
+    "account_context_store": {
+      "tests": 9,
+      "status": "passed"
+    },
+    "account_route_guard": {
+      "tests": 13,
+      "status": "passed"
+    }
+  },
+  "summary": {
+    "case_count": 25,
+    "automated_pass_count": 25,
+    "browser_pending_count": 0,
+    "browser_observed_count": 21,
+    "known_automated_failures": 0,
+    "ready_for_pr": true
+  },
+  "failures": [],
+  "open_gaps": [
+    "None blocking the UI-03 pull request. The switch was exercised end to end in a real browser against the built production pair, with real host-only cookies and real CSRF.",
+    "CS-022 is proven at the wire and storage level only; the switch COMPONENT is not mounted in a route until UI-04, so its internal state handling stays covered by its unit spec.",
+    "Release-wide responsive, accessibility, theme and visual-regression approval remains UI-16."
+  ]
+}

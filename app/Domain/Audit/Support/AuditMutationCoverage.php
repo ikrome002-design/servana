@@ -66,6 +66,11 @@ final class AuditMutationCoverage
         'auth.mfa.challenge' => ['mfa.challenge_succeeded', 'mfa.challenge_failed'],
         'auth.mfa.recovery-challenge' => ['mfa.recovery_code_used'],
         'auth.mfa.recovery-codes.regenerate' => ['mfa.recovery_codes_regenerated'],
+        // Phase UI-03 (ADR-018). Every one of these is a security-relevant transition on a
+        // principal's own sessions, so each writes a typed, secret-free event.
+        'auth.logout-all' => ['auth.global_logout', 'auth.session_family.revoked'],
+        'auth.sessions.destroy' => ['auth.host_session.revoked'],
+        'auth.account-contexts.switch' => ['auth.context_handoff.issued'],
 
         // --- Branch lifecycle + day (Phase 7 / 16B / 18B) ------------------
         'branches.store' => ['branch.created'],

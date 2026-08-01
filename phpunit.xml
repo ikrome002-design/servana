@@ -40,7 +40,13 @@
         <env name="SCOUT_DRIVER" value="null" force="true"/>
         <env name="SCOUT_PREFIX" value="servana_testing_" force="true"/>
         <env name="SESSION_DRIVER" value="array" force="true"/>
-        <env name="SANCTUM_STATEFUL_DOMAINS" value="localhost" force="true"/>
+        <!-- Phase UI-03: SANCTUM_STATEFUL_DOMAINS is deliberately NOT overridden here. It is
+             derived in config/sanctum.php from the canonical account-host registry (all eight
+             accounts x three environments, bare and with the local port) plus the loopback
+             origins. Forcing it to `localhost` — as this file used to — made every account host
+             non-stateful under test, so a Magic Link verify on `finance.servana.test` returned
+             200 with NO session cookie and the host-scoped session tests could not exist. -->
+        <env name="ACCOUNT_HOST_LOCAL_PORT" value="8080" force="true"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
 </phpunit>

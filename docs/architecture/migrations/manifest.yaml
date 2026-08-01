@@ -1582,3 +1582,55 @@ business_migrations:
     destructive: false
     verification: docs/proof/phase-21s.md
     notes: "Phase 21S (Plan §13.13; §64 'roll up billable SMS charge to Servana billing'; ADR-005; ADR-012). The authoritative billable-SMS queue. amount_minor = quantity * unit_cost_minor is a DB CHECK, so a float-derived or hand-edited amount cannot exist. The partial unique index sms_billing_entries_live_campaign_unique permits at most ONE live entry (provisional/billable/invoiced) per campaign - the structural guarantee that a duplicate confirm, a job retry or a concurrent settlement cannot double-bill. Because sms_billing_entries_guard freezes every monetary column, a settled quantity that differs from the provisional one is NOT an in-place edit: the finalizer cancels the provisional row and writes a new billable row, leaving both as an auditable correction trail. SERVANA MOVES NO MONEY HERE (ADR-012): no Wallet payment resource, no payment attempt, no subscription payment event, no provider call - money movement is Wallet truth and is 20D-W work behind a CLOSED External Gate W. billing_invoice_line_id is the nullable seam to subscription_invoice_items that a FUTURE billing phase sets when it rolls SMS charges into a subscription invoice line; Phase 21S owns the queue, never the invoicing, and only an invoiced/credited entry may carry a line (CHECK). credited/cancelled are terminal. Forward-only (ADR-004)."
+  - file: 2026_07_30_000001_add_host_binding_to_magic_login_tokens.php
+    table: magic_login_tokens
+    domain: Auth
+    owner_phase: "UI-03"
+    change_type: alter
+    data_dictionary: docs/architecture/data-dictionary/sessions-and-account-switching.md
+    depends_on:
+      - 2026_06_14_000002_create_magic_login_tokens_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-03.md
+    notes: "Phase UI-03 (ADR-019; UI/UX plan §5.1, §18.5). EXPAND-ONLY: six nullable binding columns (user_id, account_key, intended_host, environment, redirect_path, audience). The shipped Phase 5 migration is NOT edited (guardrail 12). Nullable because the table already has rows; the migration then sets invalidated_at on every still-usable row, so no UNBOUND credential survives the upgrade - a link emailed before host binding existed cannot satisfy a binding it never carried, and accepting it would leave open exactly the cross-host substitution hole ADR-019 closes. magic_login_tokens_binding_complete_check then makes the invariant permanent without a destructive NOT NULL: a row that is neither consumed nor invalidated MUST carry the complete binding. Historical consumed/invalidated rows keep their nulls, so no audit history is rewritten. Closed vocabularies for account_key (the eight registry keys), environment and audience are CHECK-enforced and asserted against the UI-02 host registry by SessionSchemaContractTest, so the constraint and the registry cannot drift. Forward-only (ADR-004)."
+  - file: 2026_07_30_000002_create_session_families_table.php
+    table: session_families
+    domain: Sessions
+    owner_phase: "UI-03"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/sessions-and-account-switching.md
+    depends_on:
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-03.md
+    notes: "Phase UI-03 (ADR-018; UI/UX plan §5.2). The server-side link between one user's browser sessions across the eight account hosts. ADR-018 rejects a shared .servana.ke cookie because it makes per-host revocation impossible; this table is what replaces it - cookies stay host-only, and the FAMILY is what global logout, suspension, role removal and branch removal act on, once, for every host. IDENTITY-OWNED: a family may legitimately span merchants, so a merchant_id column would be structurally wrong and BelongsToMerchant deliberately does not apply (EXEMPT in TenantOwnership with a written rationale). CONTAINS NO SECRET AND NO PERMISSION SNAPSHOT - ulid is a non-secret handle, not a credential, and possessing one grants nothing. lifecycle_version is a monotonic counter bumped on every revocation so a writer that read the family before it was revoked cannot resurrect it by writing stale state back. CHECKs: closed environment vocabulary, closed revoked_reason vocabulary (asserted identical to the SessionRevocationReason enum), revocation consistency ((revoked_at IS NULL) = (revoked_reason IS NULL)) so a revocation is never half-stated, and lifecycle_version >= 1. Revocation is one-way: a revoked family is never un-revoked, a new login creates a new one. Forward-only (ADR-004)."
+  - file: 2026_07_30_000003_create_host_sessions_table.php
+    table: host_sessions
+    domain: Sessions
+    owner_phase: "UI-03"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/sessions-and-account-switching.md
+    depends_on:
+      - 2026_07_30_000002_create_session_families_table.php
+      - 2026_06_14_000101_create_merchants_table.php
+      - 2026_06_14_000104_create_merchant_users_table.php
+      - 2026_06_14_000103_create_merchant_branches_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-03.md
+    notes: "Phase UI-03 (ADR-018; UI/UX plan §5.2). One row per Laravel browser session, bound to the account context that session was created for, so revocation can be per-session, per-account, per-merchant, per-branch or family-wide. session_id stores the RAW Laravel session id and is unique: revocation must DELETE the row from the sessions table, whose primary key IS the session id, so a hash could not find it - and the value is already stored in plaintext in sessions.id in the same database, so a second copy adds no new exposure class. It is hidden from serialization and never logged, audited or returned by any API. THE CONTEXT COLUMNS RECORD WHICH MEMBERSHIP/MERCHANT/BRANCH, NEVER WHAT IT MAY DO: there is no permission column and there never may be, because the whole point of ADR-018 is that the target host re-resolves authority from the database. mfa_required_at_creation is EVIDENCE of what MfaRequirementResolver answered at creation, never an assertion - the live assurance stays mfa_verified_at inside the Laravel session and is never copied across hosts. CHECKs: closed account_key vocabulary (asserted identical to the UI-02 registry), closed environment and revoked_reason vocabularies, revocation consistency, (account_key = 'super_administrator') = (merchant_id IS NULL) so the platform context is the only one without a merchant and a 'merchant_finance session with no merchant' cannot exist as a row, and branch_id requires merchant_id. Identity-owned; EXEMPT in TenantOwnership. Forward-only (ADR-004)."
+  - file: 2026_07_30_000004_create_account_context_handoffs_table.php
+    table: account_context_handoffs
+    domain: Sessions
+    owner_phase: "UI-03"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/sessions-and-account-switching.md
+    depends_on:
+      - 2026_07_30_000002_create_session_families_table.php
+      - 2026_07_30_000003_create_host_sessions_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-03.md
+    notes: "Phase UI-03 (ADR-018 steps 3-10; UI/UX plan §5.3; replay posture per ADR-003). The single-use, short-lived, hashed credential that carries a user from a source account host to a target account host without re-authenticating and WITHOUT carrying the source permission set. Treated as the bearer credential it is: 64 random bytes, SHA-256 at rest (unique token_hash), 120-second life, consumed atomically under SELECT FOR UPDATE plus a conditional single-use update, bound to its exact target. THE ROW CARRIES NO PERMISSION SNAPSHOT AND NO CLIENT-ASSERTED ROLE - every target authority (user status, merchant status, membership, role, branch) is re-read from the database inside the consume transaction, which is what makes the switch safe: a role revoked one second after issuance yields no target session. ip_hash and user_agent_hash are minimized forensics, mirroring the Phase 5 Magic Link table: enough to correlate an abuse pattern, never enough to retain the address or fingerprint. CHECKs: closed source/target account and environment vocabularies, closed invalidated_reason vocabulary (asserted identical to the HandoffRejectionReason enum), expires_at > created_at, NOT (consumed AND invalidated) so 'was this replayed?' is answerable rather than a guess, invalidation consistency, platform-has-no-merchant and branch-requires-merchant. Retention: rows are deleted past expires_at + 24h; consumed and invalidated rows are kept for that window as forensic evidence. Identity-owned; EXEMPT in TenantOwnership. Forward-only (ADR-004)."

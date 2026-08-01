@@ -62,6 +62,21 @@
       "summary": "Renders a role-specific Terms of Service / Privacy Policy / Data Policy verbatim from docs/legal."
     },
     {
+      "key": "auth-access-denied",
+      "domain": "auth",
+      "route": "access-denied",
+      "layout": "none",
+      "status": "implemented",
+      "phase": "Phase UI-03",
+      "spec": "auth/auth-access-denied.md",
+      "title": "Access denied",
+      "roles": [
+        "authenticated"
+      ],
+      "permissions": [],
+      "summary": "Role-safe denial state reached by the account-entry guard. Names no account or resource, never redirects to another account, and offers only sign-out plus the contexts the server says the user may enter."
+    },
+    {
       "key": "auth-login",
       "domain": "auth",
       "route": "auth.login",

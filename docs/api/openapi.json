@@ -2097,6 +2097,19 @@
                                 "login_link_failed",
                                 "login_success",
                                 "logout",
+                                "auth.magic_link.host_binding_rejected",
+                                "auth.magic_link.environment_binding_rejected",
+                                "auth.session_family.created",
+                                "auth.session_family.revoked",
+                                "auth.host_session.created",
+                                "auth.host_session.revoked",
+                                "auth.global_logout",
+                                "auth.account_contexts.viewed",
+                                "auth.context_handoff.issued",
+                                "auth.context_handoff.consumed",
+                                "auth.context_handoff.rejected",
+                                "auth.context_handoff.replay_rejected",
+                                "auth.account_deep_link.rejected",
                                 "invitation.created",
                                 "invitation.resent",
                                 "invitation.revoked",
@@ -2634,6 +2647,19 @@
                                 "login_link_failed",
                                 "login_success",
                                 "logout",
+                                "auth.magic_link.host_binding_rejected",
+                                "auth.magic_link.environment_binding_rejected",
+                                "auth.session_family.created",
+                                "auth.session_family.revoked",
+                                "auth.host_session.created",
+                                "auth.host_session.revoked",
+                                "auth.global_logout",
+                                "auth.account_contexts.viewed",
+                                "auth.context_handoff.issued",
+                                "auth.context_handoff.consumed",
+                                "auth.context_handoff.rejected",
+                                "auth.context_handoff.replay_rejected",
+                                "auth.account_deep_link.rejected",
                                 "invitation.created",
                                 "invitation.resent",
                                 "invitation.revoked",
@@ -3171,6 +3197,19 @@
                                 "login_link_failed",
                                 "login_success",
                                 "logout",
+                                "auth.magic_link.host_binding_rejected",
+                                "auth.magic_link.environment_binding_rejected",
+                                "auth.session_family.created",
+                                "auth.session_family.revoked",
+                                "auth.host_session.created",
+                                "auth.host_session.revoked",
+                                "auth.global_logout",
+                                "auth.account_contexts.viewed",
+                                "auth.context_handoff.issued",
+                                "auth.context_handoff.consumed",
+                                "auth.context_handoff.rejected",
+                                "auth.context_handoff.replay_rejected",
+                                "auth.account_deep_link.rejected",
                                 "invitation.created",
                                 "invitation.resent",
                                 "invitation.revoked",
@@ -3752,12 +3791,245 @@
                 ]
             }
         },
+        "/api/v1/auth/account-contexts": {
+            "get": {
+                "operationId": "auth.account-contexts.index",
+                "description": "Only ACTIVE, authorized contexts appear. An inactive merchant, a suspended membership or a\nbranch-scoped role with no active assignment simply produces no entry: there is no\n\"listed but unusable\" state for a caller to probe.",
+                "summary": "GET /auth/account-contexts — every context this user may enter right now",
+                "tags": [
+                    "AccountContext"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/account-contexts/switch": {
+            "post": {
+                "operationId": "auth.account-contexts.switch",
+                "description": "Returns only an ALLOWLISTED absolute URL built by AccountHostUrlGenerator from the registry.\nThe frontend never constructs a target host itself, so a compromised bundle cannot redirect\na user to a host Servana does not own.",
+                "summary": "POST /auth/account-contexts/switch — mint a single-use handoff and return the target URL",
+                "tags": [
+                    "AccountContext"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SwitchAccountContextRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "target_url": {
+                                                    "type": "string"
+                                                },
+                                                "target_account_key": {
+                                                    "type": "string"
+                                                },
+                                                "requires_mfa": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "target_url",
+                                                "target_account_key",
+                                                "requires_mfa"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/auth/logout": {
             "post": {
                 "operationId": "auth.logout",
-                "summary": "POST /auth/logout — invalidate the session and rotate the CSRF token",
+                "description": "Sibling sessions in the same family are deliberately untouched: signing out of the Finance\nhost must not silently end a Personnel session the user is still working in. Ending every\nsession is a separate, explicit action (`/auth/logout-all`).",
+                "summary": "POST /auth/logout — sign out of THIS host only",
                 "tags": [
                     "MagicLink"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/logout-all": {
+            "post": {
+                "operationId": "auth.logout-all",
+                "description": "This is the operation UI/UX plan §5.2 calls \"global logout\": it deletes every linked row in\nLaravel's database session store, so the next request on ANY host is unauthenticated. It is\ndeliberately separate from `/auth/logout`, which ends only the current host's session.",
+                "summary": "POST /auth/logout-all — revoke every session in this user's families, on every host",
+                "tags": [
+                    "HostSession"
                 ],
                 "responses": {
                     "204": {
@@ -3807,6 +4079,7 @@
         "/api/v1/auth/magic-link": {
             "post": {
                 "operationId": "auth.magic-link.request",
+                "description": "The response is identical whether the address is unknown, ineligible, or simply not a user\nof THIS account. Telling a caller \"that email exists, but not as Finance\" would leak both\nthe account and the role.",
                 "summary": "POST /auth/magic-link — always 202, never reveals account existence",
                 "tags": [
                     "MagicLink"
@@ -3861,7 +4134,7 @@
         "/api/v1/auth/magic-link/verify": {
             "post": {
                 "operationId": "auth.magic-link.verify",
-                "summary": "POST /auth/magic-link/verify — atomic consume, then session login with id\nregeneration (fixation defense). Uniform 422 on any failure",
+                "summary": "POST /auth/magic-link/verify — atomic bound consume, then session login with id\nregeneration (fixation defense), then the session-family and host-session binding that make\ncross-host revocation possible. Uniform 422 on any failure",
                 "tags": [
                     "MagicLink"
                 ],
@@ -3885,10 +4158,22 @@
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/AuthenticatedUserResource"
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "redirect_path": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "redirect_path"
+                                            ]
                                         }
                                     },
                                     "required": [
-                                        "data"
+                                        "data",
+                                        "meta"
                                     ]
                                 }
                             }
@@ -4453,6 +4738,133 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/sessions": {
+            "get": {
+                "operationId": "auth.sessions.index",
+                "summary": "GET /auth/sessions — this user's active sessions, sanitized",
+                "tags": [
+                    "HostSession"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {}
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/sessions/{hostSession}": {
+            "delete": {
+                "operationId": "auth.sessions.destroy",
+                "description": "Idempotent: revoking an already-revoked session succeeds and changes nothing.",
+                "summary": "DELETE /auth/sessions/{hostSession} — revoke ONE of this user's sessions",
+                "tags": [
+                    "HostSession"
+                ],
+                "parameters": [
+                    {
+                        "name": "hostSession",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFoundHttpException"
                     },
                     "422": {
                         "description": "Validation failed",
@@ -20630,6 +21042,19 @@
                                 "login_link_failed",
                                 "login_success",
                                 "logout",
+                                "auth.magic_link.host_binding_rejected",
+                                "auth.magic_link.environment_binding_rejected",
+                                "auth.session_family.created",
+                                "auth.session_family.revoked",
+                                "auth.host_session.created",
+                                "auth.host_session.revoked",
+                                "auth.global_logout",
+                                "auth.account_contexts.viewed",
+                                "auth.context_handoff.issued",
+                                "auth.context_handoff.consumed",
+                                "auth.context_handoff.rejected",
+                                "auth.context_handoff.replay_rejected",
+                                "auth.account_deep_link.rejected",
                                 "invitation.created",
                                 "invitation.resent",
                                 "invitation.revoked",
@@ -32023,6 +32448,25 @@
                     }
                 }
             },
+            "NotFoundHttpException": {
+                "description": "Not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
             "ModelNotFoundException": {
                 "description": "Not found",
                 "content": {
@@ -32769,6 +33213,11 @@
                         "type": "string",
                         "description": "Resolved permission keys (Plan §10.3): role default grants ± per-user\noverrides, request-cached by TenantContext. UX only — the backend\n(EnsurePermission + policies) is the security boundary."
                     },
+                    "account_keys": {
+                        "type": "array",
+                        "description": "Phase UI-03 (ADR-018; UI/UX plan §19.1): the account experiences this user may\ncurrently enter, DERIVED SERVER-SIDE from live membership rows. The SPA needs it to\nrefuse a wrong-account surface before it mounts (UI01-ROLE-001), and giving it the\nanswer is what stops the frontend inventing a role→account mapping of its own — a\nsecond authority that could drift from the database. Account KEYS only. No permission, no merchant identity, no branch identity: the\nswitcher's own endpoint returns the full contexts, and it does so under the same\nownership check.",
+                        "items": {}
+                    },
                     "setup": {
                         "anyOf": [
                             {
@@ -32826,6 +33275,7 @@
                     "memberships",
                     "branch_ids",
                     "permissions",
+                    "account_keys",
                     "setup",
                     "mfa"
                 ],
@@ -38686,6 +39136,14 @@
                         "type": "string",
                         "format": "email",
                         "maxLength": 255
+                    },
+                    "redirect": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The deep link the user was heading for before being asked to sign in. Shape only:\nwhether it is SAFE is decided by AccountHostUrlGenerator::safeRelativePath() in the\naction, so there is exactly one place that judges a redirect (UI/UX plan §10.6).\n512 matches the bound column, so an over-long value fails validation rather than\nbeing silently truncated into a different path.",
+                        "maxLength": 512
                     }
                 },
                 "required": [
@@ -41236,6 +41694,29 @@
                     "change_reason"
                 ],
                 "title": "SupersedePreferredPersonnelFeeRuleRequest"
+            },
+            "SwitchAccountContextRequest": {
+                "type": "object",
+                "description": "Validates an account-context switch request (Phase UI-03; ADR-018; UI/UX plan §10.2).\n\nDELIBERATELY MINIMAL. The only meaningful input is an opaque server-issued context id. There is\nno rule for a role, permission, merchant, branch, host, environment or MFA field, because none\nof those may be accepted from the browser at all — a rule for them would imply they could ever\nbe honoured. Anything else in the body is simply not read.\n\nWhether the id is legitimate is NOT decided here: the controller resolves it against the freshly\nderived context list for the authenticated user, so a well-formed id for someone else's context\nstill resolves to nothing.",
+                "properties": {
+                    "context_id": {
+                        "type": "string",
+                        "description": "32 lowercase hex characters — the exact shape AccountContextIdentifier mints.",
+                        "pattern": "^[0-9a-f]{32}$"
+                    },
+                    "redirect": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Shape only; AccountHostUrlGenerator::safeRelativePath() decides safety.",
+                        "maxLength": 512
+                    }
+                },
+                "required": [
+                    "context_id"
+                ],
+                "title": "SwitchAccountContextRequest"
             },
             "TransferAppointmentRequest": {
                 "type": "object",

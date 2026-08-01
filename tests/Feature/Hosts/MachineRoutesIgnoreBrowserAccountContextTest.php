@@ -78,10 +78,27 @@ it('does not require an account host for partner webhook routes', function (): v
     // Webhook routes are registered under /api and therefore excluded from the SPA
     // fallback and from ResolveAccountHost. Assert structurally: no route outside the
     // browser shell carries the account-host middleware.
+    // Routes that are BROWSER-ORIGINATED by definition and therefore legitimately host-resolved.
+    // Phase UI-03 added the three authentication ones: ADR-019 binds a Magic Link to the exact
+    // host it was issued for, and ADR-018 binds a context handoff to its exact target host — both
+    // need the resolved host as an ANTI-SUBSTITUTION input. Resolving it still grants nothing
+    // (ADR-017, proven by AccountHostDoesNotAuthorizeTest).
+    //
+    // The invariant this test protects is unchanged: no MACHINE route — health probe, partner
+    // webhook, signed file route, queue or scheduler surface — may depend on account-host
+    // resolution.
+    $browserOriginated = [
+        'spa.shell',
+        'auth.switch.consume',
+        'auth.magic-link.request',
+        'auth.magic-link.verify',
+        'auth.account-contexts.switch',
+    ];
+
     $offenders = [];
 
     foreach (Route::getRoutes()->getRoutes() as $route) {
-        if ($route->getName() === 'spa.shell') {
+        if (in_array($route->getName(), $browserOriginated, true)) {
             continue;
         }
         if (in_array(ResolveAccountHost::class, $route->gatherMiddleware(), true)) {

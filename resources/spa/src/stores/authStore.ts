@@ -23,6 +23,13 @@ export const useAuthStore = defineStore('auth', () => {
   const memberships = ref<MerchantMembership[]>([]);
   const permissions = ref<string[]>([]);
   const branchIds = ref<string[]>([]);
+  /**
+   * The account experiences this user may enter, as reported by `/me` (Phase UI-03).
+   *
+   * Server-derived, never computed here. The frontend deliberately holds NO role→account mapping:
+   * one would be a second authority that could disagree with the database.
+   */
+  const accountKeys = ref<string[]>([]);
   const setup = ref<SetupState | null>(null);
   const mfa = ref<MfaState | null>(null);
   const loading = ref(false);
@@ -48,6 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
     memberships.value = payload.memberships ?? [];
     permissions.value = payload.permissions ?? [];
     branchIds.value = payload.branch_ids ?? [];
+    accountKeys.value = payload.account_keys ?? [];
     setup.value = payload.setup;
     mfa.value = payload.mfa ?? null;
     useMerchantStore().setMerchant(payload.merchant);
@@ -59,6 +67,7 @@ export const useAuthStore = defineStore('auth', () => {
     memberships.value = [];
     permissions.value = [];
     branchIds.value = [];
+    accountKeys.value = [];
     setup.value = null;
     mfa.value = null;
     useMerchantStore().$reset();
@@ -66,6 +75,14 @@ export const useAuthStore = defineStore('auth', () => {
 
   /** Whether the signed-in member is a merchant admin (UX gating only). */
   const isMerchantAdmin = (): boolean => membership.value?.role === 'merchant_admin';
+
+  /**
+   * Whether the server says this user may enter an account experience (Phase UI-03).
+   *
+   * A membership check against the server's own list — not a role comparison, and not a mapping.
+   * Used by the account-entry route guard to refuse a wrong-account surface before it mounts.
+   */
+  const holdsAccount = (accountKey: string): boolean => accountKeys.value.includes(accountKey);
 
   function $reset(): void {
     clear();
@@ -163,12 +180,14 @@ export const useAuthStore = defineStore('auth', () => {
     activeMembership,
     permissions,
     branchIds,
+    accountKeys,
     setup,
     mfa,
     loading,
     bootstrapped,
     isAuthenticated,
     isMerchantAdmin,
+    holdsAccount,
     setupRequired,
     mfaEnrollmentRequired,
     mfaChallengeRequired,

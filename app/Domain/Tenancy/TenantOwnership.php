@@ -201,7 +201,17 @@ final class TenantOwnership
         'merchants' => 'tenant root (the merchant itself)',
         // User-owned identity (Plan §13.5) — not tenant-scoped; membership lives in merchant_users.
         'users' => 'user-owned identity (not tenant-scoped)',
-        'magic_login_tokens' => 'user-owned auth token (bound to email, not a merchant)',
+        'magic_login_tokens' => 'user-owned auth token (bound to email, user, account experience, host and environment from UI-03 — never to a merchant)',
+        // Phase UI-03 — host-scoped sessions and account switching (ADR-018). All three are
+        // IDENTITY-owned: a session family legitimately spans merchants, so a merchant_id column
+        // would be structurally wrong. The merchant/branch columns on host_sessions and
+        // account_context_handoffs are DESTINATION references (which context this session is for),
+        // not tenancy scopes; they are nullable for the platform context and constrained by CHECK.
+        // Every read surface is own-user only, so there is nothing for a merchant-scoped query to
+        // isolate — the isolation boundary is `user_id`, asserted directly by OwnSessionManagementTest.
+        'session_families' => 'identity-owned session family; may legitimately span merchants, so merchant scope would be wrong; read only through own-user surfaces (UI-03)',
+        'host_sessions' => 'identity-owned session binding; merchant_id/branch_id are destination context references (nullable for the platform account, CHECK-constrained), never a tenancy scope; read only through own-user surfaces (UI-03)',
+        'account_context_handoffs' => 'identity-owned single-use switch credential; target_merchant_id/target_branch_id are destination references re-validated from the database at consume, never a tenancy scope; no merchant-facing read surface exists (UI-03)',
         'mfa_credentials' => 'identity-owned MFA credential (R3; user_id, no merchant)',
         'mfa_recovery_codes' => 'identity-owned MFA recovery code (R3; user_id, no merchant)',
         // Platform-global catalogue/governance.

@@ -22,7 +22,7 @@ uses(RefreshDatabase::class)->group('auth', 'security');
 it('rejects an email containing embedded CR/LF with a validation error', function (string $payload): void {
     Notification::fake();
 
-    test()->postJson('/api/v1/auth/magic-link', ['email' => $payload])
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => $payload])
         ->assertStatus(422)
         ->assertJsonPath('error.code', 'validation_failed')
         ->assertJsonStructure(['error' => ['code', 'message', 'fields' => ['email'], 'meta']]);

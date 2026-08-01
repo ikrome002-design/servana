@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Enums\ErrorCode;
 use App\Http\Hosts\AccountHost;
 use App\Http\Hosts\AccountHostResolver;
 use Closure;
@@ -57,6 +58,21 @@ final class ResolveAccountHost
             'environment' => app()->environment(),
             'failure_category' => 'unapproved_account_host',
         ]);
+
+        // Phase UI-03 puts this middleware on the host-bound authentication endpoints too, so the
+        // denial has to speak both languages. An API caller gets the standard §11.5 envelope; a
+        // browser navigation keeps the UI-02 page. The STATUS and the absence of any host detail
+        // are identical either way — content negotiation must not become an oracle.
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return response()->json([
+                'error' => [
+                    'code' => ErrorCode::MisdirectedRequest->value,
+                    'message' => 'This request was not addressed to a recognised Servana account host.',
+                    'fields' => (object) [],
+                    'meta' => (object) [],
+                ],
+            ], Response::HTTP_MISDIRECTED_REQUEST)->header('Cache-Control', 'no-store');
+        }
 
         return response()->view('errors.unknown-host', [], Response::HTTP_MISDIRECTED_REQUEST)
             ->header('Cache-Control', 'no-store');

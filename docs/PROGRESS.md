@@ -113,8 +113,8 @@ while the repository records said the work was complete.
 |---|---|---|---|---|---|
 | UI-00 | Plan adoption and source reconciliation | ✅ `verified_complete` | PR [#50](https://github.com/ikrome002-design/servana/pull/50) merged — squash `d3f6e10`, branch deleted | [ui-00.md](proof/ui-00.md) | Phase 24 merge verified live |
 | UI-01 | As-built browser and repository audit | ✅ `verified_complete` | PR [#51](https://github.com/ikrome002-design/servana/pull/51) merged — squash `413c146`, sole parent `d3f6e10`, final head `5c52372`, source tree == merge tree `e00866f`, merged `2026-07-29T12:33:28Z`, CI run `30450612654` five checks SUCCESS, governance comment `5117766612`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted | [ui-01.md](proof/ui-01.md) | Reconciled live on the UI-02 branch |
-| UI-02 | Multi-host foundation | 🟡 `local_complete pending PR CI/review/merge` | `phase-ui-02-multi-host-foundation` (base `413c146`, **no PR**) | [ui-02.md](proof/ui-02.md) | UI-01 PR merged and reconciled live |
-| UI-03 | Authentication, session family, account switching | ⬜ Not started | — | — | UI-02 merged |
+| UI-02 | Multi-host foundation | ✅ `verified_complete` | PR [#52](https://github.com/ikrome002-design/servana/pull/52) merged — squash `fb64ba6`, sole parent `413c146`, implementation commit `db3ace4`, final head `5add80c` (`ci: build SPA before backend shell tests` — a tested CI-contract correction, one file, **not** governance-only), source tree == merge tree `442ed1d`, merged `2026-07-30T10:38:01Z`, CI run `30532318808` attempt 1 five checks SUCCESS, governance comment `5129527972`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted | [ui-02.md](proof/ui-02.md) | Reconciled live on the UI-03 branch |
+| UI-03 | Authentication, session family, account switching | 🟡 `local_complete pending PR` | `phase-ui-03-auth-session-account-switching` (base `fb64ba6`, **no PR**) — two commits: `64ca7cc` implementation, plus `ui-03: complete deployed-origin browser proof`. Deployed-origin proof **47 observations / 0 failures** against the built production images; Docker dev/prod/nginx built, `nginx -t` green, production-pair smoke 8 accounts + 4 denials + machine host; 9 targeted screenshots. Closed residual risk R1. Found and fixed three product defects only a real browser could reach: `UI03-EDGE-001` (correlation-id width 500'd every audited request through nginx), `UI03-CTX-001` (target `/me` reported the source merchant and permissions after a switch), `UI03-MFA-001` (MFA session regeneration orphaned the host session, blocking account switching for every mandatory-MFA role). Also `UI03-TEST-001`: seven tests were failing in files byte-identical to `64ca7cc`, so the previously recorded 2,528-test backend figure is **unverified**. | [ui-03.md](proof/ui-03.md) | UI-02 PR merged and reconciled live |
 | UI-04 | Design system and shared components | ⬜ Not started | — | — | UI-03 merged |
 | UI-05 | Content and asset pipeline | ⬜ Not started | — | — | UI-04 merged |
 | UI-06 | Eight public landing pages | ⬜ Not started | — | — | UI-05 merged |
@@ -181,7 +181,55 @@ blocked; Wallet-owned money movement, Refer & Earn-owned rewards, notification/r
 external-onboarding items are untouched. UI-00 closes none of them. `REM-PERM-002`, `REM-EXP-001`,
 `REM-SMS-002` and `REM-RE-002` stay open.
 
-## Phase UI-02 — Multi-host foundation (`local_complete pending PR CI/review/merge`)
+## Phase UI-03 — Authentication, session family, account switching (`local_complete pending PR CI/review/merge`)
+
+**Branch** `phase-ui-03-auth-session-account-switching` · **base** `fb64ba6` (the verified UI-02
+squash merge) · **no PR** · **proof** [ui-03.md](proof/ui-03.md) · **threat model**
+[ui-03-auth-session-threat-model.md](security/ui-03-auth-session-threat-model.md) · **artifacts**
+[`docs/frontend/audits/ui-03/`](frontend/audits/ui-03/)
+
+**Governing sources.** UI/UX plan §5.1–§5.4, §18.1–§18.7, §21, §23–§26, §25 (Phase UI-03), §27;
+ADR-016/017/018/019; backend Plan §9, §18, §70, §79 R6, §13.2.
+
+### What UI-03 built
+
+Magic Links bound at issue and re-verified at consume to user, account, exact host, environment,
+audience and safe redirect (ADR-019) · a server-side **session family** with per-host session
+bindings, so global logout, suspension, membership/role/branch changes revoke across every host at
+once (ADR-018) · a single-use, hashed, 120-second **context-handoff** token consumed atomically
+under a row lock on the target host, which rebuilds the target context from current database state
+rather than carrying anything from the source · server-derived account-context discovery behind an
+opaque HMAC identifier · own-session inspection and revocation · a minimal accessible switch
+control and a role-safe access-denied state.
+
+### Defects closed (locally)
+
+`UI01-ROLE-001` (cross-role platform surface exposure) and `UI03-AUTH-001` (HTML browser request to
+a protected API route returned 500 — observed in UI-02, owned here). Closure evidence:
+[`defect-closure.json`](frontend/audits/ui-03/defect-closure.json). They are **not**
+`verified_complete` until the UI-03 PR merges.
+
+### Permissions
+
+**None added.** Every new operation is authorized by ownership. Cross-user session management is
+recorded as a **blocked decision** — no canonical permission authority exists and UI-03 does not
+invent one.
+
+### Not done, and stated plainly
+
+The **deployed-origin browser proof was not performed**. No Playwright run, no production-image
+smoke, no screenshots, and no browser evidence is claimed anywhere in this phase. That is the
+largest residual risk (R1 in the proof) and must be closed before the UI-03 pull request is
+considered complete. Everything else deferred is listed with its owner phase in
+[ui-03.md](proof/ui-03.md) § *Skipped work and owners*.
+
+### Exact next human action
+
+Run the focused deployed-origin browser proof, then review the pushed branch, create the UI-03 pull
+request into `main`, allow the five required checks and governance to complete, merge, and reconcile
+UI-03 and its two defect closures to `verified_complete` before beginning UI-04.
+
+## Phase UI-02 — Multi-host foundation (`verified_complete`)
 
 **Branch** `phase-ui-02-multi-host-foundation` · **base** `413c146` (the verified UI-01 squash
 merge) · **no PR** · **proof** [ui-02.md](proof/ui-02.md) · **artifacts**

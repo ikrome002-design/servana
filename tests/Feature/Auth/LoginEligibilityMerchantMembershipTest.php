@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Domain\Auth\Models\MagicLoginToken;
 use App\Domain\Auth\Notifications\MagicLoginLinkNotification;
-use App\Domain\Auth\Services\MagicLinkTokenService;
 use App\Domain\Merchants\Enums\MerchantUserRole;
 use App\Domain\Merchants\Enums\MerchantUserStatus;
 use App\Domain\Merchants\Models\Merchant;
@@ -27,7 +26,7 @@ it('sends a link to a user with an active merchant membership', function (): voi
     Notification::fake();
     $user = eligibleOwner('owner@salon.co.ke');
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'owner@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'owner@salon.co.ke'])->assertStatus(202);
 
     Notification::assertSentTo($user, MagicLoginLinkNotification::class);
 });
@@ -42,7 +41,7 @@ it('sends a link to a pending_setup merchant owner', function (): void {
         'role' => MerchantUserRole::MerchantAdmin,
     ]);
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'pending@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'pending@salon.co.ke'])->assertStatus(202);
 
     Notification::assertSentTo($user, MagicLoginLinkNotification::class);
 });
@@ -51,7 +50,9 @@ it('sends a link to platform staff with no merchant', function (): void {
     Notification::fake();
     $user = User::factory()->platformStaff()->create(['email' => 'super@servana.africa']);
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'super@servana.africa'])->assertStatus(202);
+    // Platform staff hold the `super_administrator` account and no merchant account. Asking on the
+    // Merchant Administrator host is correctly answered with the uniform 202 and no email.
+    postOnHost('super_administrator', '/api/v1/auth/magic-link', ['email' => 'super@servana.africa'])->assertStatus(202);
 
     Notification::assertSentTo($user, MagicLoginLinkNotification::class);
 });
@@ -60,7 +61,7 @@ it('sends no link to a user without any merchant membership', function (): void 
     Notification::fake();
     User::factory()->create(['email' => 'orphan@salon.co.ke']);
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'orphan@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'orphan@salon.co.ke'])->assertStatus(202);
 
     Notification::assertNothingSent();
     expect(MagicLoginToken::query()->count())->toBe(0);
@@ -75,7 +76,7 @@ it('sends no link when the only membership is suspended', function (): void {
         'merchant_id' => $merchant->id,
     ]);
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'suspended-member@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'suspended-member@salon.co.ke'])->assertStatus(202);
 
     Notification::assertNothingSent();
 });
@@ -89,7 +90,7 @@ it('sends no link when the only membership is deactivated', function (): void {
         'merchant_id' => $merchant->id,
     ]);
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'gone-member@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'gone-member@salon.co.ke'])->assertStatus(202);
 
     Notification::assertNothingSent();
 });
@@ -102,12 +103,12 @@ it('denies consume when the membership is suspended after the link was issued', 
         'merchant_id' => $merchant->id,
     ]);
 
-    $raw = app(MagicLinkTokenService::class)->issue('owner@salon.co.ke');
+    $raw = issueBoundMagicLink('owner@salon.co.ke');
 
     // Membership suspended between issue and consume → consume re-check denies.
     $membership->update(['status' => MerchantUserStatus::Suspended]);
 
-    $this->postJson('/api/v1/auth/magic-link/verify', ['token' => $raw])
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link/verify', ['token' => $raw])
         ->assertStatus(422)
         ->assertJsonPath('error.code', 'invalid_or_expired_token');
 
@@ -127,7 +128,7 @@ it('sends no link to a branch_manager without a branch assignment (check 6, Phas
         'role' => MerchantUserRole::BranchManager,
     ]);
 
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'bm@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'bm@salon.co.ke'])->assertStatus(202);
 
     Notification::assertNothingSent();
 });

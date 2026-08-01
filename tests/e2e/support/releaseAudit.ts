@@ -192,6 +192,18 @@ export const SCREENS: AuditScreen[] = [
 
   // --- access states (rendered, route-less) ---------------------------------
   {
+    // Phase UI-03 registered this live screen in the inventory but never added it here, so the
+    // coverage guard correctly reported it missing the first time the suite was run after UI-03.
+    // It is a real route (`/access-denied`), reached by the account-entry guard rather than by a
+    // redirect to another account.
+    key: 'auth-access-denied',
+    route: 'access-denied',
+    path: '/access-denied',
+    role: 'merchant_administrator',
+    ready: 'text=/do not have access to this page/i',
+    state: 'access-state',
+  },
+  {
     key: 'unsupported-role',
     route: null,
     path: '/merchant',
@@ -672,6 +684,10 @@ function bootstrapBody(screen: AuditScreen): unknown {
         ? { required: true, current_step: 'business_profile', completed_at: null }
         : { required: false, current_step: null, completed_at: '2026-01-01T00:00:00Z' },
       branch_ids: o.branchIds ?? (isPlatform ? [] : [IDS.branch]),
+      // UI-03 added `account_keys` to /me (derived server-side by AccountContextResolver) and
+      // `requiresAccount` asks `holdsAccount()` for it. Without it every guarded account surface
+      // denies, which is what took out the platform screens in the first full-suite run.
+      account_keys: isPublic ? [] : [screen.role],
       mfa: {
         required: false,
         enrolled: true,
@@ -701,6 +717,36 @@ export async function prepare(
 
   const theme = opts.theme ?? 'light';
   await page.addInitScript((t) => localStorage.setItem('servana.theme', t), theme);
+
+  /*
+   * The account context the Laravel shell embeds (Phase UI-02/UI-03). `vite preview` serves a
+   * static index.html with no shell, so the element is absent and `currentAccountContext()` is
+   * null — which makes UI-03's `requiresAccount` guard fail closed on every account surface it is
+   * attached to. Stubbing it is exactly what this harness already does for /me and /sanctum: stub
+   * the server so the REAL frontend can be driven. The guard is untouched.
+   */
+  if (screen.role !== 'public') {
+    await page.addInitScript((accountKey) => {
+      const inject = (): void => {
+        if (document.getElementById('servana-account-context') !== null) return;
+        const element = document.createElement('script');
+        element.id = 'servana-account-context';
+        element.type = 'application/json';
+        element.textContent = JSON.stringify({
+          account_key: accountKey,
+          display_name: accountKey,
+          environment: 'local',
+          host: 'localhost',
+        });
+        document.head.appendChild(element);
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('readystatechange', inject, { once: true });
+      }
+      inject();
+    }, screen.role);
+  }
 
   const fixtures = opts.fixtures ?? baseFixtures();
   const unauthenticated = screen.role === 'public';
@@ -848,7 +894,10 @@ export function isShellScreen(screen: AuditScreen): boolean {
     'home', 'not-found', 'design-system', 'legal-document',
     'auth-login', 'auth-register', 'auth-check-email', 'auth-verify',
     'staff-invitation-accept', 'mfa-setup', 'mfa-challenge', 'first-time-setup',
-    'global-search', 'unsupported-role',
+    // `auth-access-denied` renders with `layout: none` (see docs/frontend/screens/inventory.json),
+    // exactly like `unsupported-role`: a deliberate role-safe dead end with no account chrome, so
+    // there is no shell navigation to assert. Phase UI-03 added the screen without listing it here.
+    'global-search', 'unsupported-role', 'auth-access-denied',
   ]);
   return !STANDALONE.has(screen.key);
 }

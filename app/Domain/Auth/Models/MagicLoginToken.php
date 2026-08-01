@@ -18,9 +18,20 @@ use Illuminate\Support\Str;
  * performed by MagicLinkTokenService via an atomic UPDATE, not by mutating this
  * model, so single-use cannot be lost to a read-modify-write race.
  *
+ * Phase UI-03 (ADR-019) adds the host binding: a token is bound at issue to the user, the account
+ * experience, the exact host, the environment, a safe post-auth route and an audience, and every
+ * one of those is re-verified at consume. The database refuses a still-usable row that is not
+ * fully bound (`magic_login_tokens_binding_complete_check`), so an unbound credential cannot exist.
+ *
  * @property int $id
  * @property string $ulid
  * @property string $email
+ * @property int|null $user_id
+ * @property string|null $account_key
+ * @property string|null $intended_host
+ * @property string|null $environment
+ * @property string|null $redirect_path
+ * @property string|null $audience
  * @property string $token_hash
  * @property Carbon $expires_at
  * @property Carbon|null $consumed_at
@@ -41,6 +52,12 @@ class MagicLoginToken extends Model
     protected $fillable = [
         'ulid',
         'email',
+        'user_id',
+        'account_key',
+        'intended_host',
+        'environment',
+        'redirect_path',
+        'audience',
         'token_hash',
         'expires_at',
         'consumed_at',
@@ -48,6 +65,13 @@ class MagicLoginToken extends Model
         'ip_address',
         'user_agent_hash',
     ];
+
+    /**
+     * The token hash never leaves the server — it is a credential verifier, not data.
+     *
+     * @var list<string>
+     */
+    protected $hidden = ['token_hash'];
 
     /**
      * @return array<string, string>

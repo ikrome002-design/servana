@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Notification;
 uses(RefreshDatabase::class)->group('auth');
 
 it('stores only the SHA-256 hash, never the raw token', function (): void {
-    $service = app(MagicLinkTokenService::class);
-    $raw = $service->issue('owner@salon.co.ke');
+    eligibleOwner('owner@salon.co.ke');
+    $raw = issueBoundMagicLink('owner@salon.co.ke');
 
     $row = MagicLoginToken::query()->firstOrFail();
 
@@ -30,12 +30,13 @@ it('stores only the SHA-256 hash, never the raw token', function (): void {
 });
 
 it('rejects an expired token at the service level', function (): void {
+    eligibleOwner('owner@salon.co.ke');
     $service = app(MagicLinkTokenService::class);
-    $raw = $service->issue('owner@salon.co.ke');
+    $raw = issueBoundMagicLink('owner@salon.co.ke');
 
     MagicLoginToken::query()->update(['expires_at' => now()->subMinute()]);
 
-    expect($service->consume($raw))->toBeNull();
+    expect($service->consume($raw, 'merchant_administrator', accountHostName('merchant_administrator'), 'testing'))->toBeNull();
 });
 
 it('audits the request to audit_logs and never writes the raw token to the log or the audit row', function (): void {
@@ -47,7 +48,7 @@ it('audits the request to audit_logs and never writes the raw token to the log o
     });
 
     $user = eligibleOwner('owner@salon.co.ke');
-    $this->postJson('/api/v1/auth/magic-link', ['email' => 'owner@salon.co.ke'])->assertStatus(202);
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link', ['email' => 'owner@salon.co.ke'])->assertStatus(202);
 
     // Recover the raw token from the captured notification (it never persists).
     $raw = null;

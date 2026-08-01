@@ -94,6 +94,7 @@ final class ApiErrorRenderer
             ErrorCode::NotFound => 'Resource not found.',
             ErrorCode::MethodNotAllowed => 'The method is not allowed for this route.',
             ErrorCode::Conflict => 'The request conflicts with the current state.',
+            ErrorCode::MisdirectedRequest => 'This request was not addressed to a recognised Servana account host.',
             ErrorCode::RateLimited => 'Too many requests.',
             ErrorCode::ServiceUnavailable => 'Service temporarily unavailable.',
             ErrorCode::InternalError => 'An unexpected error occurred.',

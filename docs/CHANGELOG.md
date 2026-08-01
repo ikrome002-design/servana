@@ -6,7 +6,140 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-02 — Multi-host foundation (`phase-ui-02-multi-host-foundation`) — local_complete pending PR CI/review/merge
+### Phase UI-03 — Authentication, session family and account switching (`phase-ui-03-auth-session-account-switching`) — local_complete pending PR CI/review/merge
+
+Off `main` = `fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f` (the Phase UI-02 PR #52 squash-merge).
+Proof: `docs/proof/ui-03.md`. Threat model: `docs/security/ui-03-auth-session-threat-model.md`.
+Artifacts: `docs/frontend/audits/ui-03/`.
+Plan authority: UI/UX plan §5.1–§5.4, §6.1–§6.5, §18.1–§18.7, §21, §23–§26, §25 (Phase UI-03),
+§27; ADR-016, ADR-017, ADR-018, ADR-019; backend Plan §9, §18, §70, §79 R6, §13.2.
+
+**Phase UI-02 reconciled to `verified_complete`** from live Git/GitHub evidence: PR #52 MERGED,
+implementation commit `db3ace4912acd569433216db137671a672276033`, final head
+`5add80c41a9f59c9350b148ef95aaa260a486cd7` (`ci: build SPA before backend shell tests` — a tested
+CI-contract correction touching only `.github/workflows/ci.yml`, **not** a governance-only commit),
+squash merge `fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f`, **sole** parent
+`413c1466be96373a408954c3813b982241b25273`, source tree == merge tree
+`442ed1df21bf35fafb949e69bd256f884624d38d`, merged `2026-07-30T10:38:01Z` (raw GitHub `mergedAt`),
+final CI run `30532318808` attempt 1 with all five required checks SUCCESS, governance comment
+`5129527972` present exactly once, `reviewDecision` blank with `0` submitted reviews (**not**
+independent reviewer approval), local and remote UI-02 branches deleted. The four UI-01 defects
+UI-02 owns — `UI01-PROV-001`, `UI01-PROV-002`, `UI01-HOST-001`, `UI01-ASSET-005` — are promoted to
+`verified_complete`; the historical UI-01 register is unchanged.
+
+#### Added — deployed-origin browser proof (Increment 7), and the three defects it found
+
+The focused cross-host proof ran against the **built production images** — `servana-ui03-nginx:audit`
+as the edge and `servana-ui03-php:audit` (`--target prod`) as the app — with a real PostgreSQL
+database, a real Mailpit inbox, and Chromium sending genuine `Host` headers for the eight
+`*.servana.test` account hosts. **47 observations, 0 failures.** This closes residual risk R1.
+
+It found three product defects that no other gate could reach, because the backend test client never
+passes through nginx and never carries a host-only cookie:
+
+- **`UI03-EDGE-001` (critical).** `CorrelationIdMiddleware` accepted an inbound `X-Correlation-ID` of
+  up to 64 characters while `audit_logs.correlation_id` is `character(26)`. `docker/nginx/default.conf`
+  supplies nginx's own 32-character `$request_id` when the client sends none, so **every audited
+  request through the real edge failed** with `SQLSTATE[22001]` and returned 500 — and any client
+  could trigger it with a 27-character header. The boundary is now bounded to the storable width and
+  **replaces** an over-wide value rather than truncating it, since truncation would collide traces.
+- **`UI03-CTX-001` (high).** After an authorized switch to a second merchant's account,
+  `/api/v1/me` on the target host still reported the **source** merchant and the source
+  permissions: tenant resolution used `activeMembership()` — the first membership — and never
+  consulted the `host_sessions` binding the switch had just written. A new session/host boundary
+  (`SessionBindingResolver` + a neutral `SessionBinding`) now decides which account the session is
+  operating as, and the tenant layer consumes that verified answer while knowing nothing about
+  hosts. ADR-017 is untouched: the host still grants nothing, the comparison is an
+  anti-substitution check on a server-created binding, and the structural guard
+  `AccountHostDoesNotAuthorizeTest` passes **unweakened**.
+- **`UI03-MFA-001` (high).** The MFA challenge regenerates the Laravel session id but did not follow
+  the `host_sessions` row onto it, orphaning the binding — so every mandatory-MFA role (Super
+  Administrator, Merchant Admin, Finance) received `409` from account switching after completing
+  their challenge. `SessionFamilyService::rebindSessionId()` now re-points the row atomically,
+  never resurrecting a revoked one.
+
+Also recorded: **`UI03-TEST-001`** — seven tests were failing in files **byte-identical to the
+UI-03 implementation commit**, so the previously recorded `2,528 passed / 8 skipped / 0 failed`
+backend figure is **not reproducible** and is marked unverified. All seven are fixed.
+
+Evidence added: `docs/frontend/audits/ui-03/screenshot-index.json` and nine targeted screenshots;
+browser evidence populated into the three UI-03 matrices; `scripts/ui03-auth-browser-proof.mjs` and
+`scripts/ui03-browser-fixture.php`. The UI-01 and UI-02 historical evidence sets (163 files) were
+verified **byte-identical** before and after the run.
+
+#### Added — Magic Link host binding (ADR-019)
+
+- Six expand-only binding columns on `magic_login_tokens` (user, account, exact host, environment,
+  safe redirect, audience), with a shaped `CHECK` making the invariant permanent: **any row that is
+  still usable must be fully bound**. The migration invalidates every in-flight unconsumed link, so
+  no unbound credential survives the upgrade.
+- The bindings are verified **inside** the single atomic consume update. A wrong-host attempt
+  therefore matches zero rows: it cannot mint a session, and it cannot burn the legitimate holder's
+  token either.
+- The emailed URL is generated by `AccountHostUrlGenerator` from the registry, never from the
+  request — proven against a poisoned `X-Forwarded-Host`.
+- Every rejection cause returns a **byte-identical** response; only the audit trail distinguishes a
+  substitution attempt from an ordinary expiry.
+
+#### Added — session families and cross-host revocation (ADR-018)
+
+- `session_families`, `host_sessions` and `account_context_handoffs`, all identity-owned and
+  registered EXEMPT in `TenantOwnership` with written rationales. None of them stores a permission
+  snapshot, and the schema test proves no permission-shaped column exists.
+- `SessionFamilyService` creates families and per-host bindings and revokes them at family,
+  merchant, membership, branch or single-session granularity — **deleting the underlying row in
+  Laravel's `sessions` table**, which is what actually denies the next request on every host.
+- `AccessRevocationService` is extended, not duplicated: it remains the single lifecycle entry
+  point and delegates the session-family half. Branch-assignment revocation is scoped to the one
+  membership, so a manager covering two branches keeps the branch they still hold.
+- `POST /api/v1/auth/logout-all` (global logout), `GET /api/v1/auth/sessions` and
+  `DELETE /api/v1/auth/sessions/{session}` (own scope only, sanitized — no raw session id, IP or
+  user agent ever leaves the server).
+
+#### Added — account-context discovery and switching (ADR-018)
+
+- `AccountContextResolver` derives enterable contexts from live rows, reading `merchant_users` and
+  `branch_user_assignments` directly because it runs *before* tenant context exists and legitimately
+  spans merchants.
+- The browser names a context by an **opaque HMAC identifier** and nothing else. The switch request
+  has no rule — and therefore no reader — for a role, host, merchant, branch, permission or MFA
+  field.
+- `POST /api/v1/auth/account-contexts/switch` mints a single-use, hashed, 120-second token and
+  returns only a registry-generated absolute URL; `GET /auth/switch` on the target host consumes it
+  atomically under a row lock, rebuilds the context from current state, regenerates the session,
+  forgets any MFA assertion, and redirects to a token-free URL with `Referrer-Policy: no-referrer`.
+- Replay, expiry, wrong host, wrong environment, revoked family, revoked source session, removed
+  membership, changed role, withdrawn branch assignment and suspended user all reject uniformly.
+
+#### Fixed
+
+- **`UI01-ROLE-001`** — `/platform` carried `requiresAuth` alone, so any authenticated user rendered
+  the Super Administrator shell. A new `requiresAccount()` guard requires the route's account, the
+  server-resolved host account and a server-derived held account to agree before the surface mounts;
+  a mismatch renders a role-safe denial and never redirects to another account.
+- **`UI03-AUTH-001`** — an HTML-accept request to an auth-protected `/api/v1` route returned `500`
+  because Laravel fell back to the `route('login')` that has never existed. `Authenticate::
+  redirectUsing()` now supplies a **relative** destination, so the fallback is never reached and no
+  untrusted host can steer it.
+- **Sanctum stateful domains** were pinned to `localhost` in the test bootstrap, which made all eight
+  account hosts non-stateful under test — a Magic Link verify returned 200 with no session cookie at
+  all. The list is now derived from the account-host registry (no wildcard), and `SESSION_DOMAIN` is
+  documented as necessarily empty so every host gets a host-only cookie.
+
+#### Changed
+
+- `/me` returns `account_keys` — the account experiences the user may enter, derived server-side —
+  so the SPA never needs a role→account mapping of its own.
+- `ErrorCode` gains `misdirected_request` (421); `ResolveAccountHost` now answers the API surface
+  with the standard envelope as well as the browser page.
+
+#### Not done
+
+- **No deployed-origin browser proof was performed.** No Playwright run, no production-image smoke,
+  no screenshots, and no browser evidence is claimed. This is recorded as residual risk R1 and must
+  be closed before the UI-03 pull request is considered complete.
+
+### Phase UI-02 — Multi-host foundation (`phase-ui-02-multi-host-foundation`) — verified_complete (PR #52 merged as `fb64ba6`)
 
 Off `main` = `413c1466be96373a408954c3813b982241b25273` (the Phase UI-01 PR #51 squash-merge).
 Proof: `docs/proof/ui-02.md`. Artifacts: `docs/frontend/audits/ui-02/`.

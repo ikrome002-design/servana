@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { stubAccountContextFor } from './support/roleBootstrap';
 
 /*
  | Phase 20C E2E — the Super-Administrator promotions surface (promotional discounts + free-period
@@ -27,6 +28,9 @@ interface MeOpts {
 
 async function stubMe(page: Page, opts: MeOpts = {}): Promise<void> {
   const isPlatformStaff = opts.isPlatformStaff ?? false;
+  // Phase UI-03: the account context the Laravel shell embeds, which requiresAccount needs.
+  // The preview origin serves no Laravel shell, so without it the /platform guard fails closed.
+  await stubAccountContextFor(page, isPlatformStaff ? 'super_administrator' : 'merchant_administrator');
   await page.route('**/sanctum/csrf-cookie', (r) => r.fulfill({ status: 204, body: '' }));
   await page.route('**/api/v1/me', (r) =>
     r.fulfill(ok({
@@ -37,6 +41,7 @@ async function stubMe(page: Page, opts: MeOpts = {}): Promise<void> {
         memberships: opts.role ? [{ id: 'mm1', role: opts.role, status: 'active' }] : [],
         permissions: opts.permissions ?? [],
         setup: { required: false, current_step: null, completed_at: null },
+        account_keys: [isPlatformStaff ? 'super_administrator' : 'merchant_administrator'],
         branch_ids: [],
         mfa: { required: false, enrolled: false, confirmed: false, verified: false, enrollment_required: false, challenge_required: false, step_up_fresh: false, step_up_fresh_until: null, recovery_codes_remaining: 0 },
       },
@@ -181,11 +186,25 @@ test.describe('Role boundary', () => {
     await stubMe(page, { role: 'merchant_admin', permissions: ['merchant.subscription.view'] });
     await stubPromotions(page);
     await page.goto('/platform/promotions');
-    // The page renders but every management control is absent (denied, not disabled); the API
-    // additionally denies a non-platform user server-side (proven by the backend Feature suite).
+
+    /*
+     * Phase UI-03 STRENGTHENED this boundary, and this expectation is updated to match.
+     *
+     * Before UI-03 the platform screen mounted and hid its controls behind a permission-based
+     * "No access" panel. That is exactly the exposure UI01-ROLE-001 recorded: removing the
+     * controls hid the door without locking it, and the route was still reachable by typing the
+     * URL. `requiresAccount('super_administrator')` now refuses to mount the surface at all, so a
+     * merchant user lands on the role-safe denial instead.
+     *
+     * The assertions below are therefore stricter than the ones they replace: the surface does not
+     * render, AND the denial names no account or resource, AND it does not redirect the user
+     * toward a broader account.
+     */
+    await expect(page.getByRole('heading', { name: /do not have access to this page/i })).toBeVisible();
+    await expect(page).toHaveURL(/\/access-denied$/);
     await expect(page.getByRole('tab')).toHaveCount(0);
-    await expect(page.getByText('No access')).toBeVisible();
     await expect(page.getByRole('button', { name: 'New promotion' })).toHaveCount(0);
+    await expect(page.getByText(/super administrator|platform/i)).toHaveCount(0);
   });
 });
 

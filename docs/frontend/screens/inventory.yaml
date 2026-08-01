@@ -25,6 +25,12 @@ screens:
     status: implemented
     phase: Phase 11
     spec: legal/legal-document.md
+  - key: auth-access-denied
+    domain: auth
+    route: access-denied
+    status: implemented
+    phase: Phase UI-03
+    spec: auth/auth-access-denied.md
   - key: auth-login
     domain: auth
     route: auth.login

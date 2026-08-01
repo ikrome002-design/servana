@@ -21,7 +21,25 @@ final class CorrelationIdMiddleware
 {
     public const HEADER = 'X-Correlation-ID';
 
-    private const MAX_LENGTH = 64;
+    /**
+     * The widest correlation id that can actually be STORED.
+     *
+     * `audit_logs.correlation_id` is `character(26)` — sized for the ULID this middleware mints.
+     * The bound here must therefore be 26, not some larger "looks safe" number: anything longer
+     * is accepted at the boundary, carried all the way to the audit write, and then rejected by
+     * PostgreSQL with SQLSTATE 22001, which surfaces as a 500 on every audited request.
+     *
+     * That is not hypothetical. It is what the Phase UI-03 deployed-origin browser proof hit on
+     * the real nginx edge: `docker/nginx/default.conf` falls back to nginx's `$request_id`, a
+     * 32-character hex string, whenever the client sends no `X-Correlation-ID`. Every audited
+     * request through the edge therefore 500'd. No backend test could catch it, because the test
+     * client never passes through nginx and the app's own ULID already fits.
+     *
+     * A client-supplied header hits the same path, so this is also an availability defect
+     * reachable by anyone: `X-Correlation-ID: <27 characters>` was enough to 500 an audited
+     * endpoint. Bounding the untrusted value to what the system can hold is the boundary's job.
+     */
+    private const MAX_LENGTH = 26;
 
     public function __construct(private readonly CorrelationId $correlationId) {}
 

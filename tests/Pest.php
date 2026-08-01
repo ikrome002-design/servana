@@ -10,6 +10,8 @@ use App\Domain\Auth\Models\MerchantUserPermissionOverride;
 use App\Domain\Auth\Models\MfaCredential;
 use App\Domain\Auth\Models\Permission;
 use App\Domain\Auth\Seeders\PermissionSeeder;
+use App\Domain\Auth\Services\MagicLinkTokenService;
+use App\Domain\Auth\Support\MagicLinkBinding;
 use App\Domain\Billing\Enums\BillingInterval;
 use App\Domain\Billing\Enums\MerchantBillingStatus;
 use App\Domain\Billing\Enums\MerchantSubscriptionStatus;
@@ -52,6 +54,8 @@ use App\Domain\Scheduling\Enums\QueueAssignmentMode;
 use App\Domain\Scheduling\Enums\ServiceSessionStatus;
 use App\Domain\Scheduling\Models\PersonnelAvailability;
 use App\Domain\Scheduling\Models\ServiceSession;
+use App\Http\Hosts\AccountHostRegistry;
+use App\Http\Hosts\AccountHostUrlGenerator;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Storage;
@@ -132,6 +136,78 @@ function postStateful(string $uri, array $data = []): TestResponse
     return test()
         ->withHeader('Origin', 'http://localhost')
         ->postJson($uri, $data);
+}
+
+/*
+ |==============================================================================
+ | Phase UI-03 host-binding helpers (ADR-018, ADR-019).
+ |
+ | Authentication is now bound to an account host, so a test that does not vary the host is not
+ | testing the control. Laravel's test client builds the request from the URI and Symfony's
+ | Request::create() OVERWRITES HTTP_HOST with the URI's host — so `withHeader('Host', ...)` on a
+ | relative path is silently ineffective and every call would hit `localhost`. These helpers use
+ | ABSOLUTE URLs for exactly that reason (the same trap AccountHostDoesNotAuthorizeTest documents).
+ */
+
+/** The absolute URL for a path on one account host, in the testing environment. */
+function accountHostUrl(string $accountKey, string $path = '/'): string
+{
+    return app(AccountHostUrlGenerator::class)->to($accountKey, $path, 'testing');
+}
+
+/** The bare host name for an account, e.g. `finance.servana.test`. */
+function accountHostName(string $accountKey): string
+{
+    return app(AccountHostRegistry::class)->hostForAccount($accountKey, 'testing');
+}
+
+/**
+ * POST to an /api/v1 endpoint ON a specific account host, as a first-party SPA request.
+ *
+ * @param  array<string, mixed>  $data
+ */
+function postOnHost(string $accountKey, string $path, array $data = []): TestResponse
+{
+    $base = accountHostUrl($accountKey, '/');
+
+    return test()
+        ->withHeader('Origin', rtrim($base, '/'))
+        ->postJson(rtrim($base, '/').$path, $data);
+}
+
+/**
+ * Issue a fully BOUND Magic Link for a user and return the raw token.
+ *
+ * Replaces the Phase 5 `MagicLinkTokenService::issue($email)` call shape across the suite: an
+ * unbound token can no longer exist (the database CHECK refuses one), so a test that wants a
+ * usable token must say which account host it is for.
+ */
+function issueBoundMagicLink(
+    User|string $user,
+    string $accountKey = 'merchant_administrator',
+    ?string $redirectPath = null,
+    ?string $host = null,
+): string {
+    // An email is accepted for the many Phase 5 call sites that only had one; the user is then
+    // REQUIRED, because the database refuses a usable token with no bound user.
+    if (is_string($user)) {
+        $user = User::query()->where('email', mb_strtolower(trim($user)))->firstOrFail();
+    }
+
+    return app(MagicLinkTokenService::class)->issue(new MagicLinkBinding(
+        email: $user->email,
+        userId: $user->id,
+        accountKey: $accountKey,
+        host: $host ?? accountHostName($accountKey),
+        environment: 'testing',
+        redirectPath: $redirectPath,
+    ));
+}
+
+/** Verify a bound Magic Link on the host it was issued for. */
+function verifyMagicLinkOnHost(string $rawToken, string $accountKey = 'merchant_administrator'): TestResponse
+{
+    return postOnHost($accountKey, '/api/v1/auth/magic-link/verify', ['token' => $rawToken]);
 }
 
 /*

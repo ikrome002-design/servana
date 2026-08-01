@@ -1,0 +1,234 @@
+{
+  "generated_by": "Phase UI-03",
+  "purpose": "Machine-verifiable closure record for the defects Phase UI-03 owns. The UI-01 audit register (docs/frontend/audits/ui-01/defect-register.csv) is a historical evidence snapshot and is deliberately NOT rewritten.",
+  "lifecycle_rule": "A local correction is NOT verified_complete. These closures stay `local_complete pending PR CI/review/merge` until the UI-03 pull request merges with green required checks and recorded governance evidence, at which point the next branch reconciles them.",
+  "ui03_branch": "phase-ui-03-auth-session-account-switching",
+  "ui03_base": "fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
+  "ui03_pull_request": "NOT CREATED — UI-03 stops at a pushed branch by instruction",
+  "closures": [
+    {
+      "defect_id": "UI01-ROLE-001",
+      "prior_severity": "high",
+      "owner_phase": "UI-03",
+      "observed_ui01_evidence": "All seven merchant-side account fixtures could request /platform and the router rendered the Super Administrator landing. The /platform tree used only `requiresAuth`; an existing `requiresRole` guard was never attached. Backend platform APIs remained independently protected.",
+      "root_cause": "The route tree declared no owning account, so nothing could check one. `requiresRole` would have been the wrong instrument anyway: it compares a client-held role string rather than asking the server which accounts the user may enter.",
+      "why_this_is_the_root_cause": "Removing the navigation entry would have hidden the door, not locked it — the route was reachable by typing the URL. Only a guard that consults the server-resolved host AND the server-derived account list can refuse it.",
+      "correct_fix": "A new `requiresAccount(accountKey)` route guard requiring three things to agree before an account surface mounts: the route's own account, the account the SERVER resolved for the host, and an account the SERVER says the user currently holds (`/me.account_keys`, derived by AccountContextResolver from live membership rows). A mismatch renders the role-safe `access-denied` state and never redirects to another account.",
+      "files_changed": [
+        "resources/spa/src/router/guards.ts",
+        "resources/spa/src/router/routes/platform.ts",
+        "resources/spa/src/router/index.ts",
+        "resources/spa/src/pages/auth/AccessDenied.vue",
+        "resources/spa/src/stores/authStore.ts",
+        "resources/spa/src/types/models.ts",
+        "app/Http/Resources/Auth/AuthenticatedUserResource.php",
+        "app/Domain/Sessions/Services/AccountContextResolver.php"
+      ],
+      "tests": [
+        "accountRouteGuard.spec — denies each of the seven merchant accounts the platform surface, on the platform host",
+        "accountRouteGuard.spec — admits a genuine platform user; denies a platform user on a merchant host",
+        "accountRouteGuard.spec — fails closed with no host context and with no account keys",
+        "accountRouteGuard.spec — no client-side role mapping or permission computation",
+        "AccountHostDoesNotAuthorizeTest (unchanged) — the Host header alone still grants nothing"
+      ],
+      "before": "Any authenticated user rendered the Super Administrator shell at /platform.",
+      "after": "The surface does not mount unless route account, server-resolved host account and a server-derived held account all agree; otherwise the role-safe denial renders. No redirect to a broader account occurs in any case.",
+      "browser_proof": "CAPTURED. Deployed-origin observation OBS-33: a Personnel-only user, genuinely authenticated on their own account host, requested the platform-owned /platform route and the role-safe access-denied state rendered ('You do not have access to this page'); no redirect to another account occurred. OBS-33b additionally records that the same deep link on the platform HOST carries no session at all, because the session cookie is host-only — so cookie scoping denies before the guard is even reached. Screenshot: docs/frontend/audits/ui-03/screenshots/09-wrong-account-deep-link-denied.png.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "The guard is UX; the backend remains the security boundary. It is attached to /platform (where the proven exposure was); UI-07 attaches it to the remaining seven account trees as it builds their route contracts."
+    },
+    {
+      "defect_id": "UI03-AUTH-001",
+      "prior_severity": "medium",
+      "owner_phase": "UI-03",
+      "first_observed": "Phase UI-02 (docs/proof/ui-02.md, 'Pre-existing issue observed, not owned, not fixed')",
+      "observed_ui02_evidence": "An HTML-accept (browser-navigation) request to an auth-protected /api/v1 route returned 500. Proven pre-existing: `git show origin/main:routes/web.php` contained no `login` route, and the same endpoint returned 401 for JSON callers.",
+      "reproduced_in_ui03": "tests/Feature/Auth/Ui03GapReproductionTest.php asserted the 500 and passed before any fix; the harness was deleted once the permanent suite replaced it.",
+      "root_cause": "Laravel's exception handler falls back to `route('login')` when an AuthenticationException carries no redirect target. Servana is an SPA and has never had a named `login` route, so the fallback raised RouteNotFoundException. JSON callers were unaffected because Authenticate::unauthenticated() passes null for them.",
+      "why_this_is_the_root_cause": "The route genuinely does not exist — `Route::has('login') === false` is now asserted permanently — so nothing downstream of that fallback could have produced a correct answer.",
+      "correct_fix": "`Authenticate::redirectUsing()` — the framework's own hook — supplies a destination, so `route('login')` is never reached. The destination is a RELATIVE path by construction: it cannot leave the origin the request arrived on, cannot be steered by an attacker-controlled Host or X-Forwarded-Host, cannot move a user toward a broader account host, and cannot loop. Backend-owned and authentication paths are dropped from the preserved intended path rather than echoed back.",
+      "files_changed": [
+        "app/Providers/AppServiceProvider.php",
+        "app/Http/Middleware/ResolveAccountHost.php",
+        "app/Enums/ErrorCode.php",
+        "app/Exceptions/ApiErrorRenderer.php"
+      ],
+      "tests": [
+        "UnauthenticatedBrowserRedirectTest — no named login route exists (the fix supplies a destination, it does not add a route)",
+        "UnauthenticatedBrowserRedirectTest — JSON request returns the standard 401 envelope",
+        "UnauthenticatedBrowserRedirectTest — HTML-accept request to /api/v1 no longer 500s on any account host",
+        "UnauthenticatedBrowserRedirectTest — browser page navigation redirects to the same host's /auth/login with a safe intended path",
+        "UnauthenticatedBrowserRedirectTest — an untrusted forwarded host cannot steer the destination",
+        "UnauthenticatedBrowserRedirectTest — machine routes unaffected; unapproved host denied, not redirected"
+      ],
+      "before": "HTML-accept request to an auth-protected /api/v1 route → 500 (RouteNotFoundException).",
+      "after": "HTML-accept request to /api/v1 → 401 with the standard envelope (an endpoint is not a page). Browser page navigation → 302 to the same host's /auth/login?redirect=<safe path>. No missing-route exception, no redirect loop, no cross-host redirect.",
+      "browser_proof": "CAPTURED. Deployed-origin observations OBS-03 (JSON request to a protected API returns the standard 401 envelope), OBS-04 (HTML-accept request to the same API stays 401 and never 500s), OBS-01 and OBS-02 (a real browser page navigation on an approved host reaches that host's own login experience with no 500 and no redirect loop), OBS-05 (an unapproved host stays denied and is never redirected to an approved account host).",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "No authenticated PAGE route exists yet, so the redirect path is proven against a route registered inside the test. UI-07 owns the real authenticated page contract; the guard is in place before those pages arrive rather than after."
+    },
+    {
+      "defect_id": "UI03-EDGE-001",
+      "severity": "critical",
+      "owner_phase": "UI-03",
+      "found_by": "Phase UI-03 deployed-origin browser proof (and by nothing else)",
+      "observed_deployed_behaviour": "Against the BUILT production nginx + PHP pair, POST /api/v1/auth/magic-link returned 500 with the generic internal_error envelope. storage/logs/laravel.log showed SQLSTATE[22001] 'value too long for type character(26)' on the audit_logs INSERT.",
+      "impact": "Availability and auditability. Every request that writes an audit row failed through the real edge — sign-in, sign-in failure, and by extension effectively every audited mutation. It was also reachable by any client: an X-Correlation-ID header of 27+ safe characters was enough to 500 an audited endpoint, with no authentication required.",
+      "root_cause": "CorrelationIdMiddleware accepted an inbound X-Correlation-ID up to 64 characters, but audit_logs.correlation_id is character(26) — sized for the ULID the middleware mints. docker/nginx/default.conf sets HTTP_X_CORRELATION_ID to nginx's own $request_id, a 32-character hex string, whenever the client sends no header. The boundary therefore admitted a value the system could not store.",
+      "why_no_test_caught_it": "Laravel's test client does not pass through nginx, so no request ever carried a 32-character correlation id; the app's self-minted ULID already fits. 2,528 backend tests, Larastan level 8 and the UI-02 host smoke all passed with the defect present.",
+      "why_this_is_the_root_cause": "The two values are a contract: what the boundary accepts must be storable. Widening the column would also have worked, but audit_logs is append-only and hash-chained, and bounding untrusted input to what the system can hold is the boundary's own job.",
+      "correct_fix": "CorrelationIdMiddleware::MAX_LENGTH is now 26 — the audit column width — with the relationship documented in place. An over-wide value is REPLACED with a fresh ULID, never truncated: truncation would collide distinct traces.",
+      "files_changed": [
+        "app/Http/Middleware/CorrelationIdMiddleware.php"
+      ],
+      "tests": [
+        "tests/Feature/Api/CorrelationIdStorageBoundTest.php — bounds an inbound id to what audit_logs can store, reading the width from information_schema so the two cannot drift",
+        "tests/Feature/Api/CorrelationIdStorageBoundTest.php — writes the audit row instead of 500ing when the edge supplies its own 32-character request id",
+        "tests/Feature/Api/CorrelationIdStorageBoundTest.php — the stored id round-trips out of the audit row",
+        "tests/Feature/Api/CorrelationIdTest.php — unchanged, still green"
+      ],
+      "test_result": "8 passed (25 assertions)",
+      "browser_proof": "CAPTURED. After the fix, the same request on the same production pair returned the uniform 202 (OBS-06) and the whole 47-observation proof completed with 0 failures.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "Tracing: nginx's $request_id is no longer honoured as the correlation id, so the edge access log and the application log correlate through the X-Correlation-ID RESPONSE header rather than a shared inbound value. Joining them in the access-log format belongs to UI-17 / backend Phase 25. Recorded as residual risk R7."
+    },
+    {
+      "defect_id": "UI03-CTX-001",
+      "severity": "high",
+      "owner_phase": "UI-03",
+      "found_by": "Phase UI-03 deployed-origin browser proof (and by nothing else)",
+      "observed_deployed_behaviour": "After an authorized context handoff from the Front Office account of merchant A to the Audit account of merchant B, GET /api/v1/me on audit.servana.test still reported merchant A and merchant A's Front Office permissions. The host_sessions row was correct; the request simply never consulted it.",
+      "impact": "Account switching changed the cookie, the host and the chrome but not the data or the authority. A user who asked for merchant B was answered as merchant A. This is a tenant-context correctness and isolation defect. It is not a privilege escalation — the user genuinely held both memberships — but it defeats the purpose of ADR-018 switching and would present one merchant's data on another merchant's account host.",
+      "root_cause": "TenantContextResolver resolved the merchant with User::activeMembership(), which returns the FIRST active membership. Because merchant_users is UNIQUE(merchant_id, user_id), a user with two memberships necessarily holds them in two different merchants, so 'the first one' is independent of which account the session is actually in. UI-03 created host_sessions carrying merchant/membership/branch per host but never wired tenant resolution to them.",
+      "why_no_test_caught_it": "Almost every fixture holds exactly one membership, for which activeMembership() is the only possible answer and therefore always correct. The defect is only observable with a multi-merchant user actually switching, which is precisely what the browser proof does.",
+      "why_this_is_the_root_cause": "The host_sessions row already recorded the intended context correctly. Nothing downstream could have produced the right merchant, because nothing read it.",
+      "correct_fix": "A new session/host boundary, SessionBindingResolver, decides which account the current session is bound to and hands the tenant layer a neutral SessionBinding. The tenant layer consumes that answer and knows nothing about hosts. The binding must AGREE with the request (same user, unrevoked session, unrevoked family, same environment, and the host addressed equals the host bound) before it is honoured; the membership is then re-loaded and re-verified from canonical state, and permissions are resolved fresh from it on every request. A binding that is required but missing or disagreeing resolves NOTHING — the context stays empty and downstream gates deny — rather than falling back to another membership the user happens to hold.",
+      "adr_017_note": "The host still grants nothing. The comparison is an anti-substitution check on a SERVER-CREATED binding, the same category as Magic Link host binding (ADR-019) and handoff target binding (ADR-018) — not an authorization input. The structural guard AccountHostDoesNotAuthorizeTest proves no account-host reference reaches any authorization layer, and it passes unweakened.",
+      "files_changed": [
+        "app/Domain/Sessions/Services/SessionBindingResolver.php",
+        "app/Domain/Sessions/Support/SessionBinding.php",
+        "app/Domain/Tenancy/TenantContextResolver.php",
+        "app/Http/Middleware/ResolveTenantContext.php",
+        "app/Http/Controllers/Api/V1/Auth/MagicLinkController.php",
+        "app/Http/Controllers/Api/V1/Auth/MfaController.php"
+      ],
+      "tests": [
+        "tests/Feature/Sessions/HostSessionTenantContextTest.php — resolves the bound membership rather than the first active one",
+        "tests/Feature/Sessions/HostSessionTenantContextTest.php — source-only permissions are absent from the target, by set difference",
+        "tests/Feature/Sessions/HostSessionTenantContextTest.php — fails closed, never falls back, when a required binding is missing or does not agree",
+        "tests/Feature/Sessions/HostSessionTenantContextTest.php — a binding owned by another user, or a suspended membership, resolves nothing",
+        "tests/Feature/Sessions/HostSessionTenantContextTest.php — no permission snapshot exists on host_sessions; a role change takes effect on the next resolution",
+        "tests/Feature/Hosts/AccountHostDoesNotAuthorizeTest.php — unchanged and unweakened, proving the dependency direction"
+      ],
+      "test_result": "12 passed (27 assertions); structural guard 6 passed; complete affected set 603 passed / 4 skipped / 0 failed",
+      "browser_proof": "CAPTURED. OBS-21 (target /me reports the target merchant, source merchant absent), OBS-22 (source-only permissions absent, target resolves its own — proven by set difference, not keyword match), OBS-22b (target merchant, membership and account key reported), OBS-24 (the source host session survives and still reports only the source context).",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "Requests with no host session — machine hosts, unapproved hosts, token callers, queue and scheduler work — keep the previous unbound behaviour, which is unambiguous because those principals hold a single active membership. UI-07 should confirm the binding requirement as it builds the authenticated page contract."
+    },
+    {
+      "defect_id": "UI03-MFA-001",
+      "severity": "high",
+      "owner_phase": "UI-03",
+      "found_by": "Phase UI-03 deployed-origin browser proof (and by nothing else)",
+      "observed_deployed_behaviour": "A mandatory-MFA user signed in, satisfied their TOTP challenge, and then received 409 conflict from POST /api/v1/auth/account-contexts/switch. They could never switch account contexts after completing MFA.",
+      "impact": "The three mandatory-MFA roles — Super Administrator, Merchant Admin, Finance — could not use account switching at all, which is exactly the population most likely to hold more than one context. Own-session listing also lost the current session, and single-session revocation could not target it.",
+      "root_cause": "host_sessions is keyed by the Laravel session id. MfaController::assertSession() regenerates that id at the MFA privilege boundary — correctly, as fixation defence — but did not follow the host_sessions row onto the new id. The row was orphaned, so findBySessionId() returned nothing and the session stopped being a recognised host session.",
+      "why_no_test_caught_it": "Magic Link verify and handoff consume both regenerate and THEN bind, so they are safe by construction and no existing test covered the regenerate-without-rebind pattern. Reaching it requires a mandatory-MFA user who completes a challenge and then switches — a sequence only the browser proof performs.",
+      "why_this_is_the_root_cause": "The session id is the row's key. Once it changed without the row following, every lookup keyed on it necessarily failed.",
+      "correct_fix": "SessionFamilyService::rebindSessionId() atomically re-points the active row from the previous id to the regenerated one, preserving the host-session ULID, family, user, account, host, merchant, membership, branch, environment and revocation state. It is a no-op when the id did not change, when the previous id owned no host session, and when the row is already revoked — so a revoked session is never resurrected. MfaController orchestrates it and does not duplicate persistence logic.",
+      "files_changed": [
+        "app/Domain/Sessions/Services/SessionFamilyService.php",
+        "app/Http/Controllers/Api/V1/Auth/MfaController.php"
+      ],
+      "tests": [
+        "tests/Feature/Sessions/MfaSessionRebindTest.php — follows a host session onto a regenerated session id; the old id stops resolving",
+        "tests/Feature/Sessions/MfaSessionRebindTest.php — no-op when the previous id owned no host session, and when the id did not change",
+        "tests/Feature/Sessions/MfaSessionRebindTest.php — never resurrects a revoked host session onto a new id",
+        "tests/Feature/Sessions/MfaSessionRebindTest.php — the session stays switchable after an MFA challenge, with the assertion intact"
+      ],
+      "test_result": "5 passed (11 assertions)",
+      "browser_proof": "CAPTURED. OBS-31 (the mandatory-MFA user satisfies the challenge on the source host) and OBS-32 (the target session records mfa_required_at_creation = true, does NOT inherit the source assertion, and the mandatory target role is challenged again — a gated target route answers 403 mfa_challenge_required). Screenshot: docs/frontend/audits/ui-03/screenshots/08-target-mfa-challenge-required.png.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None known. The source MFA assertion is still deliberately not copied to the target session, which OBS-32 confirms."
+    },
+    {
+      "defect_id": "UI03-E2E-001",
+      "severity": "high",
+      "owner_phase": "UI-03",
+      "found_by": "The full repository Playwright suite, run for the first time since the requiresAccount guard was added",
+      "observed_deployed_behaviour": "The first full Playwright run produced 815 passed / 47 failed. Every one of the 47 failures involved the super_administrator account or the /platform tree: role landing, get-started, dashboard, billing settings, promotions, registration monitoring, platform-fee configuration, the phase-23 release-audit sweep, and the platform accessibility, responsive and navigation-placement specs.",
+      "impact": "Evidence integrity and gate reliability, not production behaviour. The guard is correct at a real account host; it is unsatisfiable at the `vite preview` origin, so the repository's browser gate had been red since UI-03 without anyone knowing.",
+      "root_cause": "UI-03 attached `requiresAccount('super_administrator')` to the /platform route tree. That guard requires three things to agree: the route's account, the account the SERVER resolved for the host, and an account the SERVER says the user holds. The e2e harness satisfies none of the two server-provided inputs — `vite preview` serves a static index.html with no Laravel shell, so the `servana-account-context` element the shell embeds is absent and `currentAccountContext()` returns null; and the `/api/v1/me` stub was never given the `account_keys` array UI-03 added, so `holdsAccount()` is false. The guard therefore failed closed on every platform surface.",
+      "why_no_test_caught_it": "UI-03 never ran the Playwright suite. Its final-gates table records Pint, Larastan, Vitest, ESLint, vue-tsc, OpenAPI, build and audit results, but has no Playwright row, and the phase explicitly recorded the browser proof as not performed.",
+      "why_this_is_the_root_cause": "The guard reads exactly two server-supplied values and both were missing from the harness. Supplying them turns the previously failing platform specs green with no change to the guard.",
+      "correct_fix": "The e2e harness now stubs the account context the shell would embed, and includes `account_keys` in the `/me` stub — precisely what it already does for `/me` and `/sanctum`, so the REAL frontend can be driven against a stubbed server. Applied in the two shared harnesses (`stubBootstrap()` for the role specs, `prepare()` for the release-audit specs) and, via an exported `stubAccountContextFor()` helper, in the four platform specs that define their own local `stubMe()`. Separately, `auth-access-denied` — a live screen UI-03 registered in the inventory but never added to the release-audit matrix — is now audited and listed as STANDALONE, because it renders with `layout: none` exactly like `unsupported-role`. The guard, the router and the SPA are untouched.",
+      "files_changed": [
+        "tests/e2e/support/roleBootstrap.ts",
+        "tests/e2e/support/releaseAudit.ts",
+        "tests/e2e/phase-20a-billing.spec.ts",
+        "tests/e2e/phase-20b.spec.ts",
+        "tests/e2e/phase-20c.spec.ts",
+        "tests/e2e/phase-20e.spec.ts"
+      ],
+      "superseded_expectation": "tests/e2e/phase-20c.spec.ts 'Role boundary' expected the platform screen to MOUNT and hide its controls behind a permission-based 'No access' panel. That is the pre-UI-03 behaviour and the exact exposure UI01-ROLE-001 recorded. `requiresAccount` now refuses to mount the surface at all, so the assertion was updated to the stronger property: the surface does not render, the denial names no account or resource, the URL is /access-denied, and no redirect toward a broader account occurs.",
+      "product_code_changed": "NONE. `git diff 64ca7cc -- resources/spa` is empty and a clean rebuild reproduces the recorded Vite manifest 86363229daf61e9e17b71780b509627b2ac536ba663b4baa1968b8955550ac5f exactly. An `id=\"main-content\"` addition to AccessDenied.vue was tried and REVERTED: the harness already models shell-less screens with a STANDALONE set, so classifying the screen correctly is both the smaller fix and the accurate one, and it leaves every captured artefact valid.",
+      "tests": [
+        "tests/e2e/role-entry-surfaces.spec.ts — super_administrator lands on its own live landing page",
+        "tests/e2e/role-navigation-keyboard.spec.ts — Super Administrator primary navigation is in the header (no sidebar)",
+        "tests/e2e/role-foundation-accessibility.spec.ts and role-foundation-responsive.spec.ts — platform landing axe-clean and overflow-free",
+        "tests/e2e/phase-20a-billing.spec.ts, phase-20e.spec.ts, phase-23-release-audit.spec.ts — the platform screens they audit"
+      ],
+      "test_result": "Spot-check after the fix: role-entry-surfaces + role-navigation-keyboard, 14 passed. Full-suite result recorded in docs/proof/ui-03.md.",
+      "browser_proof": "The guard's DENY path is additionally proven at the deployed origin by OBS-33 — a real authenticated user requesting a foreign-account route on their own account host receives the role-safe access-denied state.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "The guard's ALLOW path at a REAL account host — a genuine platform-staff user reaching /platform on citrus.servana.ke — is proven by the preview-origin e2e specs and by accountRouteGuard.spec.ts (13 unit tests), not by the deployed-origin run: the UI-03 browser fixture contains no platform-staff user. Recorded as residual risk R10."
+    },
+    {
+      "defect_id": "UI03-TEST-001",
+      "severity": "medium",
+      "owner_phase": "UI-03",
+      "found_by": "Re-running the targeted suites during the deployed-origin proof",
+      "observed_deployed_behaviour": "Seven tests failed in files byte-identical to commit 64ca7cc51bd25c19fbb3d9733fd353ec63062c48 (git diff HEAD on them is empty), so they were failing in the committed UI-03 tree before any work in this session.",
+      "impact": "Evidence integrity, not product behaviour. The UI-03 proof document records a final backend gate of '2,528 passed / 8 skipped / 0 failed'. That figure is not reproducible from the committed tree: these seven tests raise ArgumentCountError or ModelNotFoundException before asserting anything.",
+      "root_cause": "UI-03 changed three signatures — MagicLinkTokenService::consume() and RequestMagicLink::handle() both became host-bound and take four arguments, and issueBoundMagicLink() now requires a real user because the database CHECK refuses a usable token with no bound user — but these call sites were left on the Phase 5 one-argument shape. Two further tests requested a Magic Link on an account host the user does not hold, which host binding now correctly answers with the uniform 202 and no email.",
+      "why_this_is_the_root_cause": "The failures are argument-count and missing-fixture errors raised before any assertion runs, plus two assertions that contradict the host-binding contract UI-03 itself introduced.",
+      "correct_fix": "Each call site now names the account the token was actually issued for, via a local consumeOnBoundHost() helper; the missing user is created; and the two eligibility tests request on the account host their user holds. This is the same class as UI-03's own recorded failed-run #3 (MidSessionSuspensionTest), which was fixed the same way. No assertion was weakened and no test was skipped.",
+      "files_changed": [
+        "tests/Feature/Auth/MagicLinkRevocationTest.php",
+        "tests/Feature/Auth/BranchAssignmentEligibilityTest.php",
+        "tests/Feature/Auth/LoginEligibilityMerchantMembershipTest.php"
+      ],
+      "tests": [
+        "tests/Feature/Auth/MagicLinkRevocationTest.php — 5 tests, now exercising host-bound consume",
+        "tests/Feature/Auth/BranchAssignmentEligibilityTest.php — 4 tests",
+        "tests/Feature/Auth/LoginEligibilityMerchantMembershipTest.php — 8 tests"
+      ],
+      "test_result": "17 passed (38 assertions)",
+      "browser_proof": "Not applicable — a test-suite defect, not a runtime behaviour.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "The originally recorded 2,528 backend figure should be treated as unverified. This session re-ran the complete affected set (Auth, Isolation, Security, Hosts, Onboarding, Sessions, Tenancy, Api) rather than the whole suite, and records that measured figure instead of restating the original."
+    }
+  ],
+  "explicitly_left_open": [
+    { "defect_id": "UI01-PROV-003", "owner_phase": "UI-16", "reason": "The Playwright suite still runs against a Vite preview origin. UI-03 captured no browser evidence at all and does not claim any part of this." },
+    { "defect_id": "UI01-PROV-004", "owner_phase": "UI-17", "reason": "Out of UI-03 scope." },
+    { "defect_id": "UI01-PROV-005", "owner_phase": "UI-17", "reason": "Out of UI-03 scope." }
+  ],
+  "not_done_in_ui03": [
+    {
+      "item": "Deployed-origin browser proof (phase brief Increment 7)",
+      "status": "NOT PERFORMED",
+      "detail": "The focused cross-host Playwright suite, the production-image smoke and the targeted UI-03 screenshot set were not run. No screenshot index exists and no browser evidence is claimed anywhere in this phase.",
+      "consequence": "The switch flow's issuance half, the cross-host cookie separation, the target-host MFA challenge and the global-logout-across-two-hosts scenario are proven server-side and in unit tests, but not against a real browser.",
+      "owner": "UI-03 follow-up before the pull request is considered complete"
+    }
+  ],
+  "permission_matrix_changed": false,
+  "new_permission_keys": [],
+  "blocked_decision": {
+    "item": "Cross-user administrative session inspection and revocation",
+    "reason": "docs/auth/permission-matrix.yaml contains no canonical authority for it, and UI-03 does not invent a grant.",
+    "smallest_required_decision": "Whether to add a permission key (e.g. `security.session.revoke`) and which roles hold it. Until then, session management stays own-scope only.",
+    "current_behaviour": "Every session read and revoke is filtered by the authenticated user's own user_id; a foreign session ULID returns 404, never 403."
+  }
+}

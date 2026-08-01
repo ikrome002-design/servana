@@ -37,12 +37,14 @@ it('snapshots eligible salary + commission + adjustment into one item per staff'
     [$branch, $staff] = payoutBranchStaff();
     earnedCommission($branch, $staff, 50000);
     pendingSalary($branch, $staff, 5000000);
+    // Adjustment eligibility uses its Africa/Nairobi created_at business date; pin it inside this July run.
     CompensationAdjustment::factory()->create([
         'merchant_id' => $branch->merchant_id,
         'branch_id' => $branch->id,
         'staff_profile_id' => $staff->id,
         'amount_minor' => -1000,
         'currency' => 'KES',
+        'created_at' => '2026-07-15 09:00:00',
     ]);
 
     $run = draftRun($branch);

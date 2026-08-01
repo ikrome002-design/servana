@@ -8,6 +8,8 @@ use App\Domain\Auth\Mfa\MfaStatus;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Onboarding\Services\FirstTimeSetupProgress;
+use App\Domain\Sessions\Services\AccountContextResolver;
+use App\Domain\Sessions\Support\AccountContext;
 use App\Domain\Tenancy\TenantContext;
 use App\Http\Resources\MerchantMembershipResource;
 use App\Http\Resources\MerchantResource;
@@ -72,6 +74,19 @@ final class AuthenticatedUserResource extends JsonResource
             // overrides, request-cached by TenantContext. UX only — the backend
             // (EnsurePermission + policies) is the security boundary.
             'permissions' => $context->permissions(),
+            // Phase UI-03 (ADR-018; UI/UX plan §19.1): the account experiences this user may
+            // currently enter, DERIVED SERVER-SIDE from live membership rows. The SPA needs it to
+            // refuse a wrong-account surface before it mounts (UI01-ROLE-001), and giving it the
+            // answer is what stops the frontend inventing a role→account mapping of its own — a
+            // second authority that could drift from the database.
+            //
+            // Account KEYS only. No permission, no merchant identity, no branch identity: the
+            // switcher's own endpoint returns the full contexts, and it does so under the same
+            // ownership check.
+            'account_keys' => array_map(
+                static fn (AccountContext $context): string => $context->accountKey,
+                app(AccountContextResolver::class)->forUser($user),
+            ),
             'setup' => $this->setupState($merchant),
             // Safe MFA state (Plan §18): drives the SPA enrollment/challenge/
             // step-up routing. Never exposes the secret or recovery-code hashes.

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\Auth\Services\MagicLinkTokenService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class)->group('auth');
@@ -12,9 +11,9 @@ it('consumes a valid token, logs in, and returns the bootstrap payload', functio
     $user->email_verified_at = null; // first login verifies it
     $user->save();
 
-    $raw = app(MagicLinkTokenService::class)->issue('owner@salon.co.ke');
+    $raw = issueBoundMagicLink('owner@salon.co.ke');
 
-    $response = postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw])
+    $response = postOnHost('merchant_administrator', '/api/v1/auth/magic-link/verify', ['token' => $raw])
         ->assertStatus(200)
         ->assertJsonPath('data.user.email', 'owner@salon.co.ke')
         ->assertJsonStructure(['data' => [
@@ -38,8 +37,8 @@ it('sets email_verified_at on first login and stamps last_login_at', function ()
     $user->save();
     expect($user->fresh()->email_verified_at)->toBeNull();
 
-    $raw = app(MagicLinkTokenService::class)->issue('first@salon.co.ke');
-    postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw])->assertStatus(200);
+    $raw = issueBoundMagicLink('first@salon.co.ke');
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link/verify', ['token' => $raw])->assertStatus(200);
 
     $fresh = $user->fresh();
     expect($fresh->email_verified_at)->not->toBeNull()
@@ -48,9 +47,9 @@ it('sets email_verified_at on first login and stamps last_login_at', function ()
 
 it('does not expose the raw token or bigint id in the response', function (): void {
     eligibleOwner('safe@salon.co.ke');
-    $raw = app(MagicLinkTokenService::class)->issue('safe@salon.co.ke');
+    $raw = issueBoundMagicLink('safe@salon.co.ke');
 
-    $response = postStateful('/api/v1/auth/magic-link/verify', ['token' => $raw])->assertStatus(200);
+    $response = postOnHost('merchant_administrator', '/api/v1/auth/magic-link/verify', ['token' => $raw])->assertStatus(200);
 
     expect($response->getContent())->not->toContain($raw);
     // The numeric PK must not leak.
@@ -58,7 +57,7 @@ it('does not expose the raw token or bigint id in the response', function (): vo
 });
 
 it('rejects a structurally missing token via validation', function (): void {
-    $this->postJson('/api/v1/auth/magic-link/verify', [])
+    postOnHost('merchant_administrator', '/api/v1/auth/magic-link/verify', [])
         ->assertStatus(422)
         ->assertJsonPath('error.code', 'validation_failed');
 });

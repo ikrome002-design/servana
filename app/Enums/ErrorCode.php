@@ -20,6 +20,12 @@ enum ErrorCode: string
     case RateLimited = 'rate_limited';
     case ServiceUnavailable = 'service_unavailable';
     case InternalError = 'internal_error';
+    /**
+     * The request did not arrive on an approved Servana account host (Phase UI-03; ADR-016).
+     * Distinct from 404: the RESOURCE may exist, the ORIGIN is wrong. Carries no host detail, so
+     * it never becomes an oracle for which hosts are approved.
+     */
+    case MisdirectedRequest = 'misdirected_request';
 
     public function httpStatus(): int
     {
@@ -30,6 +36,7 @@ enum ErrorCode: string
             self::NotFound => 404,
             self::MethodNotAllowed => 405,
             self::Conflict => 409,
+            self::MisdirectedRequest => 421,
             self::RateLimited => 429,
             self::ServiceUnavailable => 503,
             self::InternalError => 500,
@@ -45,6 +52,7 @@ enum ErrorCode: string
             404 => self::NotFound,
             405 => self::MethodNotAllowed,
             409 => self::Conflict,
+            421 => self::MisdirectedRequest,
             422 => self::ValidationFailed,
             429 => self::RateLimited,
             503 => self::ServiceUnavailable,

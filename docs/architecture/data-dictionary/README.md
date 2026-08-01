@@ -14,9 +14,12 @@ existing as-built tables are documented by their owning feature phases (§13.2).
 | File | Domain | Tables covered (this repo state) |
 |---|---|---|
 | `core-identity-and-tenancy.md` | Core / identity / tenancy | `mfa_credentials` (R3), `mfa_recovery_codes` (R3), `idempotency_keys` (R4) |
+| `sessions-and-account-switching.md` | Authentication, host-scoped sessions, account switching | `magic_login_tokens` host-binding columns, `session_families`, `host_sessions`, `account_context_handoffs` (UI-03) |
 | `billing-and-wallet.md` | Platform billing + Wallet integration (**architecture spec only**) | Future 20A–20D-W tables — no migrations in v4 adoption PR |
 | `refer-earn-integration.md` | R&E integration (**architecture spec only**) | Future 21R-A/21R-B tables — no migrations in v4 adoption PR |
 
 > As feature/remediation phases land, they extend the matching file with their
 > tables. Phase R3 (REM-MFA-001) authored the two MFA tables; Phase R4
-> (REM-IDEMP-001) authored `idempotency_keys`.
+> (REM-IDEMP-001) authored `idempotency_keys`; Phase UI-03 (ADR-018, ADR-019)
+> authored the session-family, host-session and context-handoff tables and the
+> Magic Link host-binding columns.

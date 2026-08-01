@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\ContextSwitchController;
 use App\Http\Controllers\SpaShellController;
 use App\Http\Middleware\ResolveAccountHost;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,22 @@ use Illuminate\Support\Facades\Route;
 $backendOwned = 'api|health|up|sanctum|storage|spa-assets|assets|build';
 
 Route::middleware(ResolveAccountHost::class)->group(function () use ($backendOwned): void {
+    /*
+    | Context-handoff consumption (Phase UI-03; ADR-018 steps 6–10).
+    |
+    | A BROWSER route on purpose: the target host must be reached by a top-level navigation for
+    | its own host-only session cookie to be set. It is therefore outside `/api/v1` and outside
+    | OpenAPI, and is guarded here instead — ResolveAccountHost (exact target host), a named rate
+    | limiter, a single-use atomic consume under a row lock, session regeneration, and an immediate
+    | redirect to a token-free URL with `Referrer-Policy: no-referrer`.
+    |
+    | Registered BEFORE the fallback so it is a real route rather than SPA HTML. The SPA never sees
+    | this path: by the time the browser renders anything, the token is spent and gone from the URL.
+    */
+    Route::get('auth/switch', ContextSwitchController::class)
+        ->middleware('throttle:context-handoff-consume')
+        ->name('auth.switch.consume');
+
     Route::fallback(SpaShellController::class)
         ->where('fallbackPlaceholder', '^(?!(?:'.$backendOwned.')(?:/|$)).*$')
         ->name('spa.shell');

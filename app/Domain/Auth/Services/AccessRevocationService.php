@@ -10,6 +10,8 @@ use App\Domain\Hr\Models\StaffInvitation;
 use App\Domain\Merchants\Enums\MerchantUserStatus;
 use App\Domain\Merchants\Models\Merchant;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\Sessions\Enums\SessionRevocationReason;
+use App\Domain\Sessions\Services\SessionFamilyService;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -49,16 +51,28 @@ final class AccessRevocationService
 
     public const CATEGORY_MERCHANT = 'merchant';
 
-    public function __construct(private readonly MagicLinkTokenService $tokens) {}
+    public function __construct(
+        private readonly MagicLinkTokenService $tokens,
+        // Phase UI-03 (ADR-018). The session-family half of revocation lives in its own service
+        // because it owns the host_sessions/session_families tables — but it is CALLED FROM HERE,
+        // so there is still exactly one revocation entry point. Adding a second one is the failure
+        // mode this class was created to prevent.
+        private readonly SessionFamilyService $sessionFamilies,
+    ) {}
 
     /**
      * Revoke every credential for a single user, across all tenants (user-level
      * suspension / deactivation). Pending invitations addressed to the user's
      * email in ANY merchant are revoked.
      */
-    public function revokeForUser(User $user): RevocationSummary
+    public function revokeForUser(User $user, SessionRevocationReason $reason = SessionRevocationReason::UserSuspended): RevocationSummary
     {
-        return DB::transaction(function () use ($user): RevocationSummary {
+        return DB::transaction(function () use ($user, $reason): RevocationSummary {
+            // Family-level FIRST, so every host binding is marked revoked and its underlying
+            // `sessions` row deleted before the blanket delete below. Doing it the other way round
+            // would leave orphaned host_sessions rows claiming to be active.
+            $this->sessionFamilies->revokeFamiliesForUser($user, $reason);
+
             $sessions = $this->deleteSessions([$user->id]);
             $tokens = $this->revokeTokens([$user->id]);
             $links = $this->tokens->invalidateUnconsumedForEmail($user->email);
@@ -82,15 +96,22 @@ final class AccessRevocationService
      * the membership's own merchant; a membership in another merchant for the
      * same user is unaffected at the invitation level.
      */
-    public function revokeForMembership(MerchantUser $membership): RevocationSummary
-    {
+    public function revokeForMembership(
+        MerchantUser $membership,
+        SessionRevocationReason $reason = SessionRevocationReason::MembershipRevoked,
+    ): RevocationSummary {
         $user = $membership->user;
 
         if ($user === null) {
             return new RevocationSummary(self::CATEGORY_MEMBERSHIP);
         }
 
-        return DB::transaction(function () use ($membership, $user): RevocationSummary {
+        return DB::transaction(function () use ($membership, $user, $reason): RevocationSummary {
+            // Host sessions bound to THIS membership die; the user's contexts in other merchants
+            // are deliberately left alone. Losing a Finance role in merchant B must not sign the
+            // user out of their Personnel context in merchant A.
+            $this->sessionFamilies->revokeForMembership($membership->id, $reason);
+
             $sessions = $this->deleteSessions([$user->id]);
             $tokens = $this->revokeTokens([$user->id]);
             $links = $this->tokens->invalidateUnconsumedForEmail($user->email);
@@ -114,9 +135,15 @@ final class AccessRevocationService
      * invitations in the merchant are revoked. Per-request access is already
      * denied by EnsureMerchantActive; this additionally tears down live sessions.
      */
-    public function revokeForMerchant(Merchant $merchant): RevocationSummary
-    {
-        return DB::transaction(function () use ($merchant): RevocationSummary {
+    public function revokeForMerchant(
+        Merchant $merchant,
+        SessionRevocationReason $reason = SessionRevocationReason::MerchantSuspended,
+    ): RevocationSummary {
+        return DB::transaction(function () use ($merchant, $reason): RevocationSummary {
+            // Every host session whose CONTEXT is this merchant, across all of its users and all
+            // eight account hosts. A user who also holds a context in another merchant keeps it.
+            $this->sessionFamilies->revokeForMerchant($merchant->id, $reason);
+
             $memberships = MerchantUser::query()
                 ->where('merchant_id', $merchant->id)
                 ->whereIn('status', [
@@ -240,5 +267,27 @@ final class AccessRevocationService
     {
         // No-op by design — see method docblock. Kept as the single, named
         // invalidation point so a future cache cannot be added without it.
+    }
+
+    /**
+     * Revoke the host sessions bound to ONE branch (Phase UI-03; UI/UX plan §5.2 "branch removal
+     * invalidates the affected context").
+     *
+     * Narrower than every other entry point here: it revokes only the contexts that were entered
+     * FOR that branch. A Branch Manager who covers two branches keeps the session for the branch
+     * they still hold, which is the whole reason the branch is recorded on the host session.
+     */
+    public function revokeForBranchAssignment(int $branchId, ?int $merchantUserId = null): RevocationSummary
+    {
+        $sessions = $this->sessionFamilies->revokeForBranch(
+            $branchId,
+            SessionRevocationReason::BranchRevoked,
+            $merchantUserId,
+        );
+
+        return new RevocationSummary(
+            self::CATEGORY_MEMBERSHIP,
+            sessionsRevoked: $sessions,
+        );
     }
 }

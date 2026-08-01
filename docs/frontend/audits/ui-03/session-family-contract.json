@@ -1,0 +1,272 @@
+{
+  "generated_by": "Phase UI-03 recovery from committed implementation evidence",
+  "source_branch": "phase-ui-03-auth-session-account-switching",
+  "source_commit": "64ca7cc51bd25c19fbb3d9733fd353ec63062c48",
+  "source_base": "fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
+  "source_integrity": {
+    "proof_blob": "4d1115e6dfc227a7909c8df50524bbe3bf9a7a64",
+    "threat_model_blob": "d77cff2604d60b1d8f8032d4017187ad4f70aeb6",
+    "defect_closure_blob": "eed5e1d17a103cb41d92a29d4b58ae6b632f7aac"
+  },
+  "purpose": "Machine-readable UI-03 session-family and host-session contract reconstructed from the immutable implementation commit, schema migrations, models, enums, services, and SessionSchemaContractTest. Runtime browser and production-serving evidence captured against the built production nginx + PHP pair.",
+  "evidence_scope": {
+    "schema_contract": "automated_pass",
+    "runtime_service_contract": "automated_pass",
+    "production_image_runtime": "passed",
+    "deployed_origin_browser_runtime": "passed",
+    "acceptance_status": "deployed_origin_browser_proof_complete"
+  },
+  "tables": {
+    "session_families": {
+      "migration": "database/migrations/2026_07_30_000002_create_session_families_table.php",
+      "columns": [
+        "ulid",
+        "user_id",
+        "environment",
+        "lifecycle_version",
+        "last_activity_at",
+        "revoked_at",
+        "revoked_reason",
+        "revoked_by_user_id"
+      ],
+      "purpose": "Groups all host-bound sessions created for one user in one environment.",
+      "active_rule": "revoked_at is null",
+      "revocation_fields_are_atomic": true
+    },
+    "host_sessions": {
+      "migration": "database/migrations/2026_07_30_000003_create_host_sessions_table.php",
+      "columns": [
+        "ulid",
+        "session_family_id",
+        "user_id",
+        "session_id",
+        "account_key",
+        "host",
+        "environment",
+        "merchant_id",
+        "merchant_user_id",
+        "branch_id",
+        "mfa_required_at_creation",
+        "last_activity_at",
+        "revoked_at",
+        "revoked_reason"
+      ],
+      "purpose": "Binds one Laravel database session id to one account key, exact host, environment, user, and live target context.",
+      "active_rule": "host session and parent family are both unrevoked",
+      "session_id_unique": true,
+      "raw_session_id_serialized": false
+    },
+    "account_context_handoffs": {
+      "migration": "database/migrations/2026_07_30_000004_create_account_context_handoffs_table.php",
+      "columns": [
+        "ulid",
+        "token_hash",
+        "user_id",
+        "source_session_family_id",
+        "source_host_session_id",
+        "source_account_key",
+        "target_account_key",
+        "target_host",
+        "environment",
+        "target_merchant_id",
+        "target_merchant_user_id",
+        "target_branch_id",
+        "redirect_path",
+        "expires_at",
+        "consumed_at",
+        "invalidated_at",
+        "invalidated_reason",
+        "ip_hash",
+        "user_agent_hash"
+      ],
+      "purpose": "Stores a short-lived, hashed, single-use handoff bound to source family/session and exact target context.",
+      "token_hash_unique": true,
+      "raw_token_stored": false,
+      "raw_token_serialized": false
+    },
+    "magic_login_tokens_binding_extension": {
+      "migration": "database/migrations/2026_07_30_000001_add_host_binding_to_magic_login_tokens.php",
+      "added_columns": [
+        "user_id",
+        "account_key",
+        "intended_host",
+        "environment",
+        "redirect_path",
+        "audience"
+      ],
+      "usable_row_requires_complete_binding": true
+    }
+  },
+  "invariants": [
+    {
+      "contract_id": "SF-001",
+      "contract": "Exactly the three UI-03 tables session_families, host_sessions, and account_context_handoffs are added; no later-phase session table is created.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-002",
+      "contract": "No permission, grant, or ability snapshot exists in the session or handoff schema.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php; tests/Feature/Sessions/CrossHostRevocationTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-003",
+      "contract": "All account-key CHECK vocabularies exactly equal the UI-02 account-host registry vocabulary.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-004",
+      "contract": "Revocation reason CHECK vocabularies exactly equal SessionRevocationReason.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-005",
+      "contract": "Handoff rejection CHECK vocabulary exactly equals HandoffRejectionReason.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-006",
+      "contract": "A usable Magic Link row cannot be partially bound.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-007",
+      "contract": "Merchant-side host sessions require merchant context; platform host sessions cannot name a merchant.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-008",
+      "contract": "Revoked rows cannot be half-stated: revoked_at and revoked_reason move together.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-009",
+      "contract": "A handoff cannot be both consumed and invalidated, and expires_at must be later than created_at.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-010",
+      "contract": "One handoff row exists per token hash and one host-session row exists per Laravel session id.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-011",
+      "contract": "HostSession serialization omits session_id and AccountContextHandoff serialization omits token_hash.",
+      "evidence": "tests/Feature/Sessions/SessionSchemaContractTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-012",
+      "contract": "Host-only cookies remain required; deployment must not set a wildcard SESSION_DOMAIN.",
+      "evidence": "docs/security/ui-03-auth-session-threat-model.md TM-06; committed configuration tests",
+      "status": "automated_pass_browser_verified",
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-35",
+          "OBS-33b"
+        ],
+        "observed": [
+          "the session cookie is HttpOnly and invisible to document.cookie",
+          "a session on one account host carries no authority on another host at all"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      }
+    },
+    {
+      "contract_id": "SF-013",
+      "contract": "Global family revocation deletes all linked database sessions and is idempotent.",
+      "evidence": "tests/Feature/Sessions/CrossHostRevocationTest.php",
+      "status": "automated_pass_browser_verified",
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-30"
+        ],
+        "observed": [
+          "global logout invalidates BOTH the source and the target host session"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      }
+    },
+    {
+      "contract_id": "SF-014",
+      "contract": "Merchant, membership, branch, and single-session revocation affect only the targeted contexts and preserve legitimate siblings.",
+      "evidence": "tests/Feature/Sessions/CrossHostRevocationTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-015",
+      "contract": "AccessRevocationService remains the central lifecycle entry point for user, merchant, membership, and branch revocation.",
+      "evidence": "app/Domain/Auth/Services/AccessRevocationService.php; tests/Feature/Sessions/CrossHostRevocationTest.php",
+      "status": "automated_pass"
+    },
+    {
+      "contract_id": "SF-016",
+      "contract": "A host session follows its Laravel session id across regeneration. The MFA challenge regenerates at its privilege boundary and must re-point the existing row rather than orphan it; the family, user, account, host, merchant, membership, branch and environment are unchanged, no duplicate active row is created, and a revoked row is never resurrected.",
+      "evidence": "tests/Feature/Sessions/MfaSessionRebindTest.php; deployed-origin OBS-31, OBS-32",
+      "status": "automated_pass_browser_verified"
+    }
+  ],
+  "revocation_reasons": [
+    "global_logout",
+    "user_suspended",
+    "user_deactivated",
+    "merchant_suspended",
+    "merchant_deactivated",
+    "membership_revoked",
+    "role_changed",
+    "branch_revoked",
+    "session_revoked_by_owner",
+    "current_host_logout"
+  ],
+  "handoff_rejection_reasons": [
+    "expired",
+    "replayed",
+    "wrong_host",
+    "wrong_environment",
+    "target_unavailable",
+    "family_revoked",
+    "source_session_revoked",
+    "user_ineligible",
+    "unsafe_redirect",
+    "superseded"
+  ],
+  "test_results": {
+    "session_schema_contract": {
+      "tests": 17,
+      "assertions": 50,
+      "status": "passed"
+    },
+    "cross_host_revocation": {
+      "tests": 9,
+      "assertions": 55,
+      "status": "passed"
+    }
+  },
+  "summary": {
+    "table_count": 3,
+    "invariant_count": 16,
+    "known_schema_failures": 0,
+    "production_runtime_pending": false,
+    "ready_for_pr": true
+  },
+  "failures": [],
+  "open_gaps": [
+    "None blocking the UI-03 pull request. The dev, prod and nginx images were built, nginx -t passed in the built edge, the production pair served all eight account hosts, and host-only cookie behaviour was exercised in a real browser against that pair.",
+    "Staging and production hostnames remain unexercised against a real origin (DNS/TLS are UI-17)."
+  ]
+}

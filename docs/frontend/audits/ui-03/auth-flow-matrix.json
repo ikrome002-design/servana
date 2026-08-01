@@ -1,0 +1,558 @@
+{
+  "generated_by": "Phase UI-03 recovery from committed implementation evidence",
+  "source_branch": "phase-ui-03-auth-session-account-switching",
+  "source_commit": "64ca7cc51bd25c19fbb3d9733fd353ec63062c48",
+  "source_base": "fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
+  "source_integrity": {
+    "proof_blob": "4d1115e6dfc227a7909c8df50524bbe3bf9a7a64",
+    "threat_model_blob": "d77cff2604d60b1d8f8032d4017187ad4f70aeb6",
+    "defect_closure_blob": "eed5e1d17a103cb41d92a29d4b58ae6b632f7aac"
+  },
+  "purpose": "Machine-readable UI-03 authentication-flow matrix reconstructed from the immutable implementation commit, its committed tests, proof document, threat model, migrations, routes, and code. Completed with deployed-origin browser evidence captured against the built production nginx + PHP pair.",
+  "evidence_scope": {
+    "automated_test_evidence": "passed as recorded in docs/proof/ui-03.md",
+    "deployed_origin_browser_evidence": "passed",
+    "docker_production_serving_evidence": "passed",
+    "screenshot_evidence": "passed",
+    "acceptance_status": "deployed_origin_browser_proof_complete"
+  },
+  "test_results": {
+    "magic_link_host_binding": {
+      "tests": 22,
+      "status": "passed"
+    },
+    "unauthenticated_behavior": {
+      "tests": 9,
+      "assertions": 38,
+      "status": "passed"
+    },
+    "cross_host_revocation": {
+      "tests": 9,
+      "assertions": 55,
+      "status": "passed"
+    },
+    "account_route_guard": {
+      "tests": 13,
+      "status": "passed"
+    }
+  },
+  "cases": [
+    {
+      "case_id": "AF-001",
+      "flow": "Magic Link request",
+      "scenario": "Eligible address on an approved account host",
+      "expected_contract": "Uniform 202 response; one bound token and notification are created only when the user may enter that account.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-06"
+        ],
+        "observed": [
+          "Magic Link request on an approved host returns the uniform 202"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-14"
+      ]
+    },
+    {
+      "case_id": "AF-002",
+      "flow": "Magic Link request",
+      "scenario": "Real address on the wrong approved host versus nonexistent address",
+      "expected_contract": "Status and body are byte-identical; no account enumeration.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php; tests/Feature/Auth/NoAccountEnumerationTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": null,
+      "threat_model_refs": [
+        "TM-14"
+      ]
+    },
+    {
+      "case_id": "AF-003",
+      "flow": "Magic Link URL generation",
+      "scenario": "Poisoned X-Forwarded-Host",
+      "expected_contract": "Email URL and intended_host come from the approved account-host registry, never the forwarded host.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-07"
+        ],
+        "observed": [
+          "emailed Magic Link targets the exact registry host for the requesting account, not the poisoned forwarded host"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-13"
+      ]
+    },
+    {
+      "case_id": "AF-004",
+      "flow": "Magic Link request",
+      "scenario": "Unknown host",
+      "expected_contract": "421 misdirected_request; no token row is created.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-05"
+        ],
+        "observed": [
+          "unknown browser host remains denied and is never redirected to an approved host"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-13",
+        "TM-14"
+      ]
+    },
+    {
+      "case_id": "AF-005",
+      "flow": "Magic Link consume",
+      "scenario": "Correct account host",
+      "expected_contract": "Consume succeeds, session id is regenerated, and exactly one session family plus one host session are created.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-11",
+          "OBS-12"
+        ],
+        "observed": [
+          "correct-host Magic Link consumption succeeds and establishes a session on that host",
+          "exactly one session family and one host session are created, bound to the exact host"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-02",
+        "TM-05"
+      ]
+    },
+    {
+      "case_id": "AF-006",
+      "flow": "Magic Link consume",
+      "scenario": "Wrong account host",
+      "expected_contract": "Generic invalid_or_expired_token response; no session family or host session is created.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-09",
+          "OBS-10"
+        ],
+        "observed": [
+          "wrong-host Magic Link consumption fails and creates no session",
+          "a wrong-host attempt does not burn the legitimate holder's token"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-02",
+        "TM-14"
+      ]
+    },
+    {
+      "case_id": "AF-007",
+      "flow": "Magic Link consume",
+      "scenario": "Wrong environment",
+      "expected_contract": "Generic rejection; no host session is created.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-14-wrong-environment"
+        ],
+        "observed": [
+          "wrong environment failure is generic and creates no session"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-03"
+      ]
+    },
+    {
+      "case_id": "AF-008",
+      "flow": "Magic Link consume",
+      "scenario": "Bound account tampered after issuance",
+      "expected_contract": "Generic rejection on every attempted host.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-14-tampered-account-binding",
+          "OBS-14-tampered-host-binding"
+        ],
+        "observed": [
+          "tampered account binding failure is generic and creates no session",
+          "tampered host binding failure is generic and creates no session"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-02"
+      ]
+    },
+    {
+      "case_id": "AF-009",
+      "flow": "Magic Link consume",
+      "scenario": "Expired, replayed, wrong-host, or otherwise invalid token",
+      "expected_contract": "Externally visible failure bodies are byte-identical; internal audit classification retains the true cause.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php; tests/Feature/Auth/ReusedMagicLinkTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-09",
+          "OBS-13"
+        ],
+        "observed": [
+          "wrong-host Magic Link consumption fails and creates no session",
+          "Magic Link replay fails with the SAME uniform copy as a wrong-host failure"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-01",
+        "TM-14"
+      ]
+    },
+    {
+      "case_id": "AF-010",
+      "flow": "Magic Link storage",
+      "scenario": "Raw token handling",
+      "expected_contract": "Only SHA-256 token hashes are stored; raw tokens are absent from persisted rows and audit logs.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php; tests/Feature/Security/MagicLinkTokenSecurityTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-08",
+          "OBS-37"
+        ],
+        "observed": [
+          "only the SHA-256 token hash is persisted, with a complete host/account/environment binding",
+          "no credential material appears in the application or container logs"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-12",
+        "TM-21"
+      ]
+    },
+    {
+      "case_id": "AF-011",
+      "flow": "Eligibility recheck",
+      "scenario": "Membership or branch assignment changes after issue",
+      "expected_contract": "Consume re-resolves current user, membership, role, merchant, and branch state and rejects stale authority.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": false,
+      "browser_evidence": null,
+      "threat_model_refs": [
+        "TM-08"
+      ]
+    },
+    {
+      "case_id": "AF-012",
+      "flow": "MFA assurance",
+      "scenario": "Target role requires MFA",
+      "expected_contract": "New host session records mfa_required_at_creation and does not import source assurance.",
+      "automated_evidence": "tests/Feature/Sessions/MagicLinkHostBindingTest.php; tests/Feature/Sessions/ContextHandoffTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-31",
+          "OBS-32"
+        ],
+        "observed": [
+          "the mandatory-MFA user can satisfy the MFA challenge on the source host",
+          "the target session records the freshly resolved MFA requirement and does NOT inherit the source assertion — the mandatory target role is challenged again"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-19"
+      ]
+    },
+    {
+      "case_id": "AF-013",
+      "flow": "API unauthenticated behavior",
+      "scenario": "JSON request to protected API",
+      "expected_contract": "Standard 401 unauthenticated envelope.",
+      "automated_evidence": "tests/Feature/Sessions/UnauthenticatedBrowserRedirectTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-03"
+        ],
+        "observed": [
+          "JSON request to a protected API returns the standard 401 envelope"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-16"
+      ]
+    },
+    {
+      "case_id": "AF-014",
+      "flow": "API unauthenticated behavior",
+      "scenario": "HTML-accept request to protected API",
+      "expected_contract": "Still a 401 API response and never a 500 from a missing named login route.",
+      "automated_evidence": "tests/Feature/Sessions/UnauthenticatedBrowserRedirectTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-04"
+        ],
+        "observed": [
+          "HTML-accept request to a protected API stays a 401 API response (never 500, never HTML page)"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-16"
+      ]
+    },
+    {
+      "case_id": "AF-015",
+      "flow": "Page unauthenticated behavior",
+      "scenario": "Browser page navigation on an approved host",
+      "expected_contract": "Redirects to the same host's /auth/login and preserves only a safe relative intended path.",
+      "automated_evidence": "tests/Feature/Sessions/UnauthenticatedBrowserRedirectTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-01",
+          "OBS-02",
+          "OBS-33b"
+        ],
+        "observed": [
+          "browser page request on an approved host reaches that host's login experience",
+          "unauthenticated page navigation lands on the same host without a 500 or a redirect loop",
+          "the same deep link on ANOTHER account host carries no session at all — host-only cookies leave the user anonymous there"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-04",
+        "TM-13",
+        "TM-16"
+      ]
+    },
+    {
+      "case_id": "AF-016",
+      "flow": "Page unauthenticated behavior",
+      "scenario": "Untrusted forwarded host or auth/backend intended path",
+      "expected_contract": "Forwarded host cannot steer the destination; unsafe or loop-forming intended paths are dropped.",
+      "automated_evidence": "tests/Feature/Sessions/UnauthenticatedBrowserRedirectTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-02",
+          "OBS-07"
+        ],
+        "observed": [
+          "unauthenticated page navigation lands on the same host without a 500 or a redirect loop",
+          "emailed Magic Link targets the exact registry host for the requesting account, not the poisoned forwarded host"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-04",
+        "TM-13",
+        "TM-16"
+      ]
+    },
+    {
+      "case_id": "AF-017",
+      "flow": "Unknown-host behavior",
+      "scenario": "HTML or JSON request on an unapproved browser host",
+      "expected_contract": "Unknown host remains denied and is never redirected to an approved account host.",
+      "automated_evidence": "tests/Feature/Sessions/UnauthenticatedBrowserRedirectTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-05"
+        ],
+        "observed": [
+          "unknown browser host remains denied and is never redirected to an approved host"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-13",
+        "TM-14"
+      ]
+    },
+    {
+      "case_id": "AF-018",
+      "flow": "Account surface guard",
+      "scenario": "Authenticated user opens an account surface they do not hold",
+      "expected_contract": "Route account, server-resolved host account, and server-derived held account must agree; otherwise access-denied renders without redirecting to a broader account.",
+      "automated_evidence": "resources/spa/src/router/accountRouteGuard.spec.ts",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-22",
+          "OBS-33",
+          "OBS-33b"
+        ],
+        "observed": [
+          "source-only permissions are absent from the target context, and the target resolves its own",
+          "a foreign-account route on the user's OWN host renders the role-safe access-denied state and never redirects to another account",
+          "the same deep link on ANOTHER account host carries no session at all — host-only cookies leave the user anonymous there"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-15"
+      ]
+    },
+    {
+      "case_id": "AF-019",
+      "flow": "Global logout",
+      "scenario": "User has active sessions on multiple approved hosts",
+      "expected_contract": "All linked host sessions and underlying database sessions are revoked.",
+      "automated_evidence": "tests/Feature/Sessions/CrossHostRevocationTest.php",
+      "automated_status": "automated_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-30"
+        ],
+        "observed": [
+          "global logout invalidates BOTH the source and the target host session"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-20"
+      ]
+    },
+    {
+      "case_id": "AF-020",
+      "flow": "Evidence leakage",
+      "scenario": "Focused browser proof, screenshots, storage, console, network evidence, and logs",
+      "expected_contract": "No Magic Link token, handoff token, session cookie, raw session id, or other credential material may appear.",
+      "automated_evidence": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+      "automated_status": "browser_pass",
+      "browser_required_before_pr": true,
+      "browser_evidence": {
+        "result": "passed",
+        "observations": [
+          "OBS-34",
+          "OBS-35",
+          "OBS-36",
+          "OBS-37",
+          "OBS-38",
+          "OBS-39",
+          "OBS-40"
+        ],
+        "observed": [
+          "no magic-link token, handoff token or raw session id appears in localStorage, sessionStorage or IndexedDB",
+          "the session cookie is HttpOnly — it is not visible to document.cookie",
+          "no credential material appears in browser console output",
+          "no credential material appears in the application or container logs",
+          "no credential material appears in audit metadata",
+          "the committed network evidence carries no credential material (all request bodies sanitized)",
+          "no captured screenshot was taken on a URL still carrying a token, and none renders credential material"
+        ],
+        "origin": "http://127.0.0.1:8090",
+        "harness": "scripts/ui03-auth-browser-proof.mjs against the built production nginx + PHP pair",
+        "captured_at": "2026-07-31T17:26:32.052Z"
+      },
+      "threat_model_refs": [
+        "TM-12",
+        "TM-21"
+      ]
+    }
+  ],
+  "summary": {
+    "case_count": 20,
+    "automated_pass_count": 20,
+    "browser_pending_count": 0,
+    "browser_observed_count": 18,
+    "known_automated_failures": 0,
+    "ready_for_pr": true
+  },
+  "failures": [],
+  "open_gaps": [
+    "None blocking the UI-03 pull request. Every case marked browser_required_before_pr was observed against the built production images and passed.",
+    "Release-wide responsive, accessibility, theme and visual-regression approval remains UI-16; this run is a focused security proof, not a visual baseline.",
+    "Staging and production hostnames remain unexercised against a real origin (DNS/TLS are UI-17)."
+  ]
+}

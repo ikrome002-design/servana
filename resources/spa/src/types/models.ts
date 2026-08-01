@@ -78,6 +78,15 @@ export interface BootstrapPayload {
   permissions: string[];
   setup: SetupState;
   branch_ids: string[];
+  /**
+   * Account experiences this user may enter, derived server-side from live membership rows
+   * (Phase UI-03). The frontend holds no role→account mapping of its own.
+   *
+   * Optional in the TYPE, always present in the RESPONSE. A cached older shell that has not seen
+   * this field must not throw — and because the store defaults it to `[]`, its absence fails
+   * CLOSED: `holdsAccount()` returns false and the account guard denies rather than admits.
+   */
+  account_keys?: string[];
   mfa: MfaState;
 }
 
