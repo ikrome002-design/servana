@@ -75,21 +75,29 @@ const P23_VERIFIED_PHASES = [
     // reviewDecision blank with 0 submitted reviews. Reconciled live on the
     // phase-ui-03-auth-session-account-switching branch.
     'UI-02',
+    // UI-03 merged as PR #53 — a REGULAR merge commit 00c9c1e0025e3979464691be662915ada872cc18
+    // deliberately preserving four reviewed commits (64ca7cc implementation, 415d2f5
+    // deployed-origin browser proof, 5bd6e12 and 182f2cc fixture-only payout-test corrections),
+    // parents in order fb64ba67… then 182f2cca…, merged 2026-08-01T07:08:07Z, CI run 30688440846
+    // attempt 1 (five checks SUCCESS, backend 3108 passed / 5 skipped / 0 failed), governance
+    // comment 5150328091, reviewDecision blank with 0 submitted reviews. Reconciled live on the
+    // phase-ui-04-design-system-shared-components branch.
+    'UI-03',
 ];
 
 /**
  * The corrective UI/UX programme (Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md
- * §25). UI-00, UI-01 and UI-02 are merged and verified; UI-03 is in flight; UI-04 … UI-17 have
+ * §25). UI-00 … UI-03 are merged and verified; UI-04 is in flight; UI-05 … UI-17 have
  * not started. They are listed here so a UI requirement can be deferred to a NAMED owner phase
  * instead of disappearing from the matrix.
  *
  * @var list<string>
  */
-const P23_UI_PHASES_VERIFIED = ['UI-00', 'UI-01', 'UI-02'];
+const P23_UI_PHASES_VERIFIED = ['UI-00', 'UI-01', 'UI-02', 'UI-03'];
 
 /** @var list<string> */
 const P23_UI_PHASES_UNVERIFIED = [
-    'UI-03', 'UI-04', 'UI-05', 'UI-06', 'UI-07', 'UI-08',
+    'UI-04', 'UI-05', 'UI-06', 'UI-07', 'UI-08',
     'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17',
 ];
 
@@ -105,9 +113,10 @@ const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '25', ...P23_UI_PHASES_U
  * constant when the in-flight phase merges and the next phase's branch reconciles it (the same
  * convention that promoted Phase 23 after PR #48 merged as 13f54a4, Phase 24 after PR #49 merged
  * as db3827b, Phase UI-00 after PR #50 merged as d3f6e10, and Phase UI-01 after PR #51 merged
- * as 413c146, and Phase UI-02 after PR #52 merged as fb64ba6).
+ * as 413c146, Phase UI-02 after PR #52 merged as fb64ba6, and Phase UI-03 after PR #53 merged as
+ * the regular merge commit 00c9c1e).
  */
-const P23_IN_FLIGHT_PHASE = 'UI-03';
+const P23_IN_FLIGHT_PHASE = 'UI-04';
 
 /**
  * Phases a `deferred_future_phase` row may name: the remaining backend phases plus every UI phase
@@ -115,7 +124,7 @@ const P23_IN_FLIGHT_PHASE = 'UI-03';
  *
  * @var list<string>
  */
-const P23_DEFERRABLE_PHASES = ['21N', '25', 'UI-04', 'UI-05', 'UI-06',
+const P23_DEFERRABLE_PHASES = ['21N', '25', 'UI-05', 'UI-06',
     'UI-07', 'UI-08', 'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17'];
 
 /** @return list<array<string, string>> */
@@ -468,7 +477,10 @@ it('maps every implemented frontend route claim onto the screen inventory', func
         preg_match_all('/\b([a-z][a-z0-9\-]*(?:\.[a-z0-9\-]+)+)\b/', $row['frontend_route_and_component'], $matches);
         foreach ($matches[1] as $candidate) {
             // Skip filenames and paths (they contain an extension or a slash).
-            if (str_contains($candidate, '/') || preg_match('/\.(vue|ts|md|json|yaml|php|js|mjs|spec)$/', $candidate)) {
+            // `css` and `html` were added in Phase UI-04: a generated stylesheet (`tokens.css`)
+            // and the SPA shell (`index.html`) are legitimate frontend artifacts to name, and no
+            // router route name has ever ended in either, so excluding them narrows nothing.
+            if (str_contains($candidate, '/') || preg_match('/\.(vue|ts|md|json|yaml|php|js|mjs|css|html|spec)$/', $candidate)) {
                 continue;
             }
             if (isset($routes[$candidate]) || isset($permissionKeys[$candidate])) {

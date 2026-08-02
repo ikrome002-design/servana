@@ -5,6 +5,7 @@ import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
+import { SvIconEmail } from '@/design-system/icons';
 
 const route = useRoute();
 const router = useRouter();
@@ -45,7 +46,7 @@ function backToLogin(): void {
       aria-hidden="true"
       class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cream text-3xl"
     >
-      ✉️
+      <SvIconEmail class="h-8 w-8" />
     </div>
     <h1 class="font-display text-2xl font-extrabold text-heading">
       Check your email

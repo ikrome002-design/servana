@@ -4,7 +4,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
 import { useAuthStore } from '@/stores/authStore';
@@ -195,7 +195,7 @@ async function submitApprove(): Promise<void> {
                 </p>
               </SvCard>
               <p
-                v-if="summaryStore.summary.outstanding_liability_by_currency.length === 0"
+                v-if="(summaryStore.summary?.outstanding_liability_by_currency?.length ?? 0) === 0"
                 class="text-sm text-text-muted"
               >
                 Nothing outstanding.
@@ -228,7 +228,7 @@ async function submitApprove(): Promise<void> {
                 </p>
               </SvCard>
               <p
-                v-if="summaryStore.summary.paid_by_currency.length === 0"
+                v-if="(summaryStore.summary?.paid_by_currency?.length ?? 0) === 0"
                 class="text-sm text-text-muted"
               >
                 Nothing paid yet.
@@ -319,7 +319,7 @@ async function submitApprove(): Promise<void> {
     </template>
 
     <!-- approve modal -->
-    <SvModal
+    <SvDialog
       :open="approveOpen"
       title="Approve high-value payout"
       description="Approve this payout run so Finance can record its external payment. This is a high-value approval and needs a fresh step-up. It does not move any money."
@@ -385,6 +385,6 @@ async function submitApprove(): Promise<void> {
           </SvButton>
         </div>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

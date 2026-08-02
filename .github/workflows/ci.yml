@@ -275,6 +275,14 @@ jobs:
       - name: Contract — account-host registry is current (Phase UI-02)
         run: node scripts/generate-account-hosts.mjs --check
 
+      # Phase UI-04: the design-token authority (resources/spa/src/design-system/tokens.json) has
+      # two generated consumers plus a computed contrast contract. The PHP suite proves the source
+      # hash matches; this step additionally proves the generator is deterministic and that no
+      # generated BODY was hand-edited. The PHP image carries no Node runtime, so this is the only
+      # place that check can run.
+      - name: Contract — design tokens are current (Phase UI-04)
+        run: node scripts/generate-design-tokens.mjs --check
+
       - name: Unit tests — Vitest
         run: npm run test
 

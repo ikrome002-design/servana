@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useClientStore } from '@/stores/clientStore';
 
@@ -58,11 +58,11 @@ function search(): void {
       @submit.prevent="search"
     >
       <div class="grow">
-        <SvInput
+        <SvTextInput
           id="client-search"
           v-model="query"
           label="Search clients"
-          hint="By name or phone number."
+          help="By name or phone number."
           placeholder="e.g. Amina or 0712…"
         />
       </div>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Domain\Auth\Enums\ThemePreference;
 use App\Domain\Merchants\Models\MerchantUser;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +22,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $email_verified_at
  * @property string $status
  * @property bool $is_platform_staff
+ * @property ThemePreference|null $theme_preference
  * @property Carbon|null $last_login_at
  */
 class User extends Authenticatable
@@ -80,7 +82,20 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
             'is_platform_staff' => 'boolean',
             'password' => 'hashed',
+            // ADR-021. Null means "no explicit choice" and resolves to light; it is not a default.
+            'theme_preference' => ThemePreference::class,
         ];
+    }
+
+    /**
+     * The theme this user should be served (ADR-021 rule 2).
+     *
+     * Never consults the operating system. A user who has expressed no preference — and every
+     * user, before they express one — gets light.
+     */
+    public function resolvedTheme(): ThemePreference
+    {
+        return $this->theme_preference ?? ThemePreference::default();
     }
 
     /** True only when the user is active at the user level (Scope §2.3 checks 3 & 5). */

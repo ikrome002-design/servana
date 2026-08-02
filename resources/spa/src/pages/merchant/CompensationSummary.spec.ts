@@ -39,7 +39,7 @@ function mockLoaded(): void {
 }
 const mountPage = () => mount(CompensationSummary, {
   attachTo: document.body,
-  global: { stubs: { SvModal: { template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>', props: ['open', 'title', 'description'] } } },
+  global: { stubs: { SvDialog: { template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>', props: ['open', 'title', 'description'] } } },
 });
 function grantAdmin(perms = ['merchant.compensation_summary.view', 'merchant.payout.approve_high_value']): void {
   const auth = useAuthStore();

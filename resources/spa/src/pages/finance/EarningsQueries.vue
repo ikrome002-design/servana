@@ -3,11 +3,11 @@ import axios from 'axios';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -304,7 +304,7 @@ async function submitRespond(): Promise<void> {
     </template>
 
     <!-- detail + respond modal -->
-    <SvModal
+    <SvDialog
       :open="detailOpen"
       title="Respond to earnings query"
       description="Resolve or reject the query. An optional correction is recorded as a separate additive compensation adjustment; the original earnings are never edited."
@@ -373,7 +373,7 @@ async function submitRespond(): Promise<void> {
             required
             @update:model-value="form.decision = ($event as 'resolved' | 'rejected')"
           />
-          <SvTextarea
+          <SvTextArea
             id="respond-note"
             label="Response to the staff member"
             :model-value="form.resolution_note"
@@ -406,7 +406,7 @@ async function submitRespond(): Promise<void> {
                 :options="DIRECTION_OPTIONS"
                 @update:model-value="form.direction = $event"
               />
-              <SvInput
+              <SvTextInput
                 id="correction-amount"
                 label="Amount (major units)"
                 type="number"
@@ -414,14 +414,14 @@ async function submitRespond(): Promise<void> {
                 :errors="responseErrors['correction.amount_minor']"
                 @update:model-value="form.amount_major = $event"
               />
-              <SvInput
+              <SvTextInput
                 id="correction-currency"
                 label="Currency"
                 :model-value="form.currency"
                 :errors="responseErrors['correction.currency']"
                 @update:model-value="form.currency = $event"
               />
-              <SvInput
+              <SvTextInput
                 id="correction-reason"
                 label="Correction reason"
                 class="sm:col-span-3"
@@ -471,6 +471,6 @@ async function submitRespond(): Promise<void> {
           </SvButton>
         </div>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

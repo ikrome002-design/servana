@@ -52,7 +52,7 @@ const mountPage = () =>
     attachTo: document.body,
     global: {
       stubs: {
-        SvModal: {
+        SvDialog: {
           template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>',
           props: ['open', 'title', 'description'],
         },

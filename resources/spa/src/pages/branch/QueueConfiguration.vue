@@ -3,11 +3,12 @@ import axios from 'axios';
 import { computed, onMounted, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useQueueStore } from '@/stores/queueStore';
+import { SvIconBack } from '@/design-system/icons';
 
 // Branch Manager queue configuration (Plan §37; Phase 16B). Sets queue open/close,
 // capacity, and the default assignment mode on today's Branch Day — NOT an
@@ -81,7 +82,10 @@ onMounted(load);
       :to="{ name: 'branch.queue' }"
       class="text-sm font-semibold text-heading underline"
     >
-      ← Back to the queue
+      <SvIconBack
+        aria-hidden="true"
+        class="mr-1 inline-block h-4 w-4 align-text-bottom"
+      />Back to the queue
     </RouterLink>
 
     <h1 class="mt-3 font-display text-2xl font-bold text-heading">
@@ -117,13 +121,13 @@ onMounted(load);
             Queue is open
           </label>
 
-          <SvInput
+          <SvTextInput
             id="queue-capacity"
             v-model="capacity"
             label="Capacity"
             type="number"
             min="1"
-            hint="Leave blank for no limit. Cannot be set below the current active count."
+            help="Leave blank for no limit. Cannot be set below the current active count."
           />
 
           <SvSelect

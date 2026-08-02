@@ -97,7 +97,7 @@
     },
     {
       "account_key": "merchant_human_resource",
-      "display_name": "HR",
+      "display_name": "Human Resource",
       "subdomain": "hr",
       "public_content_key": "merchant_human_resource",
       "legal_content_key": "merchant_human_resource",

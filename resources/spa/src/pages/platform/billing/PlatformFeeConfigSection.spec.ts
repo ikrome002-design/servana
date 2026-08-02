@@ -36,7 +36,7 @@ function config(overrides: Record<string, unknown> = {}) {
   };
 }
 
-const stubs = { SvModal: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title'] } };
+const stubs = { SvDialog: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title'] } };
 
 function mountSection(permissions: string[] = ['platform.platform_fee.configure']) {
   const auth = useAuthStore();

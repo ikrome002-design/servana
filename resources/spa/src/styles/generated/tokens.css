@@ -1,0 +1,231 @@
+/* GENERATED FILE — do not edit by hand.
+ *
+ * Source:     resources/spa/src/design-system/tokens.json
+ * Generator:  node scripts/generate-design-tokens.mjs
+ * Verify:     node scripts/generate-design-tokens.mjs --check
+ * Source SHA-256: 2e3bcf29894c6eff5dec3ec5b74438698d0f7027852cef81e1882d0a6b2dbe0a
+ *
+ * Servana design tokens (ADR-021). Light is the DEFAULT: the dark block applies only when the
+ * root element carries the `dark` class, which is set exclusively from an explicit Servana
+ * preference. The operating-system colour-scheme media feature is never consulted here — a
+ * contract `DesignTokenGenerationTest` enforces by scanning this file.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* --- semantic colour (light) --- */
+  --sv-color-brand-primary: #F97316;
+  --sv-color-brand-primary-hover: #FDBA74;
+  --sv-color-brand-secondary: #007C78;
+  --sv-color-accent: #FBBF24;
+  --sv-color-surface-page: #F9FAFB;
+  --sv-color-surface-raised: #FFFFFF;
+  --sv-color-surface-subtle: #F3F4F6;
+  --sv-color-surface-warm: #FFF8E7;
+  --sv-color-overlay-scrim: rgb(31 41 51 / 0.55);
+  --sv-color-text-primary: #1F2933;
+  --sv-color-text-secondary: #374151;
+  --sv-color-text-muted: #4B5563;
+  --sv-color-text-inverse: #FFFFFF;
+  --sv-color-text-on-brand: #4A2208;
+  --sv-color-text-heading: #4A2208;
+  --sv-color-border-default: #E5E7EB;
+  --sv-color-border-strong: #D1D5DB;
+  --sv-color-border-input: #6B7280;
+  --sv-color-focus-ring: #007C78;
+  --sv-color-link: #007C78;
+  --sv-color-link-hover: #4A2208;
+  --sv-color-status-success-fg: #1B5E20;
+  --sv-color-status-success-bg: #E7F5E8;
+  --sv-color-status-success-border: #2E7D32;
+  --sv-color-status-warning-fg: #92400E;
+  --sv-color-status-warning-bg: #FEF3C7;
+  --sv-color-status-warning-border: #B45309;
+  --sv-color-status-error-fg: #B91C1C;
+  --sv-color-status-error-bg: #FEE2E2;
+  --sv-color-status-error-border: #DC2626;
+  --sv-color-status-info-fg: #075985;
+  --sv-color-status-info-bg: #E0F2FE;
+  --sv-color-status-info-border: #0284C7;
+  --sv-color-disabled-fg: #4B5563;
+  --sv-color-disabled-bg: #F3F4F6;
+  --sv-color-disabled-border: #D1D5DB;
+  --sv-color-selected-fg: #4A2208;
+  --sv-color-selected-bg: #FFF3C4;
+  --sv-color-selected-border: #F97316;
+  --sv-color-table-header: #F3F4F6;
+  --sv-color-table-row-hover: #FFF8E7;
+  --sv-color-nav-active-fg: #4A2208;
+  --sv-color-nav-active-bg: #FFF3C4;
+  --sv-color-nav-inactive-fg: #4B5563;
+  --sv-color-footer-surface: #FFFFFF;
+  --sv-color-footer-text: #4B5563;
+  --sv-color-footer-border: #E5E7EB;
+  --sv-color-growth: #3F7D20;
+
+  /* --- component --- */
+  --sv-space-0: 0;
+  --sv-space-1: 0.25rem;
+  --sv-space-2: 0.5rem;
+  --sv-space-3: 0.75rem;
+  --sv-space-4: 1rem;
+  --sv-space-5: 1.25rem;
+  --sv-space-6: 1.5rem;
+  --sv-space-8: 2rem;
+  --sv-space-10: 2.5rem;
+  --sv-space-12: 3rem;
+  --sv-gutter-mobile: 1rem;
+  --sv-gutter-tablet: 1.5rem;
+  --sv-gutter-desktop: 2rem;
+  --sv-radius-none: 0;
+  --sv-radius-control: 8px;
+  --sv-radius-card: 12px;
+  --sv-radius-overlay: 16px;
+  --sv-radius-pill: 9999px;
+  --sv-border-width-hairline: 1px;
+  --sv-border-width-strong: 2px;
+  --sv-shadow-card: 0 1px 3px rgb(0 0 0 / 0.08);
+  --sv-shadow-raised: 0 4px 12px rgb(0 0 0 / 0.10);
+  --sv-shadow-overlay: 0 16px 40px rgb(0 0 0 / 0.18);
+  --sv-focus-ring-width: 2px;
+  --sv-focus-ring-offset: 2px;
+  --sv-motion-duration-instant: 80ms;
+  --sv-motion-duration-fast: 150ms;
+  --sv-motion-duration-normal: 220ms;
+  --sv-motion-ease-standard: cubic-bezier(0.2, 0, 0.13, 1);
+  --sv-motion-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --sv-z-base: 0;
+  --sv-z-sticky: 10;
+  --sv-z-footer: 20;
+  --sv-z-drawer: 40;
+  --sv-z-dialog: 50;
+  --sv-z-popover: 60;
+  --sv-z-toast: 70;
+  --sv-header-height-mobile: 3.5rem;
+  --sv-header-height-desktop: 4rem;
+  --sv-sidebar-width: 16rem;
+  --sv-sidebar-rail-width: 4.5rem;
+  --sv-drawer-width: 18rem;
+  --sv-profile-identity-max-width: 12rem;
+  --sv-content-max-width: 80rem;
+  --sv-content-readable-width: 42rem;
+  --sv-dialog-width-sm: 24rem;
+  --sv-dialog-width-md: 32rem;
+  --sv-dialog-width-lg: 44rem;
+  --sv-footer-height-mobile: 5.5rem;
+  --sv-footer-height-tablet: 4.5rem;
+  --sv-footer-height-desktop: 3.5rem;
+  --sv-footer-height-zoom-fallback: 9rem;
+  --sv-control-height-sm: 2.25rem;
+  --sv-control-height-md: 2.75rem;
+  --sv-control-height-lg: 3rem;
+  --sv-touch-target-min: 44px;
+  --sv-table-row-height-compact: 2.5rem;
+  --sv-table-row-height-default: 3rem;
+  --sv-table-cell-padding-x: 0.75rem;
+  --sv-table-cell-padding-y: 0.5rem;
+  --sv-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --sv-safe-area-left: env(safe-area-inset-left, 0px);
+  --sv-safe-area-right: env(safe-area-inset-right, 0px);
+
+  /* --- typography --- */
+  --sv-font-family-ui: Inter, ui-sans-serif, system-ui, sans-serif;
+  --sv-font-family-display: Manrope, ui-sans-serif, system-ui, sans-serif;
+  --sv-font-family-numeric: Inter, ui-sans-serif, system-ui, sans-serif;
+  --sv-font-size-xs: 0.75rem;
+  --sv-line-height-xs: 1rem;
+  --sv-font-size-sm: 0.875rem;
+  --sv-line-height-sm: 1.25rem;
+  --sv-font-size-base: 1rem;
+  --sv-line-height-base: 1.5rem;
+  --sv-font-size-lg: 1.125rem;
+  --sv-line-height-lg: 1.75rem;
+  --sv-font-size-xl: 1.25rem;
+  --sv-line-height-xl: 1.75rem;
+  --sv-font-size-2xl: 1.5rem;
+  --sv-line-height-2xl: 2rem;
+  --sv-font-size-3xl: 1.875rem;
+  --sv-line-height-3xl: 2.25rem;
+  --sv-font-weight-regular: 400;
+  --sv-font-weight-medium: 500;
+  --sv-font-weight-semibold: 600;
+  --sv-font-weight-bold: 700;
+  --sv-font-weight-extrabold: 800;
+
+  /* --- legacy aliases (generated; see tokens.json legacy_aliases) --- */
+  --color-primary: var(--sv-color-brand-primary);
+  --color-sun: var(--sv-color-accent);
+  --color-success: var(--sv-color-status-success-border);
+  --color-growth: var(--sv-color-growth);
+  --color-brand-deep: var(--sv-color-text-on-brand);
+  --color-heading: var(--sv-color-text-heading);
+  --color-accent: var(--sv-color-brand-secondary);
+  --color-warning: var(--sv-color-status-warning-border);
+  --color-error: var(--sv-color-status-error-border);
+  --color-info: var(--sv-color-status-info-border);
+  --color-text: var(--sv-color-text-primary);
+  --color-text-muted: var(--sv-color-text-muted);
+  --color-border: var(--sv-color-border-default);
+  --color-surface: var(--sv-color-surface-raised);
+  --color-surface-alt: var(--sv-color-surface-subtle);
+  --color-bg: var(--sv-color-surface-page);
+  --color-cream: var(--sv-color-surface-warm);
+  --radius-card: var(--sv-radius-card);
+  --radius-control: var(--sv-radius-control);
+  --shadow-card: var(--sv-shadow-card);
+}
+
+:root.dark {
+  color-scheme: dark;
+
+  /* --- semantic colour (dark) --- */
+  --sv-color-brand-primary: #F97316;
+  --sv-color-brand-primary-hover: #FDBA74;
+  --sv-color-brand-secondary: #14B8A6;
+  --sv-color-accent: #FBBF24;
+  --sv-color-surface-page: #111827;
+  --sv-color-surface-raised: #1F2933;
+  --sv-color-surface-subtle: #273340;
+  --sv-color-surface-warm: #273340;
+  --sv-color-overlay-scrim: rgb(0 0 0 / 0.65);
+  --sv-color-text-primary: #F3F4F6;
+  --sv-color-text-secondary: #D1D5DB;
+  --sv-color-text-muted: #9CA3AF;
+  --sv-color-text-inverse: #1F2933;
+  --sv-color-text-on-brand: #4A2208;
+  --sv-color-text-heading: #F3F4F6;
+  --sv-color-border-default: #374151;
+  --sv-color-border-strong: #4B5563;
+  --sv-color-border-input: #9CA3AF;
+  --sv-color-focus-ring: #FBBF24;
+  --sv-color-link: #14B8A6;
+  --sv-color-link-hover: #FBBF24;
+  --sv-color-status-success-fg: #86EFAC;
+  --sv-color-status-success-bg: #14321B;
+  --sv-color-status-success-border: #4ADE80;
+  --sv-color-status-warning-fg: #FCD34D;
+  --sv-color-status-warning-bg: #3A2A08;
+  --sv-color-status-warning-border: #FBBF24;
+  --sv-color-status-error-fg: #FCA5A5;
+  --sv-color-status-error-bg: #3B1516;
+  --sv-color-status-error-border: #F87171;
+  --sv-color-status-info-fg: #7DD3FC;
+  --sv-color-status-info-bg: #0C2A3E;
+  --sv-color-status-info-border: #38BDF8;
+  --sv-color-disabled-fg: #9CA3AF;
+  --sv-color-disabled-bg: #273340;
+  --sv-color-disabled-border: #4B5563;
+  --sv-color-selected-fg: #F3F4F6;
+  --sv-color-selected-bg: #273340;
+  --sv-color-selected-border: #F97316;
+  --sv-color-table-header: #273340;
+  --sv-color-table-row-hover: #273340;
+  --sv-color-nav-active-fg: #F3F4F6;
+  --sv-color-nav-active-bg: #273340;
+  --sv-color-nav-inactive-fg: #9CA3AF;
+  --sv-color-footer-surface: #1F2933;
+  --sv-color-footer-text: #9CA3AF;
+  --sv-color-footer-border: #374151;
+  --sv-color-growth: #4ADE80;
+}

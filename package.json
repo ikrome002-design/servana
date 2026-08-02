@@ -1,69 +1,72 @@
 {
-    "name": "servana",
-    "version": "0.1.0",
-    "private": true,
-    "type": "module",
-    "description": "Servana by Citrus - Vue 3 + TypeScript SPA.",
-    "engines": {
-        "node": ">=20.0.0 <21",
-        "npm": ">=10"
+  "name": "servana",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Servana by Citrus - Vue 3 + TypeScript SPA.",
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "api:types": "openapi-typescript docs/api/openapi.json -o resources/spa/src/types/generated/api.ts",
+    "api:contract:check": "node scripts/check-api-contract.mjs",
+    "tokens": "node scripts/generate-design-tokens.mjs",
+    "tokens:check": "node scripts/generate-design-tokens.mjs --check"
+  },
+  "dependencies": {
+    "@heroicons/vue": "2.2.0",
+    "axios": "^1.18.1",
+    "pinia": "^2.2.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.4.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "@eslint/js": "^10.0.1",
+    "@fontsource/inter": "^5.1.0",
+    "@fontsource/manrope": "^5.1.0",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^22.8.0",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vue/test-utils": "^2.4.6",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^10.8.0",
+    "eslint-plugin-vue": "^10.10.0",
+    "globals": "^17.7.0",
+    "jsdom": "^25.0.0",
+    "openapi-typescript": "7.4.4",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.65.0",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.8",
+    "vue-eslint-parser": "^10.4.1",
+    "vue-tsc": "^2.1.0"
+  },
+  "overrides": {
+    "js-yaml@4.0.0 - 4.2.0": "^4.3.0",
+    "@redocly/openapi-core": {
+      "minimatch": "^10.2.5"
     },
-    "scripts": {
-        "dev": "vite",
-        "build": "vue-tsc --noEmit && vite build",
-        "preview": "vite preview",
-        "typecheck": "vue-tsc --noEmit",
-        "lint": "eslint .",
-        "lint:fix": "eslint . --fix",
-        "test": "vitest run",
-        "e2e": "playwright test",
-        "e2e:ui": "playwright test --ui",
-        "api:types": "openapi-typescript docs/api/openapi.json -o resources/spa/src/types/generated/api.ts",
-        "api:contract:check": "node scripts/check-api-contract.mjs"
+    "@vue/language-core": {
+      "minimatch": "^10.2.5"
     },
-    "dependencies": {
-        "axios": "^1.18.1",
-        "pinia": "^2.2.0",
-        "vue": "^3.5.0",
-        "vue-router": "^4.4.0"
+    "editorconfig": {
+      "minimatch": "^10.2.5"
     },
-    "devDependencies": {
-        "@axe-core/playwright": "^4.11.3",
-        "@eslint/js": "^10.0.1",
-        "@fontsource/inter": "^5.1.0",
-        "@fontsource/manrope": "^5.1.0",
-        "@playwright/test": "^1.60.0",
-        "@types/node": "^22.8.0",
-        "@vitejs/plugin-vue": "^6.0.7",
-        "@vue/test-utils": "^2.4.6",
-        "autoprefixer": "^10.4.20",
-        "eslint": "^10.8.0",
-        "eslint-plugin-vue": "^10.10.0",
-        "globals": "^17.7.0",
-        "jsdom": "^25.0.0",
-        "openapi-typescript": "7.4.4",
-        "postcss": "^8.4.47",
-        "tailwindcss": "^3.4.14",
-        "typescript": "^5.6.0",
-        "typescript-eslint": "^8.65.0",
-        "vite": "^8.0.16",
-        "vitest": "^4.1.8",
-        "vue-eslint-parser": "^10.4.1",
-        "vue-tsc": "^2.1.0"
-    },
-    "overrides": {
-        "js-yaml@4.0.0 - 4.2.0": "^4.3.0",
-        "@redocly/openapi-core": {
-            "minimatch": "^10.2.5"
-        },
-        "@vue/language-core": {
-            "minimatch": "^10.2.5"
-        },
-        "editorconfig": {
-            "minimatch": "^10.2.5"
-        },
-        "glob": {
-            "minimatch": "^10.2.5"
-        }
+    "glob": {
+      "minimatch": "^10.2.5"
     }
+  }
 }

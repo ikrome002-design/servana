@@ -4,8 +4,8 @@ import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvModal from '@/components/ui/SvModal.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useFinanceDisputeStore } from '@/stores/financeDisputeStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 
@@ -140,7 +140,7 @@ onMounted(() => {
 
         <p
           v-if="actionError"
-          class="mt-3 text-sm text-[color:var(--color-danger,#dc2626)]"
+          class="mt-3 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ actionError }}
@@ -148,13 +148,13 @@ onMounted(() => {
       </SvCard>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="deciding !== null"
       :title="deciding === 'resolve' ? 'Resolve dispute' : 'Reject dispute'"
       description="A resolution note is required and is recorded on the dispute."
       @close="deciding = null"
     >
-      <SvTextarea
+      <SvTextArea
         id="dispute-note"
         v-model="note"
         label="Resolution note"
@@ -176,6 +176,6 @@ onMounted(() => {
           Confirm
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

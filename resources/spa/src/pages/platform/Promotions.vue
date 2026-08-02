@@ -3,10 +3,10 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvEmptyState from '@/components/ui/SvEmptyState.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import {
   usePromotionStore,
@@ -283,7 +283,7 @@ onMounted(() => {
           class="promotions__form"
           @submit.prevent="submitPromotion"
         >
-          <SvInput
+          <SvTextInput
             id="promo-name"
             v-model="promotionForm.name"
             label="Name"
@@ -298,7 +298,7 @@ onMounted(() => {
               { value: 'fixed_amount', label: 'Fixed amount' },
             ]"
           />
-          <SvInput
+          <SvTextInput
             id="promo-value"
             v-model.number="(promotionForm.value as unknown as string)"
             type="number"
@@ -311,7 +311,7 @@ onMounted(() => {
             label="Target scope"
             :options="scopeOptions"
           />
-          <SvInput
+          <SvTextInput
             v-if="promotionForm.target_scope === 'selected_merchants' || promotionForm.target_scope === 'selected_plans'"
             id="promo-targets"
             v-model="promotionTargetInput"
@@ -325,14 +325,14 @@ onMounted(() => {
             :options="billingModeOptions"
             @update:model-value="(v: string) => (selectedModes = [v])"
           />
-          <SvInput
+          <SvTextInput
             id="promo-from"
             v-model="promotionForm.effective_from"
             type="date"
             label="Effective from"
             required
           />
-          <SvInput
+          <SvTextInput
             id="promo-to"
             v-model="(promotionForm.effective_to as string)"
             type="date"
@@ -425,13 +425,13 @@ onMounted(() => {
           class="promotions__form"
           @submit.prevent="submitOffer"
         >
-          <SvInput
+          <SvTextInput
             id="offer-name"
             v-model="offerForm.name"
             label="Name"
             required
           />
-          <SvInput
+          <SvTextInput
             id="offer-days"
             v-model.number="(offerForm.free_period_days as unknown as string)"
             type="number"
@@ -444,7 +444,7 @@ onMounted(() => {
             label="Target scope"
             :options="scopeOptions"
           />
-          <SvInput
+          <SvTextInput
             v-if="offerForm.target_scope === 'selected_merchants' || offerForm.target_scope === 'selected_plans'"
             id="offer-targets"
             v-model="offerTargetInput"
@@ -458,14 +458,14 @@ onMounted(() => {
             :options="billingModeOptions"
             @update:model-value="(v: string) => (selectedModes = [v])"
           />
-          <SvInput
+          <SvTextInput
             id="offer-from"
             v-model="offerForm.effective_from"
             type="date"
             label="Effective from"
             required
           />
-          <SvInput
+          <SvTextInput
             id="offer-to"
             v-model="(offerForm.effective_to as string)"
             type="date"
@@ -538,13 +538,13 @@ onMounted(() => {
       </div>
     </template>
 
-    <SvModal
+    <SvDialog
       :open="reasonModal.open"
       :title="`Confirm ${reasonModal.action}`"
       description="This action is audited and requires a reason. A fresh step-up is enforced by the server."
       @close="reasonModal.open = false"
     >
-      <SvTextarea
+      <SvTextArea
         id="reason"
         v-model="reasonModal.reason"
         label="Reason"
@@ -567,7 +567,7 @@ onMounted(() => {
           Confirm
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>
 
@@ -580,13 +580,13 @@ onMounted(() => {
   font-size: 1.5rem;
 }
 .promotions__subtitle {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--sv-color-text-muted);
   max-width: 60ch;
 }
 .promotions__tabs {
   display: flex;
   gap: 0.5rem;
-  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  border-bottom: 1px solid var(--sv-color-border-default);
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
@@ -600,7 +600,7 @@ onMounted(() => {
   color: var(--color-text, inherit);
 }
 .promotions__tab--active {
-  border-bottom-color: var(--color-primary, #2563eb);
+  border-bottom-color: var(--sv-color-brand-primary);
   font-weight: 600;
 }
 .promotions__toolbar {
@@ -628,7 +628,7 @@ onMounted(() => {
   font-weight: 600;
 }
 .promotions__meta {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--sv-color-text-muted);
   font-size: 0.875rem;
 }
 .promotions__actions {
@@ -643,6 +643,6 @@ onMounted(() => {
   margin-top: 1rem;
 }
 .promotions__error {
-  color: var(--color-danger, #dc2626);
+  color: var(--sv-color-status-error-fg);
 }
 </style>

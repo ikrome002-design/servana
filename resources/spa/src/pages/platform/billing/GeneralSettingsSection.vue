@@ -3,7 +3,7 @@ import axios from 'axios';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -113,12 +113,12 @@ async function submit(): Promise<void> {
             You have read-only access to general settings.
           </p>
 
-          <SvInput
+          <SvTextInput
             v-for="entry in GENERAL_SETTINGS_KEYS"
             :id="`setting-${entry.key}`"
             :key="entry.key"
             :label="entry.label"
-            :hint="entry.hint"
+            help="entry.hint"
             :model-value="values[entry.key] ?? ''"
             :disabled="!canUpdate"
             :errors="errors[entry.key]"

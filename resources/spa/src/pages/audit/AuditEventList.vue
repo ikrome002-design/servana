@@ -3,7 +3,7 @@ import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuditEventStore } from '@/stores/auditEventStore';
@@ -73,14 +73,14 @@ onMounted(() => {
         :options="severityOptions"
         @update:model-value="applyFilters"
       />
-      <SvInput
+      <SvTextInput
         id="audit-action"
         v-model="store.filters.action"
         label="Action"
         placeholder="e.g. invoice.created"
         @keyup.enter="applyFilters"
       />
-      <SvInput
+      <SvTextInput
         id="audit-date-from"
         v-model="store.filters.date_from"
         label="From"

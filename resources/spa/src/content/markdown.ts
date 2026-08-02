@@ -26,6 +26,33 @@ function escapeHtml(text: string): string {
     .replace(/>/g, '&gt;');
 }
 
+/**
+ * URL schemes a rendered document link may use.
+ *
+ * Phase UI-04: escaping the surrounding text is not enough on its own, because a markdown link
+ * places its target directly into an `href`. `[Click](javascript:…)` would therefore survive
+ * escaping and become an executable link. The content is version-controlled and reviewed, so this
+ * is defence in depth rather than a known exploit — but `SvLegalDocument` and `SvFaq` render this
+ * output through `v-html`, and a renderer they depend on should not be able to emit a script URL
+ * at all.
+ */
+const SAFE_LINK_PATTERN = /^(?:https?:\/\/|mailto:|\/|#)/i;
+
+/**
+ * Make a markdown link target safe to place in an `href`.
+ *
+ * Anything that is not an absolute http(s) URL, a `mailto:`, a root-relative path or a fragment
+ * is replaced with `#` — the link still renders and the document still reads correctly, but it
+ * cannot navigate anywhere dangerous.
+ */
+function safeHref(href: string): string {
+  const trimmed = href.trim();
+  const candidate = SAFE_LINK_PATTERN.test(trimmed) ? trimmed : '#';
+
+  // Quotes would otherwise break out of the attribute.
+  return candidate.replace(/"/g, '%22');
+}
+
 /** Inline formatting: bold, italic, code, links. Input is escaped first. */
 export function renderInline(text: string): string {
   let out = escapeHtml(text);
@@ -34,8 +61,7 @@ export function renderInline(text: string): string {
   out = out.replace(/\*([^*]+)\*/g, '<em>$1</em>');
   out = out.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
-    (_m, label: string, href: string) =>
-      `<a href="${href.replace(/"/g, '%22')}">${label}</a>`,
+    (_m, label: string, href: string) => `<a href="${safeHref(href)}">${label}</a>`,
   );
   return out;
 }

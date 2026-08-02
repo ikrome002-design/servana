@@ -405,8 +405,15 @@ function buildBrandInventory() {
   // Everything else that physically sits under public/assets/brand/. Recording these keeps the
   // inventory a true statement about the filesystem, so a later phase can never mistake an
   // unreferenced working file for an approved brand asset.
+  //
+  // Phase UI-04: this is an inventory of brand IMAGE assets — `UiSourceContractTest` compares it
+  // against a filesystem scan of png/ico/svg/jpg/jpeg/webp. `site.webmanifest` is a document that
+  // REFERENCES brand assets, not one of them, and its own contract is enforced by
+  // `WebAppManifestContractTest`. Listing it here would make the two disagree by construction.
+  const NON_IMAGE_BRAND_FILES = new Set(['webmanifest', 'json', 'txt', 'md']);
+
   for (const relPath of filesUnder('public/assets/brand')) {
-    if (classified.has(relPath)) {
+    if (classified.has(relPath) || NON_IMAGE_BRAND_FILES.has(relPath.split('.').pop() ?? '')) {
       continue;
     }
     const record = fileRecord(relPath);

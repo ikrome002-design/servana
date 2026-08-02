@@ -36,6 +36,7 @@ final class SpaShellController extends Controller
         return response()
             ->view('spa', [
                 'accountHost' => $accountHost,
+                'themePreference' => $this->themePreference($request),
                 'entryScript' => '/'.ltrim($entry['file'], '/'),
                 'entryStyles' => array_map(
                     static fn (string $css): string => '/'.ltrim($css, '/'),
@@ -46,6 +47,28 @@ final class SpaShellController extends Controller
             // shell would keep pointing at a previous deployment's assets. The chunks
             // themselves are immutable and cached hard by Nginx.
             ->header('Cache-Control', 'no-cache, must-revalidate');
+    }
+
+    /**
+     * The signed-in user's EXPLICIT theme choice, or null (Phase UI-04; ADR-021 §3, §4).
+     *
+     * Stamping it into the shell is what applies an authenticated preference *before the
+     * authenticated shell becomes visible* — no request, no flash, and no client-side rule that
+     * could drift from the server's answer.
+     *
+     * Three deliberate properties:
+     *  - Only an EXPLICIT choice is emitted. A user who has never chosen produces null, which is
+     *    the "no preference ⇒ light" case; the shell then emits no attribute at all rather than
+     *    a stored default that would be indistinguishable from a real choice.
+     *  - It is read from the session user only. It is never read from a header, a query parameter
+     *    or the host, so it cannot be influenced by the request.
+     *  - It is a closed enum value, so the rendered attribute can only ever be `light` or `dark`.
+     */
+    private function themePreference(Request $request): ?string
+    {
+        $user = $request->user();
+
+        return $user?->theme_preference?->value;
     }
 
     /**

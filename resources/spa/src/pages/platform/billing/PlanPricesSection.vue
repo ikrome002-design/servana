@@ -2,8 +2,8 @@
 import axios from 'axios';
 import { computed, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useForm } from '@/composables/useForm';
@@ -239,7 +239,7 @@ async function confirmCancel(): Promise<void> {
       </div>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="showForm"
       title="Schedule price"
       description="Creates a new effective-dated price. Overlapping ranges for the same interval and currency are rejected."
@@ -250,18 +250,18 @@ async function confirmCancel(): Promise<void> {
         novalidate
         @submit.prevent="submit"
       >
-        <SvInput
+        <SvTextInput
           id="price-amount"
           label="Amount (major units)"
           type="number"
           :model-value="form.values.amount_major"
           :errors="form.errors.amount_minor"
-          hint="Entered in major units; stored as integer minor units."
+          help="Entered in major units; stored as integer minor units."
           required
           @update:model-value="form.values.amount_major = $event"
         />
         <div class="grid gap-4 sm:grid-cols-2">
-          <SvInput
+          <SvTextInput
             id="price-currency"
             label="Currency"
             :model-value="form.values.currency"
@@ -280,7 +280,7 @@ async function confirmCancel(): Promise<void> {
           />
         </div>
         <div class="grid gap-4 sm:grid-cols-2">
-          <SvInput
+          <SvTextInput
             id="price-from"
             label="Effective from"
             type="date"
@@ -289,7 +289,7 @@ async function confirmCancel(): Promise<void> {
             required
             @update:model-value="form.values.effective_from = $event"
           />
-          <SvInput
+          <SvTextInput
             id="price-to"
             label="Effective to (optional)"
             type="date"
@@ -320,9 +320,9 @@ async function confirmCancel(): Promise<void> {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
-    <SvModal
+    <SvDialog
       :open="cancelTarget !== null"
       title="Cancel future price?"
       description="This removes a scheduled future price. Current and historical prices are never affected."
@@ -349,6 +349,6 @@ async function confirmCancel(): Promise<void> {
           Cancel price
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

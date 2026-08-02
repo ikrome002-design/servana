@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient, primeCsrfCookie } from '@/services/apiClient';
 import { useMerchantStore } from '@/stores/merchantStore';
+import { useThemeStore } from '@/stores/themeStore';
 import type {
   AuthenticatedUser,
   BootstrapPayload,
@@ -59,6 +60,16 @@ export const useAuthStore = defineStore('auth', () => {
     setup.value = payload.setup;
     mfa.value = payload.mfa ?? null;
     useMerchantStore().setMerchant(payload.merchant);
+
+    // Phase UI-04 (ADR-021 §3): adopt the server's theme answer for this user.
+    //
+    // Every authenticated page and every account switch runs this bootstrap, so a preference set
+    // on one account host is applied on the next host's bootstrap — cross-host synchronisation
+    // with no cross-host storage, and with the theme never travelling in a cookie or a URL.
+    useThemeStore().adoptServerPreference(
+      payload.user.theme_preference ?? null,
+      payload.user.resolved_theme ?? 'light',
+    );
   }
 
   function clear(): void {
@@ -71,6 +82,11 @@ export const useAuthStore = defineStore('auth', () => {
     setup.value = null;
     mfa.value = null;
     useMerchantStore().$reset();
+
+    // Drop the SERVER-derived theme so one user's stored preference can never be inherited by
+    // the next person to use this browser. A deliberate anonymous per-browser choice survives,
+    // which is what ADR-021 §3 asks for.
+    useThemeStore().forgetUserPreference();
   }
 
   /** Whether the signed-in member is a merchant admin (UX gating only). */

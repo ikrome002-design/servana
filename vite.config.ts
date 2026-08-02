@@ -109,5 +109,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     include: ['src/**/*.{test,spec}.ts'],
+    // Supplies the browser APIs jsdom omits; see the file for why this is not an assertion change.
+    setupFiles: ['./vitest.setup.ts'],
   },
 });

@@ -2,10 +2,10 @@
 import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useServiceSessionStore } from '@/stores/serviceSessionStore';
 import type { ServiceSession } from '@/types/models';
 import {
@@ -190,13 +190,13 @@ onMounted(() => {
     </SvStateBoundary>
 
     <!-- Cancel session -->
-    <SvModal
+    <SvDialog
       :open="cancelTarget !== null"
       title="Cancel service session"
       description="This cannot be undone. A reason is required."
       @close="cancelTarget = null"
     >
-      <SvTextarea
+      <SvTextArea
         id="session-cancel-reason"
         v-model="cancelReason"
         label="Reason"
@@ -226,16 +226,16 @@ onMounted(() => {
           Cancel session
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- Edit notes -->
-    <SvModal
+    <SvDialog
       :open="notesTarget !== null"
       title="Service notes"
       description="Operational notes only — never client contact details."
       @close="notesTarget = null"
     >
-      <SvTextarea
+      <SvTextArea
         id="session-notes"
         v-model="notesValue"
         label="Notes"
@@ -262,6 +262,6 @@ onMounted(() => {
           Save notes
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

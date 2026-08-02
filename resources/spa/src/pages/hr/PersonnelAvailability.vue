@@ -4,11 +4,11 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { onBeforeRouteLeave, RouterLink } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/stores/authStore';
 import {
@@ -333,14 +333,14 @@ onBeforeRouteLeave(() => {
                   class="flex flex-wrap items-center gap-2"
                   :data-testid="`working-${day.value}`"
                 >
-                  <SvInput
+                  <SvTextInput
                     :id="`w-start-${day.value}-${i}`"
                     v-model="row.start_time"
                     type="time"
                     label="Start"
                   />
                   <span class="text-text-muted">–</span>
-                  <SvInput
+                  <SvTextInput
                     :id="`w-end-${day.value}-${i}`"
                     v-model="row.end_time"
                     type="time"
@@ -371,14 +371,14 @@ onBeforeRouteLeave(() => {
                   class="flex flex-wrap items-center gap-2"
                   :data-testid="`break-${day.value}`"
                 >
-                  <SvInput
+                  <SvTextInput
                     :id="`b-start-${day.value}-${i}`"
                     v-model="row.start_time"
                     type="time"
                     label="Break start"
                   />
                   <span class="text-text-muted">–</span>
-                  <SvInput
+                  <SvTextInput
                     :id="`b-end-${day.value}-${i}`"
                     v-model="row.end_time"
                     type="time"
@@ -425,19 +425,19 @@ onBeforeRouteLeave(() => {
               class="flex flex-wrap items-end gap-2"
               :data-testid="`exception-${i}`"
             >
-              <SvInput
+              <SvTextInput
                 :id="`ex-date-${i}`"
                 v-model="row.date"
                 type="date"
                 label="Date"
               />
-              <SvInput
+              <SvTextInput
                 :id="`ex-start-${i}`"
                 v-model="row.start_time"
                 type="time"
                 label="Start"
               />
-              <SvInput
+              <SvTextInput
                 :id="`ex-end-${i}`"
                 v-model="row.end_time"
                 type="time"
@@ -484,7 +484,7 @@ onBeforeRouteLeave(() => {
             padding="md"
             class="flex flex-col gap-3"
           >
-            <SvTextarea
+            <SvTextArea
               id="change-reason"
               v-model="changeReason"
               label="Reason for change"
@@ -521,33 +521,33 @@ onBeforeRouteLeave(() => {
       </SvStateBoundary>
 
       <!-- Emergency unavailable modal. -->
-      <SvModal
+      <SvDialog
         :open="emergencyOpen"
         title="Emergency unavailable"
         @close="emergencyOpen = false"
       >
         <div class="flex flex-col gap-3">
-          <SvInput
+          <SvTextInput
             id="em-date"
             v-model="emergency.date"
             type="date"
             label="Date"
           />
           <div class="flex gap-2">
-            <SvInput
+            <SvTextInput
               id="em-start"
               v-model="emergency.start_time"
               type="time"
               label="Start"
             />
-            <SvInput
+            <SvTextInput
               id="em-end"
               v-model="emergency.end_time"
               type="time"
               label="End"
             />
           </div>
-          <SvTextarea
+          <SvTextArea
             id="em-reason"
             v-model="emergency.change_reason"
             label="Reason"
@@ -562,7 +562,7 @@ onBeforeRouteLeave(() => {
             Mark unavailable
           </SvButton>
         </div>
-      </SvModal>
+      </SvDialog>
     </template>
   </section>
 </template>

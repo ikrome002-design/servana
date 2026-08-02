@@ -4,9 +4,10 @@ import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import { useRefundStore } from '@/stores/refundStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvMoney from '@/components/ui/SvMoney.vue';
 
 /**
  * Refund detail (Plan §44; Phase 18B). Shows the refunded component, masked external
@@ -85,7 +86,7 @@ onMounted(() => {
         <div class="flex flex-wrap items-start justify-between gap-2">
           <div>
             <p class="font-display text-lg font-semibold text-heading">
-              {{ store.current?.amount.formatted }} · {{ store.current?.method }}
+              <SvMoney :formatted="store.current?.amount?.formatted ?? null" /> · {{ store.current?.method }}
             </p>
             <p class="text-sm text-text-muted">
               Invoice {{ store.current?.invoice?.invoice_number ?? '—' }} · component {{ store.current?.payment_record?.method ?? '—' }}
@@ -128,7 +129,7 @@ onMounted(() => {
 
         <p
           v-if="actionError"
-          class="mt-3 text-sm text-[color:var(--color-danger,#dc2626)]"
+          class="mt-3 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ actionError }}
@@ -136,7 +137,7 @@ onMounted(() => {
       </SvCard>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="confirming !== null"
       :title="confirming ? verbTitle[confirming] : ''"
       :description="confirming ? verbDescription[confirming] : ''"
@@ -158,6 +159,6 @@ onMounted(() => {
           Confirm
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

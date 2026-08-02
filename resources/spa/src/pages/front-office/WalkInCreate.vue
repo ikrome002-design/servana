@@ -4,13 +4,14 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import { apiClient } from '@/services/apiClient';
 import { useClientStore } from '@/stores/clientStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useQueueStore } from '@/stores/queueStore';
 import type { QueueAssignmentMode, Service, ServiceEligibility } from '@/types/models';
+import { SvIconBack } from '@/design-system/icons';
 
 // Front Office walk-in wizard (Plan §37; Phase 16B). Find an existing branch client
 // OR create one through the existing client workflow, pick a service + assignment
@@ -108,7 +109,10 @@ onMounted(async () => {
       :to="{ name: 'front-office.queue' }"
       class="text-sm font-semibold text-heading underline"
     >
-      ← Back to the queue
+      <SvIconBack
+        aria-hidden="true"
+        class="mr-1 inline-block h-4 w-4 align-text-bottom"
+      />Back to the queue
     </RouterLink>
 
     <h1 class="mt-3 font-display text-2xl font-bold text-heading">
@@ -149,7 +153,7 @@ onMounted(async () => {
           </div>
 
           <template v-if="clientMode === 'existing'">
-            <SvInput
+            <SvTextInput
               id="client-search"
               :model-value="clients.lastQuery"
               label="Search clients"
@@ -166,13 +170,13 @@ onMounted(async () => {
           </template>
 
           <template v-else>
-            <SvInput
+            <SvTextInput
               id="new-client-name"
               v-model="newClient.full_name"
               label="Full name"
               required
             />
-            <SvInput
+            <SvTextInput
               id="new-client-phone"
               v-model="newClient.phone"
               label="Phone"

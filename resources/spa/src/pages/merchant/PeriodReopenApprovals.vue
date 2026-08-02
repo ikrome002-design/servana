@@ -66,7 +66,7 @@ onMounted(() => {
 
     <p
       v-if="actionError"
-      class="mt-3 text-sm text-[color:var(--color-danger,#dc2626)]"
+      class="mt-3 text-sm text-sv-error-fg"
       role="alert"
     >
       {{ actionError }}

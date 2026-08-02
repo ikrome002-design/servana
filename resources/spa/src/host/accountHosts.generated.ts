@@ -99,7 +99,7 @@ export const ACCOUNT_HOSTS: Record<RoleIdentity, AccountHostDefinition> = {
   },
   merchant_human_resource: {
     accountKey: 'merchant_human_resource',
-    displayName: "HR",
+    displayName: "Human Resource",
     hosts: {
       production: 'hr.servana.ke',
       staging: 'hr.servana.staging.citruslabs.co.ke',

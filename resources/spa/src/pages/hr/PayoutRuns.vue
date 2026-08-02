@@ -3,8 +3,8 @@ import axios from 'axios';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
@@ -297,17 +297,17 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
           :options="PAYOUT_RUN_STATUS_FILTER"
           @update:model-value="store.filters.status = $event"
         />
-        <SvInput
+        <SvTextInput
           id="filter-currency"
           label="Currency"
-          hint="3-letter code, e.g. KES"
+          help="3-letter code, e.g. KES"
           :model-value="store.filters.currency"
           @update:model-value="store.filters.currency = $event"
         />
-        <SvInput
+        <SvTextInput
           id="filter-branch"
           label="Branch reference"
-          hint="26-character branch reference"
+          help="26-character branch reference"
           :model-value="store.filters.branch_ulid"
           @update:model-value="store.filters.branch_ulid = $event"
         />
@@ -398,7 +398,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
     </template>
 
     <!-- create modal -->
-    <SvModal
+    <SvDialog
       :open="createOpen"
       title="New payout run"
       description="Choose a branch, pay period and currency. Servana snapshots the eligible earned amounts — you do not enter any totals. A run is single-currency."
@@ -417,17 +417,17 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
         >
           {{ createError }}
         </p>
-        <SvInput
+        <SvTextInput
           id="create-branch"
           label="Branch reference"
-          hint="The 26-character reference of the branch this run is for."
+          help="The 26-character reference of the branch this run is for."
           :model-value="createForm.branch_ulid"
           :errors="createErrors.branch_ulid"
           required
           @update:model-value="createForm.branch_ulid = $event"
         />
         <div class="grid gap-4 sm:grid-cols-2">
-          <SvInput
+          <SvTextInput
             id="create-start"
             label="Period start"
             type="date"
@@ -436,7 +436,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
             required
             @update:model-value="createForm.period_start = $event"
           />
-          <SvInput
+          <SvTextInput
             id="create-end"
             label="Period end"
             type="date"
@@ -446,7 +446,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
             @update:model-value="createForm.period_end = $event"
           />
         </div>
-        <SvInput
+        <SvTextInput
           id="create-currency"
           label="Currency"
           :model-value="createForm.currency"
@@ -471,10 +471,10 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- detail modal -->
-    <SvModal
+    <SvDialog
       :open="detailOpen"
       title="Payout run"
       description="A server-snapshotted payout run. Amounts are exact integer minor units that Servana calculated; you never edit them."
@@ -542,7 +542,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
             Edit draft period
           </p>
           <div class="mt-2 grid gap-3 sm:grid-cols-3">
-            <SvInput
+            <SvTextInput
               id="edit-start"
               label="Period start"
               type="date"
@@ -550,7 +550,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
               :errors="editErrors.period_start"
               @update:model-value="editForm.period_start = $event"
             />
-            <SvInput
+            <SvTextInput
               id="edit-end"
               label="Period end"
               type="date"
@@ -558,7 +558,7 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
               :errors="editErrors.period_end"
               @update:model-value="editForm.period_end = $event"
             />
-            <SvInput
+            <SvTextInput
               id="edit-currency"
               label="Currency"
               :model-value="editForm.currency"
@@ -671,6 +671,6 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
           </SvButton>
         </div>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

@@ -2,10 +2,10 @@
 import { computed, nextTick, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { smsExclusionLabels, usePersonnelSmsStore } from '@/stores/personnelSmsStore';
 
@@ -180,7 +180,7 @@ async function runSearch(): Promise<void> {
             class="mt-3 flex flex-wrap items-end gap-2"
             @submit.prevent="runSearch"
           >
-            <SvInput
+            <SvTextInput
               id="sms-search"
               v-model="store.search"
               label="Search by name"
@@ -280,7 +280,7 @@ async function runSearch(): Promise<void> {
             {{ store.selectedCount }} of {{ store.preview.max_recipients }} maximum recipients.
           </p>
 
-          <SvTextarea
+          <SvTextArea
             id="sms-body"
             class="mt-4"
             label="Message"
@@ -451,7 +451,7 @@ async function runSearch(): Promise<void> {
     </template>
 
     <!-- ------------------------------------------------ confirmation modal -->
-    <SvModal
+    <SvDialog
       :open="confirmOpen"
       title="Send this message?"
       @close="closeConfirm"
@@ -488,6 +488,6 @@ async function runSearch(): Promise<void> {
           </SvButton>
         </div>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

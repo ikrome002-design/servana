@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { useSearchStore } from '@/stores/searchStore';
 import type { SearchResult } from '@/stores/searchScope';
 
@@ -93,7 +93,7 @@ onBeforeUnmount(() => {
       @submit.prevent="submit"
     >
       <div class="grow">
-        <SvInput
+        <SvTextInput
           id="search-q"
           v-model="term"
           label="Search"

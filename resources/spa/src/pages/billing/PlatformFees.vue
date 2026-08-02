@@ -3,16 +3,17 @@ import axios from 'axios';
 import { computed, onMounted, reactive, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { usePlatformFeeStore, type PlatformFeeLedgerEntry } from '@/stores/platformFeeStore';
 import { usePlatformFeeDisputeStore, type PlatformFeeDispute } from '@/stores/platformFeeDisputeStore';
 import { formatMoney } from '@/utils/money';
+import { SvIconAttachment } from '@/design-system/icons';
 import {
   PLATFORM_FEE_DISPUTE_STATUS_FILTER,
   PLATFORM_FEE_DISPUTE_STATUS_LABELS,
@@ -364,7 +365,10 @@ async function submitReview(): Promise<void> {
                     <span
                       v-if="dispute.has_evidence"
                       class="ml-2 text-xs text-text-muted"
-                    >📎 evidence attached</span>
+                    ><SvIconAttachment
+                      aria-hidden="true"
+                      class="mr-1 inline-block h-4 w-4 align-text-bottom"
+                    />evidence attached</span>
                   </p>
                   <p class="mt-1 break-words text-sm text-text">
                     {{ dispute.reason }}
@@ -409,7 +413,7 @@ async function submitReview(): Promise<void> {
     </section>
 
     <!-- Entry detail modal -->
-    <SvModal
+    <SvDialog
       :open="detailEntry !== null"
       title="Fee entry detail"
       @close="detailEntry = null"
@@ -467,10 +471,10 @@ async function submitReview(): Promise<void> {
           {{ detailEntry.source_invoice_id }}
         </dd>
       </dl>
-    </SvModal>
+    </SvDialog>
 
     <!-- Dispute creation modal -->
-    <SvModal
+    <SvDialog
       :open="createOpen"
       title="Raise a dispute"
       @close="createOpen = false"
@@ -486,21 +490,21 @@ async function submitReview(): Promise<void> {
         >
           {{ createError }}
         </p>
-        <SvInput
+        <SvTextInput
           id="pf-dispute-entry"
           label="Fee entry reference (optional if an invoice is given)"
           :model-value="createForm.platform_fee_ledger_entry"
           :errors="createErrors.platform_fee_ledger_entry"
           @update:model-value="createForm.platform_fee_ledger_entry = $event"
         />
-        <SvInput
+        <SvTextInput
           id="pf-dispute-invoice"
           label="Subscription invoice reference (optional if an entry is given)"
           :model-value="createForm.subscription_invoice"
           :errors="createErrors.subscription_invoice"
           @update:model-value="createForm.subscription_invoice = $event"
         />
-        <SvTextarea
+        <SvTextArea
           id="pf-dispute-reason"
           label="Reason"
           required
@@ -508,7 +512,7 @@ async function submitReview(): Promise<void> {
           :errors="createErrors.reason"
           @update:model-value="createForm.reason = $event"
         />
-        <SvInput
+        <SvTextInput
           id="pf-dispute-evidence"
           label="Evidence file reference (optional)"
           :model-value="createForm.evidence_file"
@@ -531,10 +535,10 @@ async function submitReview(): Promise<void> {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- Resolve / reject modal (Finance) -->
-    <SvModal
+    <SvDialog
       :open="reviewTarget !== null"
       :title="reviewMode === 'reject' ? 'Reject dispute' : 'Resolve dispute'"
       @close="reviewTarget = null"
@@ -550,14 +554,14 @@ async function submitReview(): Promise<void> {
         >
           {{ reviewError }}
         </p>
-        <SvTextarea
+        <SvTextArea
           id="pf-review-note"
           :label="reviewMode === 'reject' ? 'Rejection reason' : 'Resolution note'"
           required
           :model-value="reviewNote"
           @update:model-value="reviewNote = $event"
         />
-        <SvInput
+        <SvTextInput
           v-if="reviewMode === 'resolve'"
           id="pf-review-money"
           label="Money change (optional; negative credits the merchant)"
@@ -589,6 +593,6 @@ async function submitReview(): Promise<void> {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
   </div>
 </template>

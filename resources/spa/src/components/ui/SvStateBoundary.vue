@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SvIconDocument, SvIconWarning } from '@/design-system/icons';
 defineProps<{
   state: 'loading' | 'empty' | 'error' | 'success';
   errorMessage?: string;
@@ -35,7 +36,7 @@ const emit = defineEmits<{
       aria-hidden="true"
       class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cream text-3xl"
     >
-      📋
+      <SvIconDocument class="h-8 w-8" />
     </div>
     <p class="text-sm font-medium text-text">
       {{ emptyMessage ?? 'Nothing here yet.' }}
@@ -60,7 +61,7 @@ const emit = defineEmits<{
       aria-hidden="true"
       class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-3xl dark:bg-red-900/20"
     >
-      ⚠️
+      <SvIconWarning class="h-8 w-8" />
     </div>
     <p class="text-sm font-medium text-error">
       {{ errorMessage ?? 'Something went wrong.' }}

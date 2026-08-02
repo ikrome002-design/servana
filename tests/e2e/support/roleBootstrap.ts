@@ -19,7 +19,7 @@ export const ROLES: RoleConfig[] = [
   { identity: 'super_administrator', path: '/platform', label: 'Super Administrator', role: null, isPlatformStaff: true },
   { identity: 'merchant_administrator', path: '/merchant', label: 'Merchant Administrator', role: 'merchant_admin', isPlatformStaff: false },
   { identity: 'merchant_branch', path: '/branch', label: 'Branch Manager', role: 'branch_manager', isPlatformStaff: false },
-  { identity: 'merchant_human_resource', path: '/hr', label: 'HR', role: 'hr', isPlatformStaff: false },
+  { identity: 'merchant_human_resource', path: '/hr', label: 'Human Resource', role: 'hr', isPlatformStaff: false },
   { identity: 'merchant_finance', path: '/finance', label: 'Finance', role: 'finance', isPlatformStaff: false },
   { identity: 'merchant_front_office', path: '/front-office', label: 'Front Office', role: 'front_office', isPlatformStaff: false },
   { identity: 'merchant_personnel', path: '/personnel', label: 'Personnel', role: 'personnel', isPlatformStaff: false },

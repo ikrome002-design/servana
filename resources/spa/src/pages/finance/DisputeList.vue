@@ -5,9 +5,9 @@ import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvModal from '@/components/ui/SvModal.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useFinanceDisputeStore } from '@/stores/financeDisputeStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 
@@ -128,24 +128,24 @@ onMounted(() => {
       </ul>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="creating"
       title="Open a finance dispute"
       description="Link the dispute to an invoice and/or a payment record. The disputed source record is never changed by the investigation."
       @close="creating = false"
     >
       <div class="mt-2 flex flex-col gap-3">
-        <SvInput
+        <SvTextInput
           id="dispute-invoice"
           v-model="form.invoice"
           label="Invoice ID (optional)"
         />
-        <SvInput
+        <SvTextInput
           id="dispute-payment-record"
           v-model="form.payment_record"
           label="Payment record ID (optional)"
         />
-        <SvTextarea
+        <SvTextArea
           id="dispute-reason"
           v-model="form.reason"
           label="Reason"
@@ -153,7 +153,7 @@ onMounted(() => {
       </div>
       <p
         v-if="formError"
-        class="mt-2 text-sm text-[color:var(--color-danger,#dc2626)]"
+        class="mt-2 text-sm text-sv-error-fg"
         role="alert"
       >
         {{ formError }}
@@ -174,6 +174,6 @@ onMounted(() => {
           Open dispute
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

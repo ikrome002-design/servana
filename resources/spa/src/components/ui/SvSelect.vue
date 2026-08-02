@@ -1,72 +1,128 @@
 <script setup lang="ts">
+/**
+ * SvSelect — a single choice from a known set (Phase UI-04; UI/UX plan §14.1).
+ *
+ * A NATIVE `<select>`. This is the default choice for Servana, not a fallback: the native control
+ * is better on mobile (the platform picker), works without JavaScript, is keyboard and
+ * screen-reader correct by construction, and cannot develop the half-implemented listbox bugs a
+ * custom widget accumulates. `SvCombobox` exists for the genuinely different case — filtering a
+ * long or server-loaded list — not for styling.
+ *
+ * Phase UI-04 moved its hand-rolled label/error wiring onto `SvFormField`, so all form controls
+ * now share one association strategy, and added option groups and per-option disabling.
+ */
 import { computed } from 'vue';
+import SvFormField, { type SvFieldStatus } from '@/components/ui/SvFormField.vue';
+
+export interface SvSelectOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+  /** Optional `<optgroup>` label. Options sharing a group are rendered together. */
+  group?: string;
+}
 
 const props = withDefaults(
   defineProps<{
     id: string;
     label: string;
     modelValue?: string;
-    options: { value: string; label: string }[];
+    options: SvSelectOption[];
+    /** Shown as a disabled first option. Never a substitute for the label. */
     placeholder?: string;
+    help?: string;
+    errors?: string[];
+    message?: string;
+    status?: SvFieldStatus;
     required?: boolean;
     disabled?: boolean;
-    errors?: string[];
+    labelHidden?: boolean;
   }>(),
-  { required: false, disabled: false, errors: () => [], modelValue: '' },
+  {
+    modelValue: '',
+    placeholder: undefined,
+    help: undefined,
+    errors: () => [],
+    message: undefined,
+    status: 'default',
+    required: false,
+    disabled: false,
+    labelHidden: false,
+  },
 );
 
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>();
 
-const errorId = computed(() => `${props.id}-error`);
-const hasError = computed(() => props.errors.length > 0);
+const ungrouped = computed(() => props.options.filter((option) => option.group === undefined));
+
+/** Groups in first-appearance order, so the rendered order is deterministic. */
+const groups = computed(() => {
+  const names: string[] = [];
+  for (const option of props.options) {
+    if (option.group !== undefined && !names.includes(option.group)) {
+      names.push(option.group);
+    }
+  }
+
+  return names.map((name) => ({
+    name,
+    options: props.options.filter((option) => option.group === name),
+  }));
+});
 </script>
 
 <template>
-  <div class="flex flex-col gap-1">
-    <label
-      :for="id"
-      class="text-sm font-medium text-text"
-    >
-      {{ label }}
-      <span
-        v-if="required"
-        aria-hidden="true"
-        class="ml-0.5 text-error"
-      >*</span>
-    </label>
-    <select
-      :id="id"
-      :value="modelValue"
-      :required="required"
-      :disabled="disabled"
-      :aria-required="required"
-      :aria-invalid="hasError"
-      :aria-describedby="hasError ? errorId : undefined"
-      class="min-h-[44px] w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 aria-[invalid=true]:border-error"
-      @change="emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
-    >
-      <option
-        v-if="placeholder"
-        value=""
-        disabled
+  <SvFormField
+    :id="id"
+    :label="label"
+    :help="help"
+    :errors="errors"
+    :message="message"
+    :status="status"
+    :required="required"
+    :disabled="disabled"
+    :label-hidden="labelHidden"
+  >
+    <template #default="field">
+      <select
+        v-bind="field"
+        :value="modelValue"
+        class="sv-focus-ring min-h-sv-control w-full rounded-control border border-sv-border-input bg-sv-surface-raised px-3 py-2 text-sm text-sv-text disabled:border-sv-disabled-border disabled:bg-sv-disabled-bg disabled:text-sv-disabled-fg aria-[invalid=true]:border-sv-error-border"
+        data-testid="sv-select"
+        @change="emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
       >
-        {{ placeholder }}
-      </option>
-      <option
-        v-for="opt in options"
-        :key="opt.value"
-        :value="opt.value"
-      >
-        {{ opt.label }}
-      </option>
-    </select>
-    <p
-      v-if="hasError"
-      :id="errorId"
-      role="alert"
-      class="text-xs text-error"
-    >
-      {{ errors[0] }}
-    </p>
-  </div>
+        <option
+          v-if="placeholder"
+          value=""
+          disabled
+        >
+          {{ placeholder }}
+        </option>
+
+        <option
+          v-for="option in ungrouped"
+          :key="option.value"
+          :value="option.value"
+          :disabled="option.disabled"
+        >
+          {{ option.label }}
+        </option>
+
+        <optgroup
+          v-for="group in groups"
+          :key="group.name"
+          :label="group.name"
+        >
+          <option
+            v-for="option in group.options"
+            :key="option.value"
+            :value="option.value"
+            :disabled="option.disabled"
+          >
+            {{ option.label }}
+          </option>
+        </optgroup>
+      </select>
+    </template>
+  </SvFormField>
 </template>

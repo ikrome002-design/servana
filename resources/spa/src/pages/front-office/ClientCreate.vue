@@ -4,8 +4,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useForm } from '@/composables/useForm';
 import { useClientStore } from '@/stores/clientStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -87,30 +87,30 @@ const submit = form.handleSubmit(async (values) => {
         novalidate
         @submit.prevent="submit"
       >
-        <SvInput
+        <SvTextInput
           id="full_name"
           v-model="form.values.full_name"
           label="Full name"
           required
           :errors="form.errors.full_name"
         />
-        <SvInput
+        <SvTextInput
           id="phone"
           v-model="form.values.phone"
           label="Phone"
-          hint="Stored securely; shown masked after saving."
+          help="Stored securely; shown masked after saving."
           placeholder="0712 345 678"
           required
           :errors="form.errors.phone"
         />
-        <SvInput
+        <SvTextInput
           id="email"
           v-model="form.values.email"
           label="Email (optional)"
           type="email"
           :errors="form.errors.email"
         />
-        <SvTextarea
+        <SvTextArea
           id="notes"
           v-model="form.values.notes"
           label="Notes (optional)"

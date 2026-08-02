@@ -4767,6 +4767,81 @@
                 ]
             }
         },
+        "/api/v1/auth/preferences": {
+            "patch": {
+                "operationId": "auth.preferences.update",
+                "tags": [
+                    "UserPreferences"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserPreferencesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "theme_preference": {
+                                                    "type": "string",
+                                                    "description": "Echo the STORED value (null when cleared) plus the RESOLVED theme, so the client\nnever has to re-implement the \"absence means light\" rule."
+                                                },
+                                                "resolved_theme": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "theme_preference",
+                                                "resolved_theme"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/auth/sessions": {
             "get": {
                 "operationId": "auth.sessions.index",
@@ -33150,6 +33225,13 @@
                             },
                             "is_platform_staff": {
                                 "type": "boolean"
+                            },
+                            "theme_preference": {
+                                "type": "string",
+                                "description": "Phase UI-04 (ADR-021 §3). The user's EXPLICIT theme choice, or null when they\nhave never made one. `resolved_theme` applies the \"absence means light\" rule\nserver-side so the SPA never has to re-implement it — and so it can never\naccidentally re-implement it as \"ask the operating system\"."
+                            },
+                            "resolved_theme": {
+                                "type": "string"
                             }
                         },
                         "required": [
@@ -33158,7 +33240,9 @@
                             "name",
                             "status",
                             "email_verified_at",
-                            "is_platform_staff"
+                            "is_platform_staff",
+                            "theme_preference",
+                            "resolved_theme"
                         ]
                     },
                     "merchant": {
@@ -41718,6 +41802,15 @@
                 ],
                 "title": "SwitchAccountContextRequest"
             },
+            "ThemePreference": {
+                "type": "string",
+                "description": "A user's explicit theme choice (ADR-021; UI/UX plan §12.1–§12.2). The vocabulary is CLOSED at two values. There is deliberately no `System` / `Auto` case: ADR-021 rule 2 forbids `prefers-color-scheme` from selecting the theme, so \"follow the  * operating system\" must not be expressible anywhere in the stack.  Absence of a value (a `null` column) means \"no explicit choice\", which resolves to {@see self::Light}. That is why the column is nullable rather than defaulted.\n",
+                "enum": [
+                    "light",
+                    "dark"
+                ],
+                "title": "ThemePreference"
+            },
             "TransferAppointmentRequest": {
                 "type": "object",
                 "description": "Transfer-appointment validation (Plan §36). The target personnel is a public\nstaff ULID (must differ from the current assignee — enforced in the action) and\nan optional reason is sanitised before it reaches the audit record. Front Office\nonly; Branch Manager is rejected by the policy.",
@@ -42754,6 +42847,20 @@
                     }
                 },
                 "title": "UpdateSubscriptionPlanRequest"
+            },
+            "UpdateUserPreferencesRequest": {
+                "type": "object",
+                "description": "Validates a change to the authenticated user's own display preferences (Phase UI-04; ADR-021).\n\nThe target is ALWAYS `$request->user()`. This request accepts no user identifier, no merchant,\nno branch and no role — there is deliberately no shape in which one person can write another\nperson's preference, which is why no permission key is needed (Plan §10.3 is unchanged).\n\nThe allowed vocabulary is the enum, so `system` / `auto` are rejected at the boundary as well as\nby the database CHECK (ADR-021 rule 2 forbids OS-derived theme selection).",
+                "properties": {
+                    "theme_preference": {
+                        "description": "`present` (not `required`) with `nullable`: clearing the preference back to \"no\n explicit choice\" is a legitimate action and must be distinguishable from omitting\nthe field entirely.",
+                        "$ref": "#/components/schemas/ThemePreference"
+                    }
+                },
+                "required": [
+                    "theme_preference"
+                ],
+                "title": "UpdateUserPreferencesRequest"
             },
             "VerifyMagicLinkRequest": {
                 "type": "object",

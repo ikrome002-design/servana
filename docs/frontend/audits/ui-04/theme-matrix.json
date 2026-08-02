@@ -1,0 +1,180 @@
+{
+  "generated_by": "Phase UI-04",
+  "purpose": "Every theme scenario ADR-021 and UI/UX plan §12 require, with where each is proven. UI01-THEME-001 was a clean browser rendering DARK because the pre-hydration script consulted prefers-color-scheme; the first two rows are that defect, closed.",
+  "rule": "Light is the default. The operating-system colour scheme is NEVER consulted. Dark is an explicit user choice and only an explicit user choice.",
+  "scenarios": [
+    {
+      "id": "clean-browser-dark-os",
+      "condition": "No stored preference; operating system prefers dark",
+      "expected": "light",
+      "observed": "light",
+      "proven_by": [
+        "tests/e2e/ui-04-design-system.spec.ts — 'a clean browser under a DARK operating system renders light' (Playwright colorScheme: 'dark')",
+        "resources/spa/src/stores/themeStore.spec.ts — 'still renders light when the operating system prefers dark' (asserts matchMedia is never CALLED)"
+      ],
+      "screenshot": "14-clean-browser-light-under-dark-os.png",
+      "closes": "UI01-THEME-001"
+    },
+    {
+      "id": "clean-browser-light-os",
+      "condition": "No stored preference; operating system prefers light",
+      "expected": "light",
+      "observed": "light",
+      "proven_by": ["tests/e2e/ui-04-design-system.spec.ts — 'a clean browser under a LIGHT operating system renders light'"]
+    },
+    {
+      "id": "anonymous-explicit-dark",
+      "condition": "Anonymous visitor chooses dark",
+      "expected": "dark, persisted per browser, applied at first paint after reload",
+      "observed": "dark at first paint; localStorage['servana.theme'] === 'dark'",
+      "proven_by": [
+        "tests/e2e/ui-04-design-system.spec.ts — 'an explicit dark choice persists across a reload'",
+        "resources/spa/src/stores/themeStore.spec.ts — 'persists an explicit choice per browser'"
+      ]
+    },
+    {
+      "id": "anonymous-explicit-light-under-dark-os",
+      "condition": "Anonymous visitor chooses light; operating system prefers dark",
+      "expected": "light",
+      "observed": "light",
+      "proven_by": ["tests/e2e/ui-04-design-system.spec.ts — 'an explicit light choice persists under a dark operating system'"]
+    },
+    {
+      "id": "malformed-stored-value",
+      "condition": "localStorage['servana.theme'] === 'system'",
+      "expected": "light — a malformed or removed value must not break a bootstrap",
+      "observed": "light",
+      "proven_by": [
+        "tests/e2e/ui-04-design-system.spec.ts — 'a malformed stored value falls back to light'",
+        "resources/spa/src/stores/themeStore.spec.ts — 'falls back to light for a malformed stored value'",
+        "tests/Feature/Auth/ThemePreferenceApiTest.php — 'resolves a malformed stored value to light rather than throwing'"
+      ]
+    },
+    {
+      "id": "authenticated-server-dark",
+      "condition": "Signed-in user whose record carries theme_preference = dark",
+      "expected": "dark applied BEFORE any authenticated content is visible, with no flash",
+      "observed": "The Laravel shell stamps data-sv-theme on <html>; the pre-hydration script reads it before Vue mounts.",
+      "proven_by": [
+        "app/Http/Controllers/SpaShellController.php — themePreference() reads the session user only",
+        "tests/e2e/ui-04-design-system.spec.ts — 'a server-rendered preference applies before hydration, with no flash'",
+        "resources/spa/src/stores/themeStore.spec.ts — 'adopts the attribute the Laravel shell stamped'"
+      ]
+    },
+    {
+      "id": "authenticated-server-light",
+      "condition": "Signed-in user whose record carries theme_preference = light",
+      "expected": "light, overriding a conflicting stored browser value",
+      "observed": "The server record wins; the browser value is the fallback.",
+      "proven_by": [
+        "resources/spa/src/stores/themeStore.spec.ts — 'lets the server preference override this browser\\'s choice'",
+        "resources/spa/src/stores/themeStore.spec.ts — 'lets the server attribute win over a conflicting stored value'"
+      ]
+    },
+    {
+      "id": "authenticated-no-preference",
+      "condition": "Signed-in user who has NEVER chosen; this browser has an explicit choice",
+      "expected": "the browser choice survives — a person who picked dark on this device should not lose it",
+      "observed": "browser choice retained",
+      "proven_by": ["resources/spa/src/stores/themeStore.spec.ts — 'keeps this browser\\'s explicit choice when the user has no server preference'"]
+    },
+    {
+      "id": "theme-update-persistence",
+      "condition": "Signed-in user toggles the theme",
+      "expected": "PATCH /api/v1/auth/preferences writes to their OWN record; no permission key involved",
+      "observed": "Written; own-scope only.",
+      "proven_by": [
+        "tests/Feature/Auth/ThemePreferenceApiTest.php — 'persists an explicit dark choice to the user record'",
+        "tests/Feature/Auth/ThemePreferenceApiTest.php — 'writes only the caller\\'s own record, whatever the payload claims'",
+        "resources/spa/src/stores/themeStore.spec.ts — 'writes an explicit change to the user\\'s own record'"
+      ]
+    },
+    {
+      "id": "server-write-failure",
+      "condition": "The preference write fails",
+      "expected": "the local theme is kept, and the control stops claiming it was saved",
+      "observed": "theme retained; syncError set",
+      "proven_by": ["resources/spa/src/stores/themeStore.spec.ts — 'keeps the local theme but reports the failure when the server write fails'"]
+    },
+    {
+      "id": "login-synchronisation",
+      "condition": "A user signs in",
+      "expected": "the /me bootstrap adopts the server preference",
+      "observed": "authStore.applyBootstrap calls themeStore.adoptServerPreference",
+      "proven_by": [
+        "resources/spa/src/stores/authStore.ts — applyBootstrap()",
+        "resources/spa/src/stores/themeStore.spec.ts — 'applies the user\\'s stored server preference on bootstrap'"
+      ]
+    },
+    {
+      "id": "account-switch-synchronisation",
+      "condition": "A user switches account context to another host",
+      "expected": "the target host applies the SAME server preference",
+      "observed": "The target host loads a fresh page and runs /me, which adopts the same user record. No cross-host storage and no theme in a cookie or URL.",
+      "proven_by": ["resources/spa/src/stores/authStore.ts — applyBootstrap() runs on every host's bootstrap"]
+    },
+    {
+      "id": "logout-isolation",
+      "condition": "A user logs out, leaving no explicit browser choice",
+      "expected": "the next user does NOT inherit the previous user's server preference",
+      "observed": "light; hasExplicitPreference recomputed from local storage alone",
+      "proven_by": ["resources/spa/src/stores/themeStore.spec.ts — 'does not leak one user\\'s server preference into the next session'"]
+    },
+    {
+      "id": "logout-keeps-device-choice",
+      "condition": "A user logs out, having deliberately chosen dark on this device",
+      "expected": "the device choice survives (ADR-021 §3)",
+      "observed": "dark retained",
+      "proven_by": ["resources/spa/src/stores/themeStore.spec.ts — 'keeps a deliberate anonymous browser choice across logout'"]
+    },
+    {
+      "id": "pre-hydration-parity",
+      "condition": "The standalone SPA origin and the Laravel shell",
+      "expected": "byte-identical bootstrap scripts, neither consulting the operating system",
+      "observed": "identical; neither contains prefers-color-scheme or matchMedia",
+      "proven_by": [
+        "tests/Feature/Hosts/AccountHostShellContractTest.php — 'keeps the two theme bootstraps byte-identical'",
+        "tests/Feature/Hosts/AccountHostShellContractTest.php — 'never lets the operating system select the theme in either shell (UI01-THEME-001)'",
+        "tests/e2e/ui-04-design-system.spec.ts — 'the pre-hydration script never consults the operating system' (asserted on the SERVED document)"
+      ]
+    },
+    {
+      "id": "no-flash",
+      "condition": "Any first paint",
+      "expected": "the theme class is set before Vue hydrates, so nothing flashes",
+      "observed": "The class is applied by the inline pre-hydration script; the store's initial resolution uses the SAME precedence, so hydration cannot change it.",
+      "proven_by": [
+        "resources/spa/index.html and resources/views/spa.blade.php — inline bootstrap before the module script",
+        "resources/spa/src/stores/themeStore.ts — resolveInitial() mirrors the bootstrap precedence exactly"
+      ]
+    },
+    {
+      "id": "generated-css-never-asks",
+      "condition": "The generated token stylesheet",
+      "expected": "no prefers-color-scheme rule anywhere",
+      "observed": "absent",
+      "proven_by": ["tests/Feature/DesignSystem/DesignTokenGenerationTest.php — 'never consults prefers-color-scheme anywhere in the generated CSS'"]
+    },
+    {
+      "id": "vocabulary-is-closed",
+      "condition": "Any attempt to store 'system' or 'auto'",
+      "expected": "rejected at validation AND at the database CHECK",
+      "observed": "422 at the boundary; QueryException at the database",
+      "proven_by": [
+        "tests/Feature/Auth/ThemePreferenceApiTest.php — 'rejects any value outside the closed light/dark vocabulary'",
+        "tests/Feature/Auth/ThemePreferenceApiTest.php — 'refuses a value the database vocabulary does not permit'",
+        "tests/Feature/Auth/ThemePreferenceApiTest.php — 'offers no way to express \"follow the operating system\"'"
+      ]
+    },
+    {
+      "id": "both-themes-accessible",
+      "condition": "Every semantic token pair in both themes",
+      "expected": "AA text contrast, 3:1 non-text contrast, visible focus",
+      "observed": "35 computed contrast requirements pass in BOTH themes; axe reports 0 serious and 0 critical in light and dark",
+      "proven_by": [
+        "tests/Feature/DesignSystem/DesignTokenContrastTest.php",
+        "tests/e2e/ui-04-design-system.spec.ts — axe light and dark"
+      ]
+    }
+  ]
+}

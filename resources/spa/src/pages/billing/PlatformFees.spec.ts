@@ -58,7 +58,7 @@ const dispute = {
   capabilities: { reviewable: true, resolvable: false, rejectable: true },
 };
 
-const stubs = { SvModal: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title'] } };
+const stubs = { SvDialog: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title'] } };
 
 function routeResponses(url: string) {
   if (url === '/platform-fees/summary') return { data: { data: [summaryRow] } };

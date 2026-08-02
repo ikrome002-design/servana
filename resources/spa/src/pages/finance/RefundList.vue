@@ -5,9 +5,9 @@ import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvModal from '@/components/ui/SvModal.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useRefundStore } from '@/stores/refundStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 import { PAYMENT_METHODS } from '@/stores/paymentStore';
@@ -132,19 +132,19 @@ onMounted(() => {
       </ul>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="requesting"
       title="Request an external refund"
       description="Servana records the intent only; it never moves funds. The refund is capped at the component’s remaining refundable amount and requires a distinct approver and finalizer."
       @close="requesting = false"
     >
       <div class="mt-2 flex flex-col gap-3">
-        <SvInput
+        <SvTextInput
           id="refund-component"
           v-model="form.payment_record"
           label="Validated payment component (ID)"
         />
-        <SvInput
+        <SvTextInput
           id="refund-amount"
           v-model="form.amount"
           type="number"
@@ -156,12 +156,12 @@ onMounted(() => {
           label="Refund method"
           :options="PAYMENT_METHODS"
         />
-        <SvInput
+        <SvTextInput
           id="refund-reference"
           v-model="form.reference"
           label="External reference (optional for cash)"
         />
-        <SvTextarea
+        <SvTextArea
           id="refund-reason"
           v-model="form.reason"
           label="Reason"
@@ -169,7 +169,7 @@ onMounted(() => {
       </div>
       <p
         v-if="formError"
-        class="mt-2 text-sm text-[color:var(--color-danger,#dc2626)]"
+        class="mt-2 text-sm text-sv-error-fg"
         role="alert"
       >
         {{ formError }}
@@ -190,6 +190,6 @@ onMounted(() => {
           Request refund
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

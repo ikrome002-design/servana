@@ -24,6 +24,8 @@ function bootstrapWith(accountKeys: string[], isPlatformStaff = false): Bootstra
       status: 'active',
       email_verified_at: null,
       is_platform_staff: isPlatformStaff,
+    theme_preference: null,
+    resolved_theme: 'light' as const,
     },
     merchant: null,
     membership: null,

@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { useForm } from '@/composables/useForm';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -132,7 +132,7 @@ onMounted(startEnrollment);
         novalidate
         @submit.prevent="confirm"
       >
-        <SvInput
+        <SvTextInput
           id="mfa-code"
           v-model="form.values.code"
           label="6-digit code"

@@ -3,9 +3,9 @@ import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvModal from '@/components/ui/SvModal.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { usePeriodLockStore, type PeriodLockView } from '@/stores/periodLockStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 
@@ -110,7 +110,7 @@ onMounted(() => {
 
     <p
       v-if="actionError"
-      class="mt-3 text-sm text-[color:var(--color-danger,#dc2626)]"
+      class="mt-3 text-sm text-sv-error-fg"
       role="alert"
     >
       {{ actionError }}
@@ -175,20 +175,20 @@ onMounted(() => {
       </ul>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="creating"
       title="Lock a financial period"
       description="A locked period blocks financial mutations dated inside it (423). Reads, receipts, disputes and exports remain available."
       @close="creating = false"
     >
       <div class="mt-2 flex flex-col gap-3">
-        <SvInput
+        <SvTextInput
           id="lock-start"
           v-model="form.period_start"
           type="date"
           label="Period start"
         />
-        <SvInput
+        <SvTextInput
           id="lock-end"
           v-model="form.period_end"
           type="date"
@@ -219,15 +219,15 @@ onMounted(() => {
           Lock period
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
 
-    <SvModal
+    <SvDialog
       :open="reopening !== null"
       title="Request a period reopen"
       description="A reason is mandatory. Execution requires a fresh step-up; an exceptional lock also needs a distinct Merchant Administrator approval."
       @close="reopening = null"
     >
-      <SvTextarea
+      <SvTextArea
         id="reopen-reason"
         v-model="reason"
         label="Reason"
@@ -249,6 +249,6 @@ onMounted(() => {
           Request reopen
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

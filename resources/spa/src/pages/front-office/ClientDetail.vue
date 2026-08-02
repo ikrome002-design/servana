@@ -5,9 +5,9 @@ import { useRoute } from 'vue-router';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useForm } from '@/composables/useForm';
 import { useClientStore } from '@/stores/clientStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -164,27 +164,27 @@ async function setConsent(state: SmsConsentState): Promise<void> {
                 novalidate
                 @submit.prevent="save"
               >
-                <SvInput
+                <SvTextInput
                   id="full_name"
                   v-model="form.values.full_name"
                   label="Full name"
                   required
                   :errors="form.errors.full_name"
                 />
-                <SvInput
+                <SvTextInput
                   id="phone"
                   v-model="form.values.phone"
                   label="New phone (leave blank to keep current)"
                   :errors="form.errors.phone"
                 />
-                <SvInput
+                <SvTextInput
                   id="email"
                   v-model="form.values.email"
                   label="New email (leave blank to keep current)"
                   type="email"
                   :errors="form.errors.email"
                 />
-                <SvTextarea
+                <SvTextArea
                   id="notes"
                   v-model="form.values.notes"
                   label="Notes"

@@ -1634,3 +1634,16 @@ business_migrations:
     destructive: false
     verification: docs/proof/ui-03.md
     notes: "Phase UI-03 (ADR-018 steps 3-10; UI/UX plan §5.3; replay posture per ADR-003). The single-use, short-lived, hashed credential that carries a user from a source account host to a target account host without re-authenticating and WITHOUT carrying the source permission set. Treated as the bearer credential it is: 64 random bytes, SHA-256 at rest (unique token_hash), 120-second life, consumed atomically under SELECT FOR UPDATE plus a conditional single-use update, bound to its exact target. THE ROW CARRIES NO PERMISSION SNAPSHOT AND NO CLIENT-ASSERTED ROLE - every target authority (user status, merchant status, membership, role, branch) is re-read from the database inside the consume transaction, which is what makes the switch safe: a role revoked one second after issuance yields no target session. ip_hash and user_agent_hash are minimized forensics, mirroring the Phase 5 Magic Link table: enough to correlate an abuse pattern, never enough to retain the address or fingerprint. CHECKs: closed source/target account and environment vocabularies, closed invalidated_reason vocabulary (asserted identical to the HandoffRejectionReason enum), expires_at > created_at, NOT (consumed AND invalidated) so 'was this replayed?' is answerable rather than a guess, invalidation consistency, platform-has-no-merchant and branch-requires-merchant. Retention: rows are deleted past expires_at + 24h; consumed and invalidated rows are kept for that window as forensic evidence. Identity-owned; EXEMPT in TenantOwnership. Forward-only (ADR-004)."
+  - file: 2026_08_01_000001_add_theme_preference_to_users_table.php
+    table: users
+    domain: Identity
+    owner_phase: "UI-04"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/core-identity-and-tenancy.md
+    depends_on:
+      - 0001_01_01_000000_create_users_table.php
+      - 2026_06_14_000001_add_auth_columns_to_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-04.md
+    notes: "Phase UI-04 (ADR-021; UI/UX plan §12.2). One nullable column carrying the authenticated user's explicit theme choice so it can be stamped before hydration on every account host. NULLABLE WITH NO DEFAULT IS THE CONTRACT: null means 'never chose', which ADR-021 rule 2 resolves to light. A column default of 'light' would make 'never chose' indistinguishable from 'chose light' and would let a future default change silently rewrite an unexpressed preference. The vocabulary is closed at the database (Plan §9 rule 7): users_theme_preference_check permits NULL, 'light' or 'dark' only, so 'system'/'auto' are deliberately unrepresentable - ADR-021 forbids prefers-color-scheme from selecting the theme, so there must be no way to persist 'follow the OS'. OWN-SCOPE ONLY AND CARRIES NO AUTHORITY: it is a presentation preference on the identity record, not a permission, not tenant-wide, and it gates nothing - no permission key was added for it. Expand-only; the shipped users migration is not edited (Guardrail 12). Forward-only (ADR-004)."

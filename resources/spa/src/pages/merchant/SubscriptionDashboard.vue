@@ -148,7 +148,7 @@ onMounted(async () => {
                 Current plan
               </dt>
               <dd class="mt-1 text-base text-text">
-                {{ sub.plan.name }}
+                {{ sub.plan?.name ?? 'Not available' }}
               </dd>
             </div>
             <div>
@@ -197,7 +197,7 @@ onMounted(async () => {
             class="mt-2 text-sm text-text"
             data-testid="scheduled-change-summary"
           >
-            Changing to <strong>{{ sub.scheduled_plan_change.target_plan.name }}</strong>
+            Changing to <strong>{{ sub.scheduled_plan_change?.target_plan?.name ?? 'Not available' }}</strong>
             ({{ formatMoney(sub.scheduled_plan_change.target_price.amount_minor, sub.scheduled_plan_change.target_price.currency) }})
             on <strong>{{ sub.scheduled_plan_change.effective_at }}</strong>.
           </p>

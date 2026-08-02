@@ -27,7 +27,7 @@ const activeRule = {
   change_reason: 'launch',
 };
 
-const stubs = { SvModal: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title', 'description'] } };
+const stubs = { SvDialog: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title', 'description'] } };
 
 function mountSection(permissions: string[] = ['platform.preferred_personnel_fee.manage']) {
   const auth = useAuthStore();

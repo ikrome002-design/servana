@@ -5,11 +5,11 @@ import PermissionGate from '@/components/auth/PermissionGate.vue';
 import BranchPreferredFeeCard from '@/pages/branch/BranchPreferredFeeCard.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useForm } from '@/composables/useForm';
 import { useCatalogueStore } from '@/stores/catalogueStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -212,7 +212,7 @@ async function confirmArchive(): Promise<void> {
     </SvStateBoundary>
 
     <!-- Create / edit modal -->
-    <SvModal
+    <SvDialog
       :open="showForm"
       :title="editing ? 'Edit service' : 'Add service'"
       @close="showForm = false"
@@ -231,27 +231,27 @@ async function confirmArchive(): Promise<void> {
           :options="categoryOptions"
           :errors="form.errors.category_id"
         />
-        <SvInput
+        <SvTextInput
           id="name"
           v-model="form.values.name"
           label="Service name"
           required
           :errors="form.errors.name"
         />
-        <SvTextarea
+        <SvTextArea
           id="description"
           v-model="form.values.description"
           label="Description"
           :errors="form.errors.description"
         />
-        <SvInput
+        <SvTextInput
           id="price_major"
           v-model="form.values.price_major"
           label="Price (KES)"
           required
           :errors="form.errors.price_minor"
         />
-        <SvInput
+        <SvTextInput
           id="duration_minutes"
           v-model="form.values.duration_minutes"
           label="Duration (minutes)"
@@ -275,10 +275,10 @@ async function confirmArchive(): Promise<void> {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- Archive confirmation -->
-    <SvModal
+    <SvDialog
       :open="archiveTarget !== null"
       title="Archive service?"
       @close="archiveTarget = null"
@@ -301,7 +301,7 @@ async function confirmArchive(): Promise<void> {
           Archive
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- Phase 20A — read-only effective preferred-personnel fee (Branch Manager). UX gate
          only; the API enforces `preferred_personnel_fee.view_branch_rule`. No mutation. -->

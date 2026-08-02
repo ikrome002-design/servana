@@ -4,15 +4,16 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { apiClient } from '@/services/apiClient';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useQueueStore } from '@/stores/queueStore';
 import type { QueueEntry, ServiceEligibility } from '@/types/models';
 import { assignmentModeLabel, queueStatusLabel, waitEstimateLabel } from '@/utils/queue';
+import { SvIconBack } from '@/design-system/icons';
 
 // Front Office queue-entry detail with capability-gated actions (Plan §37; Phase
 // 16B). Action availability is driven by the API `can` map (UX only); the API
@@ -107,7 +108,10 @@ onMounted(load);
       :to="{ name: 'front-office.queue' }"
       class="text-sm font-semibold text-heading underline"
     >
-      ← Back to the queue
+      <SvIconBack
+        aria-hidden="true"
+        class="mr-1 inline-block h-4 w-4 align-text-bottom"
+      />Back to the queue
     </RouterLink>
 
     <SvStateBoundary
@@ -256,7 +260,7 @@ onMounted(load);
       </SvCard>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="activeDialog === 'assign' || activeDialog === 'transfer'"
       :title="activeDialog === 'transfer' ? 'Transfer queue entry' : 'Assign personnel'"
       description="Only eligible, available personnel can take this entry."
@@ -275,7 +279,7 @@ onMounted(load);
           :options="personnelOptions"
           required
         />
-        <SvTextarea
+        <SvTextArea
           v-if="activeDialog === 'transfer'"
           id="queue-transfer-reason"
           v-model="reason"
@@ -290,9 +294,9 @@ onMounted(load);
           Confirm
         </SvButton>
       </form>
-    </SvModal>
+    </SvDialog>
 
-    <SvModal
+    <SvDialog
       :open="activeDialog === 'cancel'"
       title="Cancel queue entry"
       description="A reason is required."
@@ -303,7 +307,7 @@ onMounted(load);
         novalidate
         @submit.prevent="submitCancel"
       >
-        <SvTextarea
+        <SvTextArea
           id="queue-cancel-reason"
           v-model="reason"
           label="Reason"
@@ -317,6 +321,6 @@ onMounted(load);
           Cancel entry
         </SvButton>
       </form>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

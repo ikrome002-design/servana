@@ -3,11 +3,11 @@ import axios from 'axios';
 import { computed, onMounted, reactive, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
 import {
@@ -313,7 +313,7 @@ async function confirmCancel(): Promise<void> {
       </ul>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="modalOpen"
       :title="mode === 'supersede' ? 'Supersede fee rule' : 'New draft fee rule'"
       :description="mode === 'supersede'
@@ -340,7 +340,7 @@ async function confirmCancel(): Promise<void> {
           v-if="isFixed"
           class="grid gap-4 sm:grid-cols-2"
         >
-          <SvInput
+          <SvTextInput
             id="fee-fixed-amount"
             label="Fixed amount (major units)"
             type="number"
@@ -349,7 +349,7 @@ async function confirmCancel(): Promise<void> {
             required
             @update:model-value="form.fixed_amount_major = $event"
           />
-          <SvInput
+          <SvTextInput
             id="fee-currency"
             label="Currency"
             :model-value="form.currency"
@@ -358,14 +358,14 @@ async function confirmCancel(): Promise<void> {
             @update:model-value="form.currency = $event"
           />
         </div>
-        <SvInput
+        <SvTextInput
           v-else
           id="fee-basis-points"
           label="Percentage (basis points, 0–10000)"
           type="number"
           :model-value="form.percentage_basis_points"
           :errors="errors.percentage_basis_points"
-          hint="10000 basis points = 100%."
+          help="10000 basis points = 100%."
           required
           @update:model-value="form.percentage_basis_points = $event"
         />
@@ -390,20 +390,20 @@ async function confirmCancel(): Promise<void> {
             required
             @update:model-value="form.scope = $event"
           />
-          <SvInput
+          <SvTextInput
             v-if="isServiceScope"
             id="fee-service"
             label="Service (ULID)"
             :model-value="form.service_id"
             :errors="errors.service_id"
-            hint="The 26-character service identifier this rule overrides."
+            help="The 26-character service identifier this rule overrides."
             required
             @update:model-value="form.service_id = $event"
           />
         </template>
 
         <div class="grid gap-4 sm:grid-cols-2">
-          <SvInput
+          <SvTextInput
             id="fee-from"
             label="Effective from"
             type="date"
@@ -412,7 +412,7 @@ async function confirmCancel(): Promise<void> {
             required
             @update:model-value="form.effective_from = $event"
           />
-          <SvInput
+          <SvTextInput
             id="fee-to"
             label="Effective to (optional)"
             type="date"
@@ -422,7 +422,7 @@ async function confirmCancel(): Promise<void> {
           />
         </div>
 
-        <SvTextarea
+        <SvTextArea
           id="fee-reason"
           label="Change reason"
           :model-value="form.change_reason"
@@ -454,9 +454,9 @@ async function confirmCancel(): Promise<void> {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
-    <SvModal
+    <SvDialog
       :open="cancelTarget !== null"
       title="Cancel fee rule?"
       description="Only a draft or scheduled rule can be cancelled. Active and terminal rules are never affected."
@@ -483,6 +483,6 @@ async function confirmCancel(): Promise<void> {
           Cancel rule
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

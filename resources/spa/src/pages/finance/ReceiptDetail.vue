@@ -4,10 +4,11 @@ import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvModal from '@/components/ui/SvModal.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useReceiptStore } from '@/stores/receiptStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvMoney from '@/components/ui/SvMoney.vue';
 
 /**
  * Receipt detail (Plan §43; Phase 18B). View the immutable receipt + its snapshot
@@ -86,7 +87,7 @@ onMounted(() => {
               Receipt #{{ store.current?.receipt_number }}
             </p>
             <p class="text-sm text-text-muted">
-              Invoice {{ store.current?.invoice?.invoice_number ?? '—' }} · {{ store.current?.amount.formatted }}
+              Invoice {{ store.current?.invoice?.invoice_number ?? '—' }} · <SvMoney :formatted="store.current?.amount?.formatted ?? null" />
             </p>
             <p
               v-if="store.current?.is_reissue"
@@ -124,13 +125,13 @@ onMounted(() => {
             class="flex items-center justify-between rounded-lg bg-surface-alt px-3 py-2 text-sm"
           >
             <span class="font-semibold text-heading">{{ component.method }}</span>
-            <span class="font-semibold text-heading">{{ component.amount.formatted }}</span>
+            <span class="font-semibold text-heading"><SvMoney :formatted="component.amount?.formatted ?? null" /></span>
           </li>
         </ul>
 
         <p
           v-if="actionError"
-          class="mt-3 text-sm text-[color:var(--color-danger,#dc2626)]"
+          class="mt-3 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ actionError }}
@@ -138,13 +139,13 @@ onMounted(() => {
       </SvCard>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="reissuing"
       title="Reissue receipt"
       description="A reissue creates a NEW receipt number that references this original. The original is never altered. A reason is required."
       @close="reissuing = false"
     >
-      <SvTextarea
+      <SvTextArea
         id="reissue-reason"
         v-model="reason"
         label="Reason"
@@ -166,6 +167,6 @@ onMounted(() => {
           Reissue receipt
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

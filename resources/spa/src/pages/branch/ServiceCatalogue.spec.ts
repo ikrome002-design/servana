@@ -36,7 +36,7 @@ function mockLoad(services: unknown[] = [service]): void {
 }
 
 const mountPage = () =>
-  mount(ServiceCatalogue, { global: { stubs: { RouterLink: { template: '<a><slot /></a>' }, SvModal: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title'] } } } });
+  mount(ServiceCatalogue, { global: { stubs: { RouterLink: { template: '<a><slot /></a>' }, SvDialog: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title'] } } } });
 
 describe('ServiceCatalogue.vue', () => {
   beforeEach(() => {

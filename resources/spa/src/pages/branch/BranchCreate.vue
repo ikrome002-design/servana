@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { useForm } from '@/composables/useForm';
 import { useBranchStore } from '@/stores/branchStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -56,7 +56,7 @@ const submit = form.handleSubmit(async (values) => {
         novalidate
         @submit.prevent="submit"
       >
-        <SvInput
+        <SvTextInput
           id="name"
           v-model="form.values.name"
           label="Branch name"
@@ -64,22 +64,22 @@ const submit = form.handleSubmit(async (values) => {
           required
           :errors="form.errors.name"
         />
-        <SvInput
+        <SvTextInput
           id="code"
           v-model="form.values.code"
           label="Branch code"
-          hint="Unique within your business; used on invoice numbers."
+          help="Unique within your business; used on invoice numbers."
           placeholder="KIL001"
           required
           :errors="form.errors.code"
         />
-        <SvInput
+        <SvTextInput
           id="town"
           v-model="form.values.town"
           label="Town"
           :errors="form.errors.town"
         />
-        <SvInput
+        <SvTextInput
           id="phone"
           v-model="form.values.phone"
           label="Phone"

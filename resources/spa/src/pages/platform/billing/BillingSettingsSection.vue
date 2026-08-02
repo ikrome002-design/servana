@@ -3,7 +3,7 @@ import axios from 'axios';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
@@ -128,7 +128,7 @@ async function submit(): Promise<void> {
           />
 
           <div class="grid gap-4 sm:grid-cols-2">
-            <SvInput
+            <SvTextInput
               id="default-trial-days"
               label="Default trial days"
               type="number"
@@ -138,7 +138,7 @@ async function submit(): Promise<void> {
               required
               @update:model-value="form.default_trial_days = $event"
             />
-            <SvInput
+            <SvTextInput
               id="grace-days"
               label="Grace days"
               type="number"
@@ -150,13 +150,13 @@ async function submit(): Promise<void> {
             />
           </div>
 
-          <SvInput
+          <SvTextInput
             id="currency"
             label="Currency (ISO 4217)"
             :model-value="form.currency"
             :disabled="!canUpdate"
             :errors="errors.currency"
-            hint="Three-letter uppercase code, e.g. KES."
+            help="Three-letter uppercase code, e.g. KES."
             required
             @update:model-value="form.currency = $event"
           />

@@ -25,7 +25,7 @@ function paged<T>(rows: T[]) { return { data: { data: rows, meta: { current_page
 
 const mountPage = () => mount(PayoutRuns, {
   attachTo: document.body,
-  global: { stubs: { SvModal: { template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>', props: ['open', 'title', 'description'] } } },
+  global: { stubs: { SvDialog: { template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>', props: ['open', 'title', 'description'] } } },
 });
 
 function grantHr(perms = ['payout_run.create', 'payout_run.update_draft', 'payout_run.submit', 'payout_run.cancel_draft']): void {

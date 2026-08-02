@@ -1,0 +1,109 @@
+{
+  "generated_by": "Phase UI-04",
+  "purpose": "Responsive behaviour of the shared component foundation at the binding viewport boundaries (UI/UX plan §13.2). UI-16 owns the release-wide audit; UI-04 proves the COMPONENT foundation.",
+  "contract": {
+    "mobile": "<= 767px",
+    "tablet": "768px - 1024px",
+    "desktop": ">= 1025px",
+    "method": "CSS media queries only. JavaScript device detection is forbidden (CLAUDE.md guardrail 1) and is enforced by DesignTokenSourceGuardTest.",
+    "source_of_truth": "resources/spa/src/design-system/tokens.json -> breakpoints; Tailwind reads the same file."
+  },
+  "horizontal_overflow": {
+    "surface": "design-system fixture (/dev/design-system)",
+    "assertion": "documentElement.scrollWidth - documentElement.clientWidth <= 0",
+    "proven_by": "tests/e2e/ui-04-design-system.spec.ts — one test per width",
+    "results": [
+      { "width": 360, "band": "mobile", "overflow_px": 0, "result": "pass" },
+      { "width": 767, "band": "mobile (upper bound)", "overflow_px": 0, "result": "pass" },
+      { "width": 768, "band": "tablet (lower bound)", "overflow_px": 0, "result": "pass" },
+      { "width": 1024, "band": "tablet (upper bound)", "overflow_px": 0, "result": "pass" },
+      { "width": 1025, "band": "desktop (lower bound)", "overflow_px": 0, "result": "pass" },
+      { "width": 1280, "band": "desktop", "overflow_px": 0, "result": "pass" },
+      { "width": 1440, "band": "desktop (wide)", "overflow_px": 0, "result": "pass" }
+    ]
+  },
+  "component_transformations": [
+    {
+      "component": "SvDataTable + SvResponsiveRecordList",
+      "mobile": "Labelled record cards. Every value keeps the label its column header carried; detail-priority columns move behind a per-card disclosure and are never dropped.",
+      "tablet_desktop": "Semantic table with a caption, aria-sort on sortable headers, and tabular numerals on numeric columns.",
+      "shared_contract": "resources/spa/src/components/ui/dataContract.ts — ONE SvColumn[] drives both, so a screen defines its data once.",
+      "proven_by": "resources/spa/src/components/ui/SvData.spec.ts — 'renders the SAME columns the table does, from one definition'"
+    },
+    {
+      "component": "SvDrawer",
+      "mobile": "Bottom sheet.",
+      "tablet_desktop": "Side panel.",
+      "method": "Typed `placement` prop resolved by Tailwind md: classes. No JavaScript viewport measurement.",
+      "proven_by": "resources/spa/src/components/ui/SvOverlays.spec.ts — 'resolves responsive placement by CSS class, never by measuring the viewport'"
+    },
+    {
+      "component": "SvFilterBar",
+      "mobile": "Collapsed behind a disclosure; the active-filter count stays visible on the trigger.",
+      "tablet_desktop": "Always visible.",
+      "proven_by": "resources/spa/src/components/ui/SvForms.spec.ts — 'shows the active count as text, so a collapsed filter is still visible'"
+    },
+    {
+      "component": "SvPageHeader",
+      "mobile": "Actions stack full width, so the primary action stays thumb-reachable.",
+      "tablet_desktop": "Actions inline, right-aligned.",
+      "proven_by": "resources/spa/src/components/ui/SvPrimitives.spec.ts"
+    },
+    {
+      "component": "SvBreadcrumbs",
+      "mobile": "The middle of a long trail is visually hidden but REMAINS in the DOM, so truncation never removes accessible information.",
+      "tablet_desktop": "Full trail.",
+      "proven_by": "resources/spa/src/components/ui/SvPrimitives.spec.ts — 'keeps collapsed items in the DOM so truncation is visual only'"
+    },
+    {
+      "component": "SvProfileControl",
+      "mobile": "Avatar only, with a complete screen-reader name.",
+      "tablet_desktop": "Avatar plus name and account/context.",
+      "proven_by": "resources/spa/src/components/ui/SvShellControls.spec.ts — 'keeps a full accessible name when the text is hidden on mobile'"
+    },
+    {
+      "component": "SvPagination",
+      "mobile": "Compact `2/5` label.",
+      "tablet_desktop": "`Page 2 of 5`.",
+      "proven_by": "resources/spa/src/components/ui/SvData.spec.ts"
+    },
+    {
+      "component": "SvFixedFooter",
+      "mobile": "5.5rem, stacked rows, safe-area inset applied.",
+      "tablet": "4.5rem.",
+      "desktop": "3.5rem, single row.",
+      "extreme_zoom": "9rem cap with internal scrolling below a 26rem viewport height, so the footer never consumes the screen (ADR-024 rule 6).",
+      "method": "One token per band drives BOTH the footer height and the page reserve (.sv-footer-reserve). Two values that can drift apart is how obstruction defects appear.",
+      "proven_by": "resources/spa/src/style.css; resources/spa/src/layouts/RoleLayouts.spec.ts — 'reserves the footer\\'s block size so it cannot cover page content'"
+    },
+    {
+      "component": "SvDialog / SvConfirmDialog",
+      "all_bands": "Height-capped at 85vh with an internally scrolling body and a safe-area-aware bottom padding, so it fits at 360px and at 200% zoom without the page scrolling.",
+      "proven_by": "resources/spa/src/components/ui/SvOverlays.spec.ts"
+    },
+    {
+      "component": "SvPopover / SvMenu / SvCombobox listbox",
+      "all_bands": "max-w-[calc(100vw-2rem)] — the panel can never be wider than the viewport, so it cannot push the page sideways. Collision handling is CSS, not measurement.",
+      "proven_by": "resources/spa/src/components/ui/SvOverlays.spec.ts — 'caps its width to the viewport, so it cannot push the page sideways'"
+    }
+  ],
+  "touch_targets": {
+    "minimum": "44px (UI/UX plan §9.5), from the `touch-target-min` token",
+    "applied_to": [
+      "SvButton (every size)",
+      "SvIconButton (every size)",
+      "SvThemeToggle",
+      "form controls via control-height-md",
+      "menu items, tabs, accordion headers, pagination controls, record-card disclosures, footer links"
+    ],
+    "proven_by": [
+      "tests/Feature/DesignSystem/DesignTokenSchemaTest.php — 'keeps the 44px minimum touch target'",
+      "resources/spa/src/components/ui/SvPrimitives.spec.ts — 'keeps a 44px minimum target at every size'"
+    ]
+  },
+  "not_done_here": {
+    "release_wide_audit": "UI-16 — every account page at every breakpoint",
+    "visual_regression_baselines": "UI-16 (ADR-025) — the UI-04 screenshots are implementation proofs, not approved baselines",
+    "account_experience_layouts": "UI-08 … UI-15"
+  }
+}

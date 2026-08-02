@@ -17,7 +17,8 @@ export const hrRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/hr',
-    component: () => import('@/layouts/BranchLayout.vue'),
+    // Phase UI-04 (UI01-NAV-002): HR has its own shell. It previously mounted BranchLayout.
+    component: () => import('@/layouts/HumanResourceLayout.vue'),
     beforeEnter: [requiresAuth, requiresActiveMerchant],
     children: [
       {

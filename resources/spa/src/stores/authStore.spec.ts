@@ -26,6 +26,8 @@ const bootstrap: BootstrapPayload = {
     status: 'active',
     email_verified_at: '2026-06-14T00:00:00+00:00',
     is_platform_staff: false,
+    theme_preference: null,
+    resolved_theme: 'light' as const,
   },
   merchant: {
     id: '01J000000000000000000MERCH',

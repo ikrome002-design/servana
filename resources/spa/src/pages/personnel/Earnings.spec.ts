@@ -30,7 +30,7 @@ function mockLoaded(): void {
 }
 const mountPage = () => mount(Earnings, {
   attachTo: document.body,
-  global: { stubs: { SvModal: { template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>', props: ['open', 'title', 'description'] } } },
+  global: { stubs: { SvDialog: { template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>', props: ['open', 'title', 'description'] } } },
 });
 function grantPersonnel(): void {
   const auth = useAuthStore();

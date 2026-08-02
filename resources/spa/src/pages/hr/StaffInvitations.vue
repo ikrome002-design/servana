@@ -3,7 +3,7 @@ import axios from 'axios';
 import { onMounted } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import { useForm } from '@/composables/useForm';
 import { useAuthStore } from '@/stores/authStore';
@@ -89,7 +89,7 @@ async function revoke(id: string): Promise<void> {
         novalidate
         @submit.prevent="submit"
       >
-        <SvInput
+        <SvTextInput
           id="email"
           v-model="form.values.email"
           label="Email address"

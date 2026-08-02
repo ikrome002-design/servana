@@ -3,12 +3,13 @@ import axios from 'axios';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
+import { SvIconClose } from '@/design-system/icons';
 import { useAuthStore } from '@/stores/authStore';
 import {
   COMMISSION_APPLIES_TO,
@@ -843,7 +844,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
     </template>
 
     <!-- ------------------------------------------------------------------ detail + history -->
-    <SvModal
+    <SvDialog
       :open="detail !== null"
       title="Compensation plan"
       description="Configured terms and the append-only change history for this plan."
@@ -996,10 +997,10 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           </SvButton>
         </div>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- ------------------------------------------------------------------ commission-rule draft -->
-    <SvModal
+    <SvDialog
       :open="ruleModalOpen"
       :title="ruleEditing === null ? 'New commission rule' : 'Edit commission rule draft'"
       description="Percentage and fixed terms are mutually exclusive. A rule is only editable while it is a draft."
@@ -1019,14 +1020,14 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           required
           @update:model-value="ruleForm.calculation_type = $event"
         />
-        <SvInput
+        <SvTextInput
           v-if="isPercentage"
           id="comp-rule-bp"
           label="Percentage (basis points, 0–10000)"
           type="number"
           :model-value="ruleForm.percentage_basis_points"
           :errors="ruleErrors.percentage_basis_points"
-          hint="10000 basis points = 100%."
+          help="10000 basis points = 100%."
           required
           @update:model-value="ruleForm.percentage_basis_points = $event"
         />
@@ -1034,7 +1035,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           v-else
           class="grid gap-4 sm:grid-cols-2"
         >
-          <SvInput
+          <SvTextInput
             id="comp-rule-fixed"
             label="Fixed amount (major units)"
             type="number"
@@ -1043,7 +1044,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
             required
             @update:model-value="ruleForm.fixed_amount_major = $event"
           />
-          <SvInput
+          <SvTextInput
             id="comp-rule-currency"
             label="Currency"
             :model-value="ruleForm.currency"
@@ -1070,13 +1071,13 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           required
           @update:model-value="ruleForm.applies_to = $event"
         />
-        <SvInput
+        <SvTextInput
           v-if="ruleNeedsCategory"
           id="comp-rule-category"
           label="Service category reference"
           :model-value="ruleForm.service_category_id"
           :errors="ruleErrors.service_category_id"
-          hint="The 26-character service-category identifier this rule is scoped to."
+          help="The 26-character service-category identifier this rule is scoped to."
           required
           @update:model-value="ruleForm.service_category_id = $event"
         />
@@ -1162,7 +1163,10 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
                   :aria-label="`Remove ${serviceLabel(ulid)}`"
                   @click="removeSelectedService(ulid)"
                 >
-                  ✕
+                  <SvIconClose
+                    aria-hidden="true"
+                    class="h-4 w-4"
+                  />
                 </button>
               </li>
             </ul>
@@ -1197,7 +1201,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2">
-          <SvInput
+          <SvTextInput
             id="comp-rule-from"
             label="Effective from"
             type="date"
@@ -1206,7 +1210,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
             required
             @update:model-value="ruleForm.effective_from = $event"
           />
-          <SvInput
+          <SvTextInput
             id="comp-rule-to"
             label="Effective to (optional)"
             type="date"
@@ -1215,7 +1219,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
             @update:model-value="ruleForm.effective_to = $event"
           />
         </div>
-        <SvTextarea
+        <SvTextArea
           id="comp-rule-reason"
           label="Change reason"
           :model-value="ruleForm.change_reason"
@@ -1249,10 +1253,10 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- ------------------------------------------------------------------ compensation-plan draft -->
-    <SvModal
+    <SvDialog
       :open="planModalOpen"
       :title="planEditing === null ? 'New compensation plan' : 'Edit compensation plan draft'"
       description="A salary only plan carries no commission rule. A commission only plan carries no salary. Salary plus commission requires both."
@@ -1286,7 +1290,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
 
         <template v-if="needsSalary">
           <div class="grid gap-4 sm:grid-cols-2">
-            <SvInput
+            <SvTextInput
               id="comp-plan-salary"
               label="Salary amount (major units)"
               type="number"
@@ -1295,7 +1299,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
               required
               @update:model-value="planForm.salary_amount_major = $event"
             />
-            <SvInput
+            <SvTextInput
               id="comp-plan-currency"
               label="Salary currency"
               :model-value="planForm.salary_currency"
@@ -1314,13 +1318,13 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
               required
               @update:model-value="planForm.salary_period = $event"
             />
-            <SvInput
+            <SvTextInput
               id="comp-plan-payout-day"
               label="Salary payout day (optional)"
               type="number"
               :model-value="planForm.salary_payout_day"
               :errors="planErrors.salary_payout_day"
-              hint="Day of the month, 1–31."
+              help="Day of the month, 1–31."
               @update:model-value="planForm.salary_payout_day = $event"
             />
           </div>
@@ -1345,7 +1349,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
         </p>
 
         <div class="grid gap-4 sm:grid-cols-2">
-          <SvInput
+          <SvTextInput
             id="comp-plan-from"
             label="Effective from"
             type="date"
@@ -1354,7 +1358,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
             required
             @update:model-value="planForm.effective_from = $event"
           />
-          <SvInput
+          <SvTextInput
             id="comp-plan-to"
             label="Effective to (optional)"
             type="date"
@@ -1363,7 +1367,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
             @update:model-value="planForm.effective_to = $event"
           />
         </div>
-        <SvTextarea
+        <SvTextArea
           id="comp-plan-reason"
           label="Change reason"
           :model-value="planForm.change_reason"
@@ -1397,10 +1401,10 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- ------------------------------------------------------------------ transition confirmation -->
-    <SvModal
+    <SvDialog
       :open="confirming !== null"
       :title="confirming ? verbTitle[confirming] : ''"
       :description="confirming ? verbDescription[confirming] : ''"
@@ -1441,7 +1445,7 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           </div>
         </div>
 
-        <SvTextarea
+        <SvTextArea
           id="comp-confirm-reason"
           label="Reason"
           :model-value="confirmReason"
@@ -1475,6 +1479,6 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
           </SvButton>
         </div>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

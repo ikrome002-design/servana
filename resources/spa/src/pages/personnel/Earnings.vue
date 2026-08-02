@@ -3,11 +3,11 @@ import axios from 'axios';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -66,7 +66,8 @@ function money(minor: number, currency: string): string {
 const overviewState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
   if (earnings.overviewLoading) return 'loading';
   if (earnings.overviewError) return 'error';
-  if (earnings.overview.currencies.length === 0) return 'empty';
+  // The overview arrives asynchronously; an absent one is "still loading", not "no earnings".
+  if ((earnings.overview?.currencies?.length ?? 0) === 0) return 'empty';
   return 'success';
 });
 const payoutsState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
@@ -527,7 +528,7 @@ function closeQuery(): void {
     </template>
 
     <!-- create query modal -->
-    <SvModal
+    <SvDialog
       :open="createOpen"
       title="Raise an earnings query"
       description="Ask Finance about one of your own facts — a commission entry, a salary entry, or a payout item. Enter its reference and describe the issue. Finance will respond; any correction is made as a separate adjustment."
@@ -554,10 +555,10 @@ function closeQuery(): void {
           required
           @update:model-value="createForm.subject_type = $event"
         />
-        <SvInput
+        <SvTextInput
           id="query-subject-ulid"
           label="Reference"
-          hint="The 26-character reference of your own commission, salary or payout item."
+          help="The 26-character reference of your own commission, salary or payout item."
           :model-value="createForm.subject_ulid"
           :errors="createErrors.subject_ulid"
           required
@@ -571,7 +572,7 @@ function closeQuery(): void {
           required
           @update:model-value="createForm.query_type = $event"
         />
-        <SvTextarea
+        <SvTextArea
           id="query-body"
           label="Describe the issue"
           :model-value="createForm.body"
@@ -596,10 +597,10 @@ function closeQuery(): void {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- query detail modal -->
-    <SvModal
+    <SvDialog
       :open="detailQuery !== null"
       title="Earnings query"
       description="The status of your query and Finance's response. Any monetary correction appears as a separate adjustment reference."
@@ -652,6 +653,6 @@ function closeQuery(): void {
           Close
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

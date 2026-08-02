@@ -3,11 +3,11 @@ import axios from 'axios';
 import { computed, onMounted, reactive, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
 import {
@@ -357,7 +357,7 @@ async function confirmCancel(): Promise<void> {
     </SvStateBoundary>
 
     <!-- Create / edit / supersede modal -->
-    <SvModal
+    <SvDialog
       :open="modalOpen"
       :title="modalTitle"
       @close="modalOpen = false"
@@ -390,7 +390,7 @@ async function confirmCancel(): Promise<void> {
           :errors="errors.tier_behavior"
           @update:model-value="form.tier_behavior = $event"
         />
-        <SvInput
+        <SvTextInput
           id="pf-bps"
           label="Percentage (basis points, 0–10000)"
           type="number"
@@ -398,7 +398,7 @@ async function confirmCancel(): Promise<void> {
           :errors="errors.percentage_basis_points"
           @update:model-value="form.percentage_basis_points = $event"
         />
-        <SvInput
+        <SvTextInput
           v-if="isShared"
           id="pf-split"
           label="Shared split (basis points)"
@@ -408,7 +408,7 @@ async function confirmCancel(): Promise<void> {
           :errors="errors.shared_split_basis_points"
           @update:model-value="form.shared_split_basis_points = $event"
         />
-        <SvInput
+        <SvTextInput
           id="pf-fixed"
           label="Fixed component (optional)"
           type="number"
@@ -424,7 +424,7 @@ async function confirmCancel(): Promise<void> {
           :errors="errors.fee_basis_type"
           @update:model-value="form.fee_basis_type = $event"
         />
-        <SvInput
+        <SvTextInput
           id="pf-currency"
           label="Currency"
           :model-value="form.currency"
@@ -432,7 +432,7 @@ async function confirmCancel(): Promise<void> {
           @update:model-value="form.currency = $event"
         />
         <div class="grid gap-4 sm:grid-cols-2">
-          <SvInput
+          <SvTextInput
             id="pf-eff-from"
             label="Effective from"
             type="date"
@@ -441,7 +441,7 @@ async function confirmCancel(): Promise<void> {
             :errors="errors.effective_from"
             @update:model-value="form.effective_from = $event"
           />
-          <SvInput
+          <SvTextInput
             id="pf-eff-to"
             label="Effective to (optional)"
             type="date"
@@ -450,7 +450,7 @@ async function confirmCancel(): Promise<void> {
             @update:model-value="form.effective_to = $event"
           />
         </div>
-        <SvTextarea
+        <SvTextArea
           id="pf-reason"
           label="Change reason"
           required
@@ -475,10 +475,10 @@ async function confirmCancel(): Promise<void> {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- Cancel confirmation -->
-    <SvModal
+    <SvDialog
       :open="cancelTarget !== null"
       title="Cancel configuration"
       @close="cancelTarget = null"
@@ -508,6 +508,6 @@ async function confirmCancel(): Promise<void> {
           Cancel configuration
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

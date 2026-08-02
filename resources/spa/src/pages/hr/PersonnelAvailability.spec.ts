@@ -46,7 +46,7 @@ const mountPage = () =>
     global: {
       stubs: {
         RouterLink: { template: '<a><slot /></a>' },
-        SvModal: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title'] },
+        SvDialog: { template: '<div v-if="open"><slot /></div>', props: ['open', 'title'] },
       },
     },
   });

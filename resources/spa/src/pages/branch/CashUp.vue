@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCashUpStore } from '@/stores/cashUpStore';
 import { usePermissionStore } from '@/stores/permissionStore';
@@ -42,7 +42,8 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
 });
 
 function expectedFor(method: string): number {
-  return current.value?.lines.find((l) => l.method === method)?.expected_minor ?? 0;
+  // `lines` is a whenLoaded relation: absent unless the endpoint eager-loaded it.
+  return current.value?.lines?.find((l) => l.method === method)?.expected_minor ?? 0;
 }
 function varianceFor(method: string): number {
   return (counts.value[method] ?? 0) - expectedFor(method);
@@ -54,7 +55,7 @@ const varianceTotal = computed(() => countedTotal.value - expectedTotal.value);
 function seedCounts(): void {
   const next: Record<string, number> = {};
   for (const m of methods) {
-    next[m.value] = current.value?.lines.find((l) => l.method === m.value)?.counted_minor ?? 0;
+    next[m.value] = current.value?.lines?.find((l) => l.method === m.value)?.counted_minor ?? 0;
   }
   counts.value = next;
 }
@@ -118,7 +119,7 @@ onMounted(load);
       :empty-message="!hasBranch ? 'You are not assigned to a branch yet.' : 'Cash-up is available to Branch Managers.'"
     >
       <div class="mb-4 flex flex-wrap items-end gap-3">
-        <SvInput
+        <SvTextInput
           id="cash-up-date"
           v-model="date"
           type="date"
@@ -144,7 +145,7 @@ onMounted(load);
             v-for="method in methods"
             :key="method.value"
             data-testid="cash-up-card"
-            class="rounded-lg border border-[color:var(--color-border,#e5e7eb)] p-3"
+            class="rounded-lg border border-sv-border p-3"
           >
             <div class="flex items-center justify-between gap-2">
               <span class="font-semibold text-heading">{{ method.label }}</span>
@@ -164,7 +165,7 @@ onMounted(load);
                 min="0"
                 :value="counts[method.value] ?? 0"
                 :aria-label="`Counted ${method.label}`"
-                class="w-32 max-w-[55%] rounded-lg border border-[color:var(--color-border,#e5e7eb)] bg-surface px-2 py-1 text-right text-heading focus:outline-none focus:ring-2 focus:ring-[color:var(--color-focus,#2563eb)]"
+                class="w-32 max-w-[55%] rounded-lg border border-sv-border bg-surface px-2 py-1 text-right text-heading focus:outline-none focus:ring-2 focus:ring-sv-focus"
                 @input="counts[method.value] = Number(($event.target as HTMLInputElement).value)"
               >
               <span
@@ -174,13 +175,13 @@ onMounted(load);
             </div>
             <p
               class="mt-1 text-right text-sm"
-              :class="varianceFor(method.value) === 0 ? 'text-text-muted' : 'text-[color:var(--color-warning,#d97706)]'"
+              :class="varianceFor(method.value) === 0 ? 'text-text-muted' : 'text-sv-warning-fg'"
             >
               Variance {{ varianceFor(method.value) }}
             </p>
           </li>
           <li
-            class="rounded-lg border-2 border-[color:var(--color-border,#e5e7eb)] p-3 font-semibold text-heading"
+            class="rounded-lg border-2 border-sv-border p-3 font-semibold text-heading"
           >
             <div class="flex items-center justify-between gap-2">
               <span>Total</span>
@@ -196,71 +197,71 @@ onMounted(load);
         <!-- Tablet/desktop (≥768px): full reconciliation table. -->
         <div class="hidden overflow-x-auto md:block">
           <table class="w-full min-w-[26rem] text-sm">
-          <thead>
-            <tr class="text-left text-text-muted">
-              <th class="py-1">
-                Method
-              </th>
-              <th class="py-1 text-right">
-                Expected
-              </th>
-              <th class="py-1 text-right">
-                Counted
-              </th>
-              <th class="py-1 text-right">
-                Variance
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="method in methods"
-              :key="method.value"
-              class="border-t border-[color:var(--color-border,#e5e7eb)]"
-              data-testid="cash-up-line"
-            >
-              <td class="py-1 font-semibold text-heading">
-                {{ method.label }}
-              </td>
-              <td class="py-1 text-right">
-                {{ expectedFor(method.value) }}
-              </td>
-              <td class="py-1 text-right">
-                <input
-                  v-if="editable"
-                  :id="`counted-${method.value}`"
-                  type="number"
-                  min="0"
-                  :value="counts[method.value] ?? 0"
-                  :aria-label="`Counted ${method.label}`"
-                  :data-testid="`counted-${method.value}`"
-                  class="w-28 rounded-lg border border-[color:var(--color-border,#e5e7eb)] bg-surface px-2 py-1 text-right text-heading focus:outline-none focus:ring-2 focus:ring-[color:var(--color-focus,#2563eb)]"
-                  @input="counts[method.value] = Number(($event.target as HTMLInputElement).value)"
-                >
-                <span v-else>{{ counts[method.value] ?? 0 }}</span>
-              </td>
-              <td
-                class="py-1 text-right"
-                :class="varianceFor(method.value) === 0 ? '' : 'text-[color:var(--color-warning,#d97706)]'"
+            <thead>
+              <tr class="text-left text-text-muted">
+                <th class="py-1">
+                  Method
+                </th>
+                <th class="py-1 text-right">
+                  Expected
+                </th>
+                <th class="py-1 text-right">
+                  Counted
+                </th>
+                <th class="py-1 text-right">
+                  Variance
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="method in methods"
+                :key="method.value"
+                class="border-t border-sv-border"
+                data-testid="cash-up-line"
               >
-                {{ varianceFor(method.value) }}
-              </td>
-            </tr>
-            <tr class="border-t-2 border-[color:var(--color-border,#e5e7eb)] font-semibold text-heading">
-              <td class="py-1">
-                Total
-              </td>
-              <td class="py-1 text-right">
-                {{ expectedTotal }}
-              </td>
-              <td class="py-1 text-right">
-                {{ countedTotal }}
-              </td>
-              <td class="py-1 text-right">
-                {{ varianceTotal }}
-              </td>
-            </tr>
-          </tbody>
+                <td class="py-1 font-semibold text-heading">
+                  {{ method.label }}
+                </td>
+                <td class="py-1 text-right">
+                  {{ expectedFor(method.value) }}
+                </td>
+                <td class="py-1 text-right">
+                  <input
+                    v-if="editable"
+                    :id="`counted-${method.value}`"
+                    type="number"
+                    min="0"
+                    :value="counts[method.value] ?? 0"
+                    :aria-label="`Counted ${method.label}`"
+                    :data-testid="`counted-${method.value}`"
+                    class="w-28 rounded-lg border border-sv-border bg-surface px-2 py-1 text-right text-heading focus:outline-none focus:ring-2 focus:ring-sv-focus"
+                    @input="counts[method.value] = Number(($event.target as HTMLInputElement).value)"
+                  >
+                  <span v-else>{{ counts[method.value] ?? 0 }}</span>
+                </td>
+                <td
+                  class="py-1 text-right"
+                  :class="varianceFor(method.value) === 0 ? '' : 'text-sv-warning-fg'"
+                >
+                  {{ varianceFor(method.value) }}
+                </td>
+              </tr>
+              <tr class="border-t-2 border-sv-border font-semibold text-heading">
+                <td class="py-1">
+                  Total
+                </td>
+                <td class="py-1 text-right">
+                  {{ expectedTotal }}
+                </td>
+                <td class="py-1 text-right">
+                  {{ countedTotal }}
+                </td>
+                <td class="py-1 text-right">
+                  {{ varianceTotal }}
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
 
@@ -293,7 +294,7 @@ onMounted(load);
 
         <p
           v-if="actionError"
-          class="mt-3 text-sm text-[color:var(--color-danger,#dc2626)]"
+          class="mt-3 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ actionError }}
