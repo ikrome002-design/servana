@@ -1,0 +1,36 @@
+# Servana gitleaks fingerprint allowlist.
+#
+# One line per VERIFIED finding, identified by its EXACT fingerprint
+# (commit:path:rule:line). Never a rule, path, directory, extension, regex class
+# or entropy range: a broad suppression would also hide a real credential, which
+# is the opposite of what this file is for.
+#
+# Every entry must state why the finding is not a credential, and any genuine
+# credential must be revoked or rotated OUTSIDE Git before it is listed here.
+#
+# ---------------------------------------------------------------------------
+# generic-api-key — resources/spa/src/design-system/tokens.generated.ts:13
+# Introduced by d7c64c3 (Phase UI-04).
+#
+# VERIFIED FALSE POSITIVE. No credential exists, so there is nothing to revoke.
+#
+# The matched value is DESIGN_TOKEN_SOURCE_SHA256: the SHA-256 content digest of
+# resources/spa/src/design-system/tokens.json. It is emitted by
+# scripts/generate-design-tokens.mjs (line 30 hashes the token source, line 290
+# writes the constant) so `--check` can prove the generated artefacts still match
+# their source. Objectively not a secret:
+#
+#   * it is exactly SHA-256(tokens.json), reproducible by anyone from a file that
+#     is itself committed in this repository;
+#   * the identical digest is printed in plaintext in the generated file's own
+#     header comment, which no credential would tolerate;
+#   * it authenticates nothing and authorises nothing — it is an integrity digest;
+#   * gitleaks matched it on entropy alone (3.897), the expected entropy of a
+#     64-character lowercase hex string.
+#
+# The introducing commit is immutable — this workflow forbids force-push, history
+# rewriting and amending the completion commit — and it stays inside the pull
+# request's scan range, so the historical fingerprint is suppressed here rather
+# than by rewriting history, editing the scanner configuration, or weakening the
+# rule.
+d7c64c3008943e44357f5b7b3b49ea2d84a7616c:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13
