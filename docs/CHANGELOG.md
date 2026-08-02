@@ -6,7 +6,152 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-04 — Design system and shared components (`phase-ui-04-design-system-shared-components`) — local_complete pending PR CI/review/merge
+### Phase UI-05 — Content and asset pipeline (`phase-ui-05-content-asset-pipeline`) — local_complete pending PR CI/review/merge
+
+Off `main` = `e6afe832fa9b45c4f452bcd43e19338ac87bfd9a` (the Phase UI-04 PR #54 merge commit).
+Proof: `docs/proof/ui-05.md`. Contracts: `docs/frontend/content/`.
+Artifacts: `docs/frontend/audits/ui-05/`.
+Plan authority: UI/UX plan §8.1–§8.8, §17.1–§17.4, §22.2, §25 (Phase UI-05), §26, §28.2, §28.8;
+ADR-025; backend Plan §27.2.
+
+**No pull request was created.** UI-05 stops at a pushed branch by instruction.
+
+#### Changed — production no longer discovers repository Markdown at build time
+
+The approved role content in `docs/**` was loaded with
+`import.meta.glob('../../../../docs/**/*.md', '?raw')`, which reaches out of the SPA source tree at
+build time and resolves a document by matching a path **suffix** — so a missing file could be
+answered with a sibling's, and nothing ever noticed a document had changed. UI/UX plan §8.8 rule 1
+forbids exactly that.
+
+`scripts/generate-role-content.mjs` now compiles the **forty** approved documents (8 accounts × 5
+categories) into typed, committed modules under `resources/spa/src/content/generated/`, recording
+each source path, SHA-256 and byte length. `npm run content:check` regenerates in memory and fails
+when a committed artifact no longer matches its source. The account keys come from
+`config/account-hosts.json` — the existing authority — so the pipeline adds no second role list.
+
+The compiler **refuses**, naming file and line, on a missing source, a duplicate mapping, a
+cross-role content key, a source outside its canonical directory, raw HTML, an unsafe link scheme,
+an unmapped landing section or a duplicate FAQ identifier. Unsafe content is refused, never
+stripped: silently sanitising approved legal text would change what the product owner published.
+
+Loading stays lazy and per-document — forty **static** dynamic imports, one per account and
+category, so Vite still emits forty chunks and no browser-supplied value can choose a file.
+
+#### Added — legal text preservation, proven independently
+
+All twenty-four legal documents are reproduced **byte for byte**.
+`LegalContentVerbatimTest` extracts the generated string literal and decodes it with PHP's own JSON
+decoder rather than trusting the emitter, then compares line, heading, list-item and link counts, and
+asserts `git status -- docs/legal` is empty so a run that modified an approved source would fail
+even if its own output still matched.
+
+`/legal/:role/:doc` now renders through UI-04's `SvLegalDocument`, so there is one audited Markdown
+path instead of two, and the rendered `<article>` carries the source path and hash it was compiled
+from. An unknown account or document type renders the not-found boundary — never another account's
+document.
+
+#### Fixed — sixty FAQ questions were silently dropped (`UI05-FAQ-001`)
+
+The runtime parser accepted a question only at heading level two. Merchant Administrator writes 60
+of its 196 questions at level three, and all seven other accounts write every question at level two
+— so the defect was invisible in seven of eight cases. Heading level has been removed from the rule:
+a question is any heading whose text begins with dotted numbering, which is how the source documents
+themselves define one. **1,264** items now compile across the eight accounts, up from 1,204.
+
+#### Added — curated landing-image manifest and responsive derivatives (`UI05-IMAGE-001`)
+
+`roleContent.ts` enumerated **all 61** supplied images from a hard-coded count table, assumed every
+role's `1.png` was its hero, and rendered it with invented alternative text at a declared 800 × 600
+for files that are 1672 × 941 or 1448 × 1086. §8.7 forbids rendering every image.
+
+`config/landing-image-selection.json` now records the curated human decision — **four images per
+account, thirty-two in total** — and `scripts/generate-landing-images.mjs` measures everything else
+from the files themselves. Each image is mapped to a landing region its own content actually
+supplies, with measured dimensions, aspect ratio, focal position, per-breakpoint crop, loading
+strategy and curated alternative text.
+
+**192 derivatives** (96 AVIF + 96 WebP at 640/1024/1440, 9.8 MB) with pinned encoder options and
+`withoutEnlargement`, so the pipeline never synthesises pixels the artwork did not have. Deleting the
+whole generated tree and regenerating produced byte-identical files. The untouched original is the
+`<picture>` fallback; downscaled PNGs were deliberately not generated, because they would add roughly
+seventy megabytes of binary to serve a path AVIF and WebP already cover. All 61 supplied originals
+are re-hashed against the UI-00 inventory on every test run and are unchanged.
+
+Social-proof and testimonial artwork is deliberately **not** selected: those regions carry unverified
+customer evidence and are marked not renderable until the product owner decides.
+
+#### Fixed — eleven unapproved brand files were publicly served (`UI01-ASSET-002`)
+
+`PNG.png` and ten `v1/ChatGPT Image …png` working files shipped inside the public web root of the
+production image, because `docker/nginx.Dockerfile` copies the whole `public` tree.
+
+They were **moved, not deleted**, with `git mv`, into `docs/brand/quarantine/ui01-asset-002/`, which
+is never copied into the nginx image. Every hash was verified against the UI-00 inventory before the
+move and re-verified from the archived bytes afterwards; `config/brand-asset-quarantine.json` is the
+reviewed decision record. Deleting product-owner artwork is not this phase's call, and a quarantine
+leaves the decision reversible. `public/assets/brand` now holds exactly the eight approved assets;
+`Logo.svg` remains absent and unreferenced.
+
+#### Added — guards that are themselves proven to fire
+
+`scripts/ui05-negative-controls.mjs` breaks exactly one thing in a disposable copy of the repository
+— seventeen controls — and requires the generator to exit non-zero naming that problem. Each control
+verifies the **unmutated** copy passes first, so a control can never pass because the sandbox was
+already broken. Nothing is ever mutated in the working tree.
+
+`content:check`, `assets:check` and the negative controls run in the existing
+`Frontend — ESLint, vue-tsc, Vitest, build` job; the UI-05 asset smoke runs in `Docker — build
+images` against the built nginx image. **The five required CI job names are unchanged.**
+
+#### Recorded, deliberately not fixed
+
+`UI05-CONTENT-001` — four accounts supply testimonial copy carrying unverified customer quotes (one
+source says outright that its quotes are placeholders). `UI05-CONTENT-002` — four of the sixteen plan
+regions have no source content. Both are compiled verbatim, flagged not renderable, and left to
+UI-06 and the product owner: §8.3 and §8.4 forbid inventing commercial or customer evidence, and
+rewriting approved copy is not an engineering decision.
+
+#### Not changed
+
+No route, no API operation, no permission key, no policy, no migration, no tenant query and no
+financial logic. No landing page, no FAQ route, no account experience. The eight public landing
+pages and the final FAQ routes remain UI-06's; `UI01-ASSET-004`, `UI01-LEGAL-001` and
+`UI01-LEGAL-002` are **not** claimed closed.
+
+#### Dependency
+
+`sharp` 0.35.3 added as a pinned, exact **development** dependency for derivative generation. It is
+never imported by the SPA or by PHP, and the lockfile carries every platform variant.
+`npm audit --audit-level=high` reports 0 vulnerabilities.
+
+---
+
+### Phase UI-04 — Design system and shared components (`phase-ui-04-design-system-shared-components`) — **verified_complete**
+
+**PR [#54](https://github.com/ikrome002-design/servana/pull/54) MERGED** — squash commit
+`e6afe832fa9b45c4f452bcd43e19338ac87bfd9a` (single parent `00c9c1e…`), reviewed head
+`cf36cee837fa5f724a9e0d8b3018c9c868ce6697` whose tree `bd6728fb…` is identical to the merge tree,
+`mergedAt 2026-08-02T13:37:16Z`.
+
+Final CI run `30748616089` — Backend, Frontend, Docker, Security and E2E all successful. The earlier
+run `30746233065` failed **only** on gitleaks, against one exact fingerprint
+(`d7c64c3…:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13`). That value is
+`DESIGN_TOKEN_SOURCE_SHA256`, a reproducible SHA-256 digest of a committed file, printed in plaintext
+in the same file's own header. **Verified false positive**; no credential existed, so nothing was
+revocable. One corrective commit added that single historical fingerprint to `.gitleaksignore`; no
+rule, path, glob, entropy threshold, workflow step or job permission was weakened.
+
+Governance comment `5158172398` records the **product owner's approval of the `#FDBA74` light-theme
+primary-hover value** (8.17:1 against the ADR-009-fixed `#4A2208` CTA label; none of the seventeen
+approved brand base values changed) and a solo-maintainer exception: **0 submitted reviews, 0
+approving, `reviewDecision` blank — not independent approval**. Both branch refs are deleted.
+
+All **thirteen** UI-04 closures — `UI01-NAV-002`, `UI01-THEME-001`, `UI01-ASSET-001`,
+`UI01-ASSET-003`, `UI01-RENDER-001`, `UI04-TOKEN-001/002/003`, `UI04-TOAST-001/002`,
+`UI04-POPOVER-001`, `UI04-RESP-001`, `UI04-A11Y-001` — are now `verified_complete`.
+
+The detailed UI-04 implementation entry below is preserved unchanged.
 
 Off `main` = `00c9c1e0025e3979464691be662915ada872cc18` (the Phase UI-03 PR #53 merge commit).
 Proof: `docs/proof/ui-04.md`. Design system: `docs/frontend/design-system/`.
@@ -14,7 +159,8 @@ Artifacts: `docs/frontend/audits/ui-04/`.
 Plan authority: UI/UX plan §9–§14, §17–§19, §21, §25 (Phase UI-04), §26, §28; ADR-009, ADR-021,
 ADR-024, ADR-025; backend Plan §2 AS-3, §9 rule 7, §10.2, §11.5, §13.2.
 
-**No pull request was created.** UI-04 stops at a pushed branch by instruction.
+*(Superseded by the merge facts above: PR #54 was created, reviewed under the solo-maintainer
+exception, and merged. The entry below records what UI-04 built and is otherwise unchanged.)*
 
 #### Added — one canonical design-token authority
 

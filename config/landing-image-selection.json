@@ -1,0 +1,295 @@
+{
+  "$comment": [
+    "CURATED LANDING-IMAGE SELECTION — Phase UI-05 (UI/UX plan §8.7).",
+    "",
+    "This file is the single human decision in the image pipeline: WHICH of a role's supplied",
+    "images are used, WHERE each one sits, and WHAT its alternative text says. Everything else —",
+    "dimensions, hashes, aspect ratios, responsive candidates, derivative paths — is measured from",
+    "the files themselves by `node scripts/generate-landing-images.mjs` and must never be typed in",
+    "here by hand.",
+    "",
+    "Rules the generator enforces, so a mistake in this file fails a check rather than shipping:",
+    "  * an image may only come from its OWN role directory (no cross-role borrowing);",
+    "  * two to four primary images per role;",
+    "  * each target region must exist in that role's compiled landing content, be renderable, and",
+    "    be one of the image-capable regions;",
+    "  * one image per region and one region per image;",
+    "  * non-decorative images need non-empty alt text; decorative images need empty alt text.",
+    "",
+    "Alternative text describes what the illustration SHOWS and why it is there. It never names a",
+    "person, never states a customer outcome, adoption figure or rating, and never uses the file",
+    "name. The artwork is product-owner-supplied illustration; nothing here is a photograph of a",
+    "real customer.",
+    "",
+    "Selection rationale: every role's set follows the same reading order — the product in use",
+    "(hero), the situation the product addresses (problem), the numbered flow the source content",
+    "already describes (how it works), and then either the product surface itself (product",
+    "showcase) or the access-control story (security), whichever the role's own artwork supplies.",
+    "Social-proof and testimonial artwork is deliberately NOT selected: those regions carry",
+    "unverified customer evidence and are marked not renderable until the product owner decides",
+    "(UI/UX plan §8.4).",
+    "",
+    "Approval vocabulary is truthful and narrow:",
+    "  source_approval = product_owner_supplied   (the artwork was supplied for this role)",
+    "  pipeline_status = selected_for_ui06        (UI-05 selected and processed it)",
+    "  release_status  = pending_ui06_visual_review (nothing is release-approved yet)"
+  ],
+  "version": 1,
+  "selection_policy": {
+    "min_images_per_role": 2,
+    "max_images_per_role": 4,
+    "source_approval": "product_owner_supplied",
+    "pipeline_status": "selected_for_ui06",
+    "release_status": "pending_ui06_visual_review",
+    "crop_strategy": "preserve_source_frame",
+    "crop_note": "Derivatives are aspect-preserving downscales. No breakpoint crops the frame, so no subject can be cropped out of shot. The recorded focal point exists for UI-06 to use as object-position when it places an image in a container whose aspect differs from the source.",
+    "responsive_widths": [640, 1024, 1440],
+    "formats": ["avif", "webp"],
+    "fallback": "original",
+    "fallback_note": "The <img> fallback is the untouched supplied PNG. Downscaled PNG derivatives were deliberately not generated: they would add roughly seventy megabytes of binary to the repository to serve a path that AVIF and WebP already cover in every browser that reaches it, and the original is already served byte-identical.",
+    "focal_default": { "x": 0.5, "y": 0.45 },
+    "focal_note": "A single declared focal point is used rather than per-image coordinates. Every selected illustration is a wide, centrally composed scene with its subject slightly above the vertical midpoint; inventing distinct per-image precision would record a measurement nobody took."
+  },
+  "roles": {
+    "super_administrator": [
+      {
+        "file": "1.png",
+        "region": "hero",
+        "loading": "eager",
+        "fetch_priority": "high",
+        "alt": "The Servana platform overview open on a desktop monitor and a tablet, showing merchant totals, transaction volume, settlement and platform-fee figures beside a recent-merchant list."
+      },
+      {
+        "file": "3.png",
+        "region": "problem",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A platform operator working through scattered paperwork, handwritten notes and unanswered merchant queries, illustrating oversight spread across disconnected records."
+      },
+      {
+        "file": "6.png",
+        "region": "how_it_works",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A five-step sequence showing platform setup, configuration of platform rules, merchants operating in their own spaces, and monitoring of activity."
+      },
+      {
+        "file": "9.png",
+        "region": "security",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A platform operator beside a padlocked shield and fingerprint symbol, with role and record panels indicating protected access and controlled permissions."
+      }
+    ],
+    "merchant_administrator": [
+      {
+        "file": "1.png",
+        "region": "hero",
+        "loading": "eager",
+        "fetch_priority": "high",
+        "alt": "A salon owner at a reception desk reviewing the Servana merchant dashboard on a laptop in her own branded workspace."
+      },
+      {
+        "file": "3.png",
+        "region": "problem",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A business owner surrounded by appointment notebooks, sticky-note reminders, a wall client list and a calculator, illustrating daily operations tracked on paper."
+      },
+      {
+        "file": "5.png",
+        "region": "product_showcase",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "The merchant dashboard on a laptop, surrounded by panels for client records, appointments, invoices and payments, staff commissions, and reports."
+      },
+      {
+        "file": "6.png",
+        "region": "how_it_works",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A four-step sequence: register a business account, set up branches, services and pricing, invite and activate the team with roles, then run daily operations from the dashboard."
+      }
+    ],
+    "merchant_branch": [
+      {
+        "file": "1.png",
+        "region": "hero",
+        "loading": "eager",
+        "fetch_priority": "high",
+        "alt": "A branch manager welcoming a client at the front desk of a salon, with the branch day view open on a counter tablet."
+      },
+      {
+        "file": "3.png",
+        "region": "problem",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A branch manager on the phone at a counter covered with handwritten booking sheets, loose receipts and a card terminal, illustrating a branch day tracked on paper."
+      },
+      {
+        "file": "6.png",
+        "region": "how_it_works",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A four-step sequence: get access to the branch account, set up the branch profile, assign personnel, and run the day from the branch view."
+      },
+      {
+        "file": "9.png",
+        "region": "security",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A branch manager beside a shield and padlock symbol with linked record icons, indicating branch-scoped access to protected records."
+      }
+    ],
+    "merchant_human_resource": [
+      {
+        "file": "1.png",
+        "region": "hero",
+        "loading": "eager",
+        "fetch_priority": "high",
+        "alt": "A human-resource manager with a tablet in front of her team, beside panels showing a staff directory, role assignment, branch assignment and weekly availability."
+      },
+      {
+        "file": "3.png",
+        "region": "problem",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A staff manager working through printed rosters, duplicate records and pending approval notes, illustrating shift and access tracking spread across manual processes."
+      },
+      {
+        "file": "5.png",
+        "region": "how_it_works",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A four-step sequence: create or access the business account, add staff and personnel profiles, assign roles and branches, then keep availability and status up to date."
+      },
+      {
+        "file": "8.png",
+        "region": "security",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A padlocked shield beside panels for role-based access, branch permissions, account verification status and Magic Link sign-in without passwords."
+      }
+    ],
+    "merchant_finance": [
+      {
+        "file": "1.png",
+        "region": "hero",
+        "loading": "eager",
+        "fetch_priority": "high",
+        "alt": "A finance user reviewing the Servana finance overview on a laptop, with panels for invoice visibility, offline payment records, receipt generation, outstanding balance and commission liabilities."
+      },
+      {
+        "file": "3.png",
+        "region": "problem",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A finance user surrounded by printed receipts, a long till roll and handwritten totals, with warning markers for an unverified payment, a missing receipt and an unclear commission."
+      },
+      {
+        "file": "4.png",
+        "region": "how_it_works",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A five-step sequence from service delivery to invoice, recorded payment, validation, and an audit-ready receipt."
+      },
+      {
+        "file": "5.png",
+        "region": "security",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "Two colleagues reviewing a payment record on a tablet beside a shield, padlock and receipt printer, indicating validated records held under controlled access."
+      }
+    ],
+    "merchant_front_office": [
+      {
+        "file": "1.png",
+        "region": "hero",
+        "loading": "eager",
+        "fetch_priority": "high",
+        "alt": "A front-office attendant checking in a client at a salon reception desk, with today's queue, upcoming appointments and a service invoice shown alongside."
+      },
+      {
+        "file": "2.png",
+        "region": "problem",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A receptionist handling a phone call, a waiting client and loose paper booking slips at once, illustrating a busy front desk without a single record of the day."
+      },
+      {
+        "file": "5.png",
+        "region": "how_it_works",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A four-step sequence: add the walk-in or client, select the service, assign the queue and personnel, then create the invoice and record the payment details."
+      },
+      {
+        "file": "6.png",
+        "region": "product_showcase",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "The front-office surfaces on a laptop, tablet and phone, showing today's appointments, the active queue, client records, an invoice summary and payment recording."
+      }
+    ],
+    "merchant_personnel": [
+      {
+        "file": "1.png",
+        "region": "hero",
+        "loading": "eager",
+        "fetch_priority": "high",
+        "alt": "Service professionals at their stations beside panels showing an assigned queue, upcoming appointments, clients served and commission earned."
+      },
+      {
+        "file": "2.png",
+        "region": "problem",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "Two service professionals comparing handwritten appointment notes and commission calculations, with markers for a double booking, a no-show and missing records."
+      },
+      {
+        "file": "4.png",
+        "region": "product_showcase",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A personnel dashboard ringed by panels for the day's queue, appointments, assigned clients, completed work history, preferred requests and commission visibility."
+      },
+      {
+        "file": "5.png",
+        "region": "how_it_works",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A four-step sequence: the business activates the staff member, the staff member signs in with a Magic Link, works through the day's assignments, and tracks completed work and commission."
+      }
+    ],
+    "merchant_audit": [
+      {
+        "file": "1.png",
+        "region": "hero",
+        "loading": "eager",
+        "fetch_priority": "high",
+        "alt": "The merchant audit overview open on a laptop, showing reviewed activity totals, flagged events and a filterable record list."
+      },
+      {
+        "file": "3.png",
+        "region": "problem",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A reviewer working through loose receipts, handwritten daily totals and conflicting notes, with markers for a missing invoice, a voided transaction and a figure that does not match."
+      },
+      {
+        "file": "6.png",
+        "region": "how_it_works",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A four-step sequence: receive read-only access, sign in securely, review the records, and flag what needs attention."
+      },
+      {
+        "file": "8.png",
+        "region": "security",
+        "loading": "lazy",
+        "fetch_priority": "auto",
+        "alt": "A padlocked shield beside panels for read-only role access, immutable audit logs, tenant isolation, protected sensitive records and Magic Link sign-in."
+      }
+    ]
+  }
+}

@@ -494,11 +494,36 @@ it('proves every supplied landing image is a real image', function (): void {
 it('makes no final landing-image selection in UI-00', function (): void {
     $inventory = ui00Inventory('landing-images');
 
-    // The curated production manifest belongs to UI-05/UI-06. Its absence here is the contract.
+    // The curated production manifest belongs to UI-05/UI-06. UI-00's own inventory must stay a
+    // complete statement of what was SUPPLIED, with no selection in it.
     expect($inventory['selection_rule'])->toContain('two to four');
-    expect(file_exists(base_path('public/assets/landing_page_images/manifest.json')))->toBeFalse(
-        'A landing-image selection manifest exists; UI-00 must not select images (owner: UI-05/UI-06).',
-    );
+    expect($inventory['total_images'])->toBe(61);
+
+    /** @var list<array<string, mixed>> $images */
+    $images = $inventory['images'];
+    foreach ($images as $image) {
+        foreach (['landing_section', 'alternative_text', 'derivatives', 'selected'] as $selectionField) {
+            expect(array_key_exists($selectionField, $image))->toBeFalse(
+                "The UI-00 inventory records a selection field ({$selectionField}); selection is UI-05's.",
+            );
+        }
+        // Generated derivatives must never be inventoried as supplied artwork.
+        expect((string) $image['path'])->not->toContain('/generated/');
+    }
+
+    // Phase UI-05 created the curated manifest, which is why this file exists now. UI-00's boundary
+    // is unchanged — what changed is that the owning phase did its work — so the assertion moved
+    // from "the manifest must not exist" to "if it exists, UI-05 owns it and UI-00 did not write
+    // it". Deleting the check instead would have removed the boundary along with the failure.
+    $manifestPath = base_path('public/assets/landing_page_images/manifest.json');
+    if (file_exists($manifestPath)) {
+        /** @var array<string, mixed> $manifest */
+        $manifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
+
+        expect($manifest['generated_by'])->toBe('scripts/generate-landing-images.mjs');
+        expect($manifest['selection_authority'])->toBe('config/landing-image-selection.json');
+        expect($manifest['total_selected'])->toBeLessThan(61);
+    }
 });
 
 // ---------------------------------------------------------------------------------------------

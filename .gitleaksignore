@@ -34,3 +34,38 @@
 # than by rewriting history, editing the scanner configuration, or weakening the
 # rule.
 d7c64c3008943e44357f5b7b3b49ea2d84a7616c:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13
+# ---------------------------------------------------------------------------
+# generic-api-key — resources/spa/src/design-system/tokens.generated.ts:13
+# Reported at commit e6afe832 (the PR #54 SQUASH MERGE). Phase UI-05.
+#
+# VERIFIED FALSE POSITIVE, investigated independently rather than assumed from
+# the entry above — this workflow forbids widening an existing suppression to
+# absorb a new finding.
+#
+# It is the SAME VALUE at a NEW COMMIT, not a new secret and not a regenerated
+# digest. Squashing PR #54 created a fresh commit that introduces the identical
+# line, and a gitleaks fingerprint is commit:path:rule:line — so the same
+# non-secret is reported under a second fingerprint. The value is unchanged:
+#
+#   2e3bcf29894c6eff5dec3ec5b74438698d0f7027852cef81e1882d0a6b2dbe0a
+#
+# Recomputed independently during Phase UI-05 with
+# `Get-FileHash resources/spa/src/design-system/tokens.json -Algorithm SHA256`,
+# which returns exactly that string. It is therefore SHA-256 of a file committed
+# in this repository, is printed in plaintext in the generated file's own header
+# comment, authenticates and authorises nothing, and was matched on entropy alone
+# (3.897 — the expected entropy of 64 lowercase hex characters). No credential
+# exists, so nothing is revocable or rotatable.
+#
+# Again suppressed by ONE exact fingerprint. No rule, path, glob, extension,
+# regex, entropy threshold, workflow step, job permission or exit code was
+# changed, and the design-token generator was not modified to dodge the matcher —
+# altering a UI-04 artefact to silence a scanner would be worse than recording
+# the finding truthfully.
+#
+# RESIDUAL, unchanged from UI-04 and still open: every squash merge or token
+# regeneration mints another fingerprint for this same non-secret. A durable
+# treatment (an allowlist rule scoped to this one path and constant name, or
+# emitting the digest in a form the generic rule does not match) needs its own
+# authorization; it is not UI-05's to decide.
+e6afe832fa9b45c4f452bcd43e19338ac87bfd9a:resources/spa/src/design-system/tokens.generated.ts:generic-api-key:13

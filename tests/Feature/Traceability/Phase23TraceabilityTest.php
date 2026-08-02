@@ -83,21 +83,31 @@ const P23_VERIFIED_PHASES = [
     // comment 5150328091, reviewDecision blank with 0 submitted reviews. Reconciled live on the
     // phase-ui-04-design-system-shared-components branch.
     'UI-03',
+    // UI-04 merged as PR #54 — a SQUASH commit e6afe832fa9b45c4f452bcd43e19338ac87bfd9a with the
+    // single parent 00c9c1e0025e3979464691be662915ada872cc18, reviewed head
+    // cf36cee837fa5f724a9e0d8b3018c9c868ce6697 whose tree bd6728fb… is identical to the merge tree,
+    // merged 2026-08-02T13:37:16Z. Final CI run 30748616089 (five checks SUCCESS); the earlier run
+    // 30746233065 failed ONLY on gitleaks against one exact fingerprint — a reproducible SHA-256
+    // design-token digest, verified false positive, closed by a single historical fingerprint with
+    // no rule, path, entropy or workflow weakening. Governance comment 5158172398 records the
+    // product-owner approval of the #FDBA74 hover value; reviewDecision blank with 0 submitted
+    // reviews. Reconciled live on the phase-ui-05-content-asset-pipeline branch.
+    'UI-04',
 ];
 
 /**
  * The corrective UI/UX programme (Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md
- * §25). UI-00 … UI-03 are merged and verified; UI-04 is in flight; UI-05 … UI-17 have
+ * §25). UI-00 … UI-04 are merged and verified; UI-05 is in flight; UI-06 … UI-17 have
  * not started. They are listed here so a UI requirement can be deferred to a NAMED owner phase
  * instead of disappearing from the matrix.
  *
  * @var list<string>
  */
-const P23_UI_PHASES_VERIFIED = ['UI-00', 'UI-01', 'UI-02', 'UI-03'];
+const P23_UI_PHASES_VERIFIED = ['UI-00', 'UI-01', 'UI-02', 'UI-03', 'UI-04'];
 
 /** @var list<string> */
 const P23_UI_PHASES_UNVERIFIED = [
-    'UI-04', 'UI-05', 'UI-06', 'UI-07', 'UI-08',
+    'UI-05', 'UI-06', 'UI-07', 'UI-08',
     'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17',
 ];
 
@@ -113,10 +123,11 @@ const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '25', ...P23_UI_PHASES_U
  * constant when the in-flight phase merges and the next phase's branch reconciles it (the same
  * convention that promoted Phase 23 after PR #48 merged as 13f54a4, Phase 24 after PR #49 merged
  * as db3827b, Phase UI-00 after PR #50 merged as d3f6e10, and Phase UI-01 after PR #51 merged
- * as 413c146, Phase UI-02 after PR #52 merged as fb64ba6, and Phase UI-03 after PR #53 merged as
- * the regular merge commit 00c9c1e).
+ * as 413c146, Phase UI-02 after PR #52 merged as fb64ba6, Phase UI-03 after PR #53 merged as
+ * the regular merge commit 00c9c1e, and Phase UI-04 after PR #54 merged as the squash commit
+ * e6afe832).
  */
-const P23_IN_FLIGHT_PHASE = 'UI-04';
+const P23_IN_FLIGHT_PHASE = 'UI-05';
 
 /**
  * Phases a `deferred_future_phase` row may name: the remaining backend phases plus every UI phase

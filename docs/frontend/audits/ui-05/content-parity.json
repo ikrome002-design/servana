@@ -1,0 +1,415 @@
+{
+  "generated_by": "scripts/generate-role-content.mjs",
+  "content_version": "ff63281f92acef862cb8aaf71a4dbbe93981e7b5af3dbae5b4e896e683ed8f11",
+  "source_timestamp": "2026-06-21T11:17:57Z",
+  "landing_regions": [
+    "header_navigation",
+    "hero",
+    "social_proof",
+    "problem",
+    "solution",
+    "features",
+    "how_it_works",
+    "benefits",
+    "product_showcase",
+    "use_cases",
+    "testimonials",
+    "pricing",
+    "security",
+    "faq",
+    "final_cta",
+    "footer"
+  ],
+  "landing_region_presence": {
+    "merchant_administrator": {
+      "header_navigation": "present_in_source",
+      "hero": "present_in_source",
+      "social_proof": "present_in_source",
+      "problem": "present_in_source",
+      "solution": "present_in_source",
+      "features": "present_in_source",
+      "how_it_works": "present_in_source",
+      "benefits": "present_in_source",
+      "product_showcase": "present_in_source",
+      "use_cases": "present_in_source",
+      "testimonials": "missing_from_source",
+      "pricing": "present_in_source",
+      "security": "present_in_source",
+      "faq": "present_in_source",
+      "final_cta": "present_in_source",
+      "footer": "present_in_source"
+    },
+    "merchant_audit": {
+      "header_navigation": "present_in_source",
+      "hero": "present_in_source",
+      "social_proof": "present_in_source",
+      "problem": "present_in_source",
+      "solution": "present_in_source",
+      "features": "present_in_source",
+      "how_it_works": "present_in_source",
+      "benefits": "present_in_source",
+      "product_showcase": "present_in_source",
+      "use_cases": "present_in_source",
+      "testimonials": "missing_from_source",
+      "pricing": "present_in_source",
+      "security": "present_in_source",
+      "faq": "present_in_source",
+      "final_cta": "present_in_source",
+      "footer": "present_in_source"
+    },
+    "merchant_branch": {
+      "header_navigation": "present_in_source",
+      "hero": "present_in_source",
+      "social_proof": "present_in_source",
+      "problem": "present_in_source",
+      "solution": "present_in_source",
+      "features": "present_in_source",
+      "how_it_works": "present_in_source",
+      "benefits": "present_in_source",
+      "product_showcase": "present_in_source",
+      "use_cases": "present_in_source",
+      "testimonials": "present_in_source",
+      "pricing": "present_in_source",
+      "security": "present_in_source",
+      "faq": "present_in_source",
+      "final_cta": "present_in_source",
+      "footer": "present_in_source"
+    },
+    "merchant_finance": {
+      "header_navigation": "present_in_source",
+      "hero": "present_in_source",
+      "social_proof": "present_in_source",
+      "problem": "present_in_source",
+      "solution": "present_in_source",
+      "features": "present_in_source",
+      "how_it_works": "present_in_source",
+      "benefits": "present_in_source",
+      "product_showcase": "present_in_source",
+      "use_cases": "present_in_source",
+      "testimonials": "present_in_source",
+      "pricing": "present_in_source",
+      "security": "present_in_source",
+      "faq": "present_in_source",
+      "final_cta": "present_in_source",
+      "footer": "present_in_source"
+    },
+    "merchant_front_office": {
+      "header_navigation": "present_in_source",
+      "hero": "present_in_source",
+      "social_proof": "present_in_source",
+      "problem": "present_in_source",
+      "solution": "present_in_source",
+      "features": "present_in_source",
+      "how_it_works": "present_in_source",
+      "benefits": "present_in_source",
+      "product_showcase": "present_in_source",
+      "use_cases": "present_in_source",
+      "testimonials": "present_in_source",
+      "pricing": "present_in_source",
+      "security": "present_in_source",
+      "faq": "present_in_source",
+      "final_cta": "present_in_source",
+      "footer": "present_in_source"
+    },
+    "merchant_human_resource": {
+      "header_navigation": "present_in_source",
+      "hero": "present_in_source",
+      "social_proof": "present_in_source",
+      "problem": "present_in_source",
+      "solution": "present_in_source",
+      "features": "present_in_source",
+      "how_it_works": "present_in_source",
+      "benefits": "present_in_source",
+      "product_showcase": "present_in_source",
+      "use_cases": "present_in_source",
+      "testimonials": "present_in_source",
+      "pricing": "present_in_source",
+      "security": "present_in_source",
+      "faq": "present_in_source",
+      "final_cta": "present_in_source",
+      "footer": "present_in_source"
+    },
+    "merchant_personnel": {
+      "header_navigation": "present_in_source",
+      "hero": "present_in_source",
+      "social_proof": "present_in_source",
+      "problem": "present_in_source",
+      "solution": "present_in_source",
+      "features": "present_in_source",
+      "how_it_works": "present_in_source",
+      "benefits": "present_in_source",
+      "product_showcase": "present_in_source",
+      "use_cases": "present_in_source",
+      "testimonials": "present_in_source",
+      "pricing": "present_in_source",
+      "security": "present_in_source",
+      "faq": "present_in_source",
+      "final_cta": "present_in_source",
+      "footer": "present_in_source"
+    },
+    "super_administrator": {
+      "header_navigation": "present_in_source",
+      "hero": "present_in_source",
+      "social_proof": "present_in_source",
+      "problem": "present_in_source",
+      "solution": "present_in_source",
+      "features": "present_in_source",
+      "how_it_works": "present_in_source",
+      "benefits": "present_in_source",
+      "product_showcase": "present_in_source",
+      "use_cases": "present_in_source",
+      "testimonials": "missing_from_source",
+      "pricing": "missing_from_source",
+      "security": "present_in_source",
+      "faq": "present_in_source",
+      "final_cta": "present_in_source",
+      "footer": "present_in_source"
+    }
+  },
+  "sections_missing_from_source": [
+    {
+      "account_key": "merchant_administrator",
+      "region": "testimonials",
+      "decision": "product_owner_content_decision_required",
+      "owner_phase": "UI-06"
+    },
+    {
+      "account_key": "merchant_audit",
+      "region": "testimonials",
+      "decision": "product_owner_content_decision_required",
+      "owner_phase": "UI-06"
+    },
+    {
+      "account_key": "super_administrator",
+      "region": "testimonials",
+      "decision": "product_owner_content_decision_required",
+      "owner_phase": "UI-06"
+    },
+    {
+      "account_key": "super_administrator",
+      "region": "pricing",
+      "decision": "product_owner_content_decision_required",
+      "owner_phase": "UI-06"
+    }
+  ],
+  "sections_not_renderable": [
+    {
+      "account_key": "merchant_branch",
+      "region": "testimonials",
+      "source_heading": "Testimonial Section",
+      "content_restriction": "unverified_customer_evidence",
+      "reason": "The section presents an attributed customer quote with no verified source. UI/UX plan §8.4 permits publication only after verified evidence is supplied or a factual alternative is approved.",
+      "owner_phase": "UI-06 / product owner"
+    },
+    {
+      "account_key": "merchant_finance",
+      "region": "testimonials",
+      "source_heading": "Testimonial Section",
+      "content_restriction": "unverified_customer_evidence",
+      "reason": "The section presents an attributed customer quote with no verified source. UI/UX plan §8.4 permits publication only after verified evidence is supplied or a factual alternative is approved.",
+      "owner_phase": "UI-06 / product owner"
+    },
+    {
+      "account_key": "merchant_front_office",
+      "region": "testimonials",
+      "source_heading": "Testimonial Section",
+      "content_restriction": "unverified_customer_evidence",
+      "reason": "The section presents an attributed customer quote with no verified source. UI/UX plan §8.4 permits publication only after verified evidence is supplied or a factual alternative is approved.",
+      "owner_phase": "UI-06 / product owner"
+    },
+    {
+      "account_key": "merchant_personnel",
+      "region": "testimonials",
+      "source_heading": "Testimonials Section",
+      "content_restriction": "placeholder_testimonial_marked_in_source",
+      "reason": "The source document states these quotes are suggestions to be replaced before launch. UI/UX plan §8.4 forbids publishing them as customer evidence.",
+      "owner_phase": "UI-06 / product owner"
+    }
+  ],
+  "generated_artifacts": [
+    {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    {
+      "path": "docs/frontend/audits/ui-05/faq-manifest.json",
+      "sha256": "a41a64169eaa2bc329c56f63b5665d260cd07adbb22024a2341e012622a94907"
+    },
+    {
+      "path": "docs/frontend/audits/ui-05/legal-hash-manifest.json",
+      "sha256": "741e8632c8ae8a376922fd54838d4bbe03f41f0a1a5b5cbdd8a9701e85056dc1"
+    },
+    {
+      "path": "resources/spa/src/content/generated/contentManifest.generated.ts",
+      "sha256": "d05ac59f8ff5be995daef5e9824f3411a012da18cc220b48756cca12b4420561"
+    },
+    {
+      "path": "resources/spa/src/content/generated/contentTypes.generated.ts",
+      "sha256": "96bafec54795c4197bfa4dfe38abeda3b67f366b66ef92e3ea92c8538f858bb9"
+    },
+    {
+      "path": "resources/spa/src/content/generated/index.generated.ts",
+      "sha256": "20642ef83b3d55e89207de5bf688e2176ee1d35e4d5fd2afe22bb8296128c691"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_administrator/data-policy.generated.ts",
+      "sha256": "4a72ac60978cdec2c4880b1165184f43af2854ffdb572a55dff12c9675aa212b"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_administrator/faq.generated.ts",
+      "sha256": "ac42b3ba62c76d2a704f836a502abef937d59595cfb60786dc1269d58045e3e7"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_administrator/landing.generated.ts",
+      "sha256": "ec9973ac4d0cdb8994846302f5285303b343ce6379ff5410e6343fa29028701a"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_administrator/privacy-policy.generated.ts",
+      "sha256": "048d5c844ffda9b44870b942da8bbbc31fd1e8f5096c3b0822764d0780852644"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_administrator/terms-of-service.generated.ts",
+      "sha256": "e1a127631136cd880b169627c9b273086239c1851c3c1b5f0860f5a99ff4d3de"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_audit/data-policy.generated.ts",
+      "sha256": "1c49c68462d47b8bd843df9286cdaaaa0e4832b3aa6e3a9f2a90429ecfa861cd"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_audit/faq.generated.ts",
+      "sha256": "2519e608d51c12df98906db871331cb6820c509ed02e7ca1e7f646eeb99a4516"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_audit/landing.generated.ts",
+      "sha256": "c025ba68942a096ff8b619c663939f017d805fe367925152342c82a51c06a04a"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_audit/privacy-policy.generated.ts",
+      "sha256": "a2a5c1724894bfe28714eb670d3bad90cbb9ddca71c42e4e906037e1092c35b4"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_audit/terms-of-service.generated.ts",
+      "sha256": "b1a1798b1164f86193b2fd3c19f13a0009c912602bf639563af5c1a4eb6efeac"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_branch/data-policy.generated.ts",
+      "sha256": "f93deb82c90baa883755db9250574e5f36491d57c1bcbf3a07bd70b358476017"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_branch/faq.generated.ts",
+      "sha256": "c152dd5ebd42cbae3e087b45f88595bbfd8d60bac4b0aa8e520c3e9e37caef2d"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_branch/landing.generated.ts",
+      "sha256": "a1a2dca63d2cfe6f684bbc807b7e3e694dce3753da2e4dfa121fb642ff2f6875"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_branch/privacy-policy.generated.ts",
+      "sha256": "794ff38700e06108df2ca25f9a8c13acf75ec135700903dfa2faa5a2d8e4bde6"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_branch/terms-of-service.generated.ts",
+      "sha256": "9d916c55dd7276305c8e64050d7914d09cba58e86481cf38845b39ccf8a9a998"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_finance/data-policy.generated.ts",
+      "sha256": "f9af9bca8c1e470d48ebbc365a70085a18b5424e9f5769fc77e444d025d55e97"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_finance/faq.generated.ts",
+      "sha256": "cc27b23cd8008ae980a32af3ae9294191f7daa2e5750e3266cad113bfd33fabf"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_finance/landing.generated.ts",
+      "sha256": "96918bb4755612c07474f1cdaf94b3e85f983c4953aaf10cf1df5be795dce332"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_finance/privacy-policy.generated.ts",
+      "sha256": "e539f759fa2042f311983387dc3658419c447b77f2ee0be0ad4aeccedf4d692a"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_finance/terms-of-service.generated.ts",
+      "sha256": "71e696cb94d70db9ef68619583488094e58cbea58c8a3031b234133b3ec878a6"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_front_office/data-policy.generated.ts",
+      "sha256": "fda67ef034d6106adb84b8ccec23113346bf27d1b57d6e287579e3babd31470d"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_front_office/faq.generated.ts",
+      "sha256": "034d4fbd2d2b852415e6c662dbda74ebe38b4a91a5290066077c6e0aefcd8426"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_front_office/landing.generated.ts",
+      "sha256": "30ce0d8c5542b5762481c1190640d858f7ea96c5b985e19f6e89be0b035a8712"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_front_office/privacy-policy.generated.ts",
+      "sha256": "85dd77efc80fa8fc8c40168f6b38c34ca44105ab0d5d01a2bc63e91ea98522cc"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_front_office/terms-of-service.generated.ts",
+      "sha256": "cabe678df039740adb58d0fd02cc05dd4331f7fd18ad7fb972ea576897366510"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_human_resource/data-policy.generated.ts",
+      "sha256": "cbefbcb26378801a2d866308ccb63dc39cea292e7cac1893473b5c2babf98508"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_human_resource/faq.generated.ts",
+      "sha256": "d3957eeba3b211cbbbcc396958535576240ae379fb6d3a56ee1f8fab1df757e7"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_human_resource/landing.generated.ts",
+      "sha256": "e29c0b02779f7b630092789422209187044c388bfc9f4fbcc48c544c1c32f102"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_human_resource/privacy-policy.generated.ts",
+      "sha256": "e2291daf99da5d5698a450a2b40bcdbe6134d62069f78b33002b4dd58b9a629a"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_human_resource/terms-of-service.generated.ts",
+      "sha256": "871fe66354e677994a45d9a0b137145bf31446c480ead6c970ac4b495fa07817"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_personnel/data-policy.generated.ts",
+      "sha256": "1616e9e541905b9c871dd9ababb114c69670ba1b01b704995e4cbf0bbacf031f"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_personnel/faq.generated.ts",
+      "sha256": "dff54bedd5612ebf9c70933b5ba88a50b22dc8b28cc07ce8c5c353c99e9be7c1"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_personnel/landing.generated.ts",
+      "sha256": "e847d9f1cfe089d2e7a39776b50ca146b3d07554e319ab0256bd0659f945e28f"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_personnel/privacy-policy.generated.ts",
+      "sha256": "6a41607a35588215881d0ed1d445dcab0a4e10f05747c54e647dc639e821de7e"
+    },
+    {
+      "path": "resources/spa/src/content/generated/merchant_personnel/terms-of-service.generated.ts",
+      "sha256": "5ae0fdb4d871edb6393cc9b7dbb6a7bd6f23c65651c7cc0046bd13e3496900ea"
+    },
+    {
+      "path": "resources/spa/src/content/generated/super_administrator/data-policy.generated.ts",
+      "sha256": "ad5124f9b6b25c84cb595e8164e9ce7e8ce8b3b76c5821bc052ae785958c9285"
+    },
+    {
+      "path": "resources/spa/src/content/generated/super_administrator/faq.generated.ts",
+      "sha256": "a72eac10df9245d6e8be4594a8be0812158dc89223f80f9b45f5d1155864c286"
+    },
+    {
+      "path": "resources/spa/src/content/generated/super_administrator/landing.generated.ts",
+      "sha256": "784702c16d6263b86f4d21ee3f28cd7fe42367014b0e52aa06c8ce2ab1f8f7ac"
+    },
+    {
+      "path": "resources/spa/src/content/generated/super_administrator/privacy-policy.generated.ts",
+      "sha256": "a6bb30478cdee2bd45b3cc7e17fac84717cdf5b931aa70658907dab8142ecee7"
+    },
+    {
+      "path": "resources/spa/src/content/generated/super_administrator/terms-of-service.generated.ts",
+      "sha256": "61dbf443b33bb5c0923d3c58e773e471a3994b09801010b2c9ec0923f0880915"
+    }
+  ]
+}

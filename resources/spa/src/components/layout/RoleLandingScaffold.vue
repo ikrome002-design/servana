@@ -3,7 +3,8 @@ import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
 import FaqAccordion from '@/components/support/FaqAccordion.vue';
-import { heroImage, LEGAL_DOCS } from '@/content/roleContent';
+import { LEGAL_DOCS } from '@/content/roleContent';
+import { landingHeroImage } from '@/content/generated/landingImages.generated';
 import { loadFaq, loadLandingHero } from '@/content/roleDocuments';
 import type { FaqItem, HeroContent } from '@/content/markdown';
 import { navigationFor } from '@/navigation/roleNavigation';
@@ -27,6 +28,28 @@ const getStarted = useGetStartedStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
 const nav = computed(() => navigationFor(props.identity));
+
+/**
+ * The role's curated hero image (Phase UI-05).
+ *
+ * Previously this was `heroImage(identity)`, which assumed every role's `1.png` was its hero and
+ * paired it with an invented alt string. Both now come from the generated landing-image manifest:
+ * the alternative text is the curated description of what the illustration shows, the width and
+ * height are the file's real intrinsic pixels rather than a guess, and the AVIF/WebP candidates let
+ * the browser choose a right-sized encode instead of downloading a two-megabyte PNG.
+ */
+const heroImage = computed(() => landingHeroImage(props.identity));
+const heroSources = computed(() => {
+  const image = heroImage.value;
+  if (image === null) return [];
+  return (['avif', 'webp'] as const).map((format) => ({
+    type: format === 'avif' ? 'image/avif' : 'image/webp',
+    srcset: image.derivatives
+      .filter((derivative) => derivative.format === format)
+      .map((derivative) => `${derivative.publicPath} ${derivative.width}w`)
+      .join(', '),
+  })).filter((source) => source.srcset !== '');
+});
 
 /*
  * Phase 24 (PH24-BUNDLE-001): this role's landing + FAQ markdown is fetched lazily, so only the
@@ -134,14 +157,29 @@ function goGetStarted(): void {
           </button>
         </div>
       </div>
-      <div class="overflow-hidden rounded-card bg-surface-alt shadow-card">
-        <img
-          :src="heroImage(identity)"
-          :alt="`${entry.label} working in Servana`"
-          class="aspect-[4/3] w-full object-cover"
-          width="800"
-          height="600"
-        >
+      <div
+        v-if="heroImage"
+        class="overflow-hidden rounded-card bg-surface-alt shadow-card"
+      >
+        <picture>
+          <source
+            v-for="source in heroSources"
+            :key="source.type"
+            :type="source.type"
+            :srcset="source.srcset"
+            :sizes="heroImage.sizes"
+          >
+          <img
+            :src="heroImage.sourcePublicPath"
+            :alt="heroImage.alternativeText"
+            :width="heroImage.intrinsicWidth"
+            :height="heroImage.intrinsicHeight"
+            :loading="heroImage.loading"
+            :fetchpriority="heroImage.fetchPriority"
+            :style="{ objectPosition: `${heroImage.focalX * 100}% ${heroImage.focalY * 100}%` }"
+            class="aspect-[4/3] w-full object-cover"
+          >
+        </picture>
       </div>
     </section>
 

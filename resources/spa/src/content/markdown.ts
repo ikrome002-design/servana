@@ -196,11 +196,12 @@ export function extractSection(md: string, titlePattern: RegExp): string {
 }
 
 /**
- * Parse the role landing markdown's Hero Section into a headline + body
- * paragraphs (verbatim). Falls back gracefully when the section is absent.
+ * Parse an already-extracted Hero Section body into a headline + body paragraphs
+ * (verbatim). Phase UI-05 compiles landing sections ahead of time, so the hero
+ * body arrives already delimited; `parseHero` keeps the whole-document entry
+ * point for callers that still hold the raw markdown.
  */
-export function parseHero(landingMd: string): HeroContent {
-  const section = extractSection(landingMd, /^hero section/i);
+export function parseHeroBody(section: string): HeroContent {
   if (!section) return { title: '', body: [] };
   const lines = section.split('\n');
   let title = '';
@@ -223,6 +224,11 @@ export function parseHero(landingMd: string): HeroContent {
     title = body.shift() as string;
   }
   return { title, body };
+}
+
+/** Parse the Hero Section out of a full role landing document. */
+export function parseHero(landingMd: string): HeroContent {
+  return parseHeroBody(extractSection(landingMd, /^hero section/i));
 }
 
 /**

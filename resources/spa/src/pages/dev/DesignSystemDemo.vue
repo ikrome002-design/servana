@@ -9,10 +9,30 @@ import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import SvThemeToggle from '@/components/ui/SvThemeToggle.vue';
+import SvFaq from '@/components/ui/SvFaq.vue';
 import { SvIconProfile, SvIconSuccess } from '@/design-system/icons';
+import { loadFaq } from '@/content/roleDocuments';
+import type { FaqItem } from '@/content/markdown';
+import { ROLE_ENTRY, ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
 import { useNotificationStore } from '@/stores/notificationStore';
 
 const notifications = useNotificationStore();
+
+/** UI-05 content fixture: one account's compiled FAQ at a time, loaded on demand. */
+const faqIdentity = ref<RoleIdentity>('merchant_finance');
+const faqItems = ref<FaqItem[]>([]);
+
+function selectFaqAccount(identity: RoleIdentity): void {
+  faqIdentity.value = identity;
+  void loadFaq(identity).then((items) => {
+    // A slower earlier request must never overwrite a newer account's content.
+    if (faqIdentity.value === identity) {
+      faqItems.value = items;
+    }
+  });
+}
+
+selectFaqAccount(faqIdentity.value);
 
 const modalOpen = ref(false);
 const inputValue = ref('');
@@ -288,6 +308,48 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
             Info toast
           </SvButton>
         </div>
+      </SvCard>
+
+      <!--
+        Phase UI-05 content fixture.
+
+        The generated FAQ contract needs a real browser surface to be proven accessible in, and the
+        only place one exists today is this development fixture: UI-06 owns the public FAQ route,
+        and creating that route early purely to satisfy a browser assertion would claim work this
+        phase has not done. Each account's data set is loaded on demand, so switching accounts
+        exercises the same per-role lazy loading the production surfaces use.
+      -->
+      <SvCard>
+        <h2 class="mb-4 font-display text-base font-bold text-heading">
+          SvFaq — generated role content (UI-05)
+        </h2>
+        <div
+          class="mb-4 flex flex-wrap gap-2"
+          role="group"
+          aria-label="Account content set"
+        >
+          <SvButton
+            v-for="identity in ROLE_IDENTITIES"
+            :key="identity"
+            :variant="identity === faqIdentity ? 'primary' : 'secondary'"
+            :data-testid="`faq-account-${identity}`"
+            :aria-pressed="identity === faqIdentity"
+            @click="selectFaqAccount(identity)"
+          >
+            {{ ROLE_ENTRY[identity].label }}
+          </SvButton>
+        </div>
+        <p
+          class="mb-3 text-sm text-sv-text-muted"
+          data-testid="faq-fixture-summary"
+        >
+          {{ faqItems.length }} questions compiled for {{ ROLE_ENTRY[faqIdentity].label }}.
+        </p>
+        <SvFaq
+          v-if="faqItems.length > 0"
+          :items="faqItems.slice(0, 8)"
+          :label="`${ROLE_ENTRY[faqIdentity].label} questions`"
+        />
       </SvCard>
     </div>
   </div>

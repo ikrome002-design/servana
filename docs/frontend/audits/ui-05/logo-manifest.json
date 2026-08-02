@@ -1,0 +1,73 @@
+{
+  "generated_by": "scripts/generate-landing-images.mjs",
+  "contract": "One approved logo, referenced by public path from all eight accounts. It is never copied into per-role directories, never recoloured and never regenerated.",
+  "approval_authority": "docs/brand/Servana Brand Identity.md; recorded approved in docs/frontend/source-inventory/brand-assets.json (Phase UI-00)",
+  "logo": {
+    "repository_path": "public/assets/brand/Logo.png",
+    "public_path": "/assets/brand/Logo.png",
+    "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035",
+    "bytes": 162570,
+    "intrinsic_width": 500,
+    "intrinsic_height": 500,
+    "mime_type": "image/png",
+    "exact_case_required": true,
+    "alt_text_policy": "Decorative when a visible \"Servana\" wordmark sits beside it (empty alt); otherwise the accessible name is \"Servana\". Never the file name, and never a slogan.",
+    "source_approval": "product_owner_approved"
+  },
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "logo_public_path": "/assets/brand/Logo.png",
+      "override": null,
+      "basis": "No authoritative source supplies a different approved asset for this account."
+    },
+    {
+      "account_key": "merchant_audit",
+      "logo_public_path": "/assets/brand/Logo.png",
+      "override": null,
+      "basis": "No authoritative source supplies a different approved asset for this account."
+    },
+    {
+      "account_key": "merchant_branch",
+      "logo_public_path": "/assets/brand/Logo.png",
+      "override": null,
+      "basis": "No authoritative source supplies a different approved asset for this account."
+    },
+    {
+      "account_key": "merchant_finance",
+      "logo_public_path": "/assets/brand/Logo.png",
+      "override": null,
+      "basis": "No authoritative source supplies a different approved asset for this account."
+    },
+    {
+      "account_key": "merchant_front_office",
+      "logo_public_path": "/assets/brand/Logo.png",
+      "override": null,
+      "basis": "No authoritative source supplies a different approved asset for this account."
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "logo_public_path": "/assets/brand/Logo.png",
+      "override": null,
+      "basis": "No authoritative source supplies a different approved asset for this account."
+    },
+    {
+      "account_key": "merchant_personnel",
+      "logo_public_path": "/assets/brand/Logo.png",
+      "override": null,
+      "basis": "No authoritative source supplies a different approved asset for this account."
+    },
+    {
+      "account_key": "super_administrator",
+      "logo_public_path": "/assets/brand/Logo.png",
+      "override": null,
+      "basis": "No authoritative source supplies a different approved asset for this account."
+    }
+  ],
+  "forbidden": {
+    "repository_path": "public/assets/brand/Logo.svg",
+    "public_path": "/assets/brand/Logo.svg",
+    "state": "absent",
+    "rule": "Deleted under product-owner authority (commit 49160cd). Must not be restored, referenced or required."
+  }
+}

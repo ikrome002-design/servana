@@ -17,6 +17,11 @@ export default tseslint.config(
       // Auto-generated from docs/api/openapi.json (npm run api:types). Validated by
       // vue-tsc + the contract check, not hand-edited, so it is not linted.
       'resources/spa/src/types/generated/**',
+      // Auto-generated role content and landing-image manifest (Phase UI-05,
+      // `npm run content:generate` / `npm run assets:generate`). These carry the approved
+      // documents verbatim, are never hand-edited, and are validated by vue-tsc plus the
+      // `content:check` / `assets:check` staleness gates rather than by lint.
+      'resources/spa/src/content/generated/**',
       // Node tooling scripts (not part of the SPA bundle).
       'scripts/**',
     ],

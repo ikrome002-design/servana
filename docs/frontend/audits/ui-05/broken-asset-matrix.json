@@ -1,0 +1,1429 @@
+{
+  "generated_by": "scripts/generate-landing-images.mjs",
+  "contract": "Every path this pipeline publishes exists, decodes, matches its recorded dimensions and hash, and has a MIME type matching its extension. Every path it quarantines is absent from the public tree.",
+  "must_serve": [
+    {
+      "path": "public/assets/brand/Logo.png",
+      "public_path": "/assets/brand/Logo.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "public_path": "/assets/landing_page_images/manifest.json",
+      "mime_type": "application/json",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_administrator/1.png",
+      "public_path": "/assets/landing_page_images/merchant_administrator/1.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_administrator/3.png",
+      "public_path": "/assets/landing_page_images/merchant_administrator/3.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_administrator/5.png",
+      "public_path": "/assets/landing_page_images/merchant_administrator/5.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_administrator/6.png",
+      "public_path": "/assets/landing_page_images/merchant_administrator/6.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_audit/1.png",
+      "public_path": "/assets/landing_page_images/merchant_audit/1.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_audit/3.png",
+      "public_path": "/assets/landing_page_images/merchant_audit/3.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_audit/6.png",
+      "public_path": "/assets/landing_page_images/merchant_audit/6.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_audit/8.png",
+      "public_path": "/assets/landing_page_images/merchant_audit/8.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_branch/1.png",
+      "public_path": "/assets/landing_page_images/merchant_branch/1.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_branch/3.png",
+      "public_path": "/assets/landing_page_images/merchant_branch/3.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_branch/6.png",
+      "public_path": "/assets/landing_page_images/merchant_branch/6.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_branch/9.png",
+      "public_path": "/assets/landing_page_images/merchant_branch/9.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_finance/1.png",
+      "public_path": "/assets/landing_page_images/merchant_finance/1.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_finance/3.png",
+      "public_path": "/assets/landing_page_images/merchant_finance/3.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_finance/4.png",
+      "public_path": "/assets/landing_page_images/merchant_finance/4.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_finance/5.png",
+      "public_path": "/assets/landing_page_images/merchant_finance/5.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_front_office/1.png",
+      "public_path": "/assets/landing_page_images/merchant_front_office/1.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_front_office/2.png",
+      "public_path": "/assets/landing_page_images/merchant_front_office/2.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_front_office/5.png",
+      "public_path": "/assets/landing_page_images/merchant_front_office/5.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_front_office/6.png",
+      "public_path": "/assets/landing_page_images/merchant_front_office/6.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_human_resource/1.png",
+      "public_path": "/assets/landing_page_images/merchant_human_resource/1.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_human_resource/3.png",
+      "public_path": "/assets/landing_page_images/merchant_human_resource/3.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_human_resource/5.png",
+      "public_path": "/assets/landing_page_images/merchant_human_resource/5.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_human_resource/8.png",
+      "public_path": "/assets/landing_page_images/merchant_human_resource/8.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_personnel/1.png",
+      "public_path": "/assets/landing_page_images/merchant_personnel/1.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_personnel/2.png",
+      "public_path": "/assets/landing_page_images/merchant_personnel/2.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_personnel/4.png",
+      "public_path": "/assets/landing_page_images/merchant_personnel/4.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/merchant_personnel/5.png",
+      "public_path": "/assets/landing_page_images/merchant_personnel/5.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/super_administrator/1.png",
+      "public_path": "/assets/landing_page_images/super_administrator/1.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/super_administrator/3.png",
+      "public_path": "/assets/landing_page_images/super_administrator/3.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/super_administrator/6.png",
+      "public_path": "/assets/landing_page_images/super_administrator/6.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/super_administrator/9.png",
+      "public_path": "/assets/landing_page_images/super_administrator/9.png",
+      "mime_type": "image/png",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/1-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/1-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/1-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/1-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/1-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/1-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/1-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/1-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/1-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/1-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/1-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/1-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/3-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/3-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/3-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/3-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/3-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/3-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/3-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/3-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/3-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/3-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/3-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/3-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/5-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/5-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/5-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/5-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/5-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/5-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/5-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/5-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/5-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/5-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/5-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/5-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/6-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/6-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/6-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/6-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/6-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/6-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/6-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/6-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/6-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/6-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_administrator/6-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_administrator/6-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/1-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/1-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/1-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/1-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/1-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/1-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/1-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/1-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/1-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/1-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/1-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/1-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/3-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/3-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/3-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/3-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/3-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/3-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/3-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/3-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/3-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/3-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/3-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/3-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/6-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/6-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/6-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/6-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/6-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/6-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/6-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/6-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/6-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/6-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/6-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/6-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/8-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/8-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/8-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/8-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/8-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/8-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/8-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/8-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/8-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/8-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_audit/8-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_audit/8-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/1-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/1-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/1-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/1-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/1-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/1-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/1-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/1-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/1-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/1-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/1-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/1-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/3-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/3-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/3-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/3-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/3-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/3-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/3-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/3-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/3-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/3-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/3-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/3-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/6-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/6-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/6-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/6-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/6-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/6-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/6-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/6-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/6-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/6-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/6-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/6-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/9-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/9-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/9-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/9-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/9-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/9-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/9-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/9-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/9-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/9-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_branch/9-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_branch/9-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/1-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/1-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/1-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/1-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/1-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/1-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/1-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/1-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/1-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/1-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/1-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/1-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/3-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/3-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/3-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/3-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/3-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/3-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/3-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/3-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/3-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/3-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/3-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/3-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/4-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/4-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/4-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/4-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/4-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/4-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/4-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/4-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/4-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/4-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/4-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/4-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/5-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/5-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/5-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/5-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/5-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/5-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/5-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/5-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/5-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/5-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_finance/5-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_finance/5-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/1-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/1-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/1-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/1-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/1-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/1-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/1-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/1-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/1-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/1-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/1-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/1-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/2-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/2-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/2-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/2-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/2-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/2-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/2-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/2-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/2-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/2-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/2-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/2-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/5-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/5-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/5-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/5-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/5-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/5-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/5-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/5-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/5-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/5-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/5-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/5-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/6-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/6-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/6-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/6-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/6-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/6-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/6-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/6-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/6-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/6-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_front_office/6-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_front_office/6-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/1-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/1-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/1-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/1-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/1-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/1-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/1-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/1-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/3-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/3-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/3-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/3-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/3-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/3-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/3-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/3-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/5-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/5-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/5-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/5-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/5-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/5-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/5-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/5-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/5-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/5-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/5-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/5-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/8-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/8-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/8-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/8-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/8-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/8-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/8-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/8-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/8-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/8-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_human_resource/8-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_human_resource/8-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/1-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/1-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/1-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/1-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/1-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/1-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/1-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/1-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/1-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/1-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/1-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/1-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/2-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/2-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/2-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/2-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/2-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/2-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/2-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/2-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/2-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/2-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/2-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/2-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/4-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/4-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/4-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/4-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/4-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/4-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/4-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/4-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/4-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/4-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/4-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/4-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/5-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/5-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/5-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/5-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/5-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/5-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/5-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/5-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/5-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/5-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/merchant_personnel/5-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/merchant_personnel/5-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/1-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/1-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/1-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/1-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/1-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/1-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/1-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/1-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/1-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/1-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/1-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/1-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/3-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/3-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/3-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/3-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/3-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/3-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/3-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/3-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/3-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/3-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/3-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/3-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/6-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/6-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/6-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/6-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/6-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/6-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/6-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/6-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/6-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/6-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/6-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/6-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/9-w1024.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/9-w1024.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/9-w1024.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/9-w1024.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/9-w1440.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/9-w1440.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/9-w1440.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/9-w1440.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/9-w640.avif",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/9-w640.avif",
+      "mime_type": "image/avif",
+      "expect_status": 200
+    },
+    {
+      "path": "public/assets/landing_page_images/generated/super_administrator/9-w640.webp",
+      "public_path": "/assets/landing_page_images/generated/super_administrator/9-w640.webp",
+      "mime_type": "image/webp",
+      "expect_status": 200
+    }
+  ],
+  "must_not_serve": [
+    {
+      "public_path": "/assets/brand/Logo.svg",
+      "expect_status": 404,
+      "reason": "Deleted under product-owner authority."
+    },
+    {
+      "public_path": "/assets/brand/logo.png",
+      "expect_status": 404,
+      "reason": "Wrong case; the edge must stay case-sensitive."
+    },
+    {
+      "public_path": "/assets/brand/PNG.png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_31 PM.png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_42 PM.png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_00 PM.png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_15 PM.png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_07 PM (1).png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (2).png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (3).png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_09 PM (4).png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_49_32 PM.png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    },
+    {
+      "public_path": "/assets/brand/v1/ChatGPT_Image_Jun_8__2026__05_50_13_PM-removebg-preview.png",
+      "expect_status": 404,
+      "reason": "UI01-ASSET-002 quarantine."
+    }
+  ]
+}
