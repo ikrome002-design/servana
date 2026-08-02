@@ -6,51 +6,116 @@
 @import '@fontsource/manrope/700.css';
 @import '@fontsource/manrope/800.css';
 
+/* Servana design tokens — GENERATED from resources/spa/src/design-system/tokens.json by
+   `node scripts/generate-design-tokens.mjs` (ADR-021). This file declares no colour of its own:
+   raw brand values exist ONLY in the token source, and `DesignTokenSourceGuardTest` fails the
+   build if one reappears here. */
+@import './styles/generated/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Brand design tokens (Plan §12.1). Single source for both themes; .dark
-   overrides only the values that change (Plan §14). */
-:root {
-  --color-primary: #f97316; /* Savannah Orange — CTAs, active states */
-  --color-sun: #fbbf24; /* badges, soft highlights */
-  --color-success: #2e7d32;
-  --color-growth: #3f7d20;
-  --color-brand-deep: #4a2208; /* headings (light), footer, admin anchor; CTA text on orange (ADR-009) */
-  --color-heading: #4a2208; /* adaptive heading/anchor color — brand-deep in light, light in dark */
-  --color-accent: #007c78; /* Service Teal — module accents, trust */
-  --color-warning: #f59e0b;
-  --color-error: #dc2626;
-  --color-info: #0284c7;
-  --color-text: #1f2933;
-  --color-text-muted: #4b5563; /* AA (≥4.5:1) on white, bg, and surface-alt (ADR-009) */
-  --color-border: #e5e7eb;
-  --color-surface: #ffffff;
-  --color-surface-alt: #f3f4f6;
-  --color-bg: #f9fafb;
-  --color-cream: #fff8e7;
-  --radius-card: 12px;
-  --radius-control: 8px;
-  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.08);
+@layer base {
+  body {
+    font-family: var(--sv-font-family-ui);
+    background-color: var(--sv-color-surface-page);
+    color: var(--sv-color-text-primary);
+  }
+
+  /* Financial figures align column-wise (UI/UX plan §9.3). */
+  .sv-numeric {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
 }
 
-.dark {
-  --color-bg: #111827;
-  --color-surface: #1f2933;
-  --color-surface-alt: #273340;
-  --color-text: #f3f4f6;
-  --color-text-muted: #9ca3af;
-  --color-heading: #f3f4f6; /* headings/anchors use the light text color in dark mode (AA) */
-  --color-border: #374151; /* borders stay visible in dark — never removed */
-  --color-primary: #f97316; /* AA on dark */
-  --color-accent: #14b8a6; /* lightened teal */
-  --color-error: #f87171;
-  --color-success: #4ade80;
+@layer components {
+  /*
+   * Fixed-footer layout contract (ADR-024).
+   *
+   * ONE token drives both the footer's own block size and the space the page reserves for it, so
+   * the two can never drift apart — which is exactly how "the footer covers the submit button"
+   * defects appear. The reserved space includes the mobile safe-area inset, so the footer sits
+   * above the inset rather than under it.
+   */
+  .sv-footer-reserve {
+    padding-block-end: calc(var(--sv-footer-height-mobile) + var(--sv-safe-area-bottom));
+  }
+
+  .sv-fixed-footer {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: var(--sv-z-footer);
+    min-block-size: var(--sv-footer-height-mobile);
+    padding-block-end: var(--sv-safe-area-bottom);
+    padding-inline: max(var(--sv-gutter-mobile), var(--sv-safe-area-left), var(--sv-safe-area-right));
+    background-color: var(--sv-color-footer-surface);
+    border-block-start: var(--sv-border-width-hairline) solid var(--sv-color-footer-border);
+    color: var(--sv-color-footer-text);
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .sv-footer-reserve {
+      padding-block-end: calc(var(--sv-footer-height-tablet) + var(--sv-safe-area-bottom));
+    }
+
+    .sv-fixed-footer {
+      min-block-size: var(--sv-footer-height-tablet);
+      padding-inline: var(--sv-gutter-tablet);
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .sv-footer-reserve {
+      padding-block-end: calc(var(--sv-footer-height-desktop) + var(--sv-safe-area-bottom));
+    }
+
+    .sv-fixed-footer {
+      min-block-size: var(--sv-footer-height-desktop);
+      padding-inline: var(--sv-gutter-desktop);
+    }
+  }
+
+  /*
+   * Extreme-zoom fallback (ADR-024 rule 6). Under a very short viewport the footer must not
+   * consume the screen: it caps its own height and scrolls INTERNALLY. The page still never
+   * scrolls horizontally.
+   */
+  @media (max-height: 26rem) {
+    .sv-fixed-footer {
+      max-block-size: var(--sv-footer-height-zoom-fallback);
+      overflow-y: auto;
+    }
+
+    .sv-footer-reserve {
+      padding-block-end: calc(var(--sv-footer-height-zoom-fallback) + var(--sv-safe-area-bottom));
+    }
+  }
+
+  /* A focused control must never be scrolled to a position the reserved footer band occupies. */
+  .sv-footer-reserve :focus-visible {
+    scroll-margin-block-end: calc(var(--sv-footer-height-mobile) + var(--sv-space-4));
+  }
+
+  /* Shared visible focus. One ring definition, both themes, token-driven. */
+  .sv-focus-ring:focus-visible {
+    outline: var(--sv-focus-ring-width) solid var(--sv-color-focus-ring);
+    outline-offset: var(--sv-focus-ring-offset);
+  }
 }
 
-body {
-  font-family: theme('fontFamily.sans');
-  background-color: var(--color-bg);
-  color: var(--color-text);
+@layer utilities {
+  /* Reduced motion is honoured globally: no shared component may animate through it. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

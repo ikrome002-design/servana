@@ -114,8 +114,8 @@ while the repository records said the work was complete.
 | UI-00 | Plan adoption and source reconciliation | ✅ `verified_complete` | PR [#50](https://github.com/ikrome002-design/servana/pull/50) merged — squash `d3f6e10`, branch deleted | [ui-00.md](proof/ui-00.md) | Phase 24 merge verified live |
 | UI-01 | As-built browser and repository audit | ✅ `verified_complete` | PR [#51](https://github.com/ikrome002-design/servana/pull/51) merged — squash `413c146`, sole parent `d3f6e10`, final head `5c52372`, source tree == merge tree `e00866f`, merged `2026-07-29T12:33:28Z`, CI run `30450612654` five checks SUCCESS, governance comment `5117766612`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted | [ui-01.md](proof/ui-01.md) | Reconciled live on the UI-02 branch |
 | UI-02 | Multi-host foundation | ✅ `verified_complete` | PR [#52](https://github.com/ikrome002-design/servana/pull/52) merged — squash `fb64ba6`, sole parent `413c146`, implementation commit `db3ace4`, final head `5add80c` (`ci: build SPA before backend shell tests` — a tested CI-contract correction, one file, **not** governance-only), source tree == merge tree `442ed1d`, merged `2026-07-30T10:38:01Z`, CI run `30532318808` attempt 1 five checks SUCCESS, governance comment `5129527972`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted | [ui-02.md](proof/ui-02.md) | Reconciled live on the UI-03 branch |
-| UI-03 | Authentication, session family, account switching | 🟡 `local_complete pending PR` | `phase-ui-03-auth-session-account-switching` (base `fb64ba6`, **no PR**) — two commits: `64ca7cc` implementation, plus `ui-03: complete deployed-origin browser proof`. Deployed-origin proof **47 observations / 0 failures** against the built production images; Docker dev/prod/nginx built, `nginx -t` green, production-pair smoke 8 accounts + 4 denials + machine host; 9 targeted screenshots. Closed residual risk R1. Found and fixed three product defects only a real browser could reach: `UI03-EDGE-001` (correlation-id width 500'd every audited request through nginx), `UI03-CTX-001` (target `/me` reported the source merchant and permissions after a switch), `UI03-MFA-001` (MFA session regeneration orphaned the host session, blocking account switching for every mandatory-MFA role). Also `UI03-TEST-001`: seven tests were failing in files byte-identical to `64ca7cc`, so the previously recorded 2,528-test backend figure is **unverified**. | [ui-03.md](proof/ui-03.md) | UI-02 PR merged and reconciled live |
-| UI-04 | Design system and shared components | ⬜ Not started | — | — | UI-03 merged |
+| UI-03 | Authentication, session family, account switching | ✅ `verified_complete` | PR [#53](https://github.com/ikrome002-design/servana/pull/53) merged — **regular merge commit** `00c9c1e` preserving **four** reviewed commits (`64ca7cc` implementation, `415d2f5` deployed-origin browser proof, `5bd6e12` + `182f2cc` fixture-only payout-test corrections), parents in order `fb64ba67…` then `182f2cca…`, merged `2026-08-01T07:08:07Z`, CI run `30688440846` attempt 1 five checks SUCCESS, governance comment `5150328091`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted. Deployed-origin proof **47 observations / 0 failures**; 9 screenshots; merged full-suite backend baseline **3,108 passed / 5 skipped / 0 failed** (the retracted `2,528` figure is not reused). | [ui-03.md](proof/ui-03.md) | Reconciled live on the UI-04 branch |
+| UI-04 | Design system and shared components | 🟡 `local_complete pending PR` | `phase-ui-04-design-system-shared-components` (base `00c9c1e`, **no PR**) — one canonical token authority with a computed contrast gate, light-default theme with own-scope authenticated persistence (**no permission key**), Heroicons + web app manifest, **54 shared `Sv*` components** behind a machine-verified registry, fixed footer with a token-driven page reserve, distinct Human Resource shell. Closed five inherited UI-01 defects and **eight** found here (`UI04-TOKEN-001/002/003`, `UI04-TOAST-001/002`, `UI04-POPOVER-001`, `UI04-RESP-001`, `UI04-A11Y-001`) — five of the eight were surfaced by the final full Playwright gate, which the earlier truncated-tail reading had reported clean. UI-01/UI-02/UI-03 evidence **177 files unchanged** (aggregate SHA-256 re-proven). `UI04-TOKEN-003` changes a derived brand hover shade under an accessibility gate and is **flagged for product-owner review**. | [ui-04.md](proof/ui-04.md) | UI-03 PR merged and reconciled live |
 | UI-05 | Content and asset pipeline | ⬜ Not started | — | — | UI-04 merged |
 | UI-06 | Eight public landing pages | ⬜ Not started | — | — | UI-05 merged |
 | UI-07 | Navigation registry and screen contracts | ⬜ Not started | — | — | UI-06 merged |
@@ -181,53 +181,141 @@ blocked; Wallet-owned money movement, Refer & Earn-owned rewards, notification/r
 external-onboarding items are untouched. UI-00 closes none of them. `REM-PERM-002`, `REM-EXP-001`,
 `REM-SMS-002` and `REM-RE-002` stay open.
 
-## Phase UI-03 — Authentication, session family, account switching (`local_complete pending PR CI/review/merge`)
+## Phase UI-04 — Design system and shared components (`local_complete pending PR CI/review/merge`)
 
-**Branch** `phase-ui-03-auth-session-account-switching` · **base** `fb64ba6` (the verified UI-02
-squash merge) · **no PR** · **proof** [ui-03.md](proof/ui-03.md) · **threat model**
+**Branch** `phase-ui-04-design-system-shared-components` · **base** `00c9c1e` (the verified UI-03
+merge commit) · **no PR** · **proof** [ui-04.md](proof/ui-04.md) · **design system**
+[`docs/frontend/design-system/`](frontend/design-system/) · **artifacts**
+[`docs/frontend/audits/ui-04/`](frontend/audits/ui-04/)
+
+**Governing sources.** UI/UX plan §9–§14, §17–§19, §21, §25 (Phase UI-04), §26, §28; ADR-009,
+ADR-021, ADR-024, ADR-025; backend Plan §2 AS-3, §9 rule 7, §10.2, §11.5, §13.2.
+
+### What UI-04 built
+
+One canonical **design-token authority** (`tokens.json`) with a deterministic `--check` generator
+— 48 palette, 48 semantic × 2 themes, 62 component tokens — and a **computed** contrast contract
+(35 requirements evaluated in both themes) that caught three real failures on its first run ·
+**light as the clean-browser default** with `prefers-color-scheme` removed from every layer, plus
+the smallest self-owned authenticated persistence (`users.theme_preference`, own-scope endpoint,
+**no permission key**) · **Heroicons** pinned and imported individually, with a source guard whose
+negative controls fire on the exact glyphs UI-01 recorded · a **web app manifest** referencing both
+approved Android icons · **54 shared `Sv*` components** behind a machine-verified registry, with
+one focus trap for every overlay, one association owner for every form control, and one column
+contract driving both the desktop table and the mobile record cards · the final **profile control**
+and **account-context switcher** built on UI-03's server-derived contexts · a **fixed footer**
+whose height token also drives the page reserve · a distinct **Human Resource shell**.
+
+Four legacy duplicates were **removed rather than aliased** (`SvInput`, `SvTextarea`, `SvModal`,
+`SvAccountSwitcher`), with 71 files migrated onto the canonical names.
+
+### Defects closed (locally)
+
+Five inherited: `UI01-NAV-002`, `UI01-THEME-001`, `UI01-ASSET-001`, `UI01-ASSET-003`,
+`UI01-RENDER-001`. **Eight** found during the work: **`UI04-TOKEN-001`** (16 `var(--x, #hex)`
+fallbacks across 14 pages whose custom properties were never defined, so the literal colour was
+*live*), **`UI04-TOAST-001`** (colour-only status, a nested live region, positioning inside the
+fixed-footer band, toasts added after mount never expiring), **`UI04-POPOVER-001`** (Escape and
+outside-click dead when mounted already open), and five surfaced by the **final full Playwright
+gate**: **`UI04-TOKEN-002`** (the shell avatar paired Brand Deep with a surface that inverts by
+theme — 1.07:1 in dark on every shell-bearing screen, 103 failures from one element),
+**`UI04-RESP-001`** (the profile trigger sized to its content, overflowing the header at exactly
+768px), **`UI04-TOAST-002`** (`aria-live` confers no role, so the toast stack could not be
+addressed by role after `UI04-TOAST-001` removed `role="status"`), **`UI04-A11Y-001`** (the profile
+control hard-coded dark text, unreadable on the Super Administrator's brand-deep header) and
+**`UI04-TOKEN-003`** (the light-theme brand hover shade gave 1.89:1 against the ADR-009-fixed CTA
+label; the contract gated only the base colour).
+
+That gate had previously been recorded clean from a **truncated terminal tail**; read in full it
+reported 166 failures. Closure evidence:
+[`defect-closure.json`](frontend/audits/ui-04/defect-closure.json). All thirteen are
+`local_complete pending PR CI/review/merge` — **not** `verified_complete`. The historical UI-01
+register is unchanged.
+
+**`UI04-TOKEN-003` needs a product-owner decision at review.** It changes a visible brand hover
+shade (light theme, `#9A3412` → `#FDBA74`). It alters none of the seventeen approved brand palette
+values and is forced by guardrail 11; the only conforming alternative is a different CTA label
+colour, which would reopen ADR-009.
+
+### Permissions, policies, migrations
+
+**No permission key. No permission-matrix change. No policy change.** One expand-only migration
+(`users.theme_preference`, nullable + `CHECK`), with its data-dictionary entry written first. One
+route added (`PATCH /api/v1/auth/preferences`, own scope); route total 301 → 302.
+
+### Not done, and stated plainly
+
+No content compiler, no landing pages, no FAQ route, no 160-page route contract, no account
+experiences, no release-wide visual baselines, no deployment. `SvNotificationsControl` is a
+data-driven visual contract because **no notification API exists** — no table, controller, route
+or fake record was created. Every skip has a named owner in
+[ui-04.md](proof/ui-04.md) § *Skipped work and owners*.
+
+### Exact next human action
+
+Review the pushed branch, create the UI-04 pull request into `main`, allow the five required
+checks and governance to complete, merge, and reconcile UI-04 and its eight defect closures to
+`verified_complete` before beginning UI-05.
+
+## Phase UI-03 — Authentication, session family, account switching (`verified_complete`)
+
+**PR** [#53](https://github.com/ikrome002-design/servana/pull/53) **MERGED** · **merge commit**
+`00c9c1e0025e3979464691be662915ada872cc18` · **reviewed base** `fb64ba67…` · **final head**
+`182f2cca…` · **proof** [ui-03.md](proof/ui-03.md) · **threat model**
 [ui-03-auth-session-threat-model.md](security/ui-03-auth-session-threat-model.md) · **artifacts**
 [`docs/frontend/audits/ui-03/`](frontend/audits/ui-03/)
 
 **Governing sources.** UI/UX plan §5.1–§5.4, §18.1–§18.7, §21, §23–§26, §25 (Phase UI-03), §27;
 ADR-016/017/018/019; backend Plan §9, §18, §70, §79 R6, §13.2.
 
-### What UI-03 built
+### Merge facts (verified live on the UI-04 branch)
 
-Magic Links bound at issue and re-verified at consume to user, account, exact host, environment,
-audience and safe redirect (ADR-019) · a server-side **session family** with per-host session
-bindings, so global logout, suspension, membership/role/branch changes revoke across every host at
-once (ADR-018) · a single-use, hashed, 120-second **context-handoff** token consumed atomically
-under a row lock on the target host, which rebuilds the target context from current database state
-rather than carrying anything from the source · server-derived account-context discovery behind an
-opaque HMAC identifier · own-session inspection and revocation · a minimal accessible switch
-control and a role-safe access-denied state.
+A **regular merge commit** preserving **four reviewed commits** — parents in order
+`fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f` then `182f2cca78f56e1d0f74984ccb723a83be805140`,
+raw GitHub `mergedAt` `2026-08-01T07:08:07Z`:
 
-### Defects closed (locally)
+1. `64ca7cc…` — `ui-03: secure host-bound authentication and account switching`
+2. `415d2f5…` — `ui-03: complete deployed-origin browser proof`
+3. `5bd6e12…` — `test: pin payout adjustment inside run period`
+4. `182f2cc…` — `test: respect created-at-only adjustment schema`
 
-`UI01-ROLE-001` (cross-role platform surface exposure) and `UI03-AUTH-001` (HTML browser request to
-a protected API route returned 500 — observed in UI-02, owned here). Closure evidence:
-[`defect-closure.json`](frontend/audits/ui-03/defect-closure.json). They are **not**
-`verified_complete` until the UI-03 PR merges.
+Commits 3 and 4 are **fixture-only** corrections to a pre-existing compensation test that PR CI
+exposed as calendar-boundary nondeterministic (`created_at` crossing the fixed July payout period
+in `Africa/Nairobi`); the first correction then failed separately because the append-only
+`compensation_adjustments` table has no `updated_at` column. The final commit removed only that
+unsupported value, keeping the deterministic `created_at` and the `-1000` assertion. **No payout
+production code, financial behaviour or database schema changed.**
+
+Final CI run `30688440846` attempt 1, event `pull_request`, head `182f2cca…`, **five required jobs
+all SUCCESS**. Governance comment `5150328091` present exactly once. `reviewDecision` blank with
+**0 submitted reviews** — **not** independent approval. Both UI-03 branch refs deleted;
+`main == origin/main == 00c9c1e…`.
+
+### Acceptance evidence carried forward
+
+Deployed-origin browser proof **47 observations / 0 failures** · local full Playwright
+**865 passed / 0 failed** · **nine** committed UI-03 screenshots · preserved UI-01/UI-02 evidence
+**163 files unchanged**. The merged full-suite backend baseline, read from the successful Backend
+log, is **3,108 passed / 5 skipped / 0 failed** (20,697 assertions, parallel, 4 processes). The
+retracted `2,528` figure (residual risk R8) is **not** reused; R8 is closed by this measurement.
+
+### Defects closed — all `verified_complete`
+
+`UI01-ROLE-001`, `UI03-AUTH-001`, `UI03-EDGE-001`, `UI03-CTX-001`, `UI03-MFA-001`, `UI03-TEST-001`,
+`UI03-E2E-001`. Closure lifecycle:
+[`defect-closure.json`](frontend/audits/ui-03/defect-closure.json). The historical UI-01 register
+row is deliberately **not** rewritten — its audit-time state is evidence.
 
 ### Permissions
 
-**None added.** Every new operation is authorized by ownership. Cross-user session management is
-recorded as a **blocked decision** — no canonical permission authority exists and UI-03 does not
-invent one.
+**None added.** Cross-user session management remains a **blocked decision** — no canonical
+permission authority exists and UI-03 did not invent one.
 
-### Not done, and stated plainly
+### Residual risks still open after merge
 
-The **deployed-origin browser proof was not performed**. No Playwright run, no production-image
-smoke, no screenshots, and no browser evidence is claimed anywhere in this phase. That is the
-largest residual risk (R1 in the proof) and must be closed before the UI-03 pull request is
-considered complete. Everything else deferred is listed with its owner phase in
-[ui-03.md](proof/ui-03.md) § *Skipped work and owners*.
-
-### Exact next human action
-
-Run the focused deployed-origin browser proof, then review the pushed branch, create the UI-03 pull
-request into `main`, allow the five required checks and governance to complete, merge, and reconcile
-UI-03 and its two defect closures to `verified_complete` before beginning UI-04.
+`R2` (`requiresAccount` attached to `/platform` only → UI-07), `R4`–`R7`, `R9`, `R10` remain as
+recorded in [ui-03.md](proof/ui-03.md). `R1` and `R3` were closed by the deployed-origin proof;
+`R8` is closed by the merged full-suite baseline above.
 
 ## Phase UI-02 — Multi-host foundation (`verified_complete`)
 

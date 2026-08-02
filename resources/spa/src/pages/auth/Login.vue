@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { useForm } from '@/composables/useForm';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -62,7 +62,7 @@ const submit = form.handleSubmit(async ({ email }) => {
       novalidate
       @submit.prevent="submit"
     >
-      <SvInput
+      <SvTextInput
         id="email"
         v-model="form.values.email"
         label="Email address"

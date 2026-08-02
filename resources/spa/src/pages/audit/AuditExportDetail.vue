@@ -3,9 +3,10 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, RouterLink } from 'vue-router';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuditExportStore, isTerminal } from '@/stores/auditExportStore';
+import { SvIconBack } from '@/design-system/icons';
 
 /**
  * Audit export detail (Plan §13.5, §80; ADR-010; Phase 19). Polls while the export
@@ -111,7 +112,10 @@ onUnmounted(stopPolling);
       :to="{ name: 'audit.exports' }"
       class="inline-flex min-h-[44px] items-center text-sm font-medium text-heading underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
-      ← Back to audit exports
+      <SvIconBack
+        aria-hidden="true"
+        class="mr-1 inline-block h-4 w-4 align-text-bottom"
+      />Back to audit exports
     </RouterLink>
 
     <SvStateBoundary
@@ -238,7 +242,7 @@ onUnmounted(stopPolling);
       </div>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="confirmingRevoke"
       title="Revoke this export?"
       description="Revoking permanently prevents any further download of this export."
@@ -260,6 +264,6 @@ onUnmounted(stopPolling);
           Revoke export
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

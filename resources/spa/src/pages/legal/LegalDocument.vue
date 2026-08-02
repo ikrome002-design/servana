@@ -6,6 +6,7 @@ import { renderMarkdown } from '@/content/markdown';
 import { LEGAL_DOCS, type LegalDocType } from '@/content/roleContent';
 import { loadLegalDoc } from '@/content/legalContent';
 import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
+import { SvIconBack } from '@/design-system/icons';
 
 /**
  * Rendered role-specific legal document (Plan §27.2; task legal requirements).
@@ -55,7 +56,10 @@ watchEffect(async () => {
         :to="{ name: 'home' }"
         class="text-sm font-medium text-heading underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
-        ← Back to Servana
+        <SvIconBack
+          aria-hidden="true"
+          class="mr-1 inline-block h-4 w-4 align-text-bottom"
+        />Back to Servana
       </RouterLink>
       <SvStateBoundary
         :state="state"

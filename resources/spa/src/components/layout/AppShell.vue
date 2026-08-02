@@ -2,10 +2,13 @@
 import { computed, nextTick, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import RoleNavigation from '@/components/navigation/RoleNavigation.vue';
+import SvFixedFooter from '@/components/ui/SvFixedFooter.vue';
+import SvNotificationsControl from '@/components/ui/SvNotificationsControl.vue';
+import SvProfileControl from '@/components/ui/SvProfileControl.vue';
+import { SvIconClose, SvIconMenu } from '@/design-system/icons';
 import { navigationFor } from '@/navigation/roleNavigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useMerchantStore } from '@/stores/merchantStore';
-import { useThemeStore } from '@/stores/themeStore';
 import { ROLE_ENTRY, type RoleIdentity } from '@/types/roles';
 
 /**
@@ -21,6 +24,18 @@ import { ROLE_ENTRY, type RoleIdentity } from '@/types/roles';
  * Provides: skip link, landmarks, current-route indication, a focusable main,
  * 44px targets, light/dark support, and drawer focus management (focus returns
  * to the trigger on close). Visibility is UX only — the API is the boundary.
+ *
+ * Phase UI-04 additions:
+ *  - the identity/theme/logout cluster became SvProfileControl, which also hosts the UI-03
+ *    account switch, so ONE control carries the whole identity unit (UI/UX plan §14.3);
+ *  - SvFixedFooter renders on every authenticated page and the shell root carries
+ *    `sv-footer-reserve`, which allocates exactly the footer's responsive height. ONE token drives
+ *    both the footer and the reserved space, so they cannot disagree — two values that drift
+ *    apart is how "the footer covers the submit button" defects appear (ADR-024). The class must
+ *    stay on the ROOT element, and the template must keep a single root: a leading comment node
+ *    makes the component a fragment, which silently moves the class off the mounted element;
+ *  - the account label comes from ROLE_ENTRY, so Human Resource presents as itself rather than
+ *    under the Branch identity (UI01-NAV-002).
  */
 const props = defineProps<{ identity: RoleIdentity }>();
 
@@ -28,7 +43,6 @@ const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
 const merchant = useMerchantStore();
-const theme = useThemeStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
 const items = computed(() => navigationFor(props.identity));
@@ -74,10 +88,6 @@ watch(
   },
 );
 
-const themeLabel = computed(() =>
-  theme.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme',
-);
-
 async function logout(): Promise<void> {
   await auth.logout();
   await router.push({ name: 'auth.login' });
@@ -87,7 +97,7 @@ const isHeaderNav = computed(() => placement.value === 'header');
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-bg text-text">
+  <div class="sv-footer-reserve flex min-h-screen flex-col bg-bg text-text">
     <a
       href="#main-content"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-control focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:ring-2 focus:ring-primary"
@@ -113,10 +123,10 @@ const isHeaderNav = computed(() => placement.value === 'header');
             data-testid="nav-drawer-trigger"
             @click="toggleNav"
           >
-            <span
+            <SvIconMenu
               aria-hidden="true"
-              class="text-xl"
-            >☰</span>
+              class="h-6 w-6"
+            />
           </button>
           <img
             :src="'/assets/brand/Logo.png'"
@@ -150,30 +160,15 @@ const isHeaderNav = computed(() => placement.value === 'header');
             data-testid="merchant-context"
           >{{ merchant.name }}</span>
 
-          <button
-            type="button"
-            class="inline-flex h-11 w-11 items-center justify-center rounded-control hover:bg-surface-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            :class="isHeaderNav ? 'text-white hover:bg-white/10' : 'text-text'"
-            :aria-label="themeLabel"
-            data-testid="theme-toggle"
-            @click="theme.toggle()"
-          >
-            <span aria-hidden="true">{{ theme.theme === 'dark' ? '☀' : '☾' }}</span>
-          </button>
+          <SvNotificationsControl />
 
-          <span
+          <SvProfileControl
             v-if="auth.user"
-            class="hidden px-2 text-sm font-medium sm:inline"
-          >{{ auth.user.name }}</span>
-          <button
-            type="button"
-            class="inline-flex min-h-[44px] items-center rounded-control px-3 py-2 text-sm font-medium hover:bg-surface-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            :class="isHeaderNav ? 'text-white hover:bg-white/10' : 'text-text'"
-            data-testid="logout"
-            @click="logout"
-          >
-            Log out
-          </button>
+            :name="auth.user.name"
+            :account-label="entry.label"
+            :context-label="merchant.name ?? null"
+            @logout="logout"
+          />
 
           <!-- Super Admin: header-nav disclosure on mobile. -->
           <button
@@ -187,10 +182,10 @@ const isHeaderNav = computed(() => placement.value === 'header');
             data-testid="nav-drawer-trigger"
             @click="toggleNav"
           >
-            <span
+            <SvIconMenu
               aria-hidden="true"
-              class="text-xl"
-            >☰</span>
+              class="h-6 w-6"
+            />
           </button>
         </div>
       </div>
@@ -223,6 +218,8 @@ const isHeaderNav = computed(() => placement.value === 'header');
       </main>
     </div>
 
+    <SvFixedFooter :legal-role="identity" />
+
     <!-- Off-canvas drawer (mobile sidebar roles / mobile super-admin disclosure). -->
     <Teleport to="body">
       <div
@@ -253,7 +250,10 @@ const isHeaderNav = computed(() => placement.value === 'header');
               data-testid="nav-drawer-close"
               @click="closeNav"
             >
-              <span aria-hidden="true">✕</span>
+              <SvIconClose
+                aria-hidden="true"
+                class="h-5 w-5"
+              />
             </button>
           </div>
           <RoleNavigation

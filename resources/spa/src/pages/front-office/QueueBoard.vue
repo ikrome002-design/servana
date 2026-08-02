@@ -10,6 +10,7 @@ import { useNotificationStore } from '@/stores/notificationStore';
 import { useQueueStore } from '@/stores/queueStore';
 import type { QueueEntry } from '@/types/models';
 import { assignmentModeLabel, queueStatusLabel, waitEstimateLabel } from '@/utils/queue';
+import { SvIconArrowDown, SvIconArrowUp } from '@/design-system/icons';
 
 // Front Office queue board (Plan §37; Phase 16B). Branch-scoped; client contact is
 // ALWAYS masked by the server. Action availability is driven by each entry's API
@@ -213,7 +214,10 @@ onMounted(() => {
                   :data-testid="`move-up-${entry.id}`"
                   @click="move(entry.id, -1)"
                 >
-                  ↑
+                  <SvIconArrowUp
+                    aria-hidden="true"
+                    class="h-5 w-5"
+                  />
                 </SvButton>
                 <SvButton
                   variant="secondary"
@@ -222,7 +226,10 @@ onMounted(() => {
                   :data-testid="`move-down-${entry.id}`"
                   @click="move(entry.id, 1)"
                 >
-                  ↓
+                  <SvIconArrowDown
+                    aria-hidden="true"
+                    class="h-5 w-5"
+                  />
                 </SvButton>
               </template>
             </div>

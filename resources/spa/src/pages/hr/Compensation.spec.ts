@@ -125,8 +125,8 @@ const mountPage = () =>
     attachTo: document.body,
     global: {
       stubs: {
-        // Mirror the real SvModal's rendered title/description so dialog copy is asserted, not stubbed away.
-        SvModal: {
+        // Mirror the real SvDialog's rendered title/description so dialog copy is asserted, not stubbed away.
+        SvDialog: {
           template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>',
           props: ['open', 'title', 'description'],
         },
@@ -278,7 +278,10 @@ describe('Compensation.vue (HR)', () => {
     await flushPromises();
     // Nothing is sent while the shape is incomplete; the backend remains the authority regardless.
     expect(post).not.toHaveBeenCalled();
-    expect(wrapper.find('#comp-plan-salary-error').exists()).toBe(true);
+    // Phase UI-04: SvFormField owns association for every input, and its single message element
+    // carries error/warning/success — so the id is `-message`, not the old per-input `-error`.
+    expect(wrapper.find('#comp-plan-salary-message').exists()).toBe(true);
+    expect(wrapper.find('#comp-plan-salary-message').attributes('role')).toBe('alert');
   });
 
   it('creates a salary_only draft in integer minor units', async () => {
@@ -364,7 +367,7 @@ describe('Compensation.vue (HR)', () => {
     await flushPromises();
 
     expect(post).not.toHaveBeenCalled();
-    expect(wrapper.find('#comp-rule-bp-error').text()).toContain('0 and 10000');
+    expect(wrapper.find('#comp-rule-bp-message').text()).toContain('0 and 10000');
   });
 
   it('creates a percentage rule carrying only percentage terms and the preferred-fee inclusion flag', async () => {

@@ -1,0 +1,551 @@
+{
+  "generated_by": "node scripts/generate-ui04-artifacts.mjs",
+  "phase": "UI-04",
+  "note": "in_design_system_fixture records which components the shared fixture route renders directly. A false value is not a gap in itself — several components are exercised through a parent (SvFormField through every input, SvSkeleton through SvMetricCard) — but every component has a real behavioural spec, which is the enforced requirement.",
+  "total": 54,
+  "with_source": 54,
+  "with_test": 54,
+  "rendered_in_fixture": 9,
+  "components": [
+    {
+      "name": "SvButton",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": true,
+      "source_bytes": 3904
+    },
+    {
+      "name": "SvIconButton",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2918
+    },
+    {
+      "name": "SvLink",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3984
+    },
+    {
+      "name": "SvLogo",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2347
+    },
+    {
+      "name": "SvPageHeader",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2367
+    },
+    {
+      "name": "SvBreadcrumbs",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2650
+    },
+    {
+      "name": "SvCard",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": true,
+      "source_bytes": 1950
+    },
+    {
+      "name": "SvMetricCard",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3318
+    },
+    {
+      "name": "SvStatusBadge",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2408
+    },
+    {
+      "name": "SvMoney",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3163
+    },
+    {
+      "name": "SvDateTime",
+      "category": "primitive",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvPrimitives.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2296
+    },
+    {
+      "name": "SvAlert",
+      "category": "feedback",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvFeedback.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3074
+    },
+    {
+      "name": "SvBanner",
+      "category": "feedback",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvFeedback.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2021
+    },
+    {
+      "name": "SvToast",
+      "category": "feedback",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvFeedback.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": true,
+      "source_bytes": 5191
+    },
+    {
+      "name": "SvSkeleton",
+      "category": "feedback",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvFeedback.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 1976
+    },
+    {
+      "name": "SvEmptyState",
+      "category": "feedback",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvFeedback.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": true,
+      "source_bytes": 1959
+    },
+    {
+      "name": "SvErrorState",
+      "category": "feedback",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvFeedback.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2557
+    },
+    {
+      "name": "SvOfflineState",
+      "category": "feedback",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvFeedback.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 1923
+    },
+    {
+      "name": "SvPermissionState",
+      "category": "feedback",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvFeedback.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2343
+    },
+    {
+      "name": "SvLockedState",
+      "category": "feedback",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvFeedback.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2276
+    },
+    {
+      "name": "SvDialog",
+      "category": "overlay",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvOverlays.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": true,
+      "source_bytes": 5041
+    },
+    {
+      "name": "SvConfirmDialog",
+      "category": "overlay",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvOverlays.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3459
+    },
+    {
+      "name": "SvDrawer",
+      "category": "overlay",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvOverlays.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 4327
+    },
+    {
+      "name": "SvPopover",
+      "category": "overlay",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvOverlays.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 4550
+    },
+    {
+      "name": "SvMenu",
+      "category": "overlay",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvOverlays.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 6625
+    },
+    {
+      "name": "SvTabs",
+      "category": "overlay",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvOverlays.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 4511
+    },
+    {
+      "name": "SvAccordion",
+      "category": "overlay",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvOverlays.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3194
+    },
+    {
+      "name": "SvTooltip",
+      "category": "overlay",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvOverlays.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3078
+    },
+    {
+      "name": "SvFormField",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 5129
+    },
+    {
+      "name": "SvTextInput",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": true,
+      "source_bytes": 3569
+    },
+    {
+      "name": "SvTextArea",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": true,
+      "source_bytes": 3138
+    },
+    {
+      "name": "SvSelect",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": true,
+      "source_bytes": 3806
+    },
+    {
+      "name": "SvCombobox",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 9166
+    },
+    {
+      "name": "SvCheckbox",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3440
+    },
+    {
+      "name": "SvRadioGroup",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3737
+    },
+    {
+      "name": "SvDatePicker",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2766
+    },
+    {
+      "name": "SvMoneyInput",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 4953
+    },
+    {
+      "name": "SvPhoneInput",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3567
+    },
+    {
+      "name": "SvFileUpload",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/files/SvFileUpload.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 5672
+    },
+    {
+      "name": "SvSearchInput",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3384
+    },
+    {
+      "name": "SvFilterBar",
+      "category": "form",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvForms.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3178
+    },
+    {
+      "name": "SvDataTable",
+      "category": "data",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvData.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 6625
+    },
+    {
+      "name": "SvResponsiveRecordList",
+      "category": "data",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvData.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 5889
+    },
+    {
+      "name": "SvPagination",
+      "category": "data",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvData.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3429
+    },
+    {
+      "name": "SvTimeline",
+      "category": "data",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvData.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2593
+    },
+    {
+      "name": "SvAuditEvent",
+      "category": "data",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvData.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3851
+    },
+    {
+      "name": "SvProfileControl",
+      "category": "shell",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvShellControls.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 7221
+    },
+    {
+      "name": "SvAccountContextSwitcher",
+      "category": "shell",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvShellControls.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 7435
+    },
+    {
+      "name": "SvNotificationsControl",
+      "category": "shell",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvShellControls.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 6593
+    },
+    {
+      "name": "SvThemeToggle",
+      "category": "shell",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvShellControls.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": true,
+      "source_bytes": 4146
+    },
+    {
+      "name": "SvFixedFooter",
+      "category": "shell",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvShellControls.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 5250
+    },
+    {
+      "name": "SvLandingSection",
+      "category": "content",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvContent.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 3821
+    },
+    {
+      "name": "SvLegalDocument",
+      "category": "content",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvContent.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2238
+    },
+    {
+      "name": "SvFaq",
+      "category": "content",
+      "source_exists": true,
+      "test_exists": true,
+      "test": "resources/spa/src/components/ui/SvContent.spec.ts",
+      "referenced_in_test": true,
+      "in_design_system_fixture": false,
+      "source_bytes": 2908
+    }
+  ]
+}

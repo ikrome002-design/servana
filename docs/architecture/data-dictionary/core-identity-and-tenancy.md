@@ -164,3 +164,55 @@ their full entries in their owning reconciliation phase.
   `IdempotentReplayTest`, `IdempotencyConflictTest`, `IdempotencyConcurrencyTest`,
   `ExpiredLockRecoveryTest`, `ReplayResponseSecurityTest`, `IdempotencyPruneTest`,
   `ProviderCallbackDedupeSeamTest`, `FinancialRouteIdempotencyCoverageTest`.
+
+---
+
+## `users.theme_preference` (Phase UI-04 — ADR-021)
+
+An **expand-only column addition** to the existing `users` table. The shipped
+`users` migration is not edited (CLAUDE.md guardrail 12); the column arrives in
+`2026_08_01_000001_add_theme_preference_to_users_table.php`.
+
+- **Domain owner:** `app/Domain/Auth` (identity). The preference is a property of
+  the person, not of a merchant, a branch or an account host.
+- **Purpose + scope refs:** ADR-021 §3 requires an authenticated user's explicit
+  light/dark choice to persist to their user record, synchronise to the
+  host-local value after login, and apply **before the authenticated shell
+  becomes visible**. UI/UX plan §12.2. Without a server-side field the choice
+  cannot follow a user across devices or across the eight account hosts, and
+  ADR-021 explicitly rejects a browser-only store for that reason.
+- **Tenant ownership:** **none** — identity-owned. No `merchant_id`/`branch_id`;
+  not covered by `BelongsToMerchant`. It is deliberately **not** a
+  tenant-wide or merchant-wide setting: one user's theme never affects another.
+
+| Column | Type | Null | Default | Meaning |
+|---|---|---|---|---|
+| `theme_preference` | varchar(5) | yes | null | The user's explicit theme choice. `null` means *no explicit choice*, which resolves to **light** (ADR-021 rule 2) — it is not a stored default. `CHECK (theme_preference IS NULL OR theme_preference IN ('light','dark'))`. |
+
+- **Foreign keys:** none.
+- **Unique constraints:** none.
+- **Indexes:** none. The column is only ever read for the single authenticated
+  user on their own bootstrap, always by primary key.
+- **Closed vocabulary:** `light` \| `dark`, enforced by a database `CHECK` and by
+  the `App\Domain\Auth\Enums\ThemePreference` backed enum (Plan §9 rule 7).
+  `system` / `auto` are deliberately **absent**: ADR-021 rule 2 forbids the
+  operating-system preference from selecting the theme, so a value meaning
+  "follow the OS" must not be representable.
+- **Encryption/hashing/redaction:** none required — the value is
+  non-sensitive, carries no identity or authority, and is never logged.
+- **Authorization:** **own-scope only.** Read via `GET /api/v1/me`; written via
+  `PATCH /api/v1/me/preferences`, which resolves the target from
+  `$request->user()` and accepts no user identifier. **No permission key is
+  added** (UI-04 changes the permission matrix in no way): a person changing
+  their own display preference is authorized by ownership, exactly like
+  own-session revocation in UI-03. Cross-user preference administration does not
+  exist and is not implied.
+- **Audit:** none. The existing preference-shaped, self-service, non-financial,
+  non-authority changes in this codebase are not audited, and adding an
+  append-only hash-chained `audit_logs` row for a colour choice would dilute the
+  audit trail without adding forensic value. This is a deliberate decision, not
+  an omission.
+- **Migration order:** after `users`; forward-only; no backfill. Existing rows
+  keep `null`, which is the correct "no explicit choice" state and renders light.
+- **Down migration:** drops the `CHECK` then the column. Losing a display
+  preference is not data loss of record.

@@ -1,0 +1,1170 @@
+{
+  "generated_by": "node scripts/generate-ui04-artifacts.mjs",
+  "phase": "UI-04",
+  "schema_version": "1.0.0",
+  "authority": {
+    "path": "resources/spa/src/design-system/tokens.json",
+    "sha256": "cd789c00ab3432c0fdaee41cbd2599a6c290f001cc67f683c95a7efd526fa1ab"
+  },
+  "generator": {
+    "command": "node scripts/generate-design-tokens.mjs",
+    "check": "node scripts/generate-design-tokens.mjs --check"
+  },
+  "generated_consumers": [
+    {
+      "path": "resources/spa/src/styles/generated/tokens.css",
+      "sha256": "f6cbf8ac5e77344cb5299519103e1deb6fe70842e85b03762c8b391614a655c5"
+    },
+    {
+      "path": "resources/spa/src/design-system/tokens.generated.ts",
+      "sha256": "2ccf1b90363de07bbcf2fa669992c6421c451acebdf58a795730cfe592fef913"
+    }
+  ],
+  "tailwind_config": {
+    "path": "tailwind.config.ts",
+    "sha256": "7dafee89ffef2d4f046fa8023bb0ce8e4c307e6dcf80117b883e6a3dfad37e27"
+  },
+  "counts": {
+    "palette": 48,
+    "semantic": 48,
+    "component": 62,
+    "typography_scale_steps": 7,
+    "contrast_requirements": 35
+  },
+  "breakpoints": {
+    "note": "UI/UX plan §13.2 and CLAUDE.md guardrail 1. CSS media queries only; never JavaScript device detection. Tailwind `screens` is generated from these exact values.",
+    "mobile_max_px": 767,
+    "tablet_min_px": 768,
+    "tablet_max_px": 1024,
+    "desktop_min_px": 1025
+  },
+  "typography": {
+    "families": [
+      {
+        "name": "font-family-ui",
+        "value": "Inter, ui-sans-serif, system-ui, sans-serif",
+        "note": "Product UI."
+      },
+      {
+        "name": "font-family-display",
+        "value": "Manrope, ui-sans-serif, system-ui, sans-serif",
+        "note": "Page titles and approved marketing headings."
+      },
+      {
+        "name": "font-family-numeric",
+        "value": "Inter, ui-sans-serif, system-ui, sans-serif",
+        "note": "Financial figures; paired with font-variant-numeric: tabular-nums."
+      }
+    ],
+    "scale": [
+      {
+        "name": "font-size-xs",
+        "value": "0.75rem",
+        "line_height": "1rem"
+      },
+      {
+        "name": "font-size-sm",
+        "value": "0.875rem",
+        "line_height": "1.25rem"
+      },
+      {
+        "name": "font-size-base",
+        "value": "1rem",
+        "line_height": "1.5rem"
+      },
+      {
+        "name": "font-size-lg",
+        "value": "1.125rem",
+        "line_height": "1.75rem"
+      },
+      {
+        "name": "font-size-xl",
+        "value": "1.25rem",
+        "line_height": "1.75rem"
+      },
+      {
+        "name": "font-size-2xl",
+        "value": "1.5rem",
+        "line_height": "2rem"
+      },
+      {
+        "name": "font-size-3xl",
+        "value": "1.875rem",
+        "line_height": "2.25rem"
+      }
+    ],
+    "weights": [
+      {
+        "name": "font-weight-regular",
+        "value": "400"
+      },
+      {
+        "name": "font-weight-medium",
+        "value": "500"
+      },
+      {
+        "name": "font-weight-semibold",
+        "value": "600"
+      },
+      {
+        "name": "font-weight-bold",
+        "value": "700"
+      },
+      {
+        "name": "font-weight-extrabold",
+        "value": "800"
+      }
+    ]
+  },
+  "palette": [
+    {
+      "name": "savannah-orange",
+      "value": "#F97316",
+      "note": "Primary brand. CTAs, active states."
+    },
+    {
+      "name": "golden-sun",
+      "value": "#FBBF24",
+      "note": "Badges, soft highlights, dark-theme focus ring."
+    },
+    {
+      "name": "acacia-green",
+      "value": "#3F7D20",
+      "note": "Growth and positive movement."
+    },
+    {
+      "name": "deep-earth-brown",
+      "value": "#4A2208",
+      "note": "Headings (light), footer, admin anchor, CTA text on orange (ADR-009)."
+    },
+    {
+      "name": "service-teal",
+      "value": "#007C78",
+      "note": "Module accents, trust, light-theme focus ring."
+    },
+    {
+      "name": "warm-sand",
+      "value": "#FFF3C4",
+      "note": "Warm tint surface."
+    },
+    {
+      "name": "savannah-cream",
+      "value": "#FFF8E7",
+      "note": "Warm page tint."
+    },
+    {
+      "name": "charcoal",
+      "value": "#1F2933",
+      "note": "Primary text (light) / raised surface (dark)."
+    },
+    {
+      "name": "soft-gray",
+      "value": "#F3F4F6",
+      "note": "Subtle surface (light)."
+    },
+    {
+      "name": "app-background",
+      "value": "#F9FAFB",
+      "note": "Page surface (light)."
+    },
+    {
+      "name": "status-success",
+      "value": "#2E7D32"
+    },
+    {
+      "name": "status-warning",
+      "value": "#F59E0B"
+    },
+    {
+      "name": "status-error",
+      "value": "#DC2626"
+    },
+    {
+      "name": "status-info",
+      "value": "#0284C7"
+    },
+    {
+      "name": "neutral-text",
+      "value": "#374151",
+      "note": "Secondary text."
+    },
+    {
+      "name": "muted-text",
+      "value": "#6B7280",
+      "note": "Brand-palette muted. NOT bound to --sv-color-text-muted: ADR-009 requires the darker #4B5563 for AA on the shipped surfaces. The palette entry is retained because the brand document defines it."
+    },
+    {
+      "name": "border",
+      "value": "#E5E7EB"
+    },
+    {
+      "name": "white",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "gray-200",
+      "value": "#E5E7EB"
+    },
+    {
+      "name": "gray-300",
+      "value": "#D1D5DB"
+    },
+    {
+      "name": "gray-400",
+      "value": "#9CA3AF"
+    },
+    {
+      "name": "gray-600",
+      "value": "#4B5563"
+    },
+    {
+      "name": "gray-700",
+      "value": "#374151"
+    },
+    {
+      "name": "gray-800",
+      "value": "#273340"
+    },
+    {
+      "name": "gray-900",
+      "value": "#111827"
+    },
+    {
+      "name": "green-100",
+      "value": "#E7F5E8"
+    },
+    {
+      "name": "green-300",
+      "value": "#86EFAC"
+    },
+    {
+      "name": "green-400",
+      "value": "#4ADE80"
+    },
+    {
+      "name": "green-800",
+      "value": "#1B5E20"
+    },
+    {
+      "name": "green-950",
+      "value": "#14321B"
+    },
+    {
+      "name": "amber-100",
+      "value": "#FEF3C7"
+    },
+    {
+      "name": "amber-300",
+      "value": "#FCD34D"
+    },
+    {
+      "name": "amber-700",
+      "value": "#B45309"
+    },
+    {
+      "name": "amber-800",
+      "value": "#92400E"
+    },
+    {
+      "name": "amber-950",
+      "value": "#3A2A08"
+    },
+    {
+      "name": "red-100",
+      "value": "#FEE2E2"
+    },
+    {
+      "name": "red-300",
+      "value": "#FCA5A5"
+    },
+    {
+      "name": "red-400",
+      "value": "#F87171"
+    },
+    {
+      "name": "red-700",
+      "value": "#B91C1C"
+    },
+    {
+      "name": "red-950",
+      "value": "#3B1516"
+    },
+    {
+      "name": "sky-100",
+      "value": "#E0F2FE"
+    },
+    {
+      "name": "sky-300",
+      "value": "#7DD3FC"
+    },
+    {
+      "name": "sky-400",
+      "value": "#38BDF8"
+    },
+    {
+      "name": "sky-800",
+      "value": "#075985"
+    },
+    {
+      "name": "sky-950",
+      "value": "#0C2A3E"
+    },
+    {
+      "name": "teal-400",
+      "value": "#14B8A6",
+      "note": "Lightened Service Teal for dark surfaces."
+    },
+    {
+      "name": "orange-800",
+      "value": "#9A3412",
+      "note": "Brand primary hover on light surfaces."
+    },
+    {
+      "name": "orange-300",
+      "value": "#FDBA74",
+      "note": "Brand primary hover on dark surfaces."
+    }
+  ],
+  "semantic": [
+    {
+      "name": "color-brand-primary",
+      "light": "#F97316",
+      "dark": "#F97316",
+      "note": "CTA fill. Text on it is color-text-on-brand."
+    },
+    {
+      "name": "color-brand-primary-hover",
+      "light": "#9A3412",
+      "dark": "#FDBA74",
+      "note": null
+    },
+    {
+      "name": "color-brand-secondary",
+      "light": "#007C78",
+      "dark": "#14B8A6",
+      "note": null
+    },
+    {
+      "name": "color-accent",
+      "light": "#FBBF24",
+      "dark": "#FBBF24",
+      "note": null
+    },
+    {
+      "name": "color-surface-page",
+      "light": "#F9FAFB",
+      "dark": "#111827",
+      "note": null
+    },
+    {
+      "name": "color-surface-raised",
+      "light": "#FFFFFF",
+      "dark": "#1F2933",
+      "note": null
+    },
+    {
+      "name": "color-surface-subtle",
+      "light": "#F3F4F6",
+      "dark": "#273340",
+      "note": null
+    },
+    {
+      "name": "color-surface-warm",
+      "light": "#FFF8E7",
+      "dark": "#273340",
+      "note": null
+    },
+    {
+      "name": "color-overlay-scrim",
+      "light": "rgb(31 41 51 / 0.55)",
+      "dark": "rgb(0 0 0 / 0.65)",
+      "note": "Modal/drawer backdrop. Raw because it carries alpha; contrast is not applicable to a scrim."
+    },
+    {
+      "name": "color-text-primary",
+      "light": "#1F2933",
+      "dark": "#F3F4F6",
+      "note": null
+    },
+    {
+      "name": "color-text-secondary",
+      "light": "#374151",
+      "dark": "#D1D5DB",
+      "note": null
+    },
+    {
+      "name": "color-text-muted",
+      "light": "#4B5563",
+      "dark": "#9CA3AF",
+      "note": "ADR-009: #4B5563, not the brand palette's #6B7280, so muted text keeps AA on white, page and subtle surfaces."
+    },
+    {
+      "name": "color-text-inverse",
+      "light": "#FFFFFF",
+      "dark": "#1F2933",
+      "note": null
+    },
+    {
+      "name": "color-text-on-brand",
+      "light": "#4A2208",
+      "dark": "#4A2208",
+      "note": "ADR-009. Text placed on color-brand-primary."
+    },
+    {
+      "name": "color-text-heading",
+      "light": "#4A2208",
+      "dark": "#F3F4F6",
+      "note": null
+    },
+    {
+      "name": "color-border-default",
+      "light": "#E5E7EB",
+      "dark": "#374151",
+      "note": "Decorative separator (card edge, divider). Not an interactive boundary — see color-border-input."
+    },
+    {
+      "name": "color-border-strong",
+      "light": "#D1D5DB",
+      "dark": "#4B5563",
+      "note": "Emphasised separator. Still decorative."
+    },
+    {
+      "name": "color-border-input",
+      "light": "#6B7280",
+      "dark": "#9CA3AF",
+      "note": "The boundary of an INTERACTIVE control. WCAG 1.4.11 non-text contrast applies, so this is held to 3:1 against every surface it sits on — which is why it is a separate token from color-border-default."
+    },
+    {
+      "name": "color-focus-ring",
+      "light": "#007C78",
+      "dark": "#FBBF24",
+      "note": null
+    },
+    {
+      "name": "color-link",
+      "light": "#007C78",
+      "dark": "#14B8A6",
+      "note": null
+    },
+    {
+      "name": "color-link-hover",
+      "light": "#4A2208",
+      "dark": "#FBBF24",
+      "note": null
+    },
+    {
+      "name": "color-status-success-fg",
+      "light": "#1B5E20",
+      "dark": "#86EFAC",
+      "note": null
+    },
+    {
+      "name": "color-status-success-bg",
+      "light": "#E7F5E8",
+      "dark": "#14321B",
+      "note": null
+    },
+    {
+      "name": "color-status-success-border",
+      "light": "#2E7D32",
+      "dark": "#4ADE80",
+      "note": null
+    },
+    {
+      "name": "color-status-warning-fg",
+      "light": "#92400E",
+      "dark": "#FCD34D",
+      "note": null
+    },
+    {
+      "name": "color-status-warning-bg",
+      "light": "#FEF3C7",
+      "dark": "#3A2A08",
+      "note": null
+    },
+    {
+      "name": "color-status-warning-border",
+      "light": "#B45309",
+      "dark": "#FBBF24",
+      "note": null
+    },
+    {
+      "name": "color-status-error-fg",
+      "light": "#B91C1C",
+      "dark": "#FCA5A5",
+      "note": null
+    },
+    {
+      "name": "color-status-error-bg",
+      "light": "#FEE2E2",
+      "dark": "#3B1516",
+      "note": null
+    },
+    {
+      "name": "color-status-error-border",
+      "light": "#DC2626",
+      "dark": "#F87171",
+      "note": null
+    },
+    {
+      "name": "color-status-info-fg",
+      "light": "#075985",
+      "dark": "#7DD3FC",
+      "note": null
+    },
+    {
+      "name": "color-status-info-bg",
+      "light": "#E0F2FE",
+      "dark": "#0C2A3E",
+      "note": null
+    },
+    {
+      "name": "color-status-info-border",
+      "light": "#0284C7",
+      "dark": "#38BDF8",
+      "note": null
+    },
+    {
+      "name": "color-disabled-fg",
+      "light": "#4B5563",
+      "dark": "#9CA3AF",
+      "note": null
+    },
+    {
+      "name": "color-disabled-bg",
+      "light": "#F3F4F6",
+      "dark": "#273340",
+      "note": null
+    },
+    {
+      "name": "color-disabled-border",
+      "light": "#D1D5DB",
+      "dark": "#4B5563",
+      "note": null
+    },
+    {
+      "name": "color-selected-fg",
+      "light": "#4A2208",
+      "dark": "#F3F4F6",
+      "note": null
+    },
+    {
+      "name": "color-selected-bg",
+      "light": "#FFF3C4",
+      "dark": "#273340",
+      "note": null
+    },
+    {
+      "name": "color-selected-border",
+      "light": "#F97316",
+      "dark": "#F97316",
+      "note": null
+    },
+    {
+      "name": "color-table-header",
+      "light": "#F3F4F6",
+      "dark": "#273340",
+      "note": null
+    },
+    {
+      "name": "color-table-row-hover",
+      "light": "#FFF8E7",
+      "dark": "#273340",
+      "note": null
+    },
+    {
+      "name": "color-nav-active-fg",
+      "light": "#4A2208",
+      "dark": "#F3F4F6",
+      "note": null
+    },
+    {
+      "name": "color-nav-active-bg",
+      "light": "#FFF3C4",
+      "dark": "#273340",
+      "note": null
+    },
+    {
+      "name": "color-nav-inactive-fg",
+      "light": "#4B5563",
+      "dark": "#9CA3AF",
+      "note": null
+    },
+    {
+      "name": "color-footer-surface",
+      "light": "#FFFFFF",
+      "dark": "#1F2933",
+      "note": null
+    },
+    {
+      "name": "color-footer-text",
+      "light": "#4B5563",
+      "dark": "#9CA3AF",
+      "note": null
+    },
+    {
+      "name": "color-footer-border",
+      "light": "#E5E7EB",
+      "dark": "#374151",
+      "note": null
+    },
+    {
+      "name": "color-growth",
+      "light": "#3F7D20",
+      "dark": "#4ADE80",
+      "note": null
+    }
+  ],
+  "component": [
+    {
+      "group": "spacing",
+      "name": "space-0",
+      "value": "0"
+    },
+    {
+      "group": "spacing",
+      "name": "space-1",
+      "value": "0.25rem"
+    },
+    {
+      "group": "spacing",
+      "name": "space-2",
+      "value": "0.5rem"
+    },
+    {
+      "group": "spacing",
+      "name": "space-3",
+      "value": "0.75rem"
+    },
+    {
+      "group": "spacing",
+      "name": "space-4",
+      "value": "1rem"
+    },
+    {
+      "group": "spacing",
+      "name": "space-5",
+      "value": "1.25rem"
+    },
+    {
+      "group": "spacing",
+      "name": "space-6",
+      "value": "1.5rem"
+    },
+    {
+      "group": "spacing",
+      "name": "space-8",
+      "value": "2rem"
+    },
+    {
+      "group": "spacing",
+      "name": "space-10",
+      "value": "2.5rem"
+    },
+    {
+      "group": "spacing",
+      "name": "space-12",
+      "value": "3rem"
+    },
+    {
+      "group": "gutter",
+      "name": "gutter-mobile",
+      "value": "1rem"
+    },
+    {
+      "group": "gutter",
+      "name": "gutter-tablet",
+      "value": "1.5rem"
+    },
+    {
+      "group": "gutter",
+      "name": "gutter-desktop",
+      "value": "2rem"
+    },
+    {
+      "group": "radius",
+      "name": "radius-none",
+      "value": "0"
+    },
+    {
+      "group": "radius",
+      "name": "radius-control",
+      "value": "8px"
+    },
+    {
+      "group": "radius",
+      "name": "radius-card",
+      "value": "12px"
+    },
+    {
+      "group": "radius",
+      "name": "radius-overlay",
+      "value": "16px"
+    },
+    {
+      "group": "radius",
+      "name": "radius-pill",
+      "value": "9999px"
+    },
+    {
+      "group": "border-width",
+      "name": "border-width-hairline",
+      "value": "1px"
+    },
+    {
+      "group": "border-width",
+      "name": "border-width-strong",
+      "value": "2px"
+    },
+    {
+      "group": "shadow",
+      "name": "shadow-card",
+      "value": "0 1px 3px rgb(0 0 0 / 0.08)"
+    },
+    {
+      "group": "shadow",
+      "name": "shadow-raised",
+      "value": "0 4px 12px rgb(0 0 0 / 0.10)"
+    },
+    {
+      "group": "shadow",
+      "name": "shadow-overlay",
+      "value": "0 16px 40px rgb(0 0 0 / 0.18)"
+    },
+    {
+      "group": "focus",
+      "name": "focus-ring-width",
+      "value": "2px"
+    },
+    {
+      "group": "focus",
+      "name": "focus-ring-offset",
+      "value": "2px"
+    },
+    {
+      "group": "motion",
+      "name": "motion-duration-instant",
+      "value": "80ms"
+    },
+    {
+      "group": "motion",
+      "name": "motion-duration-fast",
+      "value": "150ms"
+    },
+    {
+      "group": "motion",
+      "name": "motion-duration-normal",
+      "value": "220ms"
+    },
+    {
+      "group": "motion",
+      "name": "motion-ease-standard",
+      "value": "cubic-bezier(0.2, 0, 0.13, 1)"
+    },
+    {
+      "group": "motion",
+      "name": "motion-ease-exit",
+      "value": "cubic-bezier(0.4, 0, 1, 1)"
+    },
+    {
+      "group": "z-index",
+      "name": "z-base",
+      "value": "0"
+    },
+    {
+      "group": "z-index",
+      "name": "z-sticky",
+      "value": "10"
+    },
+    {
+      "group": "z-index",
+      "name": "z-footer",
+      "value": "20"
+    },
+    {
+      "group": "z-index",
+      "name": "z-drawer",
+      "value": "40"
+    },
+    {
+      "group": "z-index",
+      "name": "z-dialog",
+      "value": "50"
+    },
+    {
+      "group": "z-index",
+      "name": "z-popover",
+      "value": "60"
+    },
+    {
+      "group": "z-index",
+      "name": "z-toast",
+      "value": "70"
+    },
+    {
+      "group": "layout",
+      "name": "header-height-mobile",
+      "value": "3.5rem"
+    },
+    {
+      "group": "layout",
+      "name": "header-height-desktop",
+      "value": "4rem"
+    },
+    {
+      "group": "layout",
+      "name": "sidebar-width",
+      "value": "16rem"
+    },
+    {
+      "group": "layout",
+      "name": "sidebar-rail-width",
+      "value": "4.5rem"
+    },
+    {
+      "group": "layout",
+      "name": "drawer-width",
+      "value": "18rem"
+    },
+    {
+      "group": "layout",
+      "name": "content-max-width",
+      "value": "80rem"
+    },
+    {
+      "group": "layout",
+      "name": "content-readable-width",
+      "value": "42rem"
+    },
+    {
+      "group": "layout",
+      "name": "dialog-width-sm",
+      "value": "24rem"
+    },
+    {
+      "group": "layout",
+      "name": "dialog-width-md",
+      "value": "32rem"
+    },
+    {
+      "group": "layout",
+      "name": "dialog-width-lg",
+      "value": "44rem"
+    },
+    {
+      "group": "footer",
+      "name": "footer-height-mobile",
+      "value": "5.5rem"
+    },
+    {
+      "group": "footer",
+      "name": "footer-height-tablet",
+      "value": "4.5rem"
+    },
+    {
+      "group": "footer",
+      "name": "footer-height-desktop",
+      "value": "3.5rem"
+    },
+    {
+      "group": "footer",
+      "name": "footer-height-zoom-fallback",
+      "value": "9rem",
+      "note": "Extreme-zoom fallback: the footer scrolls internally rather than consuming the viewport (ADR-024)."
+    },
+    {
+      "group": "control",
+      "name": "control-height-sm",
+      "value": "2.25rem"
+    },
+    {
+      "group": "control",
+      "name": "control-height-md",
+      "value": "2.75rem"
+    },
+    {
+      "group": "control",
+      "name": "control-height-lg",
+      "value": "3rem"
+    },
+    {
+      "group": "control",
+      "name": "touch-target-min",
+      "value": "44px",
+      "note": "UI/UX plan §9.5. Never reduced."
+    },
+    {
+      "group": "table",
+      "name": "table-row-height-compact",
+      "value": "2.5rem"
+    },
+    {
+      "group": "table",
+      "name": "table-row-height-default",
+      "value": "3rem"
+    },
+    {
+      "group": "table",
+      "name": "table-cell-padding-x",
+      "value": "0.75rem"
+    },
+    {
+      "group": "table",
+      "name": "table-cell-padding-y",
+      "value": "0.5rem"
+    },
+    {
+      "group": "safe-area",
+      "name": "safe-area-bottom",
+      "value": "env(safe-area-inset-bottom, 0px)"
+    },
+    {
+      "group": "safe-area",
+      "name": "safe-area-left",
+      "value": "env(safe-area-inset-left, 0px)"
+    },
+    {
+      "group": "safe-area",
+      "name": "safe-area-right",
+      "value": "env(safe-area-inset-right, 0px)"
+    }
+  ],
+  "legacy_aliases": {
+    "note": "Phase 4/11 components consume these older variable names. They are GENERATED as aliases of the semantic tokens above so there is exactly one source of colour truth and the two can never disagree. New components must use the --sv-* semantic names. Removing these aliases means migrating every legacy page and belongs to the account-experience phases (UI-08 … UI-15), not to UI-04.",
+    "map": {
+      "--color-primary": "color-brand-primary",
+      "--color-sun": "color-accent",
+      "--color-success": "color-status-success-border",
+      "--color-growth": "color-growth",
+      "--color-brand-deep": "color-text-on-brand",
+      "--color-heading": "color-text-heading",
+      "--color-accent": "color-brand-secondary",
+      "--color-warning": "color-status-warning-border",
+      "--color-error": "color-status-error-border",
+      "--color-info": "color-status-info-border",
+      "--color-text": "color-text-primary",
+      "--color-text-muted": "color-text-muted",
+      "--color-border": "color-border-default",
+      "--color-surface": "color-surface-raised",
+      "--color-surface-alt": "color-surface-subtle",
+      "--color-bg": "color-surface-page",
+      "--color-cream": "color-surface-warm",
+      "--radius-card": "radius-card",
+      "--radius-control": "radius-control",
+      "--shadow-card": "shadow-card"
+    }
+  },
+  "contrast_requirements": [
+    {
+      "id": "text-primary-on-raised",
+      "foreground": "color-text-primary",
+      "background": "color-surface-raised",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "text-primary-on-page",
+      "foreground": "color-text-primary",
+      "background": "color-surface-page",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "text-primary-on-subtle",
+      "foreground": "color-text-primary",
+      "background": "color-surface-subtle",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "text-secondary-on-raised",
+      "foreground": "color-text-secondary",
+      "background": "color-surface-raised",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "text-muted-on-raised",
+      "foreground": "color-text-muted",
+      "background": "color-surface-raised",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "text-muted-on-page",
+      "foreground": "color-text-muted",
+      "background": "color-surface-page",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "text-muted-on-subtle",
+      "foreground": "color-text-muted",
+      "background": "color-surface-subtle",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "text-heading-on-raised",
+      "foreground": "color-text-heading",
+      "background": "color-surface-raised",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "text-on-brand",
+      "foreground": "color-text-on-brand",
+      "background": "color-brand-primary",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "link-on-raised",
+      "foreground": "color-link",
+      "background": "color-surface-raised",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "link-on-page",
+      "foreground": "color-link",
+      "background": "color-surface-page",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "focus-ring-on-raised",
+      "foreground": "color-focus-ring",
+      "background": "color-surface-raised",
+      "min_ratio": 3
+    },
+    {
+      "id": "focus-ring-on-page",
+      "foreground": "color-focus-ring",
+      "background": "color-surface-page",
+      "min_ratio": 3
+    },
+    {
+      "id": "focus-ring-on-subtle",
+      "foreground": "color-focus-ring",
+      "background": "color-surface-subtle",
+      "min_ratio": 3
+    },
+    {
+      "id": "border-default-on-raised",
+      "foreground": "color-border-default",
+      "background": "color-surface-raised",
+      "min_ratio": 1.2,
+      "note": "A decorative separator has no WCAG minimum; 1.2:1 is the project floor that keeps it perceptible in both themes (ADR-021 'visible borders')."
+    },
+    {
+      "id": "border-strong-on-raised",
+      "foreground": "color-border-strong",
+      "background": "color-surface-raised",
+      "min_ratio": 1.4
+    },
+    {
+      "id": "border-input-on-raised",
+      "foreground": "color-border-input",
+      "background": "color-surface-raised",
+      "min_ratio": 3
+    },
+    {
+      "id": "border-input-on-page",
+      "foreground": "color-border-input",
+      "background": "color-surface-page",
+      "min_ratio": 3
+    },
+    {
+      "id": "border-input-on-subtle",
+      "foreground": "color-border-input",
+      "background": "color-surface-subtle",
+      "min_ratio": 3
+    },
+    {
+      "id": "success-fg-on-success-bg",
+      "foreground": "color-status-success-fg",
+      "background": "color-status-success-bg",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "warning-fg-on-warning-bg",
+      "foreground": "color-status-warning-fg",
+      "background": "color-status-warning-bg",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "error-fg-on-error-bg",
+      "foreground": "color-status-error-fg",
+      "background": "color-status-error-bg",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "info-fg-on-info-bg",
+      "foreground": "color-status-info-fg",
+      "background": "color-status-info-bg",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "success-border-on-raised",
+      "foreground": "color-status-success-border",
+      "background": "color-surface-raised",
+      "min_ratio": 3
+    },
+    {
+      "id": "warning-border-on-raised",
+      "foreground": "color-status-warning-border",
+      "background": "color-surface-raised",
+      "min_ratio": 3
+    },
+    {
+      "id": "error-border-on-raised",
+      "foreground": "color-status-error-border",
+      "background": "color-surface-raised",
+      "min_ratio": 3
+    },
+    {
+      "id": "info-border-on-raised",
+      "foreground": "color-status-info-border",
+      "background": "color-surface-raised",
+      "min_ratio": 3
+    },
+    {
+      "id": "disabled-fg-on-disabled-bg",
+      "foreground": "color-disabled-fg",
+      "background": "color-disabled-bg",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "selected-fg-on-selected-bg",
+      "foreground": "color-selected-fg",
+      "background": "color-selected-bg",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "nav-active-fg-on-nav-active-bg",
+      "foreground": "color-nav-active-fg",
+      "background": "color-nav-active-bg",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "nav-inactive-fg-on-raised",
+      "foreground": "color-nav-inactive-fg",
+      "background": "color-surface-raised",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "footer-text-on-footer-surface",
+      "foreground": "color-footer-text",
+      "background": "color-footer-surface",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "footer-border-on-footer-surface",
+      "foreground": "color-footer-border",
+      "background": "color-footer-surface",
+      "min_ratio": 1.2
+    },
+    {
+      "id": "text-primary-on-table-header",
+      "foreground": "color-text-primary",
+      "background": "color-table-header",
+      "min_ratio": 4.5
+    },
+    {
+      "id": "text-primary-on-table-row-hover",
+      "foreground": "color-text-primary",
+      "background": "color-table-row-hover",
+      "min_ratio": 4.5
+    }
+  ]
+}

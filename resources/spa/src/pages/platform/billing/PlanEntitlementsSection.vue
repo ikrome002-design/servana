@@ -3,7 +3,7 @@ import axios from 'axios';
 import { computed, reactive, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -145,7 +145,7 @@ async function save(): Promise<void> {
               Enabled
             </label>
             <div class="w-32">
-              <SvInput
+              <SvTextInput
                 :id="`limit-${row.entitlement_key}`"
                 label="Limit"
                 type="number"
@@ -172,11 +172,11 @@ async function save(): Promise<void> {
     >
       <div class="flex items-end gap-2">
         <div class="flex-1">
-          <SvInput
+          <SvTextInput
             id="new-entitlement-key"
             label="Add entitlement key"
             :model-value="newKey"
-            hint="e.g. branches.max or reports.advanced"
+            help="e.g. branches.max or reports.advanced"
             @update:model-value="newKey = $event"
           />
         </div>

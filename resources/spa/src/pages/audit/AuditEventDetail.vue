@@ -4,6 +4,7 @@ import { useRoute, RouterLink } from 'vue-router';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuditEventStore } from '@/stores/auditEventStore';
+import { SvIconBack } from '@/design-system/icons';
 
 /**
  * Immutable audit event detail (Plan §70, §74; Phase 19). Strictly read-only —
@@ -37,7 +38,10 @@ onMounted(() => {
       :to="{ name: 'audit.branch-events' }"
       class="inline-flex min-h-[44px] items-center text-sm font-medium text-heading underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
-      ← Back to audit log
+      <SvIconBack
+        aria-hidden="true"
+        class="mr-1 inline-block h-4 w-4 align-text-bottom"
+      />Back to audit log
     </RouterLink>
 
     <SvStateBoundary

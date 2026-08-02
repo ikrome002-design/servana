@@ -9,6 +9,7 @@
  * metadata) is ever written to localStorage.
  */
 import { computed, ref } from 'vue';
+import { SvIconRefresh } from '@/design-system/icons';
 
 export type UploadState = 'selecting' | 'uploading' | 'scanning' | 'available' | 'rejected' | 'error';
 
@@ -113,10 +114,18 @@ defineExpose({ state, reset });
 
 <template>
   <div class="sv-file-upload">
-    <label :for="`file-${purpose}`" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+    <label
+      :for="`file-${purpose}`"
+      class="block text-sm font-medium text-gray-900 dark:text-gray-100"
+    >
       {{ label }}
     </label>
-    <p :id="`file-hint-${purpose}`" class="mt-1 text-xs text-gray-600 dark:text-gray-400">{{ sizeHint }}</p>
+    <p
+      :id="`file-hint-${purpose}`"
+      class="mt-1 text-xs text-gray-600 dark:text-gray-400"
+    >
+      {{ sizeHint }}
+    </p>
 
     <input
       :id="`file-${purpose}`"
@@ -127,7 +136,7 @@ defineExpose({ state, reset });
       :disabled="state === 'uploading' || state === 'scanning'"
       class="mt-2 block w-full min-h-[44px] rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 file:mr-3 file:min-h-[44px] file:rounded file:border-0 file:bg-gray-100 file:px-3 file:py-2 focus:outline-none focus:ring-2 focus:ring-savannah-orange dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:file:bg-gray-700"
       @change="onSelect"
-    />
+    >
 
     <!-- Live status announced to assistive tech as the state machine advances. -->
     <p
@@ -141,7 +150,11 @@ defineExpose({ state, reset });
         'text-red-700 dark:text-red-400': state === 'rejected' || state === 'error',
       }"
     >
-      <span v-if="state === 'uploading' || state === 'scanning'" class="mr-2 animate-pulse" aria-hidden="true">●</span>
+      <SvIconRefresh
+        v-if="state === 'uploading' || state === 'scanning'"
+        class="mr-2 inline-block h-4 w-4 animate-spin align-text-bottom"
+        aria-hidden="true"
+      />
       {{ statusText }}
     </p>
 

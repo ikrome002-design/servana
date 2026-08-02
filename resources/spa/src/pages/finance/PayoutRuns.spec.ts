@@ -28,7 +28,7 @@ function apiError(code: string, fields: Record<string, string[]> = {}): unknown 
 
 const mountPage = () => mount(PayoutRuns, {
   attachTo: document.body,
-  global: { stubs: { SvModal: { template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>', props: ['open', 'title', 'description'] } } },
+  global: { stubs: { SvDialog: { template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>', props: ['open', 'title', 'description'] } } },
 });
 function grantFinance(perms = ['payout_run.verify', 'payout_run.approve_standard', 'payout_run.reject', 'payout_run.mark_paid']): void {
   const auth = useAuthStore();

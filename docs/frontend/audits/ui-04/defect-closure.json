@@ -1,0 +1,504 @@
+{
+  "generated_by": "Phase UI-04",
+  "purpose": "Machine-verifiable closure record for the defects Phase UI-04 owns. The UI-01 audit register (docs/frontend/audits/ui-01/defect-register.csv) is a historical evidence snapshot and is deliberately NOT rewritten — its rows record what was true at audit time.",
+  "lifecycle_rule": "A local correction is NOT verified_complete. These closures stay `local_complete pending PR CI/review/merge` until the UI-04 pull request merges with green required checks and recorded governance evidence, at which point the next branch reconciles them.",
+  "ui04_branch": "phase-ui-04-design-system-shared-components",
+  "ui04_base": "00c9c1e0025e3979464691be662915ada872cc18",
+  "ui04_pull_request": "NOT CREATED — UI-04 stops at a pushed branch by instruction",
+  "permission_matrix_changed": false,
+  "new_permission_keys": [],
+  "closures": [
+    {
+      "defect_id": "UI01-NAV-002",
+      "prior_severity": "observation",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "ROLE_ENTRY mapped BOTH merchant_branch and merchant_human_resource to BranchLayout, and router/routes/hr.ts imported that layout directly. Every other account had a layout of its own, so Human Resource was the one account presenting under another account's identity. The account host registry compounded it by naming the account 'HR'.",
+      "root_cause": "Only one layout was authored for the two branch-scoped accounts, and the account contract recorded that sharing as if it were intentional.",
+      "why_this_is_the_root_cause": "The navigation data was already role-specific — `navigationFor('merchant_human_resource')` returns HR's own items. What was shared was the IDENTITY: the layout name in ROLE_ENTRY, the route's layout import, and the display name. Correcting the navigation would have changed nothing, because the navigation was never wrong.",
+      "correct_fix": "A compositional correction, not a copy. HumanResourceLayout delegates to the same shared RoleShell every sibling layout uses, so there is no second shell to keep in step. ROLE_ENTRY now names that layout and the label 'Human Resource'; hr.ts imports it; config/account-hosts.json (the UI-02 authority) carries the corrected display name and the generated registry was regenerated from it.",
+      "files_changed": [
+        "resources/spa/src/layouts/HumanResourceLayout.vue (new)",
+        "resources/spa/src/layouts/BranchLayout.vue (comment corrected)",
+        "resources/spa/src/types/roles.ts",
+        "resources/spa/src/router/routes/hr.ts",
+        "config/account-hosts.json",
+        "resources/spa/src/host/accountHosts.generated.ts (regenerated)",
+        "tests/e2e/support/roleBootstrap.ts"
+      ],
+      "tests": [
+        "resources/spa/src/layouts/RoleLayouts.spec.ts — 'gives Human Resource a shell of its own'",
+        "resources/spa/src/layouts/RoleLayouts.spec.ts — 'gives every one of the eight accounts a distinct shell'",
+        "resources/spa/src/layouts/RoleLayouts.spec.ts — 'presents the Human Resource identity in the shell, never Branch'",
+        "resources/spa/src/layouts/RoleLayouts.spec.ts — 'keeps HR on left navigation with a responsive drawer, like every merchant account'",
+        "resources/spa/src/layouts/RoleLayouts.spec.ts — 'renders exactly one primary navigation region'",
+        "resources/spa/src/layouts/RoleLayouts.spec.ts — 'surfaces no Branch-owned command through the shell'"
+      ],
+      "before": "ROLE_ENTRY.merchant_human_resource.layout === ROLE_ENTRY.merchant_branch.layout === 'BranchLayout'; label 'HR'.",
+      "after": "Eight accounts, eight distinct layouts. HR labelled 'Human Resource' in the shell and in the host registry.",
+      "backend_authority_unchanged": "HR remains branch-scoped. No permission, policy or middleware changed. The shell renders HR's own navigation, so no Branch-owned command is exposed.",
+      "not_done_here": "UI-11 owns HR's nineteen final pages. UI-04 corrected the shell identity only.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "UI-11 must re-verify when it implements the HR pages, exactly as the UI-01 register's note anticipated."
+    },
+    {
+      "defect_id": "UI01-THEME-001",
+      "prior_severity": "high",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "With colorScheme dark and no stored preference, the root element carried class 'dark' at first paint and rendered dark. The pre-hydration script read window.matchMedia('(prefers-color-scheme: dark)') and applied dark when no stored value existed.",
+      "root_cause": "The pre-hydration script applied dark when `stored` was absent and `prefersDark` was true. The condition should have depended on the stored value alone. The same rule was duplicated in themeStore.resolveInitial().",
+      "why_this_is_the_root_cause": "Two independent places consulted the operating system, and BOTH had to change: correcting only the inline script would have left hydration flipping the theme back, which is the flash the ADR also forbids.",
+      "correct_fix": "The bootstrap now reads, in order: the server-rendered data-sv-theme attribute, then the explicit per-browser value, then light. It is byte-identical in both shells. The store mirrors that precedence exactly so hydration cannot change what was painted. `matchMedia` and `prefers-color-scheme` appear in neither shell, neither store, nor the generated token CSS. Authenticated persistence was added as the smallest self-owned contract: a nullable, CHECK-constrained users.theme_preference, PATCH /api/v1/auth/preferences (own scope, NO permission key), and the value exposed through /me.",
+      "files_changed": [
+        "resources/spa/index.html",
+        "resources/views/spa.blade.php",
+        "app/Http/Controllers/SpaShellController.php",
+        "resources/spa/src/stores/themeStore.ts",
+        "resources/spa/src/stores/authStore.ts",
+        "app/Domain/Auth/Enums/ThemePreference.php (new)",
+        "app/Http/Controllers/Api/V1/Auth/UserPreferencesController.php (new)",
+        "app/Http/Requests/Auth/UpdateUserPreferencesRequest.php (new)",
+        "app/Http/Resources/Auth/AuthenticatedUserResource.php",
+        "app/Models/User.php",
+        "database/migrations/2026_08_01_000001_add_theme_preference_to_users_table.php (new)",
+        "routes/api.php",
+        "docs/architecture/data-dictionary/core-identity-and-tenancy.md"
+      ],
+      "tests": [
+        "tests/e2e/ui-04-design-system.spec.ts — seven theme scenarios, including a clean browser under a DARK operating system",
+        "resources/spa/src/stores/themeStore.spec.ts — 17 scenarios",
+        "tests/Feature/Auth/ThemePreferenceApiTest.php — 13 scenarios",
+        "tests/Feature/Hosts/AccountHostShellContractTest.php — byte-identity plus an explicit OS-independence assertion",
+        "tests/Feature/DesignSystem/DesignTokenGenerationTest.php — the generated CSS never consults prefers-color-scheme"
+      ],
+      "before": "Clean browser + dark OS => dark at first paint.",
+      "after": "Clean browser + dark OS => LIGHT, verified in a real Chromium context with colorScheme: 'dark', and the store proven never to CALL matchMedia at all.",
+      "browser_proof": "tests/e2e/ui-04-design-system.spec.ts, screenshot 14-clean-browser-light-under-dark-os.png",
+      "permission_impact": "None. Changing your own display preference is authorized by ownership; the request carries no user identifier.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "The account-switch synchronisation path is proven by construction (every host's /me bootstrap adopts the same user record) rather than by a cross-host browser observation; a real two-host switch belongs to a phase that already stands up the multi-host browser fixture."
+    },
+    {
+      "defect_id": "UI01-ASSET-001",
+      "prior_severity": "medium",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "The application shell rendered sun and crescent-moon glyphs directly in the template, so they appeared on every authenticated page; the design-system demo rendered emoji sun and moon in a button label; no heroicons package appeared in package.json at all.",
+      "root_cause": "Heroicons was never installed and the shell was authored with literal glyphs.",
+      "why_this_is_the_root_cause": "There was no icon system to use. Replacing the glyphs without adding the library would have produced a second ad-hoc icon vocabulary.",
+      "correct_fix": "@heroicons/vue pinned at 2.2.0, with a curated re-export module (resources/spa/src/design-system/icons.ts) using static named re-exports so tree-shaking is preserved — deliberately NOT a runtime name-to-component map, which would ship the whole catalogue. Twenty genuine icon usages were replaced across fourteen files. A source guard now fails the build on recurrence, and distinguishes an ICON from prose: `← Back` is an icon, `{{ from }} → {{ to }}` is a date range.",
+      "files_changed": [
+        "package.json / package-lock.json",
+        "resources/spa/src/design-system/icons.ts (new)",
+        "resources/spa/src/components/ui/SvIconButton.vue (new)",
+        "resources/spa/src/components/ui/SvThemeToggle.vue (new)",
+        "resources/spa/src/components/layout/AppShell.vue",
+        "resources/spa/src/components/ui/SvEmptyState.vue",
+        "resources/spa/src/components/ui/SvStateBoundary.vue",
+        "resources/spa/src/components/ui/SvToast.vue",
+        "resources/spa/src/components/files/SvFileUpload.vue",
+        "eight page components (audit, branch, front-office, legal, billing, auth, hr, dev)"
+      ],
+      "tests": [
+        "tests/Feature/DesignSystem/UiIconSourceGuardTest.php — 16 tests including negative controls that fire on the EXACT glyphs UI-01 recorded",
+        "resources/spa/src/components/ui/SvPrimitives.spec.ts — icon-only controls carry an accessible name and hide the glyph"
+      ],
+      "scope_discipline": "Only glyphs used AS icons were replaced. Date-range and sort-label arrows are text content and were correctly left alone, as the UI-01 record scopes it.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None identified. The guard has negative controls, so a silently-passing matcher would itself fail."
+    },
+    {
+      "defect_id": "UI01-ASSET-003",
+      "prior_severity": "low",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "android-chrome-192x192.png and android-chrome-512x512.png are approved and present, but no source file or HTML head referenced them. No web app manifest existed.",
+      "root_cause": "The SPA head declared favicon.ico, the 16px and 32px PNGs and the apple-touch-icon, but no web app manifest existed to reference the Android icons.",
+      "why_this_is_the_root_cause": "The Android icons are only reachable through a manifest; adding more <link rel=icon> tags would not have made them installable.",
+      "correct_fix": "public/assets/brand/site.webmanifest, linked from BOTH shells. It lives under /assets/ because that prefix is backend-owned in both topologies — a manifest at the document root would fall through to the SPA fallback and be served as HTML. nginx 1.27 has no .webmanifest MIME entry, so `application/manifest+json` is declared explicitly; without it the file is served as octet-stream and, because the /assets/ location sets nosniff, the browser refuses to parse it. `display: browser` is the honest value: no service worker is registered and no offline capability is claimed.",
+      "files_changed": [
+        "public/assets/brand/site.webmanifest (new)",
+        "resources/spa/index.html",
+        "resources/views/spa.blade.php",
+        "docker/nginx/default.conf"
+      ],
+      "tests": [
+        "tests/Feature/DesignSystem/WebAppManifestContractTest.php — 9 tests including declared-size-versus-real-pixels, lowercase paths, PNG signatures, and no service worker anywhere",
+        "tests/e2e/ui-04-design-system.spec.ts — the manifest and BOTH icons are served with the right status and MIME from the running origin"
+      ],
+      "asset_bytes_unchanged": "The approved icon files are referenced, never modified, regenerated, recoloured or re-cased. Logo.svg remains absent and unreferenced.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None identified."
+    },
+    {
+      "defect_id": "UI01-RENDER-001",
+      "prior_severity": "medium",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "Thirteen uncaught TypeErrors across twelve detail and summary routes, each an unguarded dereference of a nested money object or a collection under the repository's own canonical e2e fixtures.",
+      "root_cause": "Two distinct causes, settled against the backend contract rather than guessed:\n(a) GENUINELY OPTIONAL FIELDS treated as required — CashUpResource exposes `lines` through whenLoaded, so it is absent whenever the relation was not eager-loaded; InvoiceResource and InvoiceItemResource declare `preferred_personnel_fee` explicitly nullable.\n(b) A PAYLOAD SHAPE the contract never produces — the shared audit fixture falls back to an empty paginated envelope for an unmatched GET, so a detail route received a collection where an object belongs.",
+      "why_this_is_the_root_cause": "For (a) the component was simply wrong: the server can and does omit those fields. For (b) the screen must still degrade rather than throw — which is exactly the acceptance test UI-01 wrote for this defect: 'Each affected route renders with an incomplete payload and produces no uncaught exception, showing a defined empty state instead.'",
+      "correct_fix": "Twenty-eight targeted guards across ten components, each at ONE proven expression — no blanket optional-chaining sweep. Money now renders through SvMoney, which shows 'Not available' for an absent amount and NEVER coerces it to zero: a false financial figure would be worse than the TypeError it replaced. RecordPayment received the sharpest correction — `invoice.balance.amount ?? 0` would have read as 'fully paid' and silently forbidden a legitimate payment, so an unknown balance now blocks submission with a stated reason.",
+      "routes": [
+        {
+          "route": "/branch/cash-up",
+          "component": "pages/branch/CashUp.vue",
+          "expression": "current.value?.lines.find(...)  (x2)",
+          "category": "optional nested field treated as required",
+          "contract": "CashUpResource.lines is whenLoaded — legitimately absent"
+        },
+        {
+          "route": "/finance/cash-up/{id}",
+          "component": "pages/finance/CashUpDetail.vue",
+          "expression": "store.current?.expected.formatted",
+          "category": "unsafe money dereference",
+          "contract": "always present; the audited payload was an empty envelope"
+        },
+        {
+          "route": "/finance/invoices/{id}",
+          "component": "pages/invoicing/InvoiceDetail.vue",
+          "expression": "item.preferred_personnel_fee.formatted and 9 further money fields",
+          "category": "optional nested field treated as required",
+          "contract": "InvoiceItemResource.preferred_personnel_fee is explicitly nullable"
+        },
+        {
+          "route": "/front-office/invoices/{id}",
+          "component": "pages/invoicing/InvoiceDetail.vue",
+          "expression": "same component, same fields",
+          "category": "optional nested field treated as required",
+          "contract": "as above"
+        },
+        {
+          "route": "/finance/payment-records/{id}",
+          "component": "pages/payments/PaymentGroupDetail.vue",
+          "expression": "group?.total.formatted; component.amount.formatted",
+          "category": "unsafe money dereference",
+          "contract": "always present; empty-envelope fixture"
+        },
+        {
+          "route": "/finance/receipts/{id}",
+          "component": "pages/finance/ReceiptDetail.vue",
+          "expression": "store.current?.amount.formatted; component.amount.formatted",
+          "category": "unsafe money dereference",
+          "contract": "always present; empty-envelope fixture"
+        },
+        {
+          "route": "/front-office/receipts/{id}",
+          "component": "pages/finance/ReceiptDetail.vue",
+          "expression": "same component, same fields",
+          "category": "unsafe money dereference",
+          "contract": "as above"
+        },
+        {
+          "route": "/finance/refunds/{id}",
+          "component": "pages/finance/RefundDetail.vue",
+          "expression": "store.current?.amount.formatted",
+          "category": "unsafe money dereference",
+          "contract": "always present; empty-envelope fixture"
+        },
+        {
+          "route": "/front-office/payments/record/{id}",
+          "component": "pages/payments/RecordPayment.vue",
+          "expression": "invoice.value?.balance.amount; invoice?.balance.formatted; invoice?.total.formatted; recorded.total.formatted",
+          "category": "unsafe money dereference",
+          "contract": "always present; an absent balance is UNKNOWN and now blocks submission rather than defaulting to zero"
+        },
+        {
+          "route": "/merchant/compensation-summary",
+          "component": "pages/merchant/CompensationSummary.vue",
+          "expression": "summaryStore.summary.outstanding_liability_by_currency.length (x2)",
+          "category": "unsafe collection dereference",
+          "contract": "loading sequence exposes an intermediate absent summary"
+        },
+        {
+          "route": "/personnel/earnings",
+          "component": "pages/personnel/Earnings.vue",
+          "expression": "earnings.overview.currencies.length",
+          "category": "unsafe collection dereference",
+          "contract": "loading sequence exposes an intermediate absent overview"
+        },
+        {
+          "route": "/merchant/subscription",
+          "component": "pages/merchant/SubscriptionDashboard.vue",
+          "expression": "sub.plan.name; sub.scheduled_plan_change.target_plan.name",
+          "category": "optional nested field treated as required",
+          "contract": "a scheduled change is optional"
+        }
+      ],
+      "second_pass": "The first pass guarded exactly the expressions UI-01 recorded. Running the closure spec then reached FURTHER unguarded money renders on InvoiceDetail and RecordPayment — sites the audit never reached because the first exception stopped the render. Guarding only what the audit happened to hit first would have left both routes still able to throw, so every remaining nested money render on those screens was migrated too.",
+      "prohibited_shortcuts_avoided": [
+        "no `as any`",
+        "no non-null assertion to silence the error",
+        "no catch-and-ignore",
+        "no missing-money-to-zero coercion",
+        "no fabricated nested objects",
+        "no weakened canonical fixture",
+        "no change to financial behaviour or the payout fixture"
+      ],
+      "files_changed": [
+        "resources/spa/src/pages/branch/CashUp.vue",
+        "resources/spa/src/pages/finance/CashUpDetail.vue",
+        "resources/spa/src/pages/finance/ReceiptDetail.vue",
+        "resources/spa/src/pages/finance/RefundDetail.vue",
+        "resources/spa/src/pages/invoicing/InvoiceDetail.vue",
+        "resources/spa/src/pages/payments/PaymentGroupDetail.vue",
+        "resources/spa/src/pages/payments/RecordPayment.vue",
+        "resources/spa/src/pages/merchant/CompensationSummary.vue",
+        "resources/spa/src/pages/merchant/SubscriptionDashboard.vue",
+        "resources/spa/src/pages/personnel/Earnings.vue"
+      ],
+      "tests": [
+        "resources/spa/src/pages/Ui01Render001.spec.ts — 13 tests: one per affected component mounted with a DELIBERATELY INCOMPLETE payload, failing on anything reaching Vue's error handler, plus 'never reports an absent amount as zero' and the RecordPayment fail-safe"
+      ],
+      "before": "13 uncaught TypeErrors across 12 routes.",
+      "after": "0 errors reach the Vue error handler on any of the twelve routes with an incomplete payload; every screen still renders.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "UI-10, UI-12, UI-13 and UI-14 re-verify their own routes when they build them. Whether a production API can legitimately emit the empty-envelope shape the audit fixture produced is a fixture question owned by UI-16's capture redesign, not a product defect — the components now degrade correctly either way."
+    },
+    {
+      "defect_id": "UI04-TOKEN-001",
+      "prior_severity": "medium",
+      "owner_phase": "UI-04",
+      "found_by": "Phase UI-04 raw-value source guard, while migrating components onto semantic tokens.",
+      "observed_problem": "Sixteen `var(--custom, #hex)` fallbacks across fourteen pages referenced custom properties that were NEVER DEFINED anywhere — `--color-danger` and `--color-focus` do not exist in any stylesheet. The literal fallback was therefore LIVE, not dead: those pages rendered a non-brand `#dc2626` and a generic blue `#2563eb` focus ring, neither of which is a Servana token, and neither of which had a dark-theme value.",
+      "root_cause": "The fallbacks were written defensively against variables that were assumed to exist. Nothing verified the assumption, and a fallback that always fires is indistinguishable from a hard-coded colour.",
+      "why_this_is_the_root_cause": "The undefined variables are the whole mechanism: had `--color-danger` and `--color-focus` existed, the fallbacks would have been inert. The generic blue focus ring in particular bypassed the entire theme layer, so it did not change in dark mode and had never been contrast-checked.",
+      "correct_fix": "All sixteen usages migrated to semantic Tailwind aliases and CSS custom properties backed by the token authority. `DesignTokenSourceGuardTest` now fails the build on any raw hex in production UI source, with negative controls proving the matcher fires.",
+      "files_changed": [
+        "14 page components across branch, finance, payments, merchant and platform",
+        "resources/spa/src/design-system/tokens.json (color-focus-ring and the status token families)"
+      ],
+      "tests": [
+        "tests/Feature/DesignSystem/DesignTokenSourceGuardTest.php — 'finds no raw colour value in production UI source', with a negative control",
+        "tests/Feature/DesignSystem/DesignTokenContrastTest.php — the focus ring is now contrast-checked on every surface in both themes"
+      ],
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None identified. The guard is deterministic and has negative controls."
+    },
+    {
+      "defect_id": "UI04-TOAST-001",
+      "prior_severity": "medium",
+      "owner_phase": "UI-04",
+      "found_by": "Phase UI-04, while bringing SvToast up to the shared component contract.",
+      "observed_problem": "Four contract defects in the Phase 4 toast: (1) status was carried by a coloured dot ALONE, with no text or icon; (2) the container was aria-live AND each toast was role=status, nesting a live region inside a live region so every message was announced twice; (3) it was positioned `bottom-4`, inside the band the fixed footer occupies, so its dismiss control could be covered — a case ADR-024 names explicitly; (4) removal was scheduled only on mount, so any toast added afterwards never expired.",
+      "root_cause": "The component predates both the fixed-footer contract and the icon system, and its live-region nesting was never exercised by a test.",
+      "correct_fix": "Heroicon plus a visually hidden severity word; a single live region; a bottom offset computed from the SAME footer-height token the page reserves; a watcher that schedules newly added toasts and clears timers for removed ones; the 20px hand-rolled SVG close control replaced with SvIconButton at the 44px minimum.",
+      "files_changed": [
+        "resources/spa/src/components/ui/SvToast.vue"
+      ],
+      "tests": [
+        "resources/spa/src/components/ui/SvFeedback.spec.ts — 10 SvToast tests covering all four defects"
+      ],
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None identified."
+    },
+    {
+      "defect_id": "UI04-POPOVER-001",
+      "prior_severity": "low",
+      "owner_phase": "UI-04",
+      "found_by": "Phase UI-04 component specs, during Increment 9.",
+      "observed_problem": "SvPopover registered its Escape and outside-click listeners only from a watcher on `open`. `open` is a caller-controlled prop, so a popover mounted ALREADY OPEN never registered them — leaving both dismissal paths dead for exactly the case where the panel is visible from the first frame.",
+      "root_cause": "A watcher does not fire for an initial value; only for a change.",
+      "correct_fix": "Listener registration extracted into a named function called from BOTH `onMounted` (when already open) and the watcher.",
+      "files_changed": [
+        "resources/spa/src/components/ui/SvPopover.vue"
+      ],
+      "tests": [
+        "resources/spa/src/components/ui/SvOverlays.spec.ts — 'closes on Escape' and 'closes on an outside pointer press', both mounting the popover already open"
+      ],
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None identified."
+    },
+    {
+      "defect_id": "UI04-TOKEN-002",
+      "prior_severity": "serious (WCAG 1.4.3)",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "Not a UI-01 defect. Found by the final full Playwright gate: 103 of 166 failures resolved to one element.",
+      "root_cause": "SvProfileControl paired bg-sv-surface-warm with text-sv-text-on-brand. text-on-brand is Brand Deep #4A2208 and is fixed in BOTH themes because it is the label colour for the brand colour; surface-warm is #FFF8E7 in light but #273340 in dark, so the pair measured 1.07:1 in dark on every screen rendering the shell.",
+      "why_this_is_the_root_cause": "axe reported fgColor #4a2208 on bgColor #273340 at 1.07. The light theme passed only because surface-warm happens to be a pale cream there, so the mispairing stayed invisible until dark mode was exercised.",
+      "correct_fix": "The chip sits on a SURFACE, so it takes that surface text colour (text-sv-text), which flips with the theme. A sweep confirmed this was the only text-on-brand usage on a non-brand background. Added contrast requirement text-primary-on-warm so the pairing is gated, not merely corrected.",
+      "files_changed": [
+        "resources/spa/src/components/ui/SvProfileControl.vue",
+        "resources/spa/src/design-system/tokens.json",
+        "resources/spa/src/styles/generated/tokens.css",
+        "resources/spa/src/design-system/tokens.generated.ts"
+      ],
+      "tests": [
+        "DesignTokenContrastTest (37 requirements, both themes)",
+        "full Playwright axe matrix"
+      ],
+      "before": "Every screen carrying the shell failed axe color-contrast in dark mode at 1.07:1.",
+      "after": "AA in both themes, and the pairing is a gated contrast requirement.",
+      "backend_authority_unchanged": true,
+      "not_done_here": "Legacy per-page colour migration remains UI-08 … UI-15.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None known. The contract now fails if the pairing regresses."
+    },
+    {
+      "defect_id": "UI04-RESP-001",
+      "prior_severity": "serious (responsive contract)",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "Not a UI-01 defect. Found by the final full Playwright gate (~30 failures at the tablet boundary).",
+      "root_cause": "The SvProfileControl identity block is hidden md:block, so 768px is the first width at which it renders. The inline-flex trigger sizes to its content and truncate does not engage without a bounded width, so a long display name made the trigger 562px wide and the header overflowed (scrollWidth 775 > clientWidth 768).",
+      "why_this_is_the_root_cause": "The widest-element chain named the trigger button directly, and the overflow appeared at exactly the breakpoint that first reveals the block.",
+      "correct_fix": "Added a profile-identity-max-width layout token wired through Tailwind maxWidth, so the cap comes from the token authority rather than a literal, plus min-w-0 on the shrinkable ancestors so the text ellipsises instead of dictating header width.",
+      "files_changed": [
+        "resources/spa/src/components/ui/SvProfileControl.vue",
+        "resources/spa/src/design-system/tokens.json",
+        "tailwind.config.ts"
+      ],
+      "tests": [
+        "full Playwright responsive matrix at 360/768/1280"
+      ],
+      "before": "Every shell-bearing screen scrolled horizontally at 768px.",
+      "after": "No horizontal overflow at any audited width.",
+      "backend_authority_unchanged": true,
+      "not_done_here": "Release-wide responsive review remains UI-16.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None known."
+    },
+    {
+      "defect_id": "UI04-TOAST-002",
+      "prior_severity": "serious (WCAG 4.1.3)",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "Not a UI-01 defect. Introduced by this phase while closing UI04-TOAST-001.",
+      "root_cause": "Removing the nested live region also removed role=status from the toasts, leaving only aria-live on the container. aria-live confers no role, so the toast stack could not be addressed by role at all.",
+      "why_this_is_the_root_cause": "Two queue.spec.ts assertions using getByRole(status) found no element, while the announcement itself still worked.",
+      "correct_fix": "role=status now sits on the SAME element as aria-live: one region, no nesting. The unit spec had asserted [role=status] length 0, which encoded the accident rather than the property; it now asserts exactly one live-region element carrying both attributes and no live region nested inside it.",
+      "files_changed": [
+        "resources/spa/src/components/ui/SvToast.vue",
+        "resources/spa/src/components/ui/SvFeedback.spec.ts"
+      ],
+      "tests": [
+        "SvFeedback.spec.ts",
+        "queue.spec.ts"
+      ],
+      "before": "The toast stack announced but exposed no status role.",
+      "after": "One live region, addressable by role, nothing nested inside it.",
+      "backend_authority_unchanged": true,
+      "not_done_here": "",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None known."
+    },
+    {
+      "defect_id": "UI04-A11Y-001",
+      "prior_severity": "serious (WCAG 1.4.3)",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "Not a UI-01 defect. Found by the second full Playwright run: all 17 remaining failures were super_administrator surfaces.",
+      "root_cause": "AppShell renders the header bg-brand-deep text-white for the one account using header navigation and bg-surface for the other seven. SvProfileControl hard-coded text-sv-text (#1F2933), so dark text sat on the deep-brown bar at 1.07:1 on every platform screen.",
+      "why_this_is_the_root_cause": "axe named the header as the related node and reported #1f2933 on #4a2208. Only platform surfaces failed, which is exactly the set using header navigation.",
+      "correct_fix": "The identity text now inherits its colour, resolving to page text on a surface and to white on the brand bar, so one component is correct on both. The secondary line keeps hierarchy through opacity rather than pinning a second colour with the same flaw.",
+      "files_changed": [
+        "resources/spa/src/components/ui/SvProfileControl.vue"
+      ],
+      "tests": [
+        "full Playwright axe matrix across all eight accounts"
+      ],
+      "before": "Every Super Administrator screen failed axe color-contrast.",
+      "after": "AA on both header treatments.",
+      "backend_authority_unchanged": true,
+      "not_done_here": "The Super Administrator experience itself remains UI-08.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None known."
+    },
+    {
+      "defect_id": "UI04-TOKEN-003",
+      "prior_severity": "serious (WCAG 1.4.3)",
+      "owner_phase": "UI-04",
+      "observed_ui01_evidence": "Not a UI-01 defect. Found by the second full Playwright run, on the search submit button.",
+      "root_cause": "color-brand-primary-hover was orange-800 #9A3412. ADR-009 fixes the CTA label to Brand Deep #4A2208 because white on Savannah Orange fails AA, so the label cannot move with the background: the hover state measured 1.89:1. The contrast contract gated text-on-brand on the BASE brand colour only, so the hover shade was never evaluated.",
+      "why_this_is_the_root_cause": "axe reported #4a2208 on #9a3412 at 1.88 on a primary button. Computing the pair directly from the token authority reproduces 1.89.",
+      "correct_fix": "Because the foreground is fixed, the hover must lighten rather than darken. Light theme now uses orange-300 #FDBA74 (8.17:1), which the dark theme already used, making the rule hover-lightens true in both. Added contrast requirement text-on-brand-hover covering both themes.",
+      "files_changed": [
+        "resources/spa/src/design-system/tokens.json",
+        "resources/spa/src/styles/generated/tokens.css",
+        "resources/spa/src/design-system/tokens.generated.ts"
+      ],
+      "tests": [
+        "DesignTokenContrastTest (37 requirements, both themes)",
+        "BrandContrastTokenTest",
+        "full Playwright axe matrix"
+      ],
+      "before": "Every primary button hover state failed AA in light mode at 1.89:1.",
+      "after": "8.17:1 in light, gated in both themes.",
+      "backend_authority_unchanged": true,
+      "not_done_here": "FLAGGED FOR PRODUCT-OWNER REVIEW: this changes a visible brand shade. It touches none of the seventeen approved brand palette values (#9A3412 was a UI-04-derived shade annotated \"Brand primary hover on light surfaces\") and is forced by CLAUDE.md guardrail 11, which makes AA in both themes a release gate. A darkening hover would require a different CTA label colour, reopening ADR-009, which is not UI-04 to decide.",
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "The shade is a design choice made under an accessibility constraint and is flagged for review at the pull request."
+    }
+  ],
+  "explicitly_left_open": [
+    {
+      "defect_id": "UI01-PROV-003",
+      "owner_phase": "UI-16",
+      "reason": "The Playwright suite still runs against a Vite preview origin. UI-04 does not claim any part of this."
+    },
+    {
+      "defect_id": "UI01-PROV-004",
+      "owner_phase": "UI-17",
+      "reason": "Out of UI-04 scope."
+    },
+    {
+      "defect_id": "UI01-PROV-005",
+      "owner_phase": "UI-17",
+      "reason": "Out of UI-04 scope."
+    },
+    {
+      "defect_id": "UI01-ASSET-002",
+      "owner_phase": "UI-05",
+      "reason": "Removal or quarantine of unapproved brand working files belongs to the asset pipeline. UI-04 deliberately does not absorb it."
+    },
+    {
+      "defect_id": "UI01-A11Y-001",
+      "owner_phase": "UI-16",
+      "reason": "Release-wide accessibility review. UI-04 proves the component foundation only."
+    },
+    {
+      "defect_id": "UI01-ROUTE-001 … 006, UI01-NAV-001, UI01-NAV-003, UI01-LEGAL-001 … 003, UI01-ASSET-004",
+      "owner_phase": "UI-05 … UI-12",
+      "reason": "Content, route-contract and account-experience defects owned by their recorded phases."
+    }
+  ],
+  "not_done_in_ui04": [
+    {
+      "work": "Content compiler, source hashes, generated role content",
+      "owner": "UI-05"
+    },
+    {
+      "work": "Curated landing-image manifest and derivatives",
+      "owner": "UI-05"
+    },
+    {
+      "work": "Final role-aware FAQ route and footer content integration",
+      "owner": "UI-05 / UI-06"
+    },
+    {
+      "work": "The eight public landing pages",
+      "owner": "UI-06"
+    },
+    {
+      "work": "The full 160-page route and navigation contract",
+      "owner": "UI-07"
+    },
+    {
+      "work": "The eight account experiences",
+      "owner": "UI-08 … UI-15"
+    },
+    {
+      "work": "Release-wide responsive/accessibility/theme review and approved visual baselines",
+      "owner": "UI-16"
+    },
+    {
+      "work": "Opt-in redesign of the UI-01 evidence-capture policy",
+      "owner": "UI-16"
+    },
+    {
+      "work": "Production DNS, TLS, HSTS, deployment",
+      "owner": "UI-17 / backend Phase 25"
+    },
+    {
+      "work": "A notification backend",
+      "owner": "future phase — none exists, so SvNotificationsControl is a data-driven visual contract only"
+    },
+    {
+      "work": "Cross-user session, profile or preference administration",
+      "owner": "blocked decision — no canonical permission authority exists and UI-04 does not invent one"
+    }
+  ]
+}

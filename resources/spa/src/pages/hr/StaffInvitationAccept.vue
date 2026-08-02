@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { useForm } from '@/composables/useForm';
 import { primeCsrfCookie } from '@/services/apiClient';
 import { useStaffStore } from '@/stores/staffStore';
@@ -96,21 +96,21 @@ const submit = form.handleSubmit(async (values) => {
         novalidate
         @submit.prevent="submit"
       >
-        <SvInput
+        <SvTextInput
           id="first_name"
           v-model="form.values.first_name"
           label="First name"
           required
           :errors="form.errors.first_name"
         />
-        <SvInput
+        <SvTextInput
           id="last_name"
           v-model="form.values.last_name"
           label="Last name"
           required
           :errors="form.errors.last_name"
         />
-        <SvInput
+        <SvTextInput
           id="phone"
           v-model="form.values.phone"
           label="Phone"

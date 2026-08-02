@@ -4,11 +4,12 @@ import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvModal from '@/components/ui/SvModal.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { usePaymentStore, type PaymentRecordingGroupView } from '@/stores/paymentStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvMoney from '@/components/ui/SvMoney.vue';
 
 /**
  * Finance payment-recording detail (Plan §41–§42; Phase 18A + 18B). Shows the group and
@@ -174,7 +175,7 @@ onMounted(load);
               Invoice {{ group?.invoice?.invoice_number ?? '—' }}
             </p>
             <p class="font-display text-lg font-semibold text-heading">
-              {{ group?.total.formatted }}
+              <SvMoney :formatted="group?.total?.formatted ?? null" />
             </p>
             <p class="mt-0.5 text-sm text-text-muted">
               Recorded by {{ group?.maker?.name ?? '—' }} · Status: {{ group?.status }}
@@ -235,7 +236,7 @@ onMounted(load);
           >
             <span class="font-semibold text-heading">{{ component.method }}</span>
             <span class="text-text-muted">{{ component.reference_masked ?? 'No reference' }}</span>
-            <span class="font-semibold text-heading">{{ component.amount.formatted }}</span>
+            <span class="font-semibold text-heading"><SvMoney :formatted="component.amount?.formatted ?? null" /></span>
             <SvButton
               v-if="isCorrectable && canCorrect"
               variant="ghost"
@@ -253,7 +254,7 @@ onMounted(load);
         v-if="duplicates.length > 0"
         as="section"
         padding="md"
-        class="mt-4 border-l-4 border-l-[color:var(--color-warning,#d97706)]"
+        class="mt-4 border-l-4 border-l-sv-warning-border"
         data-testid="duplicate-review"
       >
         <h2 class="font-display text-base font-semibold text-heading">
@@ -286,13 +287,13 @@ onMounted(load);
     </SvStateBoundary>
 
     <!-- Whole-group decision confirmation -->
-    <SvModal
+    <SvDialog
       :open="deciding !== null"
       :title="deciding ? decisionTitle[deciding] : ''"
       description="This decision applies to the whole group. Rejection or a correction request issues NO receipt; validation issues exactly one original receipt."
       @close="deciding = null"
     >
-      <SvTextarea
+      <SvTextArea
         v-if="needsReason"
         id="decision-reason"
         v-model="reason"
@@ -301,7 +302,7 @@ onMounted(load);
       />
       <p
         v-if="actionError"
-        class="mt-2 text-sm text-[color:var(--color-danger,#dc2626)]"
+        class="mt-2 text-sm text-sv-error-fg"
         role="alert"
       >
         {{ actionError }}
@@ -322,16 +323,16 @@ onMounted(load);
           Confirm
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- Per-component reference correction -->
-    <SvModal
+    <SvDialog
       :open="correcting !== null"
       title="Correct payment reference"
       description="Replace the recorded reference on this component before resubmitting for validation."
       @close="correcting = null"
     >
-      <SvInput
+      <SvTextInput
         v-if="correcting"
         id="corrected-reference"
         v-model="correcting.reference"
@@ -340,7 +341,7 @@ onMounted(load);
       />
       <p
         v-if="actionError"
-        class="mt-2 text-sm text-[color:var(--color-danger,#dc2626)]"
+        class="mt-2 text-sm text-sv-error-fg"
         role="alert"
       >
         {{ actionError }}
@@ -361,16 +362,16 @@ onMounted(load);
           Save reference
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- Held-duplicate override (Phase 18A) -->
-    <SvModal
+    <SvDialog
       :open="overriding !== null"
       title="Override duplicate reference"
       description="This releases the held payment for validation. A reason is required and a fresh step-up may be requested. The original reference is never edited."
       @close="overriding = null"
     >
-      <SvTextarea
+      <SvTextArea
         id="override-reason"
         v-model="reason"
         label="Reason"
@@ -378,7 +379,7 @@ onMounted(load);
       />
       <p
         v-if="actionError"
-        class="mt-2 text-sm text-[color:var(--color-danger,#dc2626)]"
+        class="mt-2 text-sm text-sv-error-fg"
         role="alert"
       >
         {{ actionError }}
@@ -399,6 +400,6 @@ onMounted(load);
           Override and release
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

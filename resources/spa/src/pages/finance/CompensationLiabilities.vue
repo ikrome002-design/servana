@@ -4,11 +4,11 @@ import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -483,35 +483,35 @@ async function verifyStepUp(): Promise<void> {
             :options="LEDGER_STATUS_FILTER"
             @update:model-value="store.filters.status = $event"
           />
-          <SvInput
+          <SvTextInput
             id="filter-currency"
             label="Currency"
-            hint="3-letter code, e.g. KES"
+            help="3-letter code, e.g. KES"
             :model-value="store.filters.currency"
             @update:model-value="store.filters.currency = $event"
           />
-          <SvInput
+          <SvTextInput
             id="filter-staff"
             label="Staff reference"
-            hint="26-character staff reference"
+            help="26-character staff reference"
             :model-value="store.filters.staff_profile_ulid"
             @update:model-value="store.filters.staff_profile_ulid = $event"
           />
-          <SvInput
+          <SvTextInput
             id="filter-branch"
             label="Branch reference"
-            hint="26-character branch reference"
+            help="26-character branch reference"
             :model-value="store.filters.branch_ulid"
             @update:model-value="store.filters.branch_ulid = $event"
           />
-          <SvInput
+          <SvTextInput
             id="filter-date-from"
             label="Date from"
             type="date"
             :model-value="store.filters.date_from"
             @update:model-value="store.filters.date_from = $event"
           />
-          <SvInput
+          <SvTextInput
             id="filter-date-to"
             label="Date to"
             type="date"
@@ -707,7 +707,7 @@ async function verifyStepUp(): Promise<void> {
     </template>
 
     <!-- ------------------------------------------------------------------ entry detail modal -->
-    <SvModal
+    <SvDialog
       :open="detailEntry !== null"
       title="Liability entry"
       description="A single server-authoritative salary or commission ledger fact. Amounts are exact integer minor units."
@@ -794,10 +794,10 @@ async function verifyStepUp(): Promise<void> {
           Close
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- ------------------------------------------------------------------ adjustment detail modal -->
-    <SvModal
+    <SvDialog
       :open="detailAdjustment !== null"
       title="Compensation adjustment"
       description="An additive, append-only adjustment to a staff member's compensation liability."
@@ -846,10 +846,10 @@ async function verifyStepUp(): Promise<void> {
           Close
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- ------------------------------------------------------------------ create adjustment modal -->
-    <SvModal
+    <SvDialog
       :open="createOpen"
       title="Record a compensation adjustment"
       description="An additive, append-only correction to a staff member's compensation liability. A positive amount increases the liability; a negative amount reduces it. This never rewrites an accrued or earned fact. Recording requires a fresh step-up."
@@ -895,10 +895,10 @@ async function verifyStepUp(): Promise<void> {
           {{ createError }}
         </p>
 
-        <SvInput
+        <SvTextInput
           id="adjustment-staff"
           label="Staff reference"
-          hint="The 26-character staff reference this adjustment applies to. The branch is derived from the staff member."
+          help="The 26-character staff reference this adjustment applies to. The branch is derived from the staff member."
           :model-value="form.staff_profile_ulid"
           :errors="createErrors.staff_profile_ulid"
           required
@@ -914,11 +914,11 @@ async function verifyStepUp(): Promise<void> {
             required
             @update:model-value="form.direction = $event"
           />
-          <SvInput
+          <SvTextInput
             id="adjustment-amount"
             label="Amount (major units)"
             type="number"
-            hint="A positive number; the direction sets the sign."
+            help="A positive number; the direction sets the sign."
             :model-value="form.amount_major"
             :errors="createErrors.amount_minor"
             required
@@ -926,7 +926,7 @@ async function verifyStepUp(): Promise<void> {
           />
         </div>
 
-        <SvInput
+        <SvTextInput
           id="adjustment-currency"
           label="Currency"
           :model-value="form.currency"
@@ -935,7 +935,7 @@ async function verifyStepUp(): Promise<void> {
           @update:model-value="form.currency = $event"
         />
 
-        <SvTextarea
+        <SvTextArea
           id="adjustment-reason"
           label="Reason"
           :model-value="form.reason"
@@ -972,6 +972,6 @@ async function verifyStepUp(): Promise<void> {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

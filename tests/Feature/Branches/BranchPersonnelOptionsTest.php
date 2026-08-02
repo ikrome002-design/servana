@@ -45,7 +45,15 @@ it('requires authentication', function (): void {
 
 it('returns the acting branch personnel as {id, display_name} in display-name order', function (): void {
     $scn = optionsScenario();
-    [$bm] = branchStaff($scn['merchant'], $scn['branch'], MerchantUserRole::BranchManager);
+
+    // The Branch Manager's own staff profile is in this branch too, and `branchStaff()` gives it a
+    // FAKER display name. Because this endpoint orders by display_name, an unpinned random name can
+    // sort BEFORE 'Alpha Able' — 'Alexandria Robel' was drawn in a full-suite run and took row 0 —
+    // so `data.0` depended on the faker draw rather than on the ordering contract under test. It is
+    // pinned to a name that sorts between the two fixtures, which also makes the order assertion
+    // below cover a middle row instead of just the endpoints.
+    [$bm, , $bmProfile] = branchStaff($scn['merchant'], $scn['branch'], MerchantUserRole::BranchManager);
+    $bmProfile->update(['display_name' => 'Manager Mike']);
 
     $zebra = StaffProfile::factory()->create([
         'merchant_id' => $scn['merchant']->id,
@@ -72,6 +80,11 @@ it('returns the acting branch personnel as {id, display_name} in display-name or
     $sorted = $names;
     sort($sorted);
     expect($names)->toBe($sorted);
+
+    // Now that every display name in the branch is pinned, the whole result is deterministic:
+    // exactly the three profiles in this branch, in display order. A random name reappearing in
+    // this fixture would fail here rather than intermittently at `data.0`.
+    expect($names)->toBe(['Alpha Able', 'Manager Mike', 'Zebra Zulu']);
 });
 
 it('exposes ONLY the public id and display name — no contact, role, status or branch field', function (): void {
@@ -93,12 +106,23 @@ it('exposes ONLY the public id and display name — no contact, role, status or 
     $body = (string) $res->getContent();
     expect($body)
         ->not->toContain($personnel->phone)
-        ->and($body)->not->toContain((string) $personnel->id)          // internal numeric PK
         ->and($body)->not->toContain($scn['branch']->ulid)
         ->and($body)->not->toContain('phone')
         ->and($body)->not->toContain('employment_status')
         ->and($body)->not->toContain('primary_branch_id')
         ->and($body)->not->toContain('profile_photo');
+
+    // The internal numeric PK must never be handed out. A raw substring search for it is not a
+    // valid test of that: a small sequence value such as `5` occurs inside almost any ULID, so the
+    // old assertion passed or failed on how many rows earlier tests had consumed — in isolation it
+    // failed, in the full suite it passed. Asserted structurally instead, which is both
+    // deterministic and stronger: every identifier returned IS a ULID, so no numeric PK can be one.
+    $ids = collect($res->json('data'))->pluck('id');
+    expect($ids)->toContain($personnel->ulid);
+
+    foreach ($ids as $id) {
+        expect($id)->toMatch('/^[0-9A-HJKMNP-TV-Z]{26}$/');
+    }
 });
 
 it('never exposes personnel from another branch of the same merchant', function (): void {

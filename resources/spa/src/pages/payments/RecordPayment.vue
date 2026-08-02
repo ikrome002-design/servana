@@ -3,7 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useInvoiceStore } from '@/stores/invoiceStore';
@@ -15,6 +15,7 @@ import {
   type PaymentRecordingGroupView,
 } from '@/stores/paymentStore';
 import type { Invoice } from '@/types/models';
+import SvMoney from '@/components/ui/SvMoney.vue';
 
 /**
  * Front Office payment recording (Plan §41; Phase 18A). Records a single or
@@ -53,7 +54,13 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
   return 'success';
 });
 
-const availableMinor = computed(() => invoice.value?.balance.amount ?? 0);
+/**
+ * The amount still recordable, in minor units, or null when the payload carried no balance.
+ *
+ * NOT defaulted to 0: zero means "fully paid" and would silently forbid recording a legitimate
+ * payment. Unknown is a different fact and the UI must say so (UI01-RENDER-001).
+ */
+const availableMinor = computed<number | null>(() => invoice.value?.balance?.amount ?? null);
 
 const groupTotalMinor = computed(() =>
   rows.reduce((sum, r) => sum + toMinor(r.amount), 0),
@@ -61,7 +68,18 @@ const groupTotalMinor = computed(() =>
 
 const formattedGroupTotal = computed(() => formatKes(groupTotalMinor.value, invoice.value?.currency ?? 'KES'));
 
-const overAvailable = computed(() => groupTotalMinor.value > availableMinor.value);
+/**
+ * True only when the balance is KNOWN and the entered total exceeds it.
+ *
+ * An unknown balance is not "not over" — it is simply unknown, and claiming otherwise would let
+ * the form present an over-payment as acceptable.
+ */
+const overAvailable = computed(
+  () => availableMinor.value !== null && groupTotalMinor.value > availableMinor.value,
+);
+
+/** The balance did not arrive. Recording against an unknown balance is refused, fail-safe. */
+const balanceUnknown = computed(() => invoice.value !== null && availableMinor.value === null);
 
 const canSubmit = computed(
   () =>
@@ -69,6 +87,8 @@ const canSubmit = computed(
     rows.length > 0 &&
     rows.every((r) => toMinor(r.amount) > 0 && (!requiresReference(r.method) || r.reference.trim() !== '')) &&
     !overAvailable.value &&
+    // Fail-safe: never record a payment when the amount owed is unknown (UI01-RENDER-001).
+    !balanceUnknown.value &&
     !submitting.value,
 );
 
@@ -153,13 +173,13 @@ onMounted(async () => {
         as="section"
         padding="md"
         data-testid="record-success"
-        class="border-l-4 border-l-[color:var(--color-success,#16a34a)]"
+        class="border-l-4 border-l-sv-success-border"
       >
         <h2 class="font-display text-lg font-semibold text-heading">
           Payment recorded — pending validation
         </h2>
         <p class="mt-1 text-sm text-text-muted">
-          {{ recorded.total.formatted }} recorded against invoice
+          <SvMoney :formatted="recorded.total?.formatted ?? null" /> recorded against invoice
           {{ invoice?.invoice_number }}. Finance must validate it before any receipt is issued.
           This is not a validation and no receipt has been created.
         </p>
@@ -180,7 +200,7 @@ onMounted(async () => {
         padding="md"
         role="alert"
         data-testid="duplicate-warning"
-        class="border-l-4 border-l-[color:var(--color-warning,#d97706)]"
+        class="border-l-4 border-l-sv-warning-border"
       >
         <h2 class="font-display text-lg font-semibold text-heading">
           Duplicate reference needs Finance review
@@ -229,7 +249,7 @@ onMounted(async () => {
                 Invoice total
               </dt>
               <dd class="font-semibold text-heading">
-                {{ invoice?.total.formatted }}
+                <SvMoney :formatted="invoice?.total?.formatted ?? null" />
               </dd>
             </div>
             <div>
@@ -240,7 +260,10 @@ onMounted(async () => {
                 class="font-semibold text-heading"
                 data-testid="available-amount"
               >
-                {{ invoice?.balance.formatted }}
+                <SvMoney
+                  :formatted="invoice?.balance?.formatted ?? null"
+                  :minor-units="invoice?.balance?.amount ?? null"
+                />
               </dd>
             </div>
           </dl>
@@ -266,13 +289,13 @@ onMounted(async () => {
                 label="Method"
                 :options="PAYMENT_METHODS"
               />
-              <SvInput
+              <SvTextInput
                 :id="`amount-${index}`"
                 v-model="row.amount"
                 label="Amount (KES)"
                 type="number"
               />
-              <SvInput
+              <SvTextInput
                 v-if="requiresReference(row.method)"
                 :id="`reference-${index}`"
                 v-model="row.reference"
@@ -314,14 +337,23 @@ onMounted(async () => {
 
           <p
             v-if="overAvailable"
-            class="text-sm text-[color:var(--color-danger,#dc2626)]"
+            class="text-sm text-sv-error-fg"
             role="alert"
           >
             The total exceeds the amount available to record on this invoice.
           </p>
           <p
+            v-if="balanceUnknown"
+            class="text-sm text-sv-error-fg"
+            role="alert"
+            data-testid="balance-unknown"
+          >
+            We couldn’t read the amount outstanding on this invoice, so a payment can’t be recorded
+            yet. Reload the page and try again.
+          </p>
+          <p
             v-if="submitError"
-            class="text-sm text-[color:var(--color-danger,#dc2626)]"
+            class="text-sm text-sv-error-fg"
             role="alert"
           >
             {{ submitError }}
@@ -341,7 +373,7 @@ onMounted(async () => {
     </SvStateBoundary>
 
     <!-- Confirmation modal -->
-    <SvModal
+    <SvDialog
       :open="confirming"
       title="Confirm payment recording"
       description="This creates a pending recording for Finance to validate — it is not a validation and issues no receipt."
@@ -366,6 +398,6 @@ onMounted(async () => {
           Record payment
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

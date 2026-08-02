@@ -62,6 +62,12 @@ final class AuthenticatedUserResource extends JsonResource
                 'status' => $this->status,
                 'email_verified_at' => $this->email_verified_at === null ? null : $this->email_verified_at->toIso8601String(),
                 'is_platform_staff' => (bool) $this->is_platform_staff,
+                // Phase UI-04 (ADR-021 §3). The user's EXPLICIT theme choice, or null when they
+                // have never made one. `resolved_theme` applies the "absence means light" rule
+                // server-side so the SPA never has to re-implement it — and so it can never
+                // accidentally re-implement it as "ask the operating system".
+                'theme_preference' => $this->theme_preference?->value,
+                'resolved_theme' => $user->resolvedTheme()->value,
             ],
             'merchant' => $merchantPayload,
             'membership' => $membershipPayload,

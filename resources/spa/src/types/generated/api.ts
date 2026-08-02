@@ -627,6 +627,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["auth.preferences.update"];
+        trace?: never;
+    };
     "/api/v1/auth/sessions": {
         parameters: {
             query?: never;
@@ -4323,6 +4339,12 @@ export interface components {
                 status: string;
                 email_verified_at: string | null;
                 is_platform_staff: boolean;
+                /** @description Phase UI-04 (ADR-021 §3). The user's EXPLICIT theme choice, or null when they
+                 *     have never made one. `resolved_theme` applies the "absence means light" rule
+                 *     server-side so the SPA never has to re-implement it — and so it can never
+                 *     accidentally re-implement it as "ask the operating system". */
+                theme_preference: string;
+                resolved_theme: string;
             };
             merchant: unknown[] | null;
             membership: unknown[] | null;
@@ -6911,6 +6933,13 @@ export interface components {
             redirect?: string | null;
         };
         /**
+         * ThemePreference
+         * @description A user's explicit theme choice (ADR-021; UI/UX plan §12.1–§12.2). The vocabulary is CLOSED at two values. There is deliberately no `System` / `Auto` case: ADR-021 rule 2 forbids `prefers-color-scheme` from selecting the theme, so "follow the  * operating system" must not be expressible anywhere in the stack.  Absence of a value (a `null` column) means "no explicit choice", which resolves to {@see self::Light}. That is why the column is nullable rather than defaulted.
+         *
+         * @enum {string}
+         */
+        ThemePreference: "light" | "dark";
+        /**
          * TransferAppointmentRequest
          * @description Transfer-appointment validation (Plan §36). The target personnel is a public
          *     staff ULID (must differ from the current assignee — enforced in the action) and
@@ -7292,6 +7321,23 @@ export interface components {
             tier?: string | null;
             metadata?: string[];
             sort_order?: number;
+        };
+        /**
+         * UpdateUserPreferencesRequest
+         * @description Validates a change to the authenticated user's own display preferences (Phase UI-04; ADR-021).
+         *
+         *     The target is ALWAYS `$request->user()`. This request accepts no user identifier, no merchant,
+         *     no branch and no role — there is deliberately no shape in which one person can write another
+         *     person's preference, which is why no permission key is needed (Plan §10.3 is unchanged).
+         *
+         *     The allowed vocabulary is the enum, so `system` / `auto` are rejected at the boundary as well as
+         *     by the database CHECK (ADR-021 rule 2 forbids OS-derived theme selection).
+         */
+        UpdateUserPreferencesRequest: {
+            /** @description `present` (not `required`) with `nullable`: clearing the preference back to "no
+             *      explicit choice" is a legitimate action and must be distinguishable from omitting
+             *     the field entirely. */
+            theme_preference: components["schemas"]["ThemePreference"];
         };
         /**
          * VerifyMagicLinkRequest
@@ -9248,6 +9294,48 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "auth.preferences.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserPreferencesRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @description Echo the STORED value (null when cleared) plus the RESOLVED theme, so the client
+                             *     never has to re-implement the "absence means light" rule. */
+                            theme_preference: string;
+                            resolved_theme: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {

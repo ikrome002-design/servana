@@ -4,8 +4,8 @@ import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvModal from '@/components/ui/SvModal.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useFinanceExportStore, SUPPORTED_EXPORT_TYPES, type FinanceExportView } from '@/stores/financeExportStore';
 import { usePermissionStore } from '@/stores/permissionStore';
 
@@ -118,7 +118,7 @@ onMounted(() => {
 
     <p
       v-if="actionError"
-      class="mt-3 text-sm text-[color:var(--color-danger,#dc2626)]"
+      class="mt-3 text-sm text-sv-error-fg"
       role="alert"
     >
       {{ actionError }}
@@ -173,7 +173,7 @@ onMounted(() => {
       </ul>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="requesting"
       title="Request a finance export"
       description="The export is scoped to your access and masked. A fresh step-up is required. Only the listed data types are available this phase."
@@ -186,7 +186,7 @@ onMounted(() => {
           label="Data"
           :options="typeOptions"
         />
-        <SvTextarea
+        <SvTextArea
           id="export-reason"
           v-model="form.reason"
           label="Reason"
@@ -208,6 +208,6 @@ onMounted(() => {
           Request export
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

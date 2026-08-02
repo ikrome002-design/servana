@@ -4,7 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import { apiClient } from '@/services/apiClient';
 import { useAppointmentStore } from '@/stores/appointmentStore';
@@ -126,12 +126,12 @@ onMounted(() => {
           :options="serviceOptions"
           required
         />
-        <SvInput
+        <SvTextInput
           id="starts_at"
           v-model="startsAt"
           label="Start time"
           type="datetime-local"
-          hint="Branch business time (Africa/Nairobi)."
+          help="Branch business time (Africa/Nairobi)."
           required
         />
         <p

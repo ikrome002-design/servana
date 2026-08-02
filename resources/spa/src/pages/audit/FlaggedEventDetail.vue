@@ -3,10 +3,11 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, RouterLink } from 'vue-router';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useFlaggedEventStore } from '@/stores/flaggedEventStore';
+import { SvIconBack } from '@/design-system/icons';
 
 /**
  * Flagged-event detail + review (Plan §13.2, §80; Phase 19). The review workflow
@@ -77,7 +78,10 @@ onMounted(() => {
       :to="{ name: 'audit.flagged-events' }"
       class="inline-flex min-h-[44px] items-center text-sm font-medium text-heading underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
-      ← Back to flagged events
+      <SvIconBack
+        aria-hidden="true"
+        class="mr-1 inline-block h-4 w-4 align-text-bottom"
+      />Back to flagged events
     </RouterLink>
 
     <SvStateBoundary
@@ -230,14 +234,14 @@ onMounted(() => {
       </div>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="confirming !== null"
       :title="confirming === 'dismiss' ? 'Dismiss this flagged event?' : 'Resolve this flagged event?'"
       description="This records a review outcome. Review notes are required."
       @close="confirming = null"
     >
       <div class="mt-2">
-        <SvTextarea
+        <SvTextArea
           id="flagged-review-notes"
           v-model="notes"
           label="Review notes"
@@ -260,6 +264,6 @@ onMounted(() => {
           {{ confirming === 'dismiss' ? 'Dismiss' : 'Resolve' }}
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

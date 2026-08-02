@@ -3,12 +3,13 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useInvoiceStore } from '@/stores/invoiceStore';
 import type { Invoice } from '@/types/models';
 import { invoiceStatusLabel, isInvoiceReadOnly } from '@/utils/invoice';
+import SvMoney from '@/components/ui/SvMoney.vue';
 
 // Invoice detail (Plan §40; Phase 17). Shows the immutable snapshot (number, items,
 // preferred-personnel fee shown separately, totals, validated/balance) with masked
@@ -148,11 +149,11 @@ onMounted(() => {
                   class="mt-0.5 text-xs text-text-muted"
                   data-testid="item-preferred-fee"
                 >
-                  Preferred-personnel fee: {{ item.preferred_personnel_fee.formatted }}
+                  Preferred-personnel fee: <SvMoney :formatted="item.preferred_personnel_fee?.formatted ?? null" />
                 </p>
               </div>
               <p class="text-sm font-semibold text-text">
-                {{ item.line_total.formatted }}
+                <SvMoney :formatted="item.line_total?.formatted ?? null" />
               </p>
             </li>
           </ul>
@@ -169,7 +170,7 @@ onMounted(() => {
                 Subtotal
               </dt>
               <dd class="text-text">
-                {{ invoice.subtotal.formatted }}
+                <SvMoney :formatted="invoice.subtotal?.formatted ?? null" />
               </dd>
             </div>
             <div
@@ -180,7 +181,7 @@ onMounted(() => {
                 Preferred-personnel fee
               </dt>
               <dd class="text-text">
-                {{ invoice.preferred_personnel_fee.formatted }}
+                <SvMoney :formatted="invoice.preferred_personnel_fee?.formatted ?? null" />
               </dd>
             </div>
             <div class="flex justify-between">
@@ -188,7 +189,7 @@ onMounted(() => {
                 Discount
               </dt>
               <dd class="text-text">
-                {{ invoice.discount.formatted }}
+                <SvMoney :formatted="invoice.discount?.formatted ?? null" />
               </dd>
             </div>
             <div class="flex justify-between">
@@ -196,7 +197,7 @@ onMounted(() => {
                 Tax
               </dt>
               <dd class="text-text">
-                {{ invoice.tax.formatted }}
+                <SvMoney :formatted="invoice.tax?.formatted ?? null" />
               </dd>
             </div>
             <!-- Phase 20E — client-facing platform-fee line: the portion of the Servana platform fee
@@ -211,7 +212,7 @@ onMounted(() => {
                 Platform fee
               </dt>
               <dd class="text-text">
-                {{ invoice.platform_fee_client_shifted.formatted }}
+                <SvMoney :formatted="invoice.platform_fee_client_shifted?.formatted ?? null" />
               </dd>
             </div>
             <div class="flex justify-between border-t border-border pt-1.5 font-display text-base font-bold">
@@ -222,7 +223,7 @@ onMounted(() => {
                 class="text-heading"
                 data-testid="invoice-total"
               >
-                {{ invoice.total.formatted }}
+                <SvMoney :formatted="invoice.total?.formatted ?? null" />
               </dd>
             </div>
             <div class="flex justify-between">
@@ -230,7 +231,7 @@ onMounted(() => {
                 Validated paid
               </dt>
               <dd class="text-text">
-                {{ invoice.validated_paid.formatted }}
+                <SvMoney :formatted="invoice.validated_paid?.formatted ?? null" />
               </dd>
             </div>
             <div class="flex justify-between">
@@ -238,7 +239,7 @@ onMounted(() => {
                 Balance
               </dt>
               <dd class="text-text">
-                {{ invoice.balance.formatted }}
+                <SvMoney :formatted="invoice.balance?.formatted ?? null" />
               </dd>
             </div>
           </dl>
@@ -311,7 +312,7 @@ onMounted(() => {
     </SvStateBoundary>
 
     <!-- Finalize confirmation -->
-    <SvModal
+    <SvDialog
       :open="confirmFinalize"
       title="Finalize this invoice?"
       description="Finalizing allocates the invoice number and locks the amounts permanently. This cannot be undone."
@@ -332,10 +333,10 @@ onMounted(() => {
           Finalize
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- Void execute confirmation -->
-    <SvModal
+    <SvDialog
       :open="confirmExecute"
       title="Void this invoice?"
       description="Voiding is irreversible. The invoice number is retained and the original amounts are preserved."
@@ -357,16 +358,16 @@ onMounted(() => {
           Void invoice
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- Void / adjust reason -->
-    <SvModal
+    <SvDialog
       :open="reasonAction !== null"
       :title="reasonTitle"
       description="A reason is required and is recorded in the audit trail. This is an irreversible financial action."
       @close="reasonAction = null"
     >
-      <SvTextarea
+      <SvTextArea
         id="invoice-reason"
         v-model="reason"
         label="Reason"
@@ -396,6 +397,6 @@ onMounted(() => {
           {{ reasonTitle }}
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

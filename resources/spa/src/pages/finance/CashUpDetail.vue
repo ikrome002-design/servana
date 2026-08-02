@@ -4,10 +4,11 @@ import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvModal from '@/components/ui/SvModal.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCashUpStore } from '@/stores/cashUpStore';
 import { usePermissionStore } from '@/stores/permissionStore';
+import SvMoney from '@/components/ui/SvMoney.vue';
 
 /**
  * Finance cash-up detail + review (Plan §45; Phase 18B). Finance (checker) approves,
@@ -143,7 +144,10 @@ onMounted(() => {
               Expected
             </p>
             <p class="font-semibold text-heading">
-              {{ store.current?.expected.formatted }}
+              <SvMoney
+                :formatted="store.current?.expected?.formatted ?? null"
+                :minor-units="store.current?.expected_minor ?? null"
+              />
             </p>
           </div>
           <div class="rounded-lg bg-surface-alt px-3 py-2">
@@ -151,7 +155,10 @@ onMounted(() => {
               Counted
             </p>
             <p class="font-semibold text-heading">
-              {{ store.current?.counted.formatted }}
+              <SvMoney
+                :formatted="store.current?.counted?.formatted ?? null"
+                :minor-units="store.current?.counted_minor ?? null"
+              />
             </p>
           </div>
           <div class="rounded-lg bg-surface-alt px-3 py-2">
@@ -159,55 +166,69 @@ onMounted(() => {
               Variance
             </p>
             <p class="font-semibold text-heading">
-              {{ store.current?.variance.formatted }}
+              <SvMoney
+                :formatted="store.current?.variance?.formatted ?? null"
+                :minor-units="store.current?.variance_minor ?? null"
+                signed
+              />
             </p>
           </div>
         </div>
 
-        <div class="mt-4 overflow-x-auto">
+        <!--
+          A horizontally scrollable region must be reachable by keyboard (WCAG 2.1.1): the table is
+          wider than a mobile viewport, so a pointer user can scroll it and a keyboard user could
+          not. Same contract SvDataTable applies to its own scroll container.
+        -->
+        <div
+          class="mt-4 overflow-x-auto"
+          tabindex="0"
+          role="region"
+          aria-label="Cash-up denomination breakdown (scrollable)"
+        >
           <table class="w-full min-w-[24rem] text-sm">
-          <thead>
-            <tr class="text-left text-text-muted">
-              <th class="py-1">
-                Method
-              </th>
-              <th class="py-1 text-right">
-                Expected
-              </th>
-              <th class="py-1 text-right">
-                Counted
-              </th>
-              <th class="py-1 text-right">
-                Variance
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="line in store.current?.lines ?? []"
-              :key="line.method"
-              class="border-t border-[color:var(--color-border,#e5e7eb)]"
-            >
-              <td class="py-1 font-semibold text-heading">
-                {{ line.method }}
-              </td>
-              <td class="py-1 text-right">
-                {{ line.expected_minor }}
-              </td>
-              <td class="py-1 text-right">
-                {{ line.counted_minor }}
-              </td>
-              <td class="py-1 text-right">
-                {{ line.variance_minor }}
-              </td>
-            </tr>
-          </tbody>
+            <thead>
+              <tr class="text-left text-text-muted">
+                <th class="py-1">
+                  Method
+                </th>
+                <th class="py-1 text-right">
+                  Expected
+                </th>
+                <th class="py-1 text-right">
+                  Counted
+                </th>
+                <th class="py-1 text-right">
+                  Variance
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="line in store.current?.lines ?? []"
+                :key="line.method"
+                class="border-t border-sv-border"
+              >
+                <td class="py-1 font-semibold text-heading">
+                  {{ line.method }}
+                </td>
+                <td class="py-1 text-right">
+                  {{ line.expected_minor }}
+                </td>
+                <td class="py-1 text-right">
+                  {{ line.counted_minor }}
+                </td>
+                <td class="py-1 text-right">
+                  {{ line.variance_minor }}
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
 
         <p
           v-if="actionError"
-          class="mt-3 text-sm text-[color:var(--color-danger,#dc2626)]"
+          class="mt-3 text-sm text-sv-error-fg"
           role="alert"
         >
           {{ actionError }}
@@ -215,13 +236,13 @@ onMounted(() => {
       </SvCard>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="deciding !== null"
       :title="deciding ? verbTitle[deciding] : ''"
       description="Approving requires that you are not the branch manager who submitted this cash-up. Reject / request-correction need a reason."
       @close="deciding = null"
     >
-      <SvTextarea
+      <SvTextArea
         v-if="needsReason"
         id="cash-up-reason"
         v-model="reason"
@@ -244,6 +265,6 @@ onMounted(() => {
           Confirm
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

@@ -3,15 +3,15 @@ import { ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvEmptyState from '@/components/ui/SvEmptyState.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
+import SvThemeToggle from '@/components/ui/SvThemeToggle.vue';
+import { SvIconProfile, SvIconSuccess } from '@/design-system/icons';
 import { useNotificationStore } from '@/stores/notificationStore';
-import { useThemeStore } from '@/stores/themeStore';
 
-const theme = useThemeStore();
 const notifications = useNotificationStore();
 
 const modalOpen = ref(false);
@@ -52,14 +52,25 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
         <h2 class="mb-4 font-display text-base font-bold text-heading">
           Theme
         </h2>
-        <SvButton
-          variant="secondary"
-          :aria-pressed="theme.theme === 'dark'"
-          data-testid="theme-toggle"
-          @click="theme.toggle()"
-        >
-          {{ theme.theme === 'dark' ? '☀️ Switch to light' : '🌙 Switch to dark' }}
-        </SvButton>
+        <!--
+          Phase UI-04 (UI01-ASSET-001): this rendered emoji sun/moon in a button label. The
+          production theme control is now SvThemeToggle, which uses Heroicons and carries a real
+          accessible name — the fixture exercises the SAME component the product ships.
+        -->
+        <!--
+          Both variants appear here because this is a component gallery. `SvThemeToggle` carries a
+          single `theme-toggle` test id — correct for a product page, which ships exactly one — so
+          on THIS page the id is necessarily ambiguous. Each variant is wrapped rather than having
+          the component's id changed: the gallery is the anomaly, not the contract.
+        -->
+        <div class="flex flex-wrap items-center gap-4">
+          <span data-testid="theme-toggle-icon-variant">
+            <SvThemeToggle />
+          </span>
+          <span data-testid="theme-toggle-switch-variant">
+            <SvThemeToggle variant="switch" />
+          </span>
+        </div>
       </SvCard>
 
       <!-- Buttons -->
@@ -98,10 +109,10 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
       <!-- Inputs -->
       <SvCard>
         <h2 class="mb-4 font-display text-base font-bold text-heading">
-          SvInput, SvSelect, SvTextarea
+          SvTextInput, SvSelect, SvTextArea
         </h2>
         <div class="space-y-4">
-          <SvInput
+          <SvTextInput
             id="demo-name"
             v-model="inputValue"
             label="Display name"
@@ -123,7 +134,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
               Clear error
             </SvButton>
           </div>
-          <SvInput
+          <SvTextInput
             id="demo-disabled"
             model-value=""
             label="Disabled input"
@@ -141,7 +152,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
               { value: 'finance', label: 'Finance' },
             ]"
           />
-          <SvTextarea
+          <SvTextArea
             id="demo-notes"
             v-model="textareaValue"
             label="Notes"
@@ -186,8 +197,11 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
               Success
             </p>
             <SvStateBoundary state="success">
-              <p class="text-sm text-success">
-                ✓ Data loaded successfully.
+              <p class="flex items-center gap-2 text-sm text-sv-success-fg">
+                <SvIconSuccess
+                  aria-hidden="true"
+                  class="h-4 w-4"
+                />Data loaded successfully.
               </p>
             </SvStateBoundary>
           </div>
@@ -203,14 +217,14 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
           title="No clients yet"
           description="Start by adding your first client to this branch."
           action-label="Add client"
-          icon="👤"
+          :icon="SvIconProfile"
         />
       </SvCard>
 
-      <!-- SvModal -->
+      <!-- SvDialog -->
       <SvCard>
         <h2 class="mb-4 font-display text-base font-bold text-heading">
-          SvModal
+          SvDialog
         </h2>
         <SvButton
           variant="primary"
@@ -219,7 +233,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
         >
           Open modal
         </SvButton>
-        <SvModal
+        <SvDialog
           :open="modalOpen"
           title="Confirm action"
           description="This is a demonstration modal. Press Esc or click outside to close."
@@ -239,7 +253,7 @@ function showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
               Confirm
             </SvButton>
           </div>
-        </SvModal>
+        </SvDialog>
       </SvCard>
 
       <!-- Toasts -->

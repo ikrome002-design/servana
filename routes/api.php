@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\Auth\HostSessionController;
 use App\Http\Controllers\Api\V1\Auth\MagicLinkController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\MfaController;
+use App\Http\Controllers\Api\V1\Auth\UserPreferencesController;
 use App\Http\Controllers\Api\V1\Billing\PlatformFeeDisputeController;
 use App\Http\Controllers\Api\V1\Billing\PlatformFeeLedgerController;
 use App\Http\Controllers\Api\V1\Branch\PreferredPersonnelFeeRuleReadController;
@@ -175,6 +176,19 @@ Route::prefix('auth')->group(function (): void {
             Route::post('logout-all', [HostSessionController::class, 'destroyAll'])
                 ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
                 ->name('auth.logout-all');
+
+            /*
+             | Phase UI-04 (ADR-021) — the authenticated user's OWN display preferences.
+             |
+             | Identity-level for the same reason as the routes above: a person's theme follows
+             | them across every account host and every merchant, so a single tenant context would
+             | be the wrong scope. Authorization is OWNERSHIP — the subject is `$request->user()`
+             | and the payload carries no user identifier — so UI-04 adds NO permission key and
+             | makes NO permission-matrix change.
+             */
+            Route::patch('preferences', [UserPreferencesController::class, 'update'])
+                ->defaults(RouteClassification::KEY, RouteClass::AuthenticatedGlobalMutation->value)
+                ->name('auth.preferences.update');
         });
 
     /*

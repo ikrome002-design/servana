@@ -1,4 +1,4 @@
-import type { MerchantRole, MerchantStatus, UserStatus } from './enums';
+import type { MerchantRole, MerchantStatus, Theme, UserStatus } from './enums';
 
 export interface User {
   ulid: string;
@@ -18,6 +18,15 @@ export interface AuthenticatedUser {
   status: UserStatus;
   email_verified_at: string | null;
   is_platform_staff: boolean;
+  /**
+   * The user's EXPLICIT theme choice, or null when they have never made one (Phase UI-04,
+   * ADR-021). Null is not "light" — it is "no preference", which the server resolves to light in
+   * `resolved_theme`. Keeping the two separate is what stops a stored default from being
+   * mistaken for a real choice.
+   */
+  theme_preference: Theme | null;
+  /** The theme the SERVER says this user should be served. Absence of a choice resolves to light. */
+  resolved_theme: Theme;
 }
 
 export type ServiceFeeTier = 'customer_centric' | 'split_tier' | 'business_centric';

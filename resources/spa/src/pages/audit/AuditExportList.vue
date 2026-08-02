@@ -3,10 +3,10 @@ import { computed, onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import SvButton from '@/components/ui/SvButton.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuditExportStore, AUDIT_EXPORT_DOMAINS, AUDIT_EXPORT_SEVERITIES } from '@/stores/auditExportStore';
 import { usePermissionStore } from '@/stores/permissionStore';
@@ -191,7 +191,7 @@ onMounted(() => {
       </ul>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="requesting"
       title="Request an audit export"
       description="The export is branch-scoped and masked. A fresh step-up is required. A reason is mandatory."
@@ -205,20 +205,20 @@ onMounted(() => {
           :options="branchOptions"
           placeholder="Select an assigned branch"
         />
-        <SvTextarea
+        <SvTextArea
           id="audit-export-reason"
           v-model="form.reason"
           label="Reason"
           :rows="3"
         />
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <SvInput
+          <SvTextInput
             id="audit-export-from"
             v-model="form.date_from"
             label="From (optional)"
             type="date"
           />
-          <SvInput
+          <SvTextInput
             id="audit-export-to"
             v-model="form.date_to"
             label="To (optional)"
@@ -282,6 +282,6 @@ onMounted(() => {
           Request export
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

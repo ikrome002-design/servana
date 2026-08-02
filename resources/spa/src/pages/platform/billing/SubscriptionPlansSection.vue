@@ -3,11 +3,11 @@ import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useForm } from '@/composables/useForm';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -218,7 +218,7 @@ async function confirmRetire(): Promise<void> {
       </ul>
     </SvStateBoundary>
 
-    <SvModal
+    <SvDialog
       :open="showForm"
       :title="editing ? 'Edit plan' : 'New plan'"
       description="Plan metadata only. Prices and entitlements are managed separately."
@@ -229,17 +229,17 @@ async function confirmRetire(): Promise<void> {
         novalidate
         @submit.prevent="submit"
       >
-        <SvInput
+        <SvTextInput
           id="plan-key"
           label="Key"
           :model-value="form.values.key"
           :disabled="editing !== null"
           :errors="form.errors.key"
-          hint="Lowercase letters, digits and underscores. Immutable after creation."
+          help="Lowercase letters, digits and underscores. Immutable after creation."
           required
           @update:model-value="form.values.key = $event"
         />
-        <SvInput
+        <SvTextInput
           id="plan-name"
           label="Name"
           :model-value="form.values.name"
@@ -247,7 +247,7 @@ async function confirmRetire(): Promise<void> {
           required
           @update:model-value="form.values.name = $event"
         />
-        <SvTextarea
+        <SvTextArea
           id="plan-description"
           label="Description"
           :model-value="form.values.description"
@@ -255,14 +255,14 @@ async function confirmRetire(): Promise<void> {
           @update:model-value="form.values.description = $event"
         />
         <div class="grid gap-4 sm:grid-cols-2">
-          <SvInput
+          <SvTextInput
             id="plan-tier"
             label="Tier"
             :model-value="form.values.tier"
             :errors="form.errors.tier"
             @update:model-value="form.values.tier = $event"
           />
-          <SvInput
+          <SvTextInput
             id="plan-sort-order"
             label="Sort order"
             type="number"
@@ -293,9 +293,9 @@ async function confirmRetire(): Promise<void> {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
-    <SvModal
+    <SvDialog
       :open="retireTarget !== null"
       title="Retire plan?"
       description="Retiring stops new use of the plan. Existing price history is preserved and remains auditable."
@@ -322,6 +322,6 @@ async function confirmRetire(): Promise<void> {
           Retire plan
         </SvButton>
       </div>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

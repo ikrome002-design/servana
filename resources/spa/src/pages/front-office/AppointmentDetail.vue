@@ -4,16 +4,17 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { apiClient } from '@/services/apiClient';
 import { useAppointmentStore } from '@/stores/appointmentStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import type { Appointment, ServiceEligibility } from '@/types/models';
 import { appointmentStatusLabel, toBusinessIso } from '@/utils/appointment';
+import { SvIconBack } from '@/design-system/icons';
 
 // Appointment detail with capability-gated actions (Plan §36; Phase 16A). Action
 // availability is driven by the API `can` map (UX only); the API re-checks every
@@ -118,7 +119,10 @@ onMounted(load);
       :to="{ name: 'front-office.appointments' }"
       class="text-sm font-semibold text-heading underline"
     >
-      ← Back to appointments
+      <SvIconBack
+        aria-hidden="true"
+        class="mr-1 inline-block h-4 w-4 align-text-bottom"
+      />Back to appointments
     </RouterLink>
 
     <SvStateBoundary
@@ -241,7 +245,7 @@ onMounted(load);
     </SvStateBoundary>
 
     <!-- Assign / Transfer dialog -->
-    <SvModal
+    <SvDialog
       :open="activeDialog === 'assign' || activeDialog === 'transfer'"
       :title="activeDialog === 'transfer' ? 'Transfer appointment' : 'Assign personnel'"
       description="Only eligible, available personnel can take this appointment."
@@ -260,7 +264,7 @@ onMounted(load);
           :options="personnelOptions"
           required
         />
-        <SvTextarea
+        <SvTextArea
           v-if="activeDialog === 'transfer'"
           id="transfer-reason"
           v-model="reason"
@@ -275,10 +279,10 @@ onMounted(load);
           Confirm
         </SvButton>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- Reschedule dialog -->
-    <SvModal
+    <SvDialog
       :open="activeDialog === 'reschedule'"
       title="Reschedule appointment"
       description="The end time is recalculated from the service duration."
@@ -289,12 +293,12 @@ onMounted(load);
         novalidate
         @submit.prevent="submitReschedule"
       >
-        <SvInput
+        <SvTextInput
           id="new-start"
           v-model="newStart"
           label="New start time"
           type="datetime-local"
-          hint="Branch business time (Africa/Nairobi)."
+          help="Branch business time (Africa/Nairobi)."
           required
         />
         <SvButton
@@ -306,10 +310,10 @@ onMounted(load);
           Reschedule
         </SvButton>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- Cancel dialog -->
-    <SvModal
+    <SvDialog
       :open="activeDialog === 'cancel'"
       title="Cancel appointment"
       description="A reason is required once a client has checked in."
@@ -320,7 +324,7 @@ onMounted(load);
         novalidate
         @submit.prevent="submitCancel"
       >
-        <SvTextarea
+        <SvTextArea
           id="cancel-reason"
           v-model="reason"
           label="Reason"
@@ -333,6 +337,6 @@ onMounted(load);
           Cancel appointment
         </SvButton>
       </form>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

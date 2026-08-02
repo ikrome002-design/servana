@@ -4,11 +4,11 @@ import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -281,17 +281,17 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
           :options="PAYOUT_RUN_STATUS_FILTER"
           @update:model-value="store.filters.status = $event"
         />
-        <SvInput
+        <SvTextInput
           id="filter-currency"
           label="Currency"
-          hint="3-letter code, e.g. KES"
+          help="3-letter code, e.g. KES"
           :model-value="store.filters.currency"
           @update:model-value="store.filters.currency = $event"
         />
-        <SvInput
+        <SvTextInput
           id="filter-branch"
           label="Branch reference"
-          hint="26-character branch reference"
+          help="26-character branch reference"
           :model-value="store.filters.branch_ulid"
           @update:model-value="store.filters.branch_ulid = $event"
         />
@@ -381,7 +381,7 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
     </template>
 
     <!-- detail modal -->
-    <SvModal
+    <SvDialog
       :open="detailOpen"
       title="Payout run"
       description="A server-authoritative payout run. Amounts are exact integer minor units that Servana calculated."
@@ -540,10 +540,10 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
           </SvButton>
         </div>
       </div>
-    </SvModal>
+    </SvDialog>
 
     <!-- reject modal -->
-    <SvModal
+    <SvDialog
       :open="rejectOpen"
       title="Reject payout run"
       description="Rejecting releases the claimed salary, commission and adjustments back to the eligible pool. A new draft can be prepared. A reason is required."
@@ -554,7 +554,7 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
         novalidate
         @submit.prevent="submitReject"
       >
-        <SvTextarea
+        <SvTextArea
           id="reject-reason"
           label="Reason"
           :model-value="rejectReason"
@@ -579,10 +579,10 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
 
     <!-- mark-paid modal -->
-    <SvModal
+    <SvDialog
       :open="markPaidOpen"
       title="Mark payout run paid"
       description="Record that an external payment has already been made for this run. Servana does not move money — it only records the settlement. This needs a fresh step-up."
@@ -640,20 +640,20 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
           {{ markPaidError }}
         </p>
 
-        <SvInput
+        <SvTextInput
           id="mark-paid-reference"
           label="External payment reference"
-          hint="The reference for the payment made outside Servana."
+          help="The reference for the payment made outside Servana."
           :model-value="markPaidForm.external_payment_reference"
           :errors="markPaidErrors.external_payment_reference"
           required
           @update:model-value="markPaidForm.external_payment_reference = $event"
         />
-        <SvInput
+        <SvTextInput
           id="mark-paid-date"
           label="Paid date"
           type="date"
-          hint="The date the external payment was made (not in the future)."
+          help="The date the external payment was made (not in the future)."
           :model-value="markPaidForm.paid_date"
           :errors="markPaidErrors.paid_date"
           required
@@ -676,6 +676,6 @@ function mapMutationError(err: unknown, fieldErrors?: Record<string, string[]>):
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

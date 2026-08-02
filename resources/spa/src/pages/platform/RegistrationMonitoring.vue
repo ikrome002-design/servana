@@ -3,9 +3,9 @@ import axios from 'axios';
 import { computed, nextTick, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import SvTextarea from '@/components/ui/SvTextarea.vue';
+import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useCan } from '@/composables/useCan';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { usePlatformMerchantStore, type PlatformMerchant } from '@/stores/platformMerchantStore';
@@ -394,7 +394,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
     </template>
 
     <!-- Governance confirmation with mandatory reason -->
-    <SvModal
+    <SvDialog
       :open="pendingAction !== null"
       :title="modalTitle"
       description="This changes the merchant’s operational status only — it never affects billing. A reason is required and a fresh security step-up may be requested."
@@ -405,7 +405,7 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
         novalidate
         @submit.prevent="confirm"
       >
-        <SvTextarea
+        <SvTextArea
           id="governance-reason"
           label="Reason"
           :model-value="reason"
@@ -439,6 +439,6 @@ function canGovern(m: PlatformMerchant, action: GovernanceAction): boolean {
           </SvButton>
         </div>
       </form>
-    </SvModal>
+    </SvDialog>
   </div>
 </template>

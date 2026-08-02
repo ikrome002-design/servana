@@ -4,7 +4,65 @@
   "lifecycle_rule": "A local correction is NOT verified_complete. These closures stay `local_complete pending PR CI/review/merge` until the UI-03 pull request merges with green required checks and recorded governance evidence, at which point the next branch reconciles them.",
   "ui03_branch": "phase-ui-03-auth-session-account-switching",
   "ui03_base": "fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
-  "ui03_pull_request": "NOT CREATED — UI-03 stops at a pushed branch by instruction",
+  "ui03_pull_request": {
+    "number": 53,
+    "url": "https://github.com/ikrome002-design/servana/pull/53",
+    "title": "Phase UI-03: Secure host-bound authentication and account switching",
+    "state": "MERGED",
+    "is_draft": false,
+    "base_branch": "main",
+    "reviewed_base_sha": "fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
+    "head_branch": "phase-ui-03-auth-session-account-switching",
+    "final_reviewed_head": "182f2cca78f56e1d0f74984ccb723a83be805140",
+    "merge_commit": "00c9c1e0025e3979464691be662915ada872cc18",
+    "merge_method": "regular merge commit preserving the four reviewed commits",
+    "merge_parents": [
+      "fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f",
+      "182f2cca78f56e1d0f74984ccb723a83be805140"
+    ],
+    "merged_at": "2026-08-01T07:08:07Z",
+    "reviewed_commits": [
+      {
+        "sha": "64ca7cc51bd25c19fbb3d9733fd353ec63062c48",
+        "subject": "ui-03: secure host-bound authentication and account switching"
+      },
+      {
+        "sha": "415d2f5838a3f60a50d2d17a2a10ea97dbb03eda",
+        "subject": "ui-03: complete deployed-origin browser proof"
+      },
+      {
+        "sha": "5bd6e1293b4eb33af07e61d8a7e9899c141395cf",
+        "subject": "test: pin payout adjustment inside run period"
+      },
+      {
+        "sha": "182f2cca78f56e1d0f74984ccb723a83be805140",
+        "subject": "test: respect created-at-only adjustment schema"
+      }
+    ],
+    "final_ci_run": {
+      "id": 30688440846,
+      "attempt": 1,
+      "workflow": "CI",
+      "event": "pull_request",
+      "head_sha": "182f2cca78f56e1d0f74984ccb723a83be805140",
+      "conclusion": "success",
+      "required_jobs": 5,
+      "jobs": [
+        "Backend — Pint, Larastan, Pest",
+        "Frontend — ESLint, vue-tsc, Vitest, build",
+        "Docker — build images",
+        "Security — gitleaks",
+        "E2E — Playwright"
+      ]
+    },
+    "merged_backend_baseline": "3108 passed / 5 skipped / 0 failed (20697 assertions, parallel, 4 processes)",
+    "governance_comment_id": 5150328091,
+    "governance_comment_url": "https://github.com/ikrome002-design/servana/pull/53#issuecomment-5150328091",
+    "submitted_reviews": 0,
+    "review_decision": "",
+    "independent_approval_claimed": false,
+    "branch_refs_after_merge": "absent locally and on origin"
+  },
   "closures": [
     {
       "defect_id": "UI01-ROLE-001",
@@ -34,8 +92,10 @@
       "before": "Any authenticated user rendered the Super Administrator shell at /platform.",
       "after": "The surface does not mount unless route account, server-resolved host account and a server-derived held account all agree; otherwise the role-safe denial renders. No redirect to a broader account occurs in any case.",
       "browser_proof": "CAPTURED. Deployed-origin observation OBS-33: a Personnel-only user, genuinely authenticated on their own account host, requested the platform-owned /platform route and the role-safe access-denied state rendered ('You do not have access to this page'); no redirect to another account occurred. OBS-33b additionally records that the same deep link on the platform HOST carries no session at all, because the session cookie is host-only — so cookie scoping denies before the guard is even reached. Screenshot: docs/frontend/audits/ui-03/screenshots/09-wrong-account-deep-link-denied.png.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "The guard is UX; the backend remains the security boundary. It is attached to /platform (where the proven exposure was); UI-07 attaches it to the remaining seven account trees as it builds their route contracts."
+      "closure_status": "verified_complete",
+      "remaining_risk": "The guard is UX; the backend remains the security boundary. It is attached to /platform (where the proven exposure was); UI-07 attaches it to the remaining seven account trees as it builds their route contracts.",
+      "verified_by": "PR #53 merged as 00c9c1e0025e3979464691be662915ada872cc18 with CI run 30688440846 attempt 1 (five required jobs SUCCESS) and governance comment 5150328091",
+      "historical_ui01_register_rewritten": false
     },
     {
       "defect_id": "UI03-AUTH-001",
@@ -64,8 +124,10 @@
       "before": "HTML-accept request to an auth-protected /api/v1 route → 500 (RouteNotFoundException).",
       "after": "HTML-accept request to /api/v1 → 401 with the standard envelope (an endpoint is not a page). Browser page navigation → 302 to the same host's /auth/login?redirect=<safe path>. No missing-route exception, no redirect loop, no cross-host redirect.",
       "browser_proof": "CAPTURED. Deployed-origin observations OBS-03 (JSON request to a protected API returns the standard 401 envelope), OBS-04 (HTML-accept request to the same API stays 401 and never 500s), OBS-01 and OBS-02 (a real browser page navigation on an approved host reaches that host's own login experience with no 500 and no redirect loop), OBS-05 (an unapproved host stays denied and is never redirected to an approved account host).",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "No authenticated PAGE route exists yet, so the redirect path is proven against a route registered inside the test. UI-07 owns the real authenticated page contract; the guard is in place before those pages arrive rather than after."
+      "closure_status": "verified_complete",
+      "remaining_risk": "No authenticated PAGE route exists yet, so the redirect path is proven against a route registered inside the test. UI-07 owns the real authenticated page contract; the guard is in place before those pages arrive rather than after.",
+      "verified_by": "PR #53 merged as 00c9c1e0025e3979464691be662915ada872cc18 with CI run 30688440846 attempt 1 (five required jobs SUCCESS) and governance comment 5150328091",
+      "historical_ui01_register_rewritten": false
     },
     {
       "defect_id": "UI03-EDGE-001",
@@ -89,8 +151,10 @@
       ],
       "test_result": "8 passed (25 assertions)",
       "browser_proof": "CAPTURED. After the fix, the same request on the same production pair returned the uniform 202 (OBS-06) and the whole 47-observation proof completed with 0 failures.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "Tracing: nginx's $request_id is no longer honoured as the correlation id, so the edge access log and the application log correlate through the X-Correlation-ID RESPONSE header rather than a shared inbound value. Joining them in the access-log format belongs to UI-17 / backend Phase 25. Recorded as residual risk R7."
+      "closure_status": "verified_complete",
+      "remaining_risk": "Tracing: nginx's $request_id is no longer honoured as the correlation id, so the edge access log and the application log correlate through the X-Correlation-ID RESPONSE header rather than a shared inbound value. Joining them in the access-log format belongs to UI-17 / backend Phase 25. Recorded as residual risk R7.",
+      "verified_by": "PR #53 merged as 00c9c1e0025e3979464691be662915ada872cc18 with CI run 30688440846 attempt 1 (five required jobs SUCCESS) and governance comment 5150328091",
+      "historical_ui01_register_rewritten": false
     },
     {
       "defect_id": "UI03-CTX-001",
@@ -122,8 +186,10 @@
       ],
       "test_result": "12 passed (27 assertions); structural guard 6 passed; complete affected set 603 passed / 4 skipped / 0 failed",
       "browser_proof": "CAPTURED. OBS-21 (target /me reports the target merchant, source merchant absent), OBS-22 (source-only permissions absent, target resolves its own — proven by set difference, not keyword match), OBS-22b (target merchant, membership and account key reported), OBS-24 (the source host session survives and still reports only the source context).",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "Requests with no host session — machine hosts, unapproved hosts, token callers, queue and scheduler work — keep the previous unbound behaviour, which is unambiguous because those principals hold a single active membership. UI-07 should confirm the binding requirement as it builds the authenticated page contract."
+      "closure_status": "verified_complete",
+      "remaining_risk": "Requests with no host session — machine hosts, unapproved hosts, token callers, queue and scheduler work — keep the previous unbound behaviour, which is unambiguous because those principals hold a single active membership. UI-07 should confirm the binding requirement as it builds the authenticated page contract.",
+      "verified_by": "PR #53 merged as 00c9c1e0025e3979464691be662915ada872cc18 with CI run 30688440846 attempt 1 (five required jobs SUCCESS) and governance comment 5150328091",
+      "historical_ui01_register_rewritten": false
     },
     {
       "defect_id": "UI03-MFA-001",
@@ -148,8 +214,10 @@
       ],
       "test_result": "5 passed (11 assertions)",
       "browser_proof": "CAPTURED. OBS-31 (the mandatory-MFA user satisfies the challenge on the source host) and OBS-32 (the target session records mfa_required_at_creation = true, does NOT inherit the source assertion, and the mandatory target role is challenged again — a gated target route answers 403 mfa_challenge_required). Screenshot: docs/frontend/audits/ui-03/screenshots/08-target-mfa-challenge-required.png.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None known. The source MFA assertion is still deliberately not copied to the target session, which OBS-32 confirms."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None known. The source MFA assertion is still deliberately not copied to the target session, which OBS-32 confirms.",
+      "verified_by": "PR #53 merged as 00c9c1e0025e3979464691be662915ada872cc18 with CI run 30688440846 attempt 1 (five required jobs SUCCESS) and governance comment 5150328091",
+      "historical_ui01_register_rewritten": false
     },
     {
       "defect_id": "UI03-E2E-001",
@@ -180,8 +248,10 @@
       ],
       "test_result": "Spot-check after the fix: role-entry-surfaces + role-navigation-keyboard, 14 passed. Full-suite result recorded in docs/proof/ui-03.md.",
       "browser_proof": "The guard's DENY path is additionally proven at the deployed origin by OBS-33 — a real authenticated user requesting a foreign-account route on their own account host receives the role-safe access-denied state.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "The guard's ALLOW path at a REAL account host — a genuine platform-staff user reaching /platform on citrus.servana.ke — is proven by the preview-origin e2e specs and by accountRouteGuard.spec.ts (13 unit tests), not by the deployed-origin run: the UI-03 browser fixture contains no platform-staff user. Recorded as residual risk R10."
+      "closure_status": "verified_complete",
+      "remaining_risk": "The guard's ALLOW path at a REAL account host — a genuine platform-staff user reaching /platform on citrus.servana.ke — is proven by the preview-origin e2e specs and by accountRouteGuard.spec.ts (13 unit tests), not by the deployed-origin run: the UI-03 browser fixture contains no platform-staff user. Recorded as residual risk R10.",
+      "verified_by": "PR #53 merged as 00c9c1e0025e3979464691be662915ada872cc18 with CI run 30688440846 attempt 1 (five required jobs SUCCESS) and governance comment 5150328091",
+      "historical_ui01_register_rewritten": false
     },
     {
       "defect_id": "UI03-TEST-001",
@@ -205,14 +275,28 @@
       ],
       "test_result": "17 passed (38 assertions)",
       "browser_proof": "Not applicable — a test-suite defect, not a runtime behaviour.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "The originally recorded 2,528 backend figure should be treated as unverified. This session re-ran the complete affected set (Auth, Isolation, Security, Hosts, Onboarding, Sessions, Tenancy, Api) rather than the whole suite, and records that measured figure instead of restating the original."
+      "closure_status": "verified_complete",
+      "remaining_risk": "The originally recorded 2,528 backend figure should be treated as unverified. This session re-ran the complete affected set (Auth, Isolation, Security, Hosts, Onboarding, Sessions, Tenancy, Api) rather than the whole suite, and records that measured figure instead of restating the original.",
+      "verified_by": "PR #53 merged as 00c9c1e0025e3979464691be662915ada872cc18 with CI run 30688440846 attempt 1 (five required jobs SUCCESS) and governance comment 5150328091",
+      "historical_ui01_register_rewritten": false
     }
   ],
   "explicitly_left_open": [
-    { "defect_id": "UI01-PROV-003", "owner_phase": "UI-16", "reason": "The Playwright suite still runs against a Vite preview origin. UI-03 captured no browser evidence at all and does not claim any part of this." },
-    { "defect_id": "UI01-PROV-004", "owner_phase": "UI-17", "reason": "Out of UI-03 scope." },
-    { "defect_id": "UI01-PROV-005", "owner_phase": "UI-17", "reason": "Out of UI-03 scope." }
+    {
+      "defect_id": "UI01-PROV-003",
+      "owner_phase": "UI-16",
+      "reason": "The Playwright suite still runs against a Vite preview origin. UI-03 captured no browser evidence at all and does not claim any part of this."
+    },
+    {
+      "defect_id": "UI01-PROV-004",
+      "owner_phase": "UI-17",
+      "reason": "Out of UI-03 scope."
+    },
+    {
+      "defect_id": "UI01-PROV-005",
+      "owner_phase": "UI-17",
+      "reason": "Out of UI-03 scope."
+    }
   ],
   "not_done_in_ui03": [
     {
@@ -230,5 +314,8 @@
     "reason": "docs/auth/permission-matrix.yaml contains no canonical authority for it, and UI-03 does not invent a grant.",
     "smallest_required_decision": "Whether to add a permission key (e.g. `security.session.revoke`) and which roles hold it. Until then, session management stays own-scope only.",
     "current_behaviour": "Every session read and revoke is filtered by the authenticated user's own user_id; a foreign session ULID returns 404, never 403."
-  }
+  },
+  "reconciled_by": "Phase UI-04 (branch phase-ui-04-design-system-shared-components), from live Git/GitHub evidence",
+  "reconciled_at_head": "00c9c1e0025e3979464691be662915ada872cc18",
+  "phase_lifecycle": "verified_complete"
 }

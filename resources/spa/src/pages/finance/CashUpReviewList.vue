@@ -81,7 +81,7 @@ onMounted(() => {
               <div class="text-right">
                 <p
                   class="font-semibold"
-                  :class="cashUp.variance_minor === 0 ? 'text-heading' : 'text-[color:var(--color-warning,#d97706)]'"
+                  :class="cashUp.variance_minor === 0 ? 'text-heading' : 'text-sv-warning-fg'"
                 >
                   Variance {{ cashUp.variance.formatted }}
                 </p>

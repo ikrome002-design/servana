@@ -3,7 +3,7 @@ import { computed, onMounted } from 'vue';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAppointmentStore } from '@/stores/appointmentStore';
@@ -64,7 +64,7 @@ onMounted(() => {
       @submit.prevent="appointments.fetchAppointments()"
     >
       <div class="w-44">
-        <SvInput
+        <SvTextInput
           id="appointment-date"
           v-model="appointments.filterDate"
           label="Date"

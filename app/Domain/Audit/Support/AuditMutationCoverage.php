@@ -25,7 +25,8 @@ use App\Domain\Audit\Enums\AuditEvent;
  * Deferred domains own NO implemented mutating route, so they are intentionally absent —
  * this registry never claims a future-domain emission. Notifications/reports (21N) remain
  * absent. Phase 20F added the compensation-CONFIGURATION routes below; 20G/20H added the
- * compensation EARNING/payout routes; Phase 21S added the personnel-SMS routes.
+ * compensation EARNING/payout routes; Phase 21S added the personnel-SMS routes; Phase UI-04
+ * added the own-scope display-preference route as an explicit EXEMPT entry.
  */
 final class AuditMutationCoverage
 {
@@ -317,6 +318,7 @@ final class AuditMutationCoverage
         'merchant-registration.first-time-setup.store' => 'Owner onboarding completion (profile + branch defaults); the founding membership was already audited (membership.created) at self-registration — no dedicated typed event in the current catalogue.',
         'service-sessions.notes' => 'Service-note text edit (sanitised free text); no dedicated typed audit event in the current catalogue.',
         'audit-exports.download-link' => 'Signed-link issuance (authorization re-check only); download accounting + audit_export.downloaded are recorded on the audit-exports.download stream (GET), not here.',
+        'auth.preferences.update' => 'Own-scope display preference (Phase UI-04; ADR-021). The subject is the authenticated user themselves, the only writable value is a closed light|dark enum, and it grants nothing: no permission, no tenant state, no financial or authority consequence, and it cannot address another user. There is no dedicated typed event in the current catalogue, and adding one would write an append-only hash-chained row for a cosmetic setting.',
     ];
 
     /** @return list<string> */

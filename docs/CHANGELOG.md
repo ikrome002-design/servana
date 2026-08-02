@@ -6,7 +6,218 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-03 — Authentication, session family and account switching (`phase-ui-03-auth-session-account-switching`) — local_complete pending PR CI/review/merge
+### Phase UI-04 — Design system and shared components (`phase-ui-04-design-system-shared-components`) — local_complete pending PR CI/review/merge
+
+Off `main` = `00c9c1e0025e3979464691be662915ada872cc18` (the Phase UI-03 PR #53 merge commit).
+Proof: `docs/proof/ui-04.md`. Design system: `docs/frontend/design-system/`.
+Artifacts: `docs/frontend/audits/ui-04/`.
+Plan authority: UI/UX plan §9–§14, §17–§19, §21, §25 (Phase UI-04), §26, §28; ADR-009, ADR-021,
+ADR-024, ADR-025; backend Plan §2 AS-3, §9 rule 7, §10.2, §11.5, §13.2.
+
+**No pull request was created.** UI-04 stops at a pushed branch by instruction.
+
+#### Added — one canonical design-token authority
+
+`resources/spa/src/design-system/tokens.json` is now the single source of Servana's brand,
+semantic and component tokens, with `scripts/generate-design-tokens.mjs` deriving
+`styles/generated/tokens.css` and `design-system/tokens.generated.ts`. Tailwind reads the same
+file for its breakpoints, so the binding viewport contract (mobile ≤767, tablet 768–1024, desktop
+≥1025) cannot drift from the plan.
+
+48 palette entries, 48 semantic tokens with an explicit value in **both** themes, 62 component
+tokens, and **35 contrast requirements computed** — not asserted by eye — in light and dark. That
+gate caught three real failures on its first run, which produced a separate `color-border-input`
+token held to WCAG 1.4.11's 3:1 while decorative separators keep a documented lower floor.
+
+A raw-value source guard now fails the build on any hex outside the authority, on an arbitrary
+Tailwind colour literal, on JavaScript device detection, on disabled zoom and on a hard-coded
+production host — each with a **negative control** proving the matcher fires.
+
+#### Added — light is the clean-browser default (closes `UI01-THEME-001`)
+
+`prefers-color-scheme` is gone from the pre-hydration script in **both** shells, from the theme
+store, and from the generated token CSS. A clean Chromium context with `colorScheme: 'dark'` now
+renders **light**, and the store is proven never to *call* `matchMedia` at all.
+
+Authenticated persistence arrived as the smallest self-owned contract: an expand-only
+`users.theme_preference varchar(5) NULL` with a `CHECK` constraining it to `light|dark`, a
+`ThemePreference` backed enum, `PATCH /api/v1/auth/preferences` (own scope, **no permission key**),
+and the value exposed through `/me` as both the explicit choice and the server's resolution. The
+data-dictionary entry was written before the migration. `system` and `auto` are deliberately
+unrepresentable at every layer.
+
+The Laravel shell stamps `data-sv-theme` on `<html>` for a signed-in user, so an authenticated
+preference applies before any authenticated content is painted — no extra request, no flash.
+
+#### Added — Heroicons and the web app manifest (closes `UI01-ASSET-001`, `UI01-ASSET-003`)
+
+`@heroicons/vue` pinned at `2.2.0` with a curated re-export module using static named re-exports,
+so tree-shaking survives; there is deliberately **no** runtime name-to-component map. Twenty
+genuine glyph icons were replaced across fourteen files. The icon guard distinguishes an icon from
+prose — `← Back` is an icon, `{{ from }} → {{ to }}` is a date range — with negative controls both
+ways.
+
+`public/assets/brand/site.webmanifest` references both approved Android icons and is linked from
+both shells. nginx declares `application/manifest+json` for it in its own exact-match location:
+an inner `types { }` block inside `/assets/` would replace the inherited MIME map wholesale, which
+cost the brand PNGs their `image/png` type during this phase and was corrected. No service worker
+was added and no offline capability is claimed.
+
+#### Added — 54 shared `Sv*` components
+
+Registered in `resources/spa/src/design-system/componentRegistry.ts` and enforced by
+`ComponentContractTest`: every required component present, every source and test file real, every
+test actually referencing its component, no placeholder, typed props and emits only.
+
+Three consolidations carry most of the value: **one** focus trap shared by every modal overlay;
+**one** association owner (`SvFormField`) for label, help, error and `aria-describedby`, replacing
+three incompatible strategies; and **one** column contract driving both `SvDataTable` and
+`SvResponsiveRecordList`, so a screen defines its data once and the mobile transformation loses
+nothing.
+
+Four legacy duplicates were **removed rather than aliased** — `SvInput` → `SvTextInput`,
+`SvTextarea` → `SvTextArea`, `SvModal` → `SvDialog`, and UI-03's minimal `SvAccountSwitcher` →
+`SvAccountContextSwitcher` — with 71 files migrated.
+
+#### Added — profile control, account switch, fixed footer
+
+`SvProfileControl` presents identity as one unit and generates its avatar fallback locally, so no
+external avatar service receives the user's identity. `SvAccountContextSwitcher` refines UI-03's
+control **without touching any of its security**: the context list stays server-derived, the
+submitted identifier stays opaque, the target URL still comes from the server, and account-scoped
+stores are reset before leaving. UI-03's own suites re-run unweakened — 67 passed / 324 assertions.
+
+`SvFixedFooter` renders on every authenticated page. One token per breakpoint drives **both** the
+footer's height and the space the page reserves, so the two cannot drift apart — which is exactly
+how the obstruction defects ADR-024 catalogues appear.
+
+#### Fixed — the Human Resource shell (closes `UI01-NAV-002`)
+
+`ROLE_ENTRY` mapped both `merchant_branch` and `merchant_human_resource` to `BranchLayout`, making
+HR the one account presenting under another account's identity. The correction is compositional,
+not a copy: `HumanResourceLayout` delegates to the same shared `RoleShell` every sibling uses. The
+account is now labelled "Human Resource" in the shell and in the host registry. Eight accounts,
+eight distinct shells. Backend authority is untouched — HR remains branch-scoped.
+
+#### Fixed — twelve routes that threw while rendering (closes `UI01-RENDER-001`)
+
+Thirteen uncaught `TypeError`s across twelve routes, each an unguarded dereference of a nested
+money object or a collection. Each was settled against the backend contract rather than guessed:
+`CashUpResource.lines` is `whenLoaded` and legitimately absent; `preferred_personnel_fee` is
+explicitly nullable; the rest were an audit fixture supplying an empty envelope where an object
+belongs.
+
+Twenty-eight targeted guards across ten components — no blanket optional-chaining sweep. Money now
+renders through `SvMoney`, which shows "Not available" and **never** coerces a missing amount to
+zero: a false financial figure would be worse than the crash it replaced. `RecordPayment` received
+the sharpest correction, since defaulting an unknown balance to `0` would have read as "fully paid"
+and silently forbidden a legitimate payment.
+
+A second pass was needed: running the closure spec reached *further* unguarded money renders the
+audit never saw, because the first exception had stopped the render.
+
+#### Fixed — eight defects found during the work
+
+- **`UI04-TOKEN-001`.** Sixteen `var(--custom, #hex)` fallbacks across fourteen pages referenced
+  custom properties that were **never defined anywhere**. The literal fallback was therefore live,
+  not dead: a non-brand `#dc2626` and a generic blue `#2563eb` focus ring, outside the theme layer
+  entirely and never contrast-checked.
+- **`UI04-TOAST-001`.** Colour-only status; a live region nested inside a live region announcing
+  every message twice; positioning inside the band the fixed footer occupies; and removal
+  scheduled only on mount, so later toasts never expired.
+- **`UI04-POPOVER-001`.** Escape and outside-click were registered only by a watcher on `open`, so
+  a popover mounted already open had both dismissal paths dead.
+
+The remaining five were surfaced by the **final full Playwright gate**, which an earlier truncated
+terminal tail had recorded as clean; read in full it reported 166 failures.
+
+- **`UI04-TOKEN-002`.** The shell's initials chip paired `surface-warm` with `text-on-brand`. Brand
+  Deep is fixed across themes while `surface-warm` inverts, so it read **1.07:1** in dark on every
+  screen carrying the shell — **103 of the 166 failures from a single element**. The chip sits on a
+  surface, so it now takes the surface's own text colour, and `text-primary-on-warm` gates it.
+- **`UI04-RESP-001`.** The profile trigger is `inline-flex`, so it sized to its content and
+  `truncate` never engaged; a long name made it 562px wide and the header overflowed at exactly the
+  768px tablet boundary, the first width at which the identity block appears. Capped by a new
+  `profile-identity-max-width` token plus `min-w-0` on the shrinkable ancestors.
+- **`UI04-TOAST-002`.** Removing the nested live region also removed `role="status"`, and
+  `aria-live` confers no role — so the toast stack announced but could not be addressed by role.
+  Both now sit on the same element: one region, no nesting.
+- **`UI04-A11Y-001`.** `SvProfileControl` hard-coded `text-sv-text`, which is unreadable on the
+  `bg-brand-deep` header the Super Administrator's header navigation uses (**1.07:1** on every
+  platform screen). The identity text now inherits, so one component is correct on both treatments.
+- **`UI04-TOKEN-003`.** The light-theme brand hover shade `orange-800 #9A3412` gave **1.89:1**
+  against the CTA label ADR-009 fixes to Brand Deep, and the contrast contract gated only the base
+  brand colour. Since the foreground cannot move, hover now **lightens** to `orange-300 #FDBA74`
+  (8.17:1), matching dark theme, gated by `text-on-brand-hover`. **This changes a visible brand
+  shade and is flagged for product-owner review**; it alters none of the seventeen approved brand
+  palette values and is forced by the AA release gate.
+
+#### Security
+
+The shared markdown renderer now constrains link schemes to http(s), `mailto:`, root-relative and
+fragment. It escaped all HTML already, but a markdown link target went straight into an `href`, so
+`[x](javascript:…)` would have survived — defence in depth for the version-controlled legal and FAQ
+content that `SvLegalDocument` and `SvFaq` render.
+
+#### Evidence
+
+Focused browser proof: **25 passed / 0 failed**, including the `UI01-THEME-001` closure under a
+real dark operating system and axe reporting **0 serious / 0 critical** in light, dark and at
+360px. Production-pair smoke against the built nginx + PHP images: **22 observations / 0 failures**.
+UI-01/UI-02/UI-03 historical evidence verified **byte-identical, 177 files** before and after the
+full browser run — the run did rewrite `docs/proof/ui-01/`, and one tracked blob was restored and
+139 generated additions removed rather than the capture policy being changed (UI-16 owns that).
+
+#### Boundaries
+
+No content compiler, no landing pages, no FAQ route, no 160-page route contract, no account
+experiences, no release-wide visual baselines, no deployment, no Gate-W work, no Phase 25 work.
+`SvNotificationsControl` is a data-driven visual contract because no notification API exists — no
+table, controller, route or fake record was created.
+
+### Phase UI-03 — Authentication, session family and account switching — verified_complete (PR #53 merged as `00c9c1e`)
+
+**Merge record, reconciled on the Phase UI-04 branch from live Git/GitHub evidence.** PR
+[#53](https://github.com/ikrome002-design/servana/pull/53) is `MERGED`, not a draft, base `main`,
+reviewed base `fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f`, head branch
+`phase-ui-03-auth-session-account-switching`, final reviewed head
+`182f2cca78f56e1d0f74984ccb723a83be805140`, merge commit
+`00c9c1e0025e3979464691be662915ada872cc18`, raw GitHub `mergedAt` `2026-08-01T07:08:07Z`. It is a
+**regular merge commit**, not a squash: parents in order `fb64ba67…` then `182f2cca…`, deliberately
+preserving **four** reviewed commits — `64ca7cc` (implementation), `415d2f5` (deployed-origin
+browser proof), `5bd6e12` and `182f2cc` (fixture-only payout-test corrections). Final CI run
+`30688440846` attempt 1, event `pull_request`, head `182f2cca…`, **five required jobs all SUCCESS**.
+Governance comment `5150328091` present exactly once. `reviewDecision` blank with **0 submitted
+reviews** — **not** independent approval. Both UI-03 branch refs deleted;
+`main == origin/main == 00c9c1e…`.
+
+**Superseding the earlier statement below that the deployed-origin browser proof was not
+performed:** it *was* performed, in commit `415d2f5`, with **47 observations / 0 failures** against
+the built production images, and nine screenshots are committed. The historical text is retained
+because it accurately records the state at the time it was written.
+
+**The retracted `2,528` backend figure is now replaced by a measured one.** The merged full-suite
+baseline, read from the successful Backend log of run `30688440846`, is **3,108 passed / 5 skipped
+/ 0 failed** (20,697 assertions, parallel, 4 processes). Residual risk R8 is closed.
+
+**Correction history preserved.** PR CI first failed because a pre-existing compensation fixture was
+calendar-boundary nondeterministic — adjustment eligibility uses `created_at` in `Africa/Nairobi`
+and the uncontrolled timestamp crossed out of the fixed `2026-07-01`…`2026-07-31` payout period
+(run `30668756173`, attempts 1–2, **3,107 passed / 5 skipped / 1 failed**). The first correction
+`5bd6e12` then failed with `SQLSTATE[42703]` because the append-only `compensation_adjustments`
+table has **no `updated_at` column** (run `30672973928`, backend job `91294393810`, same totals,
+20,691 assertions). The final correction `182f2cc` removed only the unsupported `updated_at` value,
+**retaining** the deterministic `created_at = 2026-07-15 09:00:00` and the
+`adjustment_amount_minor === -1000` assertion. **No payout production code, financial behaviour or
+database schema changed.**
+
+All seven UI-03-owned closures — `UI01-ROLE-001`, `UI03-AUTH-001`, `UI03-EDGE-001`, `UI03-CTX-001`,
+`UI03-MFA-001`, `UI03-TEST-001`, `UI03-E2E-001` — are promoted to `verified_complete` in
+`docs/frontend/audits/ui-03/defect-closure.json`. The historical UI-01 register is unchanged.
+
+#### Original UI-03 branch record (retained verbatim)
+
+Branch `phase-ui-03-auth-session-account-switching`.
 
 Off `main` = `fb64ba67c8555ab68aff4f64d97a4d10e4eeab0f` (the Phase UI-02 PR #52 squash-merge).
 Proof: `docs/proof/ui-03.md`. Threat model: `docs/security/ui-03-auth-session-threat-model.md`.

@@ -93,8 +93,11 @@ export const ROLE_ENTRY: Record<RoleIdentity, RoleEntry> = {
   merchant_human_resource: {
     identity: 'merchant_human_resource',
     backendRole: 'hr',
-    label: 'HR',
-    layout: 'BranchLayout',
+    // Phase UI-04 (UI01-NAV-002): the account is Human Resource. "HR" is an abbreviation, and the
+    // shell label is what a user reads to know which account they are operating in.
+    label: 'Human Resource',
+    // Was BranchLayout — the one account that presented under another account's identity.
+    layout: 'HumanResourceLayout',
     navPlacement: 'sidebar',
     landingRouteName: 'hr.landing',
     getStartedRouteName: 'hr.get-started',

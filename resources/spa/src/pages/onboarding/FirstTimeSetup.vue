@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useOnboardingStore } from '@/stores/onboardingStore';
@@ -162,7 +162,7 @@ async function submit(): Promise<void> {
           Business profile
         </h2>
         <div class="mt-4 flex flex-col gap-4">
-          <SvInput
+          <SvTextInput
             id="business_category"
             v-model="form.business_category"
             label="Business category"
@@ -170,7 +170,7 @@ async function submit(): Promise<void> {
             required
             :errors="fieldErrors('business_category')"
           />
-          <SvInput
+          <SvTextInput
             id="contact_phone"
             v-model="form.contact_phone"
             label="Contact phone"
@@ -178,7 +178,7 @@ async function submit(): Promise<void> {
             required
             :errors="fieldErrors('contact_phone')"
           />
-          <SvInput
+          <SvTextInput
             id="contact_email"
             v-model="form.contact_email"
             label="Contact email"
@@ -186,20 +186,20 @@ async function submit(): Promise<void> {
             placeholder="info@business.co.ke"
             :errors="fieldErrors('contact_email')"
           />
-          <SvInput
+          <SvTextInput
             id="receipt_display_name"
             v-model="form.receipt_display_name"
             label="Receipt display name"
-            hint="Shown on client invoices and receipts. Defaults to your business name."
+            help="Shown on client invoices and receipts. Defaults to your business name."
             :errors="fieldErrors('receipt_display_name')"
           />
-          <SvInput
+          <SvTextInput
             id="town"
             v-model="form.town"
             label="Town"
             :errors="fieldErrors('town')"
           />
-          <SvInput
+          <SvTextInput
             id="address"
             v-model="form.address"
             label="Address"
@@ -217,7 +217,7 @@ async function submit(): Promise<void> {
           Every business needs at least one branch. You can add more later.
         </p>
         <div class="mt-4 flex flex-col gap-4">
-          <SvInput
+          <SvTextInput
             id="branch_name"
             v-model="form.branch.name"
             label="Branch name"
@@ -225,22 +225,22 @@ async function submit(): Promise<void> {
             required
             :errors="fieldErrors('branch.name')"
           />
-          <SvInput
+          <SvTextInput
             id="branch_code"
             v-model="form.branch.code"
             label="Branch code"
-            hint="A short code (letters/numbers) used on invoice numbers."
+            help="A short code (letters/numbers) used on invoice numbers."
             placeholder="MAIN"
             required
             :errors="fieldErrors('branch.code')"
           />
-          <SvInput
+          <SvTextInput
             id="branch_town"
             v-model="form.branch.town"
             label="Town"
             :errors="fieldErrors('branch.town')"
           />
-          <SvInput
+          <SvTextInput
             id="branch_phone"
             v-model="form.branch.phone"
             label="Branch phone"
@@ -259,7 +259,7 @@ async function submit(): Promise<void> {
           your branch and emailed a welcome message explaining Magic Link sign-in.
         </p>
         <div class="mt-4 flex flex-col gap-4">
-          <SvInput
+          <SvTextInput
             id="branch_manager_email"
             v-model="form.branch_manager_email"
             label="Branch Manager email"
@@ -267,7 +267,7 @@ async function submit(): Promise<void> {
             required
             :errors="fieldErrors('branch_manager_email')"
           />
-          <SvInput
+          <SvTextInput
             id="hr_email"
             v-model="form.hr_email"
             label="HR email"

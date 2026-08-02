@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import SvModal from '@/components/ui/SvModal.vue';
+import SvDialog from '@/components/ui/SvDialog.vue';
 import LegalAcknowledgement from '@/components/legal/LegalAcknowledgement.vue';
 import { getStartedChecklist } from '@/content/getStartedContent';
 import { useGetStartedStore } from '@/stores/getStartedStore';
@@ -126,7 +126,7 @@ function onAcknowledged(): void {
       </button>
     </div>
 
-    <SvModal
+    <SvDialog
       :open="ackOpen"
       title="Acknowledge your role's terms"
       description="Please review and accept the documents that govern your account."
@@ -136,6 +136,6 @@ function onAcknowledged(): void {
         :identity="identity"
         @acknowledged="onAcknowledged"
       />
-    </SvModal>
+    </SvDialog>
   </section>
 </template>

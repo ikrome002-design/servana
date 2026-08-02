@@ -163,13 +163,16 @@ it('keeps backend routes out of the SPA fallback', function (): void {
 });
 
 it('keeps the two theme bootstraps byte-identical', function (): void {
-    // The Blade shell and the standalone SPA index.html both set the theme class before
-    // first paint. They must not drift: a difference would mean one origin flashes and the
-    // other does not. (The prefers-color-scheme rule itself contradicts ADR-021 and is a
-    // UI-01 theme defect owned by UI-04 — UI-02 neither fixes nor worsens it.)
+    // The Blade shell and the standalone SPA index.html both set the theme class before first
+    // paint. They must not drift: a difference would mean one origin flashes and the other does
+    // not, or worse, that one origin still honours the operating-system colour scheme.
+    //
+    // Phase UI-04 closed UI01-THEME-001 by rewriting this script in BOTH shells. The extraction
+    // anchor moved with it (`Servana theme bootstrap`), and the contract itself is unchanged:
+    // one script, two shells, byte-identical.
     $extract = static function (string $path): string {
         $contents = (string) file_get_contents($path);
-        preg_match('#// Dark-mode flash prevention.*?\n\s*</script>#s', $contents, $m);
+        preg_match('#// Servana theme bootstrap.*?\n\s*</script>#s', $contents, $m);
 
         return preg_replace('/\s+/', ' ', $m[0] ?? '') ?? '';
     };
@@ -179,4 +182,20 @@ it('keeps the two theme bootstraps byte-identical', function (): void {
 
     expect($shell)->not->toBe('', 'no theme bootstrap found in the Blade shell');
     expect($shell)->toBe($index, 'the shell and index.html theme bootstraps have drifted');
+});
+
+it('never lets the operating system select the theme in either shell (UI01-THEME-001)', function (): void {
+    // ADR-021 rule 2 and CLAUDE.md guardrail 15. The audited defect was precisely a
+    // `prefers-color-scheme` read in the pre-hydration script, so this is asserted directly on
+    // both shells rather than inferred from the byte-identity test above.
+    foreach (['views/spa.blade.php', 'spa/index.html'] as $shell) {
+        $contents = (string) file_get_contents(resource_path($shell));
+
+        expect($contents)->not->toContain('prefers-color-scheme');
+        expect($contents)->not->toContain('matchMedia');
+        // The only value that may add the dark class is an explicit Servana preference.
+        expect($contents)->toContain("svTheme === 'dark'");
+        expect($contents)->toContain("localStorage.getItem('servana.theme')");
+        expect($contents)->toContain("getAttribute('data-sv-theme')");
+    }
 });

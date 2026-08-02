@@ -1238,6 +1238,30 @@ function phpCodeWithoutComments(string $source): string
 }
 
 /**
+ * The Phase UI-04 design-token authority, decoded (ADR-021).
+ *
+ * This lives in the bootstrap rather than in `DesignTokenSchemaTest` because FOUR specs read it
+ * (schema, generation parity, contrast, web app manifest). A Pest file-scope `function` is a
+ * global, but only after the file declaring it is loaded: in serial every file loads, so a
+ * cross-file helper resolves; under `--parallel` each ParaTest worker loads only its own slice, so
+ * the same helper fatals with "Call to undefined function" in whichever worker did not happen to
+ * receive the declaring file. That made the design-token suite pass serially and fail in parallel.
+ *
+ * @return array<string, mixed>
+ */
+function ui04Tokens(): array
+{
+    /** @var array<string, mixed> $decoded */
+    $decoded = json_decode(
+        (string) file_get_contents(base_path('resources/spa/src/design-system/tokens.json')),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+
+    return $decoded;
+}
+
+/**
  * How long a Phase 22 engine test waits for a Meilisearch task.
  *
  * meilisearch-php defaults `waitForTask()` to 5000 ms. That is ample in isolation but NOT under the

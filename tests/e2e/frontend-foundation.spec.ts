@@ -52,10 +52,10 @@ test.describe('Design system demo', () => {
   test('renders all core UI components', async ({ page }) => {
     await page.goto('/dev/design-system');
     await expect(page.getByText('SvButton')).toBeVisible();
-    await expect(page.getByText('SvInput, SvSelect, SvTextarea')).toBeVisible();
+    await expect(page.getByText('SvTextInput, SvSelect, SvTextArea')).toBeVisible();
     await expect(page.getByText('SvStateBoundary')).toBeVisible();
     await expect(page.getByText('SvEmptyState')).toBeVisible();
-    await expect(page.getByText('SvModal')).toBeVisible();
+    await expect(page.getByText('SvDialog', { exact: true })).toBeVisible();
     await expect(page.getByText('SvToast')).toBeVisible();
   });
 
@@ -68,12 +68,17 @@ test.describe('Design system demo', () => {
     await page.reload();
     await expect(html).not.toHaveClass(/dark/);
 
+    // This page is a component gallery and renders BOTH SvThemeToggle variants, so the shared
+    // `theme-toggle` id resolves twice here. Drive the icon variant explicitly rather than
+    // relying on document order.
+    const toggle = page.getByTestId('theme-toggle-icon-variant').getByTestId('theme-toggle');
+
     // Toggle to dark.
-    await page.getByTestId('theme-toggle').click();
+    await toggle.click();
     await expect(html).toHaveClass(/dark/);
 
     // Toggle back.
-    await page.getByTestId('theme-toggle').click();
+    await toggle.click();
     await expect(html).not.toHaveClass(/dark/);
   });
 

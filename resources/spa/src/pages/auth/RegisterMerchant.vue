@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
-import SvInput from '@/components/ui/SvInput.vue';
+import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { useForm } from '@/composables/useForm';
 import { apiClient, primeCsrfCookie } from '@/services/apiClient';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -121,7 +121,7 @@ const submit = form.handleSubmit(async (values) => {
         novalidate
         @submit.prevent="submit"
       >
-        <SvInput
+        <SvTextInput
           id="owner_name"
           v-model="form.values.owner_name"
           label="Your name"
@@ -129,7 +129,7 @@ const submit = form.handleSubmit(async (values) => {
           required
           :errors="form.errors.owner_name"
         />
-        <SvInput
+        <SvTextInput
           id="business_name"
           v-model="form.values.business_name"
           label="Business name"
@@ -137,7 +137,7 @@ const submit = form.handleSubmit(async (values) => {
           required
           :errors="form.errors.business_name"
         />
-        <SvInput
+        <SvTextInput
           id="email"
           v-model="form.values.email"
           label="Email address"
@@ -148,12 +148,12 @@ const submit = form.handleSubmit(async (values) => {
         />
 
         <div>
-          <SvInput
+          <SvTextInput
             id="referral_code"
             v-model="form.values.referral_code"
             label="Referral code (optional)"
             placeholder="SERVANA-XXXXX"
-            hint="If someone referred you to Servana, enter their code. You can leave this blank."
+            help="If someone referred you to Servana, enter their code. You can leave this blank."
             :errors="form.errors.referral_code"
             @update:model-value="onReferralInput"
           />

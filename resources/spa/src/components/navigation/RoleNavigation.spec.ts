@@ -26,7 +26,7 @@ function makeRouter(): Router {
 function setPermissions(perms: string[]): void {
   const auth = useAuthStore();
   auth.applyBootstrap({
-    user: { id: 'u1', email: 'a@b.co', name: 'A', status: 'active', email_verified_at: null, is_platform_staff: false },
+    user: { id: 'u1', email: 'a@b.co', name: 'A', status: 'active', email_verified_at: null, is_platform_staff: false, theme_preference: null, resolved_theme: 'light' as const },
     merchant: { id: 'm1', name: 'Glow', slug: 'glow', status: 'active', service_fee_tier: null, setup_completed_at: '2026-01-01T00:00:00Z' },
     membership: { id: 'mm1', role: 'branch_manager', status: 'active' },
     memberships: [],
