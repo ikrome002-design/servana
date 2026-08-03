@@ -1270,3 +1270,149 @@ function ui04Tokens(): array
  * budget makes the engine tests load-independent instead of quietly flaky.
  */
 const P22_TASK_TIMEOUT_MS = 60_000;
+
+// ---------------------------------------------------------------------------------------------
+// Phase UI-05 — content and asset pipeline contract helpers.
+//
+// These live here rather than in one of the UI-05 test files on purpose: `--parallel` distributes
+// test FILES across processes, so a constant or helper defined in one file is simply undefined in
+// the process that runs another. Every shared UI-05 symbol therefore belongs to this bootstrap,
+// which every process loads.
+// ---------------------------------------------------------------------------------------------
+
+/** Where the UI-05 audit artifacts live. */
+const UI05_AUDIT_DIR = 'docs/frontend/audits/ui-05';
+
+/** The eight canonical account keys, in the registry's own order. */
+const UI05_ACCOUNTS = [
+    'super_administrator',
+    'merchant_administrator',
+    'merchant_branch',
+    'merchant_human_resource',
+    'merchant_finance',
+    'merchant_front_office',
+    'merchant_personnel',
+    'merchant_audit',
+];
+
+/** The five role-specific content categories. */
+const UI05_CATEGORIES = ['landing', 'data_policy', 'privacy_policy', 'terms_of_service', 'faq'];
+
+/** Canonical source directory per category (UI/UX plan §8.2; `landing_page` has an UNDERSCORE). */
+const UI05_CATEGORY_DIRECTORIES = [
+    'landing' => 'docs/landing_page',
+    'data_policy' => 'docs/legal/data_policy',
+    'privacy_policy' => 'docs/legal/privacy_policy',
+    'terms_of_service' => 'docs/legal/terms_of_service',
+    'faq' => 'docs/support/faq',
+];
+
+/** The three legal categories whose text must survive byte for byte. */
+const UI05_LEGAL_CATEGORIES = ['data_policy', 'privacy_policy', 'terms_of_service'];
+
+/** The approved brand assets the UI01-ASSET-002 quarantine must never touch. */
+const UI05_PROTECTED_BRAND_FILES = [
+    'Logo.png',
+    'favicon.ico',
+    'favicon-16x16.png',
+    'favicon-32x32.png',
+    'apple-touch-icon.png',
+    'android-chrome-192x192.png',
+    'android-chrome-512x512.png',
+    'site.webmanifest',
+];
+
+/**
+ * Read one of the UI-05 audit artifacts.
+ *
+ * @return array<string, mixed>
+ */
+function ui05Audit(string $name): array
+{
+    $path = base_path(UI05_AUDIT_DIR."/{$name}.json");
+    expect(file_exists($path))->toBeTrue("Missing UI-05 audit artifact: {$name}.json");
+
+    /** @var array<string, mixed> $decoded */
+    $decoded = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+
+    return $decoded;
+}
+
+/**
+ * The curated landing-image manifest that ships under the public root.
+ *
+ * @return array<string, mixed>
+ */
+function ui05ImageManifest(): array
+{
+    $path = base_path('public/assets/landing_page_images/manifest.json');
+    expect(file_exists($path))->toBeTrue('Missing public/assets/landing_page_images/manifest.json');
+
+    /** @var array<string, mixed> $manifest */
+    $manifest = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+
+    return $manifest;
+}
+
+/**
+ * The reviewed UI01-ASSET-002 quarantine decision record.
+ *
+ * @return array<string, mixed>
+ */
+function ui05QuarantineRecord(): array
+{
+    /** @var array<string, mixed> $record */
+    $record = json_decode(
+        (string) file_get_contents(base_path('config/brand-asset-quarantine.json')),
+        true,
+        512,
+        JSON_THROW_ON_ERROR,
+    );
+
+    return $record;
+}
+
+/**
+ * Extract and decode the `const markdown = "…";` literal from a generated legal module.
+ *
+ * The emitter writes it with `JSON.stringify`, so the literal is valid JSON. Decoding it with PHP's
+ * own decoder is an INDEPENDENT check that the escaping round-trips — a bug in the emitter cannot
+ * mark its own homework.
+ */
+function ui05DecodeGeneratedMarkdown(string $modulePath): string
+{
+    $module = (string) file_get_contents(base_path($modulePath));
+
+    expect(preg_match('/^const markdown = (".*");$/m', $module, $matches))->toBe(
+        1,
+        "No markdown literal found in {$modulePath}.",
+    );
+
+    return (string) json_decode($matches[1], false, 512, JSON_THROW_ON_ERROR);
+}
+
+/** True when a Node runtime is available to run the generators in check mode. */
+function ui05NodeAvailable(): bool
+{
+    $output = [];
+    $exitCode = 0;
+    exec('node --version 2>&1', $output, $exitCode);
+
+    return $exitCode === 0;
+}
+
+/**
+ * Run one of the UI-05 Node generators and capture how it exited.
+ *
+ * @return array{exitCode: int, output: string}
+ */
+function ui05RunNode(string $script, string ...$arguments): array
+{
+    $command = implode(' ', array_map('escapeshellarg', ['node', base_path($script), ...$arguments])).' 2>&1';
+
+    $output = [];
+    $exitCode = 0;
+    exec($command, $output, $exitCode);
+
+    return ['exitCode' => $exitCode, 'output' => implode("\n", $output)];
+}

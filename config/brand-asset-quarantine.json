@@ -1,0 +1,112 @@
+{
+  "$comment": [
+    "BRAND-ASSET QUARANTINE RECORD — Phase UI-05, defect UI01-ASSET-002.",
+    "",
+    "Eleven unapproved brand working files shipped inside the public web root of the production",
+    "image and were publicly served. UI/UX plan §17 permits only approved brand assets there.",
+    "",
+    "They were MOVED, not deleted, with `git mv`, into a non-public source-controlled archive.",
+    "docs/ is never copied into the nginx image, so the bytes are preserved and reviewable while",
+    "being unreachable over HTTP.",
+    "",
+    "This file is the reviewed DECISION record, and is deliberately separate from the UI-00 source",
+    "inventory: that inventory is a live statement about what is on disk, so after the move it",
+    "correctly reports zero unreferenced files under the brand tree and can no longer be the",
+    "authority for what was quarantined. Every hash below was verified against the UI-00 inventory",
+    "BEFORE the move and re-verified from the archived bytes after it.",
+    "",
+    "`node scripts/generate-landing-images.mjs` verifies this record on every run: each original",
+    "path must be absent from the public tree, each quarantine path must exist, and each archived",
+    "file must still hash to the value recorded here.",
+    "",
+    "Restoring any of these to public/assets/brand/ requires product-owner approval.",
+    "Approved brand assets — Logo.png, the favicons, the Android icons and site.webmanifest — were",
+    "not touched, and no file was deleted."
+  ],
+  "version": 1,
+  "defect_id": "UI01-ASSET-002",
+  "action": "non_destructive_quarantine",
+  "approval_state": "authorised_by_product_owner_for_ui05",
+  "quarantine_directory": "docs/brand/quarantine/ui01-asset-002",
+  "ui00_inventory_reference": "docs/frontend/source-inventory/brand-assets.json (pre-move revision; the eleven rows carried approval present_unreferenced)",
+  "total_files": 11,
+  "files": [
+    {
+      "original_path": "public/assets/brand/PNG.png",
+      "original_public_url": "/assets/brand/PNG.png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/PNG.png",
+      "sha256": "5347cdc6f439438e1940147ea15b2f2d548bf4e654f7a258cbe24215236b8ae0",
+      "bytes": 1085879
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_31 PM.png",
+      "original_public_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_31 PM.png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT Image Jun 8, 2026, 05_01_31 PM.png",
+      "sha256": "e708c9d89c2ba220cfe5abbe84e99068661b5cb4b65cba77109a0a7de3aaa7ba",
+      "bytes": 888932
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_42 PM.png",
+      "original_public_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_01_42 PM.png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT Image Jun 8, 2026, 05_01_42 PM.png",
+      "sha256": "632a9aac5ee08d08bf5d85f190471331a6e264ac2174279bfddbfa1886386563",
+      "bytes": 940776
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_00 PM.png",
+      "original_public_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_00 PM.png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT Image Jun 8, 2026, 05_27_00 PM.png",
+      "sha256": "e708c9d89c2ba220cfe5abbe84e99068661b5cb4b65cba77109a0a7de3aaa7ba",
+      "bytes": 888932
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_15 PM.png",
+      "original_public_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_27_15 PM.png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT Image Jun 8, 2026, 05_27_15 PM.png",
+      "sha256": "632a9aac5ee08d08bf5d85f190471331a6e264ac2174279bfddbfa1886386563",
+      "bytes": 940776
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_07 PM (1).png",
+      "original_public_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_07 PM (1).png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT Image Jun 8, 2026, 05_37_07 PM (1).png",
+      "sha256": "5347cdc6f439438e1940147ea15b2f2d548bf4e654f7a258cbe24215236b8ae0",
+      "bytes": 1085879
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (2).png",
+      "original_public_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (2).png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (2).png",
+      "sha256": "cfba6fa52b17bd408338882a6c9375ec0c3d2896947fc53992a2d42f2301ed6c",
+      "bytes": 1063192
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (3).png",
+      "original_public_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (3).png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT Image Jun 8, 2026, 05_37_08 PM (3).png",
+      "sha256": "3614c1a4df60532e2cc7d76a68f57cf769b04c8e2e4e5be25b6c9c9761644376",
+      "bytes": 1113160
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_09 PM (4).png",
+      "original_public_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_37_09 PM (4).png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT Image Jun 8, 2026, 05_37_09 PM (4).png",
+      "sha256": "1df576d4d5821e2616b9d317f266cd310d80d486a54982e631ef42320e2cfa8d",
+      "bytes": 1250503
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_49_32 PM.png",
+      "original_public_url": "/assets/brand/v1/ChatGPT Image Jun 8, 2026, 05_49_32 PM.png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT Image Jun 8, 2026, 05_49_32 PM.png",
+      "sha256": "92a7037a93243dc50c681588d0a81558ab0a515d61269b3b08c26c948d018233",
+      "bytes": 1112227
+    },
+    {
+      "original_path": "public/assets/brand/v1/ChatGPT_Image_Jun_8__2026__05_50_13_PM-removebg-preview.png",
+      "original_public_url": "/assets/brand/v1/ChatGPT_Image_Jun_8__2026__05_50_13_PM-removebg-preview.png",
+      "quarantine_path": "docs/brand/quarantine/ui01-asset-002/v1/ChatGPT_Image_Jun_8__2026__05_50_13_PM-removebg-preview.png",
+      "sha256": "1ccb1a5b426d2e8ff098728f2ed14a50cea3959e72f4e4e8f0c1b397df25b6e1",
+      "bytes": 180466
+    }
+  ]
+}

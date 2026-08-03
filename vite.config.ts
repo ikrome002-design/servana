@@ -67,9 +67,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./resources/spa/src', import.meta.url)),
-      // Approved role content (landing copy, FAQ, legal) is sourced verbatim
-      // from the version-controlled docs via `?raw` imports — a single source of
-      // truth, never hand-copied into frontend source (Plan §27.2; Phase 11).
+      // Repository documents read by tests and tooling. Phase UI-05 moved the approved role
+      // content (landing copy, FAQ, legal) off `?raw` imports and onto generated, hash-checked
+      // modules under `src/content/generated/`, so no production module resolves through this
+      // alias any more — `docs/**` remains the single source of truth, compiled at build time
+      // rather than discovered at bundle time (UI/UX plan §8.8).
       '@docs': fileURLToPath(new URL('./docs', import.meta.url)),
     },
   },

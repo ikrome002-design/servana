@@ -2,18 +2,23 @@
 import { computed, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import { renderMarkdown } from '@/content/markdown';
+import SvLegalDocument from '@/components/ui/SvLegalDocument.vue';
 import { LEGAL_DOCS, type LegalDocType } from '@/content/roleContent';
-import { loadLegalDoc } from '@/content/legalContent';
+import { loadLegalDocument } from '@/content/legalContent';
 import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
 import { SvIconBack } from '@/design-system/icons';
 
 /**
- * Rendered role-specific legal document (Plan §27.2; task legal requirements).
- * Sources the approved document verbatim from `docs/legal/**` (loaded lazily,
- * never hand-copied into source) for the exact role + document in the route —
- * one role never receives another role's documents. Linked from each role's
- * landing footer and the final acknowledgement step.
+ * Rendered role-specific legal document.
+ *
+ * The approved text is sourced verbatim from `docs/legal/**` through the Phase UI-05 generated
+ * content contract — one document per role and type, hashed at generation time, never hand-copied
+ * and never cross-mapped: an unknown role or type renders the not-found boundary rather than
+ * falling back to another account's document (UI/UX plan §17.1).
+ *
+ * Rendering goes through UI-04's `SvLegalDocument`, so the escaping markdown renderer, the readable
+ * measure and the document heading semantics are the shared audited ones rather than a second
+ * implementation here.
  */
 const route = useRoute();
 
@@ -31,7 +36,10 @@ const meta = computed(() => LEGAL_DOCS.find((d) => d.type === docType.value) ?? 
 
 type ViewState = 'loading' | 'error' | 'success';
 const state = ref<ViewState>('loading');
-const html = ref('');
+const markdown = ref('');
+/** Provenance of the document actually rendered — proves which source file produced it. */
+const sourcePath = ref('');
+const sourceSha256 = ref('');
 
 watchEffect(async () => {
   if (!identity.value || !docType.value) {
@@ -40,8 +48,10 @@ watchEffect(async () => {
   }
   state.value = 'loading';
   try {
-    const raw = await loadLegalDoc(identity.value, docType.value);
-    html.value = renderMarkdown(raw);
+    const document = await loadLegalDocument(identity.value, docType.value);
+    markdown.value = document.markdown;
+    sourcePath.value = document.meta.sourcePath;
+    sourceSha256.value = document.meta.sourceSha256;
     state.value = 'success';
   } catch {
     state.value = 'error';
@@ -66,13 +76,11 @@ watchEffect(async () => {
         error-message="That legal document could not be found."
         class="mt-4"
       >
-        <h1 class="sr-only">
-          {{ meta?.title }}
-        </h1>
-        <!-- eslint-disable-next-line vue/no-v-html -- trusted, version-controlled legal content -->
-        <article
-          class="prose-legal"
-          v-html="html"
+        <SvLegalDocument
+          :title="meta?.title ?? ''"
+          :markdown="markdown"
+          :data-content-source="sourcePath"
+          :data-content-sha256="sourceSha256"
         />
       </SvStateBoundary>
     </div>

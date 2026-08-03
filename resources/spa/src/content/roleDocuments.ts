@@ -1,73 +1,76 @@
 import type { RoleIdentity } from '@/types/roles';
-import { parseFaq, parseHero, type FaqItem, type HeroContent } from './markdown';
+import { parseHeroBody, type FaqItem, type HeroContent } from './markdown';
+import { loadGeneratedFaq, loadGeneratedLanding } from '@/content/generated/index.generated';
+import type {
+  GeneratedFaqDocument,
+  GeneratedLandingDocument,
+  GeneratedLandingSection,
+} from '@/content/generated/contentTypes.generated';
 
 /**
- * Lazily-loaded role landing + FAQ documents (Phase 24, PH24-BUNDLE-001).
+ * Lazily-loaded role landing + FAQ content.
  *
- * These were previously sixteen STATIC `?raw` imports (eight landing + eight FAQ) inside
- * `content/roleContent.ts`. Because the imports were static, every consumer of that module pulled
- * ALL EIGHT roles' landing and FAQ text into the authenticated bundle, no matter which single role
- * was signed in — including two components that only ever needed the `LEGAL_DOCS` constant.
+ * Phase 24 (PH24-BUNDLE-001) made these lazy so a signed-in role loads only its own two documents.
+ * Phase UI-05 kept that property and changed the SOURCE: instead of `import.meta.glob(…?raw)`
+ * discovering repository Markdown at build time, each document is a generated module produced by
+ * `scripts/generate-role-content.mjs` from the same `docs/**` files, with its source hash recorded
+ * and checked in CI (UI/UX plan §8.8).
  *
- * This mirrors the pattern `content/legalContent.ts` already uses for the ~3 MB of legal text:
- * `import.meta.glob` gives Vite one lazily-fetched chunk per document, so a signed-in role loads
- * exactly its own two documents. The markdown remains the single source of truth in `docs/**` —
- * still never hand-copied into frontend source, and still verbatim (Plan §27.2; CLAUDE.md §3).
+ * Two things improved as a consequence:
+ *   * the FAQ is parsed ONCE at generation time rather than on every view, and
+ *   * the parser is no longer level-sensitive, so Merchant Administrator's sixty `###` questions
+ *     are compiled instead of silently dropped (UI05-FAQ-001).
  */
-const landingLoaders = import.meta.glob<string>('../../../../docs/landing_page/*_landing_page_content.md', {
-  query: '?raw',
-  import: 'default',
-});
-
-const faqLoaders = import.meta.glob<string>('../../../../docs/support/faq/*_faq.md', {
-  query: '?raw',
-  import: 'default',
-});
-
-/**
- * Resolve the one loader whose path ends with `suffix`.
- *
- * The lookup is by suffix rather than by a constructed absolute key because Vite normalises glob
- * keys differently between dev, build and Vitest — the same reason `legalContent.ts` matches on
- * `endsWith`.
- */
-function loaderFor(
-  loaders: Record<string, () => Promise<string>>,
-  suffix: string,
-  what: string,
-): () => Promise<string> {
-  const key = Object.keys(loaders).find((k) => k.endsWith(suffix));
-  if (!key) {
-    throw new Error(`Role ${what} document not found: ${suffix}`);
-  }
-  return loaders[key];
-}
 
 const heroCache = new Map<RoleIdentity, HeroContent>();
 const faqCache = new Map<RoleIdentity, FaqItem[]>();
 
-/** Verbatim hero (headline + body) parsed from the role's own landing document. */
+/** The role's compiled landing document: every plan region, present or recorded as missing. */
+export async function loadLandingDocument(identity: RoleIdentity): Promise<GeneratedLandingDocument> {
+  return loadGeneratedLanding(identity);
+}
+
+/** The role's compiled landing regions, in UI/UX plan §8.3 order. */
+export async function loadLandingSections(
+  identity: RoleIdentity,
+): Promise<readonly GeneratedLandingSection[]> {
+  return (await loadGeneratedLanding(identity)).sections;
+}
+
+/** Verbatim hero (headline + body) from the role's own landing document. */
 export async function loadLandingHero(identity: RoleIdentity): Promise<HeroContent> {
   const cached = heroCache.get(identity);
   if (cached) return cached;
 
-  const raw = await loaderFor(
-    landingLoaders,
-    `/${identity}_landing_page_content.md`,
-    'landing',
-  )();
-  const hero = parseHero(raw);
-  heroCache.set(identity, hero);
-  return hero;
+  const document = await loadGeneratedLanding(identity);
+  const hero = document.sections.find((section) => section.region === 'hero');
+  const content = parseHeroBody(hero?.markdown ?? '');
+  heroCache.set(identity, content);
+  return content;
 }
 
-/** Verbatim FAQ items parsed from the role's own FAQ document. */
+/** The role's compiled FAQ document, with source provenance. */
+export async function loadFaqDocument(identity: RoleIdentity): Promise<GeneratedFaqDocument> {
+  return loadGeneratedFaq(identity);
+}
+
+/**
+ * Verbatim FAQ items for the role, in source order, shaped for `SvFaq`.
+ *
+ * This is the adapter UI-04's structural component consumes; it adds no accordion of its own and
+ * changes no wording. The richer compiled record (number, category, source lines) stays available
+ * through `loadFaqDocument` for the final UI-06 route.
+ */
 export async function loadFaq(identity: RoleIdentity): Promise<FaqItem[]> {
   const cached = faqCache.get(identity);
   if (cached) return cached;
 
-  const raw = await loaderFor(faqLoaders, `/${identity}_faq.md`, 'FAQ')();
-  const items = parseFaq(raw);
+  const document = await loadGeneratedFaq(identity);
+  const items = document.items.map((item) => ({
+    id: item.id,
+    question: item.question,
+    answer: item.answer,
+  }));
   faqCache.set(identity, items);
   return items;
 }

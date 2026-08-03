@@ -15,8 +15,14 @@ import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
  * brittle across content edits and bundler upgrades:
  *
  *   1. the constants module must contain no markdown import at all;
- *   2. the documents module must load lazily (`import.meta.glob`), never statically;
+ *   2. the documents module must load lazily, one document per role, never statically;
  *   3. every role must resolve its own two documents, and only its own.
+ *
+ * Phase UI-05 changed the MECHANISM behind (2) and this spec followed it. The lazy loading used to
+ * be `import.meta.glob(…?raw)`; it is now one static dynamic `import()` per generated module. The
+ * property under test is unchanged — nothing may be pulled in eagerly and no role may reach another
+ * role's document — so asserting on the glob call would now test a bundler API rather than the
+ * ownership invariant the defect was about.
  */
 const source = (relative: string): string =>
   readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf8');
@@ -33,11 +39,23 @@ describe('role document bundle ownership', () => {
 
   it('loads role documents lazily, one document per role', () => {
     const roleDocuments = source('./roleDocuments.ts');
+    const generatedIndex = source('./generated/index.generated.ts');
 
-    expect(roleDocuments).toContain('import.meta.glob');
-    // Two globs: landing and FAQ. Neither may be eager.
+    // Nothing may be pulled in eagerly, and no markdown may be imported into source.
     expect(roleDocuments).not.toContain('eager: true');
     expect(roleDocuments).not.toMatch(/^\s*import\s+.*\.md\?raw/m);
+    expect(generatedIndex).not.toContain('eager: true');
+
+    // Forty separate dynamic imports — eight accounts × five categories — so a signed-in role's
+    // chunk can never contain another role's document.
+    const dynamicImports = generatedIndex.match(/=> import\("\.\/[a-z_]+\/[a-z-]+\.generated"\)/g) ?? [];
+    expect(dynamicImports).toHaveLength(40);
+    expect(new Set(dynamicImports).size).toBe(40);
+
+    // A specifier built from a variable would defeat code splitting AND let a runtime value choose
+    // which file is loaded. Every specifier must be a literal.
+    expect(generatedIndex).not.toMatch(/import\(\s*`/);
+    expect(generatedIndex).not.toMatch(/import\(\s*[A-Za-z_$]/);
   });
 
   it('resolves every role its own landing and FAQ document', async () => {

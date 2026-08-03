@@ -115,8 +115,8 @@ while the repository records said the work was complete.
 | UI-01 | As-built browser and repository audit | ✅ `verified_complete` | PR [#51](https://github.com/ikrome002-design/servana/pull/51) merged — squash `413c146`, sole parent `d3f6e10`, final head `5c52372`, source tree == merge tree `e00866f`, merged `2026-07-29T12:33:28Z`, CI run `30450612654` five checks SUCCESS, governance comment `5117766612`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted | [ui-01.md](proof/ui-01.md) | Reconciled live on the UI-02 branch |
 | UI-02 | Multi-host foundation | ✅ `verified_complete` | PR [#52](https://github.com/ikrome002-design/servana/pull/52) merged — squash `fb64ba6`, sole parent `413c146`, implementation commit `db3ace4`, final head `5add80c` (`ci: build SPA before backend shell tests` — a tested CI-contract correction, one file, **not** governance-only), source tree == merge tree `442ed1d`, merged `2026-07-30T10:38:01Z`, CI run `30532318808` attempt 1 five checks SUCCESS, governance comment `5129527972`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted | [ui-02.md](proof/ui-02.md) | Reconciled live on the UI-03 branch |
 | UI-03 | Authentication, session family, account switching | ✅ `verified_complete` | PR [#53](https://github.com/ikrome002-design/servana/pull/53) merged — **regular merge commit** `00c9c1e` preserving **four** reviewed commits (`64ca7cc` implementation, `415d2f5` deployed-origin browser proof, `5bd6e12` + `182f2cc` fixture-only payout-test corrections), parents in order `fb64ba67…` then `182f2cca…`, merged `2026-08-01T07:08:07Z`, CI run `30688440846` attempt 1 five checks SUCCESS, governance comment `5150328091`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted. Deployed-origin proof **47 observations / 0 failures**; 9 screenshots; merged full-suite backend baseline **3,108 passed / 5 skipped / 0 failed** (the retracted `2,528` figure is not reused). | [ui-03.md](proof/ui-03.md) | Reconciled live on the UI-04 branch |
-| UI-04 | Design system and shared components | 🟡 `local_complete pending PR` | `phase-ui-04-design-system-shared-components` (base `00c9c1e`, **no PR**) — one canonical token authority with a computed contrast gate, light-default theme with own-scope authenticated persistence (**no permission key**), Heroicons + web app manifest, **54 shared `Sv*` components** behind a machine-verified registry, fixed footer with a token-driven page reserve, distinct Human Resource shell. Closed five inherited UI-01 defects and **eight** found here (`UI04-TOKEN-001/002/003`, `UI04-TOAST-001/002`, `UI04-POPOVER-001`, `UI04-RESP-001`, `UI04-A11Y-001`) — five of the eight were surfaced by the final full Playwright gate, which the earlier truncated-tail reading had reported clean. UI-01/UI-02/UI-03 evidence **177 files unchanged** (aggregate SHA-256 re-proven). `UI04-TOKEN-003` changes a derived brand hover shade under an accessibility gate and is **flagged for product-owner review**. | [ui-04.md](proof/ui-04.md) | UI-03 PR merged and reconciled live |
-| UI-05 | Content and asset pipeline | ⬜ Not started | — | — | UI-04 merged |
+| UI-04 | Design system and shared components | ✅ `verified_complete` | PR [#54](https://github.com/ikrome002-design/servana/pull/54) merged — **squash** commit `e6afe832…` (single parent `00c9c1e…`), reviewed head `cf36cee…` whose tree `bd6728fb…` equals the merge tree, `mergedAt 2026-08-02T13:37:16Z`. Final CI `30748616089` **five checks SUCCESS**; the earlier run `30746233065` failed **only** on gitleaks against one exact fingerprint — a reproducible SHA-256 design-token digest, **verified false positive**, closed by a single historical fingerprint with no rule, path, entropy or workflow weakening. Governance comment `5158172398`; **`#FDBA74` hover approved** by the product owner; `reviewDecision` blank / 0 reviews (**not** independent approval); branches deleted. All **thirteen** closures promoted to `verified_complete`. | [ui-04.md](proof/ui-04.md) | Reconciled live on the UI-05 branch |
+| UI-05 | Content and asset pipeline | 🟡 `local_complete pending PR` | `phase-ui-05-content-asset-pipeline` (base `e6afe832`, **no PR**) — deterministic compiler for the **40** approved documents into typed generated modules with source hashes and a `--check` staleness gate; **24** legal documents byte-identical, proven by an independent PHP decode; **1,264** FAQ items (was 1,204 — `UI05-FAQ-001` restored 60 dropped Merchant Administrator questions); curated image manifest of **32** images (4 per account, was all 61 enumerated) with **192** AVIF/WebP derivatives, deterministic on a full re-encode; `UI01-ASSET-002` closed by a **non-destructive quarantine** of eleven unapproved brand files (moved, hashes identical, nothing deleted). **No route, API, permission, policy or migration changed.** Two content-source findings recorded for the product owner, not fixed. | [ui-05.md](proof/ui-05.md) | UI-04 PR merged and reconciled live |
 | UI-06 | Eight public landing pages | ⬜ Not started | — | — | UI-05 merged |
 | UI-07 | Navigation registry and screen contracts | ⬜ Not started | — | — | UI-06 merged |
 | UI-08 | Super Administrator experience (22 pages) | ⬜ Not started | — | — | UI-07 merged |
@@ -141,7 +141,7 @@ while the repository records said the work was complete.
 | Approved logo | `public/assets/brand/Logo.png` — PNG 500×500, `sha256:ada6fb03…` |
 | `Logo.svg` | **Deleted under product-owner authority** in `49160cd` (2026-07-07). Absent; must never be restored or referenced |
 | Favicons | All six present with **lowercase** names (`favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `android-chrome-192x192.png`, `android-chrome-512x512.png`). The old `Favicon.ico` reference was a case bug |
-| Landing images | **61** total — super_administrator 10 · merchant_administrator 8 · merchant_branch 9 · merchant_finance 5 · merchant_human_resource 8 · merchant_front_office 6 · merchant_personnel 7 · merchant_audit 8. All valid PNG, 0 cross-role duplicates. **No selection made** (UI-05/UI-06 own it) |
+| Landing images | **61** total — super_administrator 10 · merchant_administrator 8 · merchant_branch 9 · merchant_finance 5 · merchant_human_resource 8 · merchant_front_office 6 · merchant_personnel 7 · merchant_audit 8. All valid PNG, 0 cross-role duplicates. **UI-05 curated 32 of them** (4 per account) into `public/assets/landing_page_images/manifest.json` with 192 AVIF/WebP derivatives; the 61 originals are unchanged. Final placement and visual approval remain UI-06's |
 | Navigation page counts | **160** — 22 / 23 / 18 / 19 / 24 / 19 / 20 / 15. §30 register parity **exact** |
 | ADR range | **ADR-016 … ADR-025** (next available after the existing 0015) |
 | Generated artifacts | `docs/frontend/source-inventory/{navigation-map,role-content,brand-assets,landing-images}.json` |
@@ -181,10 +181,162 @@ blocked; Wallet-owned money movement, Refer & Earn-owned rewards, notification/r
 external-onboarding items are untouched. UI-00 closes none of them. `REM-PERM-002`, `REM-EXP-001`,
 `REM-SMS-002` and `REM-RE-002` stay open.
 
-## Phase UI-04 — Design system and shared components (`local_complete pending PR CI/review/merge`)
+## Phase UI-05 — Content and asset pipeline (`local_complete pending PR CI/review/merge`)
+
+**Branch** `phase-ui-05-content-asset-pipeline` · **base** `e6afe832` (the verified UI-04 merge
+commit) · **no PR** · **proof** [ui-05.md](proof/ui-05.md) · **contracts**
+[`docs/frontend/content/`](frontend/content/) · **artifacts**
+[`docs/frontend/audits/ui-05/`](frontend/audits/ui-05/)
+
+**Governing sources.** UI/UX plan §8.1–§8.8, §17.1–§17.4, §22.2, §25 (Phase UI-05), §26, §28.2,
+§28.8; ADR-025; backend Plan §27.2.
+
+### What UI-05 built
+
+A **deterministic content compiler** (`scripts/generate-role-content.mjs`) that replaces the
+build-time `import.meta.glob(…?raw)` discovery of repository Markdown with source-controlled,
+hash-checked generated modules. **40 documents** — 8 accounts × 5 categories — each claimed exactly
+once, each read from its own account's directory, with the account keys taken from the existing
+`config/account-hosts.json` authority rather than a second role list. Loading stays lazy: **forty
+static dynamic imports**, so no chunk can contain another account's content, and an unknown key
+throws rather than falling back.
+
+**Legal preservation.** All **24** legal documents are byte-identical, proven by decoding the
+generated string literal with PHP's own JSON decoder rather than trusting the emitter, plus line,
+heading, list-item and link-count parity and a `git status` assertion that no approved source was
+modified. `/legal/:role/:doc` now renders through UI-04's `SvLegalDocument`, carrying the source
+path and hash it was compiled from.
+
+**Content version** `sha256:ff63281f…`, **source timestamp** `2026-06-21T11:17:57Z` resolved from
+git history or carried forward — never a build clock, so the bytes reproduce.
+
+**Curated imagery.** `config/landing-image-selection.json` records the human decision (4 images per
+account, **32** of the 61 supplied); everything measurable is read off the files.
+**192 derivatives** (96 AVIF + 96 WebP at 640/1024/1440, 9.8 MB) with pinned encoder options and no
+upscaling; deleting the whole generated tree and regenerating produced byte-identical files. The
+untouched original is the `<picture>` fallback.
+
+**Seventeen negative controls** break one input at a time in a disposable copy and require the
+generator to fail naming that problem — each verifying the unmutated copy passes first.
+
+### Defects closed (locally)
+
+`UI01-ASSET-002` — eleven unapproved brand working files were publicly served because the edge image
+copies the whole `public` tree. Closed by a **non-destructive quarantine**: moved with `git mv` into
+`docs/brand/quarantine/ui01-asset-002/`, hashes verified before and after, **nothing deleted**.
+
+`UI05-FAQ-001` — the runtime parser required heading level two, so **60 of Merchant Administrator's
+196** FAQ questions never reached any surface. Invisible in seven of eight accounts. 1,204 → **1,264**
+items.
+
+`UI05-IMAGE-001` — every supplied image was enumerated from a hard-coded count, `1.png` was assumed
+to be every role's hero, and the alt text was invented at a declared 800 × 600 for files that are
+1672 × 941 or 1448 × 1086.
+
+All three are `local_complete pending PR CI/review/merge` — **not** `verified_complete`. Closure
+evidence: [`defect-closure.json`](frontend/audits/ui-05/defect-closure.json). The historical UI-01
+register is unchanged.
+
+### Content findings recorded for the product owner, not fixed
+
+`UI05-CONTENT-001` — `merchant_branch`, `merchant_finance`, `merchant_front_office` and
+`merchant_personnel` supply testimonial copy carrying unverified customer quotes; the Personnel
+source says outright that its three quotes are placeholders. Compiled verbatim, flagged
+`renderPermitted: false`. `UI05-CONTENT-002` — four regions have no source content (no testimonials
+for Merchant Administrator, Merchant Audit or Super Administrator; no pricing for Super
+Administrator). §8.3 and §8.4 forbid inventing commercial or customer evidence, and rewriting
+approved copy is not an engineering decision.
+
+### Permissions, policies, migrations
+
+**No route. No API operation. No permission key. No permission-matrix change. No policy. No
+migration. No tenant query. No financial logic.** One dev-only dependency: `sharp` 0.35.3, pinned
+exact, never imported by the SPA or by PHP.
+
+### Gate results
+
+Backend (in the `app` container — the host PHP has no `pdo_pgsql` driver, so `make test` is the
+only correct runner): Pint 1,764 files · Larastan level 8 clean · serial **2,704 passed / 13
+skipped / 0 failed / 38,994 assertions** · parallel (4 processes) **identical**. Reconciles against
+UI-04's 2,643/9 as 2,643 + 61 = 2,704 and 9 + 4 = 13 — the four skips are the Node-dependent
+staleness tests, which run in CI's Backend job.
+
+Frontend: ESLint **0 errors / 27 warnings** (28 → 27; the lost pair was the removed single-line
+`<h1 class="sr-only">` in `LegalDocument.vue`) · vue-tsc clean · Vitest **946 passed / 114 files**
+(919 → 946) · Vite build green, **41 generated content chunks**.
+
+Browser: UI-05 spec **33 passed**, 712 observations / 0 failures · full Playwright **923 passed / 0
+failed / 0 flaky** (890 → 923) · axe **0 serious / 0 critical** across light, dark, all eight FAQ
+data sets and 360 px.
+
+Production: images `servana-ui05-phpdev:audit` `d23c9c393b30`, `servana-ui05-php:audit`
+`093fe79ccac2`, `servana-ui05-nginx:audit` `5f197145cf5c`; `nginx -t` successful; asset smoke
+**245 observations / 0 failures** — every original and derivative serves byte-identical with the
+right MIME, and `Logo.svg`, the wrong-case logo and all eleven quarantined URLs return 404. The
+edge image contains **no `docs/` directory**, so the quarantine archive does not ship.
+
+Security: `composer audit` clean · `npm audit --audit-level=high` 0 vulnerabilities · `gitleaks`
+**no leaks found** · `git diff --check` and `git fsck --full` exit 0. Determinism: 17/17 negative
+controls fire; three consecutive content generations write 0 artifacts; deleting and rebuilding the
+whole derivative tree reproduces **192 byte-identical files**.
+
+**gitleaks correction.** The first run reported one leak — the PR #54 squash minted a new commit
+introducing the same `DESIGN_TOKEN_SOURCE_SHA256` line, so the same non-secret carries a second
+`commit:path:rule:line` fingerprint. It was re-verified from scratch (`Get-FileHash` on the
+committed token source reproduces the flagged value exactly) and closed with **one** additional
+exact fingerprint. No rule, path, entropy, workflow or generator change. Recurrence remains an open
+residual for a durable, separately authorized treatment.
+
+**Historical evidence.** The full Playwright run rewrote 139 UI-01 screenshots + `browser-evidence.json`
+and 6 UI-04 screenshots + `screenshot-index.json`. Restored by enumerated path only — `git restore
+--source=HEAD` for the 8 tracked blobs, `rm` for the 139 additions after asserting each sits under
+`docs/proof/ui-01/screenshots/`. No `git clean`, no wildcard, no capture-policy change (UI-16 owns
+that). `scripts/ui04-evidence-hash.mjs` reproduces the pre-run report byte for byte: **177 files
+unchanged**.
+
+**Local environment.** Meilisearch held 48 indexes (37 `servana_p22cmd_*`, 8 `servana_p22test_*`) —
+two orders of magnitude below UI-04's contamination, engine healthy, no search test failed, so **no
+cleanup was performed**. The Phase-22 test reaper stays a future search-test owner's work.
+
+### Not done, and stated plainly
+
+No landing page, no public FAQ route, no 160-page route contract, no account experience, no visual
+baseline, no deployment. `UI01-ASSET-004`, `UI01-LEGAL-001` and `UI01-LEGAL-002` are **not** claimed
+closed — a manifest is not a rendered page, and a compiled FAQ is not a route. Every skip has a
+named owner in [ui-05.md](proof/ui-05.md) § *Skipped work and owners*.
+
+### Commit and push state
+
+One atomic completion commit — `ui-05: implement content and asset pipeline` — 306 files changed
+(271 added, 24 modified, 11 renamed at `R100`, 0 deleted), exactly one commit ahead of
+`origin/main`. Branch pushed. **No pull request created.** The commit hash is read from the pushed
+branch rather than recorded inside the commit it names.
+
+### Exact next human action
+
+Review the pushed `phase-ui-05-content-asset-pipeline` branch, create the UI-05 pull request into
+`main`, allow the five required checks and governance/review process to complete, merge, then
+reconcile UI-05 and its locally closed defects to `verified_complete` before beginning UI-06.
+
+## Phase UI-04 — Design system and shared components (`verified_complete`)
+
+**PR** [#54](https://github.com/ikrome002-design/servana/pull/54) **MERGED** · **squash merge**
+`e6afe832fa9b45c4f452bcd43e19338ac87bfd9a` (single parent `00c9c1e…`) · **reviewed head**
+`cf36cee837fa5f724a9e0d8b3018c9c868ce6697` · **tree equivalence** `cf36cee^{tree}` = merge tree =
+`bd6728fb…` · **mergedAt** `2026-08-02T13:37:16Z` · **final CI** `30748616089`, Backend / Frontend /
+Docker / Security / E2E all successful · **governance comment** `5158172398` · **`#FDBA74` hover
+approved** by the product owner · **0 reviews submitted, 0 approving, `reviewDecision` blank —
+not independent approval** · branches deleted · **thirteen closures promoted to `verified_complete`**.
+
+The one CI failure (`30746233065`) was gitleaks against a single exact fingerprint — the reproducible
+SHA-256 digest of the committed design-token source, printed in plaintext in the same generated
+file's own header. **Verified false positive**; no credential existed, so nothing was revocable. The
+correction is one historical fingerprint in `.gitleaksignore`; no rule, path, glob, entropy
+threshold, workflow step or job permission was weakened, and UI-05 re-verified it is still the sole
+active entry.
 
 **Branch** `phase-ui-04-design-system-shared-components` · **base** `00c9c1e` (the verified UI-03
-merge commit) · **no PR** · **proof** [ui-04.md](proof/ui-04.md) · **design system**
+merge commit) · **proof** [ui-04.md](proof/ui-04.md) · **design system**
 [`docs/frontend/design-system/`](frontend/design-system/) · **artifacts**
 [`docs/frontend/audits/ui-04/`](frontend/audits/ui-04/)
 
@@ -228,14 +380,13 @@ label; the contract gated only the base colour).
 
 That gate had previously been recorded clean from a **truncated terminal tail**; read in full it
 reported 166 failures. Closure evidence:
-[`defect-closure.json`](frontend/audits/ui-04/defect-closure.json). All thirteen are
-`local_complete pending PR CI/review/merge` — **not** `verified_complete`. The historical UI-01
-register is unchanged.
+[`defect-closure.json`](frontend/audits/ui-04/defect-closure.json). All thirteen are now
+`verified_complete` (PR #54 merged). The historical UI-01 register is unchanged.
 
-**`UI04-TOKEN-003` needs a product-owner decision at review.** It changes a visible brand hover
-shade (light theme, `#9A3412` → `#FDBA74`). It alters none of the seventeen approved brand palette
-values and is forced by guardrail 11; the only conforming alternative is a different CTA label
-colour, which would reopen ADR-009.
+**`UI04-TOKEN-003` was approved at review.** It changed a visible brand hover shade (light theme,
+`#9A3412` → `#FDBA74`, 1.89:1 → 8.17:1 against the ADR-009-fixed CTA label). It altered none of the
+seventeen approved brand palette values and was forced by guardrail 11. The product owner recorded
+the approval in governance comment `5158172398`, so the flag is discharged.
 
 ### Permissions, policies, migrations
 
@@ -251,11 +402,10 @@ data-driven visual contract because **no notification API exists** — no table,
 or fake record was created. Every skip has a named owner in
 [ui-04.md](proof/ui-04.md) § *Skipped work and owners*.
 
-### Exact next human action
+### Outcome
 
-Review the pushed branch, create the UI-04 pull request into `main`, allow the five required
-checks and governance to complete, merge, and reconcile UI-04 and its eight defect closures to
-`verified_complete` before beginning UI-05.
+Done. The pull request was created, reviewed under the solo-maintainer exception, and merged; UI-04
+and its thirteen closures were reconciled to `verified_complete` on the UI-05 branch.
 
 ## Phase UI-03 — Authentication, session family, account switching (`verified_complete`)
 

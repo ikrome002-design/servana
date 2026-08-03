@@ -1,10 +1,10 @@
 {
   "generated_by": "Phase UI-04",
   "purpose": "Machine-verifiable closure record for the defects Phase UI-04 owns. The UI-01 audit register (docs/frontend/audits/ui-01/defect-register.csv) is a historical evidence snapshot and is deliberately NOT rewritten — its rows record what was true at audit time.",
-  "lifecycle_rule": "A local correction is NOT verified_complete. These closures stay `local_complete pending PR CI/review/merge` until the UI-04 pull request merges with green required checks and recorded governance evidence, at which point the next branch reconciles them.",
+  "lifecycle_rule": "RECONCILED. Every closure below merged with PR #54 on a green five-job CI run and is now verified_complete. The UI-01 audit register (docs/frontend/audits/ui-01/defect-register.csv) remains a historical evidence snapshot and is still deliberately NOT rewritten.",
   "ui04_branch": "phase-ui-04-design-system-shared-components",
   "ui04_base": "00c9c1e0025e3979464691be662915ada872cc18",
-  "ui04_pull_request": "NOT CREATED — UI-04 stops at a pushed branch by instruction",
+  "ui04_pull_request": "https://github.com/ikrome002-design/servana/pull/54 — MERGED (squash) 2026-08-02T13:37:16Z",
   "permission_matrix_changed": false,
   "new_permission_keys": [],
   "closures": [
@@ -37,8 +37,9 @@
       "after": "Eight accounts, eight distinct layouts. HR labelled 'Human Resource' in the shell and in the host registry.",
       "backend_authority_unchanged": "HR remains branch-scoped. No permission, policy or middleware changed. The shell renders HR's own navigation, so no Branch-owned command is exposed.",
       "not_done_here": "UI-11 owns HR's nineteen final pages. UI-04 corrected the shell identity only.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "UI-11 must re-verify when it implements the HR pages, exactly as the UI-01 register's note anticipated."
+      "closure_status": "verified_complete",
+      "remaining_risk": "UI-11 must re-verify when it implements the HR pages, exactly as the UI-01 register's note anticipated.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI01-THEME-001",
@@ -74,8 +75,9 @@
       "after": "Clean browser + dark OS => LIGHT, verified in a real Chromium context with colorScheme: 'dark', and the store proven never to CALL matchMedia at all.",
       "browser_proof": "tests/e2e/ui-04-design-system.spec.ts, screenshot 14-clean-browser-light-under-dark-os.png",
       "permission_impact": "None. Changing your own display preference is authorized by ownership; the request carries no user identifier.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "The account-switch synchronisation path is proven by construction (every host's /me bootstrap adopts the same user record) rather than by a cross-host browser observation; a real two-host switch belongs to a phase that already stands up the multi-host browser fixture."
+      "closure_status": "verified_complete",
+      "remaining_risk": "The account-switch synchronisation path is proven by construction (every host's /me bootstrap adopts the same user record) rather than by a cross-host browser observation; a real two-host switch belongs to a phase that already stands up the multi-host browser fixture.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI01-ASSET-001",
@@ -102,8 +104,9 @@
         "resources/spa/src/components/ui/SvPrimitives.spec.ts — icon-only controls carry an accessible name and hide the glyph"
       ],
       "scope_discipline": "Only glyphs used AS icons were replaced. Date-range and sort-label arrows are text content and were correctly left alone, as the UI-01 record scopes it.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None identified. The guard has negative controls, so a silently-passing matcher would itself fail."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None identified. The guard has negative controls, so a silently-passing matcher would itself fail.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI01-ASSET-003",
@@ -124,8 +127,9 @@
         "tests/e2e/ui-04-design-system.spec.ts — the manifest and BOTH icons are served with the right status and MIME from the running origin"
       ],
       "asset_bytes_unchanged": "The approved icon files are referenced, never modified, regenerated, recoloured or re-cased. Logo.svg remains absent and unreferenced.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None identified."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None identified.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI01-RENDER-001",
@@ -248,8 +252,9 @@
       ],
       "before": "13 uncaught TypeErrors across 12 routes.",
       "after": "0 errors reach the Vue error handler on any of the twelve routes with an incomplete payload; every screen still renders.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "UI-10, UI-12, UI-13 and UI-14 re-verify their own routes when they build them. Whether a production API can legitimately emit the empty-envelope shape the audit fixture produced is a fixture question owned by UI-16's capture redesign, not a product defect — the components now degrade correctly either way."
+      "closure_status": "verified_complete",
+      "remaining_risk": "UI-10, UI-12, UI-13 and UI-14 re-verify their own routes when they build them. Whether a production API can legitimately emit the empty-envelope shape the audit fixture produced is a fixture question owned by UI-16's capture redesign, not a product defect — the components now degrade correctly either way.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI04-TOKEN-001",
@@ -268,8 +273,9 @@
         "tests/Feature/DesignSystem/DesignTokenSourceGuardTest.php — 'finds no raw colour value in production UI source', with a negative control",
         "tests/Feature/DesignSystem/DesignTokenContrastTest.php — the focus ring is now contrast-checked on every surface in both themes"
       ],
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None identified. The guard is deterministic and has negative controls."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None identified. The guard is deterministic and has negative controls.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI04-TOAST-001",
@@ -285,8 +291,9 @@
       "tests": [
         "resources/spa/src/components/ui/SvFeedback.spec.ts — 10 SvToast tests covering all four defects"
       ],
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None identified."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None identified.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI04-POPOVER-001",
@@ -302,8 +309,9 @@
       "tests": [
         "resources/spa/src/components/ui/SvOverlays.spec.ts — 'closes on Escape' and 'closes on an outside pointer press', both mounting the popover already open"
       ],
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None identified."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None identified.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI04-TOKEN-002",
@@ -327,8 +335,9 @@
       "after": "AA in both themes, and the pairing is a gated contrast requirement.",
       "backend_authority_unchanged": true,
       "not_done_here": "Legacy per-page colour migration remains UI-08 … UI-15.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None known. The contract now fails if the pairing regresses."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None known. The contract now fails if the pairing regresses.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI04-RESP-001",
@@ -350,8 +359,9 @@
       "after": "No horizontal overflow at any audited width.",
       "backend_authority_unchanged": true,
       "not_done_here": "Release-wide responsive review remains UI-16.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None known."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None known.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI04-TOAST-002",
@@ -373,8 +383,9 @@
       "after": "One live region, addressable by role, nothing nested inside it.",
       "backend_authority_unchanged": true,
       "not_done_here": "",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None known."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None known.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI04-A11Y-001",
@@ -394,8 +405,9 @@
       "after": "AA on both header treatments.",
       "backend_authority_unchanged": true,
       "not_done_here": "The Super Administrator experience itself remains UI-08.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None known."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None known.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     },
     {
       "defect_id": "UI04-TOKEN-003",
@@ -419,8 +431,9 @@
       "after": "8.17:1 in light, gated in both themes.",
       "backend_authority_unchanged": true,
       "not_done_here": "FLAGGED FOR PRODUCT-OWNER REVIEW: this changes a visible brand shade. It touches none of the seventeen approved brand palette values (#9A3412 was a UI-04-derived shade annotated \"Brand primary hover on light surfaces\") and is forced by CLAUDE.md guardrail 11, which makes AA in both themes a release gate. A darkening hover would require a different CTA label colour, reopening ADR-009, which is not UI-04 to decide.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "The shade is a design choice made under an accessibility constraint and is flagged for review at the pull request."
+      "closure_status": "verified_complete",
+      "remaining_risk": "The shade is a design choice made under an accessibility constraint and is flagged for review at the pull request.",
+      "verified_complete_evidence": "PR #54 merged as e6afe832fa9b45c4f452bcd43e19338ac87bfd9a (squash of reviewed head cf36cee837fa5f724a9e0d8b3018c9c868ce6697); final CI run 30748616089 — five required jobs successful; governance comment 5158172398."
     }
   ],
   "explicitly_left_open": [
@@ -442,7 +455,8 @@
     {
       "defect_id": "UI01-ASSET-002",
       "owner_phase": "UI-05",
-      "reason": "Removal or quarantine of unapproved brand working files belongs to the asset pipeline. UI-04 deliberately does not absorb it."
+      "reason": "Removal or quarantine of unapproved brand working files belongs to the asset pipeline. UI-04 deliberately does not absorb it.",
+      "status_in_ui05": "local_complete pending PR CI/review/merge — quarantined by Phase UI-05; see docs/frontend/audits/ui-05/asset-quarantine.json"
     },
     {
       "defect_id": "UI01-A11Y-001",
@@ -500,5 +514,11 @@
       "work": "Cross-user session, profile or preference administration",
       "owner": "blocked decision — no canonical permission authority exists and UI-04 does not invent one"
     }
-  ]
+  ],
+  "ui04_final_head": "cf36cee837fa5f724a9e0d8b3018c9c868ce6697",
+  "ui04_original_completion_commit": "d7c64c3008943e44357f5b7b3b49ea2d84a7616c",
+  "ui04_merge_commit": "e6afe832fa9b45c4f452bcd43e19338ac87bfd9a",
+  "ui04_final_ci_run": "30748616089 — Backend, Frontend, Docker, Security, E2E all successful",
+  "ui04_governance_comment": "5158172398 — solo-maintainer exception; 0 reviews submitted, 0 approving, reviewDecision blank; no independent reviewer approval exists or is claimed",
+  "reconciled_by": "Phase UI-05 (branch phase-ui-05-content-asset-pipeline)"
 }

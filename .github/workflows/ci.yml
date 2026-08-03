@@ -283,6 +283,26 @@ jobs:
       - name: Contract — design tokens are current (Phase UI-04)
         run: node scripts/generate-design-tokens.mjs --check
 
+      # Phase UI-05: the approved role content in docs/** is compiled into generated, committed
+      # modules. `--check` regenerates in memory and fails when the committed artifacts no longer
+      # match their sources — the staleness gate the UI/UX plan §8.8 requires. It deliberately does
+      # NOT write: a build that silently regenerated stale output would hide the very diff a
+      # reviewer needs to see.
+      - name: Contract — generated role content is current (Phase UI-05)
+        run: npm run content:check
+
+      # Phase UI-05: the curated landing-image manifest, its responsive derivatives, the approved
+      # logo mapping and the UI01-ASSET-002 quarantine. This check never re-encodes an image; it
+      # verifies the committed derivatives still exist, decode and hash as recorded, so the result
+      # does not depend on the runner's libvips build.
+      - name: Contract — landing images and brand quarantine are current (Phase UI-05)
+        run: npm run assets:check
+
+      # Phase UI-05: prove the two generators above still FAIL when an input is broken. A guard that
+      # silently stopped running would keep the two checks green forever.
+      - name: Contract — UI-05 generator negative controls
+        run: node scripts/ui05-negative-controls.mjs
+
       - name: Unit tests — Vitest
         run: npm run test
 
@@ -379,6 +399,12 @@ jobs:
 
       - name: Smoke — eight account hosts on the built image (Phase UI-02)
         run: node scripts/ui02-host-smoke.mjs --origin http://127.0.0.1:8080
+
+      # Phase UI-05: the offline contracts prove the curated assets exist and hash correctly; this
+      # proves the EDGE serves them with the right MIME and withholds the eleven quarantined brand
+      # working files and the deleted vector logo.
+      - name: Smoke — UI-05 content and asset pipeline on the built image
+        run: node scripts/ui05-production-smoke.mjs http://127.0.0.1:8080 servana.test
 
       - name: Upload host matrix
         if: always()

@@ -86,6 +86,10 @@ document already defines — read the file.
 | **Binding navigation map (160 pages)** | `docs/frontend/navigation/servana-user-account-navigation-maps.md` — generated; edit Appendix A of the UI/UX plan instead |
 | UI source inventories (generated) | `docs/frontend/source-inventory/{navigation-map,role-content,brand-assets,landing-images}.json` |
 | UI source generator | `node scripts/generate-ui-source-inventory.mjs` (`--check` for staleness) |
+| **Content/asset pipeline contracts (UI-05)** | `docs/frontend/content/{README,content-contract,legal-preservation-contract,image-pipeline-contract}.md` |
+| Generated role content (never hand-edited) | `resources/spa/src/content/generated/` ← `scripts/generate-role-content.mjs` |
+| Curated landing images + derivatives | `public/assets/landing_page_images/manifest.json`, `.../generated/` ← `scripts/generate-landing-images.mjs`; selection in `config/landing-image-selection.json` |
+| Quarantined brand working files (non-public) | `docs/brand/quarantine/ui01-asset-002/`; decision record `config/brand-asset-quarantine.json` |
 | Landing page copy (one file per account user) | `docs/landing_page/{role}_landing_page_content.md` |
 | Data policies (per account user) | `docs/legal/data_policy/{role}_data_policy.md` |
 | Privacy policies (per account user) | `docs/legal/privacy_policy/{role}_privacy_policy.md` |
@@ -289,7 +293,16 @@ npm run e2e       # playwright (critical tag)
 php artisan test --filter={TestName}   # targeted
 node scripts/generate-ui-source-inventory.mjs           # regenerate UI source inventories
 node scripts/generate-ui-source-inventory.mjs --check   # fail if they are stale
+npm run content:generate   # recompile the 40 approved role documents (Phase UI-05)
+npm run content:check      # fail if the generated content artifacts are stale
+npm run assets:generate    # re-derive the landing-image manifest and derivatives
+npm run assets:check       # fail if a manifest path, hash or derivative is stale
+node scripts/ui05-negative-controls.mjs   # prove the UI-05 generator guards still fire
 ```
+Never hand-edit anything under `resources/spa/src/content/generated/` or
+`public/assets/landing_page_images/generated/` — change the source and regenerate.
+The backend suite runs **in the app container** (`make test`); the host PHP has no
+`pdo_pgsql` driver.
 Quality gates before any commit: Pint clean · Larastan level 8 · all tests
 green · no `npm audit`/`composer audit` high+critical · gitleaks clean.
 
