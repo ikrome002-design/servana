@@ -1,0 +1,1761 @@
+{
+  "generated_by": "node scripts/generate-ui06-artifacts.mjs",
+  "phase": "UI-06",
+  "authorities": {
+    "account_host_registry": {
+      "path": "config/account-hosts.json",
+      "sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c"
+    },
+    "content_manifest": {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    "image_manifest": {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "sha256": "85165982796291dd4f876e0e58b63ce1cbc1e69f6460a23b072f5c7d998f0b15"
+    },
+    "logo": {
+      "path": "public/assets/brand/Logo.png",
+      "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035"
+    }
+  },
+  "purpose": "The sixteen semantic regions of UI/UX plan §8.3, per account: where each comes from, and — where the source supplies nothing publishable — which approved alternative fills it.",
+  "plan_regions": [
+    "header_navigation",
+    "hero",
+    "social_proof",
+    "problem",
+    "solution",
+    "features",
+    "how_it_works",
+    "benefits",
+    "product_showcase",
+    "use_cases",
+    "testimonials",
+    "pricing",
+    "security",
+    "faq",
+    "final_cta",
+    "footer"
+  ],
+  "region_treatments": {
+    "header_navigation": "Rendered as the real LandingHeader (logo, in-page navigation, resolved CTAs, mobile menu). The compiled section is build instruction, never body copy.",
+    "footer": "Rendered as the real SvFixedFooter. The compiled section duplicates its link list and is never rendered as body copy.",
+    "testimonials": "Approved factual trust evidence on all eight accounts (binding decisions §2.1 and §2.2). No customer quotation is published.",
+    "pricing": "Role-appropriate plan access. No amount is published anywhere (binding decisions §2.3 and §2.4)."
+  },
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "regions": [
+        {
+          "region": "header_navigation",
+          "source_presence": "present_in_source",
+          "source_heading": "Header / Navigation",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "LandingHeader",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Logo",
+            "Navigation Links",
+            "Login Link",
+            "Primary CTA"
+          ]
+        },
+        {
+          "region": "hero",
+          "source_presence": "present_in_source",
+          "source_heading": "Hero Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-hero",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA",
+            "Optional secondary link"
+          ]
+        },
+        {
+          "region": "social_proof",
+          "source_presence": "present_in_source",
+          "source_heading": "Trust / Social Proof Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-social-proof",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "problem",
+          "source_presence": "present_in_source",
+          "source_heading": "Problem Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-problem",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "solution",
+          "source_presence": "present_in_source",
+          "source_heading": "Solution / Value Proposition Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-solution",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        },
+        {
+          "region": "features",
+          "source_presence": "present_in_source",
+          "source_heading": "Features Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-features",
+          "item_count": 8,
+          "dropped_annotations": []
+        },
+        {
+          "region": "how_it_works",
+          "source_presence": "present_in_source",
+          "source_heading": "How It Works Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-how-it-works",
+          "item_count": 4,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        },
+        {
+          "region": "benefits",
+          "source_presence": "present_in_source",
+          "source_heading": "Benefits Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-benefits",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "product_showcase",
+          "source_presence": "present_in_source",
+          "source_heading": "Product Showcase Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-product-showcase",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "use_cases",
+          "source_presence": "present_in_source",
+          "source_heading": "Use Cases Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-use-cases",
+          "item_count": 4,
+          "dropped_annotations": []
+        },
+        {
+          "region": "testimonials",
+          "source_presence": "missing_from_source",
+          "source_heading": null,
+          "content_restriction": "product_owner_content_decision_required",
+          "source_render_permitted": false,
+          "rendered": true,
+          "rendered_as": "trust_evidence:approved_factual_alternative",
+          "anchor": "#section-testimonials",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "pricing",
+          "source_presence": "present_in_source",
+          "source_heading": "Pricing Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "plan_access:merchant_subscription_plan_access",
+          "anchor": "#section-pricing",
+          "item_count": 4,
+          "dropped_annotations": [
+            "CTA for each plan"
+          ]
+        },
+        {
+          "region": "security",
+          "source_presence": "present_in_source",
+          "source_heading": "Security / Control Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-security",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "faq",
+          "source_presence": "present_in_source",
+          "source_heading": "FAQ Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-faq",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "final_cta",
+          "source_presence": "present_in_source",
+          "source_heading": "Final CTA Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-final-cta",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        },
+        {
+          "region": "footer",
+          "source_presence": "present_in_source",
+          "source_heading": "Footer",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "SvFixedFooter",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": []
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_audit",
+      "regions": [
+        {
+          "region": "header_navigation",
+          "source_presence": "present_in_source",
+          "source_heading": "Header / Navigation",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "LandingHeader",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Logo",
+            "Navigation Links",
+            "Login Link",
+            "Primary CTA Button"
+          ]
+        },
+        {
+          "region": "hero",
+          "source_presence": "present_in_source",
+          "source_heading": "Hero Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-hero",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA",
+            "Secondary Text Link"
+          ]
+        },
+        {
+          "region": "social_proof",
+          "source_presence": "present_in_source",
+          "source_heading": "Social Proof / Trust Statement",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-social-proof",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "problem",
+          "source_presence": "present_in_source",
+          "source_heading": "Problem Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-problem",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "solution",
+          "source_presence": "present_in_source",
+          "source_heading": "Solution / Value Proposition Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-solution",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "features",
+          "source_presence": "present_in_source",
+          "source_heading": "Features Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-features",
+          "item_count": 9,
+          "dropped_annotations": []
+        },
+        {
+          "region": "how_it_works",
+          "source_presence": "present_in_source",
+          "source_heading": "How It Works Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-how-it-works",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "benefits",
+          "source_presence": "present_in_source",
+          "source_heading": "Benefits Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-benefits",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "product_showcase",
+          "source_presence": "present_in_source",
+          "source_heading": "Product Showcase Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-product-showcase",
+          "item_count": 0,
+          "dropped_annotations": [
+            "Suggested visual content for this section"
+          ]
+        },
+        {
+          "region": "use_cases",
+          "source_presence": "present_in_source",
+          "source_heading": "Use Cases Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-use-cases",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "testimonials",
+          "source_presence": "missing_from_source",
+          "source_heading": null,
+          "content_restriction": "product_owner_content_decision_required",
+          "source_render_permitted": false,
+          "rendered": true,
+          "rendered_as": "trust_evidence:approved_factual_alternative",
+          "anchor": "#section-testimonials",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "pricing",
+          "source_presence": "present_in_source",
+          "source_heading": "Pricing / Access Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "plan_access:invitation_account_plan_access",
+          "anchor": "#section-pricing",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        },
+        {
+          "region": "security",
+          "source_presence": "present_in_source",
+          "source_heading": "Security / Trust Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-security",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "faq",
+          "source_presence": "present_in_source",
+          "source_heading": "FAQ Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-faq",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "final_cta",
+          "source_presence": "present_in_source",
+          "source_heading": "Final CTA Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-final-cta",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA",
+            "CTA Behavior"
+          ]
+        },
+        {
+          "region": "footer",
+          "source_presence": "present_in_source",
+          "source_heading": "Footer",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "SvFixedFooter",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Meta Title",
+            "Meta Description",
+            "Primary CTA Label",
+            "Best Hero Image Direction"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_branch",
+      "regions": [
+        {
+          "region": "header_navigation",
+          "source_presence": "present_in_source",
+          "source_heading": "Header / Navigation",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "LandingHeader",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Logo",
+            "Navigation Links",
+            "Login Link",
+            "Primary CTA"
+          ]
+        },
+        {
+          "region": "hero",
+          "source_presence": "present_in_source",
+          "source_heading": "Hero Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-hero",
+          "item_count": 0,
+          "dropped_annotations": [
+            "Primary CTA",
+            "Secondary CTA"
+          ]
+        },
+        {
+          "region": "social_proof",
+          "source_presence": "present_in_source",
+          "source_heading": "Trust / Social Proof Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-social-proof",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "problem",
+          "source_presence": "present_in_source",
+          "source_heading": "Problem Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-problem",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "solution",
+          "source_presence": "present_in_source",
+          "source_heading": "Solution / Value Proposition Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-solution",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "features",
+          "source_presence": "present_in_source",
+          "source_heading": "Features Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-features",
+          "item_count": 8,
+          "dropped_annotations": []
+        },
+        {
+          "region": "how_it_works",
+          "source_presence": "present_in_source",
+          "source_heading": "How It Works Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-how-it-works",
+          "item_count": 5,
+          "dropped_annotations": [
+            "Primary CTA"
+          ]
+        },
+        {
+          "region": "benefits",
+          "source_presence": "present_in_source",
+          "source_heading": "Benefits Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-benefits",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "product_showcase",
+          "source_presence": "present_in_source",
+          "source_heading": "Product Showcase Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-product-showcase",
+          "item_count": 0,
+          "dropped_annotations": [
+            "Suggested visual direction for this section"
+          ]
+        },
+        {
+          "region": "use_cases",
+          "source_presence": "present_in_source",
+          "source_heading": "Use Cases Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-use-cases",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "testimonials",
+          "source_presence": "present_in_source",
+          "source_heading": "Testimonial Section",
+          "content_restriction": "unverified_customer_evidence",
+          "source_render_permitted": false,
+          "rendered": true,
+          "rendered_as": "trust_evidence:approved_factual_alternative",
+          "anchor": "#section-testimonials",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "pricing",
+          "source_presence": "present_in_source",
+          "source_heading": "Pricing Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "plan_access:invitation_account_plan_access",
+          "anchor": "#section-pricing",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        },
+        {
+          "region": "security",
+          "source_presence": "present_in_source",
+          "source_heading": "Security / Compliance Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-security",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "faq",
+          "source_presence": "present_in_source",
+          "source_heading": "FAQ Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-faq",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "final_cta",
+          "source_presence": "present_in_source",
+          "source_heading": "Final CTA Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-final-cta",
+          "item_count": 0,
+          "dropped_annotations": [
+            "Primary CTA"
+          ]
+        },
+        {
+          "region": "footer",
+          "source_presence": "present_in_source",
+          "source_heading": "Footer",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "SvFixedFooter",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_finance",
+      "regions": [
+        {
+          "region": "header_navigation",
+          "source_presence": "present_in_source",
+          "source_heading": "Header / Navigation",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "LandingHeader",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Logo",
+            "Navigation Links",
+            "Right Side",
+            "CTA behavior"
+          ]
+        },
+        {
+          "region": "hero",
+          "source_presence": "present_in_source",
+          "source_heading": "Hero Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-hero",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED",
+            "Secondary link"
+          ]
+        },
+        {
+          "region": "social_proof",
+          "source_presence": "present_in_source",
+          "source_heading": "Social Proof / Trust Statement",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-social-proof",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "problem",
+          "source_presence": "present_in_source",
+          "source_heading": "Problem Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-problem",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "solution",
+          "source_presence": "present_in_source",
+          "source_heading": "Solution / Value Proposition Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-solution",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "features",
+          "source_presence": "present_in_source",
+          "source_heading": "Features Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-features",
+          "item_count": 8,
+          "dropped_annotations": []
+        },
+        {
+          "region": "how_it_works",
+          "source_presence": "present_in_source",
+          "source_heading": "How It Works Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-how-it-works",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "benefits",
+          "source_presence": "present_in_source",
+          "source_heading": "Benefits Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-benefits",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "product_showcase",
+          "source_presence": "present_in_source",
+          "source_heading": "Product Showcase Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-product-showcase",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "use_cases",
+          "source_presence": "present_in_source",
+          "source_heading": "Use Cases Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-use-cases",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "testimonials",
+          "source_presence": "present_in_source",
+          "source_heading": "Testimonial Section",
+          "content_restriction": "unverified_customer_evidence",
+          "source_render_permitted": false,
+          "rendered": true,
+          "rendered_as": "trust_evidence:approved_factual_alternative",
+          "anchor": "#section-testimonials",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "pricing",
+          "source_presence": "present_in_source",
+          "source_heading": "Pricing Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "plan_access:invitation_account_plan_access",
+          "anchor": "#section-pricing",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "security",
+          "source_presence": "present_in_source",
+          "source_heading": "Security / Trust Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-security",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "faq",
+          "source_presence": "present_in_source",
+          "source_heading": "FAQ Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-faq",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "final_cta",
+          "source_presence": "present_in_source",
+          "source_heading": "Final CTA Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-final-cta",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "footer",
+          "source_presence": "present_in_source",
+          "source_heading": "Footer",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "SvFixedFooter",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Reason"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_front_office",
+      "regions": [
+        {
+          "region": "header_navigation",
+          "source_presence": "present_in_source",
+          "source_heading": "Header / Navigation",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "LandingHeader",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Logo",
+            "Navigation Links",
+            "Login Link",
+            "Primary CTA",
+            "CTA behavior"
+          ]
+        },
+        {
+          "region": "hero",
+          "source_presence": "present_in_source",
+          "source_heading": "Hero Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-hero",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED",
+            "Secondary link"
+          ]
+        },
+        {
+          "region": "social_proof",
+          "source_presence": "present_in_source",
+          "source_heading": "Trust / Social Proof Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-social-proof",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "problem",
+          "source_presence": "present_in_source",
+          "source_heading": "Problem Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-problem",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "solution",
+          "source_presence": "present_in_source",
+          "source_heading": "Solution / Value Proposition Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-solution",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "features",
+          "source_presence": "present_in_source",
+          "source_heading": "Features Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-features",
+          "item_count": 10,
+          "dropped_annotations": []
+        },
+        {
+          "region": "how_it_works",
+          "source_presence": "present_in_source",
+          "source_heading": "How It Works Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-how-it-works",
+          "item_count": 7,
+          "dropped_annotations": []
+        },
+        {
+          "region": "benefits",
+          "source_presence": "present_in_source",
+          "source_heading": "Benefits Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-benefits",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "product_showcase",
+          "source_presence": "present_in_source",
+          "source_heading": "Product Showcase Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-product-showcase",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "use_cases",
+          "source_presence": "present_in_source",
+          "source_heading": "Use Cases Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-use-cases",
+          "item_count": 4,
+          "dropped_annotations": []
+        },
+        {
+          "region": "testimonials",
+          "source_presence": "present_in_source",
+          "source_heading": "Testimonial Section",
+          "content_restriction": "unverified_customer_evidence",
+          "source_render_permitted": false,
+          "rendered": true,
+          "rendered_as": "trust_evidence:approved_factual_alternative",
+          "anchor": "#section-testimonials",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "pricing",
+          "source_presence": "present_in_source",
+          "source_heading": "Pricing Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "plan_access:invitation_account_plan_access",
+          "anchor": "#section-pricing",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "security",
+          "source_presence": "present_in_source",
+          "source_heading": "Security / Trust Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-security",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "faq",
+          "source_presence": "present_in_source",
+          "source_heading": "FAQ Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-faq",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "final_cta",
+          "source_presence": "present_in_source",
+          "source_heading": "Final CTA Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-final-cta",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "footer",
+          "source_presence": "present_in_source",
+          "source_heading": "Footer",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "SvFixedFooter",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "regions": [
+        {
+          "region": "header_navigation",
+          "source_presence": "present_in_source",
+          "source_heading": "Header / Navigation",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "LandingHeader",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Logo",
+            "Navigation Links",
+            "Login Link",
+            "Primary CTA Button"
+          ]
+        },
+        {
+          "region": "hero",
+          "source_presence": "present_in_source",
+          "source_heading": "Hero Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-hero",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED",
+            "Secondary link"
+          ]
+        },
+        {
+          "region": "social_proof",
+          "source_presence": "present_in_source",
+          "source_heading": "Social Proof / Trust Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-social-proof",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "problem",
+          "source_presence": "present_in_source",
+          "source_heading": "Problem Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-problem",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "solution",
+          "source_presence": "present_in_source",
+          "source_heading": "Solution / Value Proposition Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-solution",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "features",
+          "source_presence": "present_in_source",
+          "source_heading": "Features Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-features",
+          "item_count": 8,
+          "dropped_annotations": []
+        },
+        {
+          "region": "how_it_works",
+          "source_presence": "present_in_source",
+          "source_heading": "How It Works Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-how-it-works",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "benefits",
+          "source_presence": "present_in_source",
+          "source_heading": "Benefits Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-benefits",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "product_showcase",
+          "source_presence": "present_in_source",
+          "source_heading": "Product Showcase Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-product-showcase",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA below preview"
+          ]
+        },
+        {
+          "region": "use_cases",
+          "source_presence": "present_in_source",
+          "source_heading": "Use Cases Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-use-cases",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "testimonials",
+          "source_presence": "present_in_source",
+          "source_heading": "Trust Statement Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "trust_evidence:compiled_source_section",
+          "anchor": "#section-testimonials",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "pricing",
+          "source_presence": "present_in_source",
+          "source_heading": "Pricing Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "plan_access:invitation_account_plan_access",
+          "anchor": "#section-pricing",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "security",
+          "source_presence": "present_in_source",
+          "source_heading": "Security / Compliance Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-security",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "faq",
+          "source_presence": "present_in_source",
+          "source_heading": "FAQ Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-faq",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "final_cta",
+          "source_presence": "present_in_source",
+          "source_heading": "Final CTA Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-final-cta",
+          "item_count": 0,
+          "dropped_annotations": [
+            "GET STARTED"
+          ]
+        },
+        {
+          "region": "footer",
+          "source_presence": "present_in_source",
+          "source_heading": "Footer",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "SvFixedFooter",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_personnel",
+      "regions": [
+        {
+          "region": "header_navigation",
+          "source_presence": "present_in_source",
+          "source_heading": "Header / Navigation",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "LandingHeader",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Logo",
+            "Navigation Links",
+            "Login Link",
+            "Primary CTA",
+            "CTA Destination Logic"
+          ]
+        },
+        {
+          "region": "hero",
+          "source_presence": "present_in_source",
+          "source_heading": "Hero Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-hero",
+          "item_count": 0,
+          "dropped_annotations": [
+            "Primary CTA",
+            "Secondary CTA"
+          ]
+        },
+        {
+          "region": "social_proof",
+          "source_presence": "present_in_source",
+          "source_heading": "Trust / Social Proof Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-social-proof",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "problem",
+          "source_presence": "present_in_source",
+          "source_heading": "Problem Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-problem",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "solution",
+          "source_presence": "present_in_source",
+          "source_heading": "Solution / Value Proposition Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-solution",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "features",
+          "source_presence": "present_in_source",
+          "source_heading": "Features Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-features",
+          "item_count": 8,
+          "dropped_annotations": []
+        },
+        {
+          "region": "how_it_works",
+          "source_presence": "present_in_source",
+          "source_heading": "How It Works Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-how-it-works",
+          "item_count": 5,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        },
+        {
+          "region": "benefits",
+          "source_presence": "present_in_source",
+          "source_heading": "Benefits Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-benefits",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "product_showcase",
+          "source_presence": "present_in_source",
+          "source_heading": "Product Showcase Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-product-showcase",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        },
+        {
+          "region": "use_cases",
+          "source_presence": "present_in_source",
+          "source_heading": "Use Cases Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-use-cases",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "testimonials",
+          "source_presence": "present_in_source",
+          "source_heading": "Testimonials Section",
+          "content_restriction": "placeholder_testimonial_marked_in_source",
+          "source_render_permitted": false,
+          "rendered": true,
+          "rendered_as": "trust_evidence:approved_factual_alternative",
+          "anchor": "#section-testimonials",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "pricing",
+          "source_presence": "present_in_source",
+          "source_heading": "Pricing Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "plan_access:invitation_account_plan_access",
+          "anchor": "#section-pricing",
+          "item_count": 0,
+          "dropped_annotations": [
+            "CTA"
+          ]
+        },
+        {
+          "region": "security",
+          "source_presence": "present_in_source",
+          "source_heading": "Security / Trust Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-security",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "faq",
+          "source_presence": "present_in_source",
+          "source_heading": "FAQ Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-faq",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "final_cta",
+          "source_presence": "present_in_source",
+          "source_heading": "Final CTA Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-final-cta",
+          "item_count": 0,
+          "dropped_annotations": [
+            "Primary CTA",
+            "CTA Microcopy"
+          ]
+        },
+        {
+          "region": "footer",
+          "source_presence": "present_in_source",
+          "source_heading": "Footer",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "SvFixedFooter",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Footer CTA"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "super_administrator",
+      "regions": [
+        {
+          "region": "header_navigation",
+          "source_presence": "present_in_source",
+          "source_heading": "Header / Navigation",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "LandingHeader",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": [
+            "Logo",
+            "Navigation Links",
+            "Right Side"
+          ]
+        },
+        {
+          "region": "hero",
+          "source_presence": "present_in_source",
+          "source_heading": "Hero Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-hero",
+          "item_count": 0,
+          "dropped_annotations": [
+            "Primary CTA"
+          ]
+        },
+        {
+          "region": "social_proof",
+          "source_presence": "present_in_source",
+          "source_heading": "Platform Positioning Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-social-proof",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "problem",
+          "source_presence": "present_in_source",
+          "source_heading": "Problem Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-problem",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "solution",
+          "source_presence": "present_in_source",
+          "source_heading": "Solution Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-solution",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "features",
+          "source_presence": "present_in_source",
+          "source_heading": "Feature Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-features",
+          "item_count": 8,
+          "dropped_annotations": []
+        },
+        {
+          "region": "how_it_works",
+          "source_presence": "present_in_source",
+          "source_heading": "How It Works Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-how-it-works",
+          "item_count": 4,
+          "dropped_annotations": []
+        },
+        {
+          "region": "benefits",
+          "source_presence": "present_in_source",
+          "source_heading": "Benefits Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-benefits",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "product_showcase",
+          "source_presence": "present_in_source",
+          "source_heading": "Product Showcase Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-product-showcase",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "use_cases",
+          "source_presence": "present_in_source",
+          "source_heading": "Use Cases Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-use-cases",
+          "item_count": 5,
+          "dropped_annotations": []
+        },
+        {
+          "region": "testimonials",
+          "source_presence": "missing_from_source",
+          "source_heading": null,
+          "content_restriction": "product_owner_content_decision_required",
+          "source_render_permitted": false,
+          "rendered": true,
+          "rendered_as": "trust_evidence:approved_factual_alternative",
+          "anchor": "#section-testimonials",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "pricing",
+          "source_presence": "missing_from_source",
+          "source_heading": null,
+          "content_restriction": "product_owner_content_decision_required",
+          "source_render_permitted": false,
+          "rendered": true,
+          "rendered_as": "plan_access:platform_plan_administration",
+          "anchor": "#section-pricing",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "security",
+          "source_presence": "present_in_source",
+          "source_heading": "Security Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-security",
+          "item_count": 0,
+          "dropped_annotations": []
+        },
+        {
+          "region": "faq",
+          "source_presence": "present_in_source",
+          "source_heading": "FAQ Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-faq",
+          "item_count": 6,
+          "dropped_annotations": []
+        },
+        {
+          "region": "final_cta",
+          "source_presence": "present_in_source",
+          "source_heading": "Final CTA Section",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "compiled_source",
+          "anchor": "#section-final-cta",
+          "item_count": 0,
+          "dropped_annotations": [
+            "Primary CTA",
+            "Secondary CTA"
+          ]
+        },
+        {
+          "region": "footer",
+          "source_presence": "present_in_source",
+          "source_heading": "Footer",
+          "content_restriction": "none",
+          "source_render_permitted": true,
+          "rendered": true,
+          "rendered_as": "SvFixedFooter",
+          "anchor": null,
+          "item_count": 0,
+          "dropped_annotations": []
+        }
+      ]
+    }
+  ]
+}

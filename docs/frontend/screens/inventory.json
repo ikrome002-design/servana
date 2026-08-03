@@ -5,31 +5,31 @@
       "key": "home",
       "domain": "public",
       "route": "home",
-      "layout": "Standalone",
+      "layout": "PublicLandingLayout",
       "status": "implemented",
-      "phase": "Phase 1",
+      "phase": "Phase UI-06",
       "spec": "public/home.md",
-      "title": "Home / entry",
+      "title": "Public account landing page",
       "roles": [
         "public"
       ],
       "permissions": [],
-      "summary": "Unauthenticated entry card with brand and a prompt to sign in via Magic Link; also the not-found fallback."
+      "summary": "The resolved account host's own public landing page: sixteen semantic regions built from that account's compiled content, curated imagery, approved factual trust evidence, role-appropriate plan access and registry-derived calls to action."
     },
     {
       "key": "not-found",
       "domain": "public",
       "route": "not-found",
-      "layout": "Standalone",
+      "layout": "PublicLandingLayout",
       "status": "implemented",
-      "phase": "Phase 1",
+      "phase": "Phase UI-06",
       "spec": "public/not-found.md",
       "title": "Not found",
       "roles": [
         "public"
       ],
       "permissions": [],
-      "summary": "Catch-all route rendering the Home entry card for unknown paths."
+      "summary": "Catch-all route stating plainly that the address does not exist on this account host, with links to that host's home page and FAQ. It previously rendered the entry card, which made every wrong path look like a working page."
     },
     {
       "key": "design-system",
@@ -52,14 +52,14 @@
       "route": "legal.document",
       "layout": "Standalone",
       "status": "implemented",
-      "phase": "Phase 11",
+      "phase": "Phase UI-06",
       "spec": "legal/legal-document.md",
       "title": "Legal document",
       "roles": [
         "public"
       ],
       "permissions": [],
-      "summary": "Renders a role-specific Terms of Service / Privacy Policy / Data Policy verbatim from docs/legal."
+      "summary": "Compatibility route for the pre-UI-06 /legal/:role/:doc shape. A role equal to the resolved host account redirects to the canonical role-free path; any other role fails closed and renders nothing."
     },
     {
       "key": "auth-access-denied",
@@ -2111,6 +2111,36 @@
       ],
       "permissions": [],
       "summary": "Cross-domain search over the records the authenticated user can ALREADY reach (Plan §68). A single term queries a fixed catalogue of document types — clients, staff, appointments, queue entries, service sessions, invoices, receipts, and a Personnel member's own served clients — and each type is admitted only after the server proves the caller holds the authority governing that type's own list/detail route (decision D-22-01). The screen therefore lists no permission of its own: `GET /api/v1/search` grants access to nothing, and a role with no searchable authority sees the empty state rather than a 403, which would confirm which types exist. Every filter is built server-side from the authenticated membership — the browser sends only the term and, optionally, a type list, an own-branch narrowing filter, an allowlisted sort and a bounded limit; the 21 scope/permission/engine forgery fields are rejected with 422. Results are masked by omission: the response schema has NO contact field of any kind — no phone, masked phone, phone last four, email or masked email — even for the types whose own Resources return masked contact today (decision D-22-03). An authorized EXACT phone lookup exists for Front Office through the existing keyed blind index, returns the client name only, never reaches the search engine, and never echoes the number back; a partial phone fragment is not searchable anywhere. NO export, download, print or clipboard-copy control exists on this screen and none may ever be added (ADR-010; Plan §19.4 non-overridable); nothing is persisted to localStorage or sessionStorage; and held results are cleared on any membership or branch-scope change."
+    },
+    {
+      "key": "public-faq",
+      "domain": "public",
+      "route": "public.faq",
+      "layout": "PublicLandingLayout",
+      "status": "implemented",
+      "phase": "Phase UI-06",
+      "spec": "public/public-faq.md",
+      "title": "Public FAQ",
+      "roles": [
+        "public"
+      ],
+      "permissions": [],
+      "summary": "The resolved account host's own compiled FAQ, rendered through SvFaq with the source's category dividers preserved. Host-derived: no path segment selects the account."
+    },
+    {
+      "key": "public-legal",
+      "domain": "legal",
+      "route": "public.legal",
+      "layout": "PublicLandingLayout",
+      "status": "implemented",
+      "phase": "Phase UI-06",
+      "spec": "legal/public-legal.md",
+      "title": "Public legal document",
+      "roles": [
+        "public"
+      ],
+      "permissions": [],
+      "summary": "The resolved account host's own Data Policy, Privacy Policy or Terms of Service, verbatim, at a role-free path. The document slug is one of three fixed values matched by the route."
     }
   ]
 }

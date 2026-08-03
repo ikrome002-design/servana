@@ -36,6 +36,7 @@ function makeRouter(): Router {
       { path: '/branch/get-started', name: 'branch.get-started', component: stub },
       // Phase UI-04: SvFixedFooter links the three role-scoped legal documents, so the shell
       // cannot mount without this route resolving.
+      { path: '/legal/:doc(data-policy|privacy-policy|terms-of-service)', name: 'public.legal', component: stub },
       { path: '/legal/:role/:doc', name: 'legal.document', component: stub },
     ],
   });
@@ -228,19 +229,26 @@ describe('authenticated shell chrome', () => {
     expect(wrapper.find('[data-testid="theme-toggle"]').exists()).toBe(true);
   });
 
-  it('links the three legal documents for the ACTIVE account only', async () => {
-    // One account never receives another's documents.
+  it('links the three legal documents at the canonical host-derived paths', async () => {
+    // Phase UI-06 removed the role from the path: the destination is `/legal/<doc>` on the current
+    // host and the SERVER-resolved account decides which document that is. The cross-role
+    // guarantee is unchanged and stronger — a path segment can no longer select an account at all.
     const wrapper = await mountShell('merchant_human_resource');
 
     for (const doc of ['data-policy', 'privacy-policy', 'terms-of-service']) {
       const link = wrapper.get(`[data-testid="sv-footer-${doc}"]`);
-      expect(link.attributes('href')).toContain('/legal/merchant_human_resource/');
+      expect(link.attributes('href')).toBe(`/legal/${doc}`);
+    }
+
+    // No account key survives anywhere in the footer's destinations.
+    for (const identity of ['merchant_human_resource', 'merchant_finance', 'merchant_audit']) {
+      expect(wrapper.get('[data-testid="sv-fixed-footer"]').html()).not.toContain(`/legal/${identity}`);
     }
   });
 
-  it('ships no dead FAQ link while the role-aware FAQ route does not exist', async () => {
-    // UI-05/UI-06 activate it. A link that promises content the product cannot serve is worse
-    // than no link.
+  it('ships no dead FAQ link when the shell supplies no FAQ destination', async () => {
+    // The authenticated shell passes none; the public layout does, now that `/faq` exists
+    // (Phase UI-06). A link that promises content the surface cannot serve is worse than no link.
     const wrapper = await mountShell('merchant_finance');
 
     expect(wrapper.find('[data-testid="sv-footer-faq"]').exists()).toBe(false);

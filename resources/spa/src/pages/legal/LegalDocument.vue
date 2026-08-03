@@ -5,6 +5,7 @@ import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvLegalDocument from '@/components/ui/SvLegalDocument.vue';
 import { LEGAL_DOCS, type LegalDocType } from '@/content/roleContent';
 import { loadLegalDocument } from '@/content/legalContent';
+import { currentAccountContext } from '@/host/accountHostContext';
 import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
 import { SvIconBack } from '@/design-system/icons';
 
@@ -22,11 +23,30 @@ import { SvIconBack } from '@/design-system/icons';
  */
 const route = useRoute();
 
+/**
+ * The role named in the PATH.
+ *
+ * Phase UI-06 made `/legal/data-policy` the canonical, host-derived route and kept this shape only
+ * for compatibility. `routes/public.ts` redirects the account's own documents here to the canonical
+ * path; anything else must fail closed, which is what the account cross-check below does. It is
+ * deliberately not a redirect: sending a visitor to another account's document would be a worse
+ * defect than the one being closed.
+ *
+ * With no resolved account context — the standalone Vite preview origin embeds none — there is no
+ * host account to compare against, so behaviour is unchanged from before this phase.
+ */
 const identity = computed<RoleIdentity | null>(() => {
   const role = route.params.role;
-  return typeof role === 'string' && ROLE_IDENTITIES.includes(role as RoleIdentity)
-    ? (role as RoleIdentity)
-    : null;
+  if (typeof role !== 'string' || !ROLE_IDENTITIES.includes(role as RoleIdentity)) {
+    return null;
+  }
+
+  const context = currentAccountContext();
+  if (context !== null && context.legalContentKey !== role) {
+    return null;
+  }
+
+  return role as RoleIdentity;
 });
 const docType = computed<LegalDocType | null>(() => {
   const doc = route.params.doc;

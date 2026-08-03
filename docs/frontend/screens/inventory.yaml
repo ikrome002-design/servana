@@ -5,13 +5,13 @@ screens:
     domain: public
     route: home
     status: implemented
-    phase: Phase 1
+    phase: Phase UI-06
     spec: public/home.md
   - key: not-found
     domain: public
     route: not-found
     status: implemented
-    phase: Phase 1
+    phase: Phase UI-06
     spec: public/not-found.md
   - key: design-system
     domain: public
@@ -23,7 +23,7 @@ screens:
     domain: legal
     route: legal.document
     status: implemented
-    phase: Phase 11
+    phase: Phase UI-06
     spec: legal/legal-document.md
   - key: auth-access-denied
     domain: auth
@@ -745,3 +745,15 @@ screens:
     status: implemented
     phase: Phase 22
     spec: search/global-search.md
+  - key: public-faq
+    domain: public
+    route: public.faq
+    status: implemented
+    phase: Phase UI-06
+    spec: public/public-faq.md
+  - key: public-legal
+    domain: legal
+    route: public.legal
+    status: implemented
+    phase: Phase UI-06
+    spec: legal/public-legal.md

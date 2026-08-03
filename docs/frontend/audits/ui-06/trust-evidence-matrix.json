@@ -1,0 +1,415 @@
+{
+  "generated_by": "node scripts/generate-ui06-artifacts.mjs",
+  "phase": "UI-06",
+  "authorities": {
+    "account_host_registry": {
+      "path": "config/account-hosts.json",
+      "sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c"
+    },
+    "content_manifest": {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    "image_manifest": {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "sha256": "85165982796291dd4f876e0e58b63ce1cbc1e69f6460a23b072f5c7d998f0b15"
+    },
+    "logo": {
+      "path": "public/assets/brand/Logo.png",
+      "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035"
+    }
+  },
+  "purpose": "The approved factual alternative to customer testimonials, per account. Every item names what backs it, and declares that it makes no customer and no metric claim.",
+  "binding_decision": "No supplied customer testimonial quotation is approved for production. Four accounts supply unverified or self-declared placeholder quotations (UI05-CONTENT-001); three supply no testimonials section at all (UI05-CONTENT-002). All eight pages carry a factual alternative instead. No source text was deleted or rewritten.",
+  "forbidden_in_production": [
+    "customer names",
+    "customer company names",
+    "customer quotations",
+    "placeholder quotations",
+    "merchant logos",
+    "ratings",
+    "review counts",
+    "user counts",
+    "adoption statistics",
+    "performance-improvement percentages",
+    "unverified customer outcomes"
+  ],
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "source_presence": "missing_from_source",
+      "source_restriction": "product_owner_content_decision_required",
+      "source_render_permitted": false,
+      "heading": "Built for accountable service operations",
+      "mode": "approved_factual_alternative",
+      "intro": "This account owns the business record. These are the controls that come with it — product capability and security architecture, not customer claims.",
+      "items": [
+        {
+          "title": "Your business is its own tenant",
+          "detail": "Every record belongs to one merchant. Another merchant cannot read, infer, edit, export or enumerate it.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Isolation/CrossTenantAccessTest.php",
+          "source_reference": "cross-tenant read/write denial across every tenant-owned model",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "No passwords to lose",
+          "detail": "Sign-in is a single-use Magic Link, hashed at rest, valid for fifteen minutes and bound to the account address it was requested from.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Security/MagicLinkTokenSecurityTest.php",
+          "source_reference": "token hashing, single-use consume and expiry",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Access follows the role, not the person",
+          "detail": "Branch, HR, Finance, Front Office, Personnel and Audit each see the work their role owns, and nothing beyond it.",
+          "evidence_type": "role_boundary",
+          "source": "tests/Feature/Auth/AuthorityBoundariesTest.php",
+          "source_reference": "authority-boundary matrix per role",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Servana never touches client money",
+          "detail": "Clients pay your business offline. Servana records the method, amount, reference and validation state so the record is reviewable.",
+          "evidence_type": "operational_workflow",
+          "source": "docs/landing_page/merchant_administrator_landing_page_content.md",
+          "source_reference": "§6 Features Section — \"Invoices and offline payment records\"",
+          "customer_claim": false,
+          "metric_claim": false
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_audit",
+      "source_presence": "missing_from_source",
+      "source_restriction": "product_owner_content_decision_required",
+      "source_render_permitted": false,
+      "heading": "Independence you can check",
+      "mode": "approved_factual_alternative",
+      "intro": "An audit account is only worth having if its independence is structural. These are the mechanisms that make it so — implemented behaviour, not customer evidence.",
+      "items": [
+        {
+          "title": "Read-only is enforced, not agreed",
+          "detail": "The audit account cannot edit clients, services, invoices, payments, receipts, users, queues or commissions. The API refuses, not the interface.",
+          "evidence_type": "role_boundary",
+          "source": "tests/Feature/Auth/AuditReadOnlyTest.php",
+          "source_reference": "mutation denial across every audited surface",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "The record is append-only and chained",
+          "detail": "Audit entries cannot be updated or deleted, and each is hash-chained to the one before it, so a silent edit would break the chain.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Audit/AuditChainVerificationTest.php",
+          "source_reference": "append-only enforcement and hash-chain verification",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "An export is scoped to your own business",
+          "detail": "Audit exports are generated within the merchant tenant and are not readable from another one.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Audit/AuditExportIsolationTest.php",
+          "source_reference": "cross-tenant export isolation",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Review does not slow the floor down",
+          "detail": "Audit reads the record after the fact. It sits outside the queue, the till and the receipt, so reviewing never blocks the people serving clients.",
+          "evidence_type": "factual_account_purpose",
+          "source": "docs/landing_page/merchant_audit_landing_page_content.md",
+          "source_reference": "§11 Security / Trust Section — \"designed for oversight, not control\"",
+          "customer_claim": false,
+          "metric_claim": false
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_branch",
+      "source_presence": "present_in_source",
+      "source_restriction": "unverified_customer_evidence",
+      "source_render_permitted": false,
+      "heading": "Designed for controlled branch operations",
+      "mode": "approved_factual_alternative",
+      "intro": "A branch account is scoped to its branch by design. These are the controls that keep it that way — implemented behaviour, not customer evidence.",
+      "items": [
+        {
+          "title": "Branch scope is enforced by the server",
+          "detail": "A branch account reaches its own branch. Branch assignment is re-checked on every protected request, never inferred from the page you are on.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Isolation/CrossTenantBranchOwnedModelTest.php",
+          "source_reference": "branch-owned model scope enforcement",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "The branch owns its service catalogue and its day",
+          "detail": "Services, pricing and the operating calendar belong to the branch. Queue, appointment and payment records stay readable to it.",
+          "evidence_type": "role_boundary",
+          "source": "docs/landing_page/merchant_branch_landing_page_content.md",
+          "source_reference": "§6 Features Section — service catalogue and branch day",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Recording a payment is not validating one",
+          "detail": "The branch sees payment records. Validating a payment and issuing a receipt stay with Finance, which is what keeps the receipt trustworthy.",
+          "evidence_type": "operational_workflow",
+          "source": "tests/Feature/Auth/AuthorityBoundariesTest.php",
+          "source_reference": "branch cannot validate payments or issue receipts",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Access is checked, not assumed",
+          "detail": "User status, role status, merchant assignment, branch assignment and Magic Link rules are all evaluated before a branch record is returned.",
+          "evidence_type": "security_control",
+          "source": "docs/landing_page/merchant_branch_landing_page_content.md",
+          "source_reference": "§14 Security / Compliance Section",
+          "customer_claim": false,
+          "metric_claim": false
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_finance",
+      "source_presence": "present_in_source",
+      "source_restriction": "unverified_customer_evidence",
+      "source_render_permitted": false,
+      "heading": "Operational confidence in the money record",
+      "mode": "approved_factual_alternative",
+      "intro": "Finance is the validating role, so the controls around it are the point. These are implemented behaviours, not customer claims.",
+      "items": [
+        {
+          "title": "A receipt cannot exist before validation",
+          "detail": "Receipt issuance is driven by validation, and the rule is enforced in the database rather than only in application code.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Receipts/ReceiptIssuanceTest.php",
+          "source_reference": "receipt-only-after-validation enforcement",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Receipt and invoice numbers are unique by construction",
+          "detail": "Numbering is allocated under a database uniqueness guarantee, so two concurrent issues cannot produce the same number.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Receipts/ReceiptNumberConcurrencyTest.php",
+          "source_reference": "concurrent receipt-number allocation",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Recording and validating are different hands",
+          "detail": "Front Office records what a client paid. Finance decides whether that record is accurate. Neither role can do both.",
+          "evidence_type": "role_boundary",
+          "source": "tests/Feature/Auth/AuthorityBoundariesTest.php",
+          "source_reference": "record-versus-validate separation",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Servana takes no client payment",
+          "detail": "Clients pay the business offline by cash, M-Pesa, bank transfer, card terminal, voucher or split payment. Servana holds the record, not the money.",
+          "evidence_type": "operational_workflow",
+          "source": "docs/landing_page/merchant_finance_landing_page_content.md",
+          "source_reference": "§3 Social Proof / Trust Statement",
+          "customer_claim": false,
+          "metric_claim": false
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_front_office",
+      "source_presence": "present_in_source",
+      "source_restriction": "unverified_customer_evidence",
+      "source_render_permitted": false,
+      "heading": "Built for accountable service at the front desk",
+      "mode": "approved_factual_alternative",
+      "intro": "The front desk touches clients, queues and money records, so its limits matter as much as its tools. These are implemented behaviours, not customer claims.",
+      "items": [
+        {
+          "title": "Record a payment, never validate one",
+          "detail": "Front Office captures the method, amount and reference. Confirming it and issuing the receipt belong to Finance.",
+          "evidence_type": "role_boundary",
+          "source": "tests/Feature/Auth/AuthorityBoundariesTest.php",
+          "source_reference": "front-office cannot validate payments or issue receipts",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Two clients cannot hold the same slot",
+          "detail": "Overlapping appointments for one person are rejected by a database exclusion constraint, not only by a form check.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Scheduling/AppointmentConflictTest.php",
+          "source_reference": "appointment exclusion constraint",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "A duplicate payment reference is caught",
+          "detail": "A reference already recorded against another payment is flagged for review instead of being quietly accepted twice.",
+          "evidence_type": "operational_workflow",
+          "source": "tests/Feature/Payments/PaymentGroupValidationTest.php",
+          "source_reference": "duplicate-reference detection on recording",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Client records stay inside the business",
+          "detail": "Client data belongs to the merchant tenant. It is not readable by another business, and there is no contact-export capability anywhere in the product.",
+          "evidence_type": "policy_commitment",
+          "source": "tests/Feature/Messaging/SmsContactExportProhibitionTest.php",
+          "source_reference": "contact-export prohibition — no field, no endpoint, no screen",
+          "customer_claim": false,
+          "metric_claim": false
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "source_presence": "present_in_source",
+      "source_restriction": "none",
+      "source_render_permitted": true,
+      "heading": "Trust through clear responsibility",
+      "mode": "compiled_source_section",
+      "intro": "The commitments below are how that is actually enforced — implemented behaviour, not customer evidence.",
+      "items": [
+        {
+          "title": "HR works within its own branch",
+          "detail": "Staff records, roles, availability and compensation setup are scoped to the branch HR is assigned to.",
+          "evidence_type": "role_boundary",
+          "source": "tests/Feature/Compensation/CompensationScopeIsolationTest.php",
+          "source_reference": "branch-scoped compensation and staff reads",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "HR cannot grant itself more access",
+          "detail": "Permission changes are checked against the role boundary, so an HR user cannot escalate its own or a peer role beyond what the matrix allows.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Auth/PermissionRoleBoundaryTest.php",
+          "source_reference": "self-escalation denial",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Every access change is checked before it applies",
+          "detail": "Whether the user is active, belongs to the correct merchant, holds the right role and may reach the relevant branch is evaluated on each request.",
+          "evidence_type": "security_control",
+          "source": "docs/landing_page/merchant_human_resource_landing_page_content.md",
+          "source_reference": "§14 Security / Compliance Section",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Staff and client records stay separate concerns",
+          "detail": "HR manages people. It does not export client records or payment details, and no contact-export capability exists for it.",
+          "evidence_type": "policy_commitment",
+          "source": "tests/Feature/Messaging/SmsContactExportProhibitionTest.php",
+          "source_reference": "contact-export prohibition — no field, no endpoint, no screen",
+          "customer_claim": false,
+          "metric_claim": false
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_personnel",
+      "source_presence": "present_in_source",
+      "source_restriction": "placeholder_testimonial_marked_in_source",
+      "source_render_permitted": false,
+      "heading": "Your work, your record, your limits",
+      "mode": "approved_factual_alternative",
+      "intro": "A personnel account is deliberately narrow. These are the boundaries and controls that define it — implemented behaviour, not customer claims.",
+      "items": [
+        {
+          "title": "You see your own work",
+          "detail": "Queue, appointments, sessions and earnings are scoped to you. The account does not open the wider business to you, and it does not need to.",
+          "evidence_type": "role_boundary",
+          "source": "tests/Feature/Compensation/PersonnelEarningsReadModelTest.php",
+          "source_reference": "own-scope earnings read model",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Client contact export does not exist",
+          "detail": "There is no field, no endpoint and no screen anywhere in Servana that exports personnel client contacts. It is a product-wide prohibition, not a permission you have not been given.",
+          "evidence_type": "policy_commitment",
+          "source": "tests/Feature/Messaging/SmsContactExportProhibitionTest.php",
+          "source_reference": "contact-export prohibition — no field, no endpoint, no screen",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Commission comes from recorded work",
+          "detail": "Earned and pending commission are derived from completed, validated service records, so the figure has something behind it.",
+          "evidence_type": "operational_workflow",
+          "source": "docs/landing_page/merchant_personnel_landing_page_content.md",
+          "source_reference": "§6 Features Section — \"Commission Visibility\"",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Sign-in is a link, not a password",
+          "detail": "You log in with a single-use Magic Link sent to the email your business activated. Nothing to remember, nothing to leak.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Security/MagicLinkTokenSecurityTest.php",
+          "source_reference": "token hashing, single-use consume and expiry",
+          "customer_claim": false,
+          "metric_claim": false
+        }
+      ]
+    },
+    {
+      "account_key": "super_administrator",
+      "source_presence": "missing_from_source",
+      "source_restriction": "product_owner_content_decision_required",
+      "source_render_permitted": false,
+      "heading": "Security and accountability",
+      "mode": "approved_factual_alternative",
+      "intro": "This account governs the platform. What follows is the architecture that governs it in turn — implemented controls, not customer evidence.",
+      "items": [
+        {
+          "title": "Merchant data stays separated",
+          "detail": "Every merchant is an isolated tenant. Platform-level reads cross that boundary only through explicit platform services, never through an ordinary query.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Isolation/CrossTenantAccessTest.php",
+          "source_reference": "tenant-scope enforcement and platform-context exemption",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Privileged access requires a second factor",
+          "detail": "The platform account requires MFA enrollment, and sensitive platform changes require a fresh step-up challenge.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Auth/PermissionStepUpCoverageTest.php",
+          "source_reference": "step-up coverage for platform-governed mutations",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "The audit record cannot be rewritten",
+          "detail": "Audit entries are append-only and hash-chained, and the chain is verified on a schedule rather than on request.",
+          "evidence_type": "security_control",
+          "source": "tests/Feature/Audit/AuditChainVerificationTest.php",
+          "source_reference": "hash-chain verification and tamper detection",
+          "customer_claim": false,
+          "metric_claim": false
+        },
+        {
+          "title": "Oversight without interference",
+          "detail": "Platform governance reviews merchant activity; it does not operate a merchant’s day. Merchants keep their own clients, queues, invoices and receipts.",
+          "evidence_type": "role_boundary",
+          "source": "docs/landing_page/super_administrator_landing_page_content.md",
+          "source_reference": "§10 Use Cases Section — \"Audit oversight\"",
+          "customer_claim": false,
+          "metric_claim": false
+        }
+      ]
+    }
+  ]
+}

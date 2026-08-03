@@ -1,0 +1,101 @@
+{
+  "generated_by": "node scripts/generate-ui06-artifacts.mjs",
+  "phase": "UI-06",
+  "authorities": {
+    "account_host_registry": {
+      "path": "config/account-hosts.json",
+      "sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c"
+    },
+    "content_manifest": {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    "image_manifest": {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "sha256": "85165982796291dd4f876e0e58b63ce1cbc1e69f6460a23b072f5c7d998f0b15"
+    },
+    "logo": {
+      "path": "public/assets/brand/Logo.png",
+      "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035"
+    }
+  },
+  "purpose": "The eight public FAQ routes and the compiled documents they serve.",
+  "route": "/faq",
+  "account_selected_by": "the server-resolved account host context, never a path segment",
+  "renderer": "SvFaq (UI-04) over the UI-05 compiled FAQ. No second parser, no second accordion.",
+  "total_items": 1264,
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "route": "/faq",
+      "source_path": "docs/support/faq/merchant_administrator_faq.md",
+      "source_sha256": "a2b264e99a5391af3d4ca126b59c9d04027c6958c345d5c41cf8cbbfa7ae36d9",
+      "item_count": 196,
+      "category_count": 21,
+      "all_items_rendered": true
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/faq",
+      "source_path": "docs/support/faq/merchant_audit_faq.md",
+      "source_sha256": "00647d34e8cef63272745f9dd6c7605a7113766ab7e9fe06d3732f777335cd0f",
+      "item_count": 153,
+      "category_count": 24,
+      "all_items_rendered": true
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/faq",
+      "source_path": "docs/support/faq/merchant_branch_faq.md",
+      "source_sha256": "12e2a14d6ae03bc70db3829f3b4e577b7effbb304956e319626da18130e53d11",
+      "item_count": 169,
+      "category_count": 27,
+      "all_items_rendered": true
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/faq",
+      "source_path": "docs/support/faq/merchant_finance_faq.md",
+      "source_sha256": "7b8c7405de629489fe45436b7cc277b4da671ef578e70cf7a7124b020022f5f6",
+      "item_count": 176,
+      "category_count": 28,
+      "all_items_rendered": true
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/faq",
+      "source_path": "docs/support/faq/merchant_front_office_faq.md",
+      "source_sha256": "ef43ece0257779a4a6c8a2f3ef99265064ee5ea1d5209d038ea118421156b633",
+      "item_count": 162,
+      "category_count": 26,
+      "all_items_rendered": true
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/faq",
+      "source_path": "docs/support/faq/merchant_human_resource_faq.md",
+      "source_sha256": "f08589a395e442c38a0e5c22fbd375d4d692d838b8fee5ff259f6631dd396a70",
+      "item_count": 133,
+      "category_count": 22,
+      "all_items_rendered": true
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/faq",
+      "source_path": "docs/support/faq/merchant_personnel_faq.md",
+      "source_sha256": "9b66f7000a84b16bf0ce31871eb9b54dd2d80eceb987890b97e0956504e75b41",
+      "item_count": 144,
+      "category_count": 24,
+      "all_items_rendered": true
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/faq",
+      "source_path": "docs/support/faq/super_administrator_faq.md",
+      "source_sha256": "5e60f59aca7df21520c1451d01d7f86eaec7703b284c5ad7d1499154461ee65d",
+      "item_count": 131,
+      "category_count": 12,
+      "all_items_rendered": true
+    }
+  ]
+}

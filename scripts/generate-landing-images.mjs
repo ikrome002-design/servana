@@ -257,7 +257,12 @@ function buildQuarantineManifest() {
     action: 'non_destructive_quarantine',
     action_note: 'The bytes were MOVED, not deleted, with `git mv`, into a non-public source-controlled archive. docs/ is not copied into the nginx image, so the archive is source-controlled and unreachable over HTTP.',
     approval_state: 'authorised_by_product_owner_for_ui05',
-    closure_status: 'local_complete pending PR CI/review/merge',
+    // Phase UI-06: copied from the reviewed decision record rather than hard-coded here. A defect's
+    // lifecycle is a review outcome, and encoding it in a generator meant that promoting a merged
+    // closure required editing a build tool — which is how a generated artifact ends up disagreeing
+    // with the branch it describes.
+    closure_status: record.closure_status,
+    closure_evidence: record.closure_evidence,
     quarantine_directory: QUARANTINE_DIR,
     quarantine_publicly_served: false,
     total_files: files.length,

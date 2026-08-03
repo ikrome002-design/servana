@@ -111,11 +111,30 @@ it('keeps the archive outside every publicly served tree and out of the nginx im
     expect($dockerfile)->toContain('COPY --chown=nginx:nginx public /var/www/html/public');
 });
 
-it('holds the closure at local completion until the pull request merges', function (): void {
+it('records the closure lifecycle from the reviewed decision record, never from the generator', function (): void {
+    // Phase UI-06 reconciliation. UI-05 pull request #55 merged as e6664f2e with five successful
+    // required checks, so holding this at `local_complete` would now be untrue. The assertion that
+    // matters is no longer the literal value — it is that the generated artifact cannot state a
+    // lifecycle the reviewed decision record does not, which is what let the two disagree before.
     $manifest = ui05Audit('asset-quarantine');
+    /** @var array<string, mixed> $decision */
+    $decision = json_decode(
+        (string) file_get_contents(base_path('config/brand-asset-quarantine.json')),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
 
-    expect($manifest['closure_status'])->toBe('local_complete pending PR CI/review/merge');
-    expect($manifest['closure_status'])->not->toBe('verified_complete');
+    expect($manifest['closure_status'])->toBe($decision['closure_status']);
+    expect($manifest['closure_status'])->toBe('verified_complete');
+
+    /** @var array<string, mixed> $evidence */
+    $evidence = $manifest['closure_evidence'];
+    expect($evidence['pull_request'])->toBe(55);
+    expect($evidence['squash_merge'])->toBe('e6664f2ec1c60e55fa27c0a40fa2685a6442932f');
+    expect($evidence['required_jobs_successful'])->toBe(5);
+    // Zero reviews were submitted; the merge proceeded under the solo-maintainer exception. Saying
+    // so here keeps the record from being mistaken for independent approval.
+    expect($evidence['approving_reviews'])->toBe(0);
 });
 
 it('never references a quarantined path from production source', function (): void {

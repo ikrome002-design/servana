@@ -8,6 +8,7 @@ import { landingHeroImage } from '@/content/generated/landingImages.generated';
 import { loadFaq, loadLandingHero } from '@/content/roleDocuments';
 import type { FaqItem, HeroContent } from '@/content/markdown';
 import { navigationFor } from '@/navigation/roleNavigation';
+import { publicLegalLocation } from '@/router/publicRoutes';
 import { useAuthStore } from '@/stores/authStore';
 import { useGetStartedStore } from '@/stores/getStartedStore';
 import { ROLE_ENTRY, type RoleIdentity } from '@/types/roles';
@@ -350,8 +351,13 @@ function goGetStarted(): void {
           v-for="doc in LEGAL_DOCS"
           :key="doc.type"
         >
+          <!--
+            Phase UI-06: the canonical legal routes are host-derived (`/legal/data-policy`), so the
+            role no longer travels in the path. The authenticated shell is on the account's own
+            host, so this resolves to that account's document.
+          -->
           <RouterLink
-            :to="{ name: 'legal.document', params: { role: identity, doc: doc.type } }"
+            :to="publicLegalLocation(doc.type)"
             class="text-sm font-medium text-heading underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             {{ doc.title }}

@@ -12,8 +12,14 @@
  *
  * `imageAlt` is REQUIRED whenever an image is supplied, and an empty string is an explicit,
  * deliberate "this is decorative" rather than an omission.
+ *
+ * Phase UI-06 added the `media` slot. The eight public landing pages render responsive
+ * `<picture>` elements with AVIF/WebP candidates, intrinsic dimensions and a per-image loading
+ * strategy, which the single `imageSrc` `<img>` below cannot express. The slot occupies the same
+ * media column, so the section keeps ONE layout implementation instead of the page rebuilding the
+ * content/media split beside it. The `imageSrc` path is untouched and still serves its callers.
  */
-import { computed } from 'vue';
+import { computed, useSlots } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -46,7 +52,11 @@ const headingId = computed(
   () => `sv-landing-${props.heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`,
 );
 
+const slots = useSlots();
+
 const hasImage = computed(() => typeof props.imageSrc === 'string' && props.imageSrc !== '');
+/** The media column renders for either an `imageSrc` or a supplied `media` slot. */
+const hasMedia = computed(() => hasImage.value || slots.media !== undefined);
 </script>
 
 <template>
@@ -62,7 +72,7 @@ const hasImage = computed(() => typeof props.imageSrc === 'string' && props.imag
   >
     <div
       class="mx-auto flex max-w-sv-content flex-col gap-8 lg:flex-row lg:items-center"
-      :class="hasImage && mediaPosition === 'start' ? 'lg:flex-row-reverse' : ''"
+      :class="hasMedia && mediaPosition === 'start' ? 'lg:flex-row-reverse' : ''"
     >
       <div class="min-w-0 flex-1">
         <p
@@ -93,14 +103,18 @@ const hasImage = computed(() => typeof props.imageSrc === 'string' && props.imag
       </div>
 
       <div
-        v-if="hasImage"
+        v-if="hasMedia"
         class="min-w-0 flex-1"
       >
+        <!-- UI-06: a responsive <picture> occupies this column when the caller supplies one. -->
+        <slot name="media" />
+
         <!--
           `imageAlt` is required with an image. An empty string is a deliberate decorative
           declaration; a missing one is a defect the caller must fix, not something to guess at.
         -->
         <img
+          v-if="hasImage"
           :src="imageSrc ?? ''"
           :alt="imageAlt ?? ''"
           class="h-auto w-full max-w-full rounded-card object-cover"

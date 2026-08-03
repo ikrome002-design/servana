@@ -303,6 +303,14 @@ jobs:
       - name: Contract — UI-05 generator negative controls
         run: node scripts/ui05-negative-controls.mjs
 
+      # Phase UI-06: the nine deterministic public-landing audit artifacts are DERIVED from the
+      # composition modules, the account-host registry and the compiled content. `--check` re-derives
+      # them in memory and fails when the committed files no longer match, so the artifacts the
+      # contract tests assert against cannot drift from the code they describe. The PHP image has no
+      # Node runtime, so this is the only place the check can run.
+      - name: Contract — UI-06 landing audit artifacts are current (Phase UI-06)
+        run: node scripts/generate-ui06-artifacts.mjs --check
+
       - name: Unit tests — Vitest
         run: npm run test
 
@@ -405,6 +413,13 @@ jobs:
       # working files and the deleted vector logo.
       - name: Smoke — UI-05 content and asset pipeline on the built image
         run: node scripts/ui05-production-smoke.mjs http://127.0.0.1:8080 servana.test
+
+      # Phase UI-06: the Playwright suite runs against a Vite preview origin with no Laravel behind
+      # it, so the account context it exercises is installed by the harness (UI01-PROV-003, owned by
+      # UI-16). This closes the other half: the eight public surfaces probed over HTTP with genuine
+      # account Host headers, so the context is resolved by the SERVER exactly as in production.
+      - name: Smoke — UI-06 public surfaces on the built image
+        run: node scripts/ui06-public-host-smoke.mjs --origin http://127.0.0.1:8080
 
       - name: Upload host matrix
         if: always()

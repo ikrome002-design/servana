@@ -150,10 +150,30 @@ export const SCREENS: AuditScreen[] = [
   { key: 'not-found', route: 'not-found', path: '/no-such-page-01hzz', role: 'public', state: 'static' },
   { key: 'design-system', route: 'dev.design-system', path: '/dev/design-system', role: 'public', state: 'static' },
   {
+    // The pre-UI-06 role-parameterised shape. With the Merchant Administrator context bootstrapped
+    // above, this is the account's OWN document, so the compatibility route redirects to the
+    // canonical path and the audit still grades a rendered legal document.
     key: 'legal-document',
     route: 'legal.document',
     path: '/legal/merchant_administrator/terms-of-service',
     role: 'public',
+    state: 'static',
+  },
+  // Phase UI-06 public surfaces. The account is host-derived, so the path carries no role.
+  {
+    key: 'public-faq',
+    route: 'public.faq',
+    path: '/faq',
+    role: 'public',
+    ready: '[data-testid="public-faq"]',
+    state: 'populated',
+  },
+  {
+    key: 'public-legal',
+    route: 'public.legal',
+    path: '/legal/privacy-policy',
+    role: 'public',
+    ready: '[data-testid="sv-legal-document"]',
     state: 'static',
   },
   { key: 'auth-login', route: 'auth.login', path: '/auth/login', role: 'public', state: 'static' },
@@ -725,7 +745,16 @@ export async function prepare(
    * attached to. Stubbing it is exactly what this harness already does for /me and /sanctum: stub
    * the server so the REAL frontend can be driven. The guard is untouched.
    */
-  if (screen.role !== 'public') {
+  /*
+   * Phase UI-06: the PUBLIC surfaces need the context too. `/`, `/faq` and `/legal/<doc>` resolve
+   * their account from the shell exactly as the authenticated surfaces do, so without it they
+   * render the fail-closed boundary and the audit would grade a boundary instead of the page. The
+   * accommodation is unchanged in kind — stub the server so the REAL frontend can be driven — and
+   * `public` screens are bootstrapped as the Merchant Administrator account, which is the host
+   * whose public surface the audit walks.
+   */
+  {
+    const accountKeyForContext = screen.role === 'public' ? 'merchant_administrator' : screen.role;
     await page.addInitScript((accountKey) => {
       const inject = (): void => {
         if (document.getElementById('servana-account-context') !== null) return;
@@ -745,7 +774,7 @@ export async function prepare(
         document.addEventListener('readystatechange', inject, { once: true });
       }
       inject();
-    }, screen.role);
+    }, accountKeyForContext);
   }
 
   const fixtures = opts.fixtures ?? baseFixtures();

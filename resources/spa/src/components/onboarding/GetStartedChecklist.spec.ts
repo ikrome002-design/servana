@@ -17,6 +17,7 @@ function makeRouter(): Router {
       { path: '/', name: 'test.home', component: stub },
       { path: '/branch/create', name: 'branch.create', component: stub },
       { path: '/onboarding', name: 'onboarding.first-time-setup', component: stub },
+      { path: '/legal/:doc(data-policy|privacy-policy|terms-of-service)', name: 'public.legal', component: stub },
       { path: '/legal/:role/:doc', name: 'legal.document', component: stub },
     ],
   });

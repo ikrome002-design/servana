@@ -1,0 +1,723 @@
+{
+  "generated_by": "node scripts/generate-ui06-artifacts.mjs",
+  "phase": "UI-06",
+  "authorities": {
+    "account_host_registry": {
+      "path": "config/account-hosts.json",
+      "sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c"
+    },
+    "content_manifest": {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    "image_manifest": {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "sha256": "85165982796291dd4f876e0e58b63ce1cbc1e69f6460a23b072f5c7d998f0b15"
+    },
+    "logo": {
+      "path": "public/assets/brand/Logo.png",
+      "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035"
+    }
+  },
+  "purpose": "Which curated image each account renders in which region, with the loading strategy and the responsive candidates the page emits.",
+  "rule": "Exactly one eager, high-priority image per page (the hero). Every other image is lazy and auto priority. No account renders another account's file.",
+  "total_images": 32,
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "image_count": 4,
+      "high_priority_count": 1,
+      "images": [
+        {
+          "landing_section": "hero",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_administrator/1.png",
+          "alternative_text": "A salon owner at a reception desk reviewing the Servana merchant dashboard on a laptop in her own branded workspace.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "eager",
+          "fetch_priority": "high",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_administrator/1-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/1-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_administrator/1-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/1-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_administrator/1-w640.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/1-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_administrator/3.png",
+          "alternative_text": "A business owner surrounded by appointment notebooks, sticky-note reminders, a wall client list and a calculator, illustrating daily operations tracked on paper.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_administrator/3-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/3-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_administrator/3-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/3-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_administrator/3-w640.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/3-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "product_showcase",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_administrator/5.png",
+          "alternative_text": "The merchant dashboard on a laptop, surrounded by panels for client records, appointments, invoices and payments, staff commissions, and reports.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_administrator/5-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/5-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_administrator/5-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/5-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_administrator/5-w640.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/5-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_administrator/6.png",
+          "alternative_text": "A four-step sequence: register a business account, set up branches, services and pricing, invite and activate the team with roles, then run daily operations from the dashboard.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_administrator/6-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/6-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_administrator/6-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/6-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_administrator/6-w640.avif",
+            "/assets/landing_page_images/generated/merchant_administrator/6-w640.webp"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_audit",
+      "image_count": 4,
+      "high_priority_count": 1,
+      "images": [
+        {
+          "landing_section": "hero",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_audit/1.png",
+          "alternative_text": "The merchant audit overview open on a laptop, showing reviewed activity totals, flagged events and a filterable record list.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "eager",
+          "fetch_priority": "high",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_audit/1-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_audit/1-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_audit/1-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_audit/1-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_audit/1-w640.avif",
+            "/assets/landing_page_images/generated/merchant_audit/1-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_audit/3.png",
+          "alternative_text": "A reviewer working through loose receipts, handwritten daily totals and conflicting notes, with markers for a missing invoice, a voided transaction and a figure that does not match.",
+          "decorative": false,
+          "intrinsic_width": 1448,
+          "intrinsic_height": 1086,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_audit/3-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_audit/3-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_audit/3-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_audit/3-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_audit/3-w640.avif",
+            "/assets/landing_page_images/generated/merchant_audit/3-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_audit/6.png",
+          "alternative_text": "A four-step sequence: receive read-only access, sign in securely, review the records, and flag what needs attention.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_audit/6-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_audit/6-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_audit/6-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_audit/6-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_audit/6-w640.avif",
+            "/assets/landing_page_images/generated/merchant_audit/6-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "security",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_audit/8.png",
+          "alternative_text": "A padlocked shield beside panels for read-only role access, immutable audit logs, tenant isolation, protected sensitive records and Magic Link sign-in.",
+          "decorative": false,
+          "intrinsic_width": 1448,
+          "intrinsic_height": 1086,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_audit/8-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_audit/8-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_audit/8-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_audit/8-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_audit/8-w640.avif",
+            "/assets/landing_page_images/generated/merchant_audit/8-w640.webp"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_branch",
+      "image_count": 4,
+      "high_priority_count": 1,
+      "images": [
+        {
+          "landing_section": "hero",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_branch/1.png",
+          "alternative_text": "A branch manager welcoming a client at the front desk of a salon, with the branch day view open on a counter tablet.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "eager",
+          "fetch_priority": "high",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_branch/1-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_branch/1-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_branch/1-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_branch/1-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_branch/1-w640.avif",
+            "/assets/landing_page_images/generated/merchant_branch/1-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_branch/3.png",
+          "alternative_text": "A branch manager on the phone at a counter covered with handwritten booking sheets, loose receipts and a card terminal, illustrating a branch day tracked on paper.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_branch/3-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_branch/3-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_branch/3-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_branch/3-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_branch/3-w640.avif",
+            "/assets/landing_page_images/generated/merchant_branch/3-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_branch/6.png",
+          "alternative_text": "A four-step sequence: get access to the branch account, set up the branch profile, assign personnel, and run the day from the branch view.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_branch/6-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_branch/6-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_branch/6-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_branch/6-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_branch/6-w640.avif",
+            "/assets/landing_page_images/generated/merchant_branch/6-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "security",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_branch/9.png",
+          "alternative_text": "A branch manager beside a shield and padlock symbol with linked record icons, indicating branch-scoped access to protected records.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_branch/9-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_branch/9-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_branch/9-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_branch/9-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_branch/9-w640.avif",
+            "/assets/landing_page_images/generated/merchant_branch/9-w640.webp"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_finance",
+      "image_count": 4,
+      "high_priority_count": 1,
+      "images": [
+        {
+          "landing_section": "hero",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_finance/1.png",
+          "alternative_text": "A finance user reviewing the Servana finance overview on a laptop, with panels for invoice visibility, offline payment records, receipt generation, outstanding balance and commission liabilities.",
+          "decorative": false,
+          "intrinsic_width": 1448,
+          "intrinsic_height": 1086,
+          "loading": "eager",
+          "fetch_priority": "high",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_finance/1-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_finance/1-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_finance/1-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_finance/1-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_finance/1-w640.avif",
+            "/assets/landing_page_images/generated/merchant_finance/1-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_finance/3.png",
+          "alternative_text": "A finance user surrounded by printed receipts, a long till roll and handwritten totals, with warning markers for an unverified payment, a missing receipt and an unclear commission.",
+          "decorative": false,
+          "intrinsic_width": 1448,
+          "intrinsic_height": 1086,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_finance/3-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_finance/3-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_finance/3-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_finance/3-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_finance/3-w640.avif",
+            "/assets/landing_page_images/generated/merchant_finance/3-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_finance/4.png",
+          "alternative_text": "A five-step sequence from service delivery to invoice, recorded payment, validation, and an audit-ready receipt.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_finance/4-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_finance/4-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_finance/4-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_finance/4-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_finance/4-w640.avif",
+            "/assets/landing_page_images/generated/merchant_finance/4-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "security",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_finance/5.png",
+          "alternative_text": "Two colleagues reviewing a payment record on a tablet beside a shield, padlock and receipt printer, indicating validated records held under controlled access.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_finance/5-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_finance/5-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_finance/5-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_finance/5-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_finance/5-w640.avif",
+            "/assets/landing_page_images/generated/merchant_finance/5-w640.webp"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_front_office",
+      "image_count": 4,
+      "high_priority_count": 1,
+      "images": [
+        {
+          "landing_section": "hero",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_front_office/1.png",
+          "alternative_text": "A front-office attendant checking in a client at a salon reception desk, with today's queue, upcoming appointments and a service invoice shown alongside.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "eager",
+          "fetch_priority": "high",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_front_office/1-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/1-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_front_office/1-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/1-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_front_office/1-w640.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/1-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_front_office/2.png",
+          "alternative_text": "A receptionist handling a phone call, a waiting client and loose paper booking slips at once, illustrating a busy front desk without a single record of the day.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_front_office/2-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/2-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_front_office/2-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/2-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_front_office/2-w640.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/2-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_front_office/5.png",
+          "alternative_text": "A four-step sequence: add the walk-in or client, select the service, assign the queue and personnel, then create the invoice and record the payment details.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_front_office/5-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/5-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_front_office/5-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/5-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_front_office/5-w640.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/5-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "product_showcase",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_front_office/6.png",
+          "alternative_text": "The front-office surfaces on a laptop, tablet and phone, showing today's appointments, the active queue, client records, an invoice summary and payment recording.",
+          "decorative": false,
+          "intrinsic_width": 1448,
+          "intrinsic_height": 1086,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_front_office/6-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/6-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_front_office/6-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/6-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_front_office/6-w640.avif",
+            "/assets/landing_page_images/generated/merchant_front_office/6-w640.webp"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "image_count": 4,
+      "high_priority_count": 1,
+      "images": [
+        {
+          "landing_section": "hero",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_human_resource/1.png",
+          "alternative_text": "A human-resource manager with a tablet in front of her team, beside panels showing a staff directory, role assignment, branch assignment and weekly availability.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "eager",
+          "fetch_priority": "high",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_human_resource/1-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/1-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_human_resource/1-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/1-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_human_resource/1-w640.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/1-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_human_resource/3.png",
+          "alternative_text": "A staff manager working through printed rosters, duplicate records and pending approval notes, illustrating shift and access tracking spread across manual processes.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_human_resource/3-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/3-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_human_resource/3-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/3-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_human_resource/3-w640.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/3-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_human_resource/5.png",
+          "alternative_text": "A four-step sequence: create or access the business account, add staff and personnel profiles, assign roles and branches, then keep availability and status up to date.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_human_resource/5-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/5-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_human_resource/5-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/5-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_human_resource/5-w640.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/5-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "security",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_human_resource/8.png",
+          "alternative_text": "A padlocked shield beside panels for role-based access, branch permissions, account verification status and Magic Link sign-in without passwords.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_human_resource/8-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/8-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_human_resource/8-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/8-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_human_resource/8-w640.avif",
+            "/assets/landing_page_images/generated/merchant_human_resource/8-w640.webp"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_personnel",
+      "image_count": 4,
+      "high_priority_count": 1,
+      "images": [
+        {
+          "landing_section": "hero",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_personnel/1.png",
+          "alternative_text": "Service professionals at their stations beside panels showing an assigned queue, upcoming appointments, clients served and commission earned.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "eager",
+          "fetch_priority": "high",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_personnel/1-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/1-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_personnel/1-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/1-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_personnel/1-w640.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/1-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_personnel/2.png",
+          "alternative_text": "Two service professionals comparing handwritten appointment notes and commission calculations, with markers for a double booking, a no-show and missing records.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_personnel/2-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/2-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_personnel/2-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/2-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_personnel/2-w640.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/2-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "product_showcase",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_personnel/4.png",
+          "alternative_text": "A personnel dashboard ringed by panels for the day's queue, appointments, assigned clients, completed work history, preferred requests and commission visibility.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_personnel/4-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/4-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_personnel/4-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/4-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_personnel/4-w640.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/4-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/merchant_personnel/5.png",
+          "alternative_text": "A four-step sequence: the business activates the staff member, the staff member signs in with a Magic Link, works through the day's assignments, and tracks completed work and commission.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/merchant_personnel/5-w1024.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/5-w1024.webp",
+            "/assets/landing_page_images/generated/merchant_personnel/5-w1440.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/5-w1440.webp",
+            "/assets/landing_page_images/generated/merchant_personnel/5-w640.avif",
+            "/assets/landing_page_images/generated/merchant_personnel/5-w640.webp"
+          ]
+        }
+      ]
+    },
+    {
+      "account_key": "super_administrator",
+      "image_count": 4,
+      "high_priority_count": 1,
+      "images": [
+        {
+          "landing_section": "hero",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/super_administrator/1.png",
+          "alternative_text": "The Servana platform overview open on a desktop monitor and a tablet, showing merchant totals, transaction volume, settlement and platform-fee figures beside a recent-merchant list.",
+          "decorative": false,
+          "intrinsic_width": 1448,
+          "intrinsic_height": 1086,
+          "loading": "eager",
+          "fetch_priority": "high",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/super_administrator/1-w1024.avif",
+            "/assets/landing_page_images/generated/super_administrator/1-w1024.webp",
+            "/assets/landing_page_images/generated/super_administrator/1-w1440.avif",
+            "/assets/landing_page_images/generated/super_administrator/1-w1440.webp",
+            "/assets/landing_page_images/generated/super_administrator/1-w640.avif",
+            "/assets/landing_page_images/generated/super_administrator/1-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/super_administrator/3.png",
+          "alternative_text": "A platform operator working through scattered paperwork, handwritten notes and unanswered merchant queries, illustrating oversight spread across disconnected records.",
+          "decorative": false,
+          "intrinsic_width": 1448,
+          "intrinsic_height": 1086,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/super_administrator/3-w1024.avif",
+            "/assets/landing_page_images/generated/super_administrator/3-w1024.webp",
+            "/assets/landing_page_images/generated/super_administrator/3-w1440.avif",
+            "/assets/landing_page_images/generated/super_administrator/3-w1440.webp",
+            "/assets/landing_page_images/generated/super_administrator/3-w640.avif",
+            "/assets/landing_page_images/generated/super_administrator/3-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/super_administrator/6.png",
+          "alternative_text": "A five-step sequence showing platform setup, configuration of platform rules, merchants operating in their own spaces, and monitoring of activity.",
+          "decorative": false,
+          "intrinsic_width": 1672,
+          "intrinsic_height": 941,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/super_administrator/6-w1024.avif",
+            "/assets/landing_page_images/generated/super_administrator/6-w1024.webp",
+            "/assets/landing_page_images/generated/super_administrator/6-w1440.avif",
+            "/assets/landing_page_images/generated/super_administrator/6-w1440.webp",
+            "/assets/landing_page_images/generated/super_administrator/6-w640.avif",
+            "/assets/landing_page_images/generated/super_administrator/6-w640.webp"
+          ]
+        },
+        {
+          "landing_section": "security",
+          "section_renders": true,
+          "source_public_path": "/assets/landing_page_images/super_administrator/9.png",
+          "alternative_text": "A platform operator beside a padlocked shield and fingerprint symbol, with role and record panels indicating protected access and controlled permissions.",
+          "decorative": false,
+          "intrinsic_width": 1448,
+          "intrinsic_height": 1086,
+          "loading": "lazy",
+          "fetch_priority": "auto",
+          "sizes": "(max-width: 767px) 100vw, (max-width: 1024px) 92vw, 1440px",
+          "derivative_paths": [
+            "/assets/landing_page_images/generated/super_administrator/9-w1024.avif",
+            "/assets/landing_page_images/generated/super_administrator/9-w1024.webp",
+            "/assets/landing_page_images/generated/super_administrator/9-w1440.avif",
+            "/assets/landing_page_images/generated/super_administrator/9-w1440.webp",
+            "/assets/landing_page_images/generated/super_administrator/9-w640.avif",
+            "/assets/landing_page_images/generated/super_administrator/9-w640.webp"
+          ]
+        }
+      ]
+    }
+  ]
+}

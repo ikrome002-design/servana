@@ -29,18 +29,24 @@ import { computed } from 'vue';
 import type { RouteLocationRaw } from 'vue-router';
 import SvLink from '@/components/ui/SvLink.vue';
 import SvThemeToggle from '@/components/ui/SvThemeToggle.vue';
+import { PUBLIC_LEGAL_DOCS, PUBLIC_LEGAL_TITLES, publicLegalLocation } from '@/router/publicRoutes';
 import type { RoleIdentity } from '@/types/roles';
 
 const props = withDefaults(
   defineProps<{
     /**
-     * Whose legal documents to link. The rendered legal route is role-scoped, so one account
-     * never receives another's documents.
+     * The account whose documents these are.
+     *
+     * Phase UI-06 made the legal routes HOST-DERIVED: the destination is `/legal/data-policy` on
+     * the current host, and the server-resolved account decides which document that is. The role
+     * is therefore no longer a path segment, and this prop's remaining job is to say whether there
+     * is an account at all — a public surface with no resolved context has no documents to link,
+     * and linking some account's would be the cross-role leak §17.1 forbids.
      */
     legalRole?: RoleIdentity | null;
     /**
-     * The FAQ destination. Omitted until the role-aware FAQ route exists (UI-05/UI-06) — the link
-     * is then simply not rendered rather than shipped dead.
+     * The FAQ destination. Supplied by the public layout now that `/faq` exists; omitted (and so
+     * not rendered) anywhere it does not, rather than shipped dead.
      */
     faqTo?: RouteLocationRaw | null;
   }>(),
@@ -61,19 +67,16 @@ const CORPORATE_SITE = 'https://citruslabs.co.ke/';
 /** Verbatim from plan §11.1. Never reworded. */
 const COPYRIGHT = '© 2026 Citrus Labs. All Rights Reserved.';
 
-/** The three legal documents, pointing at the route that already renders them. */
+/** The three legal documents, at the canonical role-free paths on the current host. */
 const legalLinks = computed(() => {
   if (props.legalRole === null) {
     return [];
   }
 
-  return [
-    { key: 'data-policy', label: 'Data Policy', doc: 'data-policy' },
-    { key: 'privacy-policy', label: 'Privacy Policy', doc: 'privacy-policy' },
-    { key: 'terms-of-service', label: 'Terms of Service', doc: 'terms-of-service' },
-  ].map((entry) => ({
-    ...entry,
-    to: { name: 'legal.document', params: { role: props.legalRole, doc: entry.doc } } as RouteLocationRaw,
+  return PUBLIC_LEGAL_DOCS.map((doc) => ({
+    key: doc,
+    label: PUBLIC_LEGAL_TITLES[doc],
+    to: publicLegalLocation(doc) as RouteLocationRaw,
   }));
 });
 </script>
