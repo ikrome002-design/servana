@@ -1,0 +1,1685 @@
+{
+  "generated_by": "scripts/ui06-public-host-smoke.mjs",
+  "phase": "UI-06",
+  "origin": "http://127.0.0.1:8099",
+  "purpose": "The eight public surfaces, probed over HTTP against the BUILT production images with genuine account Host headers, so the account context is resolved by the server exactly as it is in production.",
+  "required_public_paths": [
+    "/",
+    "/login",
+    "/auth/magic-link/request",
+    "/auth/magic-link/consume",
+    "/faq",
+    "/legal/data-policy",
+    "/legal/privacy-policy",
+    "/legal/terms-of-service"
+  ],
+  "route_matrix_sha_reference": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "host": "servana.test",
+      "public_paths": {
+        "/": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/login": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/request": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/consume": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/faq": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/data-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/privacy-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/terms-of-service": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        }
+      },
+      "register_shell_status": 200,
+      "setup_shell_status": 200,
+      "images": [
+        {
+          "landing_section": "hero",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_administrator/1.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/1-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/1-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/1-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/1-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/1-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/1-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_administrator/3.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/3-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/3-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/3-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/3-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/3-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/3-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "product_showcase",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_administrator/5.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/5-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/5-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/5-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/5-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/5-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/5-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_administrator/6.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/6-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/6-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/6-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/6-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/6-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_administrator/6-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        }
+      ],
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "quarantined_brand_file_status": 404
+    },
+    {
+      "account_key": "super_administrator",
+      "host": "citrus.servana.test",
+      "public_paths": {
+        "/": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/login": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/request": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/consume": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/faq": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/data-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/privacy-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/terms-of-service": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        }
+      },
+      "register_shell_status": 200,
+      "setup_shell_status": 200,
+      "images": [
+        {
+          "landing_section": "hero",
+          "source": {
+            "path": "/assets/landing_page_images/super_administrator/1.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/1-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/1-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/1-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/1-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/1-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/1-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "source": {
+            "path": "/assets/landing_page_images/super_administrator/3.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/3-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/3-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/3-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/3-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/3-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/3-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "source": {
+            "path": "/assets/landing_page_images/super_administrator/6.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/6-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/6-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/6-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/6-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/6-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/6-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "security",
+          "source": {
+            "path": "/assets/landing_page_images/super_administrator/9.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/9-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/9-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/9-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/9-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/9-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/super_administrator/9-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        }
+      ],
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "quarantined_brand_file_status": 404
+    },
+    {
+      "account_key": "merchant_branch",
+      "host": "branch.servana.test",
+      "public_paths": {
+        "/": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/login": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/request": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/consume": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/faq": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/data-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/privacy-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/terms-of-service": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        }
+      },
+      "register_shell_status": 200,
+      "setup_shell_status": 200,
+      "images": [
+        {
+          "landing_section": "hero",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_branch/1.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/1-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/1-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/1-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/1-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/1-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/1-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_branch/3.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/3-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/3-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/3-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/3-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/3-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/3-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_branch/6.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/6-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/6-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/6-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/6-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/6-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/6-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "security",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_branch/9.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/9-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/9-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/9-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/9-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/9-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_branch/9-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        }
+      ],
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "quarantined_brand_file_status": 404
+    },
+    {
+      "account_key": "merchant_finance",
+      "host": "finance.servana.test",
+      "public_paths": {
+        "/": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/login": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/request": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/consume": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/faq": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/data-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/privacy-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/terms-of-service": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        }
+      },
+      "register_shell_status": 200,
+      "setup_shell_status": 200,
+      "images": [
+        {
+          "landing_section": "hero",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_finance/1.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/1-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/1-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/1-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/1-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/1-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/1-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_finance/3.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/3-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/3-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/3-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/3-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/3-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/3-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_finance/4.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/4-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/4-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/4-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/4-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/4-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/4-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "security",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_finance/5.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/5-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/5-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/5-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/5-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/5-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_finance/5-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        }
+      ],
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "quarantined_brand_file_status": 404
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "host": "hr.servana.test",
+      "public_paths": {
+        "/": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/login": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/request": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/consume": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/faq": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/data-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/privacy-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/terms-of-service": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        }
+      },
+      "register_shell_status": 200,
+      "setup_shell_status": 200,
+      "images": [
+        {
+          "landing_section": "hero",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_human_resource/1.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/1-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/1-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/1-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_human_resource/3.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/3-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/3-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/3-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_human_resource/5.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/5-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/5-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/5-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/5-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/5-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/5-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "security",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_human_resource/8.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/8-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/8-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/8-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/8-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/8-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_human_resource/8-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        }
+      ],
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "quarantined_brand_file_status": 404
+    },
+    {
+      "account_key": "merchant_front_office",
+      "host": "office.servana.test",
+      "public_paths": {
+        "/": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/login": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/request": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/consume": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/faq": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/data-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/privacy-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/terms-of-service": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        }
+      },
+      "register_shell_status": 200,
+      "setup_shell_status": 200,
+      "images": [
+        {
+          "landing_section": "hero",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_front_office/1.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/1-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/1-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/1-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/1-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/1-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/1-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_front_office/2.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/2-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/2-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/2-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/2-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/2-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/2-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_front_office/5.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/5-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/5-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/5-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/5-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/5-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/5-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "product_showcase",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_front_office/6.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/6-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/6-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/6-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/6-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/6-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_front_office/6-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        }
+      ],
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "quarantined_brand_file_status": 404
+    },
+    {
+      "account_key": "merchant_personnel",
+      "host": "staff.servana.test",
+      "public_paths": {
+        "/": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/login": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/request": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/consume": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/faq": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/data-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/privacy-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/terms-of-service": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        }
+      },
+      "register_shell_status": 200,
+      "setup_shell_status": 200,
+      "images": [
+        {
+          "landing_section": "hero",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_personnel/1.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/1-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/1-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/1-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/1-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/1-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/1-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_personnel/2.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/2-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/2-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/2-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/2-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/2-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/2-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "product_showcase",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_personnel/4.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/4-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/4-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/4-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/4-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/4-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/4-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_personnel/5.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/5-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/5-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/5-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/5-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/5-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_personnel/5-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        }
+      ],
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "quarantined_brand_file_status": 404
+    },
+    {
+      "account_key": "merchant_audit",
+      "host": "audit.servana.test",
+      "public_paths": {
+        "/": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/login": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/request": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/auth/magic-link/consume": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/faq": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/data-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/privacy-policy": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        },
+        "/legal/terms-of-service": {
+          "status": 200,
+          "content_type": "text/html; charset=utf-8"
+        }
+      },
+      "register_shell_status": 200,
+      "setup_shell_status": 200,
+      "images": [
+        {
+          "landing_section": "hero",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_audit/1.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/1-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/1-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/1-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/1-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/1-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/1-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "problem",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_audit/3.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/3-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/3-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/3-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/3-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/3-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/3-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "how_it_works",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_audit/6.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/6-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/6-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/6-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/6-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/6-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/6-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        },
+        {
+          "landing_section": "security",
+          "source": {
+            "path": "/assets/landing_page_images/merchant_audit/8.png",
+            "status": 200,
+            "content_type": "image/png"
+          },
+          "derivatives": [
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/8-w1024.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/8-w1024.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/8-w1440.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/8-w1440.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/8-w640.avif",
+              "status": 200,
+              "content_type": "image/avif"
+            },
+            {
+              "path": "/assets/landing_page_images/generated/merchant_audit/8-w640.webp",
+              "status": 200,
+              "content_type": "image/webp"
+            }
+          ]
+        }
+      ],
+      "logo_status": 200,
+      "legacy_logo_svg_status": 404,
+      "quarantined_brand_file_status": 404
+    }
+  ],
+  "unknown_host_denials": [
+    {
+      "host": "attacker.test",
+      "connection_closed": true,
+      "status": null
+    },
+    {
+      "host": "unknown.servana.test",
+      "connection_closed": true,
+      "status": null
+    }
+  ],
+  "service_worker_probes": [
+    {
+      "path": "/sw.js",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/service-worker.js",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8"
+    }
+  ],
+  "passed": true,
+  "failures": []
+}

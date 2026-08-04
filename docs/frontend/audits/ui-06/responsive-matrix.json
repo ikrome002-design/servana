@@ -1,0 +1,467 @@
+{
+  "generated_by": "tests/e2e/ui-06-public-landing-pages.spec.ts",
+  "phase": "UI-06",
+  "origin": "http://localhost:4173 (Vite preview). UI01-PROV-003 — the deployed-origin browser gate is UI-16/UI-17.",
+  "account_context": "Installed before boot exactly as the Laravel shell embeds it, because the preview origin has no Laravel behind it. The same eight hosts are probed over HTTP against the built production images by scripts/ui06-public-host-smoke.mjs.",
+  "source_commit": "worktree",
+  "widths": [
+    360,
+    767,
+    768,
+    1024,
+    1025,
+    1280,
+    1440
+  ],
+  "rule": "mobile ≤767, tablet 768–1024, desktop ≥1025 — CSS media queries only, no JavaScript device detection",
+  "rows": [
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "width": 360,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "width": 767,
+      "scrollWidth": 767,
+      "clientWidth": 767,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "width": 1025,
+      "scrollWidth": 1025,
+      "clientWidth": 1025,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "width": 360,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "width": 767,
+      "scrollWidth": 767,
+      "clientWidth": 767,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "width": 1025,
+      "scrollWidth": 1025,
+      "clientWidth": 1025,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "width": 360,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "width": 767,
+      "scrollWidth": 767,
+      "clientWidth": 767,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "width": 1025,
+      "scrollWidth": 1025,
+      "clientWidth": 1025,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "width": 360,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "width": 767,
+      "scrollWidth": 767,
+      "clientWidth": 767,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "width": 1025,
+      "scrollWidth": 1025,
+      "clientWidth": 1025,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "width": 360,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "width": 767,
+      "scrollWidth": 767,
+      "clientWidth": 767,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "width": 1025,
+      "scrollWidth": 1025,
+      "clientWidth": 1025,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "width": 360,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "width": 767,
+      "scrollWidth": 767,
+      "clientWidth": 767,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "width": 1025,
+      "scrollWidth": 1025,
+      "clientWidth": 1025,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "width": 360,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "width": 767,
+      "scrollWidth": 767,
+      "clientWidth": 767,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "width": 1025,
+      "scrollWidth": 1025,
+      "clientWidth": 1025,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "width": 360,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "width": 767,
+      "scrollWidth": 767,
+      "clientWidth": 767,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "clientWidth": 1024,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "width": 1025,
+      "scrollWidth": 1025,
+      "clientWidth": 1025,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "no_horizontal_overflow": true
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "no_horizontal_overflow": true
+    }
+  ]
+}

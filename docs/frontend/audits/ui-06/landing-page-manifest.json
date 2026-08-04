@@ -1,0 +1,421 @@
+{
+  "generated_by": "node scripts/generate-ui06-artifacts.mjs",
+  "phase": "UI-06",
+  "authorities": {
+    "account_host_registry": {
+      "path": "config/account-hosts.json",
+      "sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c"
+    },
+    "content_manifest": {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    "image_manifest": {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "sha256": "85165982796291dd4f876e0e58b63ce1cbc1e69f6460a23b072f5c7d998f0b15"
+    },
+    "logo": {
+      "path": "public/assets/brand/Logo.png",
+      "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035"
+    }
+  },
+  "purpose": "One row per account host: which composition, which compiled content, which curated images and which routes make up its public landing page.",
+  "account_count": 8,
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "display_name": "Merchant Administrator",
+      "production_host": "servana.ke",
+      "local_host": "servana.test",
+      "landing_route": "/",
+      "faq_route": "/faq",
+      "legal_routes": [
+        "/legal/data-policy",
+        "/legal/privacy-policy",
+        "/legal/terms-of-service"
+      ],
+      "composition_module": "resources/spa/src/content/landing/accounts/merchantAdministrator.ts",
+      "document_title": "Servana by Citrus — run your service business with clearer records",
+      "meta_description": "Servana gives service-business owners one secure dashboard for clients, branches, staff, invoices, offline payment records, commissions and reports.",
+      "hero_eyebrow": "For business owners",
+      "content_source": "docs/landing_page/merchant_administrator_landing_page_content.md",
+      "content_sha256": "fe773073d31313c12f1dc2822ca7a51e7e371c7c9ba796bd7e33f67f7d501ea0",
+      "faq_source": "docs/support/faq/merchant_administrator_faq.md",
+      "faq_item_count": 196,
+      "navigation": [
+        {
+          "label": "Features",
+          "region": "features",
+          "anchor": "#section-features"
+        },
+        {
+          "label": "How it works",
+          "region": "how_it_works",
+          "anchor": "#section-how-it-works"
+        },
+        {
+          "label": "Pricing",
+          "region": "pricing",
+          "anchor": "#section-pricing"
+        },
+        {
+          "label": "Security",
+          "region": "security",
+          "anchor": "#section-security"
+        },
+        {
+          "label": "Support",
+          "region": "faq",
+          "anchor": "#section-faq"
+        }
+      ],
+      "rendered_region_count": 14,
+      "curated_image_count": 4
+    },
+    {
+      "account_key": "merchant_audit",
+      "display_name": "Audit",
+      "production_host": "audit.servana.ke",
+      "local_host": "audit.servana.test",
+      "landing_route": "/",
+      "faq_route": "/faq",
+      "legal_routes": [
+        "/legal/data-policy",
+        "/legal/privacy-policy",
+        "/legal/terms-of-service"
+      ],
+      "composition_module": "resources/spa/src/content/landing/accounts/merchantAudit.ts",
+      "document_title": "Servana for audit — review what happened, without changing it",
+      "meta_description": "Servana gives audit teams a read-only view of role changes, invoices, payment validations, receipts, queue movements and flagged activity.",
+      "hero_eyebrow": "For audit teams",
+      "content_source": "docs/landing_page/merchant_audit_landing_page_content.md",
+      "content_sha256": "c55ec7bcc6a7f5ab86078b3774eaa73f3660bdc475154256eb75d69406db2a4d",
+      "faq_source": "docs/support/faq/merchant_audit_faq.md",
+      "faq_item_count": 153,
+      "navigation": [
+        {
+          "label": "Features",
+          "region": "features",
+          "anchor": "#section-features"
+        },
+        {
+          "label": "How it works",
+          "region": "how_it_works",
+          "anchor": "#section-how-it-works"
+        },
+        {
+          "label": "Audit records",
+          "region": "product_showcase",
+          "anchor": "#section-product-showcase"
+        },
+        {
+          "label": "Security",
+          "region": "security",
+          "anchor": "#section-security"
+        },
+        {
+          "label": "FAQs",
+          "region": "faq",
+          "anchor": "#section-faq"
+        }
+      ],
+      "rendered_region_count": 14,
+      "curated_image_count": 4
+    },
+    {
+      "account_key": "merchant_branch",
+      "display_name": "Branch Manager",
+      "production_host": "branch.servana.ke",
+      "local_host": "branch.servana.test",
+      "landing_route": "/",
+      "faq_route": "/faq",
+      "legal_routes": [
+        "/legal/data-policy",
+        "/legal/privacy-policy",
+        "/legal/terms-of-service"
+      ],
+      "composition_module": "resources/spa/src/content/landing/accounts/merchantBranch.ts",
+      "document_title": "Servana for branch managers — run the branch day with clearer records",
+      "meta_description": "Servana gives each branch one dashboard for the queue, appointments, service catalogue, invoices, payment records and daily branch activity.",
+      "hero_eyebrow": "For branch managers",
+      "content_source": "docs/landing_page/merchant_branch_landing_page_content.md",
+      "content_sha256": "011108b56d2014a7b7a8d5609d127e8cef80cd9aa256c30641e271e21180b871",
+      "faq_source": "docs/support/faq/merchant_branch_faq.md",
+      "faq_item_count": 169,
+      "navigation": [
+        {
+          "label": "Home",
+          "region": "hero",
+          "anchor": "#section-hero"
+        },
+        {
+          "label": "Features",
+          "region": "features",
+          "anchor": "#section-features"
+        },
+        {
+          "label": "How it works",
+          "region": "how_it_works",
+          "anchor": "#section-how-it-works"
+        },
+        {
+          "label": "Branch operations",
+          "region": "use_cases",
+          "anchor": "#section-use-cases"
+        },
+        {
+          "label": "Security",
+          "region": "security",
+          "anchor": "#section-security"
+        },
+        {
+          "label": "FAQ",
+          "region": "faq",
+          "anchor": "#section-faq"
+        }
+      ],
+      "rendered_region_count": 14,
+      "curated_image_count": 4
+    },
+    {
+      "account_key": "merchant_finance",
+      "display_name": "Finance",
+      "production_host": "finance.servana.ke",
+      "local_host": "finance.servana.test",
+      "landing_route": "/",
+      "faq_route": "/faq",
+      "legal_routes": [
+        "/legal/data-policy",
+        "/legal/privacy-policy",
+        "/legal/terms-of-service"
+      ],
+      "composition_module": "resources/spa/src/content/landing/accounts/merchantFinance.ts",
+      "document_title": "Servana for finance — validate payments and keep records you can trust",
+      "meta_description": "Servana gives finance teams one place to review invoices, validate offline payments, issue receipts, track balances and monitor commission obligations.",
+      "hero_eyebrow": "For finance teams",
+      "content_source": "docs/landing_page/merchant_finance_landing_page_content.md",
+      "content_sha256": "1f541f8dadda5cf3e69078909766403f8951e69198e4a3545278e616b00b39ab",
+      "faq_source": "docs/support/faq/merchant_finance_faq.md",
+      "faq_item_count": 176,
+      "navigation": [
+        {
+          "label": "Features",
+          "region": "features",
+          "anchor": "#section-features"
+        },
+        {
+          "label": "How it works",
+          "region": "how_it_works",
+          "anchor": "#section-how-it-works"
+        },
+        {
+          "label": "Security",
+          "region": "security",
+          "anchor": "#section-security"
+        },
+        {
+          "label": "FAQ",
+          "region": "faq",
+          "anchor": "#section-faq"
+        }
+      ],
+      "rendered_region_count": 14,
+      "curated_image_count": 4
+    },
+    {
+      "account_key": "merchant_front_office",
+      "display_name": "Front Office",
+      "production_host": "office.servana.ke",
+      "local_host": "office.servana.test",
+      "landing_route": "/",
+      "faq_route": "/faq",
+      "legal_routes": [
+        "/legal/data-policy",
+        "/legal/privacy-policy",
+        "/legal/terms-of-service"
+      ],
+      "composition_module": "resources/spa/src/content/landing/accounts/merchantFrontOffice.ts",
+      "document_title": "Servana for front office — serve clients faster, record the day clearly",
+      "meta_description": "Servana helps the front desk handle walk-ins, appointments, queues, client records, services, invoices and payment details from one dashboard.",
+      "hero_eyebrow": "For front-office teams",
+      "content_source": "docs/landing_page/merchant_front_office_landing_page_content.md",
+      "content_sha256": "d7a92869cfd51fbdca1539d34d16f0f0a27827726f6db49cbcff68b34ba700e5",
+      "faq_source": "docs/support/faq/merchant_front_office_faq.md",
+      "faq_item_count": 162,
+      "navigation": [
+        {
+          "label": "Features",
+          "region": "features",
+          "anchor": "#section-features"
+        },
+        {
+          "label": "How it works",
+          "region": "how_it_works",
+          "anchor": "#section-how-it-works"
+        },
+        {
+          "label": "Front office",
+          "region": "use_cases",
+          "anchor": "#section-use-cases"
+        },
+        {
+          "label": "Security",
+          "region": "security",
+          "anchor": "#section-security"
+        },
+        {
+          "label": "FAQ",
+          "region": "faq",
+          "anchor": "#section-faq"
+        }
+      ],
+      "rendered_region_count": 14,
+      "curated_image_count": 4
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "display_name": "Human Resource",
+      "production_host": "hr.servana.ke",
+      "local_host": "hr.servana.test",
+      "landing_route": "/",
+      "faq_route": "/faq",
+      "legal_routes": [
+        "/legal/data-policy",
+        "/legal/privacy-policy",
+        "/legal/terms-of-service"
+      ],
+      "composition_module": "resources/spa/src/content/landing/accounts/merchantHumanResource.ts",
+      "document_title": "Servana for HR — manage staff records, roles and access with control",
+      "meta_description": "Servana keeps staff records, roles, branch assignments, availability and account access organised for growing service businesses.",
+      "hero_eyebrow": "For human resource teams",
+      "content_source": "docs/landing_page/merchant_human_resource_landing_page_content.md",
+      "content_sha256": "963c0c3cfed4cc431d86263664a299af1456b40cfc067776316382d8ab94ef1f",
+      "faq_source": "docs/support/faq/merchant_human_resource_faq.md",
+      "faq_item_count": 133,
+      "navigation": [
+        {
+          "label": "Features",
+          "region": "features",
+          "anchor": "#section-features"
+        },
+        {
+          "label": "How it works",
+          "region": "how_it_works",
+          "anchor": "#section-how-it-works"
+        },
+        {
+          "label": "Security",
+          "region": "security",
+          "anchor": "#section-security"
+        },
+        {
+          "label": "FAQ",
+          "region": "faq",
+          "anchor": "#section-faq"
+        }
+      ],
+      "rendered_region_count": 14,
+      "curated_image_count": 4
+    },
+    {
+      "account_key": "merchant_personnel",
+      "display_name": "Personnel",
+      "production_host": "staff.servana.ke",
+      "local_host": "staff.servana.test",
+      "landing_route": "/",
+      "faq_route": "/faq",
+      "legal_routes": [
+        "/legal/data-policy",
+        "/legal/privacy-policy",
+        "/legal/terms-of-service"
+      ],
+      "composition_module": "resources/spa/src/content/landing/accounts/merchantPersonnel.ts",
+      "document_title": "Servana for personnel — your clients, your work, your commissions",
+      "meta_description": "Servana shows service personnel their assigned clients, daily queue, appointments, completed services and commission records in one place.",
+      "hero_eyebrow": "For service personnel",
+      "content_source": "docs/landing_page/merchant_personnel_landing_page_content.md",
+      "content_sha256": "989feac29af02b918d33f93a49096edcccda38a7a1450c68079f6c0eb6ff0015",
+      "faq_source": "docs/support/faq/merchant_personnel_faq.md",
+      "faq_item_count": 144,
+      "navigation": [
+        {
+          "label": "Features",
+          "region": "features",
+          "anchor": "#section-features"
+        },
+        {
+          "label": "How it works",
+          "region": "how_it_works",
+          "anchor": "#section-how-it-works"
+        },
+        {
+          "label": "Benefits",
+          "region": "benefits",
+          "anchor": "#section-benefits"
+        },
+        {
+          "label": "Security",
+          "region": "security",
+          "anchor": "#section-security"
+        },
+        {
+          "label": "FAQ",
+          "region": "faq",
+          "anchor": "#section-faq"
+        }
+      ],
+      "rendered_region_count": 14,
+      "curated_image_count": 4
+    },
+    {
+      "account_key": "super_administrator",
+      "display_name": "Super Administrator",
+      "production_host": "citrus.servana.ke",
+      "local_host": "citrus.servana.test",
+      "landing_route": "/",
+      "faq_route": "/faq",
+      "legal_routes": [
+        "/legal/data-policy",
+        "/legal/privacy-policy",
+        "/legal/terms-of-service"
+      ],
+      "composition_module": "resources/spa/src/content/landing/accounts/superAdministrator.ts",
+      "document_title": "Servana platform administration — Citrus Labs",
+      "meta_description": "The Servana platform account: manage merchants, platform fees, permissions, reports and audit activity from one secure dashboard.",
+      "hero_eyebrow": "Platform administration",
+      "content_source": "docs/landing_page/super_administrator_landing_page_content.md",
+      "content_sha256": "45cd84b941ec1486a9a994f7d023e07ae8c97661aa3386936207ea73c60144f4",
+      "faq_source": "docs/support/faq/super_administrator_faq.md",
+      "faq_item_count": 131,
+      "navigation": [
+        {
+          "label": "Platform",
+          "region": "social_proof",
+          "anchor": "#section-social-proof"
+        },
+        {
+          "label": "Features",
+          "region": "features",
+          "anchor": "#section-features"
+        },
+        {
+          "label": "How it works",
+          "region": "how_it_works",
+          "anchor": "#section-how-it-works"
+        },
+        {
+          "label": "Security",
+          "region": "security",
+          "anchor": "#section-security"
+        },
+        {
+          "label": "FAQ",
+          "region": "faq",
+          "anchor": "#section-faq"
+        }
+      ],
+      "rendered_region_count": 14,
+      "curated_image_count": 4
+    }
+  ]
+}

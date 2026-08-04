@@ -1,0 +1,328 @@
+{
+  "generated_by": "node scripts/generate-ui06-artifacts.mjs",
+  "phase": "UI-06",
+  "authorities": {
+    "account_host_registry": {
+      "path": "config/account-hosts.json",
+      "sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c"
+    },
+    "content_manifest": {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    "image_manifest": {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "sha256": "85165982796291dd4f876e0e58b63ce1cbc1e69f6460a23b072f5c7d998f0b15"
+    },
+    "logo": {
+      "path": "public/assets/brand/Logo.png",
+      "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035"
+    }
+  },
+  "purpose": "Every call to action on every public landing page, resolved against the account-host registry and the live route table. A CTA that could not be resolved appears under `rejected`.",
+  "rule": "Only an account the registry marks selfRegistration:true may expose merchant self-registration; only invitationAcceptance:true may link invitation acceptance; every destination is a path on the current host.",
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "self_registration_permitted": true,
+      "invitation_acceptance_permitted": false,
+      "public_cta_category": "self_registration",
+      "resolved": [
+        {
+          "key": "register",
+          "label": "Get started",
+          "kind": "self_registration",
+          "emphasis": "primary",
+          "route_name": "auth.register",
+          "same_host_url": "/auth/register",
+          "eligibility_reason": "config/account-hosts.json marks merchant_administrator selfRegistration:true; it is the only merchant-creation path.",
+          "source_section": "§2 Hero Section / §14 Final CTA Section — \"CTA: GET STARTED\""
+        },
+        {
+          "key": "login",
+          "label": "Log in",
+          "kind": "sign_in",
+          "emphasis": "secondary",
+          "route_name": "auth.login",
+          "same_host_url": "/auth/login",
+          "eligibility_reason": "Magic Link sign-in is available on every account host and grants nothing by itself.",
+          "source_section": "§1 Header / Navigation — \"Login Link: Login\""
+        },
+        {
+          "key": "how-it-works",
+          "label": "See how it works",
+          "kind": "in_page_anchor",
+          "emphasis": "secondary",
+          "route_name": null,
+          "same_host_url": "#section-how-it-works",
+          "eligibility_reason": "Same-page anchor; no navigation, no host change, no authorization.",
+          "source_section": "§2 Hero Section — \"Optional secondary link: See How It Works\""
+        }
+      ],
+      "rejected": []
+    },
+    {
+      "account_key": "merchant_audit",
+      "self_registration_permitted": false,
+      "invitation_acceptance_permitted": true,
+      "public_cta_category": "invitation_sign_in",
+      "resolved": [
+        {
+          "key": "login",
+          "label": "Log in",
+          "kind": "sign_in",
+          "emphasis": "primary",
+          "route_name": "auth.login",
+          "same_host_url": "/auth/login",
+          "eligibility_reason": "config/account-hosts.json marks merchant_audit selfRegistration:false, publicCtaCategory:invitation_sign_in.",
+          "source_section": "§1 Header / Navigation — \"Login Link: Login\""
+        },
+        {
+          "key": "accept-invitation",
+          "label": "Accept your invitation",
+          "kind": "invitation_acceptance",
+          "emphasis": "secondary",
+          "route_name": "staff.accept",
+          "same_host_url": "/staff/accept",
+          "eligibility_reason": "config/account-hosts.json marks merchant_audit invitationAcceptance:true; the route is host-relative and the emailed token remains the credential.",
+          "source_section": "Registry-derived. Supersedes the source CTA behaviour, which opens merchant account creation this account may not expose (UI06-CTA-001)."
+        },
+        {
+          "key": "oversight-flow",
+          "label": "See how audit oversight works",
+          "kind": "in_page_anchor",
+          "emphasis": "secondary",
+          "route_name": null,
+          "same_host_url": "#section-how-it-works",
+          "eligibility_reason": "Same-page anchor; no navigation, no host change, no authorization.",
+          "source_section": "§2 Hero Section — \"Secondary Text Link: See how audit oversight works\""
+        }
+      ],
+      "rejected": []
+    },
+    {
+      "account_key": "merchant_branch",
+      "self_registration_permitted": false,
+      "invitation_acceptance_permitted": true,
+      "public_cta_category": "invitation_sign_in",
+      "resolved": [
+        {
+          "key": "login",
+          "label": "Log in",
+          "kind": "sign_in",
+          "emphasis": "primary",
+          "route_name": "auth.login",
+          "same_host_url": "/auth/login",
+          "eligibility_reason": "config/account-hosts.json marks merchant_branch selfRegistration:false, publicCtaCategory:invitation_sign_in.",
+          "source_section": "§1 Header / Navigation — \"Login Link: Login\""
+        },
+        {
+          "key": "accept-invitation",
+          "label": "Accept your invitation",
+          "kind": "invitation_acceptance",
+          "emphasis": "secondary",
+          "route_name": "staff.accept",
+          "same_host_url": "/staff/accept",
+          "eligibility_reason": "config/account-hosts.json marks merchant_branch invitationAcceptance:true; the route is host-relative and the emailed token remains the credential.",
+          "source_section": "Registry-derived. Supersedes the source CTA, which opens merchant account creation this account may not expose (UI06-CTA-001)."
+        },
+        {
+          "key": "branch-operations",
+          "label": "See how branch operations work",
+          "kind": "in_page_anchor",
+          "emphasis": "secondary",
+          "route_name": null,
+          "same_host_url": "#section-how-it-works",
+          "eligibility_reason": "Same-page anchor; no navigation, no host change, no authorization.",
+          "source_section": "§2 Hero Section — \"Secondary CTA: See how branch operations work\""
+        }
+      ],
+      "rejected": []
+    },
+    {
+      "account_key": "merchant_finance",
+      "self_registration_permitted": false,
+      "invitation_acceptance_permitted": true,
+      "public_cta_category": "invitation_sign_in",
+      "resolved": [
+        {
+          "key": "login",
+          "label": "Log in",
+          "kind": "sign_in",
+          "emphasis": "primary",
+          "route_name": "auth.login",
+          "same_host_url": "/auth/login",
+          "eligibility_reason": "config/account-hosts.json marks merchant_finance selfRegistration:false, publicCtaCategory:invitation_sign_in.",
+          "source_section": "§1 Header / Navigation — \"Login\""
+        },
+        {
+          "key": "accept-invitation",
+          "label": "Accept your invitation",
+          "kind": "invitation_acceptance",
+          "emphasis": "secondary",
+          "route_name": "staff.accept",
+          "same_host_url": "/staff/accept",
+          "eligibility_reason": "config/account-hosts.json marks merchant_finance invitationAcceptance:true; the route is host-relative and the emailed token remains the credential.",
+          "source_section": "Registry-derived. Supersedes the source CTA behaviour, which opens merchant account creation this account may not expose (UI06-CTA-001)."
+        },
+        {
+          "key": "finance-flow",
+          "label": "See how finance works in Servana",
+          "kind": "in_page_anchor",
+          "emphasis": "secondary",
+          "route_name": null,
+          "same_host_url": "#section-how-it-works",
+          "eligibility_reason": "Same-page anchor; no navigation, no host change, no authorization.",
+          "source_section": "§2 Hero Section — \"Secondary link: See how finance works in Servana\""
+        }
+      ],
+      "rejected": []
+    },
+    {
+      "account_key": "merchant_front_office",
+      "self_registration_permitted": false,
+      "invitation_acceptance_permitted": true,
+      "public_cta_category": "invitation_sign_in",
+      "resolved": [
+        {
+          "key": "login",
+          "label": "Log in",
+          "kind": "sign_in",
+          "emphasis": "primary",
+          "route_name": "auth.login",
+          "same_host_url": "/auth/login",
+          "eligibility_reason": "config/account-hosts.json marks merchant_front_office selfRegistration:false, publicCtaCategory:invitation_sign_in.",
+          "source_section": "§1 Header / Navigation — \"Login Link: Login\""
+        },
+        {
+          "key": "accept-invitation",
+          "label": "Accept your invitation",
+          "kind": "invitation_acceptance",
+          "emphasis": "secondary",
+          "route_name": "staff.accept",
+          "same_host_url": "/staff/accept",
+          "eligibility_reason": "config/account-hosts.json marks merchant_front_office invitationAcceptance:true; the route is host-relative and the emailed token remains the credential.",
+          "source_section": "Registry-derived. Supersedes the source CTA behaviour, which opens merchant account creation this account may not expose (UI06-CTA-001)."
+        },
+        {
+          "key": "front-office-flow",
+          "label": "See how Servana helps front-office teams",
+          "kind": "in_page_anchor",
+          "emphasis": "secondary",
+          "route_name": null,
+          "same_host_url": "#section-how-it-works",
+          "eligibility_reason": "Same-page anchor; no navigation, no host change, no authorization.",
+          "source_section": "§2 Hero Section — \"Secondary link: See how Servana helps front-office teams\""
+        }
+      ],
+      "rejected": []
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "self_registration_permitted": false,
+      "invitation_acceptance_permitted": true,
+      "public_cta_category": "invitation_sign_in",
+      "resolved": [
+        {
+          "key": "login",
+          "label": "Log in",
+          "kind": "sign_in",
+          "emphasis": "primary",
+          "route_name": "auth.login",
+          "same_host_url": "/auth/login",
+          "eligibility_reason": "config/account-hosts.json marks merchant_human_resource selfRegistration:false, publicCtaCategory:invitation_sign_in.",
+          "source_section": "§1 Header / Navigation — \"Login Link: Login\""
+        },
+        {
+          "key": "accept-invitation",
+          "label": "Accept your invitation",
+          "kind": "invitation_acceptance",
+          "emphasis": "secondary",
+          "route_name": "staff.accept",
+          "same_host_url": "/staff/accept",
+          "eligibility_reason": "config/account-hosts.json marks merchant_human_resource invitationAcceptance:true; the route is host-relative and the emailed token remains the credential.",
+          "source_section": "Registry-derived. Supersedes the source CTA, which opens merchant account creation this account may not expose (UI06-CTA-001)."
+        },
+        {
+          "key": "supports-your-team",
+          "label": "See how Servana supports your team",
+          "kind": "in_page_anchor",
+          "emphasis": "secondary",
+          "route_name": null,
+          "same_host_url": "#section-features",
+          "eligibility_reason": "Same-page anchor; no navigation, no host change, no authorization.",
+          "source_section": "§2 Hero Section — \"Secondary link: See how Servana supports your team\""
+        }
+      ],
+      "rejected": []
+    },
+    {
+      "account_key": "merchant_personnel",
+      "self_registration_permitted": false,
+      "invitation_acceptance_permitted": true,
+      "public_cta_category": "invitation_sign_in",
+      "resolved": [
+        {
+          "key": "login",
+          "label": "Log in",
+          "kind": "sign_in",
+          "emphasis": "primary",
+          "route_name": "auth.login",
+          "same_host_url": "/auth/login",
+          "eligibility_reason": "config/account-hosts.json marks merchant_personnel selfRegistration:false, publicCtaCategory:invitation_sign_in.",
+          "source_section": "§2 Hero Section — \"Already activated by your business? Log in with your email.\""
+        },
+        {
+          "key": "accept-invitation",
+          "label": "Accept your invitation",
+          "kind": "invitation_acceptance",
+          "emphasis": "secondary",
+          "route_name": "staff.accept",
+          "same_host_url": "/staff/accept",
+          "eligibility_reason": "config/account-hosts.json marks merchant_personnel invitationAcceptance:true; the route is host-relative and the emailed token remains the credential.",
+          "source_section": "Registry-derived. Supersedes the source CTA destination logic, which offers merchant account creation this account may not expose (UI06-CTA-001)."
+        },
+        {
+          "key": "how-it-works",
+          "label": "See how it works",
+          "kind": "in_page_anchor",
+          "emphasis": "secondary",
+          "route_name": null,
+          "same_host_url": "#section-how-it-works",
+          "eligibility_reason": "Same-page anchor; no navigation, no host change, no authorization.",
+          "source_section": "§2 Hero Section — \"Secondary CTA: See how it works\""
+        }
+      ],
+      "rejected": []
+    },
+    {
+      "account_key": "super_administrator",
+      "self_registration_permitted": false,
+      "invitation_acceptance_permitted": false,
+      "public_cta_category": "platform_sign_in",
+      "resolved": [
+        {
+          "key": "login",
+          "label": "Log in",
+          "kind": "sign_in",
+          "emphasis": "primary",
+          "route_name": "auth.login",
+          "same_host_url": "/auth/login",
+          "eligibility_reason": "config/account-hosts.json marks super_administrator selfRegistration:false, invitationAcceptance:false, publicCtaCategory:platform_sign_in.",
+          "source_section": "§13 Final CTA Section — \"Secondary CTA: Log In\" (promoted to primary)"
+        },
+        {
+          "key": "how-it-works",
+          "label": "See how it works",
+          "kind": "in_page_anchor",
+          "emphasis": "secondary",
+          "route_name": null,
+          "same_host_url": "#section-how-it-works",
+          "eligibility_reason": "Same-page anchor; no navigation, no host change, no authorization.",
+          "source_section": "§7 How It Works Section"
+        }
+      ],
+      "rejected": []
+    }
+  ]
+}

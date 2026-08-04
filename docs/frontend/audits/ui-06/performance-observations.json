@@ -1,0 +1,119 @@
+{
+  "generated_by": "tests/e2e/ui-06-public-landing-pages.spec.ts",
+  "phase": "UI-06",
+  "origin": "http://localhost:4173 (Vite preview). UI01-PROV-003 — the deployed-origin browser gate is UI-16/UI-17.",
+  "account_context": "Installed before boot exactly as the Laravel shell embeds it, because the preview origin has no Laravel behind it. The same eight hosts are probed over HTTP against the built production images by scripts/ui06-public-host-smoke.mjs.",
+  "source_commit": "worktree",
+  "targets": {
+    "lcp_ms": 2500,
+    "cls": 0.1,
+    "inp_ms": 200
+  },
+  "status": "PRELIMINARY — recorded, not claimed. UI-17 owns the agreed p75 budget and the CDN proof.",
+  "rows": [
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "viewport": "1280x900",
+      "lcp_ms": 364,
+      "cls": 0.0011,
+      "script_transfer_bytes": 59802,
+      "image_transfer_bytes": 332795,
+      "total_transfer_bytes": 557663,
+      "request_count": 28,
+      "failed_requests": 2,
+      "note": "PRELIMINARY. A single local run on a Vite preview origin, not a p75 field measurement. Final performance acceptance and the CDN budget are UI-17."
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "viewport": "1280x900",
+      "lcp_ms": 268,
+      "cls": 0.0009,
+      "script_transfer_bytes": 60094,
+      "image_transfer_bytes": 353549,
+      "total_transfer_bytes": 578709,
+      "request_count": 28,
+      "failed_requests": 2,
+      "note": "PRELIMINARY. A single local run on a Vite preview origin, not a p75 field measurement. Final performance acceptance and the CDN budget are UI-17."
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "viewport": "1280x900",
+      "lcp_ms": 260,
+      "cls": 0.0009,
+      "script_transfer_bytes": 60275,
+      "image_transfer_bytes": 326324,
+      "total_transfer_bytes": 551665,
+      "request_count": 28,
+      "failed_requests": 2,
+      "note": "PRELIMINARY. A single local run on a Vite preview origin, not a p75 field measurement. Final performance acceptance and the CDN budget are UI-17."
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "viewport": "1280x900",
+      "lcp_ms": 280,
+      "cls": 0.0008,
+      "script_transfer_bytes": 60202,
+      "image_transfer_bytes": 370097,
+      "total_transfer_bytes": 595365,
+      "request_count": 28,
+      "failed_requests": 2,
+      "note": "PRELIMINARY. A single local run on a Vite preview origin, not a p75 field measurement. Final performance acceptance and the CDN budget are UI-17."
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "viewport": "1280x900",
+      "lcp_ms": 256,
+      "cls": 0.0008,
+      "script_transfer_bytes": 59781,
+      "image_transfer_bytes": 332042,
+      "total_transfer_bytes": 556889,
+      "request_count": 28,
+      "failed_requests": 2,
+      "note": "PRELIMINARY. A single local run on a Vite preview origin, not a p75 field measurement. Final performance acceptance and the CDN budget are UI-17."
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "viewport": "1280x900",
+      "lcp_ms": 388,
+      "cls": 0.0008,
+      "script_transfer_bytes": 59616,
+      "image_transfer_bytes": 347048,
+      "total_transfer_bytes": 571730,
+      "request_count": 28,
+      "failed_requests": 2,
+      "note": "PRELIMINARY. A single local run on a Vite preview origin, not a p75 field measurement. Final performance acceptance and the CDN budget are UI-17."
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "viewport": "1280x900",
+      "lcp_ms": 260,
+      "cls": 0.0009,
+      "script_transfer_bytes": 60456,
+      "image_transfer_bytes": 335829,
+      "total_transfer_bytes": 561351,
+      "request_count": 28,
+      "failed_requests": 2,
+      "note": "PRELIMINARY. A single local run on a Vite preview origin, not a p75 field measurement. Final performance acceptance and the CDN budget are UI-17."
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "viewport": "1280x900",
+      "lcp_ms": 252,
+      "cls": 0.0008,
+      "script_transfer_bytes": 59148,
+      "image_transfer_bytes": 400428,
+      "total_transfer_bytes": 624642,
+      "request_count": 28,
+      "failed_requests": 2,
+      "note": "PRELIMINARY. A single local run on a Vite preview origin, not a p75 field measurement. Final performance acceptance and the CDN budget are UI-17."
+    }
+  ]
+}

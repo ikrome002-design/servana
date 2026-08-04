@@ -4,8 +4,14 @@ import { requiresActiveMerchant, requiresAuth, requiresPendingSetup } from '@/ro
 export const merchantRoutes: RouteRecordRaw[] = [
   // First-time setup wizard (Scope §3.2). Standalone page (no merchant nav),
   // gated to a signed-in owner whose setup is still required.
+  //
+  // Phase UI-06: `/setup` is the public route contract's name for this page on the Merchant
+  // Administrator host (UI/UX plan §4.2). It is an ALIAS of the one implementation, so the same
+  // `requiresAuth` + `requiresPendingSetup` guards apply to both paths — a separate route would
+  // have been a second, ungoverned way in.
   {
     path: '/onboarding/first-time-setup',
+    alias: ['/setup'],
     name: 'onboarding.first-time-setup',
     component: () => import('@/pages/onboarding/FirstTimeSetup.vue'),
     beforeEnter: [requiresAuth, requiresPendingSetup],

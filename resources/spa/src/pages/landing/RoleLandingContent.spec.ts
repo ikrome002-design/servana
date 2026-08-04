@@ -16,6 +16,7 @@ function makeRouter(): Router {
     routes: [
       { path: '/front-office', name: 'front-office.landing', component: stub },
       { path: '/front-office/get-started', name: 'front-office.get-started', component: stub },
+      { path: '/legal/:doc(data-policy|privacy-policy|terms-of-service)', name: 'public.legal', component: stub },
       { path: '/legal/:role/:doc', name: 'legal.document', component: stub },
       // Phase 22 global search is in every merchant-role navigation, so the test router must
       // resolve it or RouterLink cannot render the item.
@@ -95,9 +96,15 @@ describe('role landing content sources', () => {
     expect(wrapper.text()).toContain('Serve clients faster');
     expect(wrapper.text()).toContain('Frequently asked questions');
 
-    // Legal footer links point at THIS role's documents only.
+    // Phase UI-06: the legal routes became host-derived, so the role is no longer a path segment.
+    // The destination is `/legal/<doc>` on the account's own host and the SERVER decides which
+    // document that is — which removes the possibility of a path selecting an account at all,
+    // rather than merely testing that this one does not.
     const hrefs = wrapper.findAll('a').map((a) => a.attributes('href') ?? '');
-    expect(hrefs.some((h) => h.includes('/legal/merchant_front_office/'))).toBe(true);
-    expect(hrefs.some((h) => h.includes('/legal/merchant_personnel/'))).toBe(false);
+    expect(hrefs).toContain('/legal/data-policy');
+    expect(hrefs).toContain('/legal/privacy-policy');
+    expect(hrefs).toContain('/legal/terms-of-service');
+    expect(hrefs.some((h) => h.includes('merchant_front_office'))).toBe(false);
+    expect(hrefs.some((h) => h.includes('merchant_personnel'))).toBe(false);
   });
 });

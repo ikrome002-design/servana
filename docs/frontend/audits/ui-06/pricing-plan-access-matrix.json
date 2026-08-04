@@ -1,0 +1,170 @@
+{
+  "generated_by": "node scripts/generate-ui06-artifacts.mjs",
+  "phase": "UI-06",
+  "authorities": {
+    "account_host_registry": {
+      "path": "config/account-hosts.json",
+      "sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c"
+    },
+    "content_manifest": {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    "image_manifest": {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "sha256": "85165982796291dd4f876e0e58b63ce1cbc1e69f6460a23b072f5c7d998f0b15"
+    },
+    "logo": {
+      "path": "public/assets/brand/Logo.png",
+      "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035"
+    }
+  },
+  "purpose": "What each account publishes about plans, and what it deliberately does not. No page states an amount.",
+  "price_authority": {
+    "canonical": "subscription_plan_prices (Phase 20A) — configured by the platform operator at runtime",
+    "repository_fixture": "none: no seeder or config file supplies plan prices",
+    "public_endpoint": "none: GET /api/v1/subscription/plans requires an authenticated merchant session; the platform catalogue requires platform.plan.view",
+    "consequence": "A public page cannot prove any amount is current, and UI/UX plan §8.5 forbids showing a stale one. Binding decision §2.4 applies: the role-appropriate plan-access explanation, and no amount."
+  },
+  "accounts": [
+    {
+      "account_key": "merchant_administrator",
+      "mode": "merchant_subscription_plan_access",
+      "heading": "Start with the plan that fits your business.",
+      "source_presence": "present_in_source",
+      "source_states_amount": true,
+      "renders_compiled_source": false,
+      "shows_amount": false,
+      "purchase_cta": false,
+      "points": [
+        "Your free period starts when you create your Merchant Administrator account, so early setup does not reduce your trial time.",
+        "After the free period, you choose a monthly plan that matches your branch and staff needs.",
+        "The launch billing model is subscription-first, with no percentage platform fee active at launch.",
+        "Current plan names, branch and staff limits, and prices are shown to you during account creation and in your subscription dashboard, where they come from the live plan catalogue."
+      ],
+      "withheld": [
+        {
+          "what": "The four plan tiers and their monthly amounts stated in the compiled pricing section.",
+          "reason": "The canonical price authority is the plan-price catalogue the platform operator maintains at runtime (`subscription_plan_prices`, Phase 20A). No repository fixture seeds it and no public endpoint exposes it — `GET /api/v1/subscription/plans` requires an authenticated merchant session and the platform catalogue requires `platform.plan.view`. A public page therefore cannot prove any amount is current, and UI/UX plan §8.5 forbids showing a stale one. Binding decision §2.4 applies: render the plan-access explanation and no amount. The source text is unchanged and remains compiled and hashed."
+        }
+      ]
+    },
+    {
+      "account_key": "merchant_audit",
+      "mode": "invitation_account_plan_access",
+      "heading": "Start with the oversight your business needs.",
+      "source_presence": "present_in_source",
+      "source_states_amount": false,
+      "renders_compiled_source": true,
+      "shows_amount": false,
+      "purchase_cta": false,
+      "points": [
+        "Audit access is granted inside the merchant business account; there is no separate audit plan to buy.",
+        "As the source section says, access depends on your merchant setup, assigned role and business configuration.",
+        "The business owner selects and manages the subscription from the Merchant Administrator account."
+      ],
+      "withheld": []
+    },
+    {
+      "account_key": "merchant_branch",
+      "mode": "invitation_account_plan_access",
+      "heading": "Simple pricing for growing service businesses.",
+      "source_presence": "present_in_source",
+      "source_states_amount": false,
+      "renders_compiled_source": true,
+      "shows_amount": false,
+      "purchase_cta": false,
+      "points": [
+        "A branch account is not purchased separately. Your access comes from the merchant business you belong to.",
+        "The business owner chooses and manages the subscription from the Merchant Administrator account.",
+        "Branch and staff limits follow that subscription; the current limits are shown inside the business account."
+      ],
+      "withheld": []
+    },
+    {
+      "account_key": "merchant_finance",
+      "mode": "invitation_account_plan_access",
+      "heading": "Start with the finance control your business actually needs.",
+      "source_presence": "present_in_source",
+      "source_states_amount": false,
+      "renders_compiled_source": true,
+      "shows_amount": false,
+      "purchase_cta": false,
+      "points": [
+        "Finance access is granted inside the merchant business account; there is no separate finance plan to buy.",
+        "The business owner selects and manages the subscription from the Merchant Administrator account.",
+        "As the source section says, available plans and merchant setup details are shown during account creation."
+      ],
+      "withheld": []
+    },
+    {
+      "account_key": "merchant_front_office",
+      "mode": "invitation_account_plan_access",
+      "heading": "Start with the setup that fits your service business.",
+      "source_presence": "present_in_source",
+      "source_states_amount": false,
+      "renders_compiled_source": true,
+      "shows_amount": false,
+      "purchase_cta": false,
+      "points": [
+        "Front-office access is granted inside the merchant business account; it is not purchased separately.",
+        "The business owner selects and manages the subscription from the Merchant Administrator account.",
+        "Branch and staff capacity follow that subscription, and the current limits are visible inside the business account."
+      ],
+      "withheld": []
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "mode": "invitation_account_plan_access",
+      "heading": "Choose a setup that fits how your business works.",
+      "source_presence": "present_in_source",
+      "source_states_amount": false,
+      "renders_compiled_source": true,
+      "shows_amount": false,
+      "purchase_cta": false,
+      "points": [
+        "HR access is granted inside the merchant business account; it is not bought separately.",
+        "The business owner selects and manages the subscription from the Merchant Administrator account.",
+        "Staff and branch capacity follow that subscription, and the current limits are visible inside the business account."
+      ],
+      "withheld": []
+    },
+    {
+      "account_key": "merchant_personnel",
+      "mode": "invitation_account_plan_access",
+      "heading": "Pricing is handled through your merchant business account.",
+      "source_presence": "present_in_source",
+      "source_states_amount": false,
+      "renders_compiled_source": true,
+      "shows_amount": false,
+      "purchase_cta": false,
+      "points": [
+        "You do not choose or pay for a plan. Your access is managed by the business you work under.",
+        "If you run the business, the Merchant Administrator account is where a merchant account is created and a plan is chosen."
+      ],
+      "withheld": []
+    },
+    {
+      "account_key": "super_administrator",
+      "mode": "platform_plan_administration",
+      "heading": "Plan access and administration",
+      "source_presence": "missing_from_source",
+      "source_states_amount": false,
+      "renders_compiled_source": false,
+      "shows_amount": false,
+      "purchase_cta": false,
+      "points": [
+        "This account administers platform plan availability and platform access. It configures which plans exist, what they include, and when their prices take effect.",
+        "Merchant subscriptions are not purchased from this page. A merchant buys its own plan from its own Merchant Administrator account.",
+        "No merchant subscription price is offered to the Super Administrator user here, and no plan amount is shown, because the live plan catalogue is the only authority for current amounts.",
+        "Plan and price administration happens inside the authenticated platform billing screens, against the live catalogue."
+      ],
+      "withheld": [
+        {
+          "what": "A pricing section for this account.",
+          "reason": "The Super Administrator landing source supplies none. UI/UX plan §8.3 forbids inventing missing commercial evidence and §8.5 forbids generic tiers, so binding decision §2.3 replaces the region with plan-access-and-administration content rather than a pricing table."
+        }
+      ]
+    }
+  ]
+}

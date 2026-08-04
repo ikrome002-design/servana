@@ -391,11 +391,18 @@ describe('SvFixedFooter', () => {
     expect(mount(SvFixedFooter, { global }).find('[data-testid="theme-toggle"]').exists()).toBe(true);
   });
 
-  it('links legal documents only for the role it was given', () => {
+  it('links legal documents at the canonical host-derived paths', () => {
+    // Phase UI-06: the account is resolved by the SERVER, so it is no longer a path segment. The
+    // footer therefore links `/legal/<doc>` and NO account key appears in any destination — which
+    // is a stronger cross-role guarantee than the role-parameterised route it replaced.
+    // This suite stubs RouterLink and has no router, so the destination is asserted as the named
+    // location the footer builds. `RoleLayouts.spec.ts` mounts the same footer behind a REAL
+    // router and asserts the resulting `/legal/<doc>` path.
     const wrapper = mount(SvFixedFooter, { props: { legalRole: 'merchant_audit' }, global });
 
     expect(wrapper.get('[data-testid="sv-footer-data-policy"]').attributes('href'))
-      .toContain('merchant_audit');
+      .toBe(JSON.stringify({ name: 'public.legal', params: { doc: 'data-policy' } }));
+    expect(wrapper.html()).not.toContain('merchant_audit');
     expect(wrapper.html()).not.toContain('merchant_finance');
   });
 

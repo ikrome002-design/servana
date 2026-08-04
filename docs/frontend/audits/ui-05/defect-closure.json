@@ -1,10 +1,43 @@
 {
   "generated_by": "Phase UI-05",
   "purpose": "Machine-verifiable closure record for the defects Phase UI-05 owns. The UI-01 audit register (docs/frontend/audits/ui-01/defect-register.csv) is a historical evidence snapshot and is deliberately NOT rewritten — its rows record what was true at audit time.",
-  "lifecycle_rule": "A local correction is NOT verified_complete. These closures stay `local_complete pending PR CI/review/merge` until the UI-05 pull request merges with green required checks and recorded governance evidence, at which point the next branch reconciles them.",
+  "lifecycle_rule": "A local correction is NOT verified_complete. These closures stayed `local_complete pending PR CI/review/merge` until the UI-05 pull request merged with green required checks and recorded governance evidence. Phase UI-06 performed that reconciliation: PR #55 merged as e6664f2e on 2026-08-03T08:46:31Z with five successful required jobs, so all three closures below are now `verified_complete`. The evidence sections above each closure are UNCHANGED — they record what UI-05 built.",
   "ui05_branch": "phase-ui-05-content-asset-pipeline",
   "ui05_base": "e6afe832fa9b45c4f452bcd43e19338ac87bfd9a",
-  "ui05_pull_request": "NOT CREATED — UI-05 stops at a pushed branch by instruction",
+  "ui05_pull_request": "MERGED — https://github.com/ikrome002-design/servana/pull/55",
+  "ui05_merge": {
+    "title": "Phase UI-05: Implement content and asset pipeline",
+    "state": "MERGED",
+    "is_draft": false,
+    "base_branch": "main",
+    "reviewed_base": "e6afe832fa9b45c4f452bcd43e19338ac87bfd9a",
+    "final_reviewed_head": "3902633ce992e4973cbe7eaa229dd87dbabc57cb",
+    "squash_merge": "e6664f2ec1c60e55fa27c0a40fa2685a6442932f",
+    "squash_parents": [
+      "e6afe832fa9b45c4f452bcd43e19338ac87bfd9a"
+    ],
+    "squash_subject": "Phase UI-05: Implement content and asset pipeline (#55)",
+    "merged_at": "2026-08-03T08:46:31Z",
+    "tree_equality": "3902633c^{tree} == e6664f2e^{tree} == 64aeb959116940082b9ab4a108b362b73fa3a503",
+    "final_ci_run": 30797162231,
+    "final_ci_event": "pull_request",
+    "final_ci_conclusion": "success",
+    "required_jobs": [
+      "Backend — Pint, Larastan, Pest",
+      "Frontend — ESLint, vue-tsc, Vitest, build",
+      "Docker — build images",
+      "Security — gitleaks",
+      "E2E — Playwright"
+    ],
+    "governance_comment": 5164195590,
+    "submitted_reviews": 0,
+    "approving_reviews": 0,
+    "review_decision": "",
+    "independent_approval": false,
+    "independent_approval_note": "Zero reviews were submitted and reviewDecision is blank. The merge proceeded under the recorded solo-maintainer exception; the governance comment evidences that, not a second reviewer.",
+    "branches_deleted": true,
+    "reconciled_by": "UI-06"
+  },
   "routes_changed": 0,
   "api_operations_changed": 0,
   "permission_matrix_changed": false,
@@ -40,8 +73,9 @@
       "after": "public/assets/brand contains exactly the 8 approved assets. All 11 quarantined files hash identically to their pre-move values in a non-public, source-controlled archive.",
       "backend_authority_unchanged": true,
       "not_done_here": "UI01-ASSET-004 (selected images actually rendered by landing pages) remains UI-06's: a manifest is not a rendered page.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "The quarantine is enforced by a contract test plus the production smoke. If a future phase reintroduces a working file under public/assets/brand, both fire — but only if they keep running, which is why the negative controls exist."
+      "closure_status": "verified_complete",
+      "remaining_risk": "The quarantine is enforced by a contract test plus the production smoke. If a future phase reintroduces a working file under public/assets/brand, both fire — but only if they keep running, which is why the negative controls exist.",
+      "verified_complete_evidence": "UI-05 PR #55 squash-merged as e6664f2ec1c60e55fa27c0a40fa2685a6442932f (CI run 30797162231, five required jobs successful); reconciled by Phase UI-06."
     },
     {
       "defect_id": "UI05-FAQ-001",
@@ -65,8 +99,9 @@
       "after": "196 of 196 compiled; 1,264 items across all eight accounts.",
       "backend_authority_unchanged": true,
       "not_done_here": "The public FAQ route that will render them is UI-06's. UI-05 supplies the compiled data and the SvFaq adapter only, so UI01-LEGAL-001 stays open.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "None identified. The contract test counts questions in the source document, so a future parser regression fails rather than silently under-reporting."
+      "closure_status": "verified_complete",
+      "remaining_risk": "None identified. The contract test counts questions in the source document, so a future parser regression fails rather than silently under-reporting.",
+      "verified_complete_evidence": "UI-05 PR #55 squash-merged as e6664f2ec1c60e55fa27c0a40fa2685a6442932f (CI run 30797162231, five required jobs successful); reconciled by Phase UI-06."
     },
     {
       "defect_id": "UI05-IMAGE-001",
@@ -92,8 +127,9 @@
       "after": "32 images curated (4 per account); hero declared; alt text curated per image; dimensions measured from the files.",
       "backend_authority_unchanged": true,
       "not_done_here": "Final image placement, cropping decisions and visual approval on the eight public landing pages are UI-06's; release_status stays pending_ui06_visual_review for every image.",
-      "closure_status": "local_complete pending PR CI/review/merge",
-      "remaining_risk": "The authenticated role landing is the only surface rendering a curated image today, so the responsive candidates are proven by contract and by the asset smoke rather than by a visual comparison. UI-16 owns visual baselines."
+      "closure_status": "verified_complete",
+      "remaining_risk": "The authenticated role landing is the only surface rendering a curated image today, so the responsive candidates are proven by contract and by the asset smoke rather than by a visual comparison. UI-16 owns visual baselines.",
+      "verified_complete_evidence": "UI-05 PR #55 squash-merged as e6664f2ec1c60e55fa27c0a40fa2685a6442932f (CI run 30797162231, five required jobs successful); reconciled by Phase UI-06."
     }
   ],
   "content_findings_recorded_not_fixed": [
@@ -107,7 +143,9 @@
       "why_not_fixed_here": "Rewriting approved product-owner copy is forbidden (CLAUDE.md §9), and inventing a replacement would be exactly the fabrication §8.4 prohibits. Human Resource already occupies the same region with a factual trust statement and no customer claim, which is the approved-alternative state — so a precedent exists, but choosing it for the other four is a product decision.",
       "owner": "UI-06 / product owner",
       "entry_condition": "Verified customer evidence is supplied, or a factual alternative is approved for each of the four accounts.",
-      "risk_if_ignored": "UI-06 could render a fabricated testimonial in production. The `renderPermitted` flag prevents that by default."
+      "risk_if_ignored": "UI-06 could render a fabricated testimonial in production. The `renderPermitted` flag prevents that by default.",
+      "status_at_ui06_start": "open",
+      "resolved_by": "Phase UI-06 under binding product-owner decisions; see docs/proof/ui-06.md and docs/frontend/audits/ui-06/defect-closure.json. Reaches `local_complete pending PR CI/review/merge` in UI-06, not verified_complete."
     },
     {
       "finding_id": "UI05-CONTENT-002",
@@ -119,7 +157,9 @@
       "why_not_fixed_here": "§8.3 states the IDE must not invent missing commercial or customer evidence, and §8.5 forbids generic Free/Basic/Pro/Enterprise tiers. Super Administrator is the platform owner's own account, so whether it should carry pricing at all is a product question, not a gap to fill.",
       "owner": "UI-06 / product owner",
       "entry_condition": "Approved copy is supplied for each region, or the product owner records that the region does not apply to that account.",
-      "risk_if_ignored": "UI-06 would either ship an empty region or invent copy."
+      "risk_if_ignored": "UI-06 would either ship an empty region or invent copy.",
+      "status_at_ui06_start": "open",
+      "resolved_by": "Phase UI-06 under binding product-owner decisions; see docs/proof/ui-06.md and docs/frontend/audits/ui-06/defect-closure.json. Reaches `local_complete pending PR CI/review/merge` in UI-06, not verified_complete."
     }
   ],
   "explicitly_left_open": [
@@ -160,21 +200,69 @@
     }
   ],
   "not_done_in_ui05": [
-    { "work": "The eight public landing pages", "owner": "UI-06" },
-    { "work": "Header, hero, features, how-it-works, showcase and CTA composition", "owner": "UI-06" },
-    { "work": "The final public FAQ routes", "owner": "UI-06" },
-    { "work": "Final image placement and visual approval", "owner": "UI-06" },
-    { "work": "The testimonial evidence decision for four accounts", "owner": "UI-06 / product owner" },
-    { "work": "Pricing presentation, and whether Super Administrator carries pricing at all", "owner": "UI-06 / product owner" },
-    { "work": "The 160-page route and navigation contract", "owner": "UI-07" },
-    { "work": "The eight account experiences", "owner": "UI-08 … UI-15" },
-    { "work": "Release-wide responsive/accessibility/theme review and approved visual baselines", "owner": "UI-16" },
-    { "work": "Deployed-origin browser proof", "owner": "UI-16 / UI-17" },
-    { "work": "Performance budgets and CDN delivery", "owner": "UI-17" },
-    { "work": "DNS, TLS, HSTS, CSP, deployment, rollback", "owner": "UI-17 / backend Phase 25" },
-    { "work": "Wallet billing collections", "owner": "20D-W — External Gate W closed" },
-    { "work": "Refer & Earn runtime", "owner": "21R-B — External Gate W closed" },
-    { "work": "Blocked notification and reporting runtime", "owner": "21N — External Gate W closed" },
-    { "work": "Backend Phase 25", "owner": "Phase 25 — requires separate authorization" }
+    {
+      "work": "The eight public landing pages",
+      "owner": "UI-06"
+    },
+    {
+      "work": "Header, hero, features, how-it-works, showcase and CTA composition",
+      "owner": "UI-06"
+    },
+    {
+      "work": "The final public FAQ routes",
+      "owner": "UI-06"
+    },
+    {
+      "work": "Final image placement and visual approval",
+      "owner": "UI-06"
+    },
+    {
+      "work": "The testimonial evidence decision for four accounts",
+      "owner": "UI-06 / product owner"
+    },
+    {
+      "work": "Pricing presentation, and whether Super Administrator carries pricing at all",
+      "owner": "UI-06 / product owner"
+    },
+    {
+      "work": "The 160-page route and navigation contract",
+      "owner": "UI-07"
+    },
+    {
+      "work": "The eight account experiences",
+      "owner": "UI-08 … UI-15"
+    },
+    {
+      "work": "Release-wide responsive/accessibility/theme review and approved visual baselines",
+      "owner": "UI-16"
+    },
+    {
+      "work": "Deployed-origin browser proof",
+      "owner": "UI-16 / UI-17"
+    },
+    {
+      "work": "Performance budgets and CDN delivery",
+      "owner": "UI-17"
+    },
+    {
+      "work": "DNS, TLS, HSTS, CSP, deployment, rollback",
+      "owner": "UI-17 / backend Phase 25"
+    },
+    {
+      "work": "Wallet billing collections",
+      "owner": "20D-W — External Gate W closed"
+    },
+    {
+      "work": "Refer & Earn runtime",
+      "owner": "21R-B — External Gate W closed"
+    },
+    {
+      "work": "Blocked notification and reporting runtime",
+      "owner": "21N — External Gate W closed"
+    },
+    {
+      "work": "Backend Phase 25",
+      "owner": "Phase 25 — requires separate authorization"
+    }
   ]
 }

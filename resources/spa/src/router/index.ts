@@ -9,27 +9,20 @@ import { hrRoutes } from './routes/hr';
 import { merchantRoutes } from './routes/merchant';
 import { personnelRoutes } from './routes/personnel';
 import { platformRoutes } from './routes/platform';
+import { publicRoutes } from './routes/public';
 import { searchRoutes } from './routes/search';
 
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('@/pages/Home.vue'),
-    },
+    // Phase UI-06: the public surface every approved account host serves — the account's landing
+    // page, its FAQ, its three legal documents at role-free paths, and the compatibility redirect
+    // from the older `/legal/:role/:doc` shape. All host-derived; none of it is authorization.
+    ...publicRoutes,
     {
       path: '/dev/design-system',
       name: 'dev.design-system',
       component: () => import('@/pages/dev/DesignSystemDemo.vue'),
-    },
-    {
-      // Rendered role-specific legal documents (Phase 11). Public: no secret
-      // data; sourced verbatim from docs/legal/**.
-      path: '/legal/:role/:doc',
-      name: 'legal.document',
-      component: () => import('@/pages/legal/LegalDocument.vue'),
     },
     ...authRoutes,
     ...searchRoutes,
@@ -49,9 +42,11 @@ export const router = createRouter({
       component: () => import('@/pages/auth/AccessDenied.vue'),
     },
     {
+      // Phase UI-06: an unknown address says so. It previously rendered the account entry
+      // surface, which made every wrong path look like a working page.
       path: '/:pathMatch(.*)*',
       name: 'not-found',
-      component: () => import('@/pages/Home.vue'),
+      component: () => import('@/pages/public/PublicNotFound.vue'),
     },
   ],
 });

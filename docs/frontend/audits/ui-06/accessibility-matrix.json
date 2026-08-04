@@ -1,0 +1,225 @@
+{
+  "generated_by": "tests/e2e/ui-06-public-landing-pages.spec.ts",
+  "phase": "UI-06",
+  "origin": "http://localhost:4173 (Vite preview). UI01-PROV-003 — the deployed-origin browser gate is UI-16/UI-17.",
+  "account_context": "Installed before boot exactly as the Laravel shell embeds it, because the preview origin has no Laravel behind it. The same eight hosts are probed over HTTP against the built production images by scripts/ui06-public-host-smoke.mjs.",
+  "source_commit": "worktree",
+  "tool": "axe-core via @axe-core/playwright",
+  "tags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa"
+  ],
+  "gate": "0 serious, 0 critical",
+  "rows": [
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "theme": "dark",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_administrator",
+      "route": "/faq",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "theme": "dark",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/faq",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "theme": "dark",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/faq",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "theme": "dark",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/faq",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "theme": "dark",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/faq",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "theme": "dark",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/faq",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "theme": "dark",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/faq",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "theme": "dark",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/faq",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/legal/privacy-policy",
+      "theme": "light",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/legal/privacy-policy",
+      "theme": "dark",
+      "total_violations": 0,
+      "serious_or_critical": 0,
+      "rules": []
+    }
+  ]
+}

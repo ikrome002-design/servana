@@ -1,0 +1,243 @@
+{
+  "generated_by": "node scripts/generate-ui06-artifacts.mjs",
+  "phase": "UI-06",
+  "authorities": {
+    "account_host_registry": {
+      "path": "config/account-hosts.json",
+      "sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c"
+    },
+    "content_manifest": {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    "image_manifest": {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "sha256": "85165982796291dd4f876e0e58b63ce1cbc1e69f6460a23b072f5c7d998f0b15"
+    },
+    "logo": {
+      "path": "public/assets/brand/Logo.png",
+      "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035"
+    }
+  },
+  "purpose": "Twenty-four canonical legal routes — three documents on each of the eight account hosts — with the source and hash each renders.",
+  "route_shape": "/legal/{data-policy|privacy-policy|terms-of-service}",
+  "account_selected_by": "the server-resolved account host context, never a path segment",
+  "rows": [
+    {
+      "account_key": "merchant_administrator",
+      "document": "data-policy",
+      "title": "Data Policy",
+      "route": "/legal/data-policy",
+      "source_path": "docs/legal/data_policy/merchant_administrator_data_policy.md",
+      "source_sha256": "5c61c2c342f1e2db299b30fe1a1e48fc4e52fd887e1e22d51aa0210fb18c47e6",
+      "source_bytes": 127104
+    },
+    {
+      "account_key": "merchant_administrator",
+      "document": "privacy-policy",
+      "title": "Privacy Policy",
+      "route": "/legal/privacy-policy",
+      "source_path": "docs/legal/privacy_policy/merchant_administrator_privacy_policy.md",
+      "source_sha256": "b19391393d67fbb3aa242f0fc4925ae566b9bcd948b4b3c4201e375d26d53aba",
+      "source_bytes": 87867
+    },
+    {
+      "account_key": "merchant_administrator",
+      "document": "terms-of-service",
+      "title": "Terms of Service",
+      "route": "/legal/terms-of-service",
+      "source_path": "docs/legal/terms_of_service/merchant_administrator_terms_of_service.md",
+      "source_sha256": "21f8e61119280fb78f05a202a595c913e2a73c6f9776511f04169f2c5b48e701",
+      "source_bytes": 145742
+    },
+    {
+      "account_key": "merchant_audit",
+      "document": "data-policy",
+      "title": "Data Policy",
+      "route": "/legal/data-policy",
+      "source_path": "docs/legal/data_policy/merchant_audit_data_policy.md",
+      "source_sha256": "3500dbfa093f549eac88e1d32d1f0614eb650c53cd40b1c3288a312deba50850",
+      "source_bytes": 143197
+    },
+    {
+      "account_key": "merchant_audit",
+      "document": "privacy-policy",
+      "title": "Privacy Policy",
+      "route": "/legal/privacy-policy",
+      "source_path": "docs/legal/privacy_policy/merchant_audit_privacy_policy.md",
+      "source_sha256": "c7b5454197cf8a058fec63df1fc1cdc6496094c57ab01a3384ea9bc9a5c57c45",
+      "source_bytes": 87491
+    },
+    {
+      "account_key": "merchant_audit",
+      "document": "terms-of-service",
+      "title": "Terms of Service",
+      "route": "/legal/terms-of-service",
+      "source_path": "docs/legal/terms_of_service/merchant_audit_terms_of_service.md",
+      "source_sha256": "b19410d4167b872a34058be8d4bf0484770fc2d1235a7c0137fc5a227523f0b8",
+      "source_bytes": 134785
+    },
+    {
+      "account_key": "merchant_branch",
+      "document": "data-policy",
+      "title": "Data Policy",
+      "route": "/legal/data-policy",
+      "source_path": "docs/legal/data_policy/merchant_branch_data_policy.md",
+      "source_sha256": "c471397eaf1c5601decdff96bbebf3a77b0a747545fac220a974ee202383d025",
+      "source_bytes": 149108
+    },
+    {
+      "account_key": "merchant_branch",
+      "document": "privacy-policy",
+      "title": "Privacy Policy",
+      "route": "/legal/privacy-policy",
+      "source_path": "docs/legal/privacy_policy/merchant_branch_privacy_policy.md",
+      "source_sha256": "c79e194b4e3444ff86ba0e32596fa343e02a13c01df976c9015fbfb9460ea7b4",
+      "source_bytes": 94772
+    },
+    {
+      "account_key": "merchant_branch",
+      "document": "terms-of-service",
+      "title": "Terms of Service",
+      "route": "/legal/terms-of-service",
+      "source_path": "docs/legal/terms_of_service/merchant_branch_terms_of_service.md",
+      "source_sha256": "cc793102c4a683a0b41ddc7f33fff8261da8dbe6fbf25c24d80f4e697569848c",
+      "source_bytes": 144272
+    },
+    {
+      "account_key": "merchant_finance",
+      "document": "data-policy",
+      "title": "Data Policy",
+      "route": "/legal/data-policy",
+      "source_path": "docs/legal/data_policy/merchant_finance_data_policy.md",
+      "source_sha256": "12b8e075824a75212c1d614b92d2d3e62190955b94bb7c24bad966f440d2579e",
+      "source_bytes": 162309
+    },
+    {
+      "account_key": "merchant_finance",
+      "document": "privacy-policy",
+      "title": "Privacy Policy",
+      "route": "/legal/privacy-policy",
+      "source_path": "docs/legal/privacy_policy/merchant_finance_privacy_policy.md",
+      "source_sha256": "7ddb57e87cb1805348ff0779dc6996b28b635d580c8afbefd2af01b3a403062f",
+      "source_bytes": 102271
+    },
+    {
+      "account_key": "merchant_finance",
+      "document": "terms-of-service",
+      "title": "Terms of Service",
+      "route": "/legal/terms-of-service",
+      "source_path": "docs/legal/terms_of_service/merchant_finance_terms_of_service.md",
+      "source_sha256": "2e9086ea211493e3cd3bfd228ec36002b64312f9b3a3b8fd2ca9bff65648dda3",
+      "source_bytes": 145922
+    },
+    {
+      "account_key": "merchant_front_office",
+      "document": "data-policy",
+      "title": "Data Policy",
+      "route": "/legal/data-policy",
+      "source_path": "docs/legal/data_policy/merchant_front_office_data_policy.md",
+      "source_sha256": "0e3292ec214fa450e7c8134dc2cd18ce363b8d0db5ea0f0f5121bd0251e08759",
+      "source_bytes": 164694
+    },
+    {
+      "account_key": "merchant_front_office",
+      "document": "privacy-policy",
+      "title": "Privacy Policy",
+      "route": "/legal/privacy-policy",
+      "source_path": "docs/legal/privacy_policy/merchant_front_office_privacy_policy.md",
+      "source_sha256": "a0474f976aa15aef1816c696843433eb8a965bd6ed48ffa4bffbfdac3b531847",
+      "source_bytes": 101458
+    },
+    {
+      "account_key": "merchant_front_office",
+      "document": "terms-of-service",
+      "title": "Terms of Service",
+      "route": "/legal/terms-of-service",
+      "source_path": "docs/legal/terms_of_service/merchant_front_office_terms_of_service.md",
+      "source_sha256": "4596a98daa27297b5e46856d511cc7f083dcc45596c93d17f6c0052452f09ab4",
+      "source_bytes": 137768
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "document": "data-policy",
+      "title": "Data Policy",
+      "route": "/legal/data-policy",
+      "source_path": "docs/legal/data_policy/merchant_human_resource_data_policy.md",
+      "source_sha256": "680bc160594d4e9e5dbf966058171dcaa607e0b48ca57ae281a40b0f9521e59d",
+      "source_bytes": 191184
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "document": "privacy-policy",
+      "title": "Privacy Policy",
+      "route": "/legal/privacy-policy",
+      "source_path": "docs/legal/privacy_policy/merchant_human_resource_privacy_policy.md",
+      "source_sha256": "25568d42a7e408f333df6efa3684b2aef7304bdf53321b309a097aae3c4ebd7b",
+      "source_bytes": 105551
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "document": "terms-of-service",
+      "title": "Terms of Service",
+      "route": "/legal/terms-of-service",
+      "source_path": "docs/legal/terms_of_service/merchant_human_resource_terms_of_service.md",
+      "source_sha256": "78fcf266bc50a517030f568e6b190272c78ccc842415c18f1eaf24d2729329ec",
+      "source_bytes": 128197
+    },
+    {
+      "account_key": "merchant_personnel",
+      "document": "data-policy",
+      "title": "Data Policy",
+      "route": "/legal/data-policy",
+      "source_path": "docs/legal/data_policy/merchant_personnel_data_policy.md",
+      "source_sha256": "2f1aa70d9551213df577df4e6fdd46d973e699ebb902a27e36295e2735112ebd",
+      "source_bytes": 127184
+    },
+    {
+      "account_key": "merchant_personnel",
+      "document": "privacy-policy",
+      "title": "Privacy Policy",
+      "route": "/legal/privacy-policy",
+      "source_path": "docs/legal/privacy_policy/merchant_personnel_privacy_policy.md",
+      "source_sha256": "54cb2921858dcf9a9917f9676662964375cf12681c35aa31aa2fdd3388319d6d",
+      "source_bytes": 109678
+    },
+    {
+      "account_key": "merchant_personnel",
+      "document": "terms-of-service",
+      "title": "Terms of Service",
+      "route": "/legal/terms-of-service",
+      "source_path": "docs/legal/terms_of_service/merchant_personnel_terms_of_service.md",
+      "source_sha256": "0c5a1e2bb3f68d397d281ccfa7c4ea409b90630e98577678d8a5bc299eee3c29",
+      "source_bytes": 112390
+    },
+    {
+      "account_key": "super_administrator",
+      "document": "data-policy",
+      "title": "Data Policy",
+      "route": "/legal/data-policy",
+      "source_path": "docs/legal/data_policy/super_administrator_data_policy.md",
+      "source_sha256": "324118c50648f5c98949b5210204170152fd4135249485ed2b261d6d7dcdbbd0",
+      "source_bytes": 112444
+    },
+    {
+      "account_key": "super_administrator",
+      "document": "privacy-policy",
+      "title": "Privacy Policy",
+      "route": "/legal/privacy-policy",
+      "source_path": "docs/legal/privacy_policy/super_administrator_privacy_policy.md",
+      "source_sha256": "ee8e4d717ba0dd100c12f46766a2bf84df0202f2e96cf0d022dc9da0235bdc44",
+      "source_bytes": 74424
+    },
+    {
+      "account_key": "super_administrator",
+      "document": "terms-of-service",
+      "title": "Terms of Service",
+      "route": "/legal/terms-of-service",
+      "source_path": "docs/legal/terms_of_service/super_administrator_terms_of_service.md",
+      "source_sha256": "3f90ad3fae4ea40743b96c4d864d9da9e9e8d416ba168dcc22e5fb9188a4fe3a",
+      "source_bytes": 126352
+    }
+  ]
+}

@@ -6,7 +6,197 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-05 — Content and asset pipeline (`phase-ui-05-content-asset-pipeline`) — local_complete pending PR CI/review/merge
+### Phase UI-06 — Eight public landing pages (`phase-ui-06-public-landing-pages`) — local_complete pending PR CI/review/merge
+
+Off `main` = `e6664f2ec1c60e55fa27c0a40fa2685a6442932f` (the Phase UI-05 PR #55 merge commit).
+Proof: `docs/proof/ui-06.md`. Artifacts: `docs/frontend/audits/ui-06/`.
+Plan authority: UI/UX plan §4.2, §6.5, §8.1–§8.8, §11, §12, §13, §17, §18, §19, §21, §22.1–§22.2,
+§25 (Phase UI-06), §26, §28.2; ADR-016, ADR-017, ADR-021, ADR-024, ADR-025; the Brand Identity
+**Buttons** sentence-case rule.
+
+**No pull request was created.** UI-06 stops at a pushed branch by instruction.
+
+#### Added — the eight public landing pages
+
+`/` on every approved account host now serves that account's own landing page. Before this phase it
+served a foundation-only entry card that said so in its own header: the finished pages were UI-06's,
+and inventing them earlier would have been fabricating product claims.
+
+Each page presents **all sixteen** semantic regions of §8.3, built from that account's compiled
+content, its curated imagery, its own navigation vocabulary and calls to action resolved from the
+account-host registry. One shared architecture — a layout, eight landing components, one page
+component — and **eight typed composition modules**, loaded on demand through a static import table
+so a visitor to one host downloads neither the modules nor the images of the other seven. §8.1
+forbids "one generic content object with only the role title changed", and the distinctness is
+asserted rather than asserted-in-a-comment: every account differs on title, description, eyebrow,
+trust evidence, plan access, CTA contract, imagery, FAQ and legal hashes.
+
+#### Added — a closed annotation vocabulary, so build instructions are never published
+
+The approved landing documents are written for a human page-builder. They interleave reader-facing
+copy with production annotations — `**CTA:** **GET STARTED**`, `**Navigation Links:** Features |
+How It Works | …`, `**Best Hero Image Direction:** …`, `**Meta Title:** …` — and rendering a
+compiled section verbatim would print those at a visitor.
+
+Rewriting the sources is forbidden, so `content/landing/landingSection.ts` **classifies** lines
+instead and changes not one word. Every `**Label:**` in the eight documents is classified exactly
+once: an instruction (removed with its body, and reported), an editorial lead-in (the label goes,
+every word it introduces stays), or content (both rendered). The vocabulary is scanned against the
+real documents in CI, so a future source edit fails the build rather than publishing an instruction —
+or silently swallowing a paragraph.
+
+Two phrases that *mention* a call to action inside real copy are preserved, because removing them
+would be editing approved text: Branch asks "What happens when I click GET STARTED?" in its FAQ, and
+Human Resource's first step reads "Use GET STARTED to create a business account or log in". The
+resulting wording mismatch on invitation hosts is recorded as `UI06-CTA-002` for the product owner.
+
+#### Added — `/faq` on every account host (closes `UI01-LEGAL-001`)
+
+The account's own compiled FAQ, in full, through UI-04's `SvFaq`. The account is host-derived: no
+path segment, query parameter or stored value can reach a different one. All **1,264** compiled
+items are reachable — including the 196 Merchant Administrator questions `UI05-FAQ-001` recovered —
+with the source's own category dividers preserved as headings. `SvFixedFooter` now renders its FAQ
+link, because the destination finally exists.
+
+#### Changed — legal documents are host-derived, not path-derived (closes `UI01-LEGAL-002`)
+
+Twenty-four canonical routes: `/legal/data-policy`, `/legal/privacy-policy` and
+`/legal/terms-of-service` on each of the eight hosts. The account comes from the server-resolved
+context and the document slug is one of three fixed values matched by the route itself, so neither
+can be steered by a visitor.
+
+The previous `/legal/:role/:doc` shape read the account from the URL. It survives as a compatibility
+route only: the account's own documents redirect to the canonical path, and any other role fails
+closed — it renders nothing, and it is deliberately **not** redirected, because sending a visitor to
+another account's document would be a worse defect than the one being fixed. Every internal link was
+migrated (`SvFixedFooter`, `RoleLandingScaffold`), so no destination in the application carries a
+role in its path.
+
+#### Added — the §4.2 public route contract, as aliases rather than second pages
+
+`/login`, `/register`, `/setup`, `/auth/magic-link/request` and `/auth/magic-link/consume` are
+**aliases** of the routes that already exist. One implementation means one thing to secure;
+`router.resolve({ name })` is unchanged, so every UI-03 redirect, guard and test is unaffected; and
+an alias preserves the query string exactly, which matters for the consume path — a redirect that
+dropped `?token=` would break the Magic Link flow outright. The Magic Link security model is
+untouched.
+
+The catch-all now states that an address does not exist. It previously rendered the account entry
+surface, which made every wrong path look like a working page.
+
+#### Added — a CTA resolver that the security model, not the copy, decides
+
+Six of the eight approved sources declare a call to action opening "login and create account". Their
+account-host registry rows say `selfRegistration: false`. Publishing the copy's intention would put
+open merchant registration on an invitation-only host.
+
+So a CTA declares its *kind*, and `content/landing/ctaResolver.ts` checks that kind against the
+registry and the live route table. A CTA that fails either check is **rejected and reported**, not
+silently hidden — a CTA that quietly disappears is how a page ends up with no way in. Merchant
+self-registration is exposed by exactly one account and linked by none of the other seven, asserted
+per account in the browser. Every destination is a path on the current host.
+
+Labels are rendered in sentence case ("Get started", "Log in") because the Brand Identity's
+**Buttons** rule requires it — "Use sentence case. Good: Create invoice. Avoid: CREATE INVOICE."
+The action and destination are unchanged.
+
+#### Added — approved factual trust evidence instead of testimonials
+
+**Binding product-owner decision.** No supplied customer testimonial quotation is approved for
+production. Three accounts supply no testimonials section at all; four supply one carrying an
+unverified attributed quotation or, for Personnel, three quotations the source itself marks as
+placeholders to be replaced before launch.
+
+All eight pages therefore carry a factual trust-evidence region: implemented capability, security
+control, role boundary, operational workflow, policy commitment or account purpose — each naming the
+repository source that backs it, and each asserted to exist. Human Resource's own region-11 source
+is already a factual trust statement with no customer claim, so it is preserved and rendered
+verbatim above its items.
+
+The guarantee is structural, not editorial: `customerClaim` and `metricClaim` are typed as the
+literal `false`, and the evidence vocabulary contains no category capable of carrying a customer
+claim, so an unverified quotation cannot be expressed in the type at all. The region renders no
+blockquote, no quotation mark and no attribution — a factual statement dressed as a quote still
+reads as a customer saying it. No source text was deleted or rewritten; the sections stay compiled,
+hashed and flagged non-renderable. Closes `UI05-CONTENT-001` and the testimonial half of
+`UI05-CONTENT-002`.
+
+#### Changed — no public page states a plan amount
+
+**Binding product-owner decision.** The canonical price authority is the plan-price catalogue the
+platform operator maintains at runtime. No seeder or config file supplies it, and no public endpoint
+exposes it: `GET /api/v1/subscription/plans` requires an authenticated merchant session and the
+platform catalogue requires `platform.plan.view`.
+
+A public page therefore cannot prove any amount is current, and §8.5 forbids showing a stale one. So
+every account renders role-appropriate plan-access content and **no amount**. The Merchant
+Administrator source is the only one of the eight that states amounts; its four tier blocks are
+withheld with the reason recorded in `pricing-plan-access-matrix.json`, and the page says plainly
+that current prices come from the live catalogue at account creation. Super Administrator, whose
+source supplies no pricing section at all, carries approved plan-access-and-administration content
+rather than an invented pricing table.
+
+`showsAmount` and `purchaseCta` are typed as the literal `false` and the component has no branch
+capable of rendering a price or a purchase action. Closes the pricing half of `UI05-CONTENT-002`;
+the reduction in published information is recorded as `UI06-PRICE-001`.
+
+#### Added — the curated images finally render (closes `UI01-ASSET-004`)
+
+All **32** curated images render across the eight pages — four per account, each in its
+manifest-assigned region — through a `<picture>` carrying the AVIF and WebP candidates, the file's
+**measured** intrinsic dimensions, an aspect-ratio reservation, the manifest's loading strategy and
+fetch priority, the recorded focal point as `object-position`, and the curated alternative text.
+Exactly one image per page — the hero — is eager and high priority.
+
+The isolation assertion is over what the browser actually **requested** after scrolling the full
+page, not over what the markup declares: **0** cross-account asset requests, and every image
+requested returned. No image was reselected and none was re-encoded; the manifest and all 192
+derivatives are byte-identical to UI-05's.
+
+#### Changed — one theme control per public page
+
+`SvLandingSection` gained an additive `media` slot so the responsive `<picture>` occupies the same
+media column as the existing `imageSrc` path, rather than the page rebuilding the content/media
+split beside it. `SvFixedFooter`, `SvFaq`, `SvLegalDocument`, `SvLogo`, `SvLink`, `SvThemeToggle`,
+`SvStateBoundary` and `useFocusTrap` are consumed unchanged, and the 54-component registry is
+untouched.
+
+A theme control briefly appeared in both the landing header and the fixed footer. It was removed
+from the header rather than disambiguated in the test: plan §11.1 places the control in the footer,
+and two switches for one setting is ambiguous to a screen-reader user regardless of what any test
+asks for.
+
+#### Backend authority unchanged
+
+**No** API operation, permission key, policy, migration, tenant query, financial calculation or
+state machine changed. `routes/api.php`, `docs/api/openapi.json` and
+`docs/auth/permission-matrix.yaml` are untouched, and the UI-03 authentication, session-family and
+account-switching controls are unweakened. The account host selects public content and grants
+nothing (ADR-017).
+
+#### Reconciled — Phase UI-05 is `verified_complete`
+
+PR [#55](https://github.com/ikrome002-design/servana/pull/55) merged into `main` as squash commit
+`e6664f2ec1c60e55fa27c0a40fa2685a6442932f` (single parent `e6afe832…`), reviewed head
+`3902633ce992e4973cbe7eaa229dd87dbabc57cb` whose tree `64aeb959…` equals the merge tree, `mergedAt
+2026-08-03T08:46:31Z`, final CI run `30797162231` with **five** successful required jobs, governance
+comment `5164195590`, **0** submitted and **0** approving reviews with a blank `reviewDecision` —
+**not** independent approval — and both branch refs deleted. `UI01-ASSET-002`, `UI05-FAQ-001` and
+`UI05-IMAGE-001` are promoted to `verified_complete`.
+
+`UI01-ASSET-002`'s lifecycle was hard-coded in `scripts/generate-landing-images.mjs`, so promoting a
+merged closure required editing a build tool. It now lives in the reviewed decision record
+(`config/brand-asset-quarantine.json`), the generator copies it, and the test asserts the generated
+artifact cannot state a lifecycle the decision record does not.
+
+---
+
+### Phase UI-05 — Content and asset pipeline (`phase-ui-05-content-asset-pipeline`) — verified_complete
+
+Merged as PR [#55](https://github.com/ikrome002-design/servana/pull/55) — squash commit
+`e6664f2ec1c60e55fa27c0a40fa2685a6442932f`, `mergedAt 2026-08-03T08:46:31Z`, final CI `30797162231`
+with five successful required checks, governance comment `5164195590`, 0 reviews. Reconciled on the
+UI-06 branch; the implementation record below is unchanged.
 
 Off `main` = `e6afe832fa9b45c4f452bcd43e19338ac87bfd9a` (the Phase UI-04 PR #54 merge commit).
 Proof: `docs/proof/ui-05.md`. Contracts: `docs/frontend/content/`.
@@ -14,7 +204,7 @@ Artifacts: `docs/frontend/audits/ui-05/`.
 Plan authority: UI/UX plan §8.1–§8.8, §17.1–§17.4, §22.2, §25 (Phase UI-05), §26, §28.2, §28.8;
 ADR-025; backend Plan §27.2.
 
-**No pull request was created.** UI-05 stops at a pushed branch by instruction.
+**Pull request #55 was created and merged** after UI-05 stopped at a pushed branch by instruction; the record below describes the branch as it was reviewed.
 
 #### Changed — production no longer discovers repository Markdown at build time
 

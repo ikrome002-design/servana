@@ -1,0 +1,868 @@
+{
+  "generated_by": "node scripts/generate-ui06-artifacts.mjs",
+  "phase": "UI-06",
+  "authorities": {
+    "account_host_registry": {
+      "path": "config/account-hosts.json",
+      "sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c"
+    },
+    "content_manifest": {
+      "path": "docs/frontend/audits/ui-05/content-source-manifest.json",
+      "sha256": "12ce2d20062ccea28fabb9ea4d9c756ecc5a8228bb4657e06963366e6f854f46"
+    },
+    "image_manifest": {
+      "path": "public/assets/landing_page_images/manifest.json",
+      "sha256": "85165982796291dd4f876e0e58b63ce1cbc1e69f6460a23b072f5c7d998f0b15"
+    },
+    "logo": {
+      "path": "public/assets/brand/Logo.png",
+      "sha256": "ada6fb03045bd2817814b1136b39380214a32aa2fe9b92816a334de9f4664035"
+    }
+  },
+  "purpose": "The public route contract of UI/UX plan §4.2, as the router actually declares it. Aliases are recorded because the plan names paths that resolve to existing implementations rather than new pages.",
+  "required_on_every_host": [
+    "/",
+    "/login",
+    "/auth/magic-link/request",
+    "/auth/magic-link/consume",
+    "/faq",
+    "/legal/data-policy",
+    "/legal/privacy-policy",
+    "/legal/terms-of-service"
+  ],
+  "merchant_administrator_additional": [
+    "/register",
+    "/setup"
+  ],
+  "invitation_accounts_additional": [
+    "/staff/accept"
+  ],
+  "routes": [
+    {
+      "name": "audit.branch-events",
+      "path": "events",
+      "absolute_path": "/audit/events",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.compensation",
+      "path": "compensation",
+      "absolute_path": "/audit/compensation",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.dashboard",
+      "path": "dashboard",
+      "absolute_path": "/audit/dashboard",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.event-detail",
+      "path": "events/:id",
+      "absolute_path": "/audit/events/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.export-detail",
+      "path": "exports/:id",
+      "absolute_path": "/audit/exports/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.exports",
+      "path": "exports",
+      "absolute_path": "/audit/exports",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.finance",
+      "path": "finance",
+      "absolute_path": "/audit/finance",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.flagged-detail",
+      "path": "flagged/:id",
+      "absolute_path": "/audit/flagged/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.flagged-events",
+      "path": "flagged",
+      "absolute_path": "/audit/flagged",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.get-started",
+      "path": "get-started",
+      "absolute_path": "/audit/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.landing",
+      "path": "",
+      "absolute_path": "/audit",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.platform-fees",
+      "path": "platform-fees",
+      "absolute_path": "/audit/platform-fees",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "auth.check-email",
+      "path": "check-email",
+      "absolute_path": "/auth/check-email",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/auth.ts"
+    },
+    {
+      "name": "auth.login",
+      "path": "login",
+      "absolute_path": "/auth/login",
+      "aliases": [
+        "/login",
+        "/auth/magic-link/request"
+      ],
+      "declared_in": "resources/spa/src/router/routes/auth.ts"
+    },
+    {
+      "name": "auth.mfa.challenge",
+      "path": "mfa/challenge",
+      "absolute_path": "/auth/mfa/challenge",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/auth.ts"
+    },
+    {
+      "name": "auth.mfa.setup",
+      "path": "mfa/setup",
+      "absolute_path": "/auth/mfa/setup",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/auth.ts"
+    },
+    {
+      "name": "auth.register",
+      "path": "register",
+      "absolute_path": "/auth/register",
+      "aliases": [
+        "/register"
+      ],
+      "declared_in": "resources/spa/src/router/routes/auth.ts"
+    },
+    {
+      "name": "auth.verify",
+      "path": "verify",
+      "absolute_path": "/auth/verify",
+      "aliases": [
+        "/auth/magic-link/consume"
+      ],
+      "declared_in": "resources/spa/src/router/routes/auth.ts"
+    },
+    {
+      "name": "branch.appointments",
+      "path": "appointments",
+      "absolute_path": "/branch/appointments",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.calendar",
+      "path": ":id/calendar",
+      "absolute_path": "/branch/:id/calendar",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.cash-up",
+      "path": "cash-up",
+      "absolute_path": "/branch/cash-up",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.create",
+      "path": "create",
+      "absolute_path": "/branch/create",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.detail",
+      "path": ":id",
+      "absolute_path": "/branch/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.get-started",
+      "path": "get-started",
+      "absolute_path": "/branch/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.landing",
+      "path": "",
+      "absolute_path": "/branch",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.list",
+      "path": "list",
+      "absolute_path": "/branch/list",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.operating-hours",
+      "path": ":id/operating-hours",
+      "absolute_path": "/branch/:id/operating-hours",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.personnel-schedule",
+      "path": "personnel-schedule",
+      "absolute_path": "/branch/personnel-schedule",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.platform-fees",
+      "path": "platform-fees",
+      "absolute_path": "/branch/platform-fees",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.queue",
+      "path": "queue",
+      "absolute_path": "/branch/queue",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.queue-configuration",
+      "path": "queue-configuration",
+      "absolute_path": "/branch/queue-configuration",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.services",
+      "path": "services",
+      "absolute_path": "/branch/services",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "finance.audit",
+      "path": "audit",
+      "absolute_path": "/finance/audit",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.cash-up",
+      "path": "cash-up",
+      "absolute_path": "/finance/cash-up",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.cash-up.detail",
+      "path": "cash-up/:id",
+      "absolute_path": "/finance/cash-up/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.dashboard",
+      "path": "dashboard",
+      "absolute_path": "/finance/dashboard",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.disputes",
+      "path": "disputes",
+      "absolute_path": "/finance/disputes",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.disputes.detail",
+      "path": "disputes/:id",
+      "absolute_path": "/finance/disputes/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.earnings-queries",
+      "path": "earnings-queries",
+      "absolute_path": "/finance/earnings-queries",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.exports",
+      "path": "exports",
+      "absolute_path": "/finance/exports",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.get-started",
+      "path": "get-started",
+      "absolute_path": "/finance/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.invoices",
+      "path": "invoices",
+      "absolute_path": "/finance/invoices",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.invoices.detail",
+      "path": "invoices/:id",
+      "absolute_path": "/finance/invoices/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.landing",
+      "path": "",
+      "absolute_path": "/finance",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.liabilities",
+      "path": "liabilities",
+      "absolute_path": "/finance/liabilities",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.payment-records",
+      "path": "payment-records",
+      "absolute_path": "/finance/payment-records",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.payment-records.detail",
+      "path": "payment-records/:id",
+      "absolute_path": "/finance/payment-records/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.payout-runs",
+      "path": "payout-runs",
+      "absolute_path": "/finance/payout-runs",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.pending-validations",
+      "path": "pending-validations",
+      "absolute_path": "/finance/pending-validations",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.periods",
+      "path": "periods",
+      "absolute_path": "/finance/periods",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.platform-fees",
+      "path": "platform-fees",
+      "absolute_path": "/finance/platform-fees",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.receipts",
+      "path": "receipts",
+      "absolute_path": "/finance/receipts",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.receipts.detail",
+      "path": "receipts/:id",
+      "absolute_path": "/finance/receipts/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.refunds",
+      "path": "refunds",
+      "absolute_path": "/finance/refunds",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.refunds.detail",
+      "path": "refunds/:id",
+      "absolute_path": "/finance/refunds/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "front-office.appointments",
+      "path": "appointments",
+      "absolute_path": "/front-office/appointments",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.appointments.create",
+      "path": "appointments/create",
+      "absolute_path": "/front-office/appointments/create",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.appointments.detail",
+      "path": "appointments/:id",
+      "absolute_path": "/front-office/appointments/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.clients",
+      "path": "clients",
+      "absolute_path": "/front-office/clients",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.clients.create",
+      "path": "clients/create",
+      "absolute_path": "/front-office/clients/create",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.clients.detail",
+      "path": "clients/:id",
+      "absolute_path": "/front-office/clients/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.dashboard",
+      "path": "dashboard",
+      "absolute_path": "/front-office/dashboard",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.get-started",
+      "path": "get-started",
+      "absolute_path": "/front-office/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.invoices",
+      "path": "invoices",
+      "absolute_path": "/front-office/invoices",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.invoices.create",
+      "path": "invoices/create",
+      "absolute_path": "/front-office/invoices/create",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.invoices.detail",
+      "path": "invoices/:id",
+      "absolute_path": "/front-office/invoices/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.landing",
+      "path": "",
+      "absolute_path": "/front-office",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.payments",
+      "path": "payments",
+      "absolute_path": "/front-office/payments",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.payments.record",
+      "path": "payments/record/:id",
+      "absolute_path": "/front-office/payments/record/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.queue",
+      "path": "queue",
+      "absolute_path": "/front-office/queue",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.queue.detail",
+      "path": "queue/:id",
+      "absolute_path": "/front-office/queue/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.receipts",
+      "path": "receipts",
+      "absolute_path": "/front-office/receipts",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.receipts.detail",
+      "path": "receipts/:id",
+      "absolute_path": "/front-office/receipts/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.sessions",
+      "path": "sessions",
+      "absolute_path": "/front-office/sessions",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.walk-in",
+      "path": "walk-in",
+      "absolute_path": "/front-office/walk-in",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "home",
+      "path": "/",
+      "absolute_path": "/",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/public.ts"
+    },
+    {
+      "name": "hr.availability",
+      "path": "availability",
+      "absolute_path": "/hr/availability",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.compensation",
+      "path": "compensation",
+      "absolute_path": "/hr/compensation",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.eligibility",
+      "path": "eligibility",
+      "absolute_path": "/hr/eligibility",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.get-started",
+      "path": "get-started",
+      "absolute_path": "/hr/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.invitations",
+      "path": "invitations",
+      "absolute_path": "/hr/invitations",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.landing",
+      "path": "",
+      "absolute_path": "/hr",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.payout-runs",
+      "path": "payout-runs",
+      "absolute_path": "/hr/payout-runs",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.permission-preview",
+      "path": "permission-preview",
+      "absolute_path": "/hr/permission-preview",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.staff",
+      "path": "staff",
+      "absolute_path": "/hr/staff",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.staff-profile",
+      "path": "staff/:id",
+      "absolute_path": "/hr/staff/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "legal.document",
+      "path": "/legal/:role/:doc",
+      "absolute_path": "/legal/:role/:doc",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/public.ts"
+    },
+    {
+      "name": "merchant.compensation-summary",
+      "path": "compensation-summary",
+      "absolute_path": "/merchant/compensation-summary",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.dashboard",
+      "path": "dashboard",
+      "absolute_path": "/merchant/dashboard",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.get-started",
+      "path": "get-started",
+      "absolute_path": "/merchant/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.invoices",
+      "path": "subscription-invoices",
+      "absolute_path": "/merchant/subscription-invoices",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.landing",
+      "path": "",
+      "absolute_path": "/merchant",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.period-reopen-approvals",
+      "path": "period-reopen-approvals",
+      "absolute_path": "/merchant/period-reopen-approvals",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.plan",
+      "path": "plan",
+      "absolute_path": "/merchant/plan",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.platform-fees",
+      "path": "platform-fees",
+      "absolute_path": "/merchant/platform-fees",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.profile",
+      "path": "profile",
+      "absolute_path": "/merchant/profile",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.subscription",
+      "path": "subscription",
+      "absolute_path": "/merchant/subscription",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "onboarding.first-time-setup",
+      "path": "/onboarding/first-time-setup",
+      "absolute_path": "/onboarding/first-time-setup",
+      "aliases": [
+        "/setup"
+      ],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "personnel.appointments",
+      "path": "appointments",
+      "absolute_path": "/personnel/appointments",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.dashboard",
+      "path": "dashboard",
+      "absolute_path": "/personnel/dashboard",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.earnings",
+      "path": "earnings",
+      "absolute_path": "/personnel/earnings",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.get-started",
+      "path": "get-started",
+      "absolute_path": "/personnel/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.landing",
+      "path": "",
+      "absolute_path": "/personnel",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.queue",
+      "path": "queue",
+      "absolute_path": "/personnel/queue",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.sessions",
+      "path": "sessions",
+      "absolute_path": "/personnel/sessions",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.sms",
+      "path": "sms",
+      "absolute_path": "/personnel/sms",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "platform.billing-settings",
+      "path": "billing-settings",
+      "absolute_path": "/platform/billing-settings",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.dashboard",
+      "path": "dashboard",
+      "absolute_path": "/platform/dashboard",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.get-started",
+      "path": "get-started",
+      "absolute_path": "/platform/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.landing",
+      "path": "",
+      "absolute_path": "/platform",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.promotions",
+      "path": "promotions",
+      "absolute_path": "/platform/promotions",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.registration-monitoring",
+      "path": "registration-monitoring",
+      "absolute_path": "/platform/registration-monitoring",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "public.faq",
+      "path": "/faq",
+      "absolute_path": "/faq",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/public.ts"
+    },
+    {
+      "name": "public.legal",
+      "path": "/legal/:doc(data-policy|privacy-policy|terms-of-service)",
+      "absolute_path": "/legal/:doc(data-policy|privacy-policy|terms-of-service)",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/public.ts"
+    },
+    {
+      "name": "search",
+      "path": "/search",
+      "absolute_path": "/search",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/search.ts"
+    },
+    {
+      "name": "staff.accept",
+      "path": "",
+      "absolute_path": "/staff/accept",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    }
+  ],
+  "legacy_role_parameter_route": {
+    "name": "legal.document",
+    "path": "/legal/:role/:doc",
+    "treatment": "Compatibility only. With a resolved account context, a role EQUAL to the host account redirects to the canonical role-free path and any other role fails closed without rendering. With no resolved context (the standalone preview origin embeds none) behaviour is unchanged from before UI-06. Recorded as UI06-LEGAL-001."
+  }
+}

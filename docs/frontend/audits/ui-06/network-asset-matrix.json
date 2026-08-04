@@ -1,0 +1,153 @@
+{
+  "generated_by": "tests/e2e/ui-06-public-landing-pages.spec.ts",
+  "phase": "UI-06",
+  "origin": "http://localhost:4173 (Vite preview). UI01-PROV-003 — the deployed-origin browser gate is UI-16/UI-17.",
+  "account_context": "Installed before boot exactly as the Laravel shell embeds it, because the preview origin has no Laravel behind it. The same eight hosts are probed over HTTP against the built production images by scripts/ui06-public-host-smoke.mjs.",
+  "source_commit": "worktree",
+  "rows": [
+    {
+      "account_key": "merchant_administrator",
+      "route": "/",
+      "request_count": 29,
+      "failed_requests": [
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        },
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        }
+      ],
+      "other_account_asset_requests": []
+    },
+    {
+      "account_key": "merchant_audit",
+      "route": "/",
+      "request_count": 29,
+      "failed_requests": [
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        },
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        }
+      ],
+      "other_account_asset_requests": []
+    },
+    {
+      "account_key": "merchant_branch",
+      "route": "/",
+      "request_count": 29,
+      "failed_requests": [
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        },
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        }
+      ],
+      "other_account_asset_requests": []
+    },
+    {
+      "account_key": "merchant_finance",
+      "route": "/",
+      "request_count": 29,
+      "failed_requests": [
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        },
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        }
+      ],
+      "other_account_asset_requests": []
+    },
+    {
+      "account_key": "merchant_front_office",
+      "route": "/",
+      "request_count": 29,
+      "failed_requests": [
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        },
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        }
+      ],
+      "other_account_asset_requests": []
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "route": "/",
+      "request_count": 29,
+      "failed_requests": [
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        },
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        }
+      ],
+      "other_account_asset_requests": []
+    },
+    {
+      "account_key": "merchant_personnel",
+      "route": "/",
+      "request_count": 29,
+      "failed_requests": [
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        },
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        }
+      ],
+      "other_account_asset_requests": []
+    },
+    {
+      "account_key": "super_administrator",
+      "route": "/",
+      "request_count": 29,
+      "failed_requests": [
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        },
+        {
+          "url": "http://localhost:4173/api/v1/me",
+          "status": 401,
+          "type": "xhr"
+        }
+      ],
+      "other_account_asset_requests": []
+    }
+  ]
+}

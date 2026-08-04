@@ -1,0 +1,74 @@
+{
+  "generated_by": "tests/e2e/ui-06-public-landing-pages.spec.ts",
+  "phase": "UI-06",
+  "origin": "http://localhost:4173 (Vite preview). UI01-PROV-003 — the deployed-origin browser gate is UI-16/UI-17.",
+  "account_context": "Installed before boot exactly as the Laravel shell embeds it, because the preview origin has no Laravel behind it. The same eight hosts are probed over HTTP against the built production images by scripts/ui06-public-host-smoke.mjs.",
+  "source_commit": "worktree",
+  "rule": "ADR-021 — light is the default and prefers-color-scheme never selects the theme; dark is explicit and persistent per browser for an anonymous visitor",
+  "rows": [
+    {
+      "account_key": "merchant_administrator",
+      "fresh_context_theme": "light",
+      "os_preference": "dark",
+      "explicit_dark_applied": true,
+      "persisted": true,
+      "storage_key": "servana.theme"
+    },
+    {
+      "account_key": "merchant_audit",
+      "fresh_context_theme": "light",
+      "os_preference": "dark",
+      "explicit_dark_applied": true,
+      "persisted": true,
+      "storage_key": "servana.theme"
+    },
+    {
+      "account_key": "merchant_branch",
+      "fresh_context_theme": "light",
+      "os_preference": "dark",
+      "explicit_dark_applied": true,
+      "persisted": true,
+      "storage_key": "servana.theme"
+    },
+    {
+      "account_key": "merchant_finance",
+      "fresh_context_theme": "light",
+      "os_preference": "dark",
+      "explicit_dark_applied": true,
+      "persisted": true,
+      "storage_key": "servana.theme"
+    },
+    {
+      "account_key": "merchant_front_office",
+      "fresh_context_theme": "light",
+      "os_preference": "dark",
+      "explicit_dark_applied": true,
+      "persisted": true,
+      "storage_key": "servana.theme"
+    },
+    {
+      "account_key": "merchant_human_resource",
+      "fresh_context_theme": "light",
+      "os_preference": "dark",
+      "explicit_dark_applied": true,
+      "persisted": true,
+      "storage_key": "servana.theme"
+    },
+    {
+      "account_key": "merchant_personnel",
+      "fresh_context_theme": "light",
+      "os_preference": "dark",
+      "explicit_dark_applied": true,
+      "persisted": true,
+      "storage_key": "servana.theme"
+    },
+    {
+      "account_key": "super_administrator",
+      "fresh_context_theme": "light",
+      "os_preference": "dark",
+      "explicit_dark_applied": true,
+      "persisted": true,
+      "storage_key": "servana.theme"
+    }
+  ]
+}
