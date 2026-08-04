@@ -455,9 +455,19 @@ jobs:
     # Security; the SPA is a static preview build, so no Postgres/Redis is needed.
     name: E2E — Playwright
     runs-on: ubuntu-latest
-    # Reasonable bound: fails the workflow if the run stalls without completing
-    # (the documented Windows-host failure mode) rather than hanging indefinitely.
-    timeout-minutes: 20
+    # Stall bound, not a performance budget: fails the workflow if the run hangs
+    # without completing (the documented Windows-host failure mode) rather than
+    # hanging indefinitely. It must stay comfortably ABOVE the honest runtime, or
+    # it silently truncates a passing suite.
+    #
+    # Raised 20 -> 60 in Phase UI-06. The suite is serial by contract
+    # (playwright.config.ts pins workers=1, retries=1 on CI) and has grown to 1,024
+    # tests, which docs/proof/ui-06.md records at 32.6 min locally; two UI-01 sweeps
+    # alone carry a 15-minute per-test budget each. Run 30917088915 was cancelled at
+    # exactly 20m15s with 870/870 completed tests PASSING and none failed — the job
+    # was killed mid-test, it did not fail. No test, assertion, retry or reporter
+    # setting is relaxed here; every test still runs and still has to pass.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
