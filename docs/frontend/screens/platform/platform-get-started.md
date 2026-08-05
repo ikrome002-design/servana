@@ -1,6 +1,6 @@
 # Screen specification — Super Administrator get-started
 
-> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **phase_11** · Owning phase: **Phase 11**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
+> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 11**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `platform-get-started`
 - **Route name and URL:** `platform.get-started`
@@ -10,7 +10,7 @@
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
-- **API dependencies:** `GET /api/v1/me` bootstrap; no new endpoints in Phase 11.
+- **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
 - **Fields and displayed data:** Guided get-started checklist for platform governance setup.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.

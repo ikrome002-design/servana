@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import { accountKeyForRole, stubAccountContextForRole } from './support/roleBootstrap';
 import { expect, test, type Page } from '@playwright/test';
 
 /*
@@ -38,6 +39,10 @@ function completedSession() {
 }
 
 async function stubMe(page: Page, role: string, permissions: string[]): Promise<void> {
+  // Phase UI-07: the account guard now covers every authenticated tree, so this spec must
+  // serve the host context the Laravel shell embeds, exactly as it already stubs /me.
+  await stubAccountContextForRole(page, role, false);
+
   await page.route('**/sanctum/csrf-cookie', (r) => r.fulfill({ status: 204, body: '' }));
   await page.route('**/api/v1/me', (r) =>
     r.fulfill(
@@ -47,6 +52,7 @@ async function stubMe(page: Page, role: string, permissions: string[]): Promise<
           merchant: { id: 'm1', name: 'Glow Studio', slug: 'glow', status: 'active', service_fee_tier: null, setup_completed_at: '2026-01-01T00:00:00Z' },
           membership: { id: 'mm1', role, status: 'active' },
           memberships: [{ id: 'mm1', role, status: 'active' }],
+          account_keys: [accountKeyForRole(role, false)],
           permissions,
           setup: { required: false, current_step: null, completed_at: null },
           branch_ids: ['b1'],

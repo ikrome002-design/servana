@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import { accountKeyForRole, stubAccountContextForRole } from './support/roleBootstrap';
 import { expect, test, type Page } from '@playwright/test';
 
 /*
@@ -27,7 +28,12 @@ interface MeOpts {
   permissions?: string[];
   stepUpFresh?: boolean;
 }
-async function stubMe(page: Page, opts: MeOpts = {}): Promise<void> {
+async function stubMe(page: Page, opts: MeOpts = {
+}): Promise<void> {
+  // Phase UI-07: the account guard now covers every authenticated tree, so this spec must
+  // serve the host context the Laravel shell embeds, exactly as it already stubs /me.
+  await stubAccountContextForRole(page, opts.role, opts.isPlatformStaff ?? false);
+
   await page.route('**/sanctum/csrf-cookie', (r) => r.fulfill({ status: 204, body: '' }));
   await page.route('**/api/v1/me', (r) =>
     r.fulfill(ok({
@@ -36,6 +42,7 @@ async function stubMe(page: Page, opts: MeOpts = {}): Promise<void> {
         merchant: { id: 'm1', name: 'Glow Studio', slug: 'glow', status: 'active', service_fee_tier: null, setup_completed_at: '2026-01-01T00:00:00Z' },
         membership: opts.role ? { id: 'mm1', role: opts.role, status: 'active' } : null,
         memberships: opts.role ? [{ id: 'mm1', role: opts.role, status: 'active' }] : [],
+        account_keys: [accountKeyForRole(opts.role, opts.isPlatformStaff ?? false)],
         permissions: opts.permissions ?? [],
         setup: { required: false, current_step: null, completed_at: null },
         branch_ids: ['b1'],
@@ -249,11 +256,27 @@ test.describe('Finance earnings-query responder', () => {
 /* ================================================================= role denial */
 
 test.describe('Role denial (frontend UX; the API is the boundary)', () => {
+  /*
+   | Phase UI-07: still a denial case, denied EARLIER.
+   |
+   | Personnel is strictly own-scope, so the Finance account's payout worklist is refused at the
+   | route and the screen never mounts. Previously the account guard did not exist, so the test
+   | reached the screen and asserted its 403-backed forbidden state. The API still answers 403 —
+   | that stub stays, and `payout_run.verify` carries its own negative cases in
+   | docs/auth/permission-matrix.yaml — but the browser no longer gets that far, which is the
+   | stricter outcome. Defence in depth: the backend remains the boundary.
+   */
   test('personnel cannot reach the Finance payout worklist', async ({ page }) => {
     await stubMe(page, { role: 'personnel', permissions: ['personnel.my_earnings.view'] });
     await page.route(/\/api\/v1\/finance\/payout-runs(\?|$)/, (r) => r.fulfill(forbidden('forbidden')));
     await page.goto('/finance/payout-runs');
-    await expect(page.getByTestId('payout-forbidden')).toBeVisible();
+
+    await expect(page).toHaveURL(/\/access-denied/);
+    await expect(page.getByTestId('payout-forbidden')).toHaveCount(0);
+    // Role-safe: neither the forbidden account nor the held one is disclosed.
+    const shown = await page.locator('#app').innerText();
+    expect(shown).not.toContain('merchant_finance');
+    expect(shown).not.toContain('merchant_personnel');
   });
 
   test('a Finance user without mark-paid never sees the mark-paid control', async ({ page }) => {

@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page, type Route } from "@playwright/test";
+import { stubAccountContextFor } from "./support/roleBootstrap";
 
 /*
  | UI E2E coverage for branches and staff invitations
@@ -119,6 +120,12 @@ function adminBootstrap(): unknown {
             merchant: MERCHANT,
             membership: MEMBERSHIP,
             memberships: [MEMBERSHIP],
+            // Phase UI-07: `/me` reports the accounts the DATABASE says this user holds, and the
+            // account guard asks for them. The subject here is Merchant Administrator branch
+            // governance — Plan §10.2 gives branch creation to that account and explicitly not to
+            // the Branch Manager — so this is the account, even though the screens are currently
+            // served beneath the `/branch` path prefix.
+            account_keys: ["merchant_administrator"],
             permissions: ADMIN_PERMISSIONS,
             branch_ids: [],
             setup: {
@@ -164,6 +171,9 @@ async function stubCsrfCookie(page: Page): Promise<void> {
 async function stubAdmin(page: Page): Promise<void> {
     await clearBootstrapRoutes(page);
     await stubCsrfCookie(page);
+    // Serve the host context the Laravel shell embeds for the Merchant Administrator account.
+    // `vite preview` has no shell, so without it the account guard fails closed.
+    await stubAccountContextFor(page, "merchant_administrator");
 
     await page.route(CURRENT_USER_ROUTE, async (route) => {
         await fulfillJson(route, adminBootstrap());
@@ -301,6 +311,17 @@ test.describe("Branches + staff invitations UI", () => {
         );
     });
 
+    /*
+     | Phase UI-07 kept this case on the Merchant Administrator deliberately.
+     |
+     | `/hr/invitations` serves BOTH accounts: `StaffInvitations.vue` branches on
+     | `auth.isMerchantAdmin()` to offer Branch Manager / Human Resource, and any other account the
+     | operational roles. That is Plan §13 exactly — "Merchant Administrator: initial Branch
+     | Manager/HR and tenant lifecycle oversight; HR: owns operational staff in branch" — so
+     | inviting a `branch_manager` is Merchant Administrator authority and cannot be re-pointed at
+     | HR without inventing an authority HR does not hold. The `/hr` route tree admits both owners
+     | for this screen; every other HR child stays HR-only.
+     */
     test("merchant admin invites a staff member", async ({ page }) => {
         await stubAdmin(page);
 

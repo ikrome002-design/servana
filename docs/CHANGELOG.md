@@ -6,7 +6,169 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-06 — Eight public landing pages (`phase-ui-06-public-landing-pages`) — local_complete pending PR CI/review/merge
+### Phase UI-07 — Navigation registry and screen contracts (`phase-ui-07-navigation-screen-contracts`) — local_complete pending PR CI/review/merge
+
+Off `main` = `6b67ad2e1cc2c1031a89dc8d82902a025feac721` (the Phase UI-06 PR #56 merge commit).
+Proof: `docs/proof/ui-07.md`. Artifacts: `docs/frontend/audits/ui-07/`.
+Plan authority: UI/UX plan §6.1–§6.5, §7.1–§7.5, §9.4, §18, §19, §21, §25 (Phase UI-07);
+ADR-016, ADR-017, ADR-018, ADR-020, ADR-025; Plan §9 rule 2, §10.2, §10.3, §80.2.
+
+**No pull request was created.** UI-07 stops at a pushed branch by instruction.
+
+#### Added — one canonical authority for the 160 authenticated pages
+
+`docs/frontend/navigation/servana-user-account-navigation-map.yaml` is the single handwritten
+statement of the authenticated page contract: **160** pages — Super Administrator 22, Merchant
+Administrator 23, Branch 18, Human Resource 19, Finance 24, Front Office 19, Personnel 20,
+Audit 15. The total is **summed from the entries**; a declared total that disagrees is rejected.
+
+It cannot drift from the document it encodes: `Ui07NavigationContractTest` parses the binding human
+map and compares account, label, route path and purpose for all 160 pages, and refuses any entry
+the map does not contain.
+
+Every other machine-readable representation is derived from it — the typed runtime registry, the
+160 screen specifications and fourteen contract matrices — and CI fails when any of them is stale.
+The route table those matrices describe is read by loading the real router modules through Vite's
+SSR transform, never by parsing source text: UI-06 recorded how a regex-read contract produces an
+artifact that looks right and describes something the code does not do.
+
+`docs/frontend/screens/contract/{account}/{screen_key}.md` — 160 specifications, one per contract
+page, each carrying all 44 sections §7.3 requires. A page that is not implemented says so, names
+the owner phase that will implement it, and contains no bare `TBD`.
+
+#### Added — deterministic runtime navigation
+
+`navigationFilter.ts` filters one result that desktop, the tablet rail and the mobile drawer all
+render, so the three cannot disagree. The order is fixed and asserted: account ownership,
+removed-by-authority, implementation status, external gate, feature flag, forbidden account,
+permissions, navigation visibility, parent pruning, stable order. `permission_all` requires every
+key and `permission_any` requires one; when both are present both must pass, and missing permission
+data fails closed. Navigation is discoverability — the backend remains the security boundary.
+
+`navigationIcons.ts` resolves every contract icon through a curated Heroicons set with a **closed**
+key set, so an unknown icon is a type error rather than a runtime miss, and tree-shaking survives.
+
+#### Changed — navigation derives from the contract instead of restating it
+
+`roleNavigation.ts` held eight hand-written arrays that were a second statement of metadata the
+navigation map already owned. It now derives from the generated registry. `role-navigation.yaml`
+remains as a readable fixture of what each account actually renders.
+
+#### Fixed — seven authenticated account trees rendered for any account (`UI07-GUARD-001`)
+
+UI-03 guarded `/platform` and deferred the rest to this phase. Until now `/merchant`, `/branch`,
+`/hr`, `/finance`, `/front-office`, `/personnel` and `/audit` carried `requiresAuth` +
+`requiresActiveMerchant` only — neither is account-aware — so an authenticated Personnel user
+rendered the Finance shell. All eight trees plus the merchant setup route now carry the existing
+account guard and declare `meta.accountKey`, so the requirement is readable from the router record
+rather than hidden inside an anonymous guard closure. Allow and deny are proven for all eight in
+unit and browser tests; a denial names neither the forbidden account nor the one the user holds.
+
+#### Fixed — four planned pages exposed as live routes (`UI07-ROUTE-001`)
+
+`platform.dashboard`, `front-office.dashboard`, `personnel.dashboard` and `audit.dashboard` all
+rendered `DashboardStub.vue`, a six-line component reading *"Phase 4 stub — implementation in later
+phases"*. Four contract pages therefore looked implemented while implementing nothing. The routes
+and the dead components are removed; the contract reserves their identities as `planned`, owned by
+UI-08, UI-13, UI-14 and UI-15.
+
+#### Fixed — a primary navigation link bound to a parameterised route (`UI07-NAV-001`)
+
+Three entries resolved to `/branch/:id`-shaped routes. A primary link is rendered from the route
+name alone, so it threw `Missing required param` at mount. Those pages are `planned` until a
+parameter-free route delivers them, and the generator now rejects the whole class.
+
+#### Changed — the screen inventory speaks §7.2's vocabulary
+
+18 rows carried `phase_11` — a phase marker used as a status. Each had a real route or rendered
+boundary, a real component and UI-01/UI-04 browser proof, so all 18 became `implemented`. The five
+`planned` rows were all blocked by External Gate W (two Phase 20D-W; three Phase 21N, which
+Plan §80.1 sequences behind 20D-W) and now say so as `disabled_by_gate` naming the gate. Four
+placeholder rows were removed. 122 rows, **0** legacy values, and a test that fails on any status
+outside the closed set.
+
+#### Recorded rather than hidden
+
+`UI01-ROUTE-003` (73 implemented pages served at the account path prefix rather than the
+host-relative contract path) and `UI01-NAV-001` (seven runtime routes each serving more than one
+contract page) are now machine-checkable per page with a named owner, instead of an aggregate count
+and a source comment. `UI01-ROUTE-005` is answered by a required `non_navigation_reason` on every
+non-primary entry. `UI01-ROUTE-001` and `UI01-ROUTE-004` are closed.
+
+#### Fixed — the account guard was coarser than screen ownership (`UI07-GUARD-002`)
+
+Guarding `/branch` and `/hr` as whole trees used the account implied by the **path prefix**, and a
+path prefix is not an account boundary. `docs/frontend/screens/inventory.json` records the branch
+list, branch record and operating hours as **both** Merchant Administrator and Branch screens, and
+branch **creation** as the Merchant Administrator's alone — Plan §13 gives that account "owns within
+entitlement" and the Branch Manager "No". `StaffInvitations.vue` likewise offers Branch Manager /
+Human Resource to a merchant admin and the operational roles to everyone else. The first pass
+therefore denied the account that owns the capability, and the failing browser tests were right.
+
+`requiresAccount` now takes the accounts that genuinely own a route. The tree root admits both
+owners; the ten Branch-only and nine HR-only children re-assert their single owner. The served host
+account must be one of the owners **and** the user must hold that same account, so host and held
+account still have to agree — nothing was widened beyond real ownership.
+
+#### Fixed — the shared E2E harness never served the host account context
+
+Authenticated specs stubbed `/api/v1/me` but not the account context the Laravel shell embeds, so
+extending the guard denied them all at once: **235 failures across 26 specs**. Central
+`accountKeyForRole` / `stubAccountContextForRole` helpers — one role→account mapping instead of
+twenty-six copies — took it to **15**, and fifteen individually classified corrections took it to
+**0**. Four of the fifteen were the product defect above; two were intentional denial tests whose
+denial now lands earlier, at the guard; the rest were specs handed the wrong account context. One
+navigation label moved to the map's verbatim "Subscription Dashboard".
+
+No test was deleted, no assertion loosened, and no cross-account route alias, wildcard account,
+all-accounts test user or environment bypass was introduced.
+
+#### Test counts
+
+Full Playwright **1,054 passed / 0 failed / 0 flaky / 0 skipped**. The listed total moved from
+1,066 to 1,054: exactly the four placeholder screens removed by `UI07-ROUTE-001`, swept three ways
+each by the Phase 23 release audit. Their non-exposure is now proven by contract tests, a negative
+control and a browser case rather than by rendering them.
+
+#### Unchanged, deliberately
+
+No API operation, permission key (the matrix stays at **167**), policy, migration, financial
+behaviour, Magic Link, session-family or account-switching behaviour. No content, legal text or
+asset. No account page was implemented — that is UI-08 … UI-15. No responsive, accessibility,
+theme or visual-baseline review — that is UI-16. No performance or deployment work — UI-17 and
+Phase 25. No Gate-W work.
+
+#### Tests
+
+`Ui07NavigationContractTest` (39 cases, 4,461 assertions) · `navigationFilter.spec.ts` (25) ·
+`accountRouteGuard.spec.ts` extended to 47 · `roleNavigation.spec.ts` extended to 13 ·
+`screenInventory.spec.ts` extended to 14 · `ui07-negative-controls.mjs` (24 controls, each
+mutating a disposable copy, with control 0 proving the unmodified copy passes) ·
+`tests/e2e/ui-07-navigation-screen-contracts.spec.ts` (42 browser cases across all eight shells).
+
+### Phase UI-06 — Eight public landing pages (`phase-ui-06-public-landing-pages`) — **verified_complete**
+
+**PR [#56](https://github.com/ikrome002-design/servana/pull/56) MERGED** as squash commit
+`6b67ad2e1cc2c1031a89dc8d82902a025feac721` (single parent `e6664f2ec1c60e55fa27c0a40fa2685a6442932f`),
+reviewed head `e7cac3bf39d8a905094768f281b9343de96a29d3` whose tree `a83361024c60bb83e2e961de454d6bdc4f99dc6c`
+equals the merge tree, `mergedAt 2026-08-04T17:09:51Z`. Branch deleted local and remote.
+
+Three preserved reviewed commits: `7877e7b` implementation, `71af50d` screenshot evidence,
+`e7cac3b` CI dependency + E2E-budget correction. Run `30917088915` failed on two **external
+dependency advisories** (a transitive dev-only `brace-expansion`; Guzzle, fixed in 7.15.2) and an
+**E2E job cancelled at a stale 20-minute budget with no failing test**. Final CI `30924581598`:
+five required checks SUCCESS. Governance comment `5182250114`; **0** submitted reviews,
+`reviewDecision` blank — not independent approval. The `brace-expansion` 5.0.9 override,
+`guzzlehttp/guzzle` 7.15.2 and E2E `timeout-minutes: 60` are preserved.
+
+Five closures reconciled to `verified_complete`: `UI01-ASSET-004`, `UI01-LEGAL-001`,
+`UI01-LEGAL-002`, `UI05-CONTENT-001`, `UI05-CONTENT-002`. Open residuals keep their owners:
+`UI06-CTA-002` and `UI06-PRICE-001` (product owner), `UI06-AUDIT-002`, `UI06-AUDIT-003`,
+`UI01-PROV-003/004/005`, `UI01-A11Y-001` and pending visual approval (UI-16/UI-17).
+
+The original implementation record follows unchanged.
+
+### Phase UI-06 — implementation record
 
 Off `main` = `e6664f2ec1c60e55fa27c0a40fa2685a6442932f` (the Phase UI-05 PR #55 merge commit).
 Proof: `docs/proof/ui-06.md`. Artifacts: `docs/frontend/audits/ui-06/`.

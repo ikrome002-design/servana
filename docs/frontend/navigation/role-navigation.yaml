@@ -1,579 +1,538 @@
-# Servana role-navigation fixture (Phase 11, Plan §27.2).
-# Generated from resources/spa/src/navigation/roleNavigation.ts.
+# Servana role-navigation fixture (Phase UI-07; UI/UX plan §7).
+# Generated from resources/spa/src/navigation/roleNavigation.ts, which is itself derived
+# from docs/frontend/navigation/servana-user-account-navigation-map.yaml.
 # Enforced by roleNavigation.spec.ts (vitest file snapshot). Do not hand-edit.
 super_administrator:
-  - key: platform.overview
-    label: Overview
-    availability: live
-    route: platform.landing
-    phase: Phase 11
-  - key: platform.get-started
-    label: Get started
+  - key: super_administrator.get-started
+    label: Get Started
     availability: live
     route: platform.get-started
     phase: Phase 11
-  - key: platform.merchants
-    label: Merchant directory
-    availability: live
-    route: platform.registration-monitoring
-    permission: platform.merchant.view
-    phase: Phase 20B
-  - key: platform.registration-monitoring
-    label: Registration monitoring
-    availability: live
-    route: platform.registration-monitoring
-    permission: platform.registration_monitor.view
-    phase: Phase 20B
-  - key: platform.billing-settings
-    label: Billing settings
+  - key: super_administrator.billing-settings
+    label: Platform Billing Settings
     availability: live
     route: platform.billing-settings
     permission: platform.billing_settings.view
     phase: Phase 20A
-  - key: platform.plans
-    label: Plans and entitlements
+  - key: super_administrator.billing-plans
+    label: Plans and Entitlements
     availability: live
     route: platform.billing-settings
     permission: platform.plan.view
     phase: Phase 20A
-  - key: platform.promotions
-    label: Promotions and free periods
+  - key: super_administrator.billing-prices
+    label: Plan Prices and Billing Periods
+    availability: live
+    route: platform.billing-settings
+    permission: platform.plan.view
+    phase: Phase 20A
+  - key: super_administrator.billing-promotions
+    label: Promotional Discounts
     availability: live
     route: platform.promotions
     permission: platform.promotion.manage
     phase: Phase 20C
-  - key: platform.preferred-personnel-fee
-    label: Preferred-personnel fee rule
+  - key: super_administrator.billing-free-periods
+    label: Free-Period Offers
+    availability: live
+    route: platform.promotions
+    permission: platform.promotion.manage
+    phase: Phase 20C
+  - key: super_administrator.billing-preferred-personnel-fees
+    label: Preferred Personnel Fee Rules
     availability: live
     route: platform.billing-settings
     permission: platform.preferred_personnel_fee.manage
     phase: Phase 20A
-  - key: platform.platform-fees
-    label: Platform fees
+  - key: super_administrator.merchant-registrations
+    label: Registration Monitoring
     availability: live
-    route: platform.billing-settings
-    permission: platform.platform_fee.configure
-    phase: Phase 20E
-  - key: platform.wallet-config
-    label: Wallet configuration
-    availability: planned
-    permission: platform.wallet_configuration.manage
-    phase: Phase 20D-W
-  - key: platform.billing-reconciliation
-    label: Billing reconciliation
-    availability: planned
-    permission: platform.billing_reconciliation.view
-    phase: Phase 20D-W
-  - key: platform.audit
-    label: Platform audit
-    availability: planned
-    permission: platform.audit.view
-    phase: Phase 19
-  - key: platform.reports
-    label: Platform reports
-    availability: planned
-    permission: platform.audit.view
-    phase: Phase 21N
-  - key: platform.settings
-    label: Platform settings
+    route: platform.registration-monitoring
+    permission: platform.registration_monitor.view
+    phase: Phase 20B
+  - key: super_administrator.merchants
+    label: Merchant Directory
     availability: live
-    route: platform.billing-settings
-    permission: platform.settings.view
-    phase: Phase 20A
+    route: platform.registration-monitoring
+    permission: platform.merchant.view
+    phase: Phase 20B
+  - key: super_administrator.billing-reconciliation-exceptions
+    label: Billing Reconciliation Exceptions
+    availability: gated
+    gate: external_gate_w
+    phase: UI-08
+  - key: super_administrator.integrations
+    label: Integrations Health
+    availability: gated
+    gate: external_gate_w
+    phase: UI-08
+  - key: super_administrator.integrations-refer-and-earn-qualifications
+    label: Refer & Earn Qualification Decisions
+    availability: gated
+    gate: external_gate_w
+    phase: UI-08
+  - key: super_administrator.reports
+    label: Platform Reports
+    availability: gated
+    gate: external_gate_w
+    phase: UI-08
+  - key: super_administrator.notifications
+    label: Notifications
+    availability: gated
+    gate: external_gate_w
+    phase: UI-08
 merchant_administrator:
-  - key: merchant.overview
-    label: Overview
+  - key: merchant_administrator.setup
+    label: First-Time Setup
     availability: live
-    route: merchant.landing
-    phase: Phase 11
-  - key: merchant.get-started
-    label: Get started
-    availability: live
-    route: merchant.get-started
-    phase: Phase 11
-  - key: merchant.search
-    label: Search
-    availability: live
-    route: search
-    phase: Phase 22
-  - key: merchant.dashboard
+    route: onboarding.first-time-setup
+    phase: Phase 6
+  - key: merchant_administrator.dashboard
     label: Dashboard
     availability: live
     route: merchant.dashboard
     phase: Phase 6
-  - key: merchant.profile
-    label: Business profile
+  - key: merchant_administrator.get-started
+    label: Get Started
+    availability: live
+    route: merchant.get-started
+    phase: Phase 11
+  - key: merchant_administrator.merchant-profile
+    label: Merchant Profile
     availability: live
     route: merchant.profile
     permission: merchant.profile.view
     phase: Phase 23
-  - key: merchant.branches
-    label: Branches
-    availability: live
-    route: branch.list
-    permission: merchant.branch.view_all
-    phase: Phase 7
-  - key: merchant.period-reopen-approvals
-    label: Period-reopen approvals
-    availability: live
-    route: merchant.period-reopen-approvals
-    permission: merchant.period_reopen.approve_exception
-    phase: Phase 18B
-  - key: merchant.subscription
-    label: Subscription and billing
+  - key: merchant_administrator.subscription
+    label: Subscription Dashboard
     availability: live
     route: merchant.subscription
     permission: merchant.subscription.view
     phase: Phase 20B
-  - key: merchant.plan
-    label: Plan management
+  - key: merchant_administrator.subscription-plan
+    label: Plan Management
     availability: live
     route: merchant.plan
     permission: merchant.subscription.plan_change
     phase: Phase 20B
-  - key: merchant.invoices
-    label: Subscription invoices
+  - key: merchant_administrator.subscription-invoices
+    label: Subscription Invoices
     availability: live
     route: merchant.invoices
     permission: merchant.subscription.invoice.view
     phase: Phase 20B
-  - key: merchant.platform-fees
-    label: Platform fees
-    availability: live
-    route: merchant.platform-fees
-    permission: platform_fee.view
-    phase: Phase 20E
-  - key: merchant.reports
-    label: Reports
-    availability: planned
-    permission: merchant.report.view_all_branches
-    phase: Phase 21N
-  - key: merchant.compensation-summary
-    label: Compensation summary
+  - key: merchant_administrator.subscription-payment-attempts
+    label: Billing Payment Attempts
+    availability: gated
+    gate: external_gate_w
+    phase: UI-09
+  - key: merchant_administrator.subscription-recovery
+    label: Billing Recovery
+    availability: gated
+    gate: external_gate_w
+    phase: UI-09
+  - key: merchant_administrator.reports
+    label: Merchant Reports
+    availability: gated
+    gate: external_gate_w
+    phase: UI-09
+  - key: merchant_administrator.reports-branches
+    label: Branch Performance
+    availability: gated
+    gate: external_gate_w
+    phase: UI-09
+  - key: merchant_administrator.reports-services
+    label: Service Revenue
+    availability: gated
+    gate: external_gate_w
+    phase: UI-09
+  - key: merchant_administrator.reports-staff
+    label: Staff Performance
+    availability: gated
+    gate: external_gate_w
+    phase: UI-09
+  - key: merchant_administrator.compensation
+    label: Compensation Summary
     availability: live
     route: merchant.compensation-summary
     permission: merchant.compensation_summary.view
     phase: Phase 20H
-merchant_branch:
-  - key: branch.overview
-    label: Branch overview
+  - key: merchant_administrator.finance-period-reopen-approvals
+    label: Exceptional Period-Reopen Approvals
     availability: live
-    route: branch.landing
-    phase: Phase 11
-  - key: branch.get-started
-    label: Get started
+    route: merchant.period-reopen-approvals
+    permission: merchant.period_reopen.approve_exception
+    phase: Phase 18B
+  - key: merchant_administrator.reports-daily
+    label: Daily Reports Archive
+    availability: gated
+    gate: external_gate_w
+    phase: UI-09
+  - key: merchant_administrator.notifications
+    label: Notifications
+    availability: gated
+    gate: external_gate_w
+    phase: UI-09
+merchant_branch:
+  - key: merchant_branch.get-started
+    label: Get Started
     availability: live
     route: branch.get-started
     phase: Phase 11
-  - key: branch.search
-    label: Search
-    availability: live
-    route: search
-    phase: Phase 22
-  - key: branch.directory
-    label: Branches
-    availability: live
-    route: branch.list
-    permission: branch.profile.view
-    phase: Phase 7
-  - key: branch.services
-    label: Services
+  - key: merchant_branch.services
+    label: Service Catalogue
     availability: live
     route: branch.services
     permission: service.view
     phase: Phase 15A
-  - key: branch.personnel-schedule
-    label: Personnel schedule
+  - key: merchant_branch.staff
+    label: Staff and Availability Overview
     availability: live
     route: branch.personnel-schedule
     permission: branch.dashboard.view
     phase: Phase 15B
-  - key: branch.queue
-    label: Queue
+  - key: merchant_branch.operations-queue
+    label: Queue Read View
     availability: live
     route: branch.queue
     permission: branch.dashboard.view
     phase: Phase 16B
-  - key: branch.appointments
-    label: Appointments
+  - key: merchant_branch.operations-appointments
+    label: Appointments Read View
     availability: live
     route: branch.appointments
     permission: branch.dashboard.view
     phase: Phase 16A
-  - key: branch.service-sessions
-    label: Service sessions
-    availability: planned
-    phase: Phase 16C
-  - key: branch.invoices
-    label: Invoices
-    availability: planned
-    phase: Phase 17
-  - key: branch.payments
-    label: Payments
-    availability: planned
-    phase: Phase 18A
-  - key: branch.receipts
-    label: Receipts
-    availability: planned
-    phase: Phase 18B
-  - key: branch.day
-    label: Day opening and closing
-    availability: planned
-    permission: branch.day.open
-    phase: Phase 16B
-  - key: branch.cash-up
-    label: Cash-up and reconciliation
+  - key: merchant_branch.cash-up
+    label: Cash-Up Submission
     availability: live
     route: branch.cash-up
     permission: branch.cash_up.submit
     phase: Phase 18B
-  - key: branch.platform-fees
-    label: Platform fees
-    availability: live
-    route: branch.platform-fees
-    permission: platform_fee.view
-    phase: Phase 20E
-  - key: branch.reports
-    label: Reports
-    availability: planned
-    permission: branch.report.view
-    phase: Phase 21N
-  - key: branch.audit-logs
-    label: Audit logs
-    availability: planned
-    phase: Phase 19
+  - key: merchant_branch.reports
+    label: Branch Reports
+    availability: gated
+    gate: external_gate_w
+    phase: UI-10
+  - key: merchant_branch.subscription-payment
+    label: Subscription Payment and Recovery
+    availability: gated
+    gate: external_gate_w
+    phase: UI-10
+  - key: merchant_branch.notifications
+    label: Notifications
+    availability: gated
+    gate: external_gate_w
+    phase: UI-10
 merchant_human_resource:
-  - key: hr.overview
-    label: Overview
-    availability: live
-    route: hr.landing
-    phase: Phase 11
-  - key: hr.get-started
-    label: Get started
+  - key: merchant_human_resource.get-started
+    label: Get Started
     availability: live
     route: hr.get-started
     phase: Phase 11
-  - key: hr.search
-    label: Search
-    availability: live
-    route: search
-    phase: Phase 22
-  - key: hr.staff
-    label: Staff
+  - key: merchant_human_resource.staff
+    label: Staff Roster
     availability: live
     route: hr.staff
     permission: staff.view
     phase: Phase 7
-  - key: hr.invitations
-    label: Invitations
+  - key: merchant_human_resource.staff-invite
+    label: Invite Staff
     availability: live
     route: hr.invitations
     permission: staff.invite
     phase: Phase 7
-  - key: hr.permission-preview
-    label: Permission preview
-    availability: live
-    route: hr.permission-preview
-    permission: staff.role.assign
-    phase: Phase 7
-  - key: hr.eligibility
-    label: Service eligibility
+  - key: merchant_human_resource.eligibility
+    label: Service Eligibility
     availability: live
     route: hr.eligibility
     permission: personnel.eligibility.manage
     phase: Phase 15A
-  - key: hr.availability
-    label: Availability
+  - key: merchant_human_resource.availability
+    label: Availability and Shifts
     availability: live
     route: hr.availability
     permission: personnel.availability.manage
     phase: Phase 15B
-  - key: hr.compensation
-    label: Compensation
+  - key: merchant_human_resource.compensation
+    label: Compensation List
     availability: live
     route: hr.compensation
     permission: compensation.plan.view
     phase: Phase 20F
-  - key: hr.payout-runs
-    label: Payout runs
+  - key: merchant_human_resource.payouts
+    label: Payout Run Preparation
     availability: live
     route: hr.payout-runs
     permission: payout_run.create
     phase: Phase 20H
+  - key: merchant_human_resource.reports
+    label: HR Reports
+    availability: gated
+    gate: external_gate_w
+    phase: UI-11
+  - key: merchant_human_resource.notifications
+    label: Notifications
+    availability: gated
+    gate: external_gate_w
+    phase: UI-11
 merchant_finance:
-  - key: finance.overview
-    label: Finance overview
+  - key: merchant_finance.dashboard
+    label: Dashboard
     availability: live
-    route: finance.landing
-    phase: Phase 11
-  - key: finance.get-started
-    label: Get started
+    route: finance.dashboard
+    phase: Phase 18B
+  - key: merchant_finance.get-started
+    label: Get Started
     availability: live
     route: finance.get-started
     phase: Phase 11
-  - key: finance.search
-    label: Search
+  - key: merchant_finance.tasks
+    label: Finance Task Inbox
     availability: live
-    route: search
-    phase: Phase 22
-  - key: finance.pending-validations
-    label: Pending validations
+    route: finance.dashboard
+    phase: Phase 18B
+  - key: merchant_finance.payments-validations
+    label: Pending Validations
     availability: live
     route: finance.pending-validations
     permission: customer_payment.validate
     phase: Phase 18B
-  - key: finance.invoices
+  - key: merchant_finance.invoices
     label: Invoices
     availability: live
     route: finance.invoices
     permission: invoice.view
     phase: Phase 17
-  - key: finance.payment-records
-    label: Payment records
+  - key: merchant_finance.payments
+    label: Payment Records
     availability: live
     route: finance.payment-records
     permission: customer_payment.view
     phase: Phase 18A
-  - key: finance.receipts
+  - key: merchant_finance.receipts
     label: Receipts
     availability: live
     route: finance.receipts
     permission: receipt.view
     phase: Phase 18B
-  - key: finance.disputes
+  - key: merchant_finance.disputes
     label: Disputes
     availability: live
     route: finance.disputes
     permission: finance_dispute.manage
     phase: Phase 18B
-  - key: finance.refunds
-    label: External refunds
+  - key: merchant_finance.refunds
+    label: External Refunds
     availability: live
     route: finance.refunds
     permission: refund.create
     phase: Phase 18B
-  - key: finance.cash-up
-    label: Cash-up and reconciliation
+  - key: merchant_finance.cash-up
+    label: Cash-Up and Reconciliation
     availability: live
     route: finance.cash-up
     permission: cash_up.view
     phase: Phase 18B
-  - key: finance.periods
-    label: Financial periods
+  - key: merchant_finance.periods
+    label: Financial Periods
     availability: live
     route: finance.periods
     permission: period_lock.create
     phase: Phase 18B
-  - key: finance.payout-runs
-    label: Payout runs
+  - key: merchant_finance.payouts
+    label: Payout Runs
     availability: live
     route: finance.payout-runs
     permission: payout_run.verify
     phase: Phase 20H
-  - key: finance.earnings-queries
-    label: Earnings queries
-    availability: live
-    route: finance.earnings-queries
-    permission: earnings_query.respond
-    phase: Phase 20H
-  - key: finance.liabilities
-    label: Commission and salary liabilities
+  - key: merchant_finance.compensation-liabilities
+    label: Commission and Salary Liabilities
     availability: live
     route: finance.liabilities
     permission: compensation.liability.view
     phase: Phase 20G
-  - key: finance.subscription-billing
-    label: Subscription billing
-    availability: planned
-    permission: subscription.payment_attempts.view
-    phase: Phase 20B
-  - key: finance.reports
-    label: Finance reports
-    availability: planned
-    phase: Phase 21N
-  - key: finance.exports
+  - key: merchant_finance.compensation-queries
+    label: Earnings Queries
+    availability: live
+    route: finance.earnings-queries
+    permission: earnings_query.respond
+    phase: Phase 20H
+  - key: merchant_finance.subscription-payment-attempts
+    label: Subscription Payment Attempts
+    availability: gated
+    gate: external_gate_w
+    phase: UI-12
+  - key: merchant_finance.reports
+    label: Finance Reports
+    availability: gated
+    gate: external_gate_w
+    phase: UI-12
+  - key: merchant_finance.exports
     label: Exports
     availability: live
     route: finance.exports
     permission: finance_export.create
     phase: Phase 18B
-  - key: finance.audit
-    label: Audit activity
+  - key: merchant_finance.audit
+    label: Finance Audit Activity
     availability: live
     route: finance.audit
     permission: finance.audit.view
     phase: Phase 19
-  - key: finance.platform-fees
-    label: Platform fees
-    availability: live
-    route: finance.platform-fees
-    permission: platform_fee.view
-    phase: Phase 20E
+  - key: merchant_finance.notifications
+    label: Notifications
+    availability: gated
+    gate: external_gate_w
+    phase: UI-12
 merchant_front_office:
-  - key: front-office.overview
-    label: Overview
-    availability: live
-    route: front-office.landing
-    phase: Phase 11
-  - key: front-office.get-started
-    label: Get started
+  - key: merchant_front_office.get-started
+    label: Get Started
     availability: live
     route: front-office.get-started
     phase: Phase 11
-  - key: front-office.search
-    label: Search
+  - key: merchant_front_office.search
+    label: Operational Search
     availability: live
     route: search
     phase: Phase 22
-  - key: front-office.clients
+  - key: merchant_front_office.clients
     label: Clients
     availability: live
     route: front-office.clients
     permission: client.view
     phase: Phase 15A
-  - key: front-office.appointments
+  - key: merchant_front_office.clients-create
+    label: Create Client
+    availability: live
+    route: front-office.clients.create
+    permission: client.create
+    phase: Phase 15A
+  - key: merchant_front_office.appointments
     label: Appointments
     availability: live
     route: front-office.appointments
     permission: appointment.view
     phase: Phase 16A
-  - key: front-office.walk-ins
-    label: Walk-ins
+  - key: merchant_front_office.walk-ins
+    label: Walk-Ins
     availability: live
     route: front-office.walk-in
     permission: queue.create
     phase: Phase 16B
-  - key: front-office.queue
+  - key: merchant_front_office.queue
     label: Queue
     availability: live
     route: front-office.queue
     permission: queue.view
     phase: Phase 16B
-  - key: front-office.service-sessions
-    label: Service sessions
+  - key: merchant_front_office.sessions
+    label: Service Sessions
     availability: live
     route: front-office.sessions
     permission: service_session.view
     phase: Phase 16C
-  - key: front-office.invoices
+  - key: merchant_front_office.invoices
     label: Invoices
     availability: live
     route: front-office.invoices
     permission: invoice.view
     phase: Phase 17
-  - key: front-office.payments
-    label: Payments
-    availability: live
-    route: front-office.payments
-    permission: customer_payment.record
-    phase: Phase 18A
-  - key: front-office.receipts
-    label: Receipts
+  - key: merchant_front_office.payments-status
+    label: Payment and Receipt Status
     availability: live
     route: front-office.receipts
     permission: receipt.view
     phase: Phase 18B
+  - key: merchant_front_office.subscription-payment
+    label: Subscription Payment and Recovery
+    availability: gated
+    gate: external_gate_w
+    phase: UI-13
+  - key: merchant_front_office.notifications
+    label: Notifications
+    availability: gated
+    gate: external_gate_w
+    phase: UI-13
 merchant_personnel:
-  - key: personnel.overview
-    label: Overview
-    availability: live
-    route: personnel.landing
-    phase: Phase 11
-  - key: personnel.get-started
-    label: Get started
+  - key: merchant_personnel.get-started
+    label: Get Started
     availability: live
     route: personnel.get-started
     phase: Phase 11
-  - key: personnel.search
-    label: Search
-    availability: live
-    route: search
-    phase: Phase 22
-  - key: personnel.my-queue
-    label: My queue
+  - key: merchant_personnel.work-queue
+    label: My Queue
     availability: live
     route: personnel.queue
     permission: personnel.my_queue.view
     phase: Phase 16B
-  - key: personnel.my-appointments
-    label: My appointments
+  - key: merchant_personnel.work-appointments
+    label: My Appointments
     availability: live
     route: personnel.appointments
     permission: personnel.my_appointments.view
     phase: Phase 16A
-  - key: personnel.my-sessions
-    label: My sessions
+  - key: merchant_personnel.work-sessions
+    label: My Sessions
     availability: live
     route: personnel.sessions
     permission: personnel.my_sessions.view
     phase: Phase 16C
-  - key: personnel.my-served-clients
-    label: My served clients
-    availability: live
-    route: personnel.sms
-    permission: personnel.my_served_clients.view
-    phase: Phase 21S
-  - key: personnel.my-earnings
-    label: My earnings
-    availability: live
-    route: personnel.earnings
-    permission: personnel.my_earnings.view
-    phase: Phase 20H
-  - key: personnel.my-sms
-    label: Client SMS
+  - key: merchant_personnel.messages-compose
+    label: SMS Composer
     availability: live
     route: personnel.sms
     permission: personnel.my_sms.send
     phase: Phase 21S
-merchant_audit:
-  - key: audit.overview
-    label: Overview
+  - key: merchant_personnel.earnings
+    label: My Earnings — Overview
     availability: live
-    route: audit.landing
-    phase: Phase 11
-  - key: audit.get-started
-    label: Get started
+    route: personnel.earnings
+    permission: personnel.my_earnings.view
+    phase: Phase 20H
+  - key: merchant_personnel.notifications
+    label: Notifications
+    availability: gated
+    gate: external_gate_w
+    phase: UI-14
+merchant_audit:
+  - key: merchant_audit.get-started
+    label: Get Started
     availability: live
     route: audit.get-started
     phase: Phase 11
-  - key: audit.search
-    label: Search
-    availability: live
-    route: search
-    phase: Phase 22
-  - key: audit.branch-events
-    label: Branch audit log
+  - key: merchant_audit.audit
+    label: Branch Audit Log
     availability: live
     route: audit.branch-events
     permission: audit.branch_events.view
     phase: Phase 19
-  - key: audit.flagged-events
-    label: Flagged events
+  - key: merchant_audit.audit-flags
+    label: Flagged Events
     availability: live
     route: audit.flagged-events
     permission: audit.branch_events.view
     phase: Phase 19
-  - key: audit.compensation
-    label: Compensation audit
-    availability: live
-    route: audit.compensation
-    permission: audit.compensation.view
-    phase: Phase 19
-  - key: audit.finance
-    label: Finance audit
+  - key: merchant_audit.audit-finance
+    label: Finance Audit
     availability: live
     route: audit.finance
     permission: audit.finance.view
     phase: Phase 19
-  - key: audit.exports
-    label: Exports
+  - key: merchant_audit.audit-compensation
+    label: Compensation Audit
+    availability: live
+    route: audit.compensation
+    permission: audit.compensation.view
+    phase: Phase 19
+  - key: merchant_audit.exports
+    label: Audit Exports
     availability: live
     route: audit.exports
     permission: audit.export
     phase: Phase 19
-  - key: audit.platform-fees
-    label: Platform fees
-    availability: live
-    route: audit.platform-fees
-    permission: platform_fee.view
-    phase: Phase 20E
+  - key: merchant_audit.notifications
+    label: Notifications
+    availability: gated
+    gate: external_gate_w
+    phase: UI-15

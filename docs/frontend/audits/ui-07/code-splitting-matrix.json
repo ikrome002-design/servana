@@ -1,0 +1,928 @@
+{
+  "schema": "ui-07.audit.v1",
+  "phase": "UI-07",
+  "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
+  "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+  "canonical_authority_sha256": "f28ca6fcbbed367dc15a534a35dfc7fa8494ef8ac41f27b2f7e27910ef3db8a5",
+  "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
+  "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
+  "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
+  "permission_matrix_sha256": "c3877f0e671abdb1f8dc0be9bd4ae06b4aed5bf36c44e427e3fa0e062099f166",
+  "screen_inventory_sha256": "0871fc7bce5d6999cb15d1931a54a01a4c385bd794cae386ac32d0c36a200281",
+  "purpose": "Every account route group and page component is lazily loaded. No eager barrel imports 160 pages.",
+  "rule": "UI/UX plan §6.5 — do not import 160 pages into the initial bundle.",
+  "route_groups": [
+    "routes/audit.ts",
+    "routes/auth.ts",
+    "routes/branch.ts",
+    "routes/finance.ts",
+    "routes/frontOffice.ts",
+    "routes/hr.ts",
+    "routes/merchant.ts",
+    "routes/personnel.ts",
+    "routes/platform.ts",
+    "routes/public.ts",
+    "routes/search.ts"
+  ],
+  "rows": [
+    {
+      "route_name": "audit.landing",
+      "route_path": "/audit",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.get-started",
+      "route_path": "/audit/get-started",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.branch-events",
+      "route_path": "/audit/events",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.event-detail",
+      "route_path": "/audit/events/:id",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.flagged-events",
+      "route_path": "/audit/flagged",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.flagged-detail",
+      "route_path": "/audit/flagged/:id",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.finance",
+      "route_path": "/audit/finance",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.compensation",
+      "route_path": "/audit/compensation",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.exports",
+      "route_path": "/audit/exports",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.export-detail",
+      "route_path": "/audit/exports/:id",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "audit.platform-fees",
+      "route_path": "/audit/platform-fees",
+      "declared_in": "routes/audit.ts",
+      "account_key": "merchant_audit",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "auth.login",
+      "route_path": "/auth/login",
+      "declared_in": "routes/auth.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "auth.register",
+      "route_path": "/auth/register",
+      "declared_in": "routes/auth.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "auth.check-email",
+      "route_path": "/auth/check-email",
+      "declared_in": "routes/auth.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "auth.verify",
+      "route_path": "/auth/verify",
+      "declared_in": "routes/auth.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "auth.mfa.setup",
+      "route_path": "/auth/mfa/setup",
+      "declared_in": "routes/auth.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "auth.mfa.challenge",
+      "route_path": "/auth/mfa/challenge",
+      "declared_in": "routes/auth.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.landing",
+      "route_path": "/branch",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.get-started",
+      "route_path": "/branch/get-started",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.list",
+      "route_path": "/branch/list",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.create",
+      "route_path": "/branch/create",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.services",
+      "route_path": "/branch/services",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.personnel-schedule",
+      "route_path": "/branch/personnel-schedule",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.appointments",
+      "route_path": "/branch/appointments",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.queue",
+      "route_path": "/branch/queue",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.queue-configuration",
+      "route_path": "/branch/queue-configuration",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.cash-up",
+      "route_path": "/branch/cash-up",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.platform-fees",
+      "route_path": "/branch/platform-fees",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.detail",
+      "route_path": "/branch/:id",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.operating-hours",
+      "route_path": "/branch/:id/operating-hours",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "branch.calendar",
+      "route_path": "/branch/:id/calendar",
+      "declared_in": "routes/branch.ts",
+      "account_key": "merchant_branch",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.landing",
+      "route_path": "/finance",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.get-started",
+      "route_path": "/finance/get-started",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.dashboard",
+      "route_path": "/finance/dashboard",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.pending-validations",
+      "route_path": "/finance/pending-validations",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.receipts",
+      "route_path": "/finance/receipts",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.receipts.detail",
+      "route_path": "/finance/receipts/:id",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.refunds",
+      "route_path": "/finance/refunds",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.refunds.detail",
+      "route_path": "/finance/refunds/:id",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.disputes",
+      "route_path": "/finance/disputes",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.disputes.detail",
+      "route_path": "/finance/disputes/:id",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.cash-up",
+      "route_path": "/finance/cash-up",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.cash-up.detail",
+      "route_path": "/finance/cash-up/:id",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.periods",
+      "route_path": "/finance/periods",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.exports",
+      "route_path": "/finance/exports",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.invoices",
+      "route_path": "/finance/invoices",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.invoices.detail",
+      "route_path": "/finance/invoices/:id",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.payment-records",
+      "route_path": "/finance/payment-records",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.payment-records.detail",
+      "route_path": "/finance/payment-records/:id",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.audit",
+      "route_path": "/finance/audit",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.platform-fees",
+      "route_path": "/finance/platform-fees",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.liabilities",
+      "route_path": "/finance/liabilities",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.payout-runs",
+      "route_path": "/finance/payout-runs",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "finance.earnings-queries",
+      "route_path": "/finance/earnings-queries",
+      "declared_in": "routes/finance.ts",
+      "account_key": "merchant_finance",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.landing",
+      "route_path": "/front-office",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.get-started",
+      "route_path": "/front-office/get-started",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.clients",
+      "route_path": "/front-office/clients",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.clients.create",
+      "route_path": "/front-office/clients/create",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.clients.detail",
+      "route_path": "/front-office/clients/:id",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.appointments",
+      "route_path": "/front-office/appointments",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.appointments.create",
+      "route_path": "/front-office/appointments/create",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.appointments.detail",
+      "route_path": "/front-office/appointments/:id",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.queue",
+      "route_path": "/front-office/queue",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.walk-in",
+      "route_path": "/front-office/walk-in",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.queue.detail",
+      "route_path": "/front-office/queue/:id",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.sessions",
+      "route_path": "/front-office/sessions",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.invoices",
+      "route_path": "/front-office/invoices",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.invoices.create",
+      "route_path": "/front-office/invoices/create",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.invoices.detail",
+      "route_path": "/front-office/invoices/:id",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.payments",
+      "route_path": "/front-office/payments",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.payments.record",
+      "route_path": "/front-office/payments/record/:id",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.receipts",
+      "route_path": "/front-office/receipts",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.receipts.detail",
+      "route_path": "/front-office/receipts/:id",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "staff.accept",
+      "route_path": "/staff/accept",
+      "declared_in": "routes/hr.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.landing",
+      "route_path": "/hr",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.get-started",
+      "route_path": "/hr/get-started",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.staff",
+      "route_path": "/hr/staff",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.invitations",
+      "route_path": "/hr/invitations",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.permission-preview",
+      "route_path": "/hr/permission-preview",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.staff-profile",
+      "route_path": "/hr/staff/:id",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.eligibility",
+      "route_path": "/hr/eligibility",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.availability",
+      "route_path": "/hr/availability",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.compensation",
+      "route_path": "/hr/compensation",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.payout-runs",
+      "route_path": "/hr/payout-runs",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "onboarding.first-time-setup",
+      "route_path": "/onboarding/first-time-setup",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.landing",
+      "route_path": "/merchant",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.get-started",
+      "route_path": "/merchant/get-started",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.dashboard",
+      "route_path": "/merchant/dashboard",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.period-reopen-approvals",
+      "route_path": "/merchant/period-reopen-approvals",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.profile",
+      "route_path": "/merchant/profile",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.subscription",
+      "route_path": "/merchant/subscription",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.plan",
+      "route_path": "/merchant/plan",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.invoices",
+      "route_path": "/merchant/subscription-invoices",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.platform-fees",
+      "route_path": "/merchant/platform-fees",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.compensation-summary",
+      "route_path": "/merchant/compensation-summary",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.landing",
+      "route_path": "/personnel",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.get-started",
+      "route_path": "/personnel/get-started",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.appointments",
+      "route_path": "/personnel/appointments",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.queue",
+      "route_path": "/personnel/queue",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.sessions",
+      "route_path": "/personnel/sessions",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.earnings",
+      "route_path": "/personnel/earnings",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.sms",
+      "route_path": "/personnel/sms",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "platform.landing",
+      "route_path": "/platform",
+      "declared_in": "routes/platform.ts",
+      "account_key": "super_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "platform.get-started",
+      "route_path": "/platform/get-started",
+      "declared_in": "routes/platform.ts",
+      "account_key": "super_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "platform.billing-settings",
+      "route_path": "/platform/billing-settings",
+      "declared_in": "routes/platform.ts",
+      "account_key": "super_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "platform.registration-monitoring",
+      "route_path": "/platform/registration-monitoring",
+      "declared_in": "routes/platform.ts",
+      "account_key": "super_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "platform.promotions",
+      "route_path": "/platform/promotions",
+      "declared_in": "routes/platform.ts",
+      "account_key": "super_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "home",
+      "route_path": "/",
+      "declared_in": "routes/public.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "public.faq",
+      "route_path": "/faq",
+      "declared_in": "routes/public.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "public.legal",
+      "route_path": "/legal/:doc(data-policy|privacy-policy|terms-of-service)",
+      "declared_in": "routes/public.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "legal.document",
+      "route_path": "/legal/:role/:doc",
+      "declared_in": "routes/public.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "search",
+      "route_path": "/search",
+      "declared_in": "routes/search.ts",
+      "account_key": null,
+      "lazy": true,
+      "in_initial_bundle": false
+    }
+  ],
+  "eager_page_imports": [],
+  "planned_pages_with_runtime_chunk": [],
+  "contract_documentation_is_build_time_only": true
+}

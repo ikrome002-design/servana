@@ -1,4 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
+import { stubAccountContextFor } from "./support/roleBootstrap";
 import { expect, test, type Page, type Route } from "@playwright/test";
 
 /*
@@ -90,6 +91,9 @@ function bootstrap(merchant: unknown, setup: unknown): unknown {
             merchant,
             membership: MEMBERSHIP,
             memberships: [MEMBERSHIP],
+            // Phase UI-07: /setup and the merchant landing are Merchant Administrator routes, and
+            // the account guard asks /me which accounts this user holds.
+            account_keys: ["merchant_administrator"],
             permissions: [],
             branch_ids: [],
             setup,
@@ -137,6 +141,9 @@ async function stubLoggedOut(page: Page): Promise<void> {
 }
 
 async function stubPendingSetupOwner(page: Page): Promise<void> {
+    // Serve the Merchant Administrator host context the Laravel shell embeds; `vite preview` has
+    // no shell, so without it the account guard fails closed.
+    await stubAccountContextFor(page, "merchant_administrator");
     await clearBootstrapRoutes(page);
     await stubCsrfCookie(page);
 
@@ -222,6 +229,9 @@ test.describe("Merchant onboarding UI", () => {
 
         await clearBootstrapRoutes(page);
         await stubCsrfCookie(page);
+        // Phase UI-07: the wizard and the merchant landing it completes into are both Merchant
+        // Administrator routes, so the harness must serve that account's host context.
+        await stubAccountContextFor(page, "merchant_administrator");
 
         await page.route(CURRENT_USER_ROUTE, async (route) => {
             const payload = completed

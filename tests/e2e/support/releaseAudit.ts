@@ -242,11 +242,11 @@ export const SCREENS: AuditScreen[] = [
     ready: 'text=Waiting on a branch assignment',
     state: 'access-state',
   },
-
-  // --- Super Administrator ---------------------------------------------------
+// Phase UI-07 removed the four placeholder account dashboards (UI07-ROUTE-001): each rendered
+// `DashboardStub.vue`, so the audit was grading a Phase-4 stub as though it were a screen.
+// --- Super Administrator ---------------------------------------------------
   { key: 'platform-landing', route: 'platform.landing', path: '/platform', role: 'super_administrator', state: 'static' },
   { key: 'platform-get-started', route: 'platform.get-started', path: '/platform/get-started', role: 'super_administrator', state: 'static' },
-  { key: 'platform-dashboard', route: 'platform.dashboard', path: '/platform/dashboard', role: 'super_administrator', state: 'static' },
   { key: 'platform-billing-settings', route: 'platform.billing-settings', path: '/platform/billing-settings', role: 'super_administrator', state: 'populated' },
   { key: 'platform-promotions', route: 'platform.promotions', path: '/platform/promotions', role: 'super_administrator', state: 'populated' },
   { key: 'platform-registration-monitoring', route: 'platform.registration-monitoring', path: '/platform/registration-monitoring', role: 'super_administrator', state: 'populated' },
@@ -319,7 +319,6 @@ export const SCREENS: AuditScreen[] = [
   // --- Front Office ----------------------------------------------------------
   { key: 'front-office-landing', route: 'front-office.landing', path: '/front-office', role: 'merchant_front_office', state: 'static' },
   { key: 'front-office-get-started', route: 'front-office.get-started', path: '/front-office/get-started', role: 'merchant_front_office', state: 'static' },
-  { key: 'front-office-dashboard', route: 'front-office.dashboard', path: '/front-office/dashboard', role: 'merchant_front_office', state: 'static' },
   { key: 'front-office-clients', route: 'front-office.clients', path: '/front-office/clients', role: 'merchant_front_office', state: 'populated' },
   { key: 'front-office-client-create', route: 'front-office.clients.create', path: '/front-office/clients/create', role: 'merchant_front_office', state: 'static' },
   { key: 'front-office-client-detail', route: 'front-office.clients.detail', path: `/front-office/clients/${IDS.client}`, role: 'merchant_front_office', state: 'populated' },
@@ -341,7 +340,6 @@ export const SCREENS: AuditScreen[] = [
   // --- Personnel -------------------------------------------------------------
   { key: 'personnel-landing', route: 'personnel.landing', path: '/personnel', role: 'merchant_personnel', state: 'static' },
   { key: 'personnel-get-started', route: 'personnel.get-started', path: '/personnel/get-started', role: 'merchant_personnel', state: 'static' },
-  { key: 'personnel-dashboard', route: 'personnel.dashboard', path: '/personnel/dashboard', role: 'merchant_personnel', state: 'static' },
   { key: 'personnel-appointments', route: 'personnel.appointments', path: '/personnel/appointments', role: 'merchant_personnel', state: 'populated' },
   { key: 'personnel-queue', route: 'personnel.queue', path: '/personnel/queue', role: 'merchant_personnel', state: 'populated' },
   { key: 'personnel-sessions', route: 'personnel.sessions', path: '/personnel/sessions', role: 'merchant_personnel', state: 'populated' },
@@ -351,7 +349,6 @@ export const SCREENS: AuditScreen[] = [
   // --- Audit -----------------------------------------------------------------
   { key: 'audit-landing', route: 'audit.landing', path: '/audit', role: 'merchant_audit', state: 'static' },
   { key: 'audit-get-started', route: 'audit.get-started', path: '/audit/get-started', role: 'merchant_audit', state: 'static' },
-  { key: 'audit-dashboard', route: 'audit.dashboard', path: '/audit/dashboard', role: 'merchant_audit', state: 'static' },
   { key: 'audit-event-list', route: 'audit.branch-events', path: '/audit/events', role: 'merchant_audit', state: 'populated' },
   { key: 'audit-event-detail', route: 'audit.event-detail', path: `/audit/events/${IDS.auditEvent}`, role: 'merchant_audit', state: 'populated' },
   { key: 'audit-flagged-queue', route: 'audit.flagged-events', path: '/audit/flagged', role: 'merchant_audit', state: 'populated' },
@@ -383,7 +380,13 @@ const INVENTORY_PATH = resolve(
 /** Every live (non-planned) inventory screen — the exact set the release audit must cover. */
 export function liveInventoryScreens(): InventoryScreen[] {
   const raw = JSON.parse(readFileSync(INVENTORY_PATH, 'utf8')) as { screens: InventoryScreen[] };
-  return raw.screens.filter((s) => s.status !== 'planned');
+
+  // Phase UI-07 reconciled the inventory to the closed §7.2 vocabulary. `implemented` is the only
+  // status with a screen to grade: `planned` never had one, `disabled_by_gate` is deliberately
+  // absent behind External Gate W, and `removed_by_authority` must appear in no live audit set.
+  // Testing `!== 'planned'` was correct only while `planned` was the sole non-live value; it would
+  // now enrol five gate-blocked rows that have no route at all.
+  return raw.screens.filter((s) => s.status === 'implemented');
 }
 
 /** Inventory-declared permissions for a screen key (UX input for the bootstrap stub). */

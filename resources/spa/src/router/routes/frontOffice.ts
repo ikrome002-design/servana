@@ -1,11 +1,13 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { requiresActiveMerchant, requiresAuth } from '@/router/guards';
+import { requiresAccount, requiresActiveMerchant, requiresAuth } from '@/router/guards';
 
 export const frontOfficeRoutes: RouteRecordRaw[] = [
   {
     path: '/front-office',
     component: () => import('@/layouts/FrontOfficeLayout.vue'),
-    beforeEnter: [requiresAuth, requiresActiveMerchant],
+    // Phase UI-07 — the account guard UI-03 deferred to this phase.
+    beforeEnter: [requiresAuth, requiresActiveMerchant, requiresAccount('merchant_front_office')],
+    meta: { accountKey: 'merchant_front_office' },
     children: [
       {
         path: '',
@@ -19,11 +21,10 @@ export const frontOfficeRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/get-started/RoleGetStarted.vue'),
         meta: { roleIdentity: 'merchant_front_office' },
       },
-      {
-        path: 'dashboard',
-        name: 'front-office.dashboard',
-        component: () => import('@/pages/front-office/DashboardStub.vue'),
-      },
+      // Phase UI-07 removed `front-office.dashboard`: it rendered the "Phase 4 stub"
+      // placeholder, exposing contract page §10.4.1 as a live route that implemented nothing
+      // (UI/UX plan §7.2). `merchant_front_office.dashboard` reserves the identity as
+      // `planned`; UI-13 implements it.
       {
         path: 'clients',
         name: 'front-office.clients',

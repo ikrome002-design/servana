@@ -19,6 +19,15 @@ function makeRouter(): Router {
       { path: '/branch', name: 'branch.landing', component: stub },
       { path: '/branch/get-started', name: 'branch.get-started', component: stub },
       { path: '/branch/list', name: 'branch.list', component: stub },
+      // Phase UI-07: Branch navigation is now derived from the canonical page contract, so the
+      // test router must resolve every runtime route the Branch contract entries point at.
+      { path: '/branch/:id', name: 'branch.detail', component: stub },
+      { path: '/branch/:id/calendar', name: 'branch.calendar', component: stub },
+      { path: '/branch/services', name: 'branch.services', component: stub },
+      { path: '/branch/personnel-schedule', name: 'branch.personnel-schedule', component: stub },
+      { path: '/branch/queue', name: 'branch.queue', component: stub },
+      { path: '/branch/appointments', name: 'branch.appointments', component: stub },
+      { path: '/branch/cash-up', name: 'branch.cash-up', component: stub },
     ],
   });
 }
@@ -40,10 +49,10 @@ function setPermissions(perms: string[]): void {
 describe('RoleNavigation', () => {
   beforeEach(() => setActivePinia(createPinia()));
 
-  it('renders live items as links and planned items as disabled (no dead links)', async () => {
-    setPermissions(['branch.profile.view']);
+  it('renders live items as links and gate-blocked items as disabled (no dead links)', async () => {
+    setPermissions(['branch.profile.view', 'service.view']);
     const router = makeRouter();
-    router.push({ name: 'branch.landing' });
+    router.push({ name: 'branch.services' });
     await router.isReady();
 
     const wrapper = mount(RoleNavigation, {
@@ -52,18 +61,21 @@ describe('RoleNavigation', () => {
     });
     await flushPromises();
 
-    // Live overview link present.
-    const overview = wrapper.findAll('a').find((a) => a.text() === 'Branch overview');
-    expect(overview).toBeTruthy();
+    // An implemented, permitted entry is a real link.
+    expect(wrapper.findAll('a').some((a) => a.text() === 'Service Catalogue')).toBe(true);
 
-    // Planned item (Service sessions, Phase 16C) is a disabled span, not a link.
-    const planned = wrapper.findAll('span').find((s) => s.text().startsWith('Service sessions'));
-    expect(planned?.attributes('aria-disabled')).toBe('true');
-    expect(wrapper.findAll('a').some((a) => a.text() === 'Service sessions')).toBe(false);
+    // A gate-blocked entry (Branch Reports — External Gate W) is a disabled span, never a link.
+    const gated = wrapper.findAll('span').find((s) => s.text().startsWith('Branch Reports'));
+    expect(gated?.attributes('aria-disabled')).toBe('true');
+    expect(wrapper.findAll('a').some((a) => a.text() === 'Branch Reports')).toBe(false);
+
+    // A planned entry is absent entirely — UI/UX plan §7.2 forbids the dead link that a
+    // disabled placeholder for unbuilt work would be.
+    expect(wrapper.text()).not.toContain('Branch Day Operations');
   });
 
   it('hides permissioned items when the user lacks the permission', async () => {
-    setPermissions([]); // no branch.profile.view
+    setPermissions([]); // no service.view
     const router = makeRouter();
     router.push('/');
     await router.isReady();
@@ -74,16 +86,16 @@ describe('RoleNavigation', () => {
     });
     await flushPromises();
 
-    // "Branches" requires branch.profile.view → hidden.
-    expect(wrapper.text()).not.toContain('Branches');
-    // Non-permissioned overview still shown.
-    expect(wrapper.text()).toContain('Branch overview');
+    // "Service Catalogue" requires service.view → hidden.
+    expect(wrapper.text()).not.toContain('Service Catalogue');
+    // An entry with no permission requirement is still shown.
+    expect(wrapper.text()).toContain('Get Started');
   });
 
   it('marks the active route with aria-current', async () => {
-    setPermissions(['branch.profile.view']);
+    setPermissions(['branch.profile.view', 'service.view']);
     const router = makeRouter();
-    router.push({ name: 'branch.landing' });
+    router.push({ name: 'branch.services' });
     await router.isReady();
 
     const wrapper = mount(RoleNavigation, {
@@ -93,6 +105,6 @@ describe('RoleNavigation', () => {
     await flushPromises();
 
     const active = wrapper.findAll('a').find((a) => a.attributes('aria-current') === 'page');
-    expect(active?.text()).toBe('Branch overview');
+    expect(active?.text()).toBe('Service Catalogue');
   });
 });

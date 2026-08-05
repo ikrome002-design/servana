@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ROLE_NAVIGATION, navigationFor } from './roleNavigation';
 import { serializeRoleNavigation } from './navigationFixture';
+import { NAVIGATION_CONTRACT } from './navigationRegistry.generated';
 import { ROLE_IDENTITIES } from '@/types/roles';
 
 // Resolve the fixture relative to this module's directory (repo root is four up).
@@ -30,15 +31,37 @@ describe('role navigation registry', () => {
     }
   });
 
-  it('live items point to a route and planned items never do (no dead links)', () => {
+  it('live items point to a route and gated items never do (no dead links)', () => {
     for (const identity of ROLE_IDENTITIES) {
       for (const item of navigationFor(identity)) {
         if (item.availability === 'live') {
           expect(item.routeName, `${item.key} is live`).toBeTruthy();
         } else {
-          expect(item.routeName, `${item.key} is planned`).toBeUndefined();
-          expect(item.phase, `${item.key} planned phase`).toBeTruthy();
+          expect(item.routeName, `${item.key} is gated`).toBeUndefined();
+          expect(item.gate, `${item.key} must name its gate`).toBeTruthy();
+          expect(item.phase, `${item.key} gated phase`).toBeTruthy();
         }
+      }
+    }
+  });
+
+  it('never renders a planned page (UI/UX plan §7.2 — no dead or fake links)', () => {
+    const planned = new Set(
+      NAVIGATION_CONTRACT.filter((e) => e.implementationStatus === 'planned').map((e) => e.key),
+    );
+    expect(planned.size).toBeGreaterThan(0);
+    for (const identity of ROLE_IDENTITIES) {
+      for (const item of navigationFor(identity)) {
+        expect(planned.has(item.key), `${item.key} is planned and must not be rendered`).toBe(false);
+      }
+    }
+  });
+
+  it('renders only entries belonging to that account', () => {
+    const owner = new Map(NAVIGATION_CONTRACT.map((e) => [e.key, e.accountType]));
+    for (const identity of ROLE_IDENTITIES) {
+      for (const item of navigationFor(identity)) {
+        expect(owner.get(item.key), `${item.key} belongs to another account`).toBe(identity);
       }
     }
   });

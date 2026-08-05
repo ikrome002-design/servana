@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import { accountKeyForRole, stubAccountContextForRole } from './support/roleBootstrap';
 import { expect, test, type Page } from '@playwright/test';
 
 /*
@@ -32,6 +33,10 @@ function schedule(currentState = 'available', canUpdate = true) {
 }
 
 async function stubMe(page: Page, role: string, permissions: string[]): Promise<void> {
+  // Phase UI-07: the account guard now covers every authenticated tree, so this spec must
+  // serve the host context the Laravel shell embeds, exactly as it already stubs /me.
+  await stubAccountContextForRole(page, role, false);
+
   await page.route('**/sanctum/csrf-cookie', (route) => route.fulfill({ status: 204, body: '' }));
   await page.route('**/api/v1/me', (route) =>
     route.fulfill(
@@ -41,6 +46,7 @@ async function stubMe(page: Page, role: string, permissions: string[]): Promise<
           merchant: { id: 'm1', name: 'Glow Studio', slug: 'glow', status: 'active', service_fee_tier: null, setup_completed_at: '2026-01-01T00:00:00Z' },
           membership: { id: 'mm1', role, status: 'active' },
           memberships: [{ id: 'mm1', role, status: 'active' }],
+          account_keys: [accountKeyForRole(role, false)],
           permissions,
           setup: { required: false, current_step: null, completed_at: null },
           branch_ids: ['b1'],
@@ -124,12 +130,31 @@ test.describe('HR personnel availability', () => {
     await expect(page.getByTestId('current-state')).toHaveText('Unavailable');
   });
 
-  test('an unauthorized role cannot use the HR screen', async ({ page }) => {
+  /*
+   | Phase UI-07: this is an account-denial case, and the denial now happens EARLIER.
+   |
+   | It previously reached the HR screen and relied on the screen's own `no-permission` state,
+   | because no account guard existed. `/hr/availability` belongs to the Human Resource account, so
+   | a Front Office context is refused at the route and the screen never mounts — the correct and
+   | strictest outcome. The expectation moves to the guard; it is not relaxed.
+   |
+   | The BACKEND denial is unchanged and is proven server-side: `personnel.availability.manage`
+   | carries its own positive/negative cases in docs/auth/permission-matrix.yaml, run by the
+   | `PermissionMatrix/*` suites, and EnsurePermission remains the security boundary.
+   */
+  test('another account cannot reach the HR availability screen', async ({ page }) => {
     await stubMe(page, 'front_office', ['client.view']);
     await stubAvailability(page);
     await page.goto('/hr/availability');
-    await expect(page.getByTestId('no-permission')).toBeVisible();
-    await expect(page.getByTestId('save-availability')).toBeHidden();
+
+    await expect(page).toHaveURL(/\/access-denied/);
+    // The HR screen never mounted.
+    await expect(page.getByTestId('save-availability')).toHaveCount(0);
+    await expect(page.getByTestId('no-permission')).toHaveCount(0);
+    // Role-safe: the denial names neither the forbidden account nor the one the user holds.
+    const shown = await page.locator('#app').innerText();
+    expect(shown).not.toContain('merchant_human_resource');
+    expect(shown).not.toContain('merchant_front_office');
   });
 
   for (const width of [360, 768, 1280]) {

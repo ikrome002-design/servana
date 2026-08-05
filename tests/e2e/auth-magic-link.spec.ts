@@ -1,4 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
+import { stubAccountContextFor } from "./support/roleBootstrap";
 import { expect, test, type Page, type Route } from "@playwright/test";
 
 /*
@@ -48,6 +49,9 @@ const AUTH_USER = {
             status: "active",
         },
     ],
+    // Phase UI-07: /me reports the accounts the server says this user holds; the account guard
+    // on the Merchant Administrator landing route asks for them.
+    account_keys: ["merchant_administrator"],
     permissions: [],
     branch_ids: [],
     setup: {
@@ -82,6 +86,9 @@ async function fulfillJson(
  * Playwright gives the most recently registered matching route precedence.
  */
 async function stubLoggedOutBootstrap(page: Page): Promise<void> {
+    // Serve the Merchant Administrator host context the Laravel shell embeds. The visitor is
+    // anonymous until the link is consumed; the HOST is resolved by the server either way.
+    await stubAccountContextFor(page, "merchant_administrator");
     await page.route("**/sanctum/csrf-cookie", async (route) => {
         await route.fulfill({
             status: 204,

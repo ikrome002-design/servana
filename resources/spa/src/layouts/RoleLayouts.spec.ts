@@ -3,37 +3,46 @@ import { createPinia, setActivePinia } from 'pinia';
 import { createMemoryHistory, createRouter, type Router } from 'vue-router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import AppShell from '@/components/layout/AppShell.vue';
+import { NAVIGATION_CONTRACT } from '@/navigation/navigationRegistry.generated';
 import { useAuthStore } from '@/stores/authStore';
 import { ROLE_ENTRY, ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
 
 const stub = { template: '<div />' };
+
+/**
+ * Every runtime route the eight account navigations can point at, taken from the canonical
+ * contract itself (Phase UI-07).
+ *
+ * It used to be a hand-maintained list, which meant that adding a navigation entry silently broke
+ * this file with "No match for {name}" — the shell cannot mount if a `RouterLink` cannot resolve.
+ * Deriving it means the stub router tracks the contract by construction.
+ */
+const CONTRACT_ROUTE_NAMES = [
+  ...new Set(
+    NAVIGATION_CONTRACT.map((entry) => entry.runtimeRouteName).filter(
+      (name): name is string => name !== null,
+    ),
+  ),
+].sort();
 
 function makeRouter(): Router {
   return createRouter({
     history: createMemoryHistory(),
     routes: [
       { path: '/', name: 'test.home', component: stub },
-      // Phase 22 global search is in every merchant-role navigation, so the test router must
-      // resolve it or RouterLink cannot render the item.
-      { path: '/search', name: 'search', component: stub },
-      { path: '/platform', name: 'platform.landing', component: stub },
-      { path: '/platform/get-started', name: 'platform.get-started', component: stub },
-      { path: '/finance', name: 'finance.landing', component: stub },
-      { path: '/finance/get-started', name: 'finance.get-started', component: stub },
-      { path: '/personnel', name: 'personnel.landing', component: stub },
-      { path: '/personnel/get-started', name: 'personnel.get-started', component: stub },
       { path: '/auth/login', name: 'auth.login', component: stub },
-      { path: '/hr', name: 'hr.landing', component: stub },
-      { path: '/hr/get-started', name: 'hr.get-started', component: stub },
-      { path: '/hr/staff', name: 'hr.staff', component: stub },
-      { path: '/hr/invitations', name: 'hr.invitations', component: stub },
-      { path: '/hr/permission-preview', name: 'hr.permission-preview', component: stub },
-      { path: '/hr/eligibility', name: 'hr.eligibility', component: stub },
-      { path: '/hr/availability', name: 'hr.availability', component: stub },
-      { path: '/hr/compensation', name: 'hr.compensation', component: stub },
-      { path: '/hr/payout-runs', name: 'hr.payout-runs', component: stub },
-      { path: '/branch', name: 'branch.landing', component: stub },
-      { path: '/branch/get-started', name: 'branch.get-started', component: stub },
+      ...CONTRACT_ROUTE_NAMES.map((name) => ({
+        path: `/stub/${name.replace(/\./g, '/')}`,
+        name,
+        component: stub,
+      })),
+      // The eight role landing routes are the account tree index surfaces. They are outside the
+      // 160-page contract, but the shell's own entry links resolve to them.
+      ...ROLE_IDENTITIES.map((identity) => ({
+        path: `/stub/entry/${identity}`,
+        name: ROLE_ENTRY[identity].landingRouteName,
+        component: stub,
+      })),
       // Phase UI-04: SvFixedFooter links the three role-scoped legal documents, so the shell
       // cannot mount without this route resolving.
       { path: '/legal/:doc(data-policy|privacy-policy|terms-of-service)', name: 'public.legal', component: stub },

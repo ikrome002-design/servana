@@ -161,6 +161,101 @@ describe('account-entry guard (UI01-ROLE-001)', () => {
     expect(next).toHaveBeenCalledWith({ name: 'auth.login' });
   });
 
+  /*
+   * Phase UI-07 — the seven remaining account trees.
+   *
+   * UI-03 guarded `/platform` and deferred the rest. Until this phase `/merchant`, `/branch`,
+   * `/hr`, `/finance`, `/front-office`, `/personnel` and `/audit` carried `requiresAuth` +
+   * `requiresActiveMerchant` only, so ANY authenticated merchant-side user rendered ANY
+   * merchant-side account shell. The cases below prove allow and deny for all EIGHT.
+   */
+
+  const ALL_ACCOUNTS = [
+    ['super_administrator', 'citrus.servana.test'],
+    ['merchant_administrator', 'servana.test'],
+    ['merchant_branch', 'branch.servana.test'],
+    ['merchant_human_resource', 'hr.servana.test'],
+    ['merchant_finance', 'finance.servana.test'],
+    ['merchant_front_office', 'office.servana.test'],
+    ['merchant_personnel', 'staff.servana.test'],
+    ['merchant_audit', 'audit.servana.test'],
+  ] as const;
+
+  it.each(ALL_ACCOUNTS)('admits %s on its own host when it holds the account', (accountKey, host) => {
+    const auth = useAuthStore();
+    auth.applyBootstrap(bootstrapWith([accountKey], accountKey === 'super_administrator'));
+    serveHostContext(accountKey, host);
+
+    const next = vi.fn();
+    requiresAccount(accountKey)({} as never, {} as never, next);
+
+    expect(next).toHaveBeenCalledWith();
+  });
+
+  it.each(ALL_ACCOUNTS)('denies %s to a user who holds a different account', (accountKey, host) => {
+    const other = ALL_ACCOUNTS.find(([k]) => k !== accountKey)![0];
+    const auth = useAuthStore();
+    auth.applyBootstrap(bootstrapWith([other]));
+    // Correct host for the target account; the user simply does not hold it.
+    serveHostContext(accountKey, host);
+
+    const next = vi.fn();
+    requiresAccount(accountKey)({} as never, {} as never, next);
+
+    expect(next).toHaveBeenCalledWith({ name: 'access-denied' });
+    // Never redirected to the account they DO hold: that would confirm which one it is.
+    expect(next).not.toHaveBeenCalledWith({ name: 'home' });
+    expect(next).not.toHaveBeenCalledWith();
+  });
+
+  it.each(ALL_ACCOUNTS)('denies %s when the host context names a different account', (accountKey) => {
+    const [otherKey, otherHost] = ALL_ACCOUNTS.find(([k]) => k !== accountKey)!;
+    const auth = useAuthStore();
+    auth.applyBootstrap(bootstrapWith([accountKey, otherKey]));
+    serveHostContext(otherKey, otherHost);
+
+    const next = vi.fn();
+    requiresAccount(accountKey)({} as never, {} as never, next);
+
+    expect(next).toHaveBeenCalledWith({ name: 'access-denied' });
+  });
+
+  it.each(ALL_ACCOUNTS)('denies %s when the payload carries no account at all', (accountKey, host) => {
+    const auth = useAuthStore();
+    auth.applyBootstrap(bootstrapWith([]));
+    serveHostContext(accountKey, host);
+
+    const next = vi.fn();
+    requiresAccount(accountKey)({} as never, {} as never, next);
+
+    expect(next).toHaveBeenCalledWith({ name: 'access-denied' });
+  });
+
+  it('denies an unknown account key rather than treating it as a wildcard', () => {
+    const auth = useAuthStore();
+    auth.applyBootstrap(bootstrapWith(['not_a_real_account']));
+    serveHostContext('merchant_finance', 'finance.servana.test');
+
+    const next = vi.fn();
+    requiresAccount('merchant_finance')({} as never, {} as never, next);
+
+    expect(next).toHaveBeenCalledWith({ name: 'access-denied' });
+  });
+
+  it('names neither the forbidden account nor any resource when it denies', () => {
+    const auth = useAuthStore();
+    auth.applyBootstrap(bootstrapWith(['merchant_personnel']));
+    serveHostContext('merchant_finance', 'finance.servana.test');
+
+    const next = vi.fn();
+    requiresAccount('merchant_finance')({} as never, {} as never, next);
+
+    // The only thing handed to the router is the shared denial route: no account name, no
+    // resource identifier, no query string that would confirm what exists.
+    expect(next).toHaveBeenCalledWith({ name: 'access-denied' });
+    expect(next.mock.calls[0][0]).toEqual({ name: 'access-denied' });
+  });
+
   it('computes no permissions and no role mapping in the client', () => {
     // The guard's only inputs are the server's host context and the server's account list.
     const source = requiresAccount.toString();

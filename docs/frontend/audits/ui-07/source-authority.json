@@ -1,0 +1,24 @@
+{
+  "schema": "ui-07.audit.v1",
+  "phase": "UI-07",
+  "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
+  "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+  "canonical_authority_sha256": "f28ca6fcbbed367dc15a534a35dfc7fa8494ef8ac41f27b2f7e27910ef3db8a5",
+  "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
+  "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
+  "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
+  "permission_matrix_sha256": "c3877f0e671abdb1f8dc0be9bd4ae06b4aed5bf36c44e427e3fa0e062099f166",
+  "screen_inventory_sha256": "0871fc7bce5d6999cb15d1931a54a01a4c385bd794cae386ac32d0c36a200281",
+  "purpose": "The one handwritten authority for the authenticated page contract, and the projections derived from it. Any other machine-readable representation is generated or checked against this file.",
+  "handwritten_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+  "generated_projections": [
+    "resources/spa/src/navigation/navigationRegistry.generated.ts",
+    "docs/frontend/screens/contract/{account}/{screen_key}.md",
+    "docs/frontend/audits/ui-07/*.json"
+  ],
+  "superseded_representations": {
+    "docs/frontend/navigation/role-navigation.yaml": "Retained as a generated fixture of the shipped runtime navigation registry. It is a projection of the runtime shell, not of the 160-page contract.",
+    "docs/frontend/source-inventory/navigation-map.json": "UI-00 source inventory. It registers the required page contract only and explicitly defers owner phase and implementation status to UI-07.",
+    "docs/frontend/screens/inventory.json": "The runtime screen register: what is BUILT. The canonical contract records what is REQUIRED. UI-01 established that the two registers are never summed together."
+  }
+}

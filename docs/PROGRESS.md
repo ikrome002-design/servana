@@ -117,8 +117,8 @@ while the repository records said the work was complete.
 | UI-03 | Authentication, session family, account switching | ✅ `verified_complete` | PR [#53](https://github.com/ikrome002-design/servana/pull/53) merged — **regular merge commit** `00c9c1e` preserving **four** reviewed commits (`64ca7cc` implementation, `415d2f5` deployed-origin browser proof, `5bd6e12` + `182f2cc` fixture-only payout-test corrections), parents in order `fb64ba67…` then `182f2cca…`, merged `2026-08-01T07:08:07Z`, CI run `30688440846` attempt 1 five checks SUCCESS, governance comment `5150328091`, `reviewDecision` blank / 0 reviews (**not** independent approval), branches deleted. Deployed-origin proof **47 observations / 0 failures**; 9 screenshots; merged full-suite backend baseline **3,108 passed / 5 skipped / 0 failed** (the retracted `2,528` figure is not reused). | [ui-03.md](proof/ui-03.md) | Reconciled live on the UI-04 branch |
 | UI-04 | Design system and shared components | ✅ `verified_complete` | PR [#54](https://github.com/ikrome002-design/servana/pull/54) merged — **squash** commit `e6afe832…` (single parent `00c9c1e…`), reviewed head `cf36cee…` whose tree `bd6728fb…` equals the merge tree, `mergedAt 2026-08-02T13:37:16Z`. Final CI `30748616089` **five checks SUCCESS**; the earlier run `30746233065` failed **only** on gitleaks against one exact fingerprint — a reproducible SHA-256 design-token digest, **verified false positive**, closed by a single historical fingerprint with no rule, path, entropy or workflow weakening. Governance comment `5158172398`; **`#FDBA74` hover approved** by the product owner; `reviewDecision` blank / 0 reviews (**not** independent approval); branches deleted. All **thirteen** closures promoted to `verified_complete`. | [ui-04.md](proof/ui-04.md) | Reconciled live on the UI-05 branch |
 | UI-05 | Content and asset pipeline | ✅ `verified_complete` | PR [#55](https://github.com/ikrome002-design/servana/pull/55) merged — **squash** commit `e6664f2e…` (single parent `e6afe832…`), reviewed head `3902633c…` whose tree `64aeb959…` equals the merge tree, `mergedAt 2026-08-03T08:46:31Z`. Final CI `30797162231` **five checks SUCCESS**. Governance comment `5164195590`; `reviewDecision` blank / 0 reviews (**not** independent approval); branches deleted. `UI01-ASSET-002`, `UI05-FAQ-001` and `UI05-IMAGE-001` promoted to `verified_complete`. Its two content findings stayed **open** and are closed by UI-06. | [ui-05.md](proof/ui-05.md) | Reconciled live on the UI-06 branch |
-| UI-06 | Eight public landing pages | 🟡 `local_complete pending PR` | `phase-ui-06-public-landing-pages` (base `e6664f2e`, **no PR**) — eight account-specific public landing pages, each presenting all **16** semantic regions from its own compiled content; `/faq` on all eight hosts (**1,264** items reachable); **24** canonical host-derived legal routes replacing the role-parameterised path; **32** curated images rendered, one high-priority hero per page, **0** cross-account asset requests; a typed CTA resolver that refuses any action the account-host registry forbids; approved factual trust evidence instead of testimonials and **no plan amount on any page**. **No API, permission, policy or migration changed.** Closes `UI01-ASSET-004`, `UI01-LEGAL-001`, `UI01-LEGAL-002`, `UI05-CONTENT-001`, `UI05-CONTENT-002` locally. | [ui-06.md](proof/ui-06.md) | UI-05 PR merged and reconciled live |
-| UI-07 | Navigation registry and screen contracts | ⬜ Not started | — | — | UI-06 merged |
+| UI-06 | Eight public landing pages | ✅ `verified_complete` | PR [#56](https://github.com/ikrome002-design/servana/pull/56) merged — **squash** commit `6b67ad2e…` (single parent `e6664f2e…`), reviewed head `e7cac3bf…` whose tree `a8336102…` equals the merge tree, `mergedAt 2026-08-04T17:09:51Z`. Three preserved reviewed commits: `7877e7b` implementation, `71af50d` screenshot evidence, `e7cac3b` CI dependency + E2E-budget correction. Earlier run `30917088915` failed on two **external dependency advisories** and an **E2E job cancelled at a stale 20-minute budget with no failing test**; final CI `30924581598` **five checks SUCCESS**. Governance comment `5182250114`; `reviewDecision` blank / **0** reviews (**not** independent approval). Branch deleted local + remote. Eight account landing pages × **16** regions; `/faq` on all eight hosts (**1,264** items); **24** canonical host-derived legal routes; **32** curated images, **0** cross-account requests; approved factual trust evidence and **no plan amount anywhere**. **No API, permission, policy or migration changed.** Five closures now `verified_complete`: `UI01-ASSET-004`, `UI01-LEGAL-001`, `UI01-LEGAL-002`, `UI05-CONTENT-001`, `UI05-CONTENT-002`. | [ui-06.md](proof/ui-06.md) | UI-05 PR merged and reconciled live |
+| UI-07 | Navigation registry and screen contracts | 🟡 `local_complete pending PR` | `phase-ui-07-navigation-screen-contracts` (base `6b67ad2e`, **no PR**) — one canonical handwritten authority for the **160** authenticated pages (22/23/18/19/24/19/20/15), pinned page-by-page to the binding human map; **160** generated screen specifications; a typed generated navigation registry with deterministic filtering; the account guard on **all eight** trees (seven newly, plus the merchant setup route); **4** placeholder-component routes removed; the inventory status vocabulary reconciled to §7.2. **No API, permission, policy or migration changed.** | [ui-07.md](proof/ui-07.md) | UI-06 PR merged and reconciled live |
 | UI-08 | Super Administrator experience (22 pages) | ⬜ Not started | — | — | UI-07 merged |
 | UI-09 | Merchant Administrator experience (23 pages) | ⬜ Not started | — | — | UI-07 merged |
 | UI-10 | Branch experience (18 pages) | ⬜ Not started | — | — | UI-07 merged |
@@ -181,11 +181,99 @@ blocked; Wallet-owned money movement, Refer & Earn-owned rewards, notification/r
 external-onboarding items are untouched. UI-00 closes none of them. `REM-PERM-002`, `REM-EXP-001`,
 `REM-SMS-002` and `REM-RE-002` stay open.
 
-## Phase UI-06 — Eight public landing pages (`local_complete pending PR CI/review/merge`)
+## Phase UI-07 — Navigation registry and screen contracts (`local_complete pending PR CI/review/merge`)
 
-**Branch** `phase-ui-06-public-landing-pages` · **base** `e6664f2ec1c60e55fa27c0a40fa2685a6442932f`
-(the verified UI-05 merge commit) · **no PR** · **proof** [ui-06.md](proof/ui-06.md) ·
+**Branch** `phase-ui-07-navigation-screen-contracts` · **base**
+`6b67ad2e1cc2c1031a89dc8d82902a025feac721` (the verified UI-06 merge commit) · **no PR** ·
+**proof** [ui-07.md](proof/ui-07.md) · **artifacts**
+[`docs/frontend/audits/ui-07/`](frontend/audits/ui-07/)
+
+**Canonical authority** `docs/frontend/navigation/servana-user-account-navigation-map.yaml`
+(SHA-256 `f28ca6fc…`), pinned page-by-page — account, label, route and purpose — to the binding
+human map `docs/frontend/navigation/servana-user-account-navigation-maps.md` (SHA-256 `1f69a7bb…`)
+by `Ui07NavigationContractTest`.
+
+**Contract** 160 pages — Super Administrator 22 · Merchant Administrator 23 · Branch 18 ·
+Human Resource 19 · Finance 24 · Front Office 19 · Personnel 20 · Audit 15. The total is summed
+from the entries, never written independently.
+
+**Status** implemented 77 · planned 58 · disabled_by_gate 25 (all External Gate W) ·
+removed_by_authority 0. Legacy vocabulary retired: 18 × `phase_11` → `implemented`, 5 × `planned`
+→ `disabled_by_gate` naming the gate, 4 placeholder rows removed.
+
+**Owners** UI-08…UI-15, one per page by account; backend ownership recorded separately and read
+from the screen inventory, never inferred from UI numbering.
+
+**Parity** 160 screen specifications (0 missing, 0 orphan, 0 shared) · inventory 122 rows, every
+implemented contract page backed by one · router 112 named records, 112 lazy, 0 duplicate names,
+0 duplicate paths, 0 planned/removed exposed, 0 contract-name collisions, catch-all excluded ·
+navigation 144 primary + 16 non-navigation entries, each with a recorded reason · permissions all
+referenced keys exist, **0** added (matrix stays 167).
+
+**Account guard** all eight trees plus the merchant setup route — 9 trees, 100 authenticated
+routes, 0 missing. Two authenticated routes sit outside a tree with recorded reasons
+(`staff.accept`, `search`). All-eight allow and deny proven in unit and browser tests; denial
+names neither the forbidden account nor the held one.
+
+**Defects closed locally** `UI07-GUARD-001` (seven unguarded trees) · `UI07-GUARD-002` (the guard
+was coarser than screen ownership — `/branch` and `/hr` are path prefixes, and five screens are
+genuinely served to two accounts; Plan §13 gives branch creation to the Merchant Administrator and
+denies it to the Branch Manager) · `UI07-ROUTE-001` (four placeholder-component routes exposing
+planned pages) · `UI07-NAV-001` (primary navigation bound to a parameterised route). Also closed by
+this contract: `UI01-ROUTE-001`, `UI01-ROUTE-004`, `UI01-ROUTE-005`, `UI01-NAV-001`. All are local
+closure evidence only until UI-07 merges.
+
+**E2E harness** The account guard exposed a long-standing gap: authenticated specs stubbed `/me`
+but never the server-embedded account context. Central role→account helpers took the suite from
+**235 failures → 15**, then fifteen individually classified corrections took it to **0** — four of
+which were the `UI07-GUARD-002` product defect rather than a test defect. No guard weakening, no
+account bypass, no route alias.
+
+**Residual** `UI07-ENV-001` — eight scheduling/service-session suites fail in the last hour of a
+Nairobi business day because they create "now"-based walk-ins without freezing time. Pre-existing;
+UI-07 changed no scheduling code. Owner: the scheduling/service-session test owner, before Phase 25.
+
+**Gates** Pint 1,767 · Larastan level 8 clean 1,341 · ESLint 0 errors / 11 warnings · vue-tsc
+clean · Vitest 1,148 · build green · UI-07 browser gate 42/42 · negative controls 24/24 ·
+backend serial == parallel 2,792/14/0 (45,570 assertions) · **full Playwright 1,054/0/0/0, exit 0**
+(1,066 - 12: the four placeholder screens removed by `UI07-ROUTE-001` x three release-audit
+sweeps; no coverage lost) · composer/npm audit and gitleaks clean · historical evidence 286 files
+preserved, UI-06 33 + 33 screenshots intact.
+
+**Not done** no account page implemented (UI-08…UI-15) · no permission, API, policy or migration
+change · no responsive/accessibility/theme release review (UI-16) · no approved visual baselines
+(UI-16) · no performance or deployment work (UI-17 / Phase 25) · no Gate-W work.
+
+### Exact next human action
+
+Review the pushed `phase-ui-07-navigation-screen-contracts` branch, create the UI-07 pull request
+into `main`, allow the five required checks and the governance/review process to complete, merge,
+then reconcile UI-07 and any locally closed UI-07 defects to `verified_complete` before beginning
+UI-08.
+
+## Phase UI-06 — Eight public landing pages (`verified_complete`)
+
+**PR** [#56](https://github.com/ikrome002-design/servana/pull/56) **MERGED** · **squash merge**
+`6b67ad2e1cc2c1031a89dc8d82902a025feac721` (single parent `e6664f2ec1c60e55fa27c0a40fa2685a6442932f`)
+· **reviewed head** `e7cac3bf39d8a905094768f281b9343de96a29d3` · **tree equivalence**
+`e7cac3bf^{tree}` = merge tree = `a83361024c60bb83e2e961de454d6bdc4f99dc6c` · **mergedAt**
+`2026-08-04T17:09:51Z` · **branch** deleted local + remote · **proof** [ui-06.md](proof/ui-06.md) ·
 **artifacts** [`docs/frontend/audits/ui-06/`](frontend/audits/ui-06/)
+
+Three preserved reviewed commits: `7877e7b` implementation · `71af50d` screenshot evidence ·
+`e7cac3b` CI dependency + E2E-budget correction. Failed run `30917088915` was two **external
+dependency advisories** plus an **E2E job cancelled at a stale 20-minute budget with no failing
+test**; final CI `30924581598` five required checks SUCCESS. Governance comment `5182250114`;
+**0** submitted reviews, `reviewDecision` blank — the solo-maintainer process is **not**
+independent approval. Preserve: `brace-expansion` 5.0.9 override, `guzzlehttp/guzzle` 7.15.2,
+E2E `timeout-minutes: 60`.
+
+Screenshot evidence: 33 PNGs under `docs/frontend/audits/ui-06/screenshots/` and 33 preserved
+originals under `docs/proof/ui-06/`, index valid — focused implementation evidence, **not**
+release-approved visual baselines (UI-16).
+
+Five closures now `verified_complete`: `UI01-ASSET-004`, `UI01-LEGAL-001`, `UI01-LEGAL-002`,
+`UI05-CONTENT-001`, `UI05-CONTENT-002`.
 
 **Governing sources.** UI/UX plan §4.2, §6.5, §8.1–§8.8, §11, §12, §13, §17, §18, §19, §21,
 §22.1–§22.2, §25 (Phase UI-06), §28.2; ADR-016/017/021/024/025; the Brand Identity **Buttons**
@@ -307,11 +395,11 @@ no deployed-origin browser gate, no deployment. `UI01-PROV-003/004/005` and `UI0
 open with their recorded owners. Every skip has a named owner in [ui-06.md](proof/ui-06.md)
 § *Skipped work and owners*.
 
-### Exact next human action
+### Next human action — **done**
 
-Review the pushed `phase-ui-06-public-landing-pages` branch, create the UI-06 pull request into
-`main`, allow the five required checks and governance/review process to complete, merge, then
-reconcile UI-06 and its locally closed defects to `verified_complete` before beginning UI-07.
+The UI-06 pull request was created, its five required checks passed on run `30924581598`, and it
+merged as `6b67ad2e…`. UI-06 and its five closures were reconciled to `verified_complete` by
+Phase UI-07.
 
 ## Phase UI-05 — Content and asset pipeline (`verified_complete`)
 

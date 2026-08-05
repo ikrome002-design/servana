@@ -1,0 +1,179 @@
+{
+  "schema": "ui-07.audit.v1",
+  "phase": "UI-07",
+  "generated_by": "scripts/ui07-negative-controls.mjs",
+  "purpose": "Proof that each canonical-contract guard rejects the defect it exists to catch. Every mutation is applied to a disposable copy under the OS temp directory; the tracked authority is never modified.",
+  "controls": 24,
+  "passed": 24,
+  "failed": 0,
+  "results": [
+    {
+      "control": "control-unmodified-copy-passes",
+      "description": "the unmodified authority is accepted",
+      "expected": "pass",
+      "actual": "pass",
+      "ok": true
+    },
+    {
+      "control": "missing-entry",
+      "description": "a removed page (159) is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "extra-entry",
+      "description": "an added page (161) is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "duplicate-entry",
+      "description": "a duplicated key is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "wrong-account",
+      "description": "a page assigned to the wrong account is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "unknown-account",
+      "description": "a page naming an account that does not exist is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "duplicate-route-path-in-one-account",
+      "description": "two pages sharing a path within one account are rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "duplicate-route-name",
+      "description": "two pages sharing a route name are rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "duplicate-screen-key",
+      "description": "two pages sharing a screen key within one account are rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "cross-account-parent",
+      "description": "a parent in another account is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "parent-cycle",
+      "description": "a parent cycle is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "missing-parent",
+      "description": "a parent that does not exist is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "unknown-owner-phase",
+      "description": "an owner phase outside UI-08..UI-15 is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "unknown-status",
+      "description": "a status outside the closed vocabulary is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "unknown-permission",
+      "description": "a permission key absent from the canonical matrix is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "planned-page-exposed-as-a-route",
+      "description": "a planned page naming a runtime route is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "implemented-page-without-a-route",
+      "description": "an implemented page with no runtime route is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "implemented-page-naming-an-unregistered-route",
+      "description": "an implemented page naming a route the router does not have is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "primary-navigation-on-a-parameterised-route",
+      "description": "a primary navigation entry resolving to a parameterised route is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "gate-blocked-page-without-a-gate",
+      "description": "a disabled_by_gate page that does not name its gate is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "non-navigation-route-without-a-reason",
+      "description": "a non-primary entry with no recorded reason is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "forbidden-for-its-own-account",
+      "description": "a page forbidding its own account is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "account-count-drift",
+      "description": "an account whose page count no longer matches its declared requirement is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    },
+    {
+      "control": "total-drift",
+      "description": "a declared total that disagrees with the summed accounts is rejected",
+      "expected": "fail",
+      "actual": "fail",
+      "ok": true
+    }
+  ]
+}

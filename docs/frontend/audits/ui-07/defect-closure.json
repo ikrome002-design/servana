@@ -1,0 +1,310 @@
+{
+  "schema": "ui-07.audit.v1",
+  "phase": "UI-07",
+  "generated_by": "hand-maintained by Phase UI-07; asserted by tests/Feature/Docs/Ui07NavigationContractTest.php",
+  "purpose": "Every defect UI-07 closed, and every predecessor closure it promoted. A local correction is evidence of work, not of merge.",
+  "lifecycle_rule": "A UI-07 closure below is `local_complete pending PR CI/review/merge` and is NOT verified_complete until the UI-07 pull request merges with green required checks and recorded governance evidence, at which point the next branch reconciles it. The five UI-06 promotions are separate: their evidence merged in PR #56.",
+  "ui07_branch": "phase-ui-07-navigation-screen-contracts",
+  "ui07_base": "6b67ad2e1cc2c1031a89dc8d82902a025feac721",
+  "ui07_pull_request": "NOT CREATED — UI-07 stops at a pushed branch by instruction",
+
+  "api_operations_changed": 0,
+  "permission_matrix_changed": false,
+  "new_permission_keys": [],
+  "permission_matrix_key_count": 167,
+  "policies_changed": 0,
+  "migrations_added": 0,
+  "frontend_routes_added": 0,
+  "frontend_routes_removed": 4,
+
+  "predecessor_closures_promoted": {
+    "evidence": "PR #56 MERGED — squash 6b67ad2e1cc2c1031a89dc8d82902a025feac721, sole parent e6664f2ec1c60e55fa27c0a40fa2685a6442932f, reviewed head e7cac3bf39d8a905094768f281b9343de96a29d3 whose tree a83361024c60bb83e2e961de454d6bdc4f99dc6c equals the merge tree, mergedAt 2026-08-04T17:09:51Z, final CI run 30924581598 with five required checks SUCCESS, governance comment 5182250114, 0 submitted reviews (a solo-maintainer exception, NOT independent approval).",
+    "promoted_to": "verified_complete",
+    "ids": [
+      "UI01-ASSET-004",
+      "UI01-LEGAL-001",
+      "UI01-LEGAL-002",
+      "UI05-CONTENT-001",
+      "UI05-CONTENT-002"
+    ]
+  },
+
+  "closures": [
+    {
+      "defect_id": "UI07-GUARD-001",
+      "severity": "high",
+      "owner_phase": "UI-07",
+      "observed_problem": "Seven of the eight authenticated account route trees rendered for any authenticated merchant-side user. A Personnel user could render the Finance, Branch, HR, Front Office, Audit or Merchant Administrator shell.",
+      "evidence": "/merchant, /branch, /hr, /finance, /front-office, /personnel and /audit each carried `beforeEnter: [requiresAuth, requiresActiveMerchant]`. Only /platform carried `requiresAccount`, added by UI-03 to close UI01-ROLE-001.",
+      "affected_files": [
+        "resources/spa/src/router/routes/merchant.ts",
+        "resources/spa/src/router/routes/branch.ts",
+        "resources/spa/src/router/routes/hr.ts",
+        "resources/spa/src/router/routes/finance.ts",
+        "resources/spa/src/router/routes/frontOffice.ts",
+        "resources/spa/src/router/routes/personnel.ts",
+        "resources/spa/src/router/routes/audit.ts"
+      ],
+      "affected_accounts": [
+        "merchant_administrator",
+        "merchant_branch",
+        "merchant_human_resource",
+        "merchant_finance",
+        "merchant_front_office",
+        "merchant_personnel",
+        "merchant_audit"
+      ],
+      "root_cause": "UI-03 closed UI01-ROLE-001 for the /platform tree only and deferred the remaining seven to UI-07. Those trees kept `requiresAuth` (is anyone signed in?) and `requiresActiveMerchant` (is the merchant active?), neither of which takes an account as input.",
+      "why_this_is_the_root_cause": "`requiresActiveMerchant` has no account parameter, so it cannot distinguish Finance from Personnel. No amount of correct behaviour elsewhere could have prevented the wrong shell rendering.",
+      "correct_fix": "Attach the existing `requiresAccount(<account>)` to each tree root — the same guard, unchanged, that UI-03 proved — and declare `meta.accountKey` on the root so the requirement is readable from the router record. The guard still requires the route's account, the SERVER-resolved host account and an account the user actually holds to agree, and still fails closed on any disagreement.",
+      "why_meta_was_added": "`requiresAccount(...)` returns an anonymous closure, so a coverage test inspecting `beforeEnter` can only see an unnamed function. It would have passed vacuously on an unguarded tree — which is exactly the failure being closed.",
+      "files_changed": [
+        "resources/spa/src/router/routes/{merchant,branch,hr,finance,frontOffice,personnel,audit,platform}.ts",
+        "resources/spa/src/router/meta.d.ts"
+      ],
+      "tests": [
+        "resources/spa/src/router/accountRouteGuard.spec.ts — 47 cases: all-eight allow, held-account mismatch, host-context mismatch, missing account, unknown account key, and a denial that names neither the forbidden account nor the held one",
+        "tests/Feature/Docs/Ui07NavigationContractTest.php — guards all eight authenticated account route trees; explains every authenticated route outside a tree; states that the guard is defence in depth and not the security boundary",
+        "tests/e2e/ui-07-navigation-screen-contracts.spec.ts — 8 browser allow cases and 24 browser deny cases"
+      ],
+      "before": "1 of 8 authenticated account trees required its account.",
+      "after": "9 guarded trees (eight accounts plus the merchant first-time-setup route), 100 authenticated routes, 0 missing an account declaration.",
+      "backend_authority_unchanged": true,
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None for the guard itself. It is defence in depth: `auth:sanctum`, tenant and branch middleware, policies, `EnsurePermission` and own-scope query constraints were not touched and remain the security boundary. Changing the Host header alone still grants nothing (AccountHostDoesNotAuthorizeTest)."
+    },
+    {
+      "defect_id": "UI07-ROUTE-001",
+      "severity": "high",
+      "owner_phase": "UI-07",
+      "observed_problem": "Four contract pages were exposed as live routes that implemented nothing: /platform/dashboard, /front-office/dashboard, /personnel/dashboard and /audit/dashboard returned 200 and rendered a page-shaped placeholder.",
+      "evidence": "All four resolved to `DashboardStub.vue`, a six-line component whose entire body reads \"DashboardStub — Phase 4 stub — implementation in later phases\". The screen inventory recorded all four as `implemented`, so nothing contradicted the claim.",
+      "affected_files": [
+        "resources/spa/src/pages/platform/DashboardStub.vue",
+        "resources/spa/src/pages/front-office/DashboardStub.vue",
+        "resources/spa/src/pages/personnel/DashboardStub.vue",
+        "resources/spa/src/pages/audit/DashboardStub.vue"
+      ],
+      "affected_accounts": ["super_administrator", "merchant_front_office", "merchant_personnel", "merchant_audit"],
+      "root_cause": "Phase 4 scaffolded one placeholder per account shell so the route tree could be exercised before the pages existed. No later phase removed them, and the inventory's `implemented` status made the placeholder indistinguishable from a delivered screen.",
+      "why_this_is_the_root_cause": "The component has no data, no API call and no authorization. UI/UX plan §7.2 requires a planned page to create no dead or fake link, and §13.5 forbids satisfying the page count with a placeholder component — this is precisely that.",
+      "correct_fix": "Remove the four routes and the four now-dead components. The canonical contract reserves each page's route identity with `implementation_status: planned`, so the owner phase cannot silently rename it, and no runtime route or navigation link exists until that phase supplies a real component, read model, authorization, tests and browser proof.",
+      "files_changed": [
+        "resources/spa/src/router/routes/{platform,frontOffice,personnel,audit}.ts",
+        "resources/spa/src/pages/{platform,front-office,personnel,audit}/DashboardStub.vue (deleted)",
+        "docs/frontend/screens/inventory.json (four rows removed)"
+      ],
+      "tests": [
+        "tests/Feature/Docs/Ui07NavigationContractTest.php — never exposes a planned or removed page as a live route; no contract route name collides with a registered route",
+        "resources/spa/src/navigation/navigationFilter.spec.ts — never registers a runtime route for a planned or removed page",
+        "tests/e2e/ui-07-navigation-screen-contracts.spec.ts — 'no planned contract route is reachable at runtime'",
+        "scripts/ui07-negative-controls.mjs — planned-page-exposed-as-a-route"
+      ],
+      "before": "4 planned contract pages served a placeholder at 200.",
+      "after": "0. /personnel/dashboard now renders the not-found boundary, and the four contract entries are `planned` with owners UI-08, UI-13, UI-14 and UI-15.",
+      "backend_authority_unchanged": true,
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "`resources/spa/src/pages/finance/DashboardStub.vue` remains orphaned dead code. That is UI01-ROUTE-006, owned by UI-12, and was deliberately not absorbed here."
+    },
+    {
+      "defect_id": "UI07-NAV-001",
+      "severity": "medium",
+      "owner_phase": "UI-07",
+      "observed_problem": "Three contract pages were bound to parameterised runtime routes while being primary navigation entries, so mounting their account's navigation threw `Missing required param \"id\"`.",
+      "evidence": "merchant_branch.branch-profile and merchant_branch.branch-calendar resolved to `/branch/:id` and `/branch/:id/calendar`; merchant_audit.exports-history resolved to `/audit/exports/:id`.",
+      "affected_files": ["docs/frontend/navigation/servana-user-account-navigation-map.yaml"],
+      "affected_accounts": ["merchant_branch", "merchant_audit"],
+      "root_cause": "A primary navigation link is rendered from the route NAME alone. A parameterised target cannot be resolved without params the navigation does not have, so the link is dead at mount time while still type-checking.",
+      "why_this_is_the_root_cause": "The contract page for Branch is the ASSIGNED branch's profile; today's only delivery requires a branch id in the URL. Audit's export HISTORY is a list, and `audit.export-detail` is a single export — a different page as well as a parameterised one.",
+      "correct_fix": "Record all three as `planned` with their owner phases, and make the generator REJECT any primary navigation entry bound to a parameterised runtime route so the class cannot recur.",
+      "files_changed": [
+        "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+        "scripts/generate-ui07-navigation-contract.mjs"
+      ],
+      "tests": [
+        "scripts/ui07-negative-controls.mjs — primary-navigation-on-a-parameterised-route",
+        "resources/spa/src/components/navigation/RoleNavigation.spec.ts",
+        "resources/spa/src/layouts/RoleLayouts.spec.ts"
+      ],
+      "before": "3 primary navigation entries resolved to parameterised routes.",
+      "after": "0, and the invariant is enforced by the generator rather than by review.",
+      "backend_authority_unchanged": true,
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "UI-10 must supply parameter-free assigned-branch profile and calendar routes; UI-15 must supply a real export-history route."
+    },
+    {
+      "defect_id": "UI07-GUARD-002",
+      "severity": "high",
+      "owner_phase": "UI-07",
+      "observed_problem": "The first pass of the account guard denied a Merchant Administrator the branch list, branch creation, the branch record, its operating hours and staff invitations — five screens that account genuinely owns.",
+      "evidence": "docs/frontend/screens/inventory.json records branch-list, branch-detail and branch-operating-hours as BOTH merchant_administrator and merchant_branch, and branch-create as merchant_administrator ONLY. resources/spa/src/pages/hr/StaffInvitations.vue branches on auth.isMerchantAdmin() to offer Branch Manager / Human Resource to one account and the operational roles to the other. Five browser cases that had always passed began failing.",
+      "affected_files": [
+        "resources/spa/src/router/guards.ts",
+        "resources/spa/src/router/routes/branch.ts",
+        "resources/spa/src/router/routes/hr.ts"
+      ],
+      "affected_accounts": ["merchant_administrator", "merchant_branch", "merchant_human_resource"],
+      "root_cause": "`/branch` and `/hr` were guarded as whole trees using the account implied by the PATH PREFIX. A path prefix is not an account boundary.",
+      "why_this_is_the_root_cause": "Plan §13 assigns branch creation to the Merchant Administrator and explicitly denies it to the Branch Manager. Guarding `/branch` as `merchant_branch` therefore denied the account that owns the capability and left it reachable only by the account the Plan forbids. The failing tests encoded the Plan correctly; the guard encoded the URL.",
+      "correct_fix": "`requiresAccount(...accountKeys)` accepts the accounts that genuinely own a route. The tree root admits both owners; the ten Branch-only and nine HR-only children re-assert their single owner on their own records. The served host account must be one of the owners AND the user must hold THAT account, so host and held account still have to agree and nothing was widened beyond real ownership.",
+      "what_was_not_done": "No test was re-pointed to a different account to make it pass — doing so would have fabricated an authority Plan §13 denies. No route alias, wildcard account, all-accounts test user or environment bypass was added.",
+      "tests": [
+        "resources/spa/src/router/accountRouteGuard.spec.ts — 47 cases across all eight accounts",
+        "resources/spa/src/navigation/navigationFilter.spec.ts — 25 cases",
+        "tests/e2e/ui-07-navigation-screen-contracts.spec.ts — 42 cases",
+        "tests/e2e/branches-staff-invitations.spec.ts and tests/e2e/phase-23-release-audit.spec.ts — the five restored cases"
+      ],
+      "before": "5 browser cases denied an account that owns the screen.",
+      "after": "0. requires-account-coverage.json records both shared-ownership trees, their shared screens, the governing authority and the guard's semantics.",
+      "backend_authority_unchanged": true,
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "The Merchant Administrator still renders these screens inside the Branch and HR shells. The canonical contract already reserves that account's own /branches, /branches/:branchUlid and /staff routes as `planned`, owned by UI-09."
+    },
+    {
+      "defect_id": "UI01-ROUTE-001",
+      "severity": "high",
+      "owner_phase": "UI-07 (inherited from UI-01)",
+      "observed_problem": "Any unknown path rendered the Home entry card with HTTP 200 and no not-found signalling, so a missing page was indistinguishable from a working one.",
+      "root_cause": "The catch-all route was deliberately mapped to Home.vue, and the screen inventory recorded the same component for both the home and not-found keys.",
+      "correct_fix": "UI-06 replaced the catch-all with a real `PublicNotFound` boundary. UI-07 closes the defect by proving that the boundary cannot satisfy route parity: a Vitest case resolves an unknown path, asserts it matches `not-found`, and asserts that no contract page binds to that route name.",
+      "tests": [
+        "resources/spa/src/navigation/navigationFilter.spec.ts — never lets the catch-all satisfy a contract route",
+        "tests/e2e/ui-07-navigation-screen-contracts.spec.ts — an unknown address renders the not-found boundary; a real page does not"
+      ],
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None."
+    },
+    {
+      "defect_id": "UI01-ROUTE-004",
+      "severity": "low",
+      "owner_phase": "UI-07 (inherited from UI-01)",
+      "observed_problem": "Source documentation pointed at a router file that does not exist.",
+      "root_cause": "The route modules were reorganised per account and the comment was not updated.",
+      "correct_fix": "The canonical authority and every generated matrix now name the real module for each route (`declared_in`), derived by loading the modules rather than by reading a comment, so a stale path cannot survive.",
+      "tests": ["tests/Feature/Docs/Ui07NavigationContractTest.php — provenance and route-parity rows name real modules"],
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None."
+    },
+    {
+      "defect_id": "UI01-ROUTE-005",
+      "severity": "observation",
+      "owner_phase": "UI-07 (inherited from UI-01)",
+      "observed_problem": "20 named parameter-free routes had no navigation entry and no recorded reason, so intentional child surfaces and accidental omissions looked identical.",
+      "root_cause": "The registry had no field capable of expressing the difference.",
+      "correct_fix": "`navigation_visibility` (primary | contextual_child | detail_route) with a REQUIRED `non_navigation_reason` on every non-primary entry, enforced by the generator.",
+      "tests": [
+        "tests/Feature/Docs/Ui07NavigationContractTest.php",
+        "resources/spa/src/navigation/navigationFilter.spec.ts — every non-primary entry has a recorded reason",
+        "scripts/ui07-negative-controls.mjs — non-navigation-route-without-a-reason"
+      ],
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "None."
+    },
+    {
+      "defect_id": "UI01-NAV-001",
+      "severity": "medium",
+      "owner_phase": "UI-07 (inherited from UI-01)",
+      "observed_problem": "Five route targets were shared by multiple navigation labels, so distinct contract pages collapsed onto one screen. The choice was recorded only in source comments.",
+      "root_cause": "Earlier phases delivered several contract capabilities as one consolidated tabbed screen and pointed every relevant label at it, to avoid dead links.",
+      "correct_fix": "The collapse is now machine-checkable rather than commentary: `route_delivery` records `dedicated`, `consolidated` or `cross_account_utility` per page, and `route-parity.json` enumerates every consolidated runtime route with the contract pages it serves. The owning UI phase splits them.",
+      "measured_after": "7 consolidated runtime routes: platform.billing-settings (4 pages), platform.registration-monitoring (3), platform.promotions (2), finance.dashboard (2).",
+      "tests": ["tests/Feature/Docs/Ui07NavigationContractTest.php — route_delivery is recorded for every implemented page"],
+      "closure_status": "local_complete pending PR CI/review/merge",
+      "remaining_risk": "The consolidation itself is unchanged — splitting a shipped screen is the owning account phase's work, not a contract phase's."
+    }
+  ],
+
+  "explicitly_left_open": [
+    {
+      "id": "UI01-ROUTE-003",
+      "summary": "73 implemented pages are served at the account path prefix rather than the host-relative contract path.",
+      "why_not_closed_here": "Reconciling path shape means rebuilding the router around host-scoped route construction, which would invalidate UI-03's and UI-06's browser proofs and is properly each account phase's work. UI-07 records the divergence per page with an owner instead of leaving it as one aggregate count.",
+      "owner": "UI-08 … UI-15, per account",
+      "entry_condition": "the account's UI phase implements its pages"
+    },
+    {
+      "id": "UI07-ENV-001",
+      "summary": "Eight Phase 16B/16C scheduling and service-session suites fail in the last hour of a Nairobi business day. They create a walk-in at the real 'now' and start a session whose expected end crosses midnight, which the business-date-boundary rule correctly refuses. The tests do not freeze time.",
+      "evidence": "A --parallel run started at Africa/Nairobi 23:57 produced 24 failures, 22 carrying the identical App\\Domain\\Scheduling\\Exceptions\\SchedulingValidationException: 'The proposed time crosses a business-date boundary'. The serial run of the SAME tree, finished before the window opened, passed 2792/14/0. UI-07 changed no PHP application code.",
+      "classification": "environment / test-determinism defect — pre-existing, not a product defect and not caused by UI-07",
+      "why_not_closed_here": "Freezing time in another phase's scheduling suites has no connection to the navigation contract and would widen this phase's diff for no contract benefit.",
+      "owner": "a separately authorized test-determinism correction",
+      "entry_condition": "before Phase 25",
+      "risk_if_forgotten": "CI is red for anyone who runs the backend suite in the last hour of a Nairobi business day, and the failure presents as a product regression."
+    },
+    {
+      "id": "UI01-ROUTE-006",
+      "summary": "resources/spa/src/pages/finance/DashboardStub.vue is orphaned dead code.",
+      "why_not_closed_here": "UI-01 assigned it to UI-12; absorbing another phase's item would widen this phase's scope.",
+      "owner": "UI-12",
+      "entry_condition": "UI-12 implements the Finance account pages"
+    },
+    {
+      "id": "UI01-NAV-003",
+      "summary": "The Branch navigation rendered five inert disabled entries.",
+      "why_not_closed_here": "UI-01 assigned it to UI-10. UI-07's status vocabulary already changes the behaviour — a planned page is no longer rendered at all, and only a gate-blocked page is shown disabled while naming its gate — but confirming the resulting Branch navigation is UI-10's.",
+      "owner": "UI-10",
+      "entry_condition": "UI-10 implements the Branch account pages"
+    },
+    {
+      "id": "UI06-CTA-002",
+      "summary": "Approved source wording names a CTA the affected page does not expose.",
+      "owner": "product owner",
+      "entry_condition": "a product-owner decision on the wording"
+    },
+    {
+      "id": "UI06-PRICE-001",
+      "summary": "No public live-price endpoint exists, so no public page may state a plan amount.",
+      "owner": "product owner / separately authorized backend phase",
+      "entry_condition": "separate authorization"
+    },
+    {
+      "id": "UI06-AUDIT-002",
+      "summary": "UI-05 browser-evidence read-before-update race.",
+      "owner": "UI-16",
+      "entry_condition": "the evidence-policy phase"
+    },
+    {
+      "id": "UI06-AUDIT-003",
+      "summary": "The UI-06 capture helper still points at the historical proof-tree convention.",
+      "owner": "UI-16",
+      "entry_condition": "the evidence-policy phase"
+    },
+    {
+      "id": "UI01-PROV-003",
+      "summary": "The focused browser harness injects the account context and bootstrap because no Laravel shell sits behind the preview origin.",
+      "owner": "UI-16",
+      "entry_condition": "a deployed origin exists"
+    },
+    {
+      "id": "UI01-PROV-004",
+      "summary": "Build-provenance observation.",
+      "owner": "UI-16 / UI-17",
+      "entry_condition": "release audit"
+    },
+    {
+      "id": "UI01-PROV-005",
+      "summary": "Build-provenance observation.",
+      "owner": "UI-16 / UI-17",
+      "entry_condition": "release audit"
+    },
+    {
+      "id": "UI01-A11Y-001",
+      "summary": "Accessibility observation.",
+      "owner": "UI-16 / UI-17",
+      "entry_condition": "release-wide accessibility review"
+    }
+  ],
+
+  "not_done_in_ui07": [
+    "No account page was implemented — Super Administrator's 22, Merchant Administrator's 23, Branch's 18, HR's 19, Finance's 24, Front Office's 19, Personnel's 20 and Audit's 15 belong to UI-08 … UI-15.",
+    "No permission key was created, activated, retired or re-granted; the matrix stays at 167 keys.",
+    "No API operation, policy, migration or financial behaviour changed.",
+    "No Magic Link, session-family or account-switching behaviour changed.",
+    "No content, legal text, FAQ or asset changed.",
+    "No responsive, accessibility, theme or visual-baseline release review — UI-16.",
+    "No approved visual baselines were produced, and no UI-06 screenshot was recaptured, copied or reindexed.",
+    "No performance budget or deployment work — UI-17 and Phase 25.",
+    "No Wallet, Refer & Earn or notification runtime; External Gate W remains closed."
+  ]
+}

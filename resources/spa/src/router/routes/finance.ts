@@ -1,11 +1,13 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { requiresActiveMerchant, requiresAuth } from '@/router/guards';
+import { requiresAccount, requiresActiveMerchant, requiresAuth } from '@/router/guards';
 
 export const financeRoutes: RouteRecordRaw[] = [
   {
     path: '/finance',
     component: () => import('@/layouts/FinanceLayout.vue'),
-    beforeEnter: [requiresAuth, requiresActiveMerchant],
+    // Phase UI-07 — the account guard UI-03 deferred to this phase.
+    beforeEnter: [requiresAuth, requiresActiveMerchant, requiresAccount('merchant_finance')],
+    meta: { accountKey: 'merchant_finance' },
     children: [
       {
         path: '',

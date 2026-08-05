@@ -1,0 +1,168 @@
+{
+  "schema": "ui-07.audit.v1",
+  "phase": "UI-07",
+  "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
+  "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+  "canonical_authority_sha256": "f28ca6fcbbed367dc15a534a35dfc7fa8494ef8ac41f27b2f7e27910ef3db8a5",
+  "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
+  "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
+  "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
+  "permission_matrix_sha256": "c3877f0e671abdb1f8dc0be9bd4ae06b4aed5bf36c44e427e3fa0e062099f166",
+  "screen_inventory_sha256": "0871fc7bce5d6999cb15d1931a54a01a4c385bd794cae386ac32d0c36a200281",
+  "purpose": "Every authenticated account route tree declares the account it requires, and the guard is attached. Read from the router records, not from source text.",
+  "boundary": "The route guard is defence in depth and UX only. It does not replace auth:sanctum, tenant/branch middleware, policies, permission middleware or own-scope query constraints. Changing the Host header alone still grants nothing (AccountHostDoesNotAuthorizeTest).",
+  "pre_existing_guarded_tree": "super_administrator (/platform, Phase UI-03, closing UI01-ROLE-001)",
+  "shared_ownership": {
+    "note": "A path prefix is not an account boundary. Five screens are served to two accounts today, so their tree admits both owners and every OTHER child of that tree re-asserts the single owner. Ownership is taken from docs/frontend/screens/inventory.json and Plan §10.2/§13, never from the URL.",
+    "trees_admitting_two_accounts": [
+      {
+        "root": "/branch",
+        "accounts": [
+          "merchant_branch",
+          "merchant_administrator"
+        ],
+        "shared_screens": [
+          "branch.list",
+          "branch.create",
+          "branch.detail",
+          "branch.operating-hours"
+        ],
+        "authority": "Plan §13 — \"Create branches: Merchant Administrator owns within entitlement; Branch Manager: No\". branch.create is the Merchant Administrator's alone.",
+        "branch_only_children_reasserting_single_owner": 10
+      },
+      {
+        "root": "/hr",
+        "accounts": [
+          "merchant_human_resource",
+          "merchant_administrator"
+        ],
+        "shared_screens": [
+          "hr.invitations"
+        ],
+        "authority": "Plan §13 — \"Manage staff invitations/access: Merchant Administrator owns the initial Branch Manager/HR invitations; HR owns operational staff in branch\". StaffInvitations.vue offers each account only the roles it may issue.",
+        "hr_only_children_reasserting_single_owner": 9
+      }
+    ],
+    "guard_semantics": "The served host account must be one of the route's owners AND the user must hold THAT account — not merely one the route allows. Host and held account still have to agree."
+  },
+  "newly_guarded_trees_in_ui07": [
+    {
+      "root": "/merchant",
+      "account_key": "merchant_administrator"
+    },
+    {
+      "root": "/onboarding/first-time-setup",
+      "account_key": "merchant_administrator"
+    },
+    {
+      "root": "/branch",
+      "account_key": "merchant_branch"
+    },
+    {
+      "root": "/hr",
+      "account_key": "merchant_human_resource"
+    },
+    {
+      "root": "/finance",
+      "account_key": "merchant_finance"
+    },
+    {
+      "root": "/front-office",
+      "account_key": "merchant_front_office"
+    },
+    {
+      "root": "/personnel",
+      "account_key": "merchant_personnel"
+    },
+    {
+      "root": "/audit",
+      "account_key": "merchant_audit"
+    }
+  ],
+  "trees": [
+    {
+      "root": "/platform",
+      "account_key": "super_administrator",
+      "declared_in": "routes/platform.ts",
+      "routes_in_tree": 5,
+      "routes_declaring_account": 5,
+      "routes_missing_account": []
+    },
+    {
+      "root": "/merchant",
+      "account_key": "merchant_administrator",
+      "declared_in": "routes/merchant.ts",
+      "routes_in_tree": 10,
+      "routes_declaring_account": 10,
+      "routes_missing_account": []
+    },
+    {
+      "root": "/onboarding/first-time-setup",
+      "account_key": "merchant_administrator",
+      "declared_in": "routes/merchant.ts",
+      "routes_in_tree": 1,
+      "routes_declaring_account": 1,
+      "routes_missing_account": []
+    },
+    {
+      "root": "/branch",
+      "account_key": "merchant_branch",
+      "declared_in": "routes/branch.ts",
+      "routes_in_tree": 14,
+      "routes_declaring_account": 14,
+      "routes_missing_account": []
+    },
+    {
+      "root": "/hr",
+      "account_key": "merchant_human_resource",
+      "declared_in": "routes/hr.ts",
+      "routes_in_tree": 10,
+      "routes_declaring_account": 10,
+      "routes_missing_account": []
+    },
+    {
+      "root": "/finance",
+      "account_key": "merchant_finance",
+      "declared_in": "routes/finance.ts",
+      "routes_in_tree": 23,
+      "routes_declaring_account": 23,
+      "routes_missing_account": []
+    },
+    {
+      "root": "/front-office",
+      "account_key": "merchant_front_office",
+      "declared_in": "routes/frontOffice.ts",
+      "routes_in_tree": 19,
+      "routes_declaring_account": 19,
+      "routes_missing_account": []
+    },
+    {
+      "root": "/personnel",
+      "account_key": "merchant_personnel",
+      "declared_in": "routes/personnel.ts",
+      "routes_in_tree": 7,
+      "routes_declaring_account": 7,
+      "routes_missing_account": []
+    },
+    {
+      "root": "/audit",
+      "account_key": "merchant_audit",
+      "declared_in": "routes/audit.ts",
+      "routes_in_tree": 11,
+      "routes_declaring_account": 11,
+      "routes_missing_account": []
+    }
+  ],
+  "authenticated_routes_outside_an_account_tree": [
+    {
+      "name": "staff.accept",
+      "path": "/staff/accept",
+      "reason": "Invitation acceptance happens before the membership exists; UI/UX plan §7.5 excludes it from the 160."
+    },
+    {
+      "name": "search",
+      "path": "/search",
+      "reason": "Cross-account authenticated utility route. GET /api/v1/search grants nothing and returns only what the caller's existing per-type authority already allows (D-22-01)."
+    }
+  ]
+}

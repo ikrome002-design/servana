@@ -1,4 +1,6 @@
-# Servana screen inventory (Plan §27.3). Generated from inventory.json.
+# Servana RUNTIME screen inventory (Plan §27.3). Generated from inventory.json.
+# Status vocabulary follows UI/UX plan §7.2 (Phase UI-07). The REQUIRED 160-page contract
+# is the separate docs/frontend/navigation/servana-user-account-navigation-map.yaml.
 # Enforced by screenInventory.spec.ts (vitest file snapshot). Do not hand-edit.
 screens:
   - key: home
@@ -82,31 +84,25 @@ screens:
   - key: platform-landing
     domain: platform
     route: platform.landing
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: platform/platform-landing.md
   - key: platform-get-started
     domain: platform
     route: platform.get-started
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: platform/platform-get-started.md
-  - key: platform-dashboard
-    domain: platform
-    route: platform.dashboard
-    status: implemented
-    phase: Phase 4
-    spec: platform/platform-dashboard.md
   - key: merchant-landing
     domain: merchant
     route: merchant.landing
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: merchant/merchant-landing.md
   - key: merchant-get-started
     domain: merchant
     route: merchant.get-started
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: merchant/merchant-get-started.md
   - key: merchant-dashboard
@@ -118,13 +114,13 @@ screens:
   - key: branch-landing
     domain: branch
     route: branch.landing
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: branch/branch-landing.md
   - key: branch-get-started
     domain: branch
     route: branch.get-started
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: branch/branch-get-started.md
   - key: branch-list
@@ -154,13 +150,13 @@ screens:
   - key: hr-landing
     domain: hr
     route: hr.landing
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: hr/hr-landing.md
   - key: hr-get-started
     domain: hr
     route: hr.get-started
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: hr/hr-get-started.md
   - key: hr-staff
@@ -190,69 +186,51 @@ screens:
   - key: finance-landing
     domain: finance
     route: finance.landing
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: finance/finance-landing.md
   - key: finance-get-started
     domain: finance
     route: finance.get-started
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: finance/finance-get-started.md
   - key: front-office-landing
     domain: front-office
     route: front-office.landing
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: front-office/front-office-landing.md
   - key: front-office-get-started
     domain: front-office
     route: front-office.get-started
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: front-office/front-office-get-started.md
-  - key: front-office-dashboard
-    domain: front-office
-    route: front-office.dashboard
-    status: implemented
-    phase: Phase 4
-    spec: front-office/front-office-dashboard.md
   - key: personnel-landing
     domain: personnel
     route: personnel.landing
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: personnel/personnel-landing.md
   - key: personnel-get-started
     domain: personnel
     route: personnel.get-started
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: personnel/personnel-get-started.md
-  - key: personnel-dashboard
-    domain: personnel
-    route: personnel.dashboard
-    status: implemented
-    phase: Phase 4
-    spec: personnel/personnel-dashboard.md
   - key: audit-landing
     domain: audit
     route: audit.landing
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: audit/audit-landing.md
   - key: audit-get-started
     domain: audit
     route: audit.get-started
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: audit/audit-get-started.md
-  - key: audit-dashboard
-    domain: audit
-    route: audit.dashboard
-    status: implemented
-    phase: Phase 4
-    spec: audit/audit-dashboard.md
   - key: audit-event-list
     domain: audit
     route: audit.branch-events
@@ -304,13 +282,13 @@ screens:
   - key: unsupported-role
     domain: access-state
     route: ~
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: access-state/unsupported-role.md
   - key: no-branch-assignment
     domain: access-state
     route: ~
-    status: phase_11
+    status: implemented
     phase: Phase 11
     spec: access-state/no-branch-assignment.md
   - key: merchant-profile
@@ -340,7 +318,8 @@ screens:
   - key: merchant-reports
     domain: merchant
     route: ~
-    status: planned
+    status: disabled_by_gate
+    gate: external_gate_w
     phase: Phase 21N
     spec: ~
   - key: compensation-summary
@@ -412,7 +391,8 @@ screens:
   - key: branch-reports
     domain: branch
     route: ~
-    status: planned
+    status: disabled_by_gate
+    gate: external_gate_w
     phase: Phase 21N
     spec: ~
   - key: hr-compensation
@@ -688,13 +668,15 @@ screens:
   - key: platform-wallet-config
     domain: platform
     route: ~
-    status: planned
+    status: disabled_by_gate
+    gate: external_gate_w
     phase: Phase 20D-W
     spec: ~
   - key: platform-billing-reconciliation
     domain: platform
     route: ~
-    status: planned
+    status: disabled_by_gate
+    gate: external_gate_w
     phase: Phase 20D-W
     spec: ~
   - key: platform-registration-monitoring
@@ -706,7 +688,8 @@ screens:
   - key: platform-audit-reports
     domain: platform
     route: ~
-    status: planned
+    status: disabled_by_gate
+    gate: external_gate_w
     phase: Phase 21N
     spec: ~
   - key: merchant-platform-fees

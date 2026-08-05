@@ -1,0 +1,1500 @@
+{
+  "schema": "ui-07.audit.v1",
+  "phase": "UI-07",
+  "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
+  "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+  "canonical_authority_sha256": "f28ca6fcbbed367dc15a534a35dfc7fa8494ef8ac41f27b2f7e27910ef3db8a5",
+  "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
+  "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
+  "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
+  "permission_matrix_sha256": "c3877f0e671abdb1f8dc0be9bd4ae06b4aed5bf36c44e427e3fa0e062099f166",
+  "screen_inventory_sha256": "0871fc7bce5d6999cb15d1931a54a01a4c385bd794cae386ac32d0c36a200281",
+  "purpose": "One UI owner phase per contract page, and the backend phase that actually delivered the runtime screen. Backend ownership is read from the screen inventory and is NEVER inferred from UI phase numbering.",
+  "ui_owner_by_account": {
+    "super_administrator": "UI-08",
+    "merchant_administrator": "UI-09",
+    "merchant_branch": "UI-10",
+    "merchant_human_resource": "UI-11",
+    "merchant_finance": "UI-12",
+    "merchant_front_office": "UI-13",
+    "merchant_personnel": "UI-14",
+    "merchant_audit": "UI-15"
+  },
+  "ui_owner_totals": {
+    "UI-08": 22,
+    "UI-09": 23,
+    "UI-10": 18,
+    "UI-11": 19,
+    "UI-12": 24,
+    "UI-13": 19,
+    "UI-14": 20,
+    "UI-15": 15
+  },
+  "backend_owner_totals": {
+    "not-yet-delivered": 83,
+    "Phase 11": 8,
+    "Phase 15A": 5,
+    "Phase 15B": 2,
+    "Phase 16A": 3,
+    "Phase 16B": 4,
+    "Phase 16C": 2,
+    "Phase 17": 3,
+    "Phase 18A": 3,
+    "Phase 18B": 12,
+    "Phase 19": 7,
+    "Phase 20A": 4,
+    "Phase 20B": 6,
+    "Phase 20C": 2,
+    "Phase 20F": 1,
+    "Phase 20G": 1,
+    "Phase 20H": 5,
+    "Phase 21S": 1,
+    "Phase 22": 1,
+    "Phase 23": 1,
+    "Phase 6": 2,
+    "Phase 7": 3,
+    "Phase 8": 1
+  },
+  "rows": [
+    {
+      "key": "super_administrator.dashboard",
+      "account_type": "super_administrator",
+      "screen_key": "dashboard",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "super_administrator.get-started",
+      "account_type": "super_administrator",
+      "screen_key": "get-started",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 11",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "super_administrator.billing-settings",
+      "account_type": "super_administrator",
+      "screen_key": "billing-settings",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 20A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "super_administrator.billing-plans",
+      "account_type": "super_administrator",
+      "screen_key": "billing-plans",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 20A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "super_administrator.billing-prices",
+      "account_type": "super_administrator",
+      "screen_key": "billing-prices",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 20A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "super_administrator.billing-promotions",
+      "account_type": "super_administrator",
+      "screen_key": "billing-promotions",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 20C",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "super_administrator.billing-free-periods",
+      "account_type": "super_administrator",
+      "screen_key": "billing-free-periods",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 20C",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "super_administrator.billing-preferred-personnel-fees",
+      "account_type": "super_administrator",
+      "screen_key": "billing-preferred-personnel-fees",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 20A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "super_administrator.billing-sms",
+      "account_type": "super_administrator",
+      "screen_key": "billing-sms",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "super_administrator.merchant-registrations",
+      "account_type": "super_administrator",
+      "screen_key": "merchant-registrations",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 20B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "super_administrator.merchants",
+      "account_type": "super_administrator",
+      "screen_key": "merchants",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 20B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "super_administrator.merchant-detail",
+      "account_type": "super_administrator",
+      "screen_key": "merchant-detail",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": "Phase 20B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "super_administrator.billing-subscriptions",
+      "account_type": "super_administrator",
+      "screen_key": "billing-subscriptions",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "super_administrator.billing-reconciliation-exceptions",
+      "account_type": "super_administrator",
+      "screen_key": "billing-reconciliation-exceptions",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "super_administrator.integrations",
+      "account_type": "super_administrator",
+      "screen_key": "integrations",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "super_administrator.integrations-refer-and-earn-qualifications",
+      "account_type": "super_administrator",
+      "screen_key": "integrations-refer-and-earn-qualifications",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "super_administrator.reports",
+      "account_type": "super_administrator",
+      "screen_key": "reports",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "super_administrator.audit",
+      "account_type": "super_administrator",
+      "screen_key": "audit",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "super_administrator.platform-access",
+      "account_type": "super_administrator",
+      "screen_key": "platform-access",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "super_administrator.feature-flags",
+      "account_type": "super_administrator",
+      "screen_key": "feature-flags",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "super_administrator.notifications",
+      "account_type": "super_administrator",
+      "screen_key": "notifications",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "super_administrator.account",
+      "account_type": "super_administrator",
+      "screen_key": "account",
+      "ui_owner_phase": "UI-08",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_administrator.setup",
+      "account_type": "merchant_administrator",
+      "screen_key": "setup",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": "Phase 6",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_administrator.dashboard",
+      "account_type": "merchant_administrator",
+      "screen_key": "dashboard",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": "Phase 6",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_administrator.get-started",
+      "account_type": "merchant_administrator",
+      "screen_key": "get-started",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": "Phase 11",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_administrator.merchant-profile",
+      "account_type": "merchant_administrator",
+      "screen_key": "merchant-profile",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": "Phase 23",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_administrator.branches",
+      "account_type": "merchant_administrator",
+      "screen_key": "branches",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_administrator.branch-detail",
+      "account_type": "merchant_administrator",
+      "screen_key": "branch-detail",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_administrator.staff",
+      "account_type": "merchant_administrator",
+      "screen_key": "staff",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_administrator.subscription",
+      "account_type": "merchant_administrator",
+      "screen_key": "subscription",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": "Phase 20B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_administrator.subscription-plan",
+      "account_type": "merchant_administrator",
+      "screen_key": "subscription-plan",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": "Phase 20B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_administrator.subscription-invoices",
+      "account_type": "merchant_administrator",
+      "screen_key": "subscription-invoices",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": "Phase 20B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_administrator.subscription-invoice-detail",
+      "account_type": "merchant_administrator",
+      "screen_key": "subscription-invoice-detail",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_administrator.subscription-payment-attempts",
+      "account_type": "merchant_administrator",
+      "screen_key": "subscription-payment-attempts",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_administrator.subscription-recovery",
+      "account_type": "merchant_administrator",
+      "screen_key": "subscription-recovery",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_administrator.reports",
+      "account_type": "merchant_administrator",
+      "screen_key": "reports",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_administrator.reports-branches",
+      "account_type": "merchant_administrator",
+      "screen_key": "reports-branches",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_administrator.reports-services",
+      "account_type": "merchant_administrator",
+      "screen_key": "reports-services",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_administrator.reports-staff",
+      "account_type": "merchant_administrator",
+      "screen_key": "reports-staff",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_administrator.compensation",
+      "account_type": "merchant_administrator",
+      "screen_key": "compensation",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": "Phase 20H",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_administrator.compensation-payout-approvals",
+      "account_type": "merchant_administrator",
+      "screen_key": "compensation-payout-approvals",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_administrator.finance-period-reopen-approvals",
+      "account_type": "merchant_administrator",
+      "screen_key": "finance-period-reopen-approvals",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_administrator.reports-daily",
+      "account_type": "merchant_administrator",
+      "screen_key": "reports-daily",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_administrator.notifications",
+      "account_type": "merchant_administrator",
+      "screen_key": "notifications",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_administrator.account",
+      "account_type": "merchant_administrator",
+      "screen_key": "account",
+      "ui_owner_phase": "UI-09",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_branch.dashboard",
+      "account_type": "merchant_branch",
+      "screen_key": "dashboard",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_branch.get-started",
+      "account_type": "merchant_branch",
+      "screen_key": "get-started",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": "Phase 11",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_branch.branch-profile",
+      "account_type": "merchant_branch",
+      "screen_key": "branch-profile",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_branch.branch-calendar",
+      "account_type": "merchant_branch",
+      "screen_key": "branch-calendar",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_branch.branch-day",
+      "account_type": "merchant_branch",
+      "screen_key": "branch-day",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_branch.services",
+      "account_type": "merchant_branch",
+      "screen_key": "services",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": "Phase 15A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_branch.staff",
+      "account_type": "merchant_branch",
+      "screen_key": "staff",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": "Phase 15B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_branch.operations-queue",
+      "account_type": "merchant_branch",
+      "screen_key": "operations-queue",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": "Phase 16B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_branch.operations-appointments",
+      "account_type": "merchant_branch",
+      "screen_key": "operations-appointments",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": "Phase 16A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_branch.finance-invoices",
+      "account_type": "merchant_branch",
+      "screen_key": "finance-invoices",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_branch.finance-payments",
+      "account_type": "merchant_branch",
+      "screen_key": "finance-payments",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_branch.finance-receipts",
+      "account_type": "merchant_branch",
+      "screen_key": "finance-receipts",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_branch.cash-up",
+      "account_type": "merchant_branch",
+      "screen_key": "cash-up",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_branch.reports",
+      "account_type": "merchant_branch",
+      "screen_key": "reports",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_branch.audit",
+      "account_type": "merchant_branch",
+      "screen_key": "audit",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_branch.subscription-payment",
+      "account_type": "merchant_branch",
+      "screen_key": "subscription-payment",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_branch.notifications",
+      "account_type": "merchant_branch",
+      "screen_key": "notifications",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_branch.account",
+      "account_type": "merchant_branch",
+      "screen_key": "account",
+      "ui_owner_phase": "UI-10",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_human_resource.dashboard",
+      "account_type": "merchant_human_resource",
+      "screen_key": "dashboard",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_human_resource.get-started",
+      "account_type": "merchant_human_resource",
+      "screen_key": "get-started",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": "Phase 11",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_human_resource.staff",
+      "account_type": "merchant_human_resource",
+      "screen_key": "staff",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": "Phase 7",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_human_resource.staff-invite",
+      "account_type": "merchant_human_resource",
+      "screen_key": "staff-invite",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": "Phase 7",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_human_resource.staff-detail",
+      "account_type": "merchant_human_resource",
+      "screen_key": "staff-detail",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": "Phase 7",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_human_resource.staff-detail-edit",
+      "account_type": "merchant_human_resource",
+      "screen_key": "staff-detail-edit",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_human_resource.staff-detail-lifecycle",
+      "account_type": "merchant_human_resource",
+      "screen_key": "staff-detail-lifecycle",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_human_resource.staff-detail-access",
+      "account_type": "merchant_human_resource",
+      "screen_key": "staff-detail-access",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": "Phase 8",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_human_resource.eligibility",
+      "account_type": "merchant_human_resource",
+      "screen_key": "eligibility",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": "Phase 15A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_human_resource.availability",
+      "account_type": "merchant_human_resource",
+      "screen_key": "availability",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": "Phase 15B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_human_resource.compensation",
+      "account_type": "merchant_human_resource",
+      "screen_key": "compensation",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": "Phase 20F",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_human_resource.compensation-detail",
+      "account_type": "merchant_human_resource",
+      "screen_key": "compensation-detail",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_human_resource.compensation-setup",
+      "account_type": "merchant_human_resource",
+      "screen_key": "compensation-setup",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_human_resource.compensation-history",
+      "account_type": "merchant_human_resource",
+      "screen_key": "compensation-history",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_human_resource.payouts",
+      "account_type": "merchant_human_resource",
+      "screen_key": "payouts",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": "Phase 20H",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_human_resource.reports",
+      "account_type": "merchant_human_resource",
+      "screen_key": "reports",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_human_resource.audit",
+      "account_type": "merchant_human_resource",
+      "screen_key": "audit",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_human_resource.notifications",
+      "account_type": "merchant_human_resource",
+      "screen_key": "notifications",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_human_resource.account",
+      "account_type": "merchant_human_resource",
+      "screen_key": "account",
+      "ui_owner_phase": "UI-11",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_finance.dashboard",
+      "account_type": "merchant_finance",
+      "screen_key": "dashboard",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "merchant_finance.get-started",
+      "account_type": "merchant_finance",
+      "screen_key": "get-started",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 11",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.tasks",
+      "account_type": "merchant_finance",
+      "screen_key": "tasks",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Split the consolidated runtime screen into a dedicated page (UI01-NAV-001)."
+    },
+    {
+      "key": "merchant_finance.payments-validations",
+      "account_type": "merchant_finance",
+      "screen_key": "payments-validations",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.payments-validation-detail",
+      "account_type": "merchant_finance",
+      "screen_key": "payments-validation-detail",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.payments-duplicates",
+      "account_type": "merchant_finance",
+      "screen_key": "payments-duplicates",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_finance.invoices",
+      "account_type": "merchant_finance",
+      "screen_key": "invoices",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 17",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.payments",
+      "account_type": "merchant_finance",
+      "screen_key": "payments",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.payments-partial-split",
+      "account_type": "merchant_finance",
+      "screen_key": "payments-partial-split",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_finance.receipts",
+      "account_type": "merchant_finance",
+      "screen_key": "receipts",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.disputes",
+      "account_type": "merchant_finance",
+      "screen_key": "disputes",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.refunds",
+      "account_type": "merchant_finance",
+      "screen_key": "refunds",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.cash-up",
+      "account_type": "merchant_finance",
+      "screen_key": "cash-up",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.periods",
+      "account_type": "merchant_finance",
+      "screen_key": "periods",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.payouts",
+      "account_type": "merchant_finance",
+      "screen_key": "payouts",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 20H",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.compensation-liabilities",
+      "account_type": "merchant_finance",
+      "screen_key": "compensation-liabilities",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 20G",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.compensation-queries",
+      "account_type": "merchant_finance",
+      "screen_key": "compensation-queries",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 20H",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.subscription",
+      "account_type": "merchant_finance",
+      "screen_key": "subscription",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_finance.subscription-payment-attempts",
+      "account_type": "merchant_finance",
+      "screen_key": "subscription-payment-attempts",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_finance.reports",
+      "account_type": "merchant_finance",
+      "screen_key": "reports",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_finance.exports",
+      "account_type": "merchant_finance",
+      "screen_key": "exports",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.audit",
+      "account_type": "merchant_finance",
+      "screen_key": "audit",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": "Phase 19",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_finance.notifications",
+      "account_type": "merchant_finance",
+      "screen_key": "notifications",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_finance.settings",
+      "account_type": "merchant_finance",
+      "screen_key": "settings",
+      "ui_owner_phase": "UI-12",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_front_office.dashboard",
+      "account_type": "merchant_front_office",
+      "screen_key": "dashboard",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_front_office.get-started",
+      "account_type": "merchant_front_office",
+      "screen_key": "get-started",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 11",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.search",
+      "account_type": "merchant_front_office",
+      "screen_key": "search",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 22",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.clients",
+      "account_type": "merchant_front_office",
+      "screen_key": "clients",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 15A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.clients-create",
+      "account_type": "merchant_front_office",
+      "screen_key": "clients-create",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 15A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.client-detail",
+      "account_type": "merchant_front_office",
+      "screen_key": "client-detail",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 15A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.appointments",
+      "account_type": "merchant_front_office",
+      "screen_key": "appointments",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 16A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.walk-ins",
+      "account_type": "merchant_front_office",
+      "screen_key": "walk-ins",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 16B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.queue",
+      "account_type": "merchant_front_office",
+      "screen_key": "queue",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 16B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.queue-transfer",
+      "account_type": "merchant_front_office",
+      "screen_key": "queue-transfer",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_front_office.sessions",
+      "account_type": "merchant_front_office",
+      "screen_key": "sessions",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 16C",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.invoices",
+      "account_type": "merchant_front_office",
+      "screen_key": "invoices",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 17",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.invoices-create",
+      "account_type": "merchant_front_office",
+      "screen_key": "invoices-create",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 17",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.invoice-payment-create",
+      "account_type": "merchant_front_office",
+      "screen_key": "invoice-payment-create",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 18A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.payments-status",
+      "account_type": "merchant_front_office",
+      "screen_key": "payments-status",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_front_office.activity",
+      "account_type": "merchant_front_office",
+      "screen_key": "activity",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_front_office.subscription-payment",
+      "account_type": "merchant_front_office",
+      "screen_key": "subscription-payment",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_front_office.notifications",
+      "account_type": "merchant_front_office",
+      "screen_key": "notifications",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_front_office.account",
+      "account_type": "merchant_front_office",
+      "screen_key": "account",
+      "ui_owner_phase": "UI-13",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.dashboard",
+      "account_type": "merchant_personnel",
+      "screen_key": "dashboard",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.get-started",
+      "account_type": "merchant_personnel",
+      "screen_key": "get-started",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": "Phase 11",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_personnel.work-queue",
+      "account_type": "merchant_personnel",
+      "screen_key": "work-queue",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": "Phase 16B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_personnel.work-appointments",
+      "account_type": "merchant_personnel",
+      "screen_key": "work-appointments",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": "Phase 16A",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_personnel.work-sessions",
+      "account_type": "merchant_personnel",
+      "screen_key": "work-sessions",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": "Phase 16C",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_personnel.work-history",
+      "account_type": "merchant_personnel",
+      "screen_key": "work-history",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.work-preferred-requests",
+      "account_type": "merchant_personnel",
+      "screen_key": "work-preferred-requests",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.clients",
+      "account_type": "merchant_personnel",
+      "screen_key": "clients",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.messages-compose",
+      "account_type": "merchant_personnel",
+      "screen_key": "messages-compose",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": "Phase 21S",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_personnel.messages",
+      "account_type": "merchant_personnel",
+      "screen_key": "messages",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.earnings",
+      "account_type": "merchant_personnel",
+      "screen_key": "earnings",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": "Phase 20H",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_personnel.earnings-commission",
+      "account_type": "merchant_personnel",
+      "screen_key": "earnings-commission",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.earnings-salary",
+      "account_type": "merchant_personnel",
+      "screen_key": "earnings-salary",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.earnings-payouts",
+      "account_type": "merchant_personnel",
+      "screen_key": "earnings-payouts",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.earnings-terms",
+      "account_type": "merchant_personnel",
+      "screen_key": "earnings-terms",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.earnings-statements",
+      "account_type": "merchant_personnel",
+      "screen_key": "earnings-statements",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.earnings-queries",
+      "account_type": "merchant_personnel",
+      "screen_key": "earnings-queries",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.availability",
+      "account_type": "merchant_personnel",
+      "screen_key": "availability",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_personnel.notifications",
+      "account_type": "merchant_personnel",
+      "screen_key": "notifications",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_personnel.account",
+      "account_type": "merchant_personnel",
+      "screen_key": "account",
+      "ui_owner_phase": "UI-14",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_audit.dashboard",
+      "account_type": "merchant_audit",
+      "screen_key": "dashboard",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_audit.get-started",
+      "account_type": "merchant_audit",
+      "screen_key": "get-started",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": "Phase 11",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_audit.audit",
+      "account_type": "merchant_audit",
+      "screen_key": "audit",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": "Phase 19",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_audit.audit-event-detail",
+      "account_type": "merchant_audit",
+      "screen_key": "audit-event-detail",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": "Phase 19",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_audit.audit-flags",
+      "account_type": "merchant_audit",
+      "screen_key": "audit-flags",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": "Phase 19",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_audit.audit-operations",
+      "account_type": "merchant_audit",
+      "screen_key": "audit-operations",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_audit.audit-finance",
+      "account_type": "merchant_audit",
+      "screen_key": "audit-finance",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": "Phase 19",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_audit.audit-compensation",
+      "account_type": "merchant_audit",
+      "screen_key": "audit-compensation",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": "Phase 19",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_audit.audit-access",
+      "account_type": "merchant_audit",
+      "screen_key": "audit-access",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_audit.audit-privacy-preferred",
+      "account_type": "merchant_audit",
+      "screen_key": "audit-privacy-preferred",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_audit.exports",
+      "account_type": "merchant_audit",
+      "screen_key": "exports",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": "Phase 19",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
+    },
+    {
+      "key": "merchant_audit.exports-history",
+      "account_type": "merchant_audit",
+      "screen_key": "exports-history",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_audit.audit-integrity",
+      "account_type": "merchant_audit",
+      "screen_key": "audit-integrity",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    },
+    {
+      "key": "merchant_audit.notifications",
+      "account_type": "merchant_audit",
+      "screen_key": "notifications",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": null,
+      "implementation_status": "disabled_by_gate",
+      "remaining_dependency": "Blocked by external_gate_w."
+    },
+    {
+      "key": "merchant_audit.account",
+      "account_type": "merchant_audit",
+      "screen_key": "account",
+      "ui_owner_phase": "UI-15",
+      "backend_owner_phase": null,
+      "implementation_status": "planned",
+      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+    }
+  ]
+}

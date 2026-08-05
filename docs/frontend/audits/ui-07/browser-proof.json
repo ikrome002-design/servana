@@ -1,0 +1,170 @@
+{
+  "schema": "ui-07.audit.v1",
+  "phase": "UI-07",
+  "generated_by": "tests/e2e/ui-07-navigation-screen-contracts.spec.ts",
+  "purpose": "What a browser actually did with the eight account shells: the navigation each rendered, and the account guard admitting exactly one account and denying the rest.",
+  "harness": "Vite preview origin with the account-context block and /api/v1/me served exactly as the Laravel shell and API produce them (UI01-PROV-003 is owned by UI-16). Changing the injected account is how the deny cases are built.",
+  "accounts_exercised": 8,
+  "observations": [
+    {
+      "account": "super_administrator",
+      "shell_path": "/platform",
+      "navigation_placement": "header",
+      "expected_entries": 14,
+      "rendered_entries": 14,
+      "planned_entries_rendered": 0,
+      "links_with_destination": 9,
+      "console_errors": 0,
+      "page_errors": 0,
+      "failed_requests": 0
+    },
+    {
+      "account": "super_administrator",
+      "deny_case": "held-account-mismatch",
+      "held": "merchant_administrator",
+      "landed_on": "/access-denied",
+      "forbidden_account_named": false,
+      "held_account_named": false
+    },
+    {
+      "account": "merchant_administrator",
+      "shell_path": "/merchant",
+      "navigation_placement": "sidebar",
+      "expected_entries": 17,
+      "rendered_entries": 17,
+      "planned_entries_rendered": 0,
+      "links_with_destination": 9,
+      "console_errors": 0,
+      "page_errors": 0,
+      "failed_requests": 0
+    },
+    {
+      "account": "merchant_administrator",
+      "deny_case": "held-account-mismatch",
+      "held": "super_administrator",
+      "landed_on": "/access-denied",
+      "forbidden_account_named": false,
+      "held_account_named": false
+    },
+    {
+      "account": "merchant_branch",
+      "shell_path": "/branch",
+      "navigation_placement": "sidebar",
+      "expected_entries": 9,
+      "rendered_entries": 9,
+      "planned_entries_rendered": 0,
+      "links_with_destination": 6,
+      "console_errors": 0,
+      "page_errors": 0,
+      "failed_requests": 0
+    },
+    {
+      "account": "merchant_branch",
+      "deny_case": "held-account-mismatch",
+      "held": "super_administrator",
+      "landed_on": "/access-denied",
+      "forbidden_account_named": false,
+      "held_account_named": false
+    },
+    {
+      "account": "merchant_human_resource",
+      "shell_path": "/hr",
+      "navigation_placement": "sidebar",
+      "expected_entries": 9,
+      "rendered_entries": 9,
+      "planned_entries_rendered": 0,
+      "links_with_destination": 7,
+      "console_errors": 0,
+      "page_errors": 0,
+      "failed_requests": 0
+    },
+    {
+      "account": "merchant_human_resource",
+      "deny_case": "held-account-mismatch",
+      "held": "super_administrator",
+      "landed_on": "/access-denied",
+      "forbidden_account_named": false,
+      "held_account_named": false
+    },
+    {
+      "account": "merchant_finance",
+      "shell_path": "/finance",
+      "navigation_placement": "sidebar",
+      "expected_entries": 19,
+      "rendered_entries": 19,
+      "planned_entries_rendered": 0,
+      "links_with_destination": 16,
+      "console_errors": 0,
+      "page_errors": 0,
+      "failed_requests": 0
+    },
+    {
+      "account": "merchant_finance",
+      "deny_case": "held-account-mismatch",
+      "held": "super_administrator",
+      "landed_on": "/access-denied",
+      "forbidden_account_named": false,
+      "held_account_named": false
+    },
+    {
+      "account": "merchant_front_office",
+      "shell_path": "/front-office",
+      "navigation_placement": "sidebar",
+      "expected_entries": 12,
+      "rendered_entries": 12,
+      "planned_entries_rendered": 0,
+      "links_with_destination": 10,
+      "console_errors": 0,
+      "page_errors": 0,
+      "failed_requests": 0
+    },
+    {
+      "account": "merchant_front_office",
+      "deny_case": "held-account-mismatch",
+      "held": "super_administrator",
+      "landed_on": "/access-denied",
+      "forbidden_account_named": false,
+      "held_account_named": false
+    },
+    {
+      "account": "merchant_personnel",
+      "shell_path": "/personnel",
+      "navigation_placement": "sidebar",
+      "expected_entries": 7,
+      "rendered_entries": 7,
+      "planned_entries_rendered": 0,
+      "links_with_destination": 6,
+      "console_errors": 0,
+      "page_errors": 0,
+      "failed_requests": 0
+    },
+    {
+      "account": "merchant_personnel",
+      "deny_case": "held-account-mismatch",
+      "held": "super_administrator",
+      "landed_on": "/access-denied",
+      "forbidden_account_named": false,
+      "held_account_named": false
+    },
+    {
+      "account": "merchant_audit",
+      "shell_path": "/audit",
+      "navigation_placement": "sidebar",
+      "expected_entries": 7,
+      "rendered_entries": 7,
+      "planned_entries_rendered": 0,
+      "links_with_destination": 6,
+      "console_errors": 0,
+      "page_errors": 0,
+      "failed_requests": 0
+    },
+    {
+      "account": "merchant_audit",
+      "deny_case": "held-account-mismatch",
+      "held": "super_administrator",
+      "landed_on": "/access-denied",
+      "forbidden_account_named": false,
+      "held_account_named": false
+    }
+  ]
+}
