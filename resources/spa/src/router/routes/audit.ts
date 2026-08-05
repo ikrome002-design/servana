@@ -1,11 +1,14 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { requiresActiveMerchant, requiresAuth } from '@/router/guards';
+import { requiresAccount, requiresActiveMerchant, requiresAuth } from '@/router/guards';
 
 export const auditRoutes: RouteRecordRaw[] = [
   {
     path: '/audit',
     component: () => import('@/layouts/AuditLayout.vue'),
-    beforeEnter: [requiresAuth, requiresActiveMerchant],
+    // Phase UI-07 — the account guard UI-03 deferred to this phase. Before it, `requiresAuth` +
+    // `requiresActiveMerchant` let ANY authenticated merchant-side user render the Audit shell.
+    beforeEnter: [requiresAuth, requiresActiveMerchant, requiresAccount('merchant_audit')],
+    meta: { accountKey: 'merchant_audit' },
     children: [
       {
         path: '',
@@ -19,11 +22,11 @@ export const auditRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/get-started/RoleGetStarted.vue'),
         meta: { roleIdentity: 'merchant_audit' },
       },
-      {
-        path: 'dashboard',
-        name: 'audit.dashboard',
-        component: () => import('@/pages/audit/DashboardStub.vue'),
-      },
+      // Phase UI-07 removed `audit.dashboard`. It rendered `DashboardStub.vue` — a literal
+      // "Phase 4 stub" placeholder — so the Audit Dashboard contract page (§12.4.1) was exposed
+      // as a live route that implemented nothing. UI/UX plan §7.2 forbids a planned page from
+      // creating a dead or fake destination. The contract entry `merchant_audit.dashboard` now
+      // reserves the route identity with `implementation_status: planned`; UI-15 implements it.
       // Phase 19 — Audit read + review + export surfaces. All read-only over source
       // records; only flagged-review metadata + export request/revoke may mutate.
       {

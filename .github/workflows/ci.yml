@@ -311,6 +311,18 @@ jobs:
       - name: Contract — UI-06 landing audit artifacts are current (Phase UI-06)
         run: node scripts/generate-ui06-artifacts.mjs --check
 
+      # Phase UI-07: the typed navigation registry, the 160 screen specifications and the contract
+      # matrices are all DERIVED from docs/frontend/navigation/servana-user-account-navigation-map.yaml,
+      # and the router is read through Vite's SSR transform rather than parsed from source. `--check`
+      # re-derives everything in memory and fails on any drift, so the contract the PHP tests assert
+      # against cannot diverge from the router it describes.
+      - name: Contract — UI-07 navigation and screen contract is current (Phase UI-07)
+        run: npm run nav:check
+
+      # And prove those guards still reject the defects they exist to catch.
+      - name: Contract — UI-07 contract negative controls
+        run: npm run nav:negative-controls
+
       - name: Unit tests — Vitest
         run: npm run test
 

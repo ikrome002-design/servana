@@ -101,21 +101,32 @@ const P23_VERIFIED_PHASES = [
     // exception, NOT independent approval. Reconciled live on the
     // phase-ui-06-public-landing-pages branch.
     'UI-05',
+    // UI-06 merged as PR #56, squash 6b67ad2e1cc2c1031a89dc8d82902a025feac721, sole parent
+    // e6664f2ec1c60e55fa27c0a40fa2685a6442932f, final head e7cac3bf39d8a905094768f281b9343de96a29d3
+    // whose tree a83361024c60bb83e2e961de454d6bdc4f99dc6c equals the merge tree, merged
+    // 2026-08-04T17:09:51Z. The earlier run 30917088915 failed on two EXTERNAL dependency
+    // advisories (a transitive dev-only brace-expansion; Guzzle, fixed in 7.15.2) and an E2E job
+    // CANCELLED at a stale 20-minute wall-clock budget with no failing test — not a product
+    // defect. Final CI run 30924581598 (five checks SUCCESS); governance comment 5182250114;
+    // reviewDecision blank with 0 submitted and 0 approving reviews — a solo-maintainer
+    // exception, NOT independent approval. Reconciled live on the
+    // phase-ui-07-navigation-screen-contracts branch.
+    'UI-06',
 ];
 
 /**
  * The corrective UI/UX programme (Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md
- * §25). UI-00 … UI-05 are merged and verified; UI-06 is in flight; UI-07 … UI-17 have
+ * §25). UI-00 … UI-06 are merged and verified; UI-07 is in flight; UI-08 … UI-17 have
  * not started. They are listed here so a UI requirement can be deferred to a NAMED owner phase
  * instead of disappearing from the matrix.
  *
  * @var list<string>
  */
-const P23_UI_PHASES_VERIFIED = ['UI-00', 'UI-01', 'UI-02', 'UI-03', 'UI-04', 'UI-05'];
+const P23_UI_PHASES_VERIFIED = ['UI-00', 'UI-01', 'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06'];
 
 /** @var list<string> */
 const P23_UI_PHASES_UNVERIFIED = [
-    'UI-06', 'UI-07', 'UI-08',
+    'UI-07', 'UI-08',
     'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17',
 ];
 
@@ -133,9 +144,10 @@ const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '25', ...P23_UI_PHASES_U
  * as db3827b, Phase UI-00 after PR #50 merged as d3f6e10, and Phase UI-01 after PR #51 merged
  * as 413c146, Phase UI-02 after PR #52 merged as fb64ba6, Phase UI-03 after PR #53 merged as
  * the regular merge commit 00c9c1e, Phase UI-04 after PR #54 merged as the squash commit
- * e6afe832, and Phase UI-05 after PR #55 merged as the squash commit e6664f2e).
+ * e6afe832, Phase UI-05 after PR #55 merged as the squash commit e6664f2e, and Phase UI-06 after
+ * PR #56 merged as the squash commit 6b67ad2e).
  */
-const P23_IN_FLIGHT_PHASE = 'UI-06';
+const P23_IN_FLIGHT_PHASE = 'UI-07';
 
 /**
  * Phases a `deferred_future_phase` row may name: the remaining backend phases plus every UI phase

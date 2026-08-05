@@ -67,6 +67,45 @@ export async function stubAccountContextFor(page: Page, accountKey: string, disp
   );
 }
 
+/**
+ * Membership role → account key, the same mapping the frontend's `resolveRoleIdentity` applies.
+ *
+ * Phase UI-07 attached `requiresAccount` to the remaining seven authenticated route trees, so
+ * every authenticated spec now needs the host context the Laravel shell embeds — not just the
+ * platform specs UI-03 covered. This keeps that mapping in ONE place rather than repeating a
+ * role→account table in twenty-six spec files.
+ */
+export function accountKeyForRole(role: string | null | undefined, isPlatformStaff = false): string {
+  if (isPlatformStaff) return 'super_administrator';
+
+  const byRole: Record<string, string> = {
+    merchant_admin: 'merchant_administrator',
+    branch_manager: 'merchant_branch',
+    hr: 'merchant_human_resource',
+    finance: 'merchant_finance',
+    front_office: 'merchant_front_office',
+    personnel: 'merchant_personnel',
+    audit: 'merchant_audit',
+  };
+
+  return byRole[role ?? ''] ?? 'merchant_administrator';
+}
+
+/**
+ * Serve the account context for the role a spec is bootstrapping.
+ *
+ * The account is decided by the STUBBED SERVER, exactly as the real shell decides it — never by
+ * the URL the test navigates to. Changing the injected account is how a deny case is built.
+ */
+export async function stubAccountContextForRole(
+  page: Page,
+  role: string | null | undefined,
+  isPlatformStaff = false,
+): Promise<void> {
+  const accountKey = accountKeyForRole(role, isPlatformStaff);
+  await stubAccountContextFor(page, accountKey, accountKey);
+}
+
 export async function stubBootstrap(page: Page, cfg: RoleConfig): Promise<void> {
   await stubAccountContextFor(page, cfg.identity, cfg.label);
   await page.route('**/sanctum/csrf-cookie', (route) => route.fulfill({ status: 204, body: '' }));

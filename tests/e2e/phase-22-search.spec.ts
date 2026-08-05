@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import { accountKeyForRole, stubAccountContextForRole } from './support/roleBootstrap';
 import { expect, test, type Page } from '@playwright/test';
 
 /*
@@ -39,14 +40,20 @@ interface MeOpts {
 }
 
 async function stubMe(page: Page, opts: MeOpts = {}): Promise<void> {
+  // Phase UI-07: /search is a cross-account utility route, but a result LINKS INTO the owning
+  // account's tree (a client result opens /front-office/clients/:id), so the harness must serve
+  // that account's host context exactly as the shell does.
+  const membershipRole = opts.role === null ? null : (opts.role ?? 'front_office');
+  await stubAccountContextForRole(page, membershipRole, false);
   await page.route('**/sanctum/csrf-cookie', (r) => r.fulfill({ status: 204, body: '' }));
   await page.route('**/api/v1/me', (r) =>
     r.fulfill(ok({
       data: {
         user: { id: '01JUSER0000000000000000000', email: 'u@citrus.co.ke', name: 'Ada', status: 'active', email_verified_at: '2026-06-14T00:00:00+00:00', is_platform_staff: false },
         merchant: { id: 'm1', name: 'Glow Studio', slug: 'glow', status: 'active', service_fee_tier: null, setup_completed_at: '2026-01-01T00:00:00Z' },
-        membership: opts.role === null ? null : { id: 'mm1', role: opts.role ?? 'merchant_front_office', status: 'active' },
-        memberships: opts.role === null ? [] : [{ id: 'mm1', role: opts.role ?? 'merchant_front_office', status: 'active' }],
+        membership: membershipRole === null ? null : { id: 'mm1', role: membershipRole, status: 'active' },
+        memberships: membershipRole === null ? [] : [{ id: 'mm1', role: membershipRole, status: 'active' }],
+        account_keys: membershipRole === null ? [] : [accountKeyForRole(membershipRole, false)],
         permissions: opts.permissions ?? ['client.view', 'front_office.search', 'invoice.view'],
         setup: { required: false, current_step: null, completed_at: null },
         branch_ids: opts.branchIds ?? ['b1'],

@@ -53,13 +53,6 @@
       "declared_in": "resources/spa/src/router/routes/audit.ts"
     },
     {
-      "name": "audit.dashboard",
-      "path": "dashboard",
-      "absolute_path": "/audit/dashboard",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/audit.ts"
-    },
-    {
       "name": "audit.event-detail",
       "path": "events/:id",
       "absolute_path": "/audit/events/:id",
@@ -473,13 +466,6 @@
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.dashboard",
-      "path": "dashboard",
-      "absolute_path": "/front-office/dashboard",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
-    },
-    {
       "name": "front-office.get-started",
       "path": "get-started",
       "absolute_path": "/front-office/get-started",
@@ -741,13 +727,6 @@
       "declared_in": "resources/spa/src/router/routes/personnel.ts"
     },
     {
-      "name": "personnel.dashboard",
-      "path": "dashboard",
-      "absolute_path": "/personnel/dashboard",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/personnel.ts"
-    },
-    {
       "name": "personnel.earnings",
       "path": "earnings",
       "absolute_path": "/personnel/earnings",
@@ -793,13 +772,6 @@
       "name": "platform.billing-settings",
       "path": "billing-settings",
       "absolute_path": "/platform/billing-settings",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/platform.ts"
-    },
-    {
-      "name": "platform.dashboard",
-      "path": "dashboard",
-      "absolute_path": "/platform/dashboard",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/platform.ts"
     },

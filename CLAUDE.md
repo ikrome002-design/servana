@@ -84,6 +84,8 @@ document already defines — read the file.
 | Brand identity | `docs/brand/Servana Brand Identity.md` |
 | **UI/UX delivery plan (UI-00 … UI-17)** | `Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md` (root) |
 | **Binding navigation map (160 pages)** | `docs/frontend/navigation/servana-user-account-navigation-maps.md` — generated; edit Appendix A of the UI/UX plan instead |
+| **Canonical 160-page contract (UI-07)** | `docs/frontend/navigation/servana-user-account-navigation-map.yaml` — the one **handwritten** machine-readable authority; pinned to the human map above by `Ui07NavigationContractTest` |
+| UI-07 generated projections | `resources/spa/src/navigation/navigationRegistry.generated.ts`, `docs/frontend/screens/contract/{account}/{screen_key}.md` (160), `docs/frontend/audits/ui-07/*.json` ← `npm run nav:generate` (`nav:check`, `nav:negative-controls`) |
 | UI source inventories (generated) | `docs/frontend/source-inventory/{navigation-map,role-content,brand-assets,landing-images}.json` |
 | UI source generator | `node scripts/generate-ui-source-inventory.mjs` (`--check` for staleness) |
 | **Content/asset pipeline contracts (UI-05)** | `docs/frontend/content/{README,content-contract,legal-preservation-contract,image-pipeline-contract}.md` |
@@ -298,6 +300,9 @@ npm run content:check      # fail if the generated content artifacts are stale
 npm run assets:generate    # re-derive the landing-image manifest and derivatives
 npm run assets:check       # fail if a manifest path, hash or derivative is stale
 node scripts/ui05-negative-controls.mjs   # prove the UI-05 generator guards still fire
+npm run nav:generate       # rebuild the UI-07 navigation registry, 160 screen specs and matrices
+npm run nav:check          # fail if any UI-07 projection is stale
+npm run nav:negative-controls   # prove the UI-07 contract guards still fire
 ```
 Never hand-edit anything under `resources/spa/src/content/generated/` or
 `public/assets/landing_page_images/generated/` — change the source and regenerate.

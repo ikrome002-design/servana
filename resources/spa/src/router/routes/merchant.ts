@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { requiresActiveMerchant, requiresAuth, requiresPendingSetup } from '@/router/guards';
+import { requiresAccount, requiresActiveMerchant, requiresAuth, requiresPendingSetup } from '@/router/guards';
 
 export const merchantRoutes: RouteRecordRaw[] = [
   // First-time setup wizard (Scope §3.2). Standalone page (no merchant nav),
@@ -14,12 +14,17 @@ export const merchantRoutes: RouteRecordRaw[] = [
     alias: ['/setup'],
     name: 'onboarding.first-time-setup',
     component: () => import('@/pages/onboarding/FirstTimeSetup.vue'),
-    beforeEnter: [requiresAuth, requiresPendingSetup],
+    // Phase UI-07: first-time setup is contract page §6.4.1 and belongs to the Merchant
+    // Administrator account, so it carries the account guard like the rest of that tree.
+    beforeEnter: [requiresAuth, requiresAccount('merchant_administrator'), requiresPendingSetup],
+    meta: { accountKey: 'merchant_administrator' },
   },
   {
     path: '/merchant',
     component: () => import('@/layouts/MerchantLayout.vue'),
-    beforeEnter: [requiresAuth, requiresActiveMerchant],
+    // Phase UI-07 — the account guard UI-03 deferred to this phase.
+    beforeEnter: [requiresAuth, requiresActiveMerchant, requiresAccount('merchant_administrator')],
+    meta: { accountKey: 'merchant_administrator' },
     children: [
       {
         path: '',

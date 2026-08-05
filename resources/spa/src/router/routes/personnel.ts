@@ -1,11 +1,14 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { requiresActiveMerchant, requiresAuth } from '@/router/guards';
+import { requiresAccount, requiresActiveMerchant, requiresAuth } from '@/router/guards';
 
 export const personnelRoutes: RouteRecordRaw[] = [
   {
     path: '/personnel',
     component: () => import('@/layouts/PersonnelLayout.vue'),
-    beforeEnter: [requiresAuth, requiresActiveMerchant],
+    // Phase UI-07 — the account guard UI-03 deferred to this phase. Personnel is strictly
+    // own-scope, so rendering this shell for another account was the widest of the seven gaps.
+    beforeEnter: [requiresAuth, requiresActiveMerchant, requiresAccount('merchant_personnel')],
+    meta: { accountKey: 'merchant_personnel' },
     children: [
       {
         path: '',
@@ -19,11 +22,10 @@ export const personnelRoutes: RouteRecordRaw[] = [
         component: () => import('@/pages/get-started/RoleGetStarted.vue'),
         meta: { roleIdentity: 'merchant_personnel' },
       },
-      {
-        path: 'dashboard',
-        name: 'personnel.dashboard',
-        component: () => import('@/pages/personnel/DashboardStub.vue'),
-      },
+      // Phase UI-07 removed `personnel.dashboard`: it rendered the "Phase 4 stub" placeholder,
+      // exposing contract page §11.4.1 as a live route that implemented nothing (UI/UX plan
+      // §7.2). `merchant_personnel.dashboard` reserves the identity as `planned`; UI-14
+      // implements it.
       {
         path: 'appointments',
         name: 'personnel.appointments',

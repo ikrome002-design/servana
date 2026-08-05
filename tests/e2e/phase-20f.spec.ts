@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import { accountKeyForRole, stubAccountContextForRole } from './support/roleBootstrap';
 import { expect, test, type Page } from '@playwright/test';
 
 /*
@@ -46,7 +47,12 @@ interface MeOpts {
   isPlatformStaff?: boolean;
 }
 
-async function stubMe(page: Page, opts: MeOpts = {}): Promise<void> {
+async function stubMe(page: Page, opts: MeOpts = {
+}): Promise<void> {
+  // Phase UI-07: the account guard now covers every authenticated tree, so this spec must
+  // serve the host context the Laravel shell embeds, exactly as it already stubs /me.
+  await stubAccountContextForRole(page, opts.role, opts.isPlatformStaff ?? false);
+
   const isPlatformStaff = opts.isPlatformStaff ?? false;
   await page.route('**/sanctum/csrf-cookie', (r) => r.fulfill({ status: 204, body: '' }));
   await page.route('**/api/v1/me', (r) =>
@@ -66,6 +72,7 @@ async function stubMe(page: Page, opts: MeOpts = {}): Promise<void> {
             : { id: 'm1', name: 'Glow Studio', slug: 'glow', status: 'active', service_fee_tier: null, setup_completed_at: '2026-01-01T00:00:00Z' },
           membership: opts.role ? { id: 'mm1', role: opts.role, status: 'active' } : null,
           memberships: opts.role ? [{ id: 'mm1', role: opts.role, status: 'active' }] : [],
+          account_keys: [accountKeyForRole(opts.role, opts.isPlatformStaff ?? false)],
           permissions: opts.permissions ?? [],
           setup: { required: false, current_step: null, completed_at: null },
           branch_ids: ['b1'],

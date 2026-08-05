@@ -272,17 +272,50 @@ it('classifies every implementation claim exactly once from the permitted vocabu
      | existed AT AUDIT TIME is classified, and no claim refers to a screen that does not exist.
      | Rows added afterwards belong to the phase that added them and carry their own proof.
      */
+    /*
+     | REGISTERED REMOVALS. A screen may leave the inventory, but never silently: the UI-01
+     | register is frozen, so a claim it carries that no longer resolves must be accounted for
+     | here, by the phase that removed the screen, with the evidence for the removal.
+     |
+     | This is an explicit register, not an exemption. A removal nobody recorded still fails, and
+     | the case below fails again the moment a registered key reappears in the inventory — which
+     | forces the entry out rather than letting it rot.
+     */
+    $registeredRemovals = [
+        // Phase UI-07, defect UI07-ROUTE-001. Each of these four routes rendered
+        // `DashboardStub.vue` — a six-line component reading "Phase 4 stub — implementation in
+        // later phases" — so four contract pages were exposed as live routes that implemented
+        // nothing, which UI/UX plan §7.2 and §13.5 forbid. The routes and the dead components
+        // were removed; the canonical navigation contract reserves each page's route identity
+        // with `implementation_status: planned` and a named owner phase, so none of them can be
+        // silently renamed or quietly forgotten.
+        'platform-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-08; docs/frontend/audits/ui-07/defect-closure.json',
+        'front-office-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-13; docs/frontend/audits/ui-07/defect-closure.json',
+        'personnel-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-14; docs/frontend/audits/ui-07/defect-closure.json',
+        'audit-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-15; docs/frontend/audits/ui-07/defect-closure.json',
+    ];
+
     $inventoryKeys = array_column($inventory['screens'], 'key');
     $claimKeys = array_column($claims, 'claim_key');
 
-    expect(array_diff($claimKeys, $inventoryKeys))->toBe(
+    expect(array_values(array_diff($claimKeys, $inventoryKeys, array_keys($registeredRemovals))))->toBe(
         [],
         'The audit classifies a screen that is no longer in the inventory — the register may not be rewritten, so this means a screen was REMOVED and its removal needs its own evidence.',
     );
 
+    // A registered removal must still BE a removal. If the screen returns, this fails and the
+    // entry must go.
+    $resurrected = array_values(array_intersect(array_keys($registeredRemovals), $inventoryKeys));
+    expect($resurrected)->toBe(
+        [],
+        'A screen registered as removed is back in the inventory — remove it from the registered-removal list.',
+    );
+
+    // Claims may exceed the live inventory only by the screens that were registered as removed
+    // above; anything beyond that means the frozen audit was edited.
     expect(count($claims))->toBeLessThanOrEqual(
-        count($inventory['screens']),
-        'There are more classified claims than screens, which is impossible unless the audit was edited.',
+        count($inventory['screens']) + count($registeredRemovals),
+        'There are more classified claims than screens plus registered removals, which is impossible unless the audit was edited.',
     );
 
     $keys = [];

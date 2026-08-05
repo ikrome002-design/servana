@@ -1,0 +1,225 @@
+{
+  "schema": "ui-07.audit.v1",
+  "phase": "UI-07",
+  "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
+  "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+  "canonical_authority_sha256": "f28ca6fcbbed367dc15a534a35dfc7fa8494ef8ac41f27b2f7e27910ef3db8a5",
+  "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
+  "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
+  "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
+  "permission_matrix_sha256": "c3877f0e671abdb1f8dc0be9bd4ae06b4aed5bf36c44e427e3fa0e062099f166",
+  "screen_inventory_sha256": "0871fc7bce5d6999cb15d1931a54a01a4c385bd794cae386ac32d0c36a200281",
+  "purpose": "Implementation status across the contract, and what each status means at runtime.",
+  "allowed_statuses": [
+    "disabled_by_gate",
+    "implemented",
+    "planned",
+    "removed_by_authority"
+  ],
+  "status_semantics": {
+    "implemented": "A real runtime route in this account tree renders a real, non-placeholder component.",
+    "planned": "No runtime route and no navigation link. The contract identity is reserved only.",
+    "disabled_by_gate": "Rendered disabled, naming the exact gate. No live destination, no partner runtime.",
+    "removed_by_authority": "Absent from the router, all navigation surfaces and every live audit set."
+  },
+  "totals": {
+    "disabled_by_gate": 25,
+    "implemented": 77,
+    "planned": 58
+  },
+  "by_account": {
+    "super_administrator": {
+      "disabled_by_gate": 5,
+      "implemented": 10,
+      "planned": 7
+    },
+    "merchant_administrator": {
+      "disabled_by_gate": 8,
+      "implemented": 9,
+      "planned": 6
+    },
+    "merchant_branch": {
+      "disabled_by_gate": 3,
+      "implemented": 6,
+      "planned": 9
+    },
+    "merchant_human_resource": {
+      "disabled_by_gate": 2,
+      "implemented": 9,
+      "planned": 8
+    },
+    "merchant_finance": {
+      "disabled_by_gate": 3,
+      "implemented": 17,
+      "planned": 4
+    },
+    "merchant_front_office": {
+      "disabled_by_gate": 2,
+      "implemented": 13,
+      "planned": 4
+    },
+    "merchant_personnel": {
+      "disabled_by_gate": 1,
+      "implemented": 6,
+      "planned": 13
+    },
+    "merchant_audit": {
+      "disabled_by_gate": 1,
+      "implemented": 7,
+      "planned": 7
+    }
+  },
+  "disabled_by_gate": [
+    {
+      "key": "super_administrator.billing-reconciliation-exceptions",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-08",
+      "label": "Billing Reconciliation Exceptions"
+    },
+    {
+      "key": "super_administrator.integrations",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-08",
+      "label": "Integrations Health"
+    },
+    {
+      "key": "super_administrator.integrations-refer-and-earn-qualifications",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-08",
+      "label": "Refer & Earn Qualification Decisions"
+    },
+    {
+      "key": "super_administrator.reports",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-08",
+      "label": "Platform Reports"
+    },
+    {
+      "key": "super_administrator.notifications",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-08",
+      "label": "Notifications"
+    },
+    {
+      "key": "merchant_administrator.subscription-payment-attempts",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-09",
+      "label": "Billing Payment Attempts"
+    },
+    {
+      "key": "merchant_administrator.subscription-recovery",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-09",
+      "label": "Billing Recovery"
+    },
+    {
+      "key": "merchant_administrator.reports",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-09",
+      "label": "Merchant Reports"
+    },
+    {
+      "key": "merchant_administrator.reports-branches",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-09",
+      "label": "Branch Performance"
+    },
+    {
+      "key": "merchant_administrator.reports-services",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-09",
+      "label": "Service Revenue"
+    },
+    {
+      "key": "merchant_administrator.reports-staff",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-09",
+      "label": "Staff Performance"
+    },
+    {
+      "key": "merchant_administrator.reports-daily",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-09",
+      "label": "Daily Reports Archive"
+    },
+    {
+      "key": "merchant_administrator.notifications",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-09",
+      "label": "Notifications"
+    },
+    {
+      "key": "merchant_branch.reports",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-10",
+      "label": "Branch Reports"
+    },
+    {
+      "key": "merchant_branch.subscription-payment",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-10",
+      "label": "Subscription Payment and Recovery"
+    },
+    {
+      "key": "merchant_branch.notifications",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-10",
+      "label": "Notifications"
+    },
+    {
+      "key": "merchant_human_resource.reports",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-11",
+      "label": "HR Reports"
+    },
+    {
+      "key": "merchant_human_resource.notifications",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-11",
+      "label": "Notifications"
+    },
+    {
+      "key": "merchant_finance.subscription-payment-attempts",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-12",
+      "label": "Subscription Payment Attempts"
+    },
+    {
+      "key": "merchant_finance.reports",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-12",
+      "label": "Finance Reports"
+    },
+    {
+      "key": "merchant_finance.notifications",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-12",
+      "label": "Notifications"
+    },
+    {
+      "key": "merchant_front_office.subscription-payment",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-13",
+      "label": "Subscription Payment and Recovery"
+    },
+    {
+      "key": "merchant_front_office.notifications",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-13",
+      "label": "Notifications"
+    },
+    {
+      "key": "merchant_personnel.notifications",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-14",
+      "label": "Notifications"
+    },
+    {
+      "key": "merchant_audit.notifications",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-15",
+      "label": "Notifications"
+    }
+  ],
+  "removed_by_authority": []
+}

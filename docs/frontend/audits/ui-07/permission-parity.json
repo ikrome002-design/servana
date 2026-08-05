@@ -1,0 +1,525 @@
+{
+  "schema": "ui-07.audit.v1",
+  "phase": "UI-07",
+  "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
+  "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+  "canonical_authority_sha256": "f28ca6fcbbed367dc15a534a35dfc7fa8494ef8ac41f27b2f7e27910ef3db8a5",
+  "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
+  "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
+  "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
+  "permission_matrix_sha256": "c3877f0e671abdb1f8dc0be9bd4ae06b4aed5bf36c44e427e3fa0e062099f166",
+  "screen_inventory_sha256": "0871fc7bce5d6999cb15d1931a54a01a4c385bd794cae386ac32d0c36a200281",
+  "purpose": "Every permission referenced by the contract exists in the canonical matrix. UI-07 creates, activates, retires and re-grants NO permission key.",
+  "permission_matrix_keys": 167,
+  "contract_permission_references": [
+    "appointment.view",
+    "audit.branch_events.view",
+    "audit.compensation.view",
+    "audit.export",
+    "audit.finance.view",
+    "branch.cash_up.submit",
+    "branch.dashboard.view",
+    "branch.profile.view",
+    "cash_up.view",
+    "client.create",
+    "client.view",
+    "compensation.liability.view",
+    "compensation.plan.view",
+    "customer_payment.record",
+    "customer_payment.validate",
+    "customer_payment.view",
+    "earnings_query.respond",
+    "finance.audit.view",
+    "finance_dispute.manage",
+    "finance_export.create",
+    "invoice.create",
+    "invoice.view",
+    "merchant.branch.view_all",
+    "merchant.compensation_summary.view",
+    "merchant.period_reopen.approve_exception",
+    "merchant.profile.view",
+    "merchant.subscription.invoice.view",
+    "merchant.subscription.plan_change",
+    "merchant.subscription.view",
+    "payout_run.create",
+    "payout_run.verify",
+    "period_lock.create",
+    "personnel.availability.manage",
+    "personnel.eligibility.manage",
+    "personnel.my_appointments.view",
+    "personnel.my_earnings.view",
+    "personnel.my_queue.view",
+    "personnel.my_served_clients.view",
+    "personnel.my_sessions.view",
+    "personnel.my_sms.send",
+    "platform.billing_settings.view",
+    "platform.merchant.view",
+    "platform.plan.view",
+    "platform.preferred_personnel_fee.manage",
+    "platform.promotion.manage",
+    "platform.registration_monitor.view",
+    "queue.create",
+    "queue.view",
+    "receipt.view",
+    "refund.create",
+    "service.view",
+    "service_session.view",
+    "staff.invite",
+    "staff.role.assign",
+    "staff.view"
+  ],
+  "unknown_permission_references": [],
+  "pages_without_a_proven_permission": [
+    {
+      "key": "super_administrator.dashboard",
+      "implementation_status": "planned",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.get-started",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.billing-sms",
+      "implementation_status": "planned",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.billing-subscriptions",
+      "implementation_status": "planned",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.billing-reconciliation-exceptions",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.integrations",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.integrations-refer-and-earn-qualifications",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.reports",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.audit",
+      "implementation_status": "planned",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.platform-access",
+      "implementation_status": "planned",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.feature-flags",
+      "implementation_status": "planned",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.notifications",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "super_administrator.account",
+      "implementation_status": "planned",
+      "owner_phase": "UI-08"
+    },
+    {
+      "key": "merchant_administrator.setup",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.dashboard",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.get-started",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.staff",
+      "implementation_status": "planned",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.subscription-invoice-detail",
+      "implementation_status": "planned",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.subscription-payment-attempts",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.subscription-recovery",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.reports",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.reports-branches",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.reports-services",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.reports-staff",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.compensation-payout-approvals",
+      "implementation_status": "planned",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.reports-daily",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.notifications",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_administrator.account",
+      "implementation_status": "planned",
+      "owner_phase": "UI-09"
+    },
+    {
+      "key": "merchant_branch.dashboard",
+      "implementation_status": "planned",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.get-started",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.branch-day",
+      "implementation_status": "planned",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.finance-invoices",
+      "implementation_status": "planned",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.finance-payments",
+      "implementation_status": "planned",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.finance-receipts",
+      "implementation_status": "planned",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.reports",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.audit",
+      "implementation_status": "planned",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.subscription-payment",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.notifications",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_branch.account",
+      "implementation_status": "planned",
+      "owner_phase": "UI-10"
+    },
+    {
+      "key": "merchant_human_resource.dashboard",
+      "implementation_status": "planned",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.get-started",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.staff-detail-edit",
+      "implementation_status": "planned",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.staff-detail-lifecycle",
+      "implementation_status": "planned",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.compensation-detail",
+      "implementation_status": "planned",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.compensation-setup",
+      "implementation_status": "planned",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.compensation-history",
+      "implementation_status": "planned",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.reports",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.audit",
+      "implementation_status": "planned",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.notifications",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_human_resource.account",
+      "implementation_status": "planned",
+      "owner_phase": "UI-11"
+    },
+    {
+      "key": "merchant_finance.dashboard",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_finance.get-started",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_finance.tasks",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_finance.payments-duplicates",
+      "implementation_status": "planned",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_finance.payments-partial-split",
+      "implementation_status": "planned",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_finance.subscription",
+      "implementation_status": "planned",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_finance.subscription-payment-attempts",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_finance.reports",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_finance.notifications",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_finance.settings",
+      "implementation_status": "planned",
+      "owner_phase": "UI-12"
+    },
+    {
+      "key": "merchant_front_office.dashboard",
+      "implementation_status": "planned",
+      "owner_phase": "UI-13"
+    },
+    {
+      "key": "merchant_front_office.get-started",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-13"
+    },
+    {
+      "key": "merchant_front_office.search",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-13"
+    },
+    {
+      "key": "merchant_front_office.queue-transfer",
+      "implementation_status": "planned",
+      "owner_phase": "UI-13"
+    },
+    {
+      "key": "merchant_front_office.activity",
+      "implementation_status": "planned",
+      "owner_phase": "UI-13"
+    },
+    {
+      "key": "merchant_front_office.subscription-payment",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-13"
+    },
+    {
+      "key": "merchant_front_office.notifications",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-13"
+    },
+    {
+      "key": "merchant_front_office.account",
+      "implementation_status": "planned",
+      "owner_phase": "UI-13"
+    },
+    {
+      "key": "merchant_personnel.dashboard",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.get-started",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.work-history",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.work-preferred-requests",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.messages",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.earnings-commission",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.earnings-salary",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.earnings-payouts",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.earnings-terms",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.earnings-statements",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.earnings-queries",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.availability",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.notifications",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_personnel.account",
+      "implementation_status": "planned",
+      "owner_phase": "UI-14"
+    },
+    {
+      "key": "merchant_audit.dashboard",
+      "implementation_status": "planned",
+      "owner_phase": "UI-15"
+    },
+    {
+      "key": "merchant_audit.get-started",
+      "implementation_status": "implemented",
+      "owner_phase": "UI-15"
+    },
+    {
+      "key": "merchant_audit.audit-operations",
+      "implementation_status": "planned",
+      "owner_phase": "UI-15"
+    },
+    {
+      "key": "merchant_audit.audit-access",
+      "implementation_status": "planned",
+      "owner_phase": "UI-15"
+    },
+    {
+      "key": "merchant_audit.audit-privacy-preferred",
+      "implementation_status": "planned",
+      "owner_phase": "UI-15"
+    },
+    {
+      "key": "merchant_audit.audit-integrity",
+      "implementation_status": "planned",
+      "owner_phase": "UI-15"
+    },
+    {
+      "key": "merchant_audit.notifications",
+      "implementation_status": "disabled_by_gate",
+      "owner_phase": "UI-15"
+    },
+    {
+      "key": "merchant_audit.account",
+      "implementation_status": "planned",
+      "owner_phase": "UI-15"
+    }
+  ],
+  "boundary": "Frontend permission metadata drives discoverability only. Its absence never grants backend access; its presence never authorizes anything (ADR-017, Plan §9 rule 2)."
+}

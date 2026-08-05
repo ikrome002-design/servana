@@ -25,7 +25,10 @@
     "content:generate": "node scripts/generate-role-content.mjs",
     "content:check": "node scripts/generate-role-content.mjs --check",
     "assets:generate": "node scripts/generate-landing-images.mjs",
-    "assets:check": "node scripts/generate-landing-images.mjs --check"
+    "assets:check": "node scripts/generate-landing-images.mjs --check",
+    "nav:generate": "node scripts/generate-ui07-navigation-contract.mjs",
+    "nav:check": "node scripts/generate-ui07-navigation-contract.mjs --check",
+    "nav:negative-controls": "node scripts/ui07-negative-controls.mjs"
   },
   "dependencies": {
     "@heroicons/vue": "2.2.0",
