@@ -253,12 +253,14 @@ test.describe('Platform registration monitoring and governance', () => {
   test('lists registrations and shows operational + billing status separately', async ({ page }) => {
     await stubMe(page, { isPlatformStaff: true, permissions: PLATFORM_PERMS });
     await stubGovernance(page);
-    await page.goto('/platform/registration-monitoring');
-    await expect(page.getByRole('tab', { name: 'Registration monitoring' })).toBeVisible();
-    await expect(page.getByText('Acme Salon')).toBeVisible();
+    // Increment 7B: registration monitoring, the directory and the merchant detail are three
+    // contract pages at three addresses. `/platform/registration-monitoring` still resolves to the
+    // first through the compatibility redirect.
+    await page.goto('/merchants/registrations');
+    await expect(page.getByTestId('platform-merchant-registrations-screen')).toBeVisible();
+    await expect(page.getByRole('tab')).toHaveCount(0);
 
-    await page.getByRole('tab', { name: 'Merchant directory' }).click();
-    await page.getByTestId('merchant-row-m-acme').click();
+    await page.goto('/merchants/m-acme');
     await expect(page.getByTestId('operational-status')).toHaveText('Active');
     await expect(page.getByTestId('detail-billing-status')).toHaveText('Suspended');
   });
@@ -267,9 +269,7 @@ test.describe('Platform registration monitoring and governance', () => {
     await stubMe(page, { isPlatformStaff: true, permissions: PLATFORM_PERMS });
     await stubGovernance(page);
     await page.route('**/api/v1/platform/merchants/m-acme/suspend', (r) => r.fulfill(err(403, 'mfa_challenge_required', 'A fresh step-up is required.')));
-    await page.goto('/platform/registration-monitoring');
-    await page.getByRole('tab', { name: 'Merchant directory' }).click();
-    await page.getByTestId('merchant-row-m-acme').click();
+    await page.goto('/merchants/m-acme');
     await page.getByTestId('action-suspend').click();
 
     // Confirm is disabled until a reason is entered (mandatory reason).
@@ -287,9 +287,7 @@ test.describe('Platform registration monitoring and governance', () => {
     await stubGovernance(page, suspended);
     await page.route(/\/api\/v1\/platform\/merchants(\?|$)/, (r) => r.fulfill(ok({ data: [suspended] })));
     await page.route('**/api/v1/platform/merchants/m-acme/reactivate', (r) => r.fulfill(ok({ data: { ...suspended, operational_status: 'active' } })));
-    await page.goto('/platform/registration-monitoring');
-    await page.getByRole('tab', { name: 'Merchant directory' }).click();
-    await page.getByTestId('merchant-row-m-acme').click();
+    await page.goto('/merchants/m-acme');
     await expect(page.getByTestId('action-reactivate')).toBeVisible();
     await page.getByTestId('action-reactivate').click();
     await page.locator('#governance-reason').fill('Investigation cleared');
@@ -300,8 +298,7 @@ test.describe('Platform registration monitoring and governance', () => {
   test('shows no merchant-create, first-admin, impersonation or payment control', async ({ page }) => {
     await stubMe(page, { isPlatformStaff: true, permissions: PLATFORM_PERMS });
     await stubGovernance(page);
-    await page.goto('/platform/registration-monitoring');
-    await page.getByRole('tab', { name: 'Merchant directory' }).click();
+    await page.goto('/merchants');
     for (const forbidden of ['New merchant', 'Create merchant', 'Add merchant', 'Impersonate', 'Record payment', 'First administrator']) {
       await expect(page.getByRole('button', { name: forbidden })).toHaveCount(0);
     }
@@ -313,8 +310,15 @@ test.describe('Platform registration monitoring and governance', () => {
 test.describe('Role boundary', () => {
   test('a merchant identity is denied the platform governance route', async ({ page }) => {
     await stubMe(page, { role: 'merchant_admin', permissions: MERCHANT_PERMS });
-    await page.goto('/platform/registration-monitoring');
-    await expect(page.getByText('do not have access')).toBeVisible();
+    await page.goto('/merchants');
+      /*
+       * Phase UI-08 Increment 7B made the router host-scoped, so this refusal is now STRICTER
+       * than a denial page: the account that owns this route has no tree registered on the
+       * served host, so the address does not exist there at all. The surface still never
+       * mounts, which is what this case is about.
+       */
+    await expect(page.getByTestId('public-not-found')).toBeVisible();
+    await expect(page.getByTestId('platform-merchant-directory-screen')).toHaveCount(0);
     await expect(page.getByRole('tab')).toHaveCount(0);
   });
 });
@@ -344,9 +348,7 @@ test.describe('Accessibility, responsive, keyboard', () => {
   test('governance dialog manages and restores focus and is axe-clean', async ({ page }) => {
     await stubMe(page, { isPlatformStaff: true, permissions: PLATFORM_PERMS });
     await stubGovernance(page);
-    await page.goto('/platform/registration-monitoring');
-    await page.getByRole('tab', { name: 'Merchant directory' }).click();
-    await page.getByTestId('merchant-row-m-acme').click();
+    await page.goto('/merchants/m-acme');
 
     const trigger = page.getByTestId('action-suspend');
     await trigger.click();

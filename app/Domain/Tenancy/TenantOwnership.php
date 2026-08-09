@@ -221,6 +221,22 @@ final class TenantOwnership
         // Phase 20A — platform-scoped billing configuration (Plan §13.9/§13.10/§47).
         // Super-Admin governed; no merchant/branch scope exists for platform config.
         'platform_billing_settings' => 'platform-scoped billing configuration (effective-dated; no merchant scope)',
+        // COR-UI08-001 (Phase UI-08) — the platform SMS pricing series. Platform-governed
+        // configuration; it prices merchant usage but carries no merchant ownership itself.
+        'platform_sms_billing_rules' => 'platform-scoped SMS pricing rules (effective-dated, append-only; no merchant scope)',
+        // COR-UI08-001 (Phase UI-08) — internal platform access. These describe who administers the
+        // PLATFORM; a platform administrator holds no merchant structure of any kind, so a
+        // merchant_id column would be structurally wrong rather than merely absent.
+        'platform_access_memberships' => 'platform-scoped internal access lifecycle (identity-owned; no merchant scope)',
+        'platform_access_invitations' => 'platform-scoped internal access invitations (no merchant scope)',
+        'platform_access_permission_overrides' => 'platform-scoped deny-only permission overrides (no merchant scope)',
+        // COR-UI08-001 (Phase UI-08) — platform feature flags. A target row may REFERENCE a merchant
+        // ULID, but the flag itself is platform rollout configuration and carries no merchant
+        // ownership, exactly like promotional_discount_targets above.
+        'platform_feature_flags' => 'platform-scoped feature-flag rollout state (no merchant scope)',
+        'platform_feature_flag_targets' => 'platform-scoped flag target rows (a target may reference a merchant; the flag is platform config; no merchant ownership)',
+        'platform_feature_flag_change_requests' => 'platform-scoped maker/checker change requests (no merchant scope)',
+        'platform_feature_flag_history' => 'platform-scoped append-only flag governance history (no merchant scope)',
         'subscription_plans' => 'platform-global plan catalogue (non-price metadata; no merchant scope)',
         'subscription_plan_prices' => 'platform-global sole plan-price source (ADR-011; no merchant scope)',
         'plan_entitlements' => 'platform-global per-plan entitlements (§20 substrate; no merchant scope)',

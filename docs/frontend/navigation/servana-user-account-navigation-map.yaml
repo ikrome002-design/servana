@@ -135,12 +135,13 @@ pages:
     route_path: "/dashboard"
     screen_key_path: "contract/super_administrator/dashboard.md"
     owner_phase: UI-08
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-08 (COR-UI08-001)"
+    implementation_status: implemented
+    runtime_route_name: "platform.dashboard"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "platform.merchant.view"
     scope: platform
     requires_mfa: true
     requires_step_up: false
@@ -176,7 +177,8 @@ pages:
     runtime_route_name: "platform.get-started"
     route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "platform.billing_settings.view"
     scope: platform
     requires_mfa: true
     requires_step_up: false
@@ -210,13 +212,13 @@ pages:
     backend_owner_phase: "Phase 20A"
     implementation_status: implemented
     runtime_route_name: "platform.billing-settings"
-    route_delivery: "consolidated"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
       - "platform.billing_settings.view"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -246,14 +248,14 @@ pages:
     owner_phase: UI-08
     backend_owner_phase: "Phase 20A"
     implementation_status: implemented
-    runtime_route_name: "platform.billing-settings"
-    route_delivery: "consolidated"
+    runtime_route_name: "platform.billing-plans"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
       - "platform.plan.view"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -283,14 +285,14 @@ pages:
     owner_phase: UI-08
     backend_owner_phase: "Phase 20A"
     implementation_status: implemented
-    runtime_route_name: "platform.billing-settings"
-    route_delivery: "consolidated"
+    runtime_route_name: "platform.billing-prices"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
       - "platform.plan.view"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -320,14 +322,14 @@ pages:
     owner_phase: UI-08
     backend_owner_phase: "Phase 20C"
     implementation_status: implemented
-    runtime_route_name: "platform.promotions"
-    route_delivery: "consolidated"
+    runtime_route_name: "platform.billing-promotions"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
       - "platform.promotion.manage"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -357,14 +359,14 @@ pages:
     owner_phase: UI-08
     backend_owner_phase: "Phase 20C"
     implementation_status: implemented
-    runtime_route_name: "platform.promotions"
-    route_delivery: "consolidated"
+    runtime_route_name: "platform.billing-free-periods"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
-      - "platform.promotion.manage"
+      - "platform.free_period_offer.manage"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -394,14 +396,14 @@ pages:
     owner_phase: UI-08
     backend_owner_phase: "Phase 20A"
     implementation_status: implemented
-    runtime_route_name: "platform.billing-settings"
-    route_delivery: "consolidated"
+    runtime_route_name: "platform.billing-preferred-personnel-fees"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
       - "platform.preferred_personnel_fee.manage"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -429,15 +431,16 @@ pages:
     route_path: "/billing/sms"
     screen_key_path: "contract/super_administrator/billing-sms.md"
     owner_phase: UI-08
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-08 (COR-UI08-001)"
+    implementation_status: implemented
+    runtime_route_name: "platform.billing-sms"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "platform.billing_settings.view"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -467,8 +470,8 @@ pages:
     owner_phase: UI-08
     backend_owner_phase: "Phase 20B"
     implementation_status: implemented
-    runtime_route_name: "platform.registration-monitoring"
-    route_delivery: "consolidated"
+    runtime_route_name: "platform.merchant-registrations"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
       - "platform.registration_monitor.view"
@@ -504,8 +507,8 @@ pages:
     owner_phase: UI-08
     backend_owner_phase: "Phase 20B"
     implementation_status: implemented
-    runtime_route_name: "platform.registration-monitoring"
-    route_delivery: "consolidated"
+    runtime_route_name: "platform.merchants"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
       - "platform.merchant.view"
@@ -541,14 +544,14 @@ pages:
     owner_phase: UI-08
     backend_owner_phase: "Phase 20B"
     implementation_status: implemented
-    runtime_route_name: "platform.registration-monitoring"
-    route_delivery: "consolidated"
+    runtime_route_name: "platform.merchant-detail"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
       - "platform.merchant.view"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -576,12 +579,13 @@ pages:
     route_path: "/billing/subscriptions"
     screen_key_path: "contract/super_administrator/billing-subscriptions.md"
     owner_phase: UI-08
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-08 (COR-UI08-001)"
+    implementation_status: implemented
+    runtime_route_name: "platform.billing-subscriptions"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "platform.merchant.view"
     scope: platform
     requires_mfa: true
     requires_step_up: false
@@ -612,7 +616,7 @@ pages:
     route_path: "/billing/reconciliation-exceptions"
     screen_key_path: "contract/super_administrator/billing-reconciliation-exceptions.md"
     owner_phase: UI-08
-    backend_owner_phase: null
+    backend_owner_phase: "Phase 20D-W"
     implementation_status: disabled_by_gate
     runtime_route_name: null
     route_delivery: null
@@ -648,7 +652,7 @@ pages:
     route_path: "/integrations"
     screen_key_path: "contract/super_administrator/integrations.md"
     owner_phase: UI-08
-    backend_owner_phase: null
+    backend_owner_phase: "Phase 20D-W"
     implementation_status: disabled_by_gate
     runtime_route_name: null
     route_delivery: null
@@ -684,7 +688,7 @@ pages:
     route_path: "/integrations/refer-and-earn/qualifications"
     screen_key_path: "contract/super_administrator/integrations-refer-and-earn-qualifications.md"
     owner_phase: UI-08
-    backend_owner_phase: null
+    backend_owner_phase: "Phase 21R-B"
     implementation_status: disabled_by_gate
     runtime_route_name: null
     route_delivery: null
@@ -720,7 +724,7 @@ pages:
     route_path: "/reports"
     screen_key_path: "contract/super_administrator/reports.md"
     owner_phase: UI-08
-    backend_owner_phase: null
+    backend_owner_phase: "Phase 21N"
     implementation_status: disabled_by_gate
     runtime_route_name: null
     route_delivery: null
@@ -756,12 +760,13 @@ pages:
     route_path: "/audit"
     screen_key_path: "contract/super_administrator/audit.md"
     owner_phase: UI-08
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 19"
+    implementation_status: implemented
+    runtime_route_name: "platform.audit"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "platform.audit.view"
     scope: platform
     requires_mfa: true
     requires_step_up: false
@@ -792,15 +797,16 @@ pages:
     route_path: "/platform-access"
     screen_key_path: "contract/super_administrator/platform-access.md"
     owner_phase: UI-08
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-08 (COR-UI08-001)"
+    implementation_status: implemented
+    runtime_route_name: "platform.platform-access"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "platform.internal_access.view"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -828,15 +834,16 @@ pages:
     route_path: "/platform/feature-flags"
     screen_key_path: "contract/super_administrator/feature-flags.md"
     owner_phase: UI-08
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-08 (COR-UI08-001)"
+    implementation_status: implemented
+    runtime_route_name: "platform.feature-flags"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "platform.settings.view"
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -864,7 +871,7 @@ pages:
     route_path: "/notifications"
     screen_key_path: "contract/super_administrator/notifications.md"
     owner_phase: UI-08
-    backend_owner_phase: null
+    backend_owner_phase: "Phase 21N"
     implementation_status: disabled_by_gate
     runtime_route_name: null
     route_delivery: null
@@ -900,15 +907,15 @@ pages:
     route_path: "/account"
     screen_key_path: "contract/super_administrator/account.md"
     owner_phase: UI-08
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-03"
+    implementation_status: implemented
+    runtime_route_name: "platform.account"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all: []
     scope: platform
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null

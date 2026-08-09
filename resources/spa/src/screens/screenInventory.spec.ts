@@ -2,7 +2,10 @@ import { existsSync, readdirSync } from 'node:fs';
 import { relative, resolve, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import inventoryJson from '@docs/frontend/screens/inventory.json';
-import { router } from '@/router';
+import { createAppRouter } from '@/router';
+
+/** The inventory spans every account, so the contract reads the ALL-ACCOUNT router (Increment 7B). */
+const router = createAppRouter(null);
 
 /**
  * RUNTIME screen-inventory coverage guard (Plan §27.1, §27.3; REM-SCR-001). The JSON is

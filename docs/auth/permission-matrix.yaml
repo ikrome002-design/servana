@@ -2640,6 +2640,54 @@ keys:
       - PermissionMatrix/platform.free_period_offer.manage_allows
     negative_tests:
       - PermissionMatrix/platform.free_period_offer.manage_denies
+  platform.internal_access.manage:
+    key: platform.internal_access.manage
+    description: Manage internal Citrus Labs platform access — invite, permission change, suspend, reactivate, deactivate and session-family revocation. Never grants any merchant capability.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: true
+    audit_event: platform.internal_access.deactivated; platform.internal_access.invitation_resent; platform.internal_access.invitation_revoked; platform.internal_access.invited; platform.internal_access.permissions_changed; platform.internal_access.reactivated; platform.internal_access.sessions_revoked; platform.internal_access.suspended
+    audit_severity: crit
+    backend_policy_or_service: policy PlatformAccessPolicy (COR-UI08-001). Per-event severity is crit for deactivation, permission increase and session-family revocation; high for invite, suspend, reactivate and invitation lifecycle. The key records its maximum.
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.internal_access.manage_allows
+    negative_tests:
+      - PermissionMatrix/platform.internal_access.manage_denies
+  platform.internal_access.view:
+    key: platform.internal_access.view
+    description: View the internal Citrus Labs platform access roster, invitations, permission summary and access history.
+    implementation_status: active
+    owning_phase: null
+    canonical_successor: null
+    override_policy: revocable_only
+    scope: platform
+    billing_read_only_behavior: n/a
+    period_lock_behavior: n/a
+    entitlement_key: null
+    mfa_required: true
+    step_up_required: false
+    audit_event: none
+    audit_severity: info
+    backend_policy_or_service: policy PlatformAccessPolicy (COR-UI08-001)
+    frontend_ux_usage: visibility_only
+    default_roles:
+      - super_admin
+    maker_checker_incompatibilities: []
+    positive_tests:
+      - PermissionMatrix/platform.internal_access.view_allows
+    negative_tests:
+      - PermissionMatrix/platform.internal_access.view_denies
   platform.merchant.deactivate:
     key: platform.merchant.deactivate
     description: Deactivate (platform / merchant).

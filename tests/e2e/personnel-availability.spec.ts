@@ -147,14 +147,23 @@ test.describe('HR personnel availability', () => {
     await stubAvailability(page);
     await page.goto('/hr/availability');
 
-    await expect(page).toHaveURL(/\/access-denied/);
+    /*
+     * Phase UI-08 Increment 7B made the router host-scoped, and the outcome here is now STRICTER
+     * than a denial page: the HR tree is owned by Human Resource and the Merchant Administrator,
+     * so on a Front Office host it is never registered and `/hr/availability` does not exist at
+     * all. The screen still never mounts, which is what this case is really about.
+     */
+    await expect(page.getByTestId('public-not-found')).toBeVisible();
     // The HR screen never mounted.
     await expect(page.getByTestId('save-availability')).toHaveCount(0);
     await expect(page.getByTestId('no-permission')).toHaveCount(0);
     // Role-safe: the denial names neither the forbidden account nor the one the user holds.
     const shown = await page.locator('#app').innerText();
+    // The refusal must not name the account that OWNS the screen, nor confirm it exists.
     expect(shown).not.toContain('merchant_human_resource');
-    expect(shown).not.toContain('merchant_front_office');
+    // It may name the viewer's OWN served account — the not-found page offers a way home, and
+    // telling someone which account they are on discloses nothing they did not already have.
+    expect(shown).not.toContain('availability');
   });
 
   for (const width of [360, 768, 1280]) {

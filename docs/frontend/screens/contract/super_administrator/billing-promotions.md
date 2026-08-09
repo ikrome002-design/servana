@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `platform.promotions` at `/platform/promotions` (routes/platform.ts), delivery **consolidated**. This runtime route also serves other contract pages — the collapse recorded as `UI01-NAV-001`. Owner phase **UI-08** splits it into a dedicated page. The runtime path uses the account's path prefix rather than the host-relative contract path `/billing/promotions`; owner phase **UI-08** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `platform.billing-promotions` at `/billing/promotions` (routes/platform.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-08**
 - **Backend owner phase:** **Phase 20C**
 - **Implementation status:** `implemented`
-- **Runtime route:** `platform.promotions`
-- **Route delivery:** `consolidated`
+- **Runtime route:** `platform.billing-promotions`
+- **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `platform.promotions` (recorded in `docs/frontend/screens/platform/platform-promotions.md`).
-- **Data fields:** Consolidated Super-Administrator surface for promotional discounts and free-period offers: draft/approve/pause/resume/cancel with mandatory reason, MFA + fresh step-up (server-enforced), immutable approved terms. Backend authoritative; controls are UX-only permission gates.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `platform.billing-promotions` (recorded in `docs/frontend/screens/platform/platform-billing-promotions.md`).
+- **Data fields:** Contract page §5.4.6. Percentage or fixed-amount promotions with deterministic targeting. At most ONE discount applies to a subscription issuance, resolved server-side by the settled precedence order (merchant beats plan, plan beats billing mode, billing mode beats global), and an applied discount is captured as an immutable snapshot on the invoice it affected. Shares the Phase 20C form with free-period offers through a single-concern prop rather than a duplicated implementation.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).
@@ -51,7 +51,7 @@
 - **Branch scope:** Not branch-scoped.
 - **Own-scope:** Not own-scoped.
 - **MFA:** Required for this account.
-- **Step-up:** No route-level step-up requirement; individual mutations may still require it server-side.
+- **Step-up:** Fresh step-up required for sensitive mutations.
 - **Feature flag:** none
 - **Forbidden for:** `merchant_administrator`, `merchant_branch`, `merchant_human_resource`, `merchant_finance`, `merchant_front_office`, `merchant_personnel`, `merchant_audit`
 

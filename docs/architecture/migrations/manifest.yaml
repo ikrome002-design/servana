@@ -1647,3 +1647,119 @@ business_migrations:
     destructive: false
     verification: docs/proof/ui-04.md
     notes: "Phase UI-04 (ADR-021; UI/UX plan §12.2). One nullable column carrying the authenticated user's explicit theme choice so it can be stamped before hydration on every account host. NULLABLE WITH NO DEFAULT IS THE CONTRACT: null means 'never chose', which ADR-021 rule 2 resolves to light. A column default of 'light' would make 'never chose' indistinguishable from 'chose light' and would let a future default change silently rewrite an unexpressed preference. The vocabulary is closed at the database (Plan §9 rule 7): users_theme_preference_check permits NULL, 'light' or 'dark' only, so 'system'/'auto' are deliberately unrepresentable - ADR-021 forbids prefers-color-scheme from selecting the theme, so there must be no way to persist 'follow the OS'. OWN-SCOPE ONLY AND CARRIES NO AUTHORITY: it is a presentation preference on the identity record, not a permission, not tenant-wide, and it gates nothing - no permission key was added for it. Expand-only; the shipped users migration is not edited (Guardrail 12). Forward-only (ADR-004)."
+  - file: 2026_08_05_000001_create_platform_sms_billing_rules_table.php
+    table: platform_sms_billing_rules
+    domain: Billing
+    owner_phase: "UI-08 (COR-UI08-001)"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/billing-and-wallet.md
+    depends_on:
+      - 0001_01_01_000000_create_users_table.php
+      - 2026_07_10_000001_create_platform_billing_settings_table.php
+      - 2026_07_22_000007_create_sms_billing_entries_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-08.md
+    notes: "Phase UI-08 under COR-UI08-001 (see docs/decisions/cor-ui08-001-super-administrator-backend-enablement.md). The single effective-dated SMS pricing authority for navigation-map 5.4.9 (/billing/sms). WHY A DEDICATED TABLE, PROVEN NOT ASSUMED: COR-UI08-001 prefers extending platform_billing_settings.settings and permits this table only on proof. The proof holds. Every settings row is a COMPLETE configuration snapshot and resolution picks exactly one row (greatest effective_from <= now); TWO authorities write that same series - UpdatePlatformBillingSettings and UpdatePlatformSettings - each carrying the other's fields forward and both hard-coding effective_from = now(); and UNIQUE(effective_from) couples the two scheduling streams. A future-dated SMS row would therefore snapshot the other fields at AUTHORING time and silently revert any billing-mode/trial/grace/currency/settings change that landed in between, which is a financial regression because those fields drive subscription invoicing. /billing/sms requires a scheduled next rule, so immediate-only writes are not an option either, and adding future dating to the shipped writers would change shipped financial behaviour. PLATFORM-OWNED: no merchant_id, no branch_id (registered in TenantOwnership). NO CURRENCY COLUMN - currency stays the single authority it already is, the effective platform_billing_settings version, so this table cannot introduce a second one. APPEND-ONLY: platform_sms_billing_rules_guard freezes every pricing/ownership column, permits ONLY a pending -> cancelled transition and only while effective_from > now(), and raises on DELETE always; an already-effective rule is permanent history. UNIQUE(effective_from) is the overlap guarantee so 'which rule applies at T?' always has exactly one answer. tax_basis_points is DISCLOSURE ONLY: sms_billing_entries carries the shipped CHECK amount_minor = quantity * unit_cost_minor, so folding tax into a charged amount would violate it; the rate is shown separately in the generated cost notice and is NULL at launch, so no shipped financial arithmetic changes. INLINE BACKFILL: exactly one genesis rule from config('sms.pricing.unit_cost_minor') at effective_from 2026-07-22T00:00:00Z - the day sms_billing_entries was created - so the entire existing usage history resolves to the rule that actually produced its snapshots, and nothing is recalculated. The backfill is skipped when no platform-staff user exists rather than attributing the rule to a fabricated actor. Integer minor units (ADR-005); forward-only (ADR-004); no shipped migration edited (guardrail 12)."
+  - file: 2026_08_05_000002_create_platform_access_invitations_table.php
+    table: platform_access_invitations
+    domain: PlatformAccess
+    owner_phase: "UI-08 (COR-UI08-001)"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/platform-governance.md
+    depends_on:
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-08.md
+    notes: "Phase UI-08 under COR-UI08-001. The Magic Link-compatible invitation that admits a person to internal Citrus Labs platform access (navigation map 5.4.19). WHY NOT staff_invitations, proven not assumed: that table's merchant_id and branch_id are NOT NULL and staff_invitations_role_check restricts role to the six merchant staff roles, so super_admin is structurally unrepresentable there - inviting a platform administrator through it would require inventing a merchant and a branch for a person who must never hold either. PLATFORM-OWNED: no merchant_id, no branch_id (registered in TenantOwnership). ONLY THE SHA-256 HASH OF THE TOKEN IS STORED (Plan section 3 rule 14): the raw 64-byte token lives only inside the emailed link and is never persisted, logged, audited or returned; token_hash is hidden on the model. Consumption is atomic (SELECT FOR UPDATE plus a conditional single-use update) so two concurrent redemptions cannot both win; resend ROTATES the secret so a previously emailed link dies immediately rather than widening the window a leaked link stays valid. purpose and environment are CHECK-constrained closed vocabularies that BIND the credential, so it cannot be replayed into another context. email = lower(email) makes a case-differing duplicate unrepresentable, and a partial unique index permits at most one PENDING invitation per address while allowing a re-invite after revoke or expiry. expires_at > created_at means an expired invitation must have been issued in the past rather than being a backdated fiction. No password, OTP or WebAuthn credential is introduced anywhere in this path. Forward-only (ADR-004)."
+  - file: 2026_08_05_000003_create_platform_access_memberships_table.php
+    table: platform_access_memberships
+    domain: PlatformAccess
+    owner_phase: "UI-08 (COR-UI08-001)"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/platform-governance.md
+    depends_on:
+      - 0001_01_01_000000_create_users_table.php
+      - 2026_06_14_000100_add_platform_staff_to_users_table.php
+      - 2026_08_05_000002_create_platform_access_invitations_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-08.md
+    notes: "Phase UI-08 under COR-UI08-001. The lifecycle authority for internal platform access. WHY A TABLE AT ALL, proven not assumed: users.is_platform_staff is a bare boolean with no status vocabulary, no invited/active/suspended/deactivated lifecycle, no actor, no reason and no activation/suspension/deactivation timestamps - its own migration says 'set by platform seeders only' - and a boolean cannot answer 'who granted this, when, why, and is it currently suspended?'. users.is_platform_staff IS RETAINED as the eligibility flag and becomes a DERIVED MIRROR of status = active, written in the same transaction as every transition, which is what lets every shipped reader (LoginEligibilityService, AccountContextResolver, TenantContextResolver, ResolvePlatformContext, MfaRequirementResolver) keep working byte-for-byte. STRUCTURALLY ABSENT AND NEVER TO BE ADDED: merchant_id, branch_id, staff_profile_id, any permission snapshot, any secret. UNIQUE(user_id) means exactly one current platform membership per identity. role_key is CHECK-constrained to super_admin, the only launch platform role. Four timestamp-consistency CHECKs mean a state is never claimed without the evidence that produced it (active requires activated_at, and so on), and status=invited requires activated_at IS NULL so an invited membership provably holds no access. Deactivation is terminal: re-admission requires a NEW invitation and therefore a new audit trail. INLINE BACKFILL: one active membership per existing is_platform_staff = true user, chunked, using the user's own created_at as invited_at/activated_at - the honest statement that the grant predates the lifecycle record - and attributing no actor, because none is known. Forward-only (ADR-004)."
+  - file: 2026_08_05_000004_create_platform_access_permission_overrides_table.php
+    table: platform_access_permission_overrides
+    domain: PlatformAccess
+    owner_phase: "UI-08 (COR-UI08-001)"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/platform-governance.md
+    depends_on:
+      - 2026_08_05_000003_create_platform_access_memberships_table.php
+      - 2026_06_16_000001_create_permissions_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-08.md
+    notes: "Phase UI-08 under COR-UI08-001. DENY-ONLY per-administrator permission overrides. WHY NOT merchant_user_permission_overrides, proven not assumed: that table is keyed on a NOT NULL merchant_user_id FK, and a platform administrator has no merchant_users row by design, so it cannot address them at all - PermissionResolver::forPlatformStaff() correspondingly applied no overrides whatsoever before this phase. DENY-ONLY IS THE WHOLE POINT: effect is CHECK-constrained to deny, so an override can only ever SUBTRACT from the super_admin default grants and 'increase my own access' is not merely refused by policy, it cannot be represented as a row. A BEFORE INSERT OR UPDATE trigger additionally rejects any permission whose permissions.category is not platform, so a merchant key cannot be written here even if every layer above the database were bypassed. UNIQUE(membership, permission) prevents a contradictory duplicate. PermissionResolver::forPlatformStaff(userId) subtracts these denies for an ACTIVE membership only. Forward-only (ADR-004)."
+  - file: 2026_08_05_000005_expand_session_revocation_reason_add_platform_access.php
+    table: session_families
+    domain: Sessions
+    owner_phase: "UI-08 (COR-UI08-001)"
+    change_type: expand
+    data_dictionary: docs/architecture/data-dictionary/platform-governance.md
+    depends_on:
+      - 2026_07_30_000002_create_session_families_table.php
+      - 2026_07_30_000003_create_host_sessions_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-08.md
+    notes: "Phase UI-08 under COR-UI08-001. Expands the closed revoked_reason vocabulary on BOTH session tables (session_families and host_sessions) by exactly one value: platform_access_sessions_revoked. WHY: administrator-initiated session revocation needed a TRUTHFUL reason and the vocabulary had none - session_revoked_by_owner means the owner revoked their OWN session and global_logout means the user signed out everywhere, so reusing either would have written a FALSE forensic record, and these columns exist precisely so that 'why was this session ended?' is answerable rather than guessed. Suspension and deactivation are deliberately NOT given a new value: they keep using membership_revoked, whose own definition is 'the membership backing this context was suspended or removed', which is exactly what a suspended or deactivated platform membership is. EXPAND, NOT EDIT: the shipped Phase UI-03 migrations are untouched (guardrail 12); this migration drops and re-adds the two CHECK constraints with the widened list. Widening a CHECK is backward compatible - older code simply never writes the new value - and no row is rewritten. SessionRevocationReason gains the matching case and the existing SessionSchemaContractTest asserts the enum and both CHECKs stay identical, so the three cannot drift. down() narrows the vocabulary again and will fail while any row carries the new value; forward-repair only (ADR-004)."
+  - file: 2026_08_05_000006_create_platform_feature_flags_table.php
+    table: platform_feature_flags
+    domain: PlatformFeatureFlags
+    owner_phase: "UI-08 (COR-UI08-001)"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/platform-governance.md
+    depends_on:
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-08.md
+    notes: "Phase UI-08 under COR-UI08-001. Per-environment rollout state for navigation-map 5.4.20. A FLAG IS AN ADDITIONAL RESTRICTIVE CONTROL, NEVER AN AUTHORIZATION MECHANISM: it can turn an otherwise-authorized capability OFF and can never turn an unauthorized capability ON; permission, entitlement, billing state and account context are evaluated independently and are never consulted by, or replaced by, flag evaluation. THE CATALOGUE ITSELF IS CODE (config/platform-feature-flags.php), so this table only ever holds STATE for a key that already exists there - an unknown key fails closed at the service boundary and no row can bring one into being, which is why there is no create endpoint. PLATFORM-OWNED: no merchant_id, no branch_id. UNIQUE(flag_key, environment) means environments never share state, so enabling something in staging can never enable it in production. rollout_basis_points is an integer 0..10000 CHECK-constrained, never a float percentage, so a rollout is reproducible and only ever widens. A dating CHECK requires effective_to > effective_from, and a scheduled or active flag must carry an effective_from, so a flag can never claim to be live without saying when. version increments on every applied change and approved_configuration_hash records the exact approved configuration, so 'is what is live what was approved?' is answerable by comparison rather than inference. Forward-only (ADR-004)."
+  - file: 2026_08_05_000007_create_platform_feature_flag_targets_table.php
+    table: platform_feature_flag_targets
+    domain: PlatformFeatureFlags
+    owner_phase: "UI-08 (COR-UI08-001)"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/platform-governance.md
+    depends_on:
+      - 2026_08_05_000006_create_platform_feature_flags_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-08.md
+    notes: "Phase UI-08 under COR-UI08-001. Who a rollout applies to. NO ARBITRARY TARGETING LOGIC IS STORABLE, and that is the point: target_type is a CLOSED CHECK-constrained vocabulary (merchant, plan, cohort) and target_value is a scalar identifier - a merchant ULID, a plan key or an allowlisted cohort key - so there is nowhere to persist an executable predicate and no stored value can ever be evaluated as code. UNIQUE(feature_flag_id, target_type, target_value) prevents a duplicate target. A target row may REFERENCE a merchant, but the flag is platform rollout configuration and carries no merchant ownership, exactly like promotional_discount_targets; registered accordingly in TenantOwnership. Forward-only (ADR-004)."
+  - file: 2026_08_05_000008_create_platform_feature_flag_change_requests_table.php
+    table: platform_feature_flag_change_requests
+    domain: PlatformFeatureFlags
+    owner_phase: "UI-08 (COR-UI08-001)"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/platform-governance.md
+    depends_on:
+      - 2026_08_05_000006_create_platform_feature_flags_table.php
+      - 0001_01_01_000000_create_users_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-08.md
+    notes: "Phase UI-08 under COR-UI08-001. MAKER/CHECKER IS A DATABASE CONSTRAINT, NOT A CONVENTION: CHECK (approved_by_user_id IS NULL OR approved_by_user_id <> requested_by_user_id) means a self-approved production change CANNOT EXIST AS A ROW - even a bypassed policy, controller and service layer could not persist one, and a test proves it by attempting the raw UPDATE. impact_statement, rollback_plan, health_criterion and reason are NOT NULL, so a production-sensitive change with no stated impact or no rollback plan is unrepresentable rather than merely discouraged. A partial unique index permits at most ONE pending request per flag, so two operators cannot queue contradictory changes. Consistency CHECKs bind each terminal state to its evidence: approved and applied require an approver and a decision time, rejected requires a decision note, applied requires an applied_at, failed requires a failure_reason. proposed_configuration is CHECK-constrained to a JSON object and proposed_configuration_hash is its canonical SHA-256, copied onto the flag when applied. This migration also adds the platform_feature_flags.applied_change_request_id foreign key, which could only be constrained once this table existed. Forward-only (ADR-004)."
+  - file: 2026_08_05_000009_create_platform_feature_flag_history_table.php
+    table: platform_feature_flag_history
+    domain: PlatformFeatureFlags
+    owner_phase: "UI-08 (COR-UI08-001)"
+    change_type: create
+    data_dictionary: docs/architecture/data-dictionary/platform-governance.md
+    depends_on:
+      - 2026_08_05_000006_create_platform_feature_flags_table.php
+      - 2026_08_05_000008_create_platform_feature_flag_change_requests_table.php
+    production_compatible: true
+    destructive: false
+    verification: docs/proof/ui-08.md
+    notes: "Phase UI-08 under COR-UI08-001. APPEND-ONLY governance history. The platform_feature_flag_history_append_only trigger raises on UPDATE and on DELETE, always, giving flag governance the same guarantee audit_logs has (guardrail 5): 'who turned this on, when, under whose approval, and what exactly changed?' must remain answerable from the record, and a history that could be edited would answer nothing. Each row carries before/after configuration, before/after SHA-256 hashes, the actor, the reason and a correlation ULID linking request -> decision -> application. There is deliberately no updated_at column and the model disables timestamps, because a history row is written once and never touched again. action is a closed CHECK-constrained vocabulary and both configuration columns are CHECK-constrained to JSON objects. Forward-only (ADR-004)."

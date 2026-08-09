@@ -28,7 +28,8 @@
     "assets:check": "node scripts/generate-landing-images.mjs --check",
     "nav:generate": "node scripts/generate-ui07-navigation-contract.mjs",
     "nav:check": "node scripts/generate-ui07-navigation-contract.mjs --check",
-    "nav:negative-controls": "node scripts/ui07-negative-controls.mjs"
+    "nav:negative-controls": "node scripts/ui07-negative-controls.mjs",
+    "ui08:check": "node scripts/check-ui08-audit-artifacts.mjs"
   },
   "dependencies": {
     "@heroicons/vue": "2.2.0",

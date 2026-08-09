@@ -83,7 +83,14 @@ async function stubPromotions(page: Page, promos: unknown[] = [], offers: unknow
 
 async function gotoPromotions(page: Page): Promise<void> {
   await stubMe(page, { isPlatformStaff: true, permissions: PLATFORM_PERMS });
-  await page.goto('/platform/promotions');
+  // Increment 7B: the canonical promotional-discounts page. `/platform/promotions` still resolves
+  // here through the compatibility redirect.
+  await page.goto('/billing/promotions');
+}
+
+async function gotoFreePeriods(page: Page): Promise<void> {
+  await stubMe(page, { isPlatformStaff: true, permissions: PLATFORM_PERMS });
+  await page.goto('/billing/free-periods');
 }
 
 /* ---------------------------------------------------------------- surface + role gating */
@@ -92,10 +99,14 @@ test.describe('Super Administrator promotions surface', () => {
   test('renders both sections for a fully-permitted Super Administrator', async ({ page }) => {
     await stubPromotions(page);
     await gotoPromotions(page);
-    const tabs = page.getByRole('tab');
-    await expect(tabs).toHaveCount(2);
-    await expect(tabs.nth(0)).toHaveText('Promotional discounts');
-    await expect(tabs.nth(1)).toHaveText('Free-period offers');
+    // Increment 7B split the consolidated surface into two contract pages, so there is no
+    // tablist at all — each page owns one heading and one concern.
+    await expect(page.getByRole('tab')).toHaveCount(0);
+    await expect(page.getByRole('heading', { level: 1, name: 'Promotional discounts' })).toBeVisible();
+
+    await gotoFreePeriods(page);
+    await expect(page.getByRole('tab')).toHaveCount(0);
+    await expect(page.getByRole('heading', { level: 1, name: 'Free-period offers' })).toBeVisible();
   });
 
   test('creates a percentage promotion', async ({ page }) => {
@@ -138,8 +149,7 @@ test.describe('Super Administrator promotions surface', () => {
 
   test('creates a free-period offer from its section', async ({ page }) => {
     await stubPromotions(page);
-    await gotoPromotions(page);
-    await page.getByRole('tab', { name: 'Free-period offers' }).click();
+    await gotoFreePeriods(page);
     await page.getByRole('button', { name: 'New free-period offer' }).click();
     await page.locator('#offer-name').fill('Free 45');
     await page.locator('#offer-days').fill('45');
@@ -185,7 +195,7 @@ test.describe('Role boundary', () => {
   test('a merchant user sees no promotion-management controls (UX gate; API is authoritative)', async ({ page }) => {
     await stubMe(page, { role: 'merchant_admin', permissions: ['merchant.subscription.view'] });
     await stubPromotions(page);
-    await page.goto('/platform/promotions');
+    await page.goto('/billing/promotions');
 
     /*
      * Phase UI-03 STRENGTHENED this boundary, and this expectation is updated to match.
@@ -200,8 +210,14 @@ test.describe('Role boundary', () => {
      * render, AND the denial names no account or resource, AND it does not redirect the user
      * toward a broader account.
      */
-    await expect(page.getByRole('heading', { name: /do not have access to this page/i })).toBeVisible();
-    await expect(page).toHaveURL(/\/access-denied$/);
+      /*
+       * Phase UI-08 Increment 7B made the router host-scoped, so this refusal is now STRICTER
+       * than a denial page: the account that owns this route has no tree registered on the
+       * served host, so the address does not exist there at all. The surface still never
+       * mounts, which is what this case is about.
+       */
+    await expect(page.getByTestId('public-not-found')).toBeVisible();
+    await expect(page.getByTestId('platform-promotions-screen')).toHaveCount(0);
     await expect(page.getByRole('tab')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'New promotion' })).toHaveCount(0);
     await expect(page.getByText(/super administrator|platform/i)).toHaveCount(0);
@@ -226,7 +242,7 @@ test.describe('Responsive, zoom, dark mode and accessibility', () => {
     await stubPromotions(page);
     await gotoPromotions(page);
     await page.evaluate(() => { document.documentElement.style.zoom = '2'; });
-    await expect(page.getByRole('heading', { name: 'Promotions & free periods' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: 'Promotional discounts' })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
     expect(overflow).toBe(false);
   });

@@ -61,12 +61,17 @@ use App\Http\Controllers\Api\V1\Payments\PaymentRecordingGroupController;
 use App\Http\Controllers\Api\V1\Payments\PaymentReferenceCheckController;
 use App\Http\Controllers\Api\V1\PeriodLocks\FinancialPeriodLockController;
 use App\Http\Controllers\Api\V1\Platform\FreePeriodOfferController;
+use App\Http\Controllers\Api\V1\Platform\InternalPlatformAccessController;
 use App\Http\Controllers\Api\V1\Platform\PlanEntitlementController;
 use App\Http\Controllers\Api\V1\Platform\PlatformAuditLogController;
 use App\Http\Controllers\Api\V1\Platform\PlatformBillingSettingsController;
+use App\Http\Controllers\Api\V1\Platform\PlatformDashboardController;
+use App\Http\Controllers\Api\V1\Platform\PlatformFeatureFlagController;
 use App\Http\Controllers\Api\V1\Platform\PlatformFeeConfigurationController;
 use App\Http\Controllers\Api\V1\Platform\PlatformMerchantGovernanceController;
 use App\Http\Controllers\Api\V1\Platform\PlatformSettingsController;
+use App\Http\Controllers\Api\V1\Platform\PlatformSmsBillingController;
+use App\Http\Controllers\Api\V1\Platform\PlatformSubscriptionOperationsController;
 use App\Http\Controllers\Api\V1\Platform\PreferredPersonnelFeeRuleController;
 use App\Http\Controllers\Api\V1\Platform\PromotionalDiscountController;
 use App\Http\Controllers\Api\V1\Platform\SubscriptionPlanController;
@@ -1629,6 +1634,164 @@ Route::prefix('platform')
             ->defaults(RouteClassification::KEY, $platform)
             ->name('platform.free-period-offers.cancel');
 
+        /*
+         | COR-UI08-001 (Phase UI-08) — platform SMS billing settings, usage and charge
+         | reconciliation for navigation-map §5.4.9 (/billing/sms). REUSES the Phase 20A
+         | platform.billing_settings.view/.update permissions — no SMS-specific key exists.
+         | Scheduling and withdrawing a rule are platform_mutation with the same fresh
+         | billing_configuration step-up and idempotency the other effective-dated billing
+         | writes carry. Reads are aggregates only: no recipient, phone number, message body,
+         | contact export, provider credential or provider callback is reachable here.
+         */
+        Route::get('sms-billing-settings', [PlatformSmsBillingController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.billing_settings.view')
+            ->name('platform.sms-billing-settings.show');
+        Route::get('sms-billing-settings/versions', [PlatformSmsBillingController::class, 'versions'])
+            ->middleware(EnsurePermission::class.':platform.billing_settings.view')
+            ->name('platform.sms-billing-settings.versions.index');
+        Route::post('sms-billing-settings/versions', [PlatformSmsBillingController::class, 'schedule'])
+            ->middleware([EnsurePermission::class.':platform.billing_settings.update', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.sms-billing-settings.versions.store');
+        Route::post('sms-billing-settings/versions/{smsBillingRule}/cancel', [PlatformSmsBillingController::class, 'cancel'])
+            ->middleware([EnsurePermission::class.':platform.billing_settings.update', $stepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.sms-billing-settings.versions.cancel');
+        Route::get('sms-billing-settings/cost-notice-preview', [PlatformSmsBillingController::class, 'costNoticePreview'])
+            ->middleware(EnsurePermission::class.':platform.billing_settings.view')
+            ->name('platform.sms-billing-settings.cost-notice-preview');
+        Route::get('sms-billing-usage', [PlatformSmsBillingController::class, 'usage'])
+            ->middleware(EnsurePermission::class.':platform.billing_settings.view')
+            ->name('platform.sms-billing-usage.index');
+        Route::get('sms-billing-charge-reconciliation', [PlatformSmsBillingController::class, 'chargeReconciliation'])
+            ->middleware(EnsurePermission::class.':platform.billing_settings.view')
+            ->name('platform.sms-billing-charge-reconciliation.index');
+
+        /*
+         | COR-UI08-001 (Phase UI-08) — platform subscription operations for navigation-map
+         | §5.4.13 (/billing/subscriptions). MONITORING ONLY: every route here is a GET, and there
+         | is deliberately NO subscription mutation, invoice mutation, credit write, manual payment
+         | recording or provider status route to pair with them. Authorized by the existing
+         | platform.merchant.view governance read key; a merchant-tenant key grants nothing here.
+         | Money movement remains Wallet truth (ADR-012).
+         */
+        Route::get('subscription-operations/summary', [PlatformSubscriptionOperationsController::class, 'summary'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.subscription-operations.summary');
+        Route::get('subscriptions', [PlatformSubscriptionOperationsController::class, 'subscriptions'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.subscriptions.index');
+        Route::get('subscriptions/{merchantSubscription}', [PlatformSubscriptionOperationsController::class, 'showSubscription'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.subscriptions.show');
+        Route::get('subscription-invoices', [PlatformSubscriptionOperationsController::class, 'invoices'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.subscription-invoices.index');
+        Route::get('subscription-invoices/{subscriptionInvoice}', [PlatformSubscriptionOperationsController::class, 'showInvoice'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.subscription-invoices.show');
+        Route::get('billing-credits', [PlatformSubscriptionOperationsController::class, 'billingCredits'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.billing-credits.index');
+        Route::get('subscription-escalations', [PlatformSubscriptionOperationsController::class, 'escalations'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.subscription-escalations.index');
+
+        /*
+         | COR-UI08-001 (Phase UI-08) — internal Citrus Labs platform access for navigation-map
+         | §5.4.19 (/platform-access). Reads carry platform.internal_access.view; EVERY mutation
+         | carries platform.internal_access.manage + a fresh platform_access_administration step-up
+         | + idempotency + a mandatory reason. Named actions per transition; there is NO generic
+         | status route, NO role field anywhere, and nothing here can write merchant_users,
+         | branch_user_assignments or staff_profiles. Self-escalation and last-administrator lockout
+         | are refused inside the transaction by PlatformAdministratorQuorum, not by the UI.
+         */
+        $accessStepUp = RequireFreshMfa::class.':'.StepUpAction::PlatformAccessAdministration->value;
+
+        Route::get('internal-access/users', [InternalPlatformAccessController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.internal_access.view')
+            ->name('platform.internal-access.users.index');
+        Route::get('internal-access/users/{platformAccessMembership}', [InternalPlatformAccessController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.internal_access.view')
+            ->name('platform.internal-access.users.show');
+        Route::get('internal-access/invitations', [InternalPlatformAccessController::class, 'invitations'])
+            ->middleware(EnsurePermission::class.':platform.internal_access.view')
+            ->name('platform.internal-access.invitations.index');
+        Route::post('internal-access/invitations', [InternalPlatformAccessController::class, 'invite'])
+            ->middleware([EnsurePermission::class.':platform.internal_access.manage', $accessStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.internal-access.invitations.store');
+        Route::post('internal-access/invitations/{platformAccessInvitation}/resend', [InternalPlatformAccessController::class, 'resendInvitation'])
+            ->middleware([EnsurePermission::class.':platform.internal_access.manage', $accessStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.internal-access.invitations.resend');
+        Route::post('internal-access/invitations/{platformAccessInvitation}/revoke', [InternalPlatformAccessController::class, 'revokeInvitation'])
+            ->middleware([EnsurePermission::class.':platform.internal_access.manage', $accessStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.internal-access.invitations.revoke');
+        Route::patch('internal-access/users/{platformAccessMembership}/permissions', [InternalPlatformAccessController::class, 'updatePermissions'])
+            ->middleware([EnsurePermission::class.':platform.internal_access.manage', $accessStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.internal-access.users.permissions.update');
+        Route::post('internal-access/users/{platformAccessMembership}/suspend', [InternalPlatformAccessController::class, 'suspend'])
+            ->middleware([EnsurePermission::class.':platform.internal_access.manage', $accessStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.internal-access.users.suspend');
+        Route::post('internal-access/users/{platformAccessMembership}/reactivate', [InternalPlatformAccessController::class, 'reactivate'])
+            ->middleware([EnsurePermission::class.':platform.internal_access.manage', $accessStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.internal-access.users.reactivate');
+        Route::post('internal-access/users/{platformAccessMembership}/deactivate', [InternalPlatformAccessController::class, 'deactivate'])
+            ->middleware([EnsurePermission::class.':platform.internal_access.manage', $accessStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.internal-access.users.deactivate');
+        Route::post('internal-access/users/{platformAccessMembership}/sessions/revoke', [InternalPlatformAccessController::class, 'revokeSessions'])
+            ->middleware([EnsurePermission::class.':platform.internal_access.manage', $accessStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.internal-access.users.sessions.revoke');
+
+        /*
+         | COR-UI08-001 (Phase UI-08) — platform feature flags for navigation-map §5.4.20
+         | (/platform/feature-flags). Reads carry platform.settings.view; mutations carry
+         | platform.settings.update + a fresh platform_feature_flag_change step-up + idempotency.
+         | NO feature-flag-specific permission key exists. There is deliberately NO create route:
+         | the catalogue is code (config/platform-feature-flags.php) and an unknown key is a 404, so
+         | an operator can never mint a flag at runtime. Turning a flag ON always requires an
+         | approved change request from a DIFFERENT administrator; pause is the one single-actor
+         | path, and only because it moves the flag towards deny.
+         */
+        $flagStepUp = RequireFreshMfa::class.':'.StepUpAction::PlatformFeatureFlagChange->value;
+
+        Route::get('feature-flags', [PlatformFeatureFlagController::class, 'index'])
+            ->middleware(EnsurePermission::class.':platform.settings.view')
+            ->name('platform.feature-flags.index');
+        Route::get('feature-flags/{flagKey}', [PlatformFeatureFlagController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.settings.view')
+            ->name('platform.feature-flags.show');
+        Route::get('feature-flags/{flagKey}/history', [PlatformFeatureFlagController::class, 'history'])
+            ->middleware(EnsurePermission::class.':platform.settings.view')
+            ->name('platform.feature-flags.history.index');
+        Route::post('feature-flags/{flagKey}/change-requests', [PlatformFeatureFlagController::class, 'requestChange'])
+            ->middleware([EnsurePermission::class.':platform.settings.update', $flagStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.feature-flags.change-requests.store');
+        Route::post('feature-flag-change-requests/{platformFeatureFlagChangeRequest}/approve', [PlatformFeatureFlagController::class, 'approve'])
+            ->middleware([EnsurePermission::class.':platform.settings.update', $flagStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.feature-flag-change-requests.approve');
+        Route::post('feature-flag-change-requests/{platformFeatureFlagChangeRequest}/reject', [PlatformFeatureFlagController::class, 'reject'])
+            ->middleware([EnsurePermission::class.':platform.settings.update', $flagStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.feature-flag-change-requests.reject');
+        Route::post('feature-flag-change-requests/{platformFeatureFlagChangeRequest}/cancel', [PlatformFeatureFlagController::class, 'cancel'])
+            ->middleware([EnsurePermission::class.':platform.settings.update', $flagStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.feature-flag-change-requests.cancel');
+        Route::post('feature-flags/{flagKey}/pause', [PlatformFeatureFlagController::class, 'pause'])
+            ->middleware([EnsurePermission::class.':platform.settings.update', $flagStepUp, EnsureIdempotentRequest::class])
+            ->defaults(RouteClassification::KEY, $platform)
+            ->name('platform.feature-flags.pause');
+
         // Platform merchant governance (Plan §22, §24.1; Phase 20B). Super-Admin platform scope
         // (no merchant tenant context). Registration monitoring + merchant list/detail are reads;
         // suspend/reactivate/deactivate are platform_mutation with a MANDATORY reason and a fresh
@@ -1636,6 +1799,15 @@ Route::prefix('platform')
         // — never `merchants.billing_status`, and never creates a subscription/payment row. There is
         // NO merchant-creation, first-admin, impersonation, manual-payment, or billing-recovery route.
         $governanceStepUp = RequireFreshMfa::class.':'.StepUpAction::MerchantGovernance->value;
+
+        // Phase UI-08 — the Super Administrator governance dashboard (contract page §5.4.1). ONE
+        // aggregate READ over data that already exists. It exists because every other platform read
+        // is paginated, so a browser aggregating page 1 would report false platform totals on the
+        // screen used to govern. No new permission key: `platform.merchant.view` is the same key
+        // the merchant-governance reads below already require.
+        Route::get('dashboard', [PlatformDashboardController::class, 'show'])
+            ->middleware(EnsurePermission::class.':platform.merchant.view')
+            ->name('platform.dashboard.show');
 
         Route::get('registration-monitor', [PlatformMerchantGovernanceController::class, 'registrationMonitor'])
             ->middleware(EnsurePermission::class.':platform.registration_monitor.view')

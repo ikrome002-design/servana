@@ -101,7 +101,12 @@ it('keeps the active and planned key counts unchanged by Phase 22', function ():
     // 167), so — following the Phase 20H precedent — assert the invariant the Phase 22 claim
     // actually rests on: no phase INVENTS a canonical key, and no key is owned by Phase 22
     // (proven exhaustively by the `no Phase 22 owned key at all` case below).
-    expect($active + $planned)->toBe(167, 'the catalogue only ever shrinks by a retired legacy duplicate — never grows');
+    // Phase UI-08 (COR-UI08-001) added EXACTLY TWO keys — `platform.internal_access.view` and
+    // `platform.internal_access.manage` — under an explicit product-owner decision, taking the
+    // catalogue 167 → 169 (134 active / 35 planned). That is the only growth this assertion has
+    // ever permitted, and it is itemised: the invariant Phase 22 rests on is unchanged, because
+    // Phase 22 still owns no key at all (proven exhaustively by the case below).
+    expect($active + $planned)->toBe(169, 'the catalogue changes only by an explicitly authorized key — never silently');
 });
 
 it('leaves the matrix with no Phase 22 owned key at all', function (): void {

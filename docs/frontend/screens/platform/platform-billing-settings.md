@@ -1,4 +1,4 @@
-# Screen specification — Billing settings / plans / prices
+# Screen specification — Platform billing settings
 
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 20A**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
@@ -6,12 +6,12 @@
 - **Route name and URL:** `platform.billing-settings`
 - **Layout:** `PlatformAdminLayout`
 - **Allowed roles:** `super_administrator`
-- **Required permissions:** `platform.settings.view`, `platform.billing_settings.view`, `platform.plan.view`, `platform.preferred_personnel_fee.manage`, `platform.platform_fee.configure` (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Required permissions:** `platform.billing_settings.view`, `platform.billing_settings.update`, `platform.settings.view`, `platform.platform_fee.configure` (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** One coherent platform surface with accessible tabs: general settings, billing settings (three canonical billing modes), subscription plans (non-price metadata; retire preserves history), effective-dated plan prices (five intervals; overlap-rejected; only future prices cancellable; historical/current read-only), plan entitlements (enable/disable/limit; no merchant-subscription binding), and preferred-personnel fee rules (fixed/percentage; platform-default/service scope; supersede-not-edit; approve/cancel). Each tab is permission-gated (UX only); the API enforces platform scope, MFA and a fresh step-up on sensitive mutations. Adds the Phase 20E percentage platform-fee configuration tab (create/update-draft/approve/supersede/cancel; approved terms immutable so a change supersedes; the shared tier is shown by its canonical label). NO registration monitoring or plan-management (Phase 20B).
+- **Fields and displayed data:** Contract page §5.4.3. Platform-wide billing configuration: the three canonical billing modes, effective-dated settings versions, trial, grace, overdue and suspension boundaries, and the percentage platform-fee configuration. Composes the shipped Phase 20A and 20E sections unchanged; approved terms are immutable, so a change supersedes rather than edits. Plans, prices, promotions and preferred-personnel fees are now contract pages of their own.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

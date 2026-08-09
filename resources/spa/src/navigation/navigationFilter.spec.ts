@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { router } from '@/router';
+import { createAppRouter } from '@/router';
+
+/**
+ * The cross-account contract must see all 160 pages at once, so it builds the ALL-ACCOUNT router
+ * (Increment 7B). The application never mounts this one: a browser is served a single account
+ * host and gets that account's tree alone.
+ */
+const router = createAppRouter(null);
 import { ROLE_IDENTITIES } from '@/types/roles';
 import { NAVIGATION_ICONS } from './navigationIcons';
 import {

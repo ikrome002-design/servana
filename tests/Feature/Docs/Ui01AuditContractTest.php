@@ -289,10 +289,25 @@ it('classifies every implementation claim exactly once from the permitted vocabu
         // were removed; the canonical navigation contract reserves each page's route identity
         // with `implementation_status: planned` and a named owner phase, so none of them can be
         // silently renamed or quietly forgotten.
-        'platform-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-08; docs/frontend/audits/ui-07/defect-closure.json',
+        // `platform-dashboard` is DELIBERATELY ABSENT from this list. UI-07 removed its
+        // placeholder route and named UI-08 as the owner; UI-08 Increment 9B delivered the real
+        // page — a server-side aggregate read at `/dashboard` — so the screen is back in the
+        // inventory legitimately and the resurrection guard below is what forced this entry out.
+        // That is the register working exactly as designed: a removal is temporary custody, and
+        // the entry expires when the owner phase delivers.
         'front-office-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-13; docs/frontend/audits/ui-07/defect-closure.json',
         'personnel-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-14; docs/frontend/audits/ui-07/defect-closure.json',
         'audit-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-15; docs/frontend/audits/ui-07/defect-closure.json',
+
+        // Phase UI-08, Increment 7B. Each of these two screens was a CONSOLIDATED surface that
+        // delivered several contract pages behind tabs — `platform-registration-monitoring`
+        // delivered §5.4.10, §5.4.11 and §5.4.12, and `platform-promotions` delivered §5.4.6 and
+        // §5.4.7 — which is the defect UI-08 exists to correct. Their route identities were
+        // retired and each contract page now has its own canonical route, component and inventory
+        // row, so nothing was lost: the pages were SPLIT OUT, not deleted. The legacy components
+        // and their specs went with the routes because nothing referenced them any more.
+        'platform-promotions' => 'UI-08 / Increment 7B — split into platform-billing-promotions and platform-billing-free-periods; docs/proof/ui-08.md',
+        'platform-registration-monitoring' => 'UI-08 / Increment 7B — split into platform-merchant-registrations, platform-merchants and platform-merchant-detail; docs/proof/ui-08.md',
     ];
 
     $inventoryKeys = array_column($inventory['screens'], 'key');

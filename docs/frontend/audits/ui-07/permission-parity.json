@@ -3,14 +3,14 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "f28ca6fcbbed367dc15a534a35dfc7fa8494ef8ac41f27b2f7e27910ef3db8a5",
+  "canonical_authority_sha256": "68cc24873d9f25c8e6dc05b8d5104327109b558d653e16b9411894ea765e3a91",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
-  "permission_matrix_sha256": "c3877f0e671abdb1f8dc0be9bd4ae06b4aed5bf36c44e427e3fa0e062099f166",
-  "screen_inventory_sha256": "0871fc7bce5d6999cb15d1931a54a01a4c385bd794cae386ac32d0c36a200281",
+  "permission_matrix_sha256": "8a5e4e0c42e49a4d6f33d3b0c614abfe4a6fe0ff8efb1b3565342c289851326f",
+  "screen_inventory_sha256": "5c89abe54f46bdac725e8b0a7137e09fba0e327daadc0d864da91140b92f64ca",
   "purpose": "Every permission referenced by the contract exists in the canonical matrix. UI-07 creates, activates, retires and re-grants NO permission key.",
-  "permission_matrix_keys": 167,
+  "permission_matrix_keys": 169,
   "contract_permission_references": [
     "appointment.view",
     "audit.branch_events.view",
@@ -52,12 +52,16 @@
     "personnel.my_served_clients.view",
     "personnel.my_sessions.view",
     "personnel.my_sms.send",
+    "platform.audit.view",
     "platform.billing_settings.view",
+    "platform.free_period_offer.manage",
+    "platform.internal_access.view",
     "platform.merchant.view",
     "platform.plan.view",
     "platform.preferred_personnel_fee.manage",
     "platform.promotion.manage",
     "platform.registration_monitor.view",
+    "platform.settings.view",
     "queue.create",
     "queue.view",
     "receipt.view",
@@ -70,26 +74,6 @@
   ],
   "unknown_permission_references": [],
   "pages_without_a_proven_permission": [
-    {
-      "key": "super_administrator.dashboard",
-      "implementation_status": "planned",
-      "owner_phase": "UI-08"
-    },
-    {
-      "key": "super_administrator.get-started",
-      "implementation_status": "implemented",
-      "owner_phase": "UI-08"
-    },
-    {
-      "key": "super_administrator.billing-sms",
-      "implementation_status": "planned",
-      "owner_phase": "UI-08"
-    },
-    {
-      "key": "super_administrator.billing-subscriptions",
-      "implementation_status": "planned",
-      "owner_phase": "UI-08"
-    },
     {
       "key": "super_administrator.billing-reconciliation-exceptions",
       "implementation_status": "disabled_by_gate",
@@ -111,28 +95,13 @@
       "owner_phase": "UI-08"
     },
     {
-      "key": "super_administrator.audit",
-      "implementation_status": "planned",
-      "owner_phase": "UI-08"
-    },
-    {
-      "key": "super_administrator.platform-access",
-      "implementation_status": "planned",
-      "owner_phase": "UI-08"
-    },
-    {
-      "key": "super_administrator.feature-flags",
-      "implementation_status": "planned",
-      "owner_phase": "UI-08"
-    },
-    {
       "key": "super_administrator.notifications",
       "implementation_status": "disabled_by_gate",
       "owner_phase": "UI-08"
     },
     {
       "key": "super_administrator.account",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-08"
     },
     {

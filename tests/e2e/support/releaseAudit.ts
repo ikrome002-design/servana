@@ -245,11 +245,28 @@ export const SCREENS: AuditScreen[] = [
 // Phase UI-07 removed the four placeholder account dashboards (UI07-ROUTE-001): each rendered
 // `DashboardStub.vue`, so the audit was grading a Phase-4 stub as though it were a screen.
 // --- Super Administrator ---------------------------------------------------
+  // Phase UI-08 Increment 7B activated the Super Administrator's canonical host-relative routes and
+  // retired `platform.registration-monitoring` and `platform.promotions`, whose consolidated screens
+  // delivered three and two contract pages respectively. The audit now grades the real pages.
   { key: 'platform-landing', route: 'platform.landing', path: '/platform', role: 'super_administrator', state: 'static' },
-  { key: 'platform-get-started', route: 'platform.get-started', path: '/platform/get-started', role: 'super_administrator', state: 'static' },
-  { key: 'platform-billing-settings', route: 'platform.billing-settings', path: '/platform/billing-settings', role: 'super_administrator', state: 'populated' },
-  { key: 'platform-promotions', route: 'platform.promotions', path: '/platform/promotions', role: 'super_administrator', state: 'populated' },
-  { key: 'platform-registration-monitoring', route: 'platform.registration-monitoring', path: '/platform/registration-monitoring', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-dashboard', route: 'platform.dashboard', path: '/dashboard', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-get-started', route: 'platform.get-started', path: '/get-started', role: 'super_administrator', state: 'static' },
+  { key: 'platform-billing-settings', route: 'platform.billing-settings', path: '/billing/settings', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-billing-plans', route: 'platform.billing-plans', path: '/billing/plans', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-billing-prices', route: 'platform.billing-prices', path: '/billing/prices', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-billing-promotions', route: 'platform.billing-promotions', path: '/billing/promotions', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-billing-free-periods', route: 'platform.billing-free-periods', path: '/billing/free-periods', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-billing-preferred-personnel-fees', route: 'platform.billing-preferred-personnel-fees', path: '/billing/preferred-personnel-fees', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-billing-sms', route: 'platform.billing-sms', path: '/billing/sms', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-billing-subscriptions', route: 'platform.billing-subscriptions', path: '/billing/subscriptions', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-merchant-registrations', route: 'platform.merchant-registrations', path: '/merchants/registrations', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-merchants', route: 'platform.merchants', path: '/merchants', role: 'super_administrator', state: 'populated' },
+  // A parameterised contract route still needs release-audit coverage; the identifier is synthetic.
+  { key: 'platform-merchant-detail', route: 'platform.merchant-detail', path: '/merchants/01JQ0000000000000000000001', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-audit', route: 'platform.audit', path: '/audit', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-platform-access', route: 'platform.platform-access', path: '/platform-access', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-feature-flags', route: 'platform.feature-flags', path: '/platform/feature-flags', role: 'super_administrator', state: 'populated' },
+  { key: 'platform-account', route: 'platform.account', path: '/account', role: 'super_administrator', state: 'static' },
 
   // --- Merchant Administrator ------------------------------------------------
   { key: 'merchant-landing', route: 'merchant.landing', path: '/merchant', role: 'merchant_administrator', state: 'static' },

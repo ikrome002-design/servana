@@ -1,0 +1,413 @@
+{
+  "schema": "servana.ui08.screenshot-index.v1",
+  "phase": "UI-08",
+  "increment": "10",
+  "account": "super_administrator",
+  "host": "citrus.servana.ke",
+  "captured_against": "the built SPA served by vite preview, with every platform read stubbed with SYNTHETIC data",
+  "data_provenance": "synthetic — no real merchant, person, contact detail, credential, token, session identifier or provider payload appears in any capture",
+  "status": "implementation proof for UI-08. These are NOT UI-16-approved visual baselines.",
+  "captures": [
+    {
+      "file": "screenshots/dashboard-dark.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "dark",
+      "bytes": 129162,
+      "sha256": "1763b306380b39ac01fee5c9a6d8be897d4e91b8c7d56ff7d1bdebf0853445f1"
+    },
+    {
+      "file": "screenshots/desktop-light-account.png",
+      "screen_key": "account",
+      "route": "/account",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 166392,
+      "sha256": "fcde92198029299f5381a5dbc66407a36fbdddfbd9a1608b42ebf79dc0c4c958"
+    },
+    {
+      "file": "screenshots/desktop-light-audit.png",
+      "screen_key": "audit",
+      "route": "/audit",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 131351,
+      "sha256": "ae38834167454cf813f8c0f0aee4eeb767e548f8314313503583a0a9e0e098ba"
+    },
+    {
+      "file": "screenshots/desktop-light-billing-free-periods.png",
+      "screen_key": "billing-free-periods",
+      "route": "/billing/free-periods",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 65625,
+      "sha256": "35da986b1685607364b13e6d1a84fb025680f2bdb67a1f4f9876f3c810dcef20"
+    },
+    {
+      "file": "screenshots/desktop-light-billing-plans.png",
+      "screen_key": "billing-plans",
+      "route": "/billing/plans",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 80152,
+      "sha256": "3d4f68b9f16357c79892ac1c433a8dd4828c10e493f7e50101fb99be1b127902"
+    },
+    {
+      "file": "screenshots/desktop-light-billing-preferred-personnel-fees.png",
+      "screen_key": "billing-preferred-personnel-fees",
+      "route": "/billing/preferred-personnel-fees",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 83031,
+      "sha256": "79b78563aa039e90c33acb67d09deaca90ff0fd49fa77b3eaf5288e2a0dbfda1"
+    },
+    {
+      "file": "screenshots/desktop-light-billing-prices.png",
+      "screen_key": "billing-prices",
+      "route": "/billing/prices",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 90325,
+      "sha256": "9ba0eb038a35e6a296b7e83ac2025b46d50dc90bfc4d4ba934c91661455e1afa"
+    },
+    {
+      "file": "screenshots/desktop-light-billing-promotions.png",
+      "screen_key": "billing-promotions",
+      "route": "/billing/promotions",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 76058,
+      "sha256": "5b3badb3a0e6258eb427b2cdceb185aa4530a2ec0627d32209c2133b96f25e45"
+    },
+    {
+      "file": "screenshots/desktop-light-billing-settings.png",
+      "screen_key": "billing-settings",
+      "route": "/billing/settings",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 154116,
+      "sha256": "c2e3951dd744f48f166e51abbd7bb365c9fdb645a82a08af03c66814d007bb5e"
+    },
+    {
+      "file": "screenshots/desktop-light-billing-sms.png",
+      "screen_key": "billing-sms",
+      "route": "/billing/sms",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 176106,
+      "sha256": "d1a18112ae44fbf839c4bbb8df180e71edaf9f2a66c570d7e80a25377d714ea5"
+    },
+    {
+      "file": "screenshots/desktop-light-billing-subscriptions.png",
+      "screen_key": "billing-subscriptions",
+      "route": "/billing/subscriptions",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 117138,
+      "sha256": "8904f8273f9039277a0013a745fc3e1c2891b46bcf71f1dff08dcb039bfdbf45"
+    },
+    {
+      "file": "screenshots/desktop-light-dashboard.png",
+      "screen_key": "dashboard",
+      "route": "/dashboard",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 128937,
+      "sha256": "826f055245b30eae4eb4e878cf2464dea2bafdeb69dcac2b0d0a7415d0b11481"
+    },
+    {
+      "file": "screenshots/desktop-light-feature-flags.png",
+      "screen_key": "feature-flags",
+      "route": "/platform/feature-flags",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 67854,
+      "sha256": "331f2385e73946e92c41366d1056b20b25f583b8bbaa494cc15bf84fda259e49"
+    },
+    {
+      "file": "screenshots/desktop-light-get-started.png",
+      "screen_key": "get-started",
+      "route": "/get-started",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 198435,
+      "sha256": "d0f4197a110ca25fe9f4b6903d38e00d5b5d2710209fef24b8195d7736976228"
+    },
+    {
+      "file": "screenshots/desktop-light-merchant-detail.png",
+      "screen_key": "merchant-detail",
+      "route": "/merchants/01JQ0000000000000000000001",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 152144,
+      "sha256": "2ae0012306e196d12321dfb445471914a208b0a6d359e5cfbd971d44cc3eb96a"
+    },
+    {
+      "file": "screenshots/desktop-light-merchant-registrations.png",
+      "screen_key": "merchant-registrations",
+      "route": "/merchants/registrations",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 109411,
+      "sha256": "2901f8a3322b3be9e3c0b865d4ce7a3f32bee12647c4756cb9cc980974b5447b"
+    },
+    {
+      "file": "screenshots/desktop-light-merchants.png",
+      "screen_key": "merchants",
+      "route": "/merchants",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 108833,
+      "sha256": "816e2f4ff1633fb019cf6563fbec821e50bfb170b58c09285b7f9ad110d07ea3"
+    },
+    {
+      "file": "screenshots/desktop-light-platform-access.png",
+      "screen_key": "platform-access",
+      "route": "/platform-access",
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 127765,
+      "sha256": "e51a199d6c744dd34adc77e8a41463db17a2da0338d94e05bf2fa69007653568"
+    },
+    {
+      "file": "screenshots/form-governance-dialog.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 180292,
+      "sha256": "90268d468065bab8ab9a151dc0523f853c26c603aa003741e5e583fd6a76272c"
+    },
+    {
+      "file": "screenshots/mobile-light-account.png",
+      "screen_key": "account",
+      "route": "/account",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 133736,
+      "sha256": "1a3f55e4859bd4ca719c6be95ff33912e5c7252e392e85511d56d5db42da7da0"
+    },
+    {
+      "file": "screenshots/mobile-light-audit.png",
+      "screen_key": "audit",
+      "route": "/audit",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 110616,
+      "sha256": "9b3dccd532da5914d3f05aa50139cef1ffa5dddd79c2b98fb09ec6da7255d27f"
+    },
+    {
+      "file": "screenshots/mobile-light-billing-free-periods.png",
+      "screen_key": "billing-free-periods",
+      "route": "/billing/free-periods",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 47259,
+      "sha256": "b90bb2cb049cc34fe2ff1334f9c8fa2e60dd82e4de6f365b9e64a72c6e924104"
+    },
+    {
+      "file": "screenshots/mobile-light-billing-plans.png",
+      "screen_key": "billing-plans",
+      "route": "/billing/plans",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 54594,
+      "sha256": "168364596b15f9c7ffd1f854d8af067fcf478a5e7b6f48e15e432b21fdbdd8c5"
+    },
+    {
+      "file": "screenshots/mobile-light-billing-preferred-personnel-fees.png",
+      "screen_key": "billing-preferred-personnel-fees",
+      "route": "/billing/preferred-personnel-fees",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 65448,
+      "sha256": "0e6369d316e9ef1c4f0376ece3a09a6e1365a611d4b2d4f7035ad26c9b00c97c"
+    },
+    {
+      "file": "screenshots/mobile-light-billing-prices.png",
+      "screen_key": "billing-prices",
+      "route": "/billing/prices",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 67178,
+      "sha256": "c0cfce5410e905a796ea842916add6f7cadf1b22a6cc933912c2bbb5b45f1099"
+    },
+    {
+      "file": "screenshots/mobile-light-billing-promotions.png",
+      "screen_key": "billing-promotions",
+      "route": "/billing/promotions",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 55552,
+      "sha256": "28bfdc5264e330ef7ebc419f44d2e68f133597c9f92cf8168e075a019557efcb"
+    },
+    {
+      "file": "screenshots/mobile-light-billing-settings.png",
+      "screen_key": "billing-settings",
+      "route": "/billing/settings",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 125889,
+      "sha256": "220e645d97524a748797b7606b150f8a8ca78390b68db97c720d9cccde29a119"
+    },
+    {
+      "file": "screenshots/mobile-light-billing-sms.png",
+      "screen_key": "billing-sms",
+      "route": "/billing/sms",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 141181,
+      "sha256": "7720801bb898f0bb8828b606b0aae2fd88b023e0076d4f3d10f9083ada472cae"
+    },
+    {
+      "file": "screenshots/mobile-light-billing-subscriptions.png",
+      "screen_key": "billing-subscriptions",
+      "route": "/billing/subscriptions",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 98366,
+      "sha256": "6193db9424dabe53576f9ee14da494dc1e6c55a205ff68917fb3dbae562f39ff"
+    },
+    {
+      "file": "screenshots/mobile-light-dashboard.png",
+      "screen_key": "dashboard",
+      "route": "/dashboard",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 109663,
+      "sha256": "0b2398b35bcf821cdcf4e13c0253d3464c4146e17ff02923cc14ec3def7806e9"
+    },
+    {
+      "file": "screenshots/mobile-light-feature-flags.png",
+      "screen_key": "feature-flags",
+      "route": "/platform/feature-flags",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 49756,
+      "sha256": "42f350e6a7a3707aed95ceb70415faf4c4d355edb16b7d84e02a03db7dc4f82f"
+    },
+    {
+      "file": "screenshots/mobile-light-get-started.png",
+      "screen_key": "get-started",
+      "route": "/get-started",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 176918,
+      "sha256": "1d5ce91fa7c7b99e2399e9053bfb3a90b2589f8d541063560734d76052ba82c4"
+    },
+    {
+      "file": "screenshots/mobile-light-merchant-detail.png",
+      "screen_key": "merchant-detail",
+      "route": "/merchants/01JQ0000000000000000000001",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 132010,
+      "sha256": "55882687f08621a0281f230f9325f9d433273a956cf7f28065163bd09c9bf618"
+    },
+    {
+      "file": "screenshots/mobile-light-merchant-registrations.png",
+      "screen_key": "merchant-registrations",
+      "route": "/merchants/registrations",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 98286,
+      "sha256": "b805860bafd1340705f6f6e777e8721fca0c376ae2998b359e23cb239783136c"
+    },
+    {
+      "file": "screenshots/mobile-light-merchants.png",
+      "screen_key": "merchants",
+      "route": "/merchants",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 98873,
+      "sha256": "f2f005e75bc9a88b122285cdbec3337e7c67210a4bdfa50790dec40cc8e0d18b"
+    },
+    {
+      "file": "screenshots/mobile-light-platform-access.png",
+      "screen_key": "platform-access",
+      "route": "/platform-access",
+      "viewport": "mobile 375x812",
+      "theme": "light",
+      "bytes": 103224,
+      "sha256": "f613a3d5cbb7c6e6028c8e91d1ba913135341f76b1677ecfa7fcb7ae75515e11"
+    },
+    {
+      "file": "screenshots/nav-desktop-header.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 128829,
+      "sha256": "9fad14bff54ccaa2ddd7b4fb87669de39fe85d29a5f24d75420afcc38b859331"
+    },
+    {
+      "file": "screenshots/nav-gated-treatment.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 130226,
+      "sha256": "8d36223770d5ac44a12541df1a1b198d5073a41da8243c3212cf95dec61218f2"
+    },
+    {
+      "file": "screenshots/nav-mobile-drawer.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 107645,
+      "sha256": "870dd5c4445f12c47b559952828260b89c2899acb8f957a611e9ad04f5673016"
+    },
+    {
+      "file": "screenshots/nav-tablet-header.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 127521,
+      "sha256": "1ef3d0ee227bb4461ffa463e79e3a7cbfdf52092fc7245535ee8646e9e28961e"
+    },
+    {
+      "file": "screenshots/responsive-200-zoom.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 30427,
+      "sha256": "b67654d6a4ad53d8b0bff53ccdd69468d8bf1431e64f90bce400b12d92e95fbe"
+    },
+    {
+      "file": "screenshots/state-error-retry.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 103667,
+      "sha256": "06ea7a8ca950f5e63970443bf738bda30f5424c0f3f12d198e2e57bdd5dccad1"
+    },
+    {
+      "file": "screenshots/state-mfa-challenge.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 22512,
+      "sha256": "9b3c9e7b75056d1d29774b63e8e609006433cd017ec3d427927de4290a8c5a8d"
+    },
+    {
+      "file": "screenshots/state-no-permission.png",
+      "screen_key": null,
+      "route": null,
+      "viewport": "desktop 1280x720 (Playwright default) unless the case resized it",
+      "theme": "light",
+      "bytes": 54300,
+      "sha256": "c31c25a8ad85ccbcca89ca07c52599f2c50affbf83b8077cbb16973ed125bab3"
+    }
+  ],
+  "totals": {
+    "captures": 44,
+    "desktop_light_pages": 17,
+    "mobile_light_pages": 17
+  }
+}

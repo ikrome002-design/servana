@@ -275,6 +275,35 @@ enum AuditEvent: string
     // redacted public-ULID context. No events for reads.
     case PlatformSettingsUpdated = 'platform_settings.updated';
     case PlatformBillingSettingsUpdated = 'platform_billing.settings_updated';
+    // COR-UI08-001 (Phase UI-08) — the platform SMS pricing authority. Scheduling a rule is a
+    // financial-configuration change governed exactly like the settings above: platform_mutation,
+    // MFA, fresh billing_configuration step-up, mandatory reason. Cancellation is only ever
+    // possible while the rule is still pending, so neither event can rewrite settled pricing.
+    // COR-UI08-001 (Phase UI-08) — internal Citrus Labs platform-access administration. Every one
+    // of these is a platform_mutation with MFA + a fresh platform_access_administration step-up and
+    // a mandatory reason. Context carries a MASKED email, safe ULIDs and the actor — never a raw
+    // invitation token, its hash, a session id, an MFA secret or device history.
+    // COR-UI08-001 (Phase UI-08) — platform feature-flag governance. Every transition is recorded,
+    // and the append-only platform_feature_flag_history carries the before/after configuration
+    // hashes alongside these events so "is what is live what was approved?" stays answerable.
+    case PlatformFeatureFlagChangeRequested = 'platform.feature_flag.change_requested';
+    case PlatformFeatureFlagChangeApproved = 'platform.feature_flag.change_approved';
+    case PlatformFeatureFlagChangeRejected = 'platform.feature_flag.change_rejected';
+    case PlatformFeatureFlagChangeCancelled = 'platform.feature_flag.change_cancelled';
+    case PlatformFeatureFlagApplied = 'platform.feature_flag.applied';
+    case PlatformFeatureFlagPaused = 'platform.feature_flag.paused';
+
+    case PlatformInternalAccessInvited = 'platform.internal_access.invited';
+    case PlatformInternalAccessInvitationResent = 'platform.internal_access.invitation_resent';
+    case PlatformInternalAccessInvitationRevoked = 'platform.internal_access.invitation_revoked';
+    case PlatformInternalAccessPermissionsChanged = 'platform.internal_access.permissions_changed';
+    case PlatformInternalAccessSuspended = 'platform.internal_access.suspended';
+    case PlatformInternalAccessReactivated = 'platform.internal_access.reactivated';
+    case PlatformInternalAccessDeactivated = 'platform.internal_access.deactivated';
+    case PlatformInternalAccessSessionsRevoked = 'platform.internal_access.sessions_revoked';
+
+    case PlatformSmsBillingRuleScheduled = 'platform_sms_billing.rule_scheduled';
+    case PlatformSmsBillingRuleCancelled = 'platform_sms_billing.rule_cancelled';
     case SubscriptionPlanCreated = 'subscription_plan.created';
     case SubscriptionPlanMetadataUpdated = 'subscription_plan.metadata_updated';
     case SubscriptionPlanRetired = 'subscription_plan.retired';
@@ -831,6 +860,18 @@ enum AuditEvent: string
             self::FinancialPeriodReopened,
             self::PlatformSettingsUpdated,
             self::PlatformBillingSettingsUpdated,
+            self::PlatformSmsBillingRuleScheduled,
+            self::PlatformSmsBillingRuleCancelled,
+            self::PlatformInternalAccessInvited,
+            self::PlatformInternalAccessInvitationResent,
+            self::PlatformInternalAccessInvitationRevoked,
+            self::PlatformInternalAccessSuspended,
+            self::PlatformInternalAccessReactivated,
+            self::PlatformFeatureFlagChangeRequested,
+            self::PlatformFeatureFlagChangeApproved,
+            self::PlatformFeatureFlagChangeRejected,
+            self::PlatformFeatureFlagChangeCancelled,
+            self::PlatformFeatureFlagPaused,
             self::SubscriptionPlanRetired,
             self::SubscriptionPlanPriceCreated,
             self::SubscriptionPlanPriceScheduled,
@@ -912,7 +953,15 @@ enum AuditEvent: string
             // settled to personnel (mark-paid is the §25.5 critical financial effect).
             self::PayoutRunHighValueApproved,
             self::PayoutRunMarkedPaid,
-            self::MerchantDeactivated => AuditSeverity::Critical,
+            self::MerchantDeactivated,
+            // COR-UI08-001 — deactivating an internal administrator, changing their permissions or
+            // revoking their session families are the three internal-access actions that remove or
+            // reshape platform authority outright, so they carry the matrix's crit severity.
+            self::PlatformInternalAccessDeactivated,
+            self::PlatformInternalAccessPermissionsChanged,
+            self::PlatformInternalAccessSessionsRevoked,
+            // An APPLIED flag change is the moment a rollout actually changes what production does.
+            self::PlatformFeatureFlagApplied => AuditSeverity::Critical,
         };
     }
 }

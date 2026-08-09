@@ -43,6 +43,12 @@ export async function stubAccountContextFor(page: Page, accountKey: string, disp
   await page.addInitScript(
     ([accountKey, displayName]) => {
       const inject = (): void => {
+        // `addInitScript` runs at document_start, where `document.head` does not exist yet.
+        // Appending to it unguarded threw "Cannot read properties of null (reading 'appendChild')"
+        // on every authenticated spec — harmless to the assertions those specs made, but a real
+        // page error, and UI-08 is the first suite to require a clean console. Waiting for the
+        // head is the fix; swallowing the error would have hidden a genuine one later.
+        if (document.head === null) return;
         if (document.getElementById('servana-account-context') !== null) return;
         const element = document.createElement('script');
         element.id = 'servana-account-context';
@@ -58,9 +64,9 @@ export async function stubAccountContextFor(page: Page, accountKey: string, disp
         document.head.appendChild(element);
       };
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('readystatechange', inject, { once: true });
-      }
+      // `readystatechange` fires more than once; `interactive` is the first point at which the
+      // head is guaranteed, so the listener is not `once` and re-runs until the head exists.
+      document.addEventListener('readystatechange', inject);
       inject();
     },
     [accountKey, displayName] as const,

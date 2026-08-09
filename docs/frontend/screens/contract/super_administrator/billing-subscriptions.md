@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> No runtime page implementation is active. UI-07 registers the contract identity only: **no Vue Router record and no navigation link is exposed**. Owner phase **UI-08** implements it.
+> A real runtime route renders this page today: `platform.billing-subscriptions` at `/billing/subscriptions` (routes/platform.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -26,27 +26,27 @@
 ## Ownership and status
 
 - **UI owner phase:** **UI-08**
-- **Backend owner phase:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
-- **Implementation status:** `planned`
-- **Runtime route:** none — no runtime route is registered
-- **Route delivery:** not applicable
+- **Backend owner phase:** **Phase UI-08 (COR-UI08-001)**
+- **Implementation status:** `implemented`
+- **Runtime route:** `platform.billing-subscriptions`
+- **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
-- **Data fields:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
-- **Filters:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
-- **Sorts:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
-- **Pagination:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
-- **Primary action:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
-- **Secondary actions:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `platform.billing-subscriptions` (recorded in `docs/frontend/screens/platform/platform-billing-subscriptions.md`).
+- **Data fields:** Contract page §5.4.13 (COR-UI08-001). Platform-wide monitoring of subscriptions, subscription invoices, billing credits and escalations over seven READ projections. There is no mutation of any kind: no record-payment, mark-paid, edit-invoice, override-state, create-credit or query-provider control exists, because a subscription state is changed by the billing lifecycle and an issued invoice is immutable.
+- **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
+- **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
+- **Pagination:** Every collection paginates (Plan §9 rule 10).
+- **Primary action:** As delivered by the runtime screen; one visually dominant primary action per page.
+- **Secondary actions:** As delivered by the runtime screen.
 
 ## Authorization
 
 - **Authorization:** Backend `auth:sanctum` + Form Request + Policy + `EnsurePermission` is the security boundary. Everything below is UX visibility only (ADR-017).
 - **Permission-any:** — none
-- **Permission-all:** — none
+- **Permission-all:** `platform.merchant.view`
 - **Tenant scope:** Platform-only; merchant users are refused without record enumeration.
 - **Branch scope:** Not branch-scoped.
 - **Own-scope:** Not own-scoped.
@@ -66,7 +66,7 @@
 - **Suspended state:** Billing suspension and operational suspension follow the §19.2 allowlist.
 - **Locked-period state:** Locked financial periods render read-only and explain why the action is unavailable.
 - **Billing-state behaviour:** `per_account_billing_state_allowlist` — trialing, active, overdue, read_only_grace, suspended_billing, operational suspension and deactivation follow the account allowlist.
-- **Entitlement behaviour:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
+- **Entitlement behaviour:** Entitlement gating is enforced server-side by the owning feature phase.
 
 ## Presentation
 
@@ -78,7 +78,7 @@
 
 ## Evidence
 
-- **Audit events:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
+- **Audit events:** Mutations emit append-only hash-chained `audit_logs` entries; coverage is asserted by `AuditMutationCoverage`.
 - **Analytics events:** No third-party analytics runtime exists in Servana.
-- **Tests:** Contract-level only in UI-07: `Ui07NavigationRegistryContractTest`, `Ui07NoPlannedRouteExposureTest`. Page-level tests are owned by **UI-08**.
-- **Screenshot requirements:** None in UI-07 — there is no page to capture. Owner phase **UI-08**.
+- **Tests:** Route parity `Ui07RouteParityTest`; contract `Ui07NavigationRegistryContractTest`; account guard `Ui07AccountRouteGuardCoverageTest`; runtime navigation `navigationFilter.spec.ts`; browser `tests/e2e/ui-07-navigation-screen-contracts.spec.ts`.
+- **Screenshot requirements:** Owner phase **UI-08** captures this page; UI-07 captures rendered navigation states only.

@@ -1,0 +1,1278 @@
+{
+  "schema": "servana.backend-audit.cor-ui08-001-contract-matrix.v1",
+  "decision_id": "COR-UI08-001",
+  "decision_record": "docs/decisions/cor-ui08-001-super-administrator-backend-enablement.md",
+  "phase": "UI-08",
+  "increment": "2b",
+  "account": "super_administrator",
+  "measured_against": "16d544c58747a1d69ef390c2d4511c649315fde7",
+  "purpose": "Specification-first contract for the four corrective backend domains authorized by COR-UI08-001. This artifact is the authority the Increment 2b contract tests assert against, and the authority Increments 3-6 implement to. It is deterministic and carries no wall-clock field so it supports --check.",
+  "authority_notes": {
+    "openapi": "docs/api/openapi.json is DERIVED from the live route collection by servana:openapi (dedoc/scramble) and is never hand-written. The specification-first artifact for API operations is therefore this matrix; openapi.json is regenerated once per domain as its routes land, and Ui08CorrectiveContractMatrixTest asserts matrix<->OpenAPI parity for every operation whose implementation_state is 'implemented'.",
+    "operation_id": "An operationId in this repository IS the route name (verified across all 302 baseline operations). Every operation_id below is therefore also the route name to register.",
+    "migration_manifest": "MigrationManifestTest fails when a manifest entry references a migration file that does not exist, so manifest.yaml entries are authored in the same increment as their migration files. The proposed-migration records live here (migration_plan) and are the 'manifest before migration' authority required by ADR-004 section 6; the data-dictionary entries were authored first, in Increment 2b, before any migration file exists.",
+    "route_group": "All 33 operations register inside the existing routes/api.php platform group: prefix('platform') with auth:sanctum, EnforceIdleTimeout, EnsureActivePrincipal, throttle:api, EnsurePrivilegedMfa, ResolvePlatformContext. That group forbids ResolveTenantContext and EnsureMerchantActive (RouteClass::PlatformMutation), which is what keeps a merchant tenant context off every one of them."
+  },
+  "baseline": {
+    "openapi_paths": 253,
+    "openapi_operations": 302,
+    "permission_keys_total": 169,
+    "permission_keys_active": 134,
+    "permission_keys_planned": 35,
+    "new_permission_keys_authorized": 2
+  },
+  "expected_after_all_four_domains": {
+    "new_operations": 33,
+    "openapi_operations": 335,
+    "permission_keys_total": 169,
+    "note": "No permission key is added by any of the four domains beyond the two internal-access keys already added in Increment 2a."
+  },
+  "shared_route_security": {
+    "read": {
+      "route_class": null,
+      "route_class_note": "Reads carry no RouteClassification default, matching every existing platform read (platform.merchants.index, platform.settings.show). RouteSecurityContractTest only classifies mutations.",
+      "middleware": [
+        "auth:sanctum",
+        "EnforceIdleTimeout",
+        "EnsureActivePrincipal",
+        "throttle:api",
+        "EnsurePrivilegedMfa",
+        "ResolvePlatformContext",
+        "EnsurePermission:<read permission>"
+      ],
+      "requires_mfa": true,
+      "requires_step_up": false,
+      "requires_idempotency": false
+    },
+    "mutation": {
+      "route_class": "platform_mutation",
+      "middleware": [
+        "auth:sanctum",
+        "EnforceIdleTimeout",
+        "EnsureActivePrincipal",
+        "throttle:api",
+        "EnsurePrivilegedMfa",
+        "ResolvePlatformContext",
+        "EnsurePermission:<mutate permission>",
+        "RequireFreshMfa:<step-up action>"
+      ],
+      "forbidden_middleware": [
+        "ResolveTenantContext",
+        "EnsureMerchantActive"
+      ],
+      "requires_mfa": true,
+      "requires_step_up": true
+    },
+    "error_envelope": "Plan section 11.5 structured envelope; 403 permission_denied, 422 validation_failed / invalid_state_transition, 404 for a foreign or unknown ULID (non-enumerating), 409 idempotency_conflict.",
+    "pagination": "Every collection paginates with a bounded page size and an allowlisted sort vocabulary."
+  },
+  "step_up_actions": [
+    {
+      "case": "BillingConfiguration",
+      "value": "billing_configuration",
+      "status": "existing",
+      "used_by": [
+        "sms_billing_settings"
+      ]
+    },
+    {
+      "case": "PlatformAccessAdministration",
+      "value": "platform_access_administration",
+      "status": "new",
+      "used_by": [
+        "internal_platform_access"
+      ],
+      "rationale": "COR-UI08-001 requires fresh step-up on every /platform-access mutation. StepUpAction is the central registry (Plan section 18), so a live route must carry its own classification rather than borrow billing_configuration, which would make the step-up assertion untraceable to the action it protects."
+    },
+    {
+      "case": "PlatformFeatureFlagChange",
+      "value": "platform_feature_flag_change",
+      "status": "new",
+      "used_by": [
+        "platform_feature_flags"
+      ],
+      "rationale": "COR-UI08-001 requires fresh step-up on every production-sensitive feature-flag change including the emergency pause path."
+    }
+  ],
+  "domains": [
+    {
+      "domain": "sms_billing_settings",
+      "page_section": "5.4.9",
+      "screen_key": "billing-sms",
+      "page_title": "SMS Billing Settings",
+      "canonical_route": "/billing/sms",
+      "canonical_route_name": "platform.billing-sms",
+      "navigation_group": "Billing & Commercial",
+      "backend_owner": "COR-UI08-001",
+      "existing_dependencies": [
+        "Phase 20A",
+        "Phase 21S"
+      ],
+      "account": "super_administrator",
+      "scope": "platform",
+      "permissions": {
+        "read": "platform.billing_settings.view",
+        "mutate": "platform.billing_settings.update",
+        "new_keys": []
+      },
+      "data_authorities": [
+        "platform_sms_billing_rules (new; the single SMS pricing authority)",
+        "platform_billing_settings (existing; currency authority, unchanged)",
+        "sms_billing_entries (existing; usage truth, read-only, snapshots never recalculated)",
+        "subscription_invoice_items (existing; invoice-line mapping target, read-only)"
+      ],
+      "new_data_objects": [
+        "platform_sms_billing_rules"
+      ],
+      "reused_data_objects": [
+        "platform_billing_settings",
+        "sms_billing_entries",
+        "personnel_sms_campaigns",
+        "subscription_invoice_items"
+      ],
+      "state_machines": [
+        "docs/architecture/state-machines/platform-sms-billing-rule.md"
+      ],
+      "data_dictionary": [
+        "docs/architecture/data-dictionary/billing-and-wallet.md#cor-ui08-001--platform-sms-billing-pricing-authority-phase-ui-08"
+      ],
+      "audit_events": [
+        "platform_sms_billing.rule_scheduled",
+        "platform_sms_billing.rule_cancelled"
+      ],
+      "policies": [
+        "App\\Policies\\PlatformSmsBillingPolicy"
+      ],
+      "form_requests": [
+        "App\\Http\\Requests\\Platform\\ScheduleSmsBillingRuleRequest",
+        "App\\Http\\Requests\\Platform\\CancelSmsBillingRuleRequest",
+        "App\\Http\\Requests\\Platform\\SmsBillingCostNoticePreviewRequest",
+        "App\\Http\\Requests\\Platform\\SmsBillingUsageQueryRequest"
+      ],
+      "resources": [
+        "App\\Http\\Resources\\SmsBillingRuleResource"
+      ],
+      "actions_services": [
+        "App\\Domain\\Billing\\Actions\\ScheduleSmsBillingRule",
+        "App\\Domain\\Billing\\Actions\\CancelScheduledSmsBillingRule",
+        "App\\Domain\\Billing\\Queries\\ResolveEffectiveSmsBillingRule",
+        "App\\Domain\\Billing\\Services\\SmsBillingCostNoticeGenerator",
+        "App\\Domain\\Billing\\Queries\\SmsBillingUsageProjection",
+        "App\\Domain\\Billing\\Queries\\SmsBillingChargeReconciliationProjection"
+      ],
+      "controllers": [
+        "App\\Http\\Controllers\\Api\\V1\\Platform\\PlatformSmsBillingController"
+      ],
+      "idempotency": "EnsureIdempotentRequest on the schedule and cancel mutations (a duplicate submit must not create a second effective-dated version).",
+      "rate_limits": "throttle:api (group). No additional named limiter; the surface is Super-Administrator only and low-volume.",
+      "masking": "Aggregates only. No recipient list, no phone number in any form, no message body, no provider credential, no raw callback.",
+      "migration_requirement": "one create migration + one data backfill of the genesis rule, inside the same forward-only migration",
+      "focused_tests": [
+        "Ui08SmsBillingSettingsApiTest",
+        "Ui08SmsBillingRuleResolutionTest",
+        "Ui08SmsBillingSnapshotImmutabilityTest"
+      ],
+      "forbidden_capabilities": [
+        "no new permission key",
+        "no second SMS pricing authority",
+        "no recalculation of an existing sms_billing_entries row",
+        "no recipient list, full phone number, message body or contact export",
+        "no provider credential, provider callback or direct Daraja integration",
+        "no persisted cost-notice markup",
+        "no second currency authority"
+      ],
+      "operations": [
+        {
+          "operation_id": "platform.sms-billing-settings.show",
+          "method": "GET",
+          "path": "/api/v1/platform/sms-billing-settings",
+          "kind": "read",
+          "permission": "platform.billing_settings.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "current effective rule, next scheduled rule (nullable), inherited currency, threshold state",
+          "implementation_state": "implemented",
+          "target_increment": 3
+        },
+        {
+          "operation_id": "platform.sms-billing-settings.versions.index",
+          "method": "GET",
+          "path": "/api/v1/platform/sms-billing-settings/versions",
+          "kind": "read",
+          "permission": "platform.billing_settings.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "paginated historical version series with derived state and actor",
+          "implementation_state": "implemented",
+          "target_increment": 3
+        },
+        {
+          "operation_id": "platform.sms-billing-settings.versions.store",
+          "method": "POST",
+          "path": "/api/v1/platform/sms-billing-settings/versions",
+          "kind": "mutation",
+          "permission": "platform.billing_settings.update",
+          "step_up_action": "billing_configuration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform_sms_billing.rule_scheduled",
+          "implementation_state": "implemented",
+          "target_increment": 3
+        },
+        {
+          "operation_id": "platform.sms-billing-settings.versions.cancel",
+          "method": "POST",
+          "path": "/api/v1/platform/sms-billing-settings/versions/{smsBillingRule}/cancel",
+          "kind": "mutation",
+          "permission": "platform.billing_settings.update",
+          "step_up_action": "billing_configuration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform_sms_billing.rule_cancelled",
+          "implementation_state": "implemented",
+          "target_increment": 3,
+          "addition_rationale": "Not enumerated in the UI-08 kickoff operation list. It is required by the state machine the same list mandates: scheduling a future rule with no way to withdraw it before it takes effect would make an operator error permanent. Cancellation is refused once the rule is effective, so it can never rewrite settled pricing."
+        },
+        {
+          "operation_id": "platform.sms-billing-settings.cost-notice-preview",
+          "method": "GET",
+          "path": "/api/v1/platform/sms-billing-settings/cost-notice-preview",
+          "kind": "read",
+          "permission": "platform.billing_settings.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "server-generated cost notice for a supplied recipient/segment count, at a supplied effective instant",
+          "implementation_state": "implemented",
+          "target_increment": 3
+        },
+        {
+          "operation_id": "platform.sms-billing-usage.index",
+          "method": "GET",
+          "path": "/api/v1/platform/sms-billing-usage",
+          "kind": "read",
+          "permission": "platform.billing_settings.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "aggregated usage by merchant/branch/month distinguishing message count, recipient count, billable units and amount",
+          "implementation_state": "implemented",
+          "target_increment": 3
+        },
+        {
+          "operation_id": "platform.sms-billing-charge-reconciliation.index",
+          "method": "GET",
+          "path": "/api/v1/platform/sms-billing-charge-reconciliation",
+          "kind": "read",
+          "permission": "platform.billing_settings.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "entry-status rollup and invoice-line mapping state; ex-tax and disclosed-inclusive totals labelled separately",
+          "implementation_state": "implemented",
+          "target_increment": 3
+        }
+      ]
+    },
+    {
+      "domain": "subscription_operations",
+      "page_section": "5.4.13",
+      "screen_key": "billing-subscriptions",
+      "page_title": "Subscription Operations",
+      "canonical_route": "/billing/subscriptions",
+      "canonical_route_name": "platform.billing-subscriptions",
+      "navigation_group": "Billing Operations",
+      "backend_owner": "COR-UI08-001",
+      "existing_dependencies": [
+        "Phase 20B"
+      ],
+      "account": "super_administrator",
+      "scope": "platform",
+      "permissions": {
+        "read": "platform.merchant.view",
+        "mutate": null,
+        "conditional_links": [
+          "platform.billing_reconciliation.view",
+          "platform.audit.view"
+        ],
+        "new_keys": []
+      },
+      "data_authorities": [
+        "merchant_subscriptions (existing, read-only)",
+        "scheduled_plan_changes (existing, read-only)",
+        "subscription_invoices (existing, read-only, snapshots never recomputed)",
+        "subscription_invoice_items (existing, read-only)",
+        "billing_escalation_events (existing, read-only)",
+        "merchants (existing, read-only)"
+      ],
+      "new_data_objects": [],
+      "reused_data_objects": [
+        "merchant_subscriptions",
+        "scheduled_plan_changes",
+        "subscription_invoices",
+        "subscription_invoice_items",
+        "billing_escalation_events",
+        "subscription_plans",
+        "subscription_plan_prices",
+        "merchants"
+      ],
+      "state_machines": [],
+      "state_machine_note": "This domain adds NO state machine. It reads the existing merchant-subscription, subscription-invoice, merchant-billing-status and billing-escalation machines and explains their current state; it never advances one.",
+      "data_dictionary": [
+        "docs/architecture/data-dictionary/billing-and-wallet.md#phase-20b--subscriptions-and-invoices-nullable-wallet-projections-only"
+      ],
+      "audit_events": [],
+      "policies": [
+        "App\\Policies\\PlatformMerchantGovernancePolicy (existing; viewGovernance)"
+      ],
+      "form_requests": [
+        "App\\Http\\Requests\\Platform\\PlatformSubscriptionQueryRequest",
+        "App\\Http\\Requests\\Platform\\PlatformSubscriptionInvoiceQueryRequest"
+      ],
+      "resources": [
+        "App\\Http\\Resources\\PlatformSubscriptionResource",
+        "App\\Http\\Resources\\PlatformSubscriptionInvoiceResource"
+      ],
+      "actions_services": [
+        "App\\Domain\\Billing\\Queries\\PlatformSubscriptionOperationsProjection"
+      ],
+      "controllers": [
+        "App\\Http\\Controllers\\Api\\V1\\Platform\\PlatformSubscriptionOperationsController"
+      ],
+      "idempotency": "not applicable — no mutation exists on this surface",
+      "rate_limits": "throttle:api (group)",
+      "masking": "Merchant identity by ULID and display name only; no merchant-client PII; no full payment reference; Wallet attempt fields are shown only from the nullable projections Servana is permitted to hold.",
+      "migration_requirement": "none expected. An index is added only if a measured query plan proves it necessary; the plan output is recorded in docs/proof/ui-08.md before any index migration is authored.",
+      "focused_tests": [
+        "Ui08SubscriptionOperationsApiTest",
+        "Ui08SubscriptionOperationsAuthorizationTest"
+      ],
+      "forbidden_capabilities": [
+        "no new table",
+        "no mutation route of any kind",
+        "no manual subscription payment recording",
+        "no invoice recomputation or snapshot edit",
+        "no second billing-status state machine",
+        "no provider status query or callback",
+        "merchant-tenant keys such as merchant.subscription.view grant nothing here"
+      ],
+      "operations": [
+        {
+          "operation_id": "platform.subscription-operations.summary",
+          "method": "GET",
+          "path": "/api/v1/platform/subscription-operations/summary",
+          "kind": "read",
+          "permission": "platform.merchant.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "counts by subscription status, billing status, trial/grace/overdue cohorts, and a funnel projection; every figure carries its definition and time range",
+          "implementation_state": "implemented",
+          "target_increment": 4
+        },
+        {
+          "operation_id": "platform.subscriptions.index",
+          "method": "GET",
+          "path": "/api/v1/platform/subscriptions",
+          "kind": "read",
+          "permission": "platform.merchant.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "filters": [
+            "plan",
+            "billing_interval",
+            "status",
+            "billing_status",
+            "renewal_date_range",
+            "trial_end_range",
+            "grace_end_range",
+            "overdue_age",
+            "has_scheduled_plan_change",
+            "merchant"
+          ],
+          "sorts": [
+            "renews_at",
+            "created_at",
+            "overdue_age",
+            "merchant_name"
+          ],
+          "implementation_state": "implemented",
+          "target_increment": 4
+        },
+        {
+          "operation_id": "platform.subscriptions.show",
+          "method": "GET",
+          "path": "/api/v1/platform/subscriptions/{merchantSubscription}",
+          "kind": "read",
+          "permission": "platform.merchant.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "subscription detail with current-state explanation, scheduled plan change, invoice history links and merchant drill-through",
+          "non_enumeration": "an unknown or malformed ULID returns 404 with no distinguishing signal",
+          "implementation_state": "implemented",
+          "target_increment": 4
+        },
+        {
+          "operation_id": "platform.subscription-invoices.index",
+          "method": "GET",
+          "path": "/api/v1/platform/subscription-invoices",
+          "kind": "read",
+          "permission": "platform.merchant.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "filters": [
+            "status",
+            "merchant",
+            "issued_date_range",
+            "due_date_range"
+          ],
+          "implementation_state": "implemented",
+          "target_increment": 4
+        },
+        {
+          "operation_id": "platform.subscription-invoices.show",
+          "method": "GET",
+          "path": "/api/v1/platform/subscription-invoices/{subscriptionInvoice}",
+          "kind": "read",
+          "permission": "platform.merchant.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "the immutable issued snapshot exactly as stored, with line items; never a recomputation",
+          "implementation_state": "implemented",
+          "target_increment": 4
+        },
+        {
+          "operation_id": "platform.billing-credits.index",
+          "method": "GET",
+          "path": "/api/v1/platform/billing-credits",
+          "kind": "read",
+          "permission": "platform.merchant.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "credit invoice-item projections over existing subscription_invoice_items; read-only",
+          "implementation_state": "implemented",
+          "target_increment": 4
+        },
+        {
+          "operation_id": "platform.subscription-escalations.index",
+          "method": "GET",
+          "path": "/api/v1/platform/subscription-escalations",
+          "kind": "read",
+          "permission": "platform.merchant.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "billing_escalation_events with type, merchant and absolute timestamps",
+          "implementation_state": "implemented",
+          "target_increment": 4
+        }
+      ]
+    },
+    {
+      "domain": "internal_platform_access",
+      "page_section": "5.4.19",
+      "screen_key": "platform-access",
+      "page_title": "Internal Platform Access",
+      "canonical_route": "/platform-access",
+      "canonical_route_name": "platform.platform-access",
+      "navigation_group": "Platform Administration",
+      "backend_owner": "COR-UI08-001",
+      "existing_dependencies": [
+        "Phase R3",
+        "Phase R6",
+        "Phase 19",
+        "Phase UI-03"
+      ],
+      "account": "super_administrator",
+      "scope": "platform",
+      "permissions": {
+        "read": "platform.internal_access.view",
+        "mutate": "platform.internal_access.manage",
+        "new_keys": [
+          "platform.internal_access.view",
+          "platform.internal_access.manage"
+        ]
+      },
+      "data_authorities": [
+        "platform_access_memberships (new; lifecycle authority)",
+        "platform_access_invitations (new; Magic Link-compatible invitation)",
+        "platform_access_permission_overrides (new; deny-only)",
+        "users (existing; identity, is_platform_staff becomes a derived mirror)",
+        "session_families / host_sessions (existing; revocation authority, reused unchanged)",
+        "magic_login_tokens (existing; the only authentication path)",
+        "mfa_credentials (existing; read-only enrolment state)"
+      ],
+      "new_data_objects": [
+        "platform_access_memberships",
+        "platform_access_invitations",
+        "platform_access_permission_overrides"
+      ],
+      "reused_data_objects": [
+        "users",
+        "permissions",
+        "session_families",
+        "host_sessions",
+        "magic_login_tokens",
+        "mfa_credentials",
+        "audit_logs"
+      ],
+      "state_machines": [
+        "docs/architecture/state-machines/platform-access-membership.md",
+        "docs/architecture/state-machines/platform-access-invitation.md"
+      ],
+      "data_dictionary": [
+        "docs/architecture/data-dictionary/platform-governance.md"
+      ],
+      "audit_events": [
+        "platform.internal_access.invited",
+        "platform.internal_access.invitation_resent",
+        "platform.internal_access.invitation_revoked",
+        "platform.internal_access.permissions_changed",
+        "platform.internal_access.suspended",
+        "platform.internal_access.reactivated",
+        "platform.internal_access.deactivated",
+        "platform.internal_access.sessions_revoked"
+      ],
+      "policies": [
+        "App\\Policies\\PlatformAccessPolicy"
+      ],
+      "form_requests": [
+        "App\\Http\\Requests\\Platform\\InvitePlatformAdministratorRequest",
+        "App\\Http\\Requests\\Platform\\PlatformAccessLifecycleReasonRequest",
+        "App\\Http\\Requests\\Platform\\UpdatePlatformAccessPermissionsRequest"
+      ],
+      "resources": [
+        "App\\Http\\Resources\\PlatformAccessMembershipResource",
+        "App\\Http\\Resources\\PlatformAccessInvitationResource"
+      ],
+      "actions_services": [
+        "App\\Domain\\PlatformAccess\\Actions\\InvitePlatformAdministrator",
+        "App\\Domain\\PlatformAccess\\Actions\\ResendPlatformAccessInvitation",
+        "App\\Domain\\PlatformAccess\\Actions\\RevokePlatformAccessInvitation",
+        "App\\Domain\\PlatformAccess\\Actions\\AcceptPlatformAccessInvitation",
+        "App\\Domain\\PlatformAccess\\Actions\\UpdatePlatformAccessPermissions",
+        "App\\Domain\\PlatformAccess\\Actions\\ChangePlatformAccessStatus",
+        "App\\Domain\\PlatformAccess\\Actions\\RevokePlatformAdministratorSessions",
+        "App\\Domain\\PlatformAccess\\Services\\PlatformAccessStateMachine",
+        "App\\Domain\\PlatformAccess\\Services\\PlatformAdministratorQuorum",
+        "App\\Domain\\PlatformAccess\\Support\\PlatformAccessInvitationToken"
+      ],
+      "controllers": [
+        "App\\Http\\Controllers\\Api\\V1\\Platform\\InternalPlatformAccessController"
+      ],
+      "idempotency": "EnsureIdempotentRequest on invite, resend, revoke, permission change and every lifecycle mutation — each could otherwise create a duplicate effect (a second invitation, a second revocation audit chain).",
+      "rate_limits": "throttle:api (group) plus a named limiter on the invitation surface to blunt address probing.",
+      "masking": "Roster shows the full email only to a holder of platform.internal_access.view. No token, no token hash, no session id, no MFA secret, no recovery code and no device/IP history beyond the approved session-family fields is ever serialized.",
+      "migration_requirement": "three create migrations plus one expand migration adding the platform_access_sessions_revoked value to the session_families and host_sessions revoked_reason CHECK vocabularies",
+      "focused_tests": [
+        "Ui08InternalPlatformAccessApiTest",
+        "Ui08InternalPlatformAccessInvitationTest",
+        "Ui08InternalPlatformAccessSafetyTest",
+        "PlatformAccessMembershipMirrorTest"
+      ],
+      "forbidden_capabilities": [
+        "no merchant role option anywhere on this surface",
+        "no write to merchant_users, branch_user_assignments or staff_profiles",
+        "no merchant, branch or first-Merchant-Administrator creation",
+        "no impersonation",
+        "no self-escalation (overrides are deny-only and platform-scoped by trigger)",
+        "no deactivation of the final active Super Administrator",
+        "no password, OTP or WebAuthn credential",
+        "no second identity table and no second session store",
+        "no additional platform role beyond super_admin"
+      ],
+      "operations": [
+        {
+          "operation_id": "platform.internal-access.users.index",
+          "method": "GET",
+          "path": "/api/v1/platform/internal-access/users",
+          "kind": "read",
+          "permission": "platform.internal_access.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "paginated roster: status, role, MFA enrolment, last login, active session count, permission summary",
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.users.show",
+          "method": "GET",
+          "path": "/api/v1/platform/internal-access/users/{platformAccessMembership}",
+          "kind": "read",
+          "permission": "platform.internal_access.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "membership detail plus access history",
+          "non_enumeration": "a foreign or unknown identifier returns 404 with no distinguishing signal",
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.invitations.index",
+          "method": "GET",
+          "path": "/api/v1/platform/internal-access/invitations",
+          "kind": "read",
+          "permission": "platform.internal_access.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.invitations.store",
+          "method": "POST",
+          "path": "/api/v1/platform/internal-access/invitations",
+          "kind": "mutation",
+          "permission": "platform.internal_access.manage",
+          "step_up_action": "platform_access_administration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.internal_access.invited",
+          "enumeration_safe": true,
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.invitations.resend",
+          "method": "POST",
+          "path": "/api/v1/platform/internal-access/invitations/{platformAccessInvitation}/resend",
+          "kind": "mutation",
+          "permission": "platform.internal_access.manage",
+          "step_up_action": "platform_access_administration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "audit_event": "platform.internal_access.invitation_resent",
+          "rotates_secret": true,
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.invitations.revoke",
+          "method": "POST",
+          "path": "/api/v1/platform/internal-access/invitations/{platformAccessInvitation}/revoke",
+          "kind": "mutation",
+          "permission": "platform.internal_access.manage",
+          "step_up_action": "platform_access_administration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.internal_access.invitation_revoked",
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.users.permissions.update",
+          "method": "PATCH",
+          "path": "/api/v1/platform/internal-access/users/{platformAccessMembership}/permissions",
+          "kind": "mutation",
+          "permission": "platform.internal_access.manage",
+          "step_up_action": "platform_access_administration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.internal_access.permissions_changed",
+          "invariants": [
+            "deny-only",
+            "platform-scoped keys only",
+            "actor may not act on their own membership"
+          ],
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.users.suspend",
+          "method": "POST",
+          "path": "/api/v1/platform/internal-access/users/{platformAccessMembership}/suspend",
+          "kind": "mutation",
+          "permission": "platform.internal_access.manage",
+          "step_up_action": "platform_access_administration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.internal_access.suspended",
+          "invariants": [
+            "quorum: may not leave zero active administrators",
+            "actor may not suspend themselves"
+          ],
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.users.reactivate",
+          "method": "POST",
+          "path": "/api/v1/platform/internal-access/users/{platformAccessMembership}/reactivate",
+          "kind": "mutation",
+          "permission": "platform.internal_access.manage",
+          "step_up_action": "platform_access_administration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.internal_access.reactivated",
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.users.deactivate",
+          "method": "POST",
+          "path": "/api/v1/platform/internal-access/users/{platformAccessMembership}/deactivate",
+          "kind": "mutation",
+          "permission": "platform.internal_access.manage",
+          "step_up_action": "platform_access_administration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.internal_access.deactivated",
+          "invariants": [
+            "terminal",
+            "quorum: may not leave zero active administrators",
+            "actor may not deactivate themselves"
+          ],
+          "implementation_state": "implemented",
+          "target_increment": 5
+        },
+        {
+          "operation_id": "platform.internal-access.users.sessions.revoke",
+          "method": "POST",
+          "path": "/api/v1/platform/internal-access/users/{platformAccessMembership}/sessions/revoke",
+          "kind": "mutation",
+          "permission": "platform.internal_access.manage",
+          "step_up_action": "platform_access_administration",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.internal_access.sessions_revoked",
+          "reuses": "App\\Domain\\Sessions\\Services\\SessionFamilyService::revokeFamiliesForUser with the new platform_access_sessions_revoked reason",
+          "implementation_state": "implemented",
+          "target_increment": 5
+        }
+      ],
+      "action_note": "Suspend, reactivate and deactivate share ONE action (ChangePlatformAccessStatus) because they share every safety obligation - quorum, mirror write, session revocation - and splitting them would let those drift. Three named routes are still exposed; there is no generic status endpoint."
+    },
+    {
+      "domain": "platform_feature_flags",
+      "page_section": "5.4.20",
+      "screen_key": "platform-feature-flags",
+      "page_title": "Feature Flags",
+      "canonical_route": "/platform/feature-flags",
+      "canonical_route_name": "platform.feature-flags",
+      "navigation_group": "Platform Administration",
+      "backend_owner": "COR-UI08-001",
+      "existing_dependencies": [
+        "Phase 20A platform settings",
+        "Phase 19 audit",
+        "Phase R3 step-up"
+      ],
+      "account": "super_administrator",
+      "scope": "platform",
+      "permissions": {
+        "read": "platform.settings.view",
+        "mutate": "platform.settings.update",
+        "new_keys": []
+      },
+      "data_authorities": [
+        "config/platform-feature-flags.php (new; the code allowlist — the catalogue authority)",
+        "platform_feature_flags (new; per-environment state)",
+        "platform_feature_flag_targets (new)",
+        "platform_feature_flag_change_requests (new; maker/checker)",
+        "platform_feature_flag_history (new; append-only)"
+      ],
+      "new_data_objects": [
+        "platform_feature_flags",
+        "platform_feature_flag_targets",
+        "platform_feature_flag_change_requests",
+        "platform_feature_flag_history"
+      ],
+      "reused_data_objects": [
+        "users",
+        "merchants",
+        "subscription_plans",
+        "audit_logs"
+      ],
+      "state_machines": [
+        "docs/architecture/state-machines/platform-feature-flag.md",
+        "docs/architecture/state-machines/platform-feature-flag-change-request.md"
+      ],
+      "data_dictionary": [
+        "docs/architecture/data-dictionary/platform-governance.md#part-2--platform-feature-flags"
+      ],
+      "audit_events": [
+        "platform.feature_flag.change_requested",
+        "platform.feature_flag.change_approved",
+        "platform.feature_flag.change_rejected",
+        "platform.feature_flag.change_cancelled",
+        "platform.feature_flag.applied",
+        "platform.feature_flag.paused"
+      ],
+      "policies": [
+        "App\\Policies\\PlatformFeatureFlagPolicy"
+      ],
+      "form_requests": [
+        "App\\Http\\Requests\\Platform\\RequestFeatureFlagChangeRequest",
+        "App\\Http\\Requests\\Platform\\DecideFeatureFlagChangeRequest",
+        "App\\Http\\Requests\\Platform\\PauseFeatureFlagRequest"
+      ],
+      "resources": [
+        "App\\Http\\Resources\\PlatformFeatureFlagResource",
+        "App\\Http\\Resources\\PlatformFeatureFlagChangeRequestResource"
+      ],
+      "actions_services": [
+        "App\\Domain\\PlatformFeatureFlags\\Actions\\RequestFeatureFlagChange",
+        "App\\Domain\\PlatformFeatureFlags\\Actions\\DecideFeatureFlagChange",
+        "App\\Domain\\PlatformFeatureFlags\\Actions\\PausePlatformFeatureFlag",
+        "App\\Domain\\PlatformFeatureFlags\\Services\\PlatformFeatureFlagEvaluator",
+        "App\\Domain\\PlatformFeatureFlags\\Services\\PlatformFeatureFlagCatalogue",
+        "App\\Domain\\PlatformFeatureFlags\\Services\\PlatformFeatureFlagStateMachine",
+        "App\\Domain\\PlatformFeatureFlags\\Support\\PlatformFeatureFlagDefinition",
+        "App\\Domain\\PlatformFeatureFlags\\Support\\PlatformFeatureFlagDecision"
+      ],
+      "controllers": [
+        "App\\Http\\Controllers\\Api\\V1\\Platform\\PlatformFeatureFlagController"
+      ],
+      "idempotency": "EnsureIdempotentRequest on change-request creation, approval, rejection, cancellation and pause.",
+      "rate_limits": "throttle:api (group)",
+      "masking": "Configuration only. No credential, no merchant PII; a merchant target is stored and displayed as a ULID.",
+      "migration_requirement": "four create migrations (flags, targets, change requests, append-only history)",
+      "focused_tests": [
+        "Ui08FeatureFlagApiTest",
+        "Ui08FeatureFlagEvaluationTest",
+        "Ui08FeatureFlagMakerCheckerTest"
+      ],
+      "forbidden_capabilities": [
+        "no new permission key",
+        "no arbitrary flag-key creation through the API",
+        "no seeded fake production flag",
+        "no stored executable targeting logic",
+        "a flag can never grant an otherwise denied capability",
+        "a flag can never bypass permission, entitlement, billing state or account context",
+        "a flag can never open or bypass External Gate W",
+        "never evaluated in the browser"
+      ],
+      "operations": [
+        {
+          "operation_id": "platform.feature-flags.index",
+          "method": "GET",
+          "path": "/api/v1/platform/feature-flags",
+          "kind": "read",
+          "permission": "platform.settings.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "the allowlisted catalogue joined to per-environment state; a truthfully empty catalogue returns an empty collection",
+          "implementation_state": "implemented",
+          "target_increment": 6
+        },
+        {
+          "operation_id": "platform.feature-flags.show",
+          "method": "GET",
+          "path": "/api/v1/platform/feature-flags/{flagKey}",
+          "kind": "read",
+          "permission": "platform.settings.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "definition, state, rollout, targets, dating, dependencies, affected screen keys and operation IDs, health-metric availability, rollback criterion",
+          "unknown_key": "404 — the key is not in the code allowlist",
+          "implementation_state": "implemented",
+          "target_increment": 6
+        },
+        {
+          "operation_id": "platform.feature-flags.history.index",
+          "method": "GET",
+          "path": "/api/v1/platform/feature-flags/{flagKey}/history",
+          "kind": "read",
+          "permission": "platform.settings.view",
+          "requires_step_up": false,
+          "requires_idempotency": false,
+          "returns": "append-only history with before/after hashes, actor, reason and correlation ID",
+          "implementation_state": "implemented",
+          "target_increment": 6
+        },
+        {
+          "operation_id": "platform.feature-flags.change-requests.store",
+          "method": "POST",
+          "path": "/api/v1/platform/feature-flags/{flagKey}/change-requests",
+          "kind": "mutation",
+          "permission": "platform.settings.update",
+          "step_up_action": "platform_feature_flag_change",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "required_fields": [
+            "impact_statement",
+            "rollback_plan",
+            "health_criterion",
+            "reason"
+          ],
+          "audit_event": "platform.feature_flag.change_requested",
+          "implementation_state": "implemented",
+          "target_increment": 6
+        },
+        {
+          "operation_id": "platform.feature-flag-change-requests.approve",
+          "method": "POST",
+          "path": "/api/v1/platform/feature-flag-change-requests/{platformFeatureFlagChangeRequest}/approve",
+          "kind": "mutation",
+          "permission": "platform.settings.update",
+          "step_up_action": "platform_feature_flag_change",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.feature_flag.change_approved",
+          "invariants": [
+            "approver must differ from requester (DB CHECK)",
+            "applies the configuration in the same transaction"
+          ],
+          "implementation_state": "implemented",
+          "target_increment": 6
+        },
+        {
+          "operation_id": "platform.feature-flag-change-requests.reject",
+          "method": "POST",
+          "path": "/api/v1/platform/feature-flag-change-requests/{platformFeatureFlagChangeRequest}/reject",
+          "kind": "mutation",
+          "permission": "platform.settings.update",
+          "step_up_action": "platform_feature_flag_change",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.feature_flag.change_rejected",
+          "implementation_state": "implemented",
+          "target_increment": 6
+        },
+        {
+          "operation_id": "platform.feature-flag-change-requests.cancel",
+          "method": "POST",
+          "path": "/api/v1/platform/feature-flag-change-requests/{platformFeatureFlagChangeRequest}/cancel",
+          "kind": "mutation",
+          "permission": "platform.settings.update",
+          "step_up_action": "platform_feature_flag_change",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "audit_event": "platform.feature_flag.change_cancelled",
+          "invariants": [
+            "requester only"
+          ],
+          "implementation_state": "implemented",
+          "target_increment": 6
+        },
+        {
+          "operation_id": "platform.feature-flags.pause",
+          "method": "POST",
+          "path": "/api/v1/platform/feature-flags/{flagKey}/pause",
+          "kind": "mutation",
+          "permission": "platform.settings.update",
+          "step_up_action": "platform_feature_flag_change",
+          "requires_step_up": true,
+          "requires_idempotency": true,
+          "requires_reason": true,
+          "audit_event": "platform.feature_flag.paused",
+          "invariants": [
+            "single-actor path is permitted ONLY because it moves the flag towards deny and never away from it"
+          ],
+          "implementation_state": "implemented",
+          "target_increment": 6
+        }
+      ],
+      "action_note": "Approve, reject and cancel share ONE action (DecideFeatureFlagChange) because they share the pending-lock and history-append obligations; approval additionally applies the configuration in the same transaction. A separate change-request state machine class proved unnecessary - the transitions are enforced by the pending lock plus the database CHECKs, and a second class would have restated them without adding a guarantee."
+    }
+  ],
+  "migration_plan": [
+    {
+      "proposed_file": "create_platform_sms_billing_rules_table",
+      "owner": "COR-UI08-001",
+      "domain": "sms_billing_settings",
+      "purpose": "The single effective-dated SMS pricing authority, proven necessary because platform_billing_settings rows are complete configuration snapshots written by two authorities at now(), so a future-dated SMS row would silently revert unrelated billing settings.",
+      "change_type": "create",
+      "expand_only": true,
+      "tables": [
+        "platform_sms_billing_rules"
+      ],
+      "columns": [
+        "id",
+        "ulid",
+        "unit_cost_minor",
+        "tax_basis_points",
+        "usage_warning_threshold_units",
+        "usage_anomaly_threshold_basis_points",
+        "effective_from",
+        "reason",
+        "created_by_user_id",
+        "cancelled_at",
+        "cancelled_by_user_id",
+        "cancellation_reason",
+        "created_at",
+        "updated_at"
+      ],
+      "enums_checks": [
+        "unit_cost >= 0",
+        "tax 0..10000",
+        "thresholds >= 0",
+        "cancellation consistency",
+        "guard trigger (append-only; pending-cancel only)"
+      ],
+      "foreign_keys": [
+        "created_by_user_id -> users RESTRICT",
+        "cancelled_by_user_id -> users RESTRICT"
+      ],
+      "indexes": [
+        "UNIQUE(effective_from)",
+        "INDEX(effective_from)"
+      ],
+      "backfill": "one genesis rule from config('sms.pricing.unit_cost_minor') at effective_from 2026-07-22T00:00:00Z, so the entire existing sms_billing_entries history resolves to the rule that actually produced its snapshots",
+      "deployment_order": 1,
+      "application_compatibility": "expand-only; SmsCostCalculator continues to answer identically because the genesis rule carries the same configured unit cost",
+      "rollback_strategy": "forward-repair only (ADR-004): schedule a corrective rule. The table is append-only, so no destructive rollback exists or is needed.",
+      "data_retention_impact": "none — pricing configuration, no personal data",
+      "security_impact": "moves SMS pricing from deployment configuration to a versioned, audited, MFA + step-up governed authority. Strictly stronger."
+    },
+    {
+      "proposed_file": "create_platform_access_memberships_table",
+      "owner": "COR-UI08-001",
+      "domain": "internal_platform_access",
+      "purpose": "Lifecycle authority for internal platform access; users.is_platform_staff is a bare boolean with no status, actor, reason or timestamps.",
+      "change_type": "create",
+      "expand_only": true,
+      "tables": [
+        "platform_access_memberships"
+      ],
+      "enums_checks": [
+        "role_key IN (super_admin)",
+        "status IN (invited,active,suspended,deactivated)",
+        "four timestamp-consistency CHECKs"
+      ],
+      "foreign_keys": [
+        "user_id -> users RESTRICT (UNIQUE)",
+        "invitation_id -> platform_access_invitations RESTRICT",
+        "invited_by_user_id / last_action_by_user_id -> users RESTRICT"
+      ],
+      "indexes": [
+        "UNIQUE(user_id)",
+        "INDEX(status)"
+      ],
+      "backfill": "one active membership per existing users.is_platform_staff = true row, so the flag and the membership agree from the first migration onwards",
+      "deployment_order": 3,
+      "application_compatibility": "expand-only; every shipped reader of is_platform_staff keeps working unchanged",
+      "rollback_strategy": "forward-repair only",
+      "data_retention_impact": "identity-adjacent lifecycle record; retained with the identity",
+      "security_impact": "adds accountability where a bare boolean previously carried none"
+    },
+    {
+      "proposed_file": "create_platform_access_invitations_table",
+      "owner": "COR-UI08-001",
+      "domain": "internal_platform_access",
+      "purpose": "Magic Link-compatible platform invitation; staff_invitations cannot carry it (NOT NULL merchant_id/branch_id, role CHECK excludes super_admin).",
+      "change_type": "create",
+      "expand_only": true,
+      "tables": [
+        "platform_access_invitations"
+      ],
+      "enums_checks": [
+        "role_key",
+        "purpose",
+        "environment",
+        "status",
+        "email = lower(email)",
+        "expiry",
+        "accepted/revoked consistency",
+        "resend_count >= 0"
+      ],
+      "indexes": [
+        "UNIQUE(token_hash)",
+        "partial UNIQUE(email) WHERE status = pending",
+        "INDEX(status)"
+      ],
+      "backfill": "none",
+      "deployment_order": 2,
+      "application_compatibility": "expand-only",
+      "rollback_strategy": "forward-repair only",
+      "data_retention_impact": "holds a normalized email and a token HASH only; the raw token is never persisted",
+      "security_impact": "hashed, single-use, expiring, purpose- and environment-bound credential"
+    },
+    {
+      "proposed_file": "create_platform_access_permission_overrides_table",
+      "owner": "COR-UI08-001",
+      "domain": "internal_platform_access",
+      "purpose": "Deny-only platform overrides; merchant_user_permission_overrides is keyed on merchant_user_id and cannot address a platform administrator.",
+      "change_type": "create",
+      "expand_only": true,
+      "tables": [
+        "platform_access_permission_overrides"
+      ],
+      "enums_checks": [
+        "effect IN (deny)",
+        "scope-guard trigger rejecting any permission whose permissions.category <> 'platform'"
+      ],
+      "indexes": [
+        "UNIQUE(platform_access_membership_id, permission_id)"
+      ],
+      "backfill": "none",
+      "deployment_order": 4,
+      "application_compatibility": "expand-only; PermissionResolver::forPlatformStaff subtracts denies once the table exists",
+      "rollback_strategy": "forward-repair only",
+      "data_retention_impact": "none",
+      "security_impact": "makes self-escalation and merchant-key assignment structurally unrepresentable"
+    },
+    {
+      "proposed_file": "expand_session_revocation_reason_add_platform_access",
+      "owner": "COR-UI08-001",
+      "domain": "internal_platform_access",
+      "purpose": "Administrator-initiated session revocation needs a truthful reason; the closed vocabulary has none (session_revoked_by_owner and global_logout both describe the user's own action).",
+      "change_type": "expand",
+      "expand_only": true,
+      "tables": [
+        "session_families",
+        "host_sessions"
+      ],
+      "enums_checks": [
+        "replaces both revoked_reason CHECK constraints, adding exactly platform_access_sessions_revoked"
+      ],
+      "indexes": [],
+      "backfill": "none — existing rows keep their existing reasons",
+      "deployment_order": 5,
+      "application_compatibility": "widening a CHECK is backward compatible; older code simply never writes the new value. The shipped UI-03 migrations are NOT edited (guardrail 12).",
+      "rollback_strategy": "forward-repair only; narrowing again would require no rows to hold the value",
+      "data_retention_impact": "none",
+      "security_impact": "prevents a false forensic record"
+    },
+    {
+      "proposed_file": "create_platform_feature_flags_table",
+      "owner": "COR-UI08-001",
+      "domain": "platform_feature_flags",
+      "purpose": "Per-environment flag state. No existing table carries a rollout state machine, and config alone cannot record who changed what, when, under which approval.",
+      "change_type": "create",
+      "expand_only": true,
+      "tables": [
+        "platform_feature_flags"
+      ],
+      "enums_checks": [
+        "state IN (inactive,scheduled,active,paused,retired)",
+        "rollout 0..10000",
+        "dating consistency",
+        "scheduled requires effective_from",
+        "version >= 1"
+      ],
+      "indexes": [
+        "UNIQUE(flag_key, environment)",
+        "INDEX(environment, state)"
+      ],
+      "backfill": "none — an empty production catalogue is truthful and is never padded",
+      "deployment_order": 6,
+      "application_compatibility": "expand-only; an absent row evaluates deny",
+      "rollback_strategy": "forward-repair only",
+      "data_retention_impact": "none",
+      "security_impact": "restrictive-only control; cannot grant"
+    },
+    {
+      "proposed_file": "create_platform_feature_flag_targets_table",
+      "owner": "COR-UI08-001",
+      "domain": "platform_feature_flags",
+      "purpose": "Closed-vocabulary targeting rows so a rollout can be scoped to a merchant, plan or cohort without ever persisting an executable predicate.",
+      "change_type": "create",
+      "expand_only": true,
+      "tables": [
+        "platform_feature_flag_targets"
+      ],
+      "enums_checks": [
+        "target_type IN (merchant,plan,cohort)"
+      ],
+      "indexes": [
+        "UNIQUE(feature_flag_id, target_type, target_value)"
+      ],
+      "backfill": "none",
+      "deployment_order": 7,
+      "application_compatibility": "expand-only",
+      "rollback_strategy": "forward-repair only",
+      "data_retention_impact": "none",
+      "security_impact": "closed type vocabulary + scalar value means no executable predicate is storable"
+    },
+    {
+      "proposed_file": "create_platform_feature_flag_change_requests_table",
+      "owner": "COR-UI08-001",
+      "domain": "platform_feature_flags",
+      "purpose": "Maker/checker workflow for production-sensitive flag changes, with mandatory impact, rollback plan and health criterion, and a database CHECK that makes self-approval unrepresentable.",
+      "change_type": "create",
+      "expand_only": true,
+      "tables": [
+        "platform_feature_flag_change_requests"
+      ],
+      "enums_checks": [
+        "status IN (pending,approved,rejected,cancelled,applied,failed)",
+        "maker/checker CHECK approved_by <> requested_by",
+        "approved/rejected/applied/failed consistency",
+        "proposed_configuration is an object"
+      ],
+      "indexes": [
+        "partial UNIQUE(feature_flag_id) WHERE status = pending"
+      ],
+      "backfill": "none",
+      "deployment_order": 8,
+      "application_compatibility": "expand-only",
+      "rollback_strategy": "forward-repair only",
+      "data_retention_impact": "none",
+      "security_impact": "self-approval becomes unrepresentable at the database"
+    },
+    {
+      "proposed_file": "create_platform_feature_flag_history_table",
+      "owner": "COR-UI08-001",
+      "domain": "platform_feature_flags",
+      "purpose": "Append-only before/after history with configuration hashes, actor, reason and correlation ID, giving flag governance the same immutability guarantee audit_logs has.",
+      "change_type": "create",
+      "expand_only": true,
+      "tables": [
+        "platform_feature_flag_history"
+      ],
+      "enums_checks": [
+        "action closed vocabulary",
+        "before/after are objects when present",
+        "append-only trigger raising on UPDATE and DELETE"
+      ],
+      "indexes": [
+        "INDEX(feature_flag_id, created_at)"
+      ],
+      "backfill": "none",
+      "deployment_order": 9,
+      "application_compatibility": "expand-only",
+      "rollback_strategy": "forward-repair only",
+      "data_retention_impact": "governance history, retained",
+      "security_impact": "append-only, matching the audit_logs guarantee"
+    }
+  ],
+  "forbidden_operations": [
+    "POST /api/v1/platform/merchants",
+    "POST /api/v1/platform/merchants/{merchant}/administrators",
+    "POST /api/v1/platform/merchants/{merchant}/impersonate",
+    "POST /api/v1/platform/merchants/{merchant}/branches",
+    "POST /api/v1/platform/subscriptions/{subscription}/payments",
+    "POST /api/v1/platform/subscription-invoices/{invoice}/payments",
+    "POST /api/v1/platform/subscriptions/{subscription}/cancel",
+    "PATCH /api/v1/platform/subscriptions/{subscription}",
+    "POST /api/v1/platform/billing-credits",
+    "POST /api/v1/platform/sms-billing-usage/{entry}/recalculate",
+    "GET /api/v1/platform/sms-billing-usage/{entry}/recipients",
+    "POST /api/v1/platform/feature-flags",
+    "POST /api/v1/platform/gates/{gate}/open",
+    "POST /api/v1/platform/refer-and-earn/rewards",
+    "POST /api/v1/platform/wallet/provider-credentials"
+  ],
+  "forbidden_operations_note": "Ui08NoForbiddenPlatformCapabilityTest asserts every entry resolves to no route, in addition to asserting that no route name in the collection matches the forbidden-capability patterns.",
+  "integration_boundaries": {
+    "servana_owns": [
+      "business-billing truth",
+      "subscription truth",
+      "invoice truth",
+      "SMS usage-billing truth",
+      "access decisions",
+      "feature rollout restrictions"
+    ],
+    "wallet_owns": [
+      "money movement",
+      "provider credentials",
+      "provider callbacks",
+      "provider settlement",
+      "provider reconciliation"
+    ],
+    "refer_and_earn_owns": [
+      "referrer accounts",
+      "reward calculation",
+      "reward ledger",
+      "reward payout"
+    ],
+    "gate_w": "closed; unchanged by this decision"
+  }
+}

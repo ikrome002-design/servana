@@ -3,10 +3,17 @@
 # from docs/frontend/navigation/servana-user-account-navigation-map.yaml.
 # Enforced by roleNavigation.spec.ts (vitest file snapshot). Do not hand-edit.
 super_administrator:
+  - key: super_administrator.dashboard
+    label: Dashboard
+    availability: live
+    route: platform.dashboard
+    permission: platform.merchant.view
+    phase: Phase UI-08 (COR-UI08-001)
   - key: super_administrator.get-started
     label: Get Started
     availability: live
     route: platform.get-started
+    permission: platform.billing_settings.view
     phase: Phase 11
   - key: super_administrator.billing-settings
     label: Platform Billing Settings
@@ -17,70 +24,105 @@ super_administrator:
   - key: super_administrator.billing-plans
     label: Plans and Entitlements
     availability: live
-    route: platform.billing-settings
+    route: platform.billing-plans
     permission: platform.plan.view
     phase: Phase 20A
   - key: super_administrator.billing-prices
     label: Plan Prices and Billing Periods
     availability: live
-    route: platform.billing-settings
+    route: platform.billing-prices
     permission: platform.plan.view
     phase: Phase 20A
   - key: super_administrator.billing-promotions
     label: Promotional Discounts
     availability: live
-    route: platform.promotions
+    route: platform.billing-promotions
     permission: platform.promotion.manage
     phase: Phase 20C
   - key: super_administrator.billing-free-periods
     label: Free-Period Offers
     availability: live
-    route: platform.promotions
-    permission: platform.promotion.manage
+    route: platform.billing-free-periods
+    permission: platform.free_period_offer.manage
     phase: Phase 20C
   - key: super_administrator.billing-preferred-personnel-fees
     label: Preferred Personnel Fee Rules
     availability: live
-    route: platform.billing-settings
+    route: platform.billing-preferred-personnel-fees
     permission: platform.preferred_personnel_fee.manage
     phase: Phase 20A
+  - key: super_administrator.billing-sms
+    label: SMS Billing Settings
+    availability: live
+    route: platform.billing-sms
+    permission: platform.billing_settings.view
+    phase: Phase UI-08 (COR-UI08-001)
   - key: super_administrator.merchant-registrations
     label: Registration Monitoring
     availability: live
-    route: platform.registration-monitoring
+    route: platform.merchant-registrations
     permission: platform.registration_monitor.view
     phase: Phase 20B
   - key: super_administrator.merchants
     label: Merchant Directory
     availability: live
-    route: platform.registration-monitoring
+    route: platform.merchants
     permission: platform.merchant.view
     phase: Phase 20B
+  - key: super_administrator.billing-subscriptions
+    label: Subscription Operations
+    availability: live
+    route: platform.billing-subscriptions
+    permission: platform.merchant.view
+    phase: Phase UI-08 (COR-UI08-001)
   - key: super_administrator.billing-reconciliation-exceptions
     label: Billing Reconciliation Exceptions
     availability: gated
     gate: external_gate_w
-    phase: UI-08
+    phase: Phase 20D-W
   - key: super_administrator.integrations
     label: Integrations Health
     availability: gated
     gate: external_gate_w
-    phase: UI-08
+    phase: Phase 20D-W
   - key: super_administrator.integrations-refer-and-earn-qualifications
     label: Refer & Earn Qualification Decisions
     availability: gated
     gate: external_gate_w
-    phase: UI-08
+    phase: Phase 21R-B
   - key: super_administrator.reports
     label: Platform Reports
     availability: gated
     gate: external_gate_w
-    phase: UI-08
+    phase: Phase 21N
+  - key: super_administrator.audit
+    label: Platform Audit
+    availability: live
+    route: platform.audit
+    permission: platform.audit.view
+    phase: Phase 19
+  - key: super_administrator.platform-access
+    label: Internal Platform Access
+    availability: live
+    route: platform.platform-access
+    permission: platform.internal_access.view
+    phase: Phase UI-08 (COR-UI08-001)
+  - key: super_administrator.feature-flags
+    label: Feature Flags
+    availability: live
+    route: platform.feature-flags
+    permission: platform.settings.view
+    phase: Phase UI-08 (COR-UI08-001)
   - key: super_administrator.notifications
     label: Notifications
     availability: gated
     gate: external_gate_w
-    phase: UI-08
+    phase: Phase 21N
+  - key: super_administrator.account
+    label: Account and Security
+    availability: live
+    route: platform.account
+    phase: Phase UI-03
 merchant_administrator:
   - key: merchant_administrator.setup
     label: First-Time Setup

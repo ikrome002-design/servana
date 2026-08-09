@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `platform.billing-settings` at `/platform/billing-settings` (routes/platform.ts), delivery **consolidated**. This runtime route also serves other contract pages — the collapse recorded as `UI01-NAV-001`. Owner phase **UI-08** splits it into a dedicated page. The runtime path uses the account's path prefix rather than the host-relative contract path `/billing/settings`; owner phase **UI-08** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `platform.billing-settings` at `/billing/settings` (routes/platform.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -29,13 +29,13 @@
 - **Backend owner phase:** **Phase 20A**
 - **Implementation status:** `implemented`
 - **Runtime route:** `platform.billing-settings`
-- **Route delivery:** `consolidated`
+- **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
 - **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `platform.billing-settings` (recorded in `docs/frontend/screens/platform/platform-billing-settings.md`).
-- **Data fields:** One coherent platform surface with accessible tabs: general settings, billing settings (three canonical billing modes), subscription plans (non-price metadata; retire preserves history), effective-dated plan prices (five intervals; overlap-rejected; only future prices cancellable; historical/current read-only), plan entitlements (enable/disable/limit; no merchant-subscription binding), and preferred-personnel fee rules (fixed/percentage; platform-default/service scope; supersede-not-edit; approve/cancel). Each tab is permission-gated (UX only); the API enforces platform scope, MFA and a fresh step-up on sensitive mutations. Adds the Phase 20E percentage platform-fee configuration tab (create/update-draft/approve/supersede/cancel; approved terms immutable so a change supersedes; the shared tier is shown by its canonical label). NO registration monitoring or plan-management (Phase 20B).
+- **Data fields:** Contract page §5.4.3. Platform-wide billing configuration: the three canonical billing modes, effective-dated settings versions, trial, grace, overdue and suspension boundaries, and the percentage platform-fee configuration. Composes the shipped Phase 20A and 20E sections unchanged; approved terms are immutable, so a change supersedes rather than edits. Plans, prices, promotions and preferred-personnel fees are now contract pages of their own.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).
@@ -51,7 +51,7 @@
 - **Branch scope:** Not branch-scoped.
 - **Own-scope:** Not own-scoped.
 - **MFA:** Required for this account.
-- **Step-up:** No route-level step-up requirement; individual mutations may still require it server-side.
+- **Step-up:** Fresh step-up required for sensitive mutations.
 - **Feature flag:** none
 - **Forbidden for:** `merchant_administrator`, `merchant_branch`, `merchant_human_resource`, `merchant_finance`, `merchant_front_office`, `merchant_personnel`, `merchant_audit`
 

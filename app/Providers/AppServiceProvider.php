@@ -16,11 +16,14 @@ use App\Domain\Billing\Models\PlatformBillingSettings;
 use App\Domain\Billing\Models\PlatformFeeConfiguration;
 use App\Domain\Billing\Models\PlatformFeeDispute;
 use App\Domain\Billing\Models\PlatformFeeLedgerEntry;
+use App\Domain\Billing\Models\PlatformSmsBillingRule;
 use App\Domain\Billing\Models\PreferredPersonnelFeeRule;
 use App\Domain\Billing\Models\PromotionalDiscount;
 use App\Domain\Billing\Models\SubscriptionInvoice;
 use App\Domain\Billing\Models\SubscriptionPlan;
 use App\Domain\Billing\Models\SubscriptionPlanPrice;
+use App\Domain\Billing\Queries\ResolveEffectivePlatformBillingSettings;
+use App\Domain\Billing\Queries\ResolveEffectiveSmsBillingRule;
 use App\Domain\Billing\Services\SubscriptionPlanContextResolver;
 use App\Domain\Branches\Models\BranchCalendarException;
 use App\Domain\Branches\Models\BranchCashUp;
@@ -65,6 +68,8 @@ use App\Domain\Messaging\Sms\Models\PersonnelSmsCampaign;
 use App\Domain\Payments\Models\PaymentRecord;
 use App\Domain\Payments\Models\PaymentRecordingGroup;
 use App\Domain\Payments\Models\PaymentReferenceCheck;
+use App\Domain\PlatformAccess\Models\PlatformAccessMembership;
+use App\Domain\PlatformFeatureFlags\Models\PlatformFeatureFlag;
 use App\Domain\Receipts\Models\Receipt;
 use App\Domain\Refunds\Models\Refund;
 use App\Domain\Scheduling\Models\Appointment;
@@ -98,10 +103,13 @@ use App\Policies\PaymentRecordingGroupPolicy;
 use App\Policies\PersonnelCompensationPlanPolicy;
 use App\Policies\PersonnelPayoutRunPolicy;
 use App\Policies\PersonnelSmsCampaignPolicy;
+use App\Policies\PlatformAccessPolicy;
 use App\Policies\PlatformBillingSettingsPolicy;
+use App\Policies\PlatformFeatureFlagPolicy;
 use App\Policies\PlatformFeeConfigurationPolicy;
 use App\Policies\PlatformFeeDisputePolicy;
 use App\Policies\PlatformFeeLedgerEntryPolicy;
+use App\Policies\PlatformSmsBillingPolicy;
 use App\Policies\PreferredPersonnelFeeRulePolicy;
 use App\Policies\PromotionalDiscountPolicy;
 use App\Policies\QueueEntryPolicy;
@@ -184,6 +192,9 @@ class AppServiceProvider extends ServiceProvider
         FinanceExport::class => FinanceExportPolicy::class,
         // Phase 20A — platform billing catalogue governance (Super-Admin platform scope).
         PlatformBillingSettings::class => PlatformBillingSettingsPolicy::class,
+        PlatformSmsBillingRule::class => PlatformSmsBillingPolicy::class,
+        PlatformAccessMembership::class => PlatformAccessPolicy::class,
+        PlatformFeatureFlag::class => PlatformFeatureFlagPolicy::class,
         SubscriptionPlan::class => SubscriptionPlanPolicy::class,
         SubscriptionPlanPrice::class => SubscriptionPlanPricePolicy::class,
         MerchantSubscription::class => MerchantSubscriptionPolicy::class,
@@ -220,6 +231,24 @@ class AppServiceProvider extends ServiceProvider
         // within one request and reset between requests; ResolveTenantContext
         // populates it after auth.
         $this->app->scoped(TenantContext::class);
+
+        /*
+         | SMS pricing authority (COR-UI08-001 §9; Phase UI-08).
+         |
+         | THIS BINDING IS LOAD-BEARING, not ceremony. SmsCostCalculator declares its two
+         | collaborators as class-typed parameters WITH a default of null, so the pure-arithmetic
+         | path stays directly constructible. Illuminate\Container\Container::resolveClass()
+         | short-circuits such a parameter to its default unless the class is explicitly BOUND:
+         |
+         |     if ($parameter->isDefaultValueAvailable() && ! $this->bound($className) && ...)
+         |         return $parameter->getDefaultValue();
+         |
+         | Without these binds the container silently injects null and every SMS charge falls back
+         | to deployment configuration — the exact defect COR-UI08-001 exists to fix. Do not remove
+         | them as "redundant autowiring"; a test pins the behaviour.
+         */
+        $this->app->bind(ResolveEffectiveSmsBillingRule::class);
+        $this->app->bind(ResolveEffectivePlatformBillingSettings::class);
 
         // Audit trail (Plan §22.2). Table-backed minimal recorder introduced in
         // Phase 8; full §5.18 coverage matures in Phase 19.

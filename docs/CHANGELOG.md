@@ -6,6 +6,120 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### Phase UI-08 — Super Administrator experience (`phase-ui-08-super-administrator-experience`) — local_complete pending PR CI/review/merge
+
+Off `main` = `16d544c58747a1d69ef390c2d4511c649315fde7` (the Phase UI-07 PR #57 merge commit).
+Proof: `docs/proof/ui-08.md`. Artifacts: `docs/frontend/audits/ui-08/`, `docs/backend/audits/ui-08/`.
+Plan authority: UI/UX plan §5.4 (the 22-page Super Administrator contract), §7, §9, §11–§13, §17–§19,
+§21; ADR-016, ADR-017, ADR-018, ADR-021, ADR-024, ADR-025; Plan §9, §10.2, §10.3, §22, §24.1, §70,
+§80.1, §80.2. Product-owner decision: `COR-UI08-001`.
+
+**No pull request was created.** UI-08 stops at a pushed branch by instruction.
+
+#### Added — the Super Administrator account experience
+
+All **22** contract entries are now accounted for: **17 implemented**, **5 `disabled_by_gate`**,
+**0 planned**, **0 removed**. The global authenticated contract stays at **160** pages and the other
+seven accounts are unchanged.
+
+Seventeen canonical, host-relative destinations: `/dashboard`, `/get-started`, `/billing/settings`,
+`/billing/plans`, `/billing/prices`, `/billing/promotions`, `/billing/free-periods`,
+`/billing/preferred-personnel-fees`, `/billing/sms`, `/billing/subscriptions`,
+`/merchants/registrations`, `/merchants`, `/merchants/:merchantUlid`, `/audit`, `/platform-access`,
+`/platform/feature-flags` and `/account`.
+
+- **Header primary navigation** across eight contract groups — the one account whose primary
+  navigation lives in the header (ADR-018). No left rail on desktop at any width; a disclosure and
+  link pattern rather than `role="menu"`, so link semantics and open-in-new-tab survive; the
+  overflow split is declared in CSS, never measured in JavaScript.
+- **Platform governance dashboard** over one server-side aggregate read. The browser computes no
+  total — every other platform read is paginated, so a client-side aggregation over page one would
+  misreport the platform on the very screen used to govern it.
+- **Get Started** composing six already-shipped reads with `Promise.allSettled`, so one unreadable
+  endpoint degrades only its own step.
+- **Six Billing & Commercial pages** split out of two consolidated screens, composing the shipped
+  Phase 20A/20C/20E sections rather than restating any money rule.
+- **Three merchant governance pages.** The merchant record finally has an address:
+  `/merchants/:merchantUlid` resolves from the URL, not from a row the user clicked first. Operational
+  status and billing status are two separate, prominently labelled cards, and a governance action
+  never touches billing.
+- **Platform Audit** over the append-only platform chain, and **Account and Security** for the
+  signed-in administrator's own identity, MFA, sessions and preferences.
+
+#### Added — corrective backend (`COR-UI08-001`)
+
+Four platform-governance domains the contract required and the repository did not have: SMS billing
+settings, subscription operations (read-only), internal platform access, and feature flags — 33
+operations, 8 new tables and 1 expand migration. Plus one separately itemised read,
+`platform.dashboard.show`. OpenAPI **302 → 336**.
+
+Exactly **two** permission keys were added, under the product-owner decision:
+`platform.internal_access.view` and `platform.internal_access.manage` (catalogue **169** = 134 active
++ 35 planned).
+
+#### Changed — the router is built per account host
+
+`createAppRouter(accountKey)` replaces the module-level singleton, and `main.ts` resolves the
+account context *before* the router exists. This is what made canonical routing possible at all:
+`/audit`, `/dashboard`, `/account` and `/reports` are contract paths for more than one account, and
+one router carrying all eight trees could not register both claimants. The host selects the
+experience and nothing else — every route still re-checks the server.
+
+Four same-account compatibility redirects preserve query and hash
+(`/platform/get-started`, `/platform/billing-settings`, `/platform/promotions`,
+`/platform/registration-monitoring`). There is deliberately **no** `/platform/dashboard` redirect —
+UI-07 removed that route because it rendered a stub — and `/platform` remains the role landing.
+
+#### Removed — two consolidated screens
+
+`BillingSettings.vue` and `RegistrationMonitoring.vue`, with the retired route names
+`platform.promotions` and `platform.registration-monitoring`, and their specs. Each had delivered several contract pages behind tabs, which is the defect UI-08
+exists to correct; every page they carried now has its own route, component and inventory row.
+
+#### Fixed
+
+- **`UI08-NAV-003`** — the header's tail groups were classed `hidden xl:block`, but `tailwind.config`
+  overrides `screens` to `md` and `lg` only, so `xl` compiled to nothing and three of the eight
+  groups were reachable only through "More" at every width including 1440px. The unit test had
+  passed because it asserted the class *string*; it now rejects any unconfigured breakpoint.
+- **`UI08-RESP-001`** — Platform Audit, Internal Platform Access and Account and Security overflowed
+  the 768px tablet floor. Their tables render from the desktop floor; tablet reads labelled cards.
+- **`UI08-A11Y-001`** — a `<p>` beside `<dt>`/`<dd>` inside a `<dl>` on the dashboard (axe `serious`).
+- **`UI08-NAV-002`** — `NavigationContext.openGates` was documented as controlling gate state and was
+  never consulted. It was **removed**, not wired: a client-supplied "gate is open" would have turned
+  a backend-less entry into a live-looking destination.
+- **`UI08-AUDIT-001`** — fifteen corrective mutations were classified in neither `AUDITED` nor
+  `EXEMPT`. Every one emits a typed event; the registry is exhaustive again.
+- **`UI08-EXPORT-001`** — two platform subscription-invoice reads were unclassified in the Phase 23
+  export-hardening matrix.
+- **`UI08-E2E-001`** — the shared account-context stub called `appendChild` before `document.head`
+  existed, so every authenticated spec had been emitting a page error nothing asserted against.
+- **`UI08-API-001`**, **`UI08-API-002`**, **`UI08-NAV-001`** — recorded in `docs/proof/ui-08.md`.
+
+#### Proof
+
+Focused browser suite `tests/e2e/ui-08-super-administrator-experience.spec.ts`: 79 passed, 0 failed,
+0 flaky, 0 skipped — every implemented page with real reads and a clean console, every gated path
+non-live, eight header groups, 360–1440 plus 200% zoom, axe 0 serious / 0 critical in light and
+dark, and the security negatives. 44 indexed screenshots with SHA-256, all synthetic data.
+
+Production images built and probed on the canonical host `citrus.servana.ke`: 42 host-proof checks,
+`nginx -t` green, and the `/audit` collision proven safe on both account hosts.
+
+#### Not included
+
+The five gated entries stay `disabled_by_gate` behind External Gate W — two directly (Phase 20D-W)
+and three transitively (Phase 21R-B, Phase 21N). No Wallet-owned or Refer & Earn-owned runtime was
+implemented in Servana, no merchant-operation control exists in the Super Administrator account, and
+Gate W was not opened.
+
+#### Predecessor
+
+Phase UI-07 is reconciled to `verified_complete` (PR #57 merged as `16d544c5`), with
+`UI07-GUARD-001`, `UI07-GUARD-002`, `UI07-ROUTE-001` and `UI07-NAV-001` promoted. `UI07-ENV-001`
+remains an open test-determinism residual, honoured rather than worked around.
+
+
 ### Phase UI-07 — Navigation registry and screen contracts (`phase-ui-07-navigation-screen-contracts`) — local_complete pending PR CI/review/merge
 
 Off `main` = `6b67ad2e1cc2c1031a89dc8d82902a025feac721` (the Phase UI-06 PR #56 merge commit).

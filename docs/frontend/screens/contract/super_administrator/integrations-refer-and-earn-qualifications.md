@@ -26,7 +26,7 @@
 ## Ownership and status
 
 - **UI owner phase:** **UI-08**
-- **Backend owner phase:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
+- **Backend owner phase:** **Phase 21R-B**
 - **Implementation status:** `disabled_by_gate`
 - **Runtime route:** none — no runtime route is registered
 - **Route delivery:** not applicable

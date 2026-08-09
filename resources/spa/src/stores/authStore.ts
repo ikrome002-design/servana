@@ -179,6 +179,22 @@ export const useAuthStore = defineStore('auth', () => {
     applyBootstrap(data.data);
   }
 
+  /**
+   * Replace this user's recovery codes, returning the new set once (Phase UI-08 §5.4.22).
+   *
+   * Own-scope only: the route carries no user identifier, so there is nothing to point at another
+   * account. The server requires a confirmed credential AND a fresh `recovery_code_regeneration`
+   * step-up; a missing one is a 403 the caller surfaces rather than a silent no-op. The previous
+   * codes stop working the moment this succeeds, which is why the page states it before asking.
+   */
+  async function regenerateRecoveryCodes(): Promise<string[]> {
+    const { data } = await apiClient.post<{
+      data: { recovery_codes: string[]; mfa: MfaState };
+    }>('/auth/mfa/recovery-codes');
+    mfa.value = data.data.mfa;
+    return data.data.recovery_codes;
+  }
+
   async function logout(): Promise<void> {
     try {
       await apiClient.post('/auth/logout');
@@ -216,6 +232,7 @@ export const useAuthStore = defineStore('auth', () => {
     confirmMfaEnrollment,
     mfaChallenge,
     mfaRecoveryChallenge,
+    regenerateRecoveryCodes,
     logout,
     $reset,
   };

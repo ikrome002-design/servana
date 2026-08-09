@@ -15,5 +15,17 @@ declare module 'vue-router' {
   interface RouteMeta {
     roleIdentity?: RoleIdentity;
     accountKey?: RoleIdentity;
+    /**
+     * Phase UI-08 Increment 7B: the contract screen this runtime route renders, so the UI-07
+     * generator can pin route → contract page from the router itself.
+     *
+     * Only the screen key lives here. Navigation group, title, permissions, MFA and step-up are
+     * NOT copied into route meta — they belong to the canonical navigation map and reach the
+     * runtime through the generated registry. A second copy in the router would be a second
+     * authority that could silently disagree with the contract.
+     *
+     * `null` marks a real route that is deliberately not a contract page (the role landing).
+     */
+    screenKey?: string | null;
   }
 }

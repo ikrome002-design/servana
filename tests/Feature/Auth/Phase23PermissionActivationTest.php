@@ -62,10 +62,27 @@ it('lifts the active count to 132 and drops planned to 35, shrinking the catalog
     //   −merchant.profile.manage  (legacy, retired outright)   → 132 active / 35 planned / 167
     // The catalogue shrinks only because a legacy DUPLICATE was removed — no canonical key was
     // invented or deleted. This is the same retirement precedent Phases 20A/20B/20E/20F applied.
-    expect($matrix->activeKeys())->toHaveCount(132);
+    //
+    // COR-UI08-001 later authorized exactly two internal-platform-access keys (both ACTIVE, neither
+    // planned) so UI-08 could deliver navigation map §5.4.19 instead of shipping a fabricated page.
+    // Phase 23's own arithmetic is unchanged: it left 132 active / 35 planned / 167. This assertion
+    // states that arithmetic as a baseline plus an itemised authorization, so an unauthorized key
+    // still fails here rather than hiding inside a bumped total.
+    $authorizedGrowthActive = [
+        // COR-UI08-001 — docs/decisions/cor-ui08-001-super-administrator-backend-enablement.md
+        'platform.internal_access.view',
+        'platform.internal_access.manage',
+    ];
+
+    expect($matrix->activeKeys())->toHaveCount(132 + count($authorizedGrowthActive));
     expect($matrix->plannedKeys())->toHaveCount(35);
     expect(count($matrix->activeKeys()) + count($matrix->plannedKeys()))
-        ->toBe(167, 'the catalogue shrank by exactly the one retired legacy duplicate');
+        ->toBe(167 + count($authorizedGrowthActive), 'Phase 23 left 167; the catalogue grows only by keys itemised in a recorded product-owner authorization');
+
+    foreach ($authorizedGrowthActive as $key) {
+        expect($matrix->activeKeys())->toContain($key);
+        expect($matrix->plannedKeys())->not->toContain($key);
+    }
 
     // The retirement is complete: the legacy name exists nowhere in the runtime projection.
     expect($matrix->keys())->not->toContain('merchant.profile.manage');

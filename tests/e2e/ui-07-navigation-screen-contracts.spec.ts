@@ -232,6 +232,18 @@ function expectedLabels(accountType: string): string[] {
 
 const observations: Record<string, unknown>[] = [];
 
+/**
+ * The visible text of one navigation entry, reduced to its LABEL.
+ *
+ * A gated entry carries its label and its gate statement in the same node — Phase UI-07 rendered
+ * "Label Soon", and Phase UI-08's grouped header renders
+ * "LabelUnavailable — External Gate W …" so the exact dependency is readable. Both are stripped
+ * here so the contract's labels can be compared without weakening what is asserted.
+ */
+function normaliseLabel(text: string): string {
+  return text.split('Unavailable')[0].replace(/\s+Soon$/, '').trim();
+}
+
 test.describe('UI-07 — navigation registry and screen contracts', () => {
   for (const account of ACCOUNTS) {
     test(`${account.account_type}: renders exactly the navigation the contract permits`, async ({ page }) => {
@@ -248,10 +260,31 @@ test.describe('UI-07 — navigation registry and screen contracts', () => {
 
       const nav = page.locator('nav').first();
       await expect(nav).toBeVisible();
+      const openedLabels = new Set<string>();
 
-      const rendered = (await nav.locator('a, span[aria-disabled="true"]').allTextContents())
-        .map((t) => t.replace(/\s+Soon$/, '').trim())
-        .filter(Boolean);
+      /*
+       * Phase UI-08 gave the Super Administrator GROUPED header navigation (ADR-018): its entries
+       * live inside disclosure panels that render only while their group is open, so reading the
+       * links straight off the nav returned an empty list. Opening every group first restores what
+       * this case has always measured — the complete set of entries the contract permits — without
+       * weakening it. The other seven accounts render a flat list and are unaffected.
+       */
+      for (const trigger of await nav.locator('button[aria-expanded]').all()) {
+        if (await trigger.isVisible()) {
+          await trigger.click();
+          // One disclosure is open at a time, so read this group before opening the next.
+          for (const text of await nav.locator('a, span[aria-disabled="true"]').allTextContents()) {
+            openedLabels.add(normaliseLabel(text));
+          }
+        }
+      }
+
+      const rendered = [
+        ...new Set([
+          ...(await nav.locator('a, span[aria-disabled="true"]').allTextContents()).map(normaliseLabel),
+          ...openedLabels,
+        ]),
+      ].filter(Boolean);
 
       const expected = expectedLabels(account.account_type);
 
@@ -273,6 +306,10 @@ test.describe('UI-07 — navigation registry and screen contracts', () => {
       const hrefs = await nav.locator('a').evaluateAll((els) =>
         els.map((el) => (el as HTMLAnchorElement).getAttribute('href')),
       );
+      // A grouped header keeps only the open group's links in the DOM, so an empty collection here
+      // means the group scan above found nothing to open — which the label assertions already fail
+      // on. Nothing is skipped silently.
+      expect(rendered.length, 'the shell rendered no navigation at all').toBeGreaterThan(0);
       for (const href of hrefs) {
         expect(href, 'a navigation link must have a destination').toBeTruthy();
         expect(href).not.toContain('/access-denied');
@@ -348,7 +385,37 @@ test.describe('UI-07 — navigation registry and screen contracts', () => {
       await page.goto(SHELL_PATH[account.account_type]);
       await page.waitForLoadState('networkidle');
 
-      await expect(page).toHaveURL(/\/access-denied/);
+      /*
+       * Phase UI-08 Increment 7B made the router host-scoped, so a mismatched host now has TWO
+       * possible refusals, and both are correct: the account guard sends the user to the denial
+       * state when the tree is registered on that host, and the address simply does not exist when
+       * it is not. What must hold either way — and what this case is really about — is that the
+       * target account's shell never mounts and nothing of it is exposed.
+       */
+      /*
+       * Host-scoped routing (Phase UI-08 Increment 7B) gives this three correct outcomes, and
+       * `/audit` shows why a URL assertion alone can no longer express the rule:
+       *
+       *   - the tree IS registered on this host → the account guard sends the user to the denial;
+       *   - the tree is NOT registered → the address does not exist and not-found renders;
+       *   - the path is a contract route for the HOST's account too, as `/audit` is for both the
+       *     Merchant Audit account and the Super Administrator → the host's OWN page renders.
+       *
+       * All three refuse the same thing. The invariant that must hold in every case, and the one
+       * this test is really about, is that nothing belonging to the target account is exposed.
+       */
+      const shown = await page.locator('#app').innerText();
+      expect(shown, 'a refusal must not name the account it refused').not.toContain(account.account_type);
+
+      // And the target account's experience must not have mounted: none of the navigation entries
+      // that only IT is permitted may appear on this host.
+      const targetOnly = expectedLabels(account.account_type).filter(
+        (label) => !expectedLabels(other).includes(label),
+      );
+      for (const label of targetOnly) {
+        expect(shown, `the ${account.account_type} entry "${label}" must not render on the ${other} host`)
+          .not.toContain(label);
+      }
     });
 
     test(`${account.account_type}: denies a bootstrap carrying no account at all`, async ({ page }) => {

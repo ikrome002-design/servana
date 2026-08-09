@@ -394,6 +394,15 @@ final class PermissionRegistry
         // No merchant role receives this key; it never validates payments, fabricates ledger rows, or
         // settles liabilities.
         'platform.platform_fee.configure' => ['platform', 'Manage percentage platform-fee configurations (create/update-draft/approve/supersede/cancel).', true],
+        // COR-UI08-001 — internal Citrus Labs platform access administration (UI/UX plan §5.4.19).
+        // The ONLY two keys this corrective authorization creates. Platform scope, super_admin only,
+        // MFA on both, fresh step-up on the mutation. They administer OTHER platform users; the
+        // current user's own identity stays on the ownership-authorized `/auth` routes, which add no
+        // permission key. Neither key grants ANY merchant capability: the lifecycle actions never
+        // write `merchant_users`, `branch_user_assignments` or `staff_profiles`, and the launch role
+        // model assigns only `super_admin`.
+        'platform.internal_access.view' => ['platform', 'View the internal platform access roster, invitations and access history.', false],
+        'platform.internal_access.manage' => ['platform', 'Administer internal platform access (invite/permissions/suspend/reactivate/deactivate/session revoke).', true],
     ];
 
     /**
@@ -597,6 +606,8 @@ final class PermissionRegistry
             'platform.promotion.manage', 'platform.free_period_offer.manage',
             // Phase 20E — percentage platform-fee configuration governance (Plan §51/§52).
             'platform.platform_fee.configure',
+            // COR-UI08-001 — internal platform access administration (UI/UX plan §5.4.19).
+            'platform.internal_access.view', 'platform.internal_access.manage',
         ],
     ];
 

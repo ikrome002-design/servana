@@ -91,7 +91,7 @@ screens:
     domain: platform
     route: platform.get-started
     status: implemented
-    phase: Phase 11
+    phase: UI-08
     spec: platform/platform-get-started.md
   - key: merchant-landing
     domain: merchant
@@ -659,12 +659,6 @@ screens:
     status: implemented
     phase: Phase 20A
     spec: platform/platform-billing-settings.md
-  - key: platform-promotions
-    domain: platform
-    route: platform.promotions
-    status: implemented
-    phase: Phase 20C
-    spec: platform/platform-promotions.md
   - key: platform-wallet-config
     domain: platform
     route: ~
@@ -679,12 +673,6 @@ screens:
     gate: external_gate_w
     phase: Phase 20D-W
     spec: ~
-  - key: platform-registration-monitoring
-    domain: platform
-    route: platform.registration-monitoring
-    status: implemented
-    phase: Phase 20B
-    spec: platform/platform-registration-monitoring.md
   - key: platform-audit-reports
     domain: platform
     route: ~
@@ -692,6 +680,96 @@ screens:
     gate: external_gate_w
     phase: Phase 21N
     spec: ~
+  - key: platform-dashboard
+    domain: platform
+    route: platform.dashboard
+    status: implemented
+    phase: UI-08
+    spec: platform/platform-dashboard.md
+  - key: platform-billing-plans
+    domain: platform
+    route: platform.billing-plans
+    status: implemented
+    phase: Phase 20A
+    spec: platform/platform-billing-plans.md
+  - key: platform-billing-prices
+    domain: platform
+    route: platform.billing-prices
+    status: implemented
+    phase: Phase 20A
+    spec: platform/platform-billing-prices.md
+  - key: platform-billing-promotions
+    domain: platform
+    route: platform.billing-promotions
+    status: implemented
+    phase: Phase 20C
+    spec: platform/platform-billing-promotions.md
+  - key: platform-billing-free-periods
+    domain: platform
+    route: platform.billing-free-periods
+    status: implemented
+    phase: Phase 20C
+    spec: platform/platform-billing-free-periods.md
+  - key: platform-billing-preferred-personnel-fees
+    domain: platform
+    route: platform.billing-preferred-personnel-fees
+    status: implemented
+    phase: Phase 20A
+    spec: platform/platform-billing-preferred-personnel-fees.md
+  - key: platform-billing-sms
+    domain: platform
+    route: platform.billing-sms
+    status: implemented
+    phase: UI-08
+    spec: platform/platform-billing-sms.md
+  - key: platform-billing-subscriptions
+    domain: platform
+    route: platform.billing-subscriptions
+    status: implemented
+    phase: UI-08
+    spec: platform/platform-billing-subscriptions.md
+  - key: platform-merchant-registrations
+    domain: platform
+    route: platform.merchant-registrations
+    status: implemented
+    phase: Phase 20B
+    spec: platform/platform-merchant-registrations.md
+  - key: platform-merchants
+    domain: platform
+    route: platform.merchants
+    status: implemented
+    phase: Phase 20B
+    spec: platform/platform-merchants.md
+  - key: platform-merchant-detail
+    domain: platform
+    route: platform.merchant-detail
+    status: implemented
+    phase: Phase 20B
+    spec: platform/platform-merchant-detail.md
+  - key: platform-audit
+    domain: platform
+    route: platform.audit
+    status: implemented
+    phase: Phase 19
+    spec: platform/platform-audit.md
+  - key: platform-platform-access
+    domain: platform
+    route: platform.platform-access
+    status: implemented
+    phase: UI-08
+    spec: platform/platform-platform-access.md
+  - key: platform-feature-flags
+    domain: platform
+    route: platform.feature-flags
+    status: implemented
+    phase: UI-08
+    spec: platform/platform-feature-flags.md
+  - key: platform-account
+    domain: platform
+    route: platform.account
+    status: implemented
+    phase: UI-08
+    spec: platform/platform-account.md
   - key: merchant-platform-fees
     domain: merchant
     route: merchant.platform-fees

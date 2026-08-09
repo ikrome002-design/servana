@@ -476,11 +476,29 @@ it('references only permission keys that already exist in the canonical matrix',
 });
 
 it('adds no permission key to the matrix', function (): void {
-    // UI-07 is a read-only phase for the permission authority (Plan §10.3). The matrix key count
-    // is the same 167 the merged UI-06 tree carried.
+    // UI-07 is a read-only phase for the permission authority (Plan §10.3): it referenced only keys
+    // the merged UI-06 tree already carried, and its 167 is the baseline.
+    //
+    // A later phase MAY grow the matrix, but only under a recorded product-owner authorization.
+    // COR-UI08-001 authorized exactly two internal-platform-access keys so UI-08 could deliver
+    // navigation map §5.4.19. Asserting the baseline plus an itemised authorization keeps this test
+    // meaningful: it still fails for any key UI-07 or an unauthorized later phase slipped in.
     $matrix = Yaml::parseFile(ui07Path('docs/auth/permission-matrix.yaml'));
 
-    expect($matrix['keys'])->toHaveCount(167);
+    $authorizedSinceUi07 = [
+        // COR-UI08-001 — docs/decisions/cor-ui08-001-super-administrator-backend-enablement.md
+        'platform.internal_access.view',
+        'platform.internal_access.manage',
+    ];
+
+    expect($matrix['keys'])->toHaveCount(167 + count($authorizedSinceUi07));
+
+    foreach ($authorizedSinceUi07 as $key) {
+        expect($matrix['keys'])->toHaveKey($key);
+    }
+
+    // Every OTHER key beyond UI-07's baseline would be unauthorized, and the count above catches it.
+    // UI-07's own contract still references nothing outside the matrix (asserted immediately above).
 });
 
 // ---------------------------------------------------------------------------------------------
@@ -672,7 +690,17 @@ it('backs every implemented contract page with a runtime screen-register row', f
 it('guards all eight authenticated account route trees', function (): void {
     $coverage = ui07Audit('requires-account-coverage.json');
 
-    expect($coverage['trees'])->toHaveCount(9); // eight accounts + the merchant setup route
+    /*
+     | Eight trees, one per account (Phase UI-08 Increment 7B).
+     |
+     | This was nine while coverage was grouped by URL PREFIX — the Merchant Administrator owned
+     | two roots, `/merchant` and the first-time-setup route. Coverage is now grouped by the
+     | account each route DECLARES in `meta.accountKey`, which the file's own boundary note always
+     | said was the authority ("a path prefix is not an account boundary"), and which UI-08 made
+     | unavoidable: the Super Administrator's canonical paths share no prefix at all, and `/audit`
+     | is a contract path for two different accounts served on two different hosts.
+     */
+    expect($coverage['trees'])->toHaveCount(8);
 
     $accounts = [];
     foreach ($coverage['trees'] as $tree) {

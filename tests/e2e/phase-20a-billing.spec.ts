@@ -98,36 +98,56 @@ test.describe('Phase 20A navigation and access', () => {
     await stubSettings(page);
     await page.goto('/platform');
     await expect(
-      page.getByTestId('header-primary-nav').getByRole('link', { name: 'Billing settings' }),
+      // Phase UI-08 gave the Super Administrator GROUPED header navigation (ADR-018): the entry
+      // lives inside the "Billing & Commercial" disclosure, so the group is opened before the link
+      // is asserted. The entry is still in the header — it is simply no longer a flat link.
+      page.getByTestId('header-primary-nav').getByTestId('nav-group-trigger-nav-group-billing-commercial'),
     ).toBeVisible();
 
-    await page.goto('/platform/billing-settings');
-    await expect(page.getByTestId('billing-screen')).toBeVisible();
-    await expect(page.getByRole('tab')).toHaveCount(6);
+    await page.getByTestId('nav-group-trigger-nav-group-billing-commercial').click();
+    await expect(
+      page.getByTestId('header-primary-nav').getByRole('link', { name: 'Platform Billing Settings' }),
+    ).toBeVisible();
+
+    // Increment 7B: six tabs became five contract pages. The canonical billing-settings page
+    // owns settings, general and platform fees; plans, prices, promotions, free periods and
+    // preferred-personnel fees are their own addresses.
+    await page.goto('/billing/settings');
+    await expect(page.getByTestId('platform-billing-settings-screen')).toBeVisible();
+    await expect(page.getByRole('tab')).toHaveCount(0);
   });
 
   test('a merchant identity cannot see billing configuration on the platform route', async ({ page }) => {
     // Front Office is a merchant role with no platform permissions.
     await stubMe(page, { isPlatformStaff: false, role: 'front_office', permissions: ['invoice.create'] });
-    await page.goto('/platform/billing-settings');
-    // No tabs render; the server-derived capability map denies every panel.
+    await page.goto('/billing/settings');
+      /*
+       * Phase UI-08 Increment 7B made the router host-scoped, so this refusal is now STRICTER
+       * than a denial page: the account that owns this route has no tree registered on the
+       * served host, so the address does not exist there at all. The surface still never
+       * mounts, which is what this case is about.
+       */
+    await expect(page.getByTestId('public-not-found')).toBeVisible();
+    await expect(page.getByTestId('platform-billing-settings-screen')).toHaveCount(0);
     await expect(page.getByRole('tab')).toHaveCount(0);
-    await expect(page.getByText('do not have access')).toBeVisible();
   });
 
   test('a mandatory-MFA challenge redirects away from the billing route (reads still gated by MFA)', async ({ page }) => {
     await stubMe(page, { permissions: PLATFORM_PERMS, mfa: { required: true, enrolled: true, confirmed: true, challenge_required: true } });
-    await page.goto('/platform/billing-settings');
+    await page.goto('/billing/settings');
     await expect(page).toHaveURL(/\/auth\/mfa\/challenge/);
   });
 
-  test('only viewable tabs render (denied panels are absent, not disabled)', async ({ page }) => {
+  test('only viewable sections render (denied sections are absent, not disabled)', async ({ page }) => {
     await stubMe(page, { permissions: ['platform.billing_settings.view'] });
     await stubSettings(page);
-    await page.goto('/platform/billing-settings');
-    await expect(page.getByRole('tab')).toHaveCount(1);
-    await expect(page.getByRole('tab', { name: 'Billing settings' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Preferred-personnel fee' })).toHaveCount(0);
+    await page.goto('/billing/settings');
+    await expect(page.getByTestId('platform-billing-settings-screen')).toBeVisible();
+    // The billing section renders; the platform-fee section, which needs its own key, does not.
+    await expect(page.getByRole('heading', { name: 'Percentage platform-fee configuration' })).toHaveCount(0);
+    // And the preferred-personnel fee page refuses outright without its key.
+    await page.goto('/billing/preferred-personnel-fees');
+    await expect(page.getByTestId('sv-permission-state')).toBeVisible();
   });
 });
 
@@ -137,8 +157,7 @@ test.describe('Billing settings', () => {
   test('loads current settings and offers the three canonical billing modes', async ({ page }) => {
     await stubMe(page, { permissions: PLATFORM_PERMS });
     await stubSettings(page);
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Billing settings' }).click();
+    await page.goto('/billing/settings');
 
     const mode = page.locator('#billing-mode');
     await expect(mode).toBeVisible();
@@ -154,8 +173,7 @@ test.describe('Billing settings', () => {
   test('a reads-only viewer sees no save control', async ({ page }) => {
     await stubMe(page, { permissions: ['platform.billing_settings.view'] });
     await stubSettings(page);
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Billing settings' }).click();
+    await page.goto('/billing/settings');
     await expect(page.getByRole('button', { name: 'Save billing settings' })).toHaveCount(0);
     await expect(page.getByText('read-only access to billing settings')).toBeVisible();
   });
@@ -167,8 +185,7 @@ test.describe('Billing settings', () => {
       if (r.request().method() === 'PUT') return r.fulfill(err(403, 'step_up_required', 'A fresh step-up is required.'));
       return r.fulfill(ok({ data: settings }));
     });
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Billing settings' }).click();
+    await page.goto('/billing/settings');
     await page.getByRole('button', { name: 'Save billing settings' }).click();
     await expect(page.getByRole('alert')).toContainText('fresh step-up');
   });
@@ -189,8 +206,7 @@ test.describe('Plans and prices', () => {
   test('plan metadata has no price field; retire is offered for an active plan', async ({ page }) => {
     await stubMe(page, { permissions: PLATFORM_PERMS });
     await stubPlans(page);
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Plans' }).click();
+    await page.goto('/billing/plans');
     await expect(page.getByTestId('plan-row')).toHaveCount(1);
 
     await page.getByRole('button', { name: 'New plan' }).click();
@@ -204,8 +220,7 @@ test.describe('Plans and prices', () => {
     await stubMe(page, { permissions: PLATFORM_PERMS });
     await stubPlans(page);
     await page.route('**/api/v1/platform/plans/01PLAN/prices', (r) => r.fulfill(ok({ data: [price({ lifecycle: 'current' })] })));
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Plans' }).click();
+    await page.goto('/billing/prices');
     await page.getByRole('button', { name: 'Prices & entitlements' }).click();
 
     await expect(page.getByTestId('price-row')).toHaveCount(1);
@@ -224,8 +239,7 @@ test.describe('Plans and prices', () => {
       if (r.request().method() === 'POST') return r.fulfill(err(409, 'duplicate_reference'));
       return r.fulfill(ok({ data: [price()] }));
     });
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Plans' }).click();
+    await page.goto('/billing/prices');
     await page.getByRole('button', { name: 'Prices & entitlements' }).click();
     await page.getByRole('button', { name: 'Schedule price' }).click();
 
@@ -245,10 +259,11 @@ test.describe('Entitlements', () => {
     await page.route(/\/api\/v1\/platform\/plans(\?|$)/, (r) => r.fulfill(ok({ data: [plan] })));
     await page.route('**/api/v1/platform/plans/01PLAN/entitlements', (r) =>
       r.fulfill(ok({ data: [{ entitlement_key: 'branches.max', enabled: true, limit_int: 3 }] })));
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Plans' }).click();
+    // Entitlements live on the plans page beside the plan they belong to (contract §5.4.4).
+    await page.goto('/billing/plans');
+    // Increment 7B: entitlements render beside the selected plan on `/billing/plans` (contract
+    // §5.4.4). Selecting the plan reveals them; there is no tab.
     await page.getByRole('button', { name: 'Prices & entitlements' }).click();
-    await page.getByRole('tab', { name: 'Entitlements' }).click();
 
     await expect(page.getByText('branches.max', { exact: true })).toBeVisible();
     await expect(page.locator('#limit-branches\\.max')).toHaveValue('3');
@@ -272,8 +287,7 @@ test.describe('Preferred-personnel fee rules', () => {
   test('an active rule is read-only and offers supersede (never in-place edit)', async ({ page }) => {
     await stubMe(page, { permissions: PLATFORM_PERMS });
     await stubFees(page);
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Preferred-personnel fee' }).click();
+    await page.goto('/billing/preferred-personnel-fees');
     await expect(page.getByTestId('fee-rule-row')).toHaveCount(1);
     await expect(page.getByText('Active terms are read-only')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Supersede' })).toBeVisible();
@@ -282,8 +296,7 @@ test.describe('Preferred-personnel fee rules', () => {
   test('fixed and percentage inputs are mutually exclusive; service scope requires a service', async ({ page }) => {
     await stubMe(page, { permissions: PLATFORM_PERMS });
     await stubFees(page, []);
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Preferred-personnel fee' }).click();
+    await page.goto('/billing/preferred-personnel-fees');
     await page.getByRole('button', { name: 'New draft rule' }).click();
 
     await expect(page.locator('#fee-fixed-amount')).toBeVisible();
@@ -332,8 +345,8 @@ test.describe('Accessibility, responsive and keyboard', () => {
   test('no serious/critical axe (light + dark) and no overflow at 360/768/1280', async ({ page }) => {
     await stubMe(page, { permissions: PLATFORM_PERMS });
     await stubSettings(page);
-    await page.goto('/platform/billing-settings');
-    await expect(page.getByTestId('billing-screen')).toBeVisible();
+    await page.goto('/billing/settings');
+    await expect(page.getByTestId('platform-billing-settings-screen')).toBeVisible();
 
     for (const theme of ['light', 'dark'] as const) {
       await page.emulateMedia({ colorScheme: theme });
@@ -349,17 +362,15 @@ test.describe('Accessibility, responsive and keyboard', () => {
     }
   });
 
-  test('tabs form an accessible, arrow-navigable tablist', async ({ page }) => {
+  test('the canonical page carries one h1 and no tablist to navigate', async ({ page }) => {
+    // Increment 7B replaced the tablist with real pages, so the accessible navigation contract
+    // moved to the header groups (covered by the UI-08 navigation proof). What this asserts is
+    // that the page itself no longer hides five contract pages behind a widget.
     await stubMe(page, { permissions: PLATFORM_PERMS });
     await stubSettings(page);
-    await page.goto('/platform/billing-settings');
-    const tablist = page.getByRole('tablist');
-    await expect(tablist).toBeVisible();
-
-    const first = page.getByRole('tab').first();
-    await first.focus();
-    await expect(first).toHaveAttribute('aria-selected', 'true');
-    await page.keyboard.press('ArrowRight');
-    await expect(page.getByRole('tab', { name: 'Billing settings' })).toBeFocused();
+    await page.goto('/billing/settings');
+    await expect(page.getByRole('tablist')).toHaveCount(0);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+    await expect(page.getByRole('heading', { level: 1, name: 'Platform billing settings' })).toBeVisible();
   });
 });

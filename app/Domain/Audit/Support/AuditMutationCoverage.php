@@ -299,6 +299,30 @@ final class AuditMutationCoverage
         'platform.platform-fee-configurations.approve' => ['platform_fee.configuration_approved'],
         'platform.platform-fee-configurations.supersede' => ['platform_fee.configuration_superseded'],
         'platform.platform-fee-configurations.cancel' => ['platform_fee.configuration_cancelled'],
+
+        // Phase UI-08 (COR-UI08-001) — the four corrective platform-governance domains. Every one
+        // of these mutations emits a typed event on the platform chain; none of them is exempt.
+        'platform.sms-billing-settings.versions.store' => ['platform_sms_billing.rule_scheduled'],
+        'platform.sms-billing-settings.versions.cancel' => ['platform_sms_billing.rule_cancelled'],
+
+        'platform.internal-access.invitations.store' => ['platform.internal_access.invited'],
+        'platform.internal-access.invitations.resend' => ['platform.internal_access.invitation_resent'],
+        'platform.internal-access.invitations.revoke' => ['platform.internal_access.invitation_revoked'],
+        'platform.internal-access.users.permissions.update' => ['platform.internal_access.permissions_changed'],
+        'platform.internal-access.users.suspend' => ['platform.internal_access.suspended'],
+        'platform.internal-access.users.reactivate' => ['platform.internal_access.reactivated'],
+        'platform.internal-access.users.deactivate' => ['platform.internal_access.deactivated'],
+        'platform.internal-access.users.sessions.revoke' => ['platform.internal_access.sessions_revoked'],
+
+        'platform.feature-flags.change-requests.store' => ['platform.feature_flag.change_requested'],
+        // Approval both records the decision AND applies the flag, so it emits two events.
+        'platform.feature-flag-change-requests.approve' => [
+            'platform.feature_flag.change_approved',
+            'platform.feature_flag.applied',
+        ],
+        'platform.feature-flag-change-requests.reject' => ['platform.feature_flag.change_rejected'],
+        'platform.feature-flag-change-requests.cancel' => ['platform.feature_flag.change_cancelled'],
+        'platform.feature-flags.pause' => ['platform.feature_flag.paused'],
         // Phase 20E — percentage platform-fee dispute workflow (merchant scope).
         'platform-fee-disputes.store' => ['platform_fee.dispute_created'],
         'platform-fee-disputes.review' => ['platform_fee.dispute_review_started'],
