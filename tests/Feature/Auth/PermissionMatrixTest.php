@@ -182,6 +182,8 @@ function expectedMatrix(): array
             'platform.promotion.manage', 'platform.free_period_offer.manage',
             // Phase 20E — percentage platform-fee configuration governance (Plan §51/§52).
             'platform.platform_fee.configure',
+            // COR-UI08-001 — bounded internal Citrus Labs platform-access governance.
+            'platform.internal_access.view', 'platform.internal_access.manage',
         ],
     ];
 }

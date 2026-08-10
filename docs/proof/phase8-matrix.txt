@@ -98,6 +98,8 @@ platform.audit.view                   ·            ·            ·            
 platform.billing_settings.update      ·            ·            ·            ·            ·            ·            ·            ✓
 platform.billing_settings.view        ·            ·            ·            ·            ·            ·            ·            ✓
 platform.free_period_offer.manage     ·            ·            ·            ·            ·            ·            ·            ✓
+platform.internal_access.manage       ·            ·            ·            ·            ·            ·            ·            ✓
+platform.internal_access.view         ·            ·            ·            ·            ·            ·            ·            ✓
 platform.merchant.deactivate          ·            ·            ·            ·            ·            ·            ·            ✓
 platform.merchant.reactivate          ·            ·            ·            ·            ·            ·            ·            ✓
 platform.merchant.suspend             ·            ·            ·            ·            ·            ·            ·            ✓

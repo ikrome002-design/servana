@@ -769,16 +769,93 @@
       "declared_in": "resources/spa/src/router/routes/personnel.ts"
     },
     {
+      "name": "platform.account",
+      "path": "/account",
+      "absolute_path": "/account",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.audit",
+      "path": "/audit",
+      "absolute_path": "/audit",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.billing-free-periods",
+      "path": "/billing/free-periods",
+      "absolute_path": "/billing/free-periods",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.billing-plans",
+      "path": "/billing/plans",
+      "absolute_path": "/billing/plans",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.billing-preferred-personnel-fees",
+      "path": "/billing/preferred-personnel-fees",
+      "absolute_path": "/billing/preferred-personnel-fees",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.billing-prices",
+      "path": "/billing/prices",
+      "absolute_path": "/billing/prices",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.billing-promotions",
+      "path": "/billing/promotions",
+      "absolute_path": "/billing/promotions",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
       "name": "platform.billing-settings",
-      "path": "billing-settings",
-      "absolute_path": "/platform/billing-settings",
+      "path": "/billing/settings",
+      "absolute_path": "/billing/settings",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.billing-sms",
+      "path": "/billing/sms",
+      "absolute_path": "/billing/sms",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.billing-subscriptions",
+      "path": "/billing/subscriptions",
+      "absolute_path": "/billing/subscriptions",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.dashboard",
+      "path": "/dashboard",
+      "absolute_path": "/dashboard",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.feature-flags",
+      "path": "feature-flags",
+      "absolute_path": "/platform/feature-flags",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/platform.ts"
     },
     {
       "name": "platform.get-started",
-      "path": "get-started",
-      "absolute_path": "/platform/get-started",
+      "path": "/get-started",
+      "absolute_path": "/get-started",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/platform.ts"
     },
@@ -790,16 +867,30 @@
       "declared_in": "resources/spa/src/router/routes/platform.ts"
     },
     {
-      "name": "platform.promotions",
-      "path": "promotions",
-      "absolute_path": "/platform/promotions",
+      "name": "platform.merchant-detail",
+      "path": "/merchants/:merchantUlid",
+      "absolute_path": "/merchants/:merchantUlid",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/platform.ts"
     },
     {
-      "name": "platform.registration-monitoring",
-      "path": "registration-monitoring",
-      "absolute_path": "/platform/registration-monitoring",
+      "name": "platform.merchant-registrations",
+      "path": "/merchants/registrations",
+      "absolute_path": "/merchants/registrations",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.merchants",
+      "path": "/merchants",
+      "absolute_path": "/merchants",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/platform.ts"
+    },
+    {
+      "name": "platform.platform-access",
+      "path": "/platform-access",
+      "absolute_path": "/platform-access",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/platform.ts"
     },

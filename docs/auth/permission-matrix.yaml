@@ -2581,7 +2581,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: platform_billing.settings_updated
+    audit_event: platform_billing.settings_updated; platform_sms_billing.rule_cancelled; platform_sms_billing.rule_scheduled
     audit_severity: high
     backend_policy_or_service: "svc UpdatePlatformBillingSettings (ADR-011 price rules)"
     frontend_ux_usage: visibility_only
@@ -3159,7 +3159,7 @@ keys:
     entitlement_key: null
     mfa_required: true
     step_up_required: true
-    audit_event: platform_settings.updated
+    audit_event: platform.feature_flag.applied; platform.feature_flag.change_approved; platform.feature_flag.change_cancelled; platform.feature_flag.change_rejected; platform.feature_flag.change_requested; platform.feature_flag.paused; platform_settings.updated
     audit_severity: high
     backend_policy_or_service: policy PlatformSettingsPolicy
     frontend_ux_usage: visibility_only
