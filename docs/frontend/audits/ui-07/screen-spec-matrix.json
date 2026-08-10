@@ -7,7 +7,7 @@
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
-  "permission_matrix_sha256": "8a5e4e0c42e49a4d6f33d3b0c614abfe4a6fe0ff8efb1b3565342c289851326f",
+  "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
   "screen_inventory_sha256": "5c89abe54f46bdac725e8b0a7137e09fba0e327daadc0d864da91140b92f64ca",
   "purpose": "One screen specification per contract page: no missing spec, no orphan spec, no spec shared by two pages.",
   "spec_directory": "docs/frontend/screens/contract",
