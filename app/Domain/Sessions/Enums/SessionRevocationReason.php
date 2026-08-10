@@ -43,6 +43,17 @@ enum SessionRevocationReason: string
     /** Ordinary sign-out on one host; other host sessions in the family are untouched. */
     case CurrentHostLogout = 'current_host_logout';
 
+    /**
+     * A platform administrator revoked another administrator's sessions from the internal
+     * platform-access surface (COR-UI08-001 §11.7).
+     *
+     * It exists because the vocabulary had no truthful value for it: `session_revoked_by_owner`
+     * means the owner revoked their OWN session and `global_logout` means the user signed out
+     * everywhere. Reusing either would write a false forensic record. Suspension and deactivation
+     * keep using `membership_revoked`, whose meaning already covers them exactly.
+     */
+    case PlatformAccessSessionsRevoked = 'platform_access_sessions_revoked';
+
     /** @return list<string> the exact vocabulary, for schema-contract assertions */
     public static function values(): array
     {

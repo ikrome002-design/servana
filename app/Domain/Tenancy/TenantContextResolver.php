@@ -43,7 +43,9 @@ final class TenantContextResolver
 
         if ($user->is_platform_staff) {
             $context->markPlatformStaff();
-            $context->setPermissions($this->permissions->forPlatformStaff());
+            // The user id lets the resolver subtract this administrator's deny overrides
+            // (COR-UI08-001). Platform authority is still the super_admin role defaults minus denies.
+            $context->setPermissions($this->permissions->forPlatformStaff($user->id));
 
             return;
         }

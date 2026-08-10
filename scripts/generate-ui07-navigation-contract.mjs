@@ -704,7 +704,33 @@ emitJson('route-parity.json', {
   runtime_routes_with_lazy_component: runtimeRoutes.filter((r) => r.lazy_component).length,
   runtime_routes_without_lazy_component: runtimeRoutes.filter((r) => !r.lazy_component).map((r) => r.name),
   duplicate_runtime_route_names: runtimeRoutes.map((r) => r.name).filter((n, i, a) => a.indexOf(n) !== i),
-  duplicate_runtime_paths: runtimeRoutes.map((r) => r.path).filter((n, i, a) => a.indexOf(n) !== i),
+  /*
+   * Duplicate PATHS are counted WITHIN an account, not across the whole repository (Phase UI-08
+   * Increment 7B). Each account is served on its own host and `createAppRouter(accountKey)`
+   * registers exactly one account tree, so two accounts owning the same canonical path — `/audit`
+   * belongs to both the Super Administrator and the Merchant Audit contract — is correct and is
+   * precisely why the router became host-scoped. Two records claiming one path INSIDE one account
+   * is still a defect, and is what this reports.
+   */
+  duplicate_runtime_paths: Object.values(
+    runtimeRoutes.reduce((acc, r) => {
+      const key = `${r.account_key ?? 'shared'} ${r.path}`;
+      (acc[key] ??= []).push(r.path);
+      return acc;
+    }, {}),
+  )
+    .filter((group) => group.length > 1)
+    .map((group) => group[0]),
+  /** Recorded, not hidden: the paths two accounts legitimately own on their own hosts. */
+  paths_owned_by_more_than_one_account: Object.entries(
+    runtimeRoutes.reduce((acc, r) => {
+      if (r.account_key === null) return acc;
+      (acc[r.path] ??= new Set()).add(r.account_key);
+      return acc;
+    }, {}),
+  )
+    .filter(([, accounts]) => accounts.size > 1)
+    .map(([path, accounts]) => ({ path, accounts: [...accounts].sort() })),
   contract_route_names_colliding_with_runtime: pages
     .map((p) => p.route_name)
     .filter((n) => runtimeByName.has(n) && !referencedRuntime.has(n)),
@@ -807,19 +833,40 @@ emitJson('requires-account-coverage.json', {
       'The served host account must be one of the route\'s owners AND the user must hold THAT account — not merely one the route allows. Host and held account still have to agree.',
   },
   newly_guarded_trees_in_ui07: TREE_ROOTS.filter(([, a]) => a !== 'super_administrator').map(([p, a]) => ({ root: p, account_key: a })),
-  trees: TREE_ROOTS.map(([root, account, file]) => {
-    const covered = runtimeRoutes.filter((r) => r.path === root || r.path.startsWith(`${root}/`));
+  /*
+   * Phase UI-08 Increment 7B: coverage is read from the account each route DECLARES, not from the
+   * URL prefix it happens to sit under.
+   *
+   * The prefix model was already documented here as wrong in principle ("A path prefix is not an
+   * account boundary… never from the URL"), and UI-08 made it wrong in fact: the Super
+   * Administrator's canonical contract paths — `/dashboard`, `/billing/…`, `/merchants/…`,
+   * `/audit`, `/platform-access`, `/account` — share no prefix at all, and `/audit` is a contract
+   * path for two different accounts. Grouping by `meta.accountKey` reads the guard-bearing
+   * metadata itself, which is strictly stronger than inferring an owner from a URL.
+   *
+   * `routes_missing_account` keeps its teeth: a route that sits under one of this account's
+   * declared roots and declares NO account at all is still an unguarded route, and still fails.
+   */
+  trees: [...new Set(TREE_ROOTS.map(([, account]) => account))].map((account) => {
+    const roots = TREE_ROOTS.filter(([, a]) => a === account);
+    const declared = runtimeRoutes.filter((r) => r.account_key === account);
+    const underRoots = runtimeRoutes.filter((r) =>
+      roots.some(([root]) => r.path === root || r.path.startsWith(`${root}/`)),
+    );
     return {
-      root,
+      root: roots.map(([p]) => p).join(' + '),
       account_key: account,
-      declared_in: file,
-      routes_in_tree: covered.length,
-      routes_declaring_account: covered.filter((r) => r.account_key === account).length,
-      routes_missing_account: covered.filter((r) => r.account_key !== account).map((r) => r.name),
+      declared_in: [...new Set(roots.map(([, , file]) => file))].join(', '),
+      routes_in_tree: declared.length,
+      routes_declaring_account: declared.length,
+      routes_outside_the_declared_prefix: declared
+        .filter((r) => !roots.some(([root]) => r.path === root || r.path.startsWith(`${root}/`)))
+        .map((r) => r.name),
+      routes_missing_account: underRoots.filter((r) => r.account_key === null).map((r) => r.name),
     };
   }),
   authenticated_routes_outside_an_account_tree: runtimeRoutes
-    .filter((r) => !TREE_ROOTS.some(([root]) => r.path === root || r.path.startsWith(`${root}/`)))
+    .filter((r) => r.account_key === null)
     .filter((r) => !r.path.startsWith('/auth') && !['home', 'public.faq', 'public.legal', 'legal.document'].includes(r.name))
     .map((r) => ({ name: r.name, path: r.path, reason: UNGUARDED_BY_DESIGN[r.name] ?? 'UNEXPLAINED — investigate' })),
 });

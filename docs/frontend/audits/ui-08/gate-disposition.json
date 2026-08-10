@@ -1,0 +1,136 @@
+{
+  "schema": "servana.ui08.gate-disposition.v1",
+  "phase": "UI-08",
+  "increment": "9F",
+  "account": "super_administrator",
+  "host": "citrus.servana.ke",
+  "purpose": "The exact, per-entry disposition of the five Super Administrator contract pages that stay disabled_by_gate. It exists because a single shared gate label would tell an operator that all five are waiting on the same decision, when three of them are waiting on a PHASE that is waiting on that decision. Each row names the dependency that actually blocks it, who owns the backend, and the condition that would open it.",
+  "authorities": [
+    "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+    "docs/frontend/audits/ui-08/page-readiness-matrix.json",
+    "docs/frontend/audits/ui-08/route-activation-matrix.json",
+    "docs/auth/permission-matrix.yaml",
+    "Servana Software Development Plan.md §80.1, §80.2"
+  ],
+  "invariants": [
+    "No gated entry has a registered runtime route, an href, or a router destination in any placement.",
+    "No gated entry names a component, a store, or an API operation.",
+    "No gated metric is rendered as zero, healthy, empty, complete or up to date.",
+    "Each entry is visible and keyboard reachable so its reason can be read; it is inert, not hidden.",
+    "No client-supplied input can open a gate. `NavigationContext` carries no gate override (UI08-NAV-002); a gate opens only by the canonical map being regenerated with implementation_status: implemented."
+  ],
+  "runtime_treatment": {
+    "component": "resources/spa/src/components/navigation/HeaderGroupNavigation.vue",
+    "reason_source": "resources/spa/src/navigation/navigationFilter.ts — gateStatement(gate, backendOwnerPhase)",
+    "placements": [
+      "nav-gated-{key} — inline header group disclosure",
+      "nav-overflow-gated-{key} — the 'More' overflow disclosure below xl",
+      "nav-stacked-gated-{key} — the mobile drawer's always-open sections"
+    ],
+    "semantics": "role-less span with aria-disabled=\"true\" and tabindex=\"0\", carrying a visible reason; never an anchor, never a button that routes",
+    "tests": [
+      "resources/spa/src/components/navigation/GatedNavigationTreatment.spec.ts",
+      "resources/spa/src/components/navigation/HeaderGroupNavigation.spec.ts",
+      "resources/spa/src/navigation/navigationFilter.spec.ts"
+    ]
+  },
+  "entries": [
+    {
+      "screen_key": "billing-reconciliation-exceptions",
+      "map_section": "5.4.14",
+      "title": "Billing Reconciliation Exceptions",
+      "contract_route": "/billing/reconciliation-exceptions",
+      "navigation_group": "Billing Operations",
+      "gate": "external_gate_w",
+      "blocking_kind": "direct",
+      "blocked_by": "External Gate W — Wallet by Citrus collections readiness (Plan §80.2)",
+      "backend_owner_phase": "Phase 20D-W",
+      "planned_permission_keys": [
+        "platform.billing_reconciliation.view",
+        "platform.billing_reconciliation.resolve"
+      ],
+      "entry_condition": "External Gate W opens (docs/integrations/wallet/gate-w-evidence.md exists and is accepted), Phase 20D-W ships the exception queue, and both permission keys become implementation_status: active.",
+      "why_no_partial_page": "Servana holds no Wallet-confirmed money-movement records, so there is no exception to list and no allocation to preview. A queue rendered empty would assert that reconciliation is clean.",
+      "ownership_boundary": "Wallet by Citrus owns provider credentials, callbacks, settlement and money-movement truth. Servana never creates a manual payment path."
+    },
+    {
+      "screen_key": "integrations",
+      "map_section": "5.4.15",
+      "title": "Integrations Health",
+      "contract_route": "/integrations",
+      "navigation_group": "Integrations",
+      "gate": "external_gate_w",
+      "blocking_kind": "direct",
+      "blocked_by": "External Gate W — Wallet by Citrus collections readiness (Plan §80.2)",
+      "backend_owner_phase": "Phase 20D-W",
+      "planned_permission_keys": [
+        "platform.integrations.health.view",
+        "platform.integrations.wallet.manage",
+        "platform.integrations.refer_earn.manage"
+      ],
+      "entry_condition": "External Gate W opens and Phase 20D-W ships Wallet client health, circuit-breaker state, webhook verification and inbox telemetry. Phase 21R-A explicitly deferred this screen to 20D-W.",
+      "why_no_partial_page": "No Wallet client health, latency, circuit-breaker or webhook telemetry exists. A green health indicator derived from the absence of data is a fabricated assurance.",
+      "ownership_boundary": "No provider credential, Daraja configuration, raw callback or secret value is ever surfaced in Servana."
+    },
+    {
+      "screen_key": "integrations-refer-and-earn-qualifications",
+      "map_section": "5.4.16",
+      "title": "Refer & Earn Qualification Decisions",
+      "contract_route": "/integrations/refer-and-earn/qualifications",
+      "navigation_group": "Integrations",
+      "gate": "external_gate_w",
+      "blocking_kind": "transitive",
+      "blocked_by": "Phase 21R-B, which Plan §80.1 makes dependent on Phase 20D-W, which is behind External Gate W",
+      "backend_owner_phase": "Phase 21R-B",
+      "planned_permission_keys": [
+        "platform.referral.qualification.view",
+        "platform.referral.qualification.correct"
+      ],
+      "entry_condition": "External Gate W opens, Phase 20D-W completes, and Phase 21R-B ships the activity-qualification decision run and its reconciliation evidence.",
+      "why_no_partial_page": "Phase 21R-A delivered referral CAPTURE and signed outbox delivery only. No qualification decision has ever been computed, so there is no decision to review.",
+      "ownership_boundary": "Citrus Refer & Earn owns reward calculation, the reward ledger and payout. Servana owns only its own activity-qualification decision and never gains a reward mutation."
+    },
+    {
+      "screen_key": "reports",
+      "map_section": "5.4.17",
+      "title": "Platform Reports",
+      "contract_route": "/reports",
+      "navigation_group": "Reporting & Audit",
+      "gate": "external_gate_w",
+      "blocking_kind": "transitive",
+      "blocked_by": "Phase 21N, which Plan §80.1 makes dependent on Phase 20D-W, which is behind External Gate W",
+      "backend_owner_phase": "Phase 21N",
+      "planned_permission_keys": [
+        "reports.view"
+      ],
+      "entry_condition": "External Gate W opens, Phase 20D-W completes, and Phase 21N ships the reporting catalogue (Plan §69) with a platform-scoped read key. `reports.view` is a merchant-scope key today and is not granted to super_admin.",
+      "why_no_partial_page": "The contract's report set is majority Wallet-derived — payment success, failure, cancellation, timeout, confirmed-to-applied latency, exception backlog and allocation drift. A report page that silently omitted them would misreport platform revenue and recovery.",
+      "ownership_boundary": "Revenue is defined from validated, applied financial events; nothing here would infer it from gross issuance."
+    },
+    {
+      "screen_key": "notifications",
+      "map_section": "5.4.21",
+      "title": "Notifications",
+      "contract_route": "/notifications",
+      "navigation_group": "Utility",
+      "gate": "external_gate_w",
+      "blocking_kind": "transitive",
+      "blocked_by": "Phase 21N, which depends on Phases 17, 18 and 20D-W, and 20D-W is behind External Gate W",
+      "backend_owner_phase": "Phase 21N",
+      "planned_permission_keys": [],
+      "entry_condition": "External Gate W opens, Phase 20D-W completes, and Phase 21N ships the notification record, delivery channel and acknowledgement state (Plan §66).",
+      "why_no_partial_page": "No notification record, delivery channel or acknowledgement state exists in the repository. The existing notificationStore is a client-side toast queue, not an inbox — the header control keeps its toast behaviour and claims no inbox.",
+      "ownership_boundary": "Notification content would be redacted and permission-scoped; nothing is subscribed or unsubscribed by the Account and Security page while the runtime is off.",
+      "gate_identifier_amended_at": "Increment 7B",
+      "gate_identifier_amendment_reason": "7A minted phase_21n_blocked_by_external_gate_w so the transitive blocker was visible in the identifier itself. Increment 7B collapsed it back to the single external_gate_w vocabulary the readiness matrix, the generated registry and Ui07NavigationContractTest all speak, because two identifiers for one gate is a second vocabulary that can drift. The transitive fact is not lost: blocking_kind stays \"transitive\", blocked_by names Phase 21N and its dependency chain, and the runtime reason appends backend_owner_phase so the user reads \"External Gate W — Wallet by Citrus collections readiness (Phase 21N)\"."
+    }
+  ],
+  "totals": {
+    "gated": 5,
+    "direct": 2,
+    "transitive": 3,
+    "with_a_registered_route": 0,
+    "with_a_component": 0,
+    "with_api_operations": 0
+  }
+}

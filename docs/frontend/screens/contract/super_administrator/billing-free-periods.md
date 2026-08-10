@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `platform.promotions` at `/platform/promotions` (routes/platform.ts), delivery **consolidated**. This runtime route also serves other contract pages — the collapse recorded as `UI01-NAV-001`. Owner phase **UI-08** splits it into a dedicated page. The runtime path uses the account's path prefix rather than the host-relative contract path `/billing/free-periods`; owner phase **UI-08** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `platform.billing-free-periods` at `/billing/free-periods` (routes/platform.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-08**
 - **Backend owner phase:** **Phase 20C**
 - **Implementation status:** `implemented`
-- **Runtime route:** `platform.promotions`
-- **Route delivery:** `consolidated`
+- **Runtime route:** `platform.billing-free-periods`
+- **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `platform.promotions` (recorded in `docs/frontend/screens/platform/platform-promotions.md`).
-- **Data fields:** Consolidated Super-Administrator surface for promotional discounts and free-period offers: draft/approve/pause/resume/cancel with mandatory reason, MFA + fresh step-up (server-enforced), immutable approved terms. Backend authoritative; controls are UX-only permission gates.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `platform.billing-free-periods` (recorded in `docs/frontend/screens/platform/platform-billing-free-periods.md`).
+- **Data fields:** Contract page §5.4.7. Free-period offers with the same deterministic targeting, lifecycle and immutability rules as promotional discounts, rendered through the same shared Phase 20C form. Draft, approve, pause, resume and cancel each require a mandatory reason, MFA and a fresh server-enforced step-up.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).
@@ -46,12 +46,12 @@
 
 - **Authorization:** Backend `auth:sanctum` + Form Request + Policy + `EnsurePermission` is the security boundary. Everything below is UX visibility only (ADR-017).
 - **Permission-any:** — none
-- **Permission-all:** `platform.promotion.manage`
+- **Permission-all:** `platform.free_period_offer.manage`
 - **Tenant scope:** Platform-only; merchant users are refused without record enumeration.
 - **Branch scope:** Not branch-scoped.
 - **Own-scope:** Not own-scoped.
 - **MFA:** Required for this account.
-- **Step-up:** No route-level step-up requirement; individual mutations may still require it server-side.
+- **Step-up:** Fresh step-up required for sensitive mutations.
 - **Feature flag:** none
 - **Forbidden for:** `merchant_administrator`, `merchant_branch`, `merchant_human_resource`, `merchant_finance`, `merchant_front_office`, `merchant_personnel`, `merchant_audit`
 

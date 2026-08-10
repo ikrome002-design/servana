@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import HeaderGroupNavigation from '@/components/navigation/HeaderGroupNavigation.vue';
 import RoleNavigation from '@/components/navigation/RoleNavigation.vue';
 import SvFixedFooter from '@/components/ui/SvFixedFooter.vue';
 import SvNotificationsControl from '@/components/ui/SvNotificationsControl.vue';
 import SvProfileControl from '@/components/ui/SvProfileControl.vue';
 import { SvIconClose, SvIconMenu } from '@/design-system/icons';
+import { flattenNavigation, navigationTree } from '@/navigation/navigationFilter';
 import { navigationFor } from '@/navigation/roleNavigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useMerchantStore } from '@/stores/merchantStore';
@@ -48,8 +50,21 @@ const entry = computed(() => ROLE_ENTRY[props.identity]);
 const items = computed(() => navigationFor(props.identity));
 const placement = computed(() => entry.value.navPlacement);
 
-// Current page title from the active live nav item, falling back to the role.
+/**
+ * Phase UI-08: the header account renders the GROUPED navigation tree rather than the flat list.
+ * `navigationTree()` is the same filtered value the drawer renders, so the two surfaces cannot
+ * disagree about what a user may see. Sidebar accounts keep the flat `navigationFor()` list until
+ * their own owner phase (UI-09 … UI-15) reconciles them.
+ */
+const navigationNodes = computed(() =>
+  navigationTree(props.identity, { permissions: auth.permissions }),
+);
+
+// Current page title from the active live nav entry, falling back to the role.
 const pageTitle = computed(() => {
+  const fromTree = flattenNavigation(navigationNodes.value).find((n) => n.routeName === route.name);
+  if (fromTree) return fromTree.label;
+
   const active = items.value.find((i) => i.routeName === route.name);
   return active?.label ?? entry.value.label;
 });
@@ -139,18 +154,16 @@ const isHeaderNav = computed(() => placement.value === 'header');
           >{{ pageTitle }}</span>
         </div>
 
-        <!-- Super Admin: primary navigation in the header (desktop inline). -->
-        <nav
+        <!--
+          Super Admin: primary navigation in the header, from tablet up (ADR-018). Grouped
+          disclosures with a CSS-declared overflow — never a desktop left rail.
+        -->
+        <div
           v-if="isHeaderNav"
-          aria-label="Platform primary navigation"
-          class="hidden flex-1 justify-center md:flex"
-          data-testid="header-primary-nav"
+          class="hidden min-w-0 flex-1 justify-center md:flex"
         >
-          <RoleNavigation
-            :items="items"
-            variant="header"
-          />
-        </nav>
+          <HeaderGroupNavigation :nodes="navigationNodes" />
+        </div>
 
         <div class="flex items-center gap-1">
           <!-- Merchant/branch context for sidebar roles. -->
@@ -162,11 +175,18 @@ const isHeaderNav = computed(() => placement.value === 'header');
 
           <SvNotificationsControl />
 
+          <!--
+            `get-started-to` is what makes the setup companion reopenable after dismissal: the
+            dismissed page cannot offer its own way back, so the account menu carries the route
+            (UI/UX plan §5.4.2). Only the header account passes it today; each sidebar account's
+            owner phase supplies its own.
+          -->
           <SvProfileControl
             v-if="auth.user"
             :name="auth.user.name"
             :account-label="entry.label"
             :context-label="merchant.name ?? null"
+            :get-started-to="isHeaderNav ? { name: entry.getStartedRouteName } : null"
             @logout="logout"
           />
 
@@ -256,7 +276,19 @@ const isHeaderNav = computed(() => placement.value === 'header');
               />
             </button>
           </div>
+          <!--
+            The drawer renders the SAME filtered tree the header does, as always-open labelled
+            sections. Two different sources here is exactly how "an item is missing on mobile"
+            defects appear.
+          -->
+          <HeaderGroupNavigation
+            v-if="isHeaderNav"
+            :nodes="navigationNodes"
+            variant="stacked"
+            @navigate="onNavigate"
+          />
           <RoleNavigation
+            v-else
             :items="items"
             @navigate="onNavigate"
           />

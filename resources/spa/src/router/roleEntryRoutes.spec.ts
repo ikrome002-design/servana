@@ -1,6 +1,9 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { router } from '@/router';
+import { createAppRouter } from '@/router';
+
+/** Static cross-account parity: every account's entry route, in one router (Increment 7B). */
+const router = createAppRouter(null);
 import { activeRoleIdentity, landingRouteName } from '@/router/destinations';
 import { navigationFor } from '@/navigation/roleNavigation';
 import { useAuthStore } from '@/stores/authStore';

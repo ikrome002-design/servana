@@ -33,6 +33,11 @@ function reconCanonicalKeys(): array
         }
     }
 
+    // COR-UI08-001 makes these final-form platform keys canonical even though Plan §19.2 predates them.
+    foreach (['platform.internal_access.manage', 'platform.internal_access.view'] as $key) {
+        $keys[$key] = true;
+    }
+
     return array_keys($keys);
 }
 

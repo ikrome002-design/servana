@@ -39,8 +39,19 @@ export interface NavigationContext {
   readonly permissions: ReadonlySet<string> | readonly string[];
   /** Feature flags currently enabled. An entry naming an absent flag stays hidden. */
   readonly featureFlags?: ReadonlySet<string> | readonly string[];
-  /** External gates that are open. A closed gate leaves its entries disabled. */
-  readonly openGates?: ReadonlySet<string> | readonly string[];
+  /*
+   * There is deliberately NO `openGates` input (UI08-NAV-002, Increment 9F).
+   *
+   * One existed, was documented as "a closed gate leaves its entries disabled", and was never
+   * consulted — a caller could pass it and nothing happened. Wiring it up would have been the worse
+   * repair: an entry is `disabled_by_gate` precisely because its backend does not exist, so a
+   * client-supplied "this gate is open" would turn it into a live-looking destination with no route
+   * behind it, and would hand the browser a way to un-gate a page the server cannot serve.
+   *
+   * A gate opens by the canonical navigation map being updated to `implemented` — one authority,
+   * server-side, regenerated. No runtime input can override it, which is the property Increment 10
+   * asserts as a security negative (a feature flag cannot open Gate W).
+   */
 }
 
 export interface NavigationNode {
@@ -62,9 +73,26 @@ export interface NavigationNode {
 const asSet = (value: ReadonlySet<string> | readonly string[] | undefined): ReadonlySet<string> =>
   value === undefined ? new Set<string>() : value instanceof Set ? value : new Set(value);
 
+/**
+ * Human statements for each gate the contract may name (Phase UI-08 Increment 9F).
+ *
+ * Two gates, not one, because the five blocked Super Administrator entries are NOT blocked the same
+ * way: two sit directly behind External Gate W, and three are blocked by a phase that is itself
+ * behind it. Collapsing both into one sentence would tell an operator that Notifications is waiting
+ * on a Wallet integration decision, when it is waiting on Phase 21N which is waiting on that
+ * decision. An unrecognised gate degrades to a readable sentence naming the dependency, never to a
+ * raw `snake_case` token and never to "coming soon".
+ */
 const GATE_LABELS: Readonly<Record<string, string>> = {
   external_gate_w: 'External Gate W — Wallet by Citrus collections readiness',
+  phase_21n_blocked_by_external_gate_w:
+    'Phase 21N, which is itself blocked by External Gate W — Wallet by Citrus collections readiness',
 };
+
+function gateStatement(gate: string, backendOwnerPhase: string | null): string {
+  const label = GATE_LABELS[gate] ?? `the ${gate.replace(/_/g, ' ')} dependency`;
+  return backendOwnerPhase === null ? label : `${label} (${backendOwnerPhase})`;
+}
 
 function permitted(entry: NavigationContractEntry, held: ReadonlySet<string>): boolean {
   // Fail-closed on both groups. `permission_all` requires every key; `permission_any` requires at
@@ -107,7 +135,7 @@ function toNode(entry: NavigationContractEntry, children: readonly NavigationNod
     // map lists it, and it says exactly why it cannot be used.
     routeName: gateClosed ? null : entry.runtimeRouteName,
     disabled: gateClosed,
-    disabledReason: gateClosed ? (GATE_LABELS[entry.gate!] ?? entry.gate) : null,
+    disabledReason: gateClosed ? gateStatement(entry.gate!, entry.backendOwnerPhase) : null,
     children,
   };
 }

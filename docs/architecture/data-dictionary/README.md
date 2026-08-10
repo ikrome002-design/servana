@@ -15,11 +15,13 @@ existing as-built tables are documented by their owning feature phases (§13.2).
 |---|---|---|
 | `core-identity-and-tenancy.md` | Core / identity / tenancy | `mfa_credentials` (R3), `mfa_recovery_codes` (R3), `idempotency_keys` (R4) |
 | `sessions-and-account-switching.md` | Authentication, host-scoped sessions, account switching | `magic_login_tokens` host-binding columns, `session_families`, `host_sessions`, `account_context_handoffs` (UI-03) |
-| `billing-and-wallet.md` | Platform billing + Wallet integration (**architecture spec only**) | Future 20A–20D-W tables — no migrations in v4 adoption PR |
+| `billing-and-wallet.md` | Platform billing + Wallet integration (**architecture spec only**) | Future 20A–20D-W tables — no migrations in v4 adoption PR; plus `platform_sms_billing_rules` (UI-08 / COR-UI08-001) |
+| `platform-governance.md` | Internal platform access + platform feature flags | `platform_access_memberships`, `platform_access_invitations`, `platform_access_permission_overrides`, `platform_feature_flags`, `platform_feature_flag_targets`, `platform_feature_flag_change_requests`, `platform_feature_flag_history` (UI-08 / COR-UI08-001) |
 | `refer-earn-integration.md` | R&E integration (**architecture spec only**) | Future 21R-A/21R-B tables — no migrations in v4 adoption PR |
 
 > As feature/remediation phases land, they extend the matching file with their
 > tables. Phase R3 (REM-MFA-001) authored the two MFA tables; Phase R4
 > (REM-IDEMP-001) authored `idempotency_keys`; Phase UI-03 (ADR-018, ADR-019)
 > authored the session-family, host-session and context-handoff tables and the
-> Magic Link host-binding columns.
+> Magic Link host-binding columns; Phase UI-08 (COR-UI08-001) authored the
+> platform SMS pricing series and the seven platform-governance tables.

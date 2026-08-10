@@ -1335,6 +1335,116 @@ advances forward only (`earned/pending → included_in_payout → paid`) at mark
 
 ---
 
+## COR-UI08-001 — Platform SMS billing pricing authority (Phase UI-08)
+
+> **Status: BUILT in Phase UI-08** under
+> [`COR-UI08-001`](../../decisions/cor-ui08-001-super-administrator-backend-enablement.md), which
+> authorizes the smallest backend enablement needed for navigation-map §5.4.9 (`/billing/sms`).
+> Reuses `platform.billing_settings.view` / `.update` — **no new permission key**. Depends on
+> Phase 20A (platform settings) and Phase 21S (`sms_billing_entries`).
+> State machine: [`platform-sms-billing-rule.md`](../state-machines/platform-sms-billing-rule.md).
+
+### Why the existing settings series cannot carry SMS pricing (proven root cause)
+
+`COR-UI08-001` prefers extending the validated `settings` map of `platform_billing_settings` and
+permits a dedicated table **only if** it is proven that SMS fields cannot be scheduled
+independently without incorrectly rescheduling unrelated settings. That proof was performed against
+the code at `16d544c5` and it is decisive:
+
+1. **Every row is a complete configuration snapshot, and resolution picks exactly one row.**
+   `ResolveEffectivePlatformBillingSettings::current()` and `PlatformBillingSettings::current()`
+   both select the greatest `effective_from <= now()` and return that single row. There is no
+   per-field effective dating anywhere in the series.
+2. **Two independent authorities already write the same series, each carrying the other's fields
+   forward at `now()`.** `UpdatePlatformBillingSettings` (`platform.billing_settings.update`) sets
+   the billing primitives and copies `settings` forward; `UpdatePlatformSettings`
+   (`platform.settings.update`) sets `settings` and copies the billing primitives forward. Both
+   hard-code `'effective_from' => now()`.
+3. **Therefore future dating is not merely unimplemented — it is unsafe in this series.** A
+   future-dated SMS version must snapshot the other fields *as they are at authoring time*. Any
+   billing-mode, trial, grace, currency or general-settings change that lands between authoring and
+   the SMS row's effective instant would be **silently reverted** the moment the SMS row becomes
+   current, because that row is the whole configuration. Those fields drive subscription invoicing,
+   so the regression would be financial.
+4. **`UNIQUE(effective_from)` structurally couples the two scheduling streams.** An SMS schedule and
+   an unrelated billing schedule cannot occupy the same instant, so one authority's schedule can
+   block the other's.
+5. **Adding future dating to the shipped writers would change shipped financial behaviour** for the
+   Phase 20A/20B settings surface — outside this decision's bounded scope and outside CLAUDE.md §9.
+
+`/billing/sms` requires a scheduled next rule with overlap protection (COR-UI08-001 §9), so
+immediate-only writes are not an option either. A dedicated effective-dated series is therefore the
+smallest correct change, and it keeps **exactly one active SMS pricing authority**.
+
+### `platform_sms_billing_rules`
+
+**Classification:** `PLATFORM_OWNED` (no `merchant_id`, no `branch_id`; `TenantOwnership::EXEMPT`).
+Model `App\Domain\Billing\Models\PlatformSmsBillingRule`. Public route key: `ulid`.
+
+**It stores no currency.** Currency remains the single authority it already is — the effective
+`platform_billing_settings` version — so this table cannot introduce a second one.
+
+| Column | Type | Null | Notes |
+|---|---|---|---|
+| `id` | bigint identity | no | internal PK; never exposed |
+| `ulid` | char(26) | no | public id + route key; `UNIQUE` |
+| `unit_cost_minor` | bigint | no | integer minor units (ADR-005); `CHECK (unit_cost_minor >= 0)`. Price **per segment per recipient**, identical to the Phase 21S basis |
+| `tax_basis_points` | int | yes | `CHECK (tax_basis_points IS NULL OR tax_basis_points BETWEEN 0 AND 10000)`. **Disclosure only** — see the tax note below |
+| `usage_warning_threshold_units` | bigint | yes | `CHECK (… IS NULL OR >= 0)`; billable units per calendar month that raise the warning state |
+| `usage_anomaly_threshold_basis_points` | int | yes | `CHECK (… IS NULL OR >= 0)`; month-on-month growth in basis points that raises the anomaly state |
+| `effective_from` | timestamptz | no | `UNIQUE` — the overlap guarantee; resolution is greatest `effective_from <= usage instant` |
+| `reason` | varchar(500) | no | mandatory operator reason for the schedule |
+| `created_by_user_id` | bigint | no | FK `users(id)` ON DELETE RESTRICT |
+| `cancelled_at` | timestamptz | yes | a **future** version may be cancelled before it takes effect |
+| `cancelled_by_user_id` | bigint | yes | FK `users(id)` ON DELETE RESTRICT |
+| `cancellation_reason` | varchar(500) | yes | mandatory when cancelled |
+| `created_at` / `updated_at` | timestamptz | no | |
+
+```text
+UNIQUE (effective_from)                    no two rules share an effective instant
+INDEX  (effective_from)                    current/next resolution
+platform_sms_billing_rules_unit_cost_check            unit_cost_minor >= 0
+platform_sms_billing_rules_tax_check                  tax_basis_points IS NULL OR tax_basis_points BETWEEN 0 AND 10000
+platform_sms_billing_rules_warning_threshold_check    usage_warning_threshold_units IS NULL OR usage_warning_threshold_units >= 0
+platform_sms_billing_rules_anomaly_threshold_check    usage_anomaly_threshold_basis_points IS NULL OR usage_anomaly_threshold_basis_points >= 0
+platform_sms_billing_rules_cancellation_check         (cancelled_at IS NULL) = (cancelled_by_user_id IS NULL)
+                                                  AND (cancelled_at IS NULL) = (cancellation_reason IS NULL)
+TRIGGER platform_sms_billing_rules_guard   freezes every pricing/ownership column after insert;
+                                           permits ONLY a pending -> cancelled transition, and only
+                                           while effective_from > now(); DELETE always raises
+```
+
+**Settled versions are immutable.** The guard trigger means an already-effective rule can never be
+edited or removed, and a scheduled rule can only ever be cancelled (with actor and reason) before
+it takes effect — never silently rewritten.
+
+**Genesis row.** The creating migration backfills exactly one rule from the existing
+`config('sms.pricing.unit_cost_minor')` value at `effective_from = 2026-07-22T00:00:00Z` — the day
+`sms_billing_entries` was created, so the entire existing usage history resolves to the rule that
+actually produced its snapshots. Nothing is recalculated.
+
+**Snapshot immutability.** `sms_billing_entries` already snapshots `quantity`, `unit_cost_minor`,
+`amount_minor`, `currency` and `status`, and `sms_billing_entries_guard` freezes every monetary
+column. A new pricing rule therefore **cannot** alter an existing entry: the rule is resolved at the
+usage event's effective time and snapshotted once, at confirmation.
+
+**Tax note (why `tax_basis_points` never changes a charge).** `sms_billing_entries` carries the
+shipped constraint `amount_minor = quantity * unit_cost_minor`. Folding tax into `amount_minor`
+would violate it. `tax_basis_points` is therefore a **disclosure** rate: it appears in the generated
+cost notice and in the platform reconciliation projection as a separately labelled estimate, and the
+per-entry billable amount stays ex-tax. It is `NULL` at launch, so no notice displays a tax line
+until one is deliberately configured. **No shipped financial arithmetic changes.**
+
+**Cost notice.** The merchant-facing notice is **generated** from unit cost, currency, billable
+units/segments, the configured tax rate and the effective date. No cost-notice HTML or free text is
+ever persisted, so no unreviewed markup can reach a merchant surface.
+
+**Privacy.** Nothing in this surface exposes a recipient list, a full phone number, a message body,
+a contact export, a provider credential or a raw provider callback. The reconciliation projection
+aggregates by merchant, branch and month only.
+
+---
+
 ## Forbidden in Servana (never assign to Servana schema)
 
 | Forbidden concern | Owner |

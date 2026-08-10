@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Messaging\Sms\Support;
 
+use App\Domain\Billing\Queries\ResolveEffectivePlatformBillingSettings;
+use App\Domain\Billing\Queries\ResolveEffectiveSmsBillingRule;
 use App\Enums\Currency;
 use App\Support\Money;
+use Carbon\CarbonImmutable;
 use RuntimeException;
 
 /**
@@ -24,12 +27,24 @@ use RuntimeException;
  * preview and the confirm path call this, so a tampered client value can never change what is
  * billed.
  *
- * The unit price itself is a configured placeholder carried by REM-SMS-002 (no SMS provider tariff
- * is pinned by the Plan). A negative price is a configuration error and fails closed here rather
- * than producing a negative charge.
+ * PRICING AUTHORITY (COR-UI08-001; Phase UI-08). The unit price is no longer deployment
+ * configuration. It is the effective row of `platform_sms_billing_rules` — a versioned,
+ * effective-dated, audited, MFA + step-up governed series resolved at the usage instant. A
+ * scheduled rule ALWAYS wins: config is consulted only when the series is empty, which is the
+ * bootstrap state of a database whose platform administrator has not been seeded yet. That is the
+ * same value the migration's genesis rule is created from, so the two can never disagree about a
+ * price anyone actually scheduled. `SmsBillingRuleAlwaysWinsOverConfigTest` pins this.
+ *
+ * A negative price is a configuration error and fails closed here rather than producing a negative
+ * charge.
  */
 final class SmsCostCalculator
 {
+    public function __construct(
+        private readonly ?ResolveEffectiveSmsBillingRule $rules = null,
+        private readonly ?ResolveEffectivePlatformBillingSettings $settings = null,
+    ) {}
+
     /** Billable quantity: one unit per segment per recipient. */
     public function quantity(int $recipientCount, int $segmentCount): int
     {
@@ -40,19 +55,35 @@ final class SmsCostCalculator
         return $recipientCount * $segmentCount;
     }
 
-    public function unitCostMinor(): int
+    public function unitCostMinor(?CarbonImmutable $asOf = null): int
     {
-        $unitCost = (int) config('sms.pricing.unit_cost_minor');
+        $rule = $this->rules?->at($asOf);
+
+        $unitCost = $rule !== null
+            ? $rule->unit_cost_minor
+            : (int) config('sms.pricing.unit_cost_minor');
 
         if ($unitCost < 0) {
-            throw new RuntimeException('sms.pricing.unit_cost_minor must not be negative.');
+            throw new RuntimeException('The effective SMS unit cost must not be negative.');
         }
 
         return $unitCost;
     }
 
-    public function currency(): Currency
+    /**
+     * Currency has exactly ONE authority: the effective platform billing settings version. Before
+     * Phase UI-08 this read `sms.pricing.currency` while the platform surface read the settings
+     * version, so the two could disagree and the SMS page would have misreported the currency of a
+     * charge. Config remains only for the bootstrap case where no settings version exists yet.
+     */
+    public function currency(?CarbonImmutable $asOf = null): Currency
     {
+        $settings = $this->settings?->current($asOf);
+
+        if ($settings !== null) {
+            return Currency::from($settings->currency);
+        }
+
         return Currency::from((string) config('sms.pricing.currency', Currency::KES->value));
     }
 

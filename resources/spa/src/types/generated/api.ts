@@ -2650,6 +2650,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/platform/billing-credits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Billing credits are credit LINES on existing invoices. Servana holds no separate credit
+         *     ledger, and this endpoint deliberately does not invent one */
+        get: operations["platform.billing-credits.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/platform/billing-settings": {
         parameters: {
             query?: never;
@@ -2746,6 +2764,150 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/platform/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.dashboard.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/feature-flag-change-requests/{platformFeatureFlagChangeRequest}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.feature-flag-change-requests.approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/feature-flag-change-requests/{platformFeatureFlagChangeRequest}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.feature-flag-change-requests.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/feature-flag-change-requests/{platformFeatureFlagChangeRequest}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.feature-flag-change-requests.reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/feature-flags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.feature-flags.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/feature-flags/{flagKey}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.feature-flags.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/feature-flags/{flagKey}/change-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.feature-flags.change-requests.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/feature-flags/{flagKey}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.feature-flags.history.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/feature-flags/{flagKey}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.feature-flags.pause"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/platform/free-period-offers": {
         parameters: {
             query?: never;
@@ -2836,6 +2998,169 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["platform.free-period-offers.resume"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.internal-access.invitations.index"];
+        put?: never;
+        /** Enumeration-safe: the response is the SAME shape and status whether the address was newly
+         *     invited, had an existing invitation rotated, or already holds active access. Nothing here
+         *     discloses whether a user exists */
+        post: operations["platform.internal-access.invitations.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/invitations/{platformAccessInvitation}/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.internal-access.invitations.resend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/invitations/{platformAccessInvitation}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.internal-access.invitations.revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.internal-access.users.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/users/{platformAccessMembership}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.internal-access.users.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/users/{platformAccessMembership}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.internal-access.users.deactivate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/users/{platformAccessMembership}/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["platform.internal-access.users.permissions.update"];
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/users/{platformAccessMembership}/reactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.internal-access.users.reactivate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/users/{platformAccessMembership}/sessions/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.internal-access.users.sessions.revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/internal-access/users/{platformAccessMembership}/suspend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.internal-access.users.suspend"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3219,6 +3544,201 @@ export interface paths {
         };
         get: operations["platform.settings.show"];
         put: operations["platform.settings.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/sms-billing-charge-reconciliation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.sms-billing-charge-reconciliation.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/sms-billing-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The rule in force now, the next scheduled rule, and the inherited currency */
+        get: operations["platform.sms-billing-settings.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/sms-billing-settings/cost-notice-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Server-authoritative cost notice for a hypothetical campaign shape */
+        get: operations["platform.sms-billing-settings.cost-notice-preview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/sms-billing-settings/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The full version series, newest first, each row carrying its derived state */
+        get: operations["platform.sms-billing-settings.versions.index"];
+        put?: never;
+        post: operations["platform.sms-billing-settings.versions.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/sms-billing-settings/versions/{smsBillingRule}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform.sms-billing-settings.versions.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/sms-billing-usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.sms-billing-usage.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/subscription-escalations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.subscription-escalations.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/subscription-invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.subscription-invoices.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/subscription-invoices/{subscriptionInvoice}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.subscription-invoices.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/subscription-operations/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.subscription-operations.summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.subscriptions.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/platform/subscriptions/{merchantSubscription}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform.subscriptions.show"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -4476,6 +4996,17 @@ export interface components {
             reason: string;
         };
         /**
+         * CancelSmsBillingRuleRequest
+         * @description Validate withdrawal of a SCHEDULED SMS pricing rule (COR-UI08-001 §9; Phase UI-08).
+         *
+         *     The reason is mandatory and NOT NULL at the database. Whether the rule may be cancelled at all
+         *     is a state question, answered by the action under a row lock and by the
+         *     `platform_sms_billing_rules_guard` trigger — never here.
+         */
+        CancelSmsBillingRuleRequest: {
+            reason: string;
+        };
+        /**
          * CashUpDecisionRequest
          * @description Validate a cash-up reject / request-correction decision (Plan §45; Phase 18B). A
          *     mandatory reason is required for both. Authorization is enforced by the route
@@ -4869,6 +5400,18 @@ export interface components {
             role_title?: string | null;
             service_eligibility_ids?: number[] | null;
         };
+        /**
+         * DecideFeatureFlagChangeRequest
+         * @description Validate an approve / reject / cancel decision on a feature-flag change (COR-UI08-001
+         *     section 12.3; Phase UI-08).
+         *
+         *     `reason` is required on REJECT (it becomes the mandatory `decision_note`) and optional on approve
+         *     and cancel, where the request's own reason already stands. WHO may decide is not a validation
+         *     question — the maker/checker rule is enforced by the action and by a database CHECK.
+         */
+        DecideFeatureFlagChangeRequest: {
+            reason?: string | null;
+        };
         /** EarningsQueryResource */
         EarningsQueryResource: {
             id: string;
@@ -5030,6 +5573,20 @@ export interface components {
                 subscription_plan_id: string | null;
                 billing_mode: string | null;
             }[];
+        };
+        /**
+         * InvitePlatformAdministratorRequest
+         * @description Validate a platform-access invitation (COR-UI08-001 §11.6; Phase UI-08).
+         *
+         *     The address is normalized to lowercase before validation so a duplicate differing only in case
+         *     cannot slip past the partial unique index. NO ROLE FIELD IS ACCEPTED: `super_admin` is the only
+         *     launch platform role, so accepting a role from the request would create a choice the system does
+         *     not actually offer.
+         */
+        InvitePlatformAdministratorRequest: {
+            /** Format: email */
+            email: string;
+            reason: string;
         };
         /** InvoiceItemResource */
         InvoiceItemResource: {
@@ -5269,6 +5826,17 @@ export interface components {
          */
         MfaCodeRequest: {
             code: string;
+        };
+        /**
+         * PauseFeatureFlagRequest
+         * @description Validate an emergency pause (COR-UI08-001 section 12; Phase UI-08).
+         *
+         *     Pause is the one single-actor path, permitted because it moves a flag towards deny. It still
+         *     carries a MANDATORY reason: "why was this rollout stopped?" is precisely the question the next
+         *     operator will ask, and an unexplained pause is indistinguishable from an accident.
+         */
+        PauseFeatureFlagRequest: {
+            reason: string;
         };
         /**
          * PaymentGroupDecisionRequest
@@ -5587,6 +6155,60 @@ export interface components {
             enabled: boolean;
             limit_int: number | null;
         };
+        /** PlatformAccessInvitationResource */
+        PlatformAccessInvitationResource: {
+            id: string;
+            email: string;
+            role_key: string;
+            status: string;
+            redeemable: boolean;
+            environment: string;
+            invited_by: string;
+            expires_at: string;
+            accepted_at: string;
+            revoked_at: string;
+            revocation_reason: string | null;
+            resend_count: number;
+            last_sent_at: string;
+        };
+        /**
+         * PlatformAccessLifecycleReasonRequest
+         * @description The mandatory reason carried by every platform-access lifecycle mutation — suspend, reactivate,
+         *     deactivate, revoke invitation and revoke sessions (COR-UI08-001 §11; Phase UI-08).
+         *
+         *     The reason is required because these actions remove someone's access to the platform, and an
+         *     audit row that cannot say WHY is not accountability. Whether the transition is legal at all is a
+         *     state question answered under a row lock by the action, never here.
+         */
+        PlatformAccessLifecycleReasonRequest: {
+            reason: string;
+        };
+        /** PlatformAccessMembershipResource */
+        PlatformAccessMembershipResource: {
+            id: string;
+            user: {
+                id: string;
+                email: string;
+                name: string;
+                status: string;
+                /** @description MFA enrolment is EVIDENCE the roster needs to judge risk, resolved through the
+                 *     existing MfaManager rather than by reading credential columns here. */
+                mfa_enrolled: string;
+                last_login_at: string;
+            };
+            role_key: string;
+            status: string;
+            grants_access: boolean;
+            active_session_count: string;
+            denied_permissions: string[];
+            invited_at: string;
+            activated_at: string;
+            suspended_at: string;
+            deactivated_at: string;
+            last_action: string | null;
+            last_action_reason: string | null;
+            last_action_at: string;
+        };
         /** PlatformBillingSettingsResource */
         PlatformBillingSettingsResource: {
             id: string;
@@ -5596,6 +6218,107 @@ export interface components {
             currency: string;
             settings: string;
             effective_from: string;
+        };
+        /** PlatformDashboardAuditResource */
+        PlatformDashboardAuditResource: {
+            availability: string;
+            gate: string | null;
+            as_of: string;
+            events_last_7_days: number;
+            by_severity: string;
+            definitions: string;
+            time_range: string;
+            drill_through: string;
+        };
+        /** PlatformDashboardCommercialResource */
+        PlatformDashboardCommercialResource: {
+            availability: string;
+            gate: string | null;
+            as_of: string;
+            invoices_by_status: string;
+            issued_invoices: number;
+            open_invoice_balance_minor: number;
+            definitions: string;
+            time_range: string;
+            drill_through: string;
+        };
+        /** PlatformDashboardIntegrationsResource */
+        PlatformDashboardIntegrationsResource: {
+            availability: string;
+            gate: string;
+            gate_statement: string;
+            wallet: null;
+            reconciliation_exceptions: null;
+            refer_and_earn: null;
+            definitions: string;
+            time_range: null;
+            drill_through: null;
+        };
+        /** PlatformDashboardLifecycleResource */
+        PlatformDashboardLifecycleResource: {
+            availability: string;
+            gate: string | null;
+            as_of: string;
+            total_merchants: number;
+            by_operational_status: string;
+            by_billing_status: string;
+            billing_suspended: number;
+            active_branches: number;
+            definitions: string;
+            time_range: string;
+            drill_through: string;
+        };
+        /** PlatformDashboardRegistrationsResource */
+        PlatformDashboardRegistrationsResource: {
+            availability: string;
+            gate: string | null;
+            as_of: string;
+            registered_last_7_days: number;
+            registered_last_30_days: number;
+            awaiting_setup_completion: number;
+            definitions: string;
+            time_range: string;
+            drill_through: string;
+        };
+        /** PlatformDashboardResource */
+        PlatformDashboardResource: {
+            as_of: string;
+            merchant_lifecycle: components["schemas"]["PlatformDashboardLifecycleResource"];
+            commercial: components["schemas"]["PlatformDashboardCommercialResource"];
+            registration_monitoring: components["schemas"]["PlatformDashboardRegistrationsResource"];
+            governance_tasks: components["schemas"]["PlatformDashboardTasksResource"];
+            audit_alerts: components["schemas"]["PlatformDashboardAuditResource"];
+            integrations: components["schemas"]["PlatformDashboardIntegrationsResource"];
+        };
+        /** PlatformDashboardTasksResource */
+        PlatformDashboardTasksResource: {
+            availability: string;
+            gate: string | null;
+            merchants_suspended_for_billing: number;
+            merchants_suspended_by_policy: number;
+            overdue_invoices: number;
+            definitions: string;
+            time_range: string;
+            drill_through: string;
+        };
+        /** PlatformFeatureFlagChangeRequestResource */
+        PlatformFeatureFlagChangeRequestResource: {
+            id: string;
+            flag_key: string;
+            status: string;
+            proposed_configuration: string;
+            proposed_configuration_hash: string;
+            impact_statement: string;
+            rollback_plan: string;
+            health_criterion: string;
+            reason: string;
+            requested_by: string;
+            approved_by: string;
+            requested_at: string;
+            decided_at: string;
+            applied_at: string;
+            decision_note: string | null;
+            failure_reason: string | null;
         };
         /** PlatformFeeConfigurationResource */
         PlatformFeeConfigurationResource: {
@@ -5686,6 +6409,95 @@ export interface components {
                 suspend: string;
                 reactivate: string;
                 deactivate: string;
+            };
+        };
+        /** PlatformSubscriptionInvoiceResource */
+        PlatformSubscriptionInvoiceResource: {
+            id: string;
+            invoice_number: string | null;
+            merchant: {
+                id: string;
+                name: string;
+            };
+            plan: {
+                id: string;
+                key: string;
+            };
+            status: string;
+            period_start: string;
+            period_end: string;
+            issued_at: string;
+            due_at: string;
+            subtotal: {
+                amount: number;
+                currency: string;
+                formatted: string;
+            };
+            discount: {
+                amount: number;
+                currency: string;
+                formatted: string;
+            };
+            total: {
+                amount: number;
+                currency: string;
+                formatted: string;
+            };
+            balance: {
+                amount: number;
+                currency: string;
+                formatted: string;
+            };
+            currency: string;
+            /** @constant */
+            snapshot_note: "Issued invoices are immutable financial records; these figures are the stored snapshot, never a recalculation.";
+            wallet: {
+                registration_status: string;
+                registered_at: string;
+                /**
+                 * @description Money movement is Wallet truth (ADR-012). Servana holds this projection and
+                 *     never a provider reference, credential or callback payload.
+                 * @constant
+                 */
+                authority: "wallet_by_citrus";
+            };
+        };
+        /** PlatformSubscriptionResource */
+        PlatformSubscriptionResource: {
+            id: string;
+            merchant: {
+                id: string;
+                name: string;
+                status: string;
+                billing_status: string;
+            };
+            plan: {
+                id: string;
+                key: string;
+                name: string;
+            };
+            status: string;
+            billing_interval: string;
+            trial_started_at: string;
+            trial_ends_at: string;
+            trial_days_snapshot: number;
+            current_period_start: string;
+            current_period_end: string;
+            cancelled_at: string;
+            expired_at: string;
+            scheduled_plan_change: {
+                id: string;
+                effective_at: string;
+            } | null;
+            current_state: {
+                status: string;
+                /**
+                 * @description The record status is NOT the request-authorization authority; merchants.billing_status
+                 *     is (Plan §22). Saying so on the page prevents exactly the wrong inference.
+                 * @constant
+                 */
+                authorization_authority: "merchants.billing_status";
+                explanation: string;
             };
         };
         /** PreferredPersonnelFeeRuleResource */
@@ -6020,6 +6832,37 @@ export interface components {
             severities?: ("info" | "notice" | "warning" | "high" | "critical")[];
         };
         /**
+         * RequestFeatureFlagChangeRequest
+         * @description Validate a proposed feature-flag change (COR-UI08-001 section 12.3; Phase UI-08).
+         *
+         *     THE FOUR GOVERNANCE FIELDS ARE MANDATORY, here and at the database. A production-sensitive change
+         *     with no stated impact, no rollback plan or no health criterion is not something to discourage; it
+         *     is something that must not be representable.
+         *
+         *     There is NO `flag_key` field in the body: the key comes from the route and must already exist in
+         *     the code catalogue. Rollout is integer basis points, never a float percentage, and target types
+         *     are validated against the closed vocabulary before the action re-checks them against the
+         *     definition.
+         */
+        RequestFeatureFlagChangeRequest: {
+            /** @enum {string} */
+            state: "inactive" | "scheduled" | "active" | "paused" | "retired";
+            rollout_basis_points: number;
+            /** Format: date-time */
+            effective_from?: string | null;
+            /** Format: date-time */
+            effective_to?: string | null;
+            impact_statement: string;
+            rollback_plan: string;
+            health_criterion: string;
+            reason: string;
+            targets?: {
+                /** @enum {string} */
+                type: "merchant" | "plan" | "cohort";
+                value: string;
+            }[];
+        };
+        /**
          * RequestFinanceExportRequest
          * @description Validate a finance export request (Plan §65, §67; Phase 18B). Any enumerated type is
          *     accepted at validation; unsupported types (compensation/payouts/billing) are rejected
@@ -6139,6 +6982,29 @@ export interface components {
         SchedulePlanChangeRequest: {
             subscription_plan_ulid: string;
             subscription_plan_price_ulid: string;
+        };
+        /**
+         * ScheduleSmsBillingRuleRequest
+         * @description Validate a scheduled SMS pricing rule (COR-UI08-001 §9; Phase UI-08).
+         *
+         *     Integer minor units only (ADR-005) — a decimal price is rejected here rather than silently
+         *     truncated. Basis points are integers in 0…10000. The reason is MANDATORY: a pricing change
+         *     without a stated reason is not auditable, and the column is NOT NULL.
+         *
+         *     `effective_from` must be now or later. Backdating could not rewrite a charge (sms_billing_entries
+         *     is trigger-frozen) but it would make the recorded pricing history untruthful. The action
+         *     re-checks it inside the transaction, so this rule is convenience, not the boundary.
+         *
+         *     Authorization, MFA, fresh step-up and idempotency are enforced by the route middleware.
+         */
+        ScheduleSmsBillingRuleRequest: {
+            unit_cost_minor: number;
+            /** Format: date-time */
+            effective_from: string;
+            reason: string;
+            tax_basis_points?: number | null;
+            usage_warning_threshold_units?: number | null;
+            usage_anomaly_threshold_basis_points?: number | null;
         };
         /** ScheduledPlanChangeResource */
         ScheduledPlanChangeResource: {
@@ -6266,6 +7132,20 @@ export interface components {
                 cancel: string;
                 update_notes: string;
             };
+        };
+        /** SmsBillingRuleResource */
+        SmsBillingRuleResource: {
+            id: string;
+            state: string;
+            unit_cost_minor: number;
+            currency: string;
+            tax_basis_points: number | null;
+            usage_warning_threshold_units: number | null;
+            usage_anomaly_threshold_basis_points: number | null;
+            effective_from: string;
+            reason: string;
+            cancelled_at: string;
+            cancellation_reason: string | null;
         };
         /** SmsCampaignPreviewResource */
         SmsCampaignPreviewResource: {
@@ -7210,6 +8090,20 @@ export interface components {
                 enabled: boolean;
                 limit_int?: number | null;
             }[];
+        };
+        /**
+         * UpdatePlatformAccessPermissionsRequest
+         * @description Validate a platform-access permission change (COR-UI08-001 §11; Phase UI-08).
+         *
+         *     The request supplies the COMPLETE set of permission keys to DENY; anything absent returns to the
+         *     role default. There is no `granted` field and there never may be — the override table has no
+         *     grant effect, so accepting one here would imply a capability the system cannot represent.
+         *
+         *     An empty array is meaningful and allowed: it clears every override.
+         */
+        UpdatePlatformAccessPermissionsRequest: {
+            reason: string;
+            denied_permissions: string[];
         };
         /**
          * UpdatePlatformBillingSettingsRequest
@@ -8464,7 +9358,7 @@ export interface operations {
     "audit-logs.index": {
         parameters: {
             query?: {
-                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "auth.magic_link.host_binding_rejected" | "auth.magic_link.environment_binding_rejected" | "auth.session_family.created" | "auth.session_family.revoked" | "auth.host_session.created" | "auth.host_session.revoked" | "auth.global_logout" | "auth.account_contexts.viewed" | "auth.context_handoff.issued" | "auth.context_handoff.consumed" | "auth.context_handoff.rejected" | "auth.context_handoff.replay_rejected" | "auth.account_deep_link.rejected" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.calendar_exception_set" | "branch.calendar_exception_removed" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "invoice.created" | "invoice.updated_draft" | "invoice.finalized" | "invoice.void_requested" | "invoice.voided" | "invoice.void_rejected" | "invoice.adjusted" | "customer_payment.recorded" | "customer_payment.duplicate_suspected" | "customer_payment.duplicate_override_approved" | "customer_payment.recorded_exception" | "customer_payment.validated" | "customer_payment.rejected" | "customer_payment.correction_requested" | "customer_payment.reference_corrected" | "customer_payment.resubmitted" | "receipt.issued" | "receipt.reissued" | "receipt.downloaded" | "refund.requested" | "refund.approved" | "refund.rejected" | "refund.finalized" | "finance_dispute.opened" | "finance_dispute.review_started" | "finance_dispute.resolved" | "finance_dispute.rejected" | "cash_up.draft_updated" | "cash_up.submitted" | "cash_up.approved" | "cash_up.rejected" | "cash_up.correction_requested" | "cash_up.resubmitted" | "cash_up.locked" | "financial_period.locked" | "financial_period.reopen_requested" | "financial_period.reopen_approved" | "financial_period.reopened" | "finance_export.requested" | "finance_export.generated" | "finance_export.failed" | "finance_export.downloaded" | "finance_export.expired" | "finance_export.revoked" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted" | "audit.flagged_event.created" | "audit.flagged_event.review_started" | "audit.flagged_event.resolved" | "audit.flagged_event.dismissed" | "audit.flagged_event.reopened" | "audit_export.requested" | "audit_export.generated" | "audit_export.failed" | "audit_export.downloaded" | "audit_export.expired" | "audit_export.revoked" | "platform_settings.updated" | "platform_billing.settings_updated" | "subscription_plan.created" | "subscription_plan.metadata_updated" | "subscription_plan.retired" | "subscription_plan_price.created" | "subscription_plan_price.scheduled" | "subscription_plan_price.cancelled" | "plan_entitlement.updated" | "preferred_personnel_fee_rule.created" | "preferred_personnel_fee_rule.approved" | "preferred_personnel_fee_rule.superseded" | "preferred_personnel_fee_rule.cancelled" | "subscription.created" | "subscription.trial_started" | "subscription.activated" | "subscription.read_only_grace_entered" | "subscription.overdue" | "subscription.suspended_billing" | "subscription.cancelled" | "subscription.expired" | "subscription.recovered" | "merchant.billing_status_changed" | "subscription.plan_change_scheduled" | "subscription.plan_change_applied" | "subscription.plan_change_cancelled" | "merchant.profile_updated" | "merchant.suspended" | "merchant.reactivated" | "merchant.deactivated" | "subscription_invoice.issued" | "subscription_invoice.overdue" | "subscription_invoice.voided" | "subscription_invoice.pdf_generated" | "billing_escalation.reminder" | "billing_escalation.grace_entered" | "billing_escalation.overdue" | "billing_escalation.suspended" | "billing_escalation.recovered" | "promotion.created" | "promotion.draft_updated" | "promotion.approved" | "promotion.activated" | "promotion.paused" | "promotion.resumed" | "promotion.expired" | "promotion.cancelled" | "free_period_offer.created" | "free_period_offer.draft_updated" | "free_period_offer.approved" | "free_period_offer.activated" | "free_period_offer.paused" | "free_period_offer.resumed" | "free_period_offer.expired" | "free_period_offer.cancelled" | "platform_fee.original_recorded" | "platform_fee.aggregated" | "platform_fee.invoiced" | "platform_fee.reversed" | "platform_fee.adjusted" | "platform_fee.dispute_created" | "platform_fee.dispute_review_started" | "platform_fee.dispute_resolved" | "platform_fee.dispute_rejected" | "platform_fee.configuration_created" | "platform_fee.configuration_updated" | "platform_fee.configuration_approved" | "platform_fee.configuration_superseded" | "platform_fee.configuration_cancelled" | "compensation.plan.created" | "compensation.plan.updated_draft" | "compensation.plan.submitted" | "compensation.plan.approved" | "compensation.plan.backdated_change_approved" | "compensation.plan.activated" | "compensation.plan.rejected" | "compensation.plan.cancelled" | "compensation.plan.superseded" | "compensation.plan.expired" | "commission_rule.created" | "commission_rule.updated_draft" | "commission_rule.submitted" | "commission_rule.approved" | "commission_rule.activated" | "commission_rule.rejected" | "commission_rule.cancelled" | "commission_rule.ended" | "commission_rule.expired" | "compensation.salary.accrued" | "compensation.salary.reversed" | "compensation.salary.adjusted" | "compensation.commission.earned" | "compensation.commission.reversed" | "compensation.adjustment.created" | "compensation.handoff.failed" | "payout_run.created" | "payout_run.updated_draft" | "payout_run.submitted" | "payout_run.verified" | "payout_run.approved_standard" | "payout_run.high_value_approved" | "payout_run.rejected" | "payout_run.cancelled" | "payout_run.marked_paid" | "earnings_statement.generated" | "earnings_query.created" | "earnings_query.assigned" | "earnings_query.resolved" | "earnings_query.rejected" | "re.referral_captured" | "re.attribution_confirmed" | "re.attribution_rejected" | "re.event_dead_lettered" | "personnel.sms.previewed" | "personnel.sms.campaign_created" | "personnel.sms.campaign_confirmed" | "personnel.sms.campaign_cancelled" | "personnel.sms.recipient_suppressed" | "personnel.sms.delivery_succeeded" | "personnel.sms.delivery_failed" | "personnel.sms.delivery_dead_lettered" | "personnel.sms.billing_entry_created" | "personnel.sms.export_attempt_blocked";
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "auth.magic_link.host_binding_rejected" | "auth.magic_link.environment_binding_rejected" | "auth.session_family.created" | "auth.session_family.revoked" | "auth.host_session.created" | "auth.host_session.revoked" | "auth.global_logout" | "auth.account_contexts.viewed" | "auth.context_handoff.issued" | "auth.context_handoff.consumed" | "auth.context_handoff.rejected" | "auth.context_handoff.replay_rejected" | "auth.account_deep_link.rejected" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.calendar_exception_set" | "branch.calendar_exception_removed" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "invoice.created" | "invoice.updated_draft" | "invoice.finalized" | "invoice.void_requested" | "invoice.voided" | "invoice.void_rejected" | "invoice.adjusted" | "customer_payment.recorded" | "customer_payment.duplicate_suspected" | "customer_payment.duplicate_override_approved" | "customer_payment.recorded_exception" | "customer_payment.validated" | "customer_payment.rejected" | "customer_payment.correction_requested" | "customer_payment.reference_corrected" | "customer_payment.resubmitted" | "receipt.issued" | "receipt.reissued" | "receipt.downloaded" | "refund.requested" | "refund.approved" | "refund.rejected" | "refund.finalized" | "finance_dispute.opened" | "finance_dispute.review_started" | "finance_dispute.resolved" | "finance_dispute.rejected" | "cash_up.draft_updated" | "cash_up.submitted" | "cash_up.approved" | "cash_up.rejected" | "cash_up.correction_requested" | "cash_up.resubmitted" | "cash_up.locked" | "financial_period.locked" | "financial_period.reopen_requested" | "financial_period.reopen_approved" | "financial_period.reopened" | "finance_export.requested" | "finance_export.generated" | "finance_export.failed" | "finance_export.downloaded" | "finance_export.expired" | "finance_export.revoked" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted" | "audit.flagged_event.created" | "audit.flagged_event.review_started" | "audit.flagged_event.resolved" | "audit.flagged_event.dismissed" | "audit.flagged_event.reopened" | "audit_export.requested" | "audit_export.generated" | "audit_export.failed" | "audit_export.downloaded" | "audit_export.expired" | "audit_export.revoked" | "platform_settings.updated" | "platform_billing.settings_updated" | "platform.feature_flag.change_requested" | "platform.feature_flag.change_approved" | "platform.feature_flag.change_rejected" | "platform.feature_flag.change_cancelled" | "platform.feature_flag.applied" | "platform.feature_flag.paused" | "platform.internal_access.invited" | "platform.internal_access.invitation_resent" | "platform.internal_access.invitation_revoked" | "platform.internal_access.permissions_changed" | "platform.internal_access.suspended" | "platform.internal_access.reactivated" | "platform.internal_access.deactivated" | "platform.internal_access.sessions_revoked" | "platform_sms_billing.rule_scheduled" | "platform_sms_billing.rule_cancelled" | "subscription_plan.created" | "subscription_plan.metadata_updated" | "subscription_plan.retired" | "subscription_plan_price.created" | "subscription_plan_price.scheduled" | "subscription_plan_price.cancelled" | "plan_entitlement.updated" | "preferred_personnel_fee_rule.created" | "preferred_personnel_fee_rule.approved" | "preferred_personnel_fee_rule.superseded" | "preferred_personnel_fee_rule.cancelled" | "subscription.created" | "subscription.trial_started" | "subscription.activated" | "subscription.read_only_grace_entered" | "subscription.overdue" | "subscription.suspended_billing" | "subscription.cancelled" | "subscription.expired" | "subscription.recovered" | "merchant.billing_status_changed" | "subscription.plan_change_scheduled" | "subscription.plan_change_applied" | "subscription.plan_change_cancelled" | "merchant.profile_updated" | "merchant.suspended" | "merchant.reactivated" | "merchant.deactivated" | "subscription_invoice.issued" | "subscription_invoice.overdue" | "subscription_invoice.voided" | "subscription_invoice.pdf_generated" | "billing_escalation.reminder" | "billing_escalation.grace_entered" | "billing_escalation.overdue" | "billing_escalation.suspended" | "billing_escalation.recovered" | "promotion.created" | "promotion.draft_updated" | "promotion.approved" | "promotion.activated" | "promotion.paused" | "promotion.resumed" | "promotion.expired" | "promotion.cancelled" | "free_period_offer.created" | "free_period_offer.draft_updated" | "free_period_offer.approved" | "free_period_offer.activated" | "free_period_offer.paused" | "free_period_offer.resumed" | "free_period_offer.expired" | "free_period_offer.cancelled" | "platform_fee.original_recorded" | "platform_fee.aggregated" | "platform_fee.invoiced" | "platform_fee.reversed" | "platform_fee.adjusted" | "platform_fee.dispute_created" | "platform_fee.dispute_review_started" | "platform_fee.dispute_resolved" | "platform_fee.dispute_rejected" | "platform_fee.configuration_created" | "platform_fee.configuration_updated" | "platform_fee.configuration_approved" | "platform_fee.configuration_superseded" | "platform_fee.configuration_cancelled" | "compensation.plan.created" | "compensation.plan.updated_draft" | "compensation.plan.submitted" | "compensation.plan.approved" | "compensation.plan.backdated_change_approved" | "compensation.plan.activated" | "compensation.plan.rejected" | "compensation.plan.cancelled" | "compensation.plan.superseded" | "compensation.plan.expired" | "commission_rule.created" | "commission_rule.updated_draft" | "commission_rule.submitted" | "commission_rule.approved" | "commission_rule.activated" | "commission_rule.rejected" | "commission_rule.cancelled" | "commission_rule.ended" | "commission_rule.expired" | "compensation.salary.accrued" | "compensation.salary.reversed" | "compensation.salary.adjusted" | "compensation.commission.earned" | "compensation.commission.reversed" | "compensation.adjustment.created" | "compensation.handoff.failed" | "payout_run.created" | "payout_run.updated_draft" | "payout_run.submitted" | "payout_run.verified" | "payout_run.approved_standard" | "payout_run.high_value_approved" | "payout_run.rejected" | "payout_run.cancelled" | "payout_run.marked_paid" | "earnings_statement.generated" | "earnings_query.created" | "earnings_query.assigned" | "earnings_query.resolved" | "earnings_query.rejected" | "re.referral_captured" | "re.attribution_confirmed" | "re.attribution_rejected" | "re.event_dead_lettered" | "personnel.sms.previewed" | "personnel.sms.campaign_created" | "personnel.sms.campaign_confirmed" | "personnel.sms.campaign_cancelled" | "personnel.sms.recipient_suppressed" | "personnel.sms.delivery_succeeded" | "personnel.sms.delivery_failed" | "personnel.sms.delivery_dead_lettered" | "personnel.sms.billing_entry_created" | "personnel.sms.export_attempt_blocked";
                 severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
                 /** @description user ULID */
@@ -8535,7 +9429,7 @@ export interface operations {
     "audit-logs.compensation": {
         parameters: {
             query?: {
-                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "auth.magic_link.host_binding_rejected" | "auth.magic_link.environment_binding_rejected" | "auth.session_family.created" | "auth.session_family.revoked" | "auth.host_session.created" | "auth.host_session.revoked" | "auth.global_logout" | "auth.account_contexts.viewed" | "auth.context_handoff.issued" | "auth.context_handoff.consumed" | "auth.context_handoff.rejected" | "auth.context_handoff.replay_rejected" | "auth.account_deep_link.rejected" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.calendar_exception_set" | "branch.calendar_exception_removed" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "invoice.created" | "invoice.updated_draft" | "invoice.finalized" | "invoice.void_requested" | "invoice.voided" | "invoice.void_rejected" | "invoice.adjusted" | "customer_payment.recorded" | "customer_payment.duplicate_suspected" | "customer_payment.duplicate_override_approved" | "customer_payment.recorded_exception" | "customer_payment.validated" | "customer_payment.rejected" | "customer_payment.correction_requested" | "customer_payment.reference_corrected" | "customer_payment.resubmitted" | "receipt.issued" | "receipt.reissued" | "receipt.downloaded" | "refund.requested" | "refund.approved" | "refund.rejected" | "refund.finalized" | "finance_dispute.opened" | "finance_dispute.review_started" | "finance_dispute.resolved" | "finance_dispute.rejected" | "cash_up.draft_updated" | "cash_up.submitted" | "cash_up.approved" | "cash_up.rejected" | "cash_up.correction_requested" | "cash_up.resubmitted" | "cash_up.locked" | "financial_period.locked" | "financial_period.reopen_requested" | "financial_period.reopen_approved" | "financial_period.reopened" | "finance_export.requested" | "finance_export.generated" | "finance_export.failed" | "finance_export.downloaded" | "finance_export.expired" | "finance_export.revoked" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted" | "audit.flagged_event.created" | "audit.flagged_event.review_started" | "audit.flagged_event.resolved" | "audit.flagged_event.dismissed" | "audit.flagged_event.reopened" | "audit_export.requested" | "audit_export.generated" | "audit_export.failed" | "audit_export.downloaded" | "audit_export.expired" | "audit_export.revoked" | "platform_settings.updated" | "platform_billing.settings_updated" | "subscription_plan.created" | "subscription_plan.metadata_updated" | "subscription_plan.retired" | "subscription_plan_price.created" | "subscription_plan_price.scheduled" | "subscription_plan_price.cancelled" | "plan_entitlement.updated" | "preferred_personnel_fee_rule.created" | "preferred_personnel_fee_rule.approved" | "preferred_personnel_fee_rule.superseded" | "preferred_personnel_fee_rule.cancelled" | "subscription.created" | "subscription.trial_started" | "subscription.activated" | "subscription.read_only_grace_entered" | "subscription.overdue" | "subscription.suspended_billing" | "subscription.cancelled" | "subscription.expired" | "subscription.recovered" | "merchant.billing_status_changed" | "subscription.plan_change_scheduled" | "subscription.plan_change_applied" | "subscription.plan_change_cancelled" | "merchant.profile_updated" | "merchant.suspended" | "merchant.reactivated" | "merchant.deactivated" | "subscription_invoice.issued" | "subscription_invoice.overdue" | "subscription_invoice.voided" | "subscription_invoice.pdf_generated" | "billing_escalation.reminder" | "billing_escalation.grace_entered" | "billing_escalation.overdue" | "billing_escalation.suspended" | "billing_escalation.recovered" | "promotion.created" | "promotion.draft_updated" | "promotion.approved" | "promotion.activated" | "promotion.paused" | "promotion.resumed" | "promotion.expired" | "promotion.cancelled" | "free_period_offer.created" | "free_period_offer.draft_updated" | "free_period_offer.approved" | "free_period_offer.activated" | "free_period_offer.paused" | "free_period_offer.resumed" | "free_period_offer.expired" | "free_period_offer.cancelled" | "platform_fee.original_recorded" | "platform_fee.aggregated" | "platform_fee.invoiced" | "platform_fee.reversed" | "platform_fee.adjusted" | "platform_fee.dispute_created" | "platform_fee.dispute_review_started" | "platform_fee.dispute_resolved" | "platform_fee.dispute_rejected" | "platform_fee.configuration_created" | "platform_fee.configuration_updated" | "platform_fee.configuration_approved" | "platform_fee.configuration_superseded" | "platform_fee.configuration_cancelled" | "compensation.plan.created" | "compensation.plan.updated_draft" | "compensation.plan.submitted" | "compensation.plan.approved" | "compensation.plan.backdated_change_approved" | "compensation.plan.activated" | "compensation.plan.rejected" | "compensation.plan.cancelled" | "compensation.plan.superseded" | "compensation.plan.expired" | "commission_rule.created" | "commission_rule.updated_draft" | "commission_rule.submitted" | "commission_rule.approved" | "commission_rule.activated" | "commission_rule.rejected" | "commission_rule.cancelled" | "commission_rule.ended" | "commission_rule.expired" | "compensation.salary.accrued" | "compensation.salary.reversed" | "compensation.salary.adjusted" | "compensation.commission.earned" | "compensation.commission.reversed" | "compensation.adjustment.created" | "compensation.handoff.failed" | "payout_run.created" | "payout_run.updated_draft" | "payout_run.submitted" | "payout_run.verified" | "payout_run.approved_standard" | "payout_run.high_value_approved" | "payout_run.rejected" | "payout_run.cancelled" | "payout_run.marked_paid" | "earnings_statement.generated" | "earnings_query.created" | "earnings_query.assigned" | "earnings_query.resolved" | "earnings_query.rejected" | "re.referral_captured" | "re.attribution_confirmed" | "re.attribution_rejected" | "re.event_dead_lettered" | "personnel.sms.previewed" | "personnel.sms.campaign_created" | "personnel.sms.campaign_confirmed" | "personnel.sms.campaign_cancelled" | "personnel.sms.recipient_suppressed" | "personnel.sms.delivery_succeeded" | "personnel.sms.delivery_failed" | "personnel.sms.delivery_dead_lettered" | "personnel.sms.billing_entry_created" | "personnel.sms.export_attempt_blocked";
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "auth.magic_link.host_binding_rejected" | "auth.magic_link.environment_binding_rejected" | "auth.session_family.created" | "auth.session_family.revoked" | "auth.host_session.created" | "auth.host_session.revoked" | "auth.global_logout" | "auth.account_contexts.viewed" | "auth.context_handoff.issued" | "auth.context_handoff.consumed" | "auth.context_handoff.rejected" | "auth.context_handoff.replay_rejected" | "auth.account_deep_link.rejected" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.calendar_exception_set" | "branch.calendar_exception_removed" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "invoice.created" | "invoice.updated_draft" | "invoice.finalized" | "invoice.void_requested" | "invoice.voided" | "invoice.void_rejected" | "invoice.adjusted" | "customer_payment.recorded" | "customer_payment.duplicate_suspected" | "customer_payment.duplicate_override_approved" | "customer_payment.recorded_exception" | "customer_payment.validated" | "customer_payment.rejected" | "customer_payment.correction_requested" | "customer_payment.reference_corrected" | "customer_payment.resubmitted" | "receipt.issued" | "receipt.reissued" | "receipt.downloaded" | "refund.requested" | "refund.approved" | "refund.rejected" | "refund.finalized" | "finance_dispute.opened" | "finance_dispute.review_started" | "finance_dispute.resolved" | "finance_dispute.rejected" | "cash_up.draft_updated" | "cash_up.submitted" | "cash_up.approved" | "cash_up.rejected" | "cash_up.correction_requested" | "cash_up.resubmitted" | "cash_up.locked" | "financial_period.locked" | "financial_period.reopen_requested" | "financial_period.reopen_approved" | "financial_period.reopened" | "finance_export.requested" | "finance_export.generated" | "finance_export.failed" | "finance_export.downloaded" | "finance_export.expired" | "finance_export.revoked" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted" | "audit.flagged_event.created" | "audit.flagged_event.review_started" | "audit.flagged_event.resolved" | "audit.flagged_event.dismissed" | "audit.flagged_event.reopened" | "audit_export.requested" | "audit_export.generated" | "audit_export.failed" | "audit_export.downloaded" | "audit_export.expired" | "audit_export.revoked" | "platform_settings.updated" | "platform_billing.settings_updated" | "platform.feature_flag.change_requested" | "platform.feature_flag.change_approved" | "platform.feature_flag.change_rejected" | "platform.feature_flag.change_cancelled" | "platform.feature_flag.applied" | "platform.feature_flag.paused" | "platform.internal_access.invited" | "platform.internal_access.invitation_resent" | "platform.internal_access.invitation_revoked" | "platform.internal_access.permissions_changed" | "platform.internal_access.suspended" | "platform.internal_access.reactivated" | "platform.internal_access.deactivated" | "platform.internal_access.sessions_revoked" | "platform_sms_billing.rule_scheduled" | "platform_sms_billing.rule_cancelled" | "subscription_plan.created" | "subscription_plan.metadata_updated" | "subscription_plan.retired" | "subscription_plan_price.created" | "subscription_plan_price.scheduled" | "subscription_plan_price.cancelled" | "plan_entitlement.updated" | "preferred_personnel_fee_rule.created" | "preferred_personnel_fee_rule.approved" | "preferred_personnel_fee_rule.superseded" | "preferred_personnel_fee_rule.cancelled" | "subscription.created" | "subscription.trial_started" | "subscription.activated" | "subscription.read_only_grace_entered" | "subscription.overdue" | "subscription.suspended_billing" | "subscription.cancelled" | "subscription.expired" | "subscription.recovered" | "merchant.billing_status_changed" | "subscription.plan_change_scheduled" | "subscription.plan_change_applied" | "subscription.plan_change_cancelled" | "merchant.profile_updated" | "merchant.suspended" | "merchant.reactivated" | "merchant.deactivated" | "subscription_invoice.issued" | "subscription_invoice.overdue" | "subscription_invoice.voided" | "subscription_invoice.pdf_generated" | "billing_escalation.reminder" | "billing_escalation.grace_entered" | "billing_escalation.overdue" | "billing_escalation.suspended" | "billing_escalation.recovered" | "promotion.created" | "promotion.draft_updated" | "promotion.approved" | "promotion.activated" | "promotion.paused" | "promotion.resumed" | "promotion.expired" | "promotion.cancelled" | "free_period_offer.created" | "free_period_offer.draft_updated" | "free_period_offer.approved" | "free_period_offer.activated" | "free_period_offer.paused" | "free_period_offer.resumed" | "free_period_offer.expired" | "free_period_offer.cancelled" | "platform_fee.original_recorded" | "platform_fee.aggregated" | "platform_fee.invoiced" | "platform_fee.reversed" | "platform_fee.adjusted" | "platform_fee.dispute_created" | "platform_fee.dispute_review_started" | "platform_fee.dispute_resolved" | "platform_fee.dispute_rejected" | "platform_fee.configuration_created" | "platform_fee.configuration_updated" | "platform_fee.configuration_approved" | "platform_fee.configuration_superseded" | "platform_fee.configuration_cancelled" | "compensation.plan.created" | "compensation.plan.updated_draft" | "compensation.plan.submitted" | "compensation.plan.approved" | "compensation.plan.backdated_change_approved" | "compensation.plan.activated" | "compensation.plan.rejected" | "compensation.plan.cancelled" | "compensation.plan.superseded" | "compensation.plan.expired" | "commission_rule.created" | "commission_rule.updated_draft" | "commission_rule.submitted" | "commission_rule.approved" | "commission_rule.activated" | "commission_rule.rejected" | "commission_rule.cancelled" | "commission_rule.ended" | "commission_rule.expired" | "compensation.salary.accrued" | "compensation.salary.reversed" | "compensation.salary.adjusted" | "compensation.commission.earned" | "compensation.commission.reversed" | "compensation.adjustment.created" | "compensation.handoff.failed" | "payout_run.created" | "payout_run.updated_draft" | "payout_run.submitted" | "payout_run.verified" | "payout_run.approved_standard" | "payout_run.high_value_approved" | "payout_run.rejected" | "payout_run.cancelled" | "payout_run.marked_paid" | "earnings_statement.generated" | "earnings_query.created" | "earnings_query.assigned" | "earnings_query.resolved" | "earnings_query.rejected" | "re.referral_captured" | "re.attribution_confirmed" | "re.attribution_rejected" | "re.event_dead_lettered" | "personnel.sms.previewed" | "personnel.sms.campaign_created" | "personnel.sms.campaign_confirmed" | "personnel.sms.campaign_cancelled" | "personnel.sms.recipient_suppressed" | "personnel.sms.delivery_succeeded" | "personnel.sms.delivery_failed" | "personnel.sms.delivery_dead_lettered" | "personnel.sms.billing_entry_created" | "personnel.sms.export_attempt_blocked";
                 severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
                 /** @description user ULID */
@@ -8606,7 +9500,7 @@ export interface operations {
     "audit-logs.finance": {
         parameters: {
             query?: {
-                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "auth.magic_link.host_binding_rejected" | "auth.magic_link.environment_binding_rejected" | "auth.session_family.created" | "auth.session_family.revoked" | "auth.host_session.created" | "auth.host_session.revoked" | "auth.global_logout" | "auth.account_contexts.viewed" | "auth.context_handoff.issued" | "auth.context_handoff.consumed" | "auth.context_handoff.rejected" | "auth.context_handoff.replay_rejected" | "auth.account_deep_link.rejected" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.calendar_exception_set" | "branch.calendar_exception_removed" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "invoice.created" | "invoice.updated_draft" | "invoice.finalized" | "invoice.void_requested" | "invoice.voided" | "invoice.void_rejected" | "invoice.adjusted" | "customer_payment.recorded" | "customer_payment.duplicate_suspected" | "customer_payment.duplicate_override_approved" | "customer_payment.recorded_exception" | "customer_payment.validated" | "customer_payment.rejected" | "customer_payment.correction_requested" | "customer_payment.reference_corrected" | "customer_payment.resubmitted" | "receipt.issued" | "receipt.reissued" | "receipt.downloaded" | "refund.requested" | "refund.approved" | "refund.rejected" | "refund.finalized" | "finance_dispute.opened" | "finance_dispute.review_started" | "finance_dispute.resolved" | "finance_dispute.rejected" | "cash_up.draft_updated" | "cash_up.submitted" | "cash_up.approved" | "cash_up.rejected" | "cash_up.correction_requested" | "cash_up.resubmitted" | "cash_up.locked" | "financial_period.locked" | "financial_period.reopen_requested" | "financial_period.reopen_approved" | "financial_period.reopened" | "finance_export.requested" | "finance_export.generated" | "finance_export.failed" | "finance_export.downloaded" | "finance_export.expired" | "finance_export.revoked" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted" | "audit.flagged_event.created" | "audit.flagged_event.review_started" | "audit.flagged_event.resolved" | "audit.flagged_event.dismissed" | "audit.flagged_event.reopened" | "audit_export.requested" | "audit_export.generated" | "audit_export.failed" | "audit_export.downloaded" | "audit_export.expired" | "audit_export.revoked" | "platform_settings.updated" | "platform_billing.settings_updated" | "subscription_plan.created" | "subscription_plan.metadata_updated" | "subscription_plan.retired" | "subscription_plan_price.created" | "subscription_plan_price.scheduled" | "subscription_plan_price.cancelled" | "plan_entitlement.updated" | "preferred_personnel_fee_rule.created" | "preferred_personnel_fee_rule.approved" | "preferred_personnel_fee_rule.superseded" | "preferred_personnel_fee_rule.cancelled" | "subscription.created" | "subscription.trial_started" | "subscription.activated" | "subscription.read_only_grace_entered" | "subscription.overdue" | "subscription.suspended_billing" | "subscription.cancelled" | "subscription.expired" | "subscription.recovered" | "merchant.billing_status_changed" | "subscription.plan_change_scheduled" | "subscription.plan_change_applied" | "subscription.plan_change_cancelled" | "merchant.profile_updated" | "merchant.suspended" | "merchant.reactivated" | "merchant.deactivated" | "subscription_invoice.issued" | "subscription_invoice.overdue" | "subscription_invoice.voided" | "subscription_invoice.pdf_generated" | "billing_escalation.reminder" | "billing_escalation.grace_entered" | "billing_escalation.overdue" | "billing_escalation.suspended" | "billing_escalation.recovered" | "promotion.created" | "promotion.draft_updated" | "promotion.approved" | "promotion.activated" | "promotion.paused" | "promotion.resumed" | "promotion.expired" | "promotion.cancelled" | "free_period_offer.created" | "free_period_offer.draft_updated" | "free_period_offer.approved" | "free_period_offer.activated" | "free_period_offer.paused" | "free_period_offer.resumed" | "free_period_offer.expired" | "free_period_offer.cancelled" | "platform_fee.original_recorded" | "platform_fee.aggregated" | "platform_fee.invoiced" | "platform_fee.reversed" | "platform_fee.adjusted" | "platform_fee.dispute_created" | "platform_fee.dispute_review_started" | "platform_fee.dispute_resolved" | "platform_fee.dispute_rejected" | "platform_fee.configuration_created" | "platform_fee.configuration_updated" | "platform_fee.configuration_approved" | "platform_fee.configuration_superseded" | "platform_fee.configuration_cancelled" | "compensation.plan.created" | "compensation.plan.updated_draft" | "compensation.plan.submitted" | "compensation.plan.approved" | "compensation.plan.backdated_change_approved" | "compensation.plan.activated" | "compensation.plan.rejected" | "compensation.plan.cancelled" | "compensation.plan.superseded" | "compensation.plan.expired" | "commission_rule.created" | "commission_rule.updated_draft" | "commission_rule.submitted" | "commission_rule.approved" | "commission_rule.activated" | "commission_rule.rejected" | "commission_rule.cancelled" | "commission_rule.ended" | "commission_rule.expired" | "compensation.salary.accrued" | "compensation.salary.reversed" | "compensation.salary.adjusted" | "compensation.commission.earned" | "compensation.commission.reversed" | "compensation.adjustment.created" | "compensation.handoff.failed" | "payout_run.created" | "payout_run.updated_draft" | "payout_run.submitted" | "payout_run.verified" | "payout_run.approved_standard" | "payout_run.high_value_approved" | "payout_run.rejected" | "payout_run.cancelled" | "payout_run.marked_paid" | "earnings_statement.generated" | "earnings_query.created" | "earnings_query.assigned" | "earnings_query.resolved" | "earnings_query.rejected" | "re.referral_captured" | "re.attribution_confirmed" | "re.attribution_rejected" | "re.event_dead_lettered" | "personnel.sms.previewed" | "personnel.sms.campaign_created" | "personnel.sms.campaign_confirmed" | "personnel.sms.campaign_cancelled" | "personnel.sms.recipient_suppressed" | "personnel.sms.delivery_succeeded" | "personnel.sms.delivery_failed" | "personnel.sms.delivery_dead_lettered" | "personnel.sms.billing_entry_created" | "personnel.sms.export_attempt_blocked";
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "auth.magic_link.host_binding_rejected" | "auth.magic_link.environment_binding_rejected" | "auth.session_family.created" | "auth.session_family.revoked" | "auth.host_session.created" | "auth.host_session.revoked" | "auth.global_logout" | "auth.account_contexts.viewed" | "auth.context_handoff.issued" | "auth.context_handoff.consumed" | "auth.context_handoff.rejected" | "auth.context_handoff.replay_rejected" | "auth.account_deep_link.rejected" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.calendar_exception_set" | "branch.calendar_exception_removed" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "invoice.created" | "invoice.updated_draft" | "invoice.finalized" | "invoice.void_requested" | "invoice.voided" | "invoice.void_rejected" | "invoice.adjusted" | "customer_payment.recorded" | "customer_payment.duplicate_suspected" | "customer_payment.duplicate_override_approved" | "customer_payment.recorded_exception" | "customer_payment.validated" | "customer_payment.rejected" | "customer_payment.correction_requested" | "customer_payment.reference_corrected" | "customer_payment.resubmitted" | "receipt.issued" | "receipt.reissued" | "receipt.downloaded" | "refund.requested" | "refund.approved" | "refund.rejected" | "refund.finalized" | "finance_dispute.opened" | "finance_dispute.review_started" | "finance_dispute.resolved" | "finance_dispute.rejected" | "cash_up.draft_updated" | "cash_up.submitted" | "cash_up.approved" | "cash_up.rejected" | "cash_up.correction_requested" | "cash_up.resubmitted" | "cash_up.locked" | "financial_period.locked" | "financial_period.reopen_requested" | "financial_period.reopen_approved" | "financial_period.reopened" | "finance_export.requested" | "finance_export.generated" | "finance_export.failed" | "finance_export.downloaded" | "finance_export.expired" | "finance_export.revoked" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted" | "audit.flagged_event.created" | "audit.flagged_event.review_started" | "audit.flagged_event.resolved" | "audit.flagged_event.dismissed" | "audit.flagged_event.reopened" | "audit_export.requested" | "audit_export.generated" | "audit_export.failed" | "audit_export.downloaded" | "audit_export.expired" | "audit_export.revoked" | "platform_settings.updated" | "platform_billing.settings_updated" | "platform.feature_flag.change_requested" | "platform.feature_flag.change_approved" | "platform.feature_flag.change_rejected" | "platform.feature_flag.change_cancelled" | "platform.feature_flag.applied" | "platform.feature_flag.paused" | "platform.internal_access.invited" | "platform.internal_access.invitation_resent" | "platform.internal_access.invitation_revoked" | "platform.internal_access.permissions_changed" | "platform.internal_access.suspended" | "platform.internal_access.reactivated" | "platform.internal_access.deactivated" | "platform.internal_access.sessions_revoked" | "platform_sms_billing.rule_scheduled" | "platform_sms_billing.rule_cancelled" | "subscription_plan.created" | "subscription_plan.metadata_updated" | "subscription_plan.retired" | "subscription_plan_price.created" | "subscription_plan_price.scheduled" | "subscription_plan_price.cancelled" | "plan_entitlement.updated" | "preferred_personnel_fee_rule.created" | "preferred_personnel_fee_rule.approved" | "preferred_personnel_fee_rule.superseded" | "preferred_personnel_fee_rule.cancelled" | "subscription.created" | "subscription.trial_started" | "subscription.activated" | "subscription.read_only_grace_entered" | "subscription.overdue" | "subscription.suspended_billing" | "subscription.cancelled" | "subscription.expired" | "subscription.recovered" | "merchant.billing_status_changed" | "subscription.plan_change_scheduled" | "subscription.plan_change_applied" | "subscription.plan_change_cancelled" | "merchant.profile_updated" | "merchant.suspended" | "merchant.reactivated" | "merchant.deactivated" | "subscription_invoice.issued" | "subscription_invoice.overdue" | "subscription_invoice.voided" | "subscription_invoice.pdf_generated" | "billing_escalation.reminder" | "billing_escalation.grace_entered" | "billing_escalation.overdue" | "billing_escalation.suspended" | "billing_escalation.recovered" | "promotion.created" | "promotion.draft_updated" | "promotion.approved" | "promotion.activated" | "promotion.paused" | "promotion.resumed" | "promotion.expired" | "promotion.cancelled" | "free_period_offer.created" | "free_period_offer.draft_updated" | "free_period_offer.approved" | "free_period_offer.activated" | "free_period_offer.paused" | "free_period_offer.resumed" | "free_period_offer.expired" | "free_period_offer.cancelled" | "platform_fee.original_recorded" | "platform_fee.aggregated" | "platform_fee.invoiced" | "platform_fee.reversed" | "platform_fee.adjusted" | "platform_fee.dispute_created" | "platform_fee.dispute_review_started" | "platform_fee.dispute_resolved" | "platform_fee.dispute_rejected" | "platform_fee.configuration_created" | "platform_fee.configuration_updated" | "platform_fee.configuration_approved" | "platform_fee.configuration_superseded" | "platform_fee.configuration_cancelled" | "compensation.plan.created" | "compensation.plan.updated_draft" | "compensation.plan.submitted" | "compensation.plan.approved" | "compensation.plan.backdated_change_approved" | "compensation.plan.activated" | "compensation.plan.rejected" | "compensation.plan.cancelled" | "compensation.plan.superseded" | "compensation.plan.expired" | "commission_rule.created" | "commission_rule.updated_draft" | "commission_rule.submitted" | "commission_rule.approved" | "commission_rule.activated" | "commission_rule.rejected" | "commission_rule.cancelled" | "commission_rule.ended" | "commission_rule.expired" | "compensation.salary.accrued" | "compensation.salary.reversed" | "compensation.salary.adjusted" | "compensation.commission.earned" | "compensation.commission.reversed" | "compensation.adjustment.created" | "compensation.handoff.failed" | "payout_run.created" | "payout_run.updated_draft" | "payout_run.submitted" | "payout_run.verified" | "payout_run.approved_standard" | "payout_run.high_value_approved" | "payout_run.rejected" | "payout_run.cancelled" | "payout_run.marked_paid" | "earnings_statement.generated" | "earnings_query.created" | "earnings_query.assigned" | "earnings_query.resolved" | "earnings_query.rejected" | "re.referral_captured" | "re.attribution_confirmed" | "re.attribution_rejected" | "re.event_dead_lettered" | "personnel.sms.previewed" | "personnel.sms.campaign_created" | "personnel.sms.campaign_confirmed" | "personnel.sms.campaign_cancelled" | "personnel.sms.recipient_suppressed" | "personnel.sms.delivery_succeeded" | "personnel.sms.delivery_failed" | "personnel.sms.delivery_dead_lettered" | "personnel.sms.billing_entry_created" | "personnel.sms.export_attempt_blocked";
                 severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
                 /** @description user ULID */
@@ -17039,7 +17933,7 @@ export interface operations {
     "platform.audit-logs.index": {
         parameters: {
             query?: {
-                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "auth.magic_link.host_binding_rejected" | "auth.magic_link.environment_binding_rejected" | "auth.session_family.created" | "auth.session_family.revoked" | "auth.host_session.created" | "auth.host_session.revoked" | "auth.global_logout" | "auth.account_contexts.viewed" | "auth.context_handoff.issued" | "auth.context_handoff.consumed" | "auth.context_handoff.rejected" | "auth.context_handoff.replay_rejected" | "auth.account_deep_link.rejected" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.calendar_exception_set" | "branch.calendar_exception_removed" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "invoice.created" | "invoice.updated_draft" | "invoice.finalized" | "invoice.void_requested" | "invoice.voided" | "invoice.void_rejected" | "invoice.adjusted" | "customer_payment.recorded" | "customer_payment.duplicate_suspected" | "customer_payment.duplicate_override_approved" | "customer_payment.recorded_exception" | "customer_payment.validated" | "customer_payment.rejected" | "customer_payment.correction_requested" | "customer_payment.reference_corrected" | "customer_payment.resubmitted" | "receipt.issued" | "receipt.reissued" | "receipt.downloaded" | "refund.requested" | "refund.approved" | "refund.rejected" | "refund.finalized" | "finance_dispute.opened" | "finance_dispute.review_started" | "finance_dispute.resolved" | "finance_dispute.rejected" | "cash_up.draft_updated" | "cash_up.submitted" | "cash_up.approved" | "cash_up.rejected" | "cash_up.correction_requested" | "cash_up.resubmitted" | "cash_up.locked" | "financial_period.locked" | "financial_period.reopen_requested" | "financial_period.reopen_approved" | "financial_period.reopened" | "finance_export.requested" | "finance_export.generated" | "finance_export.failed" | "finance_export.downloaded" | "finance_export.expired" | "finance_export.revoked" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted" | "audit.flagged_event.created" | "audit.flagged_event.review_started" | "audit.flagged_event.resolved" | "audit.flagged_event.dismissed" | "audit.flagged_event.reopened" | "audit_export.requested" | "audit_export.generated" | "audit_export.failed" | "audit_export.downloaded" | "audit_export.expired" | "audit_export.revoked" | "platform_settings.updated" | "platform_billing.settings_updated" | "subscription_plan.created" | "subscription_plan.metadata_updated" | "subscription_plan.retired" | "subscription_plan_price.created" | "subscription_plan_price.scheduled" | "subscription_plan_price.cancelled" | "plan_entitlement.updated" | "preferred_personnel_fee_rule.created" | "preferred_personnel_fee_rule.approved" | "preferred_personnel_fee_rule.superseded" | "preferred_personnel_fee_rule.cancelled" | "subscription.created" | "subscription.trial_started" | "subscription.activated" | "subscription.read_only_grace_entered" | "subscription.overdue" | "subscription.suspended_billing" | "subscription.cancelled" | "subscription.expired" | "subscription.recovered" | "merchant.billing_status_changed" | "subscription.plan_change_scheduled" | "subscription.plan_change_applied" | "subscription.plan_change_cancelled" | "merchant.profile_updated" | "merchant.suspended" | "merchant.reactivated" | "merchant.deactivated" | "subscription_invoice.issued" | "subscription_invoice.overdue" | "subscription_invoice.voided" | "subscription_invoice.pdf_generated" | "billing_escalation.reminder" | "billing_escalation.grace_entered" | "billing_escalation.overdue" | "billing_escalation.suspended" | "billing_escalation.recovered" | "promotion.created" | "promotion.draft_updated" | "promotion.approved" | "promotion.activated" | "promotion.paused" | "promotion.resumed" | "promotion.expired" | "promotion.cancelled" | "free_period_offer.created" | "free_period_offer.draft_updated" | "free_period_offer.approved" | "free_period_offer.activated" | "free_period_offer.paused" | "free_period_offer.resumed" | "free_period_offer.expired" | "free_period_offer.cancelled" | "platform_fee.original_recorded" | "platform_fee.aggregated" | "platform_fee.invoiced" | "platform_fee.reversed" | "platform_fee.adjusted" | "platform_fee.dispute_created" | "platform_fee.dispute_review_started" | "platform_fee.dispute_resolved" | "platform_fee.dispute_rejected" | "platform_fee.configuration_created" | "platform_fee.configuration_updated" | "platform_fee.configuration_approved" | "platform_fee.configuration_superseded" | "platform_fee.configuration_cancelled" | "compensation.plan.created" | "compensation.plan.updated_draft" | "compensation.plan.submitted" | "compensation.plan.approved" | "compensation.plan.backdated_change_approved" | "compensation.plan.activated" | "compensation.plan.rejected" | "compensation.plan.cancelled" | "compensation.plan.superseded" | "compensation.plan.expired" | "commission_rule.created" | "commission_rule.updated_draft" | "commission_rule.submitted" | "commission_rule.approved" | "commission_rule.activated" | "commission_rule.rejected" | "commission_rule.cancelled" | "commission_rule.ended" | "commission_rule.expired" | "compensation.salary.accrued" | "compensation.salary.reversed" | "compensation.salary.adjusted" | "compensation.commission.earned" | "compensation.commission.reversed" | "compensation.adjustment.created" | "compensation.handoff.failed" | "payout_run.created" | "payout_run.updated_draft" | "payout_run.submitted" | "payout_run.verified" | "payout_run.approved_standard" | "payout_run.high_value_approved" | "payout_run.rejected" | "payout_run.cancelled" | "payout_run.marked_paid" | "earnings_statement.generated" | "earnings_query.created" | "earnings_query.assigned" | "earnings_query.resolved" | "earnings_query.rejected" | "re.referral_captured" | "re.attribution_confirmed" | "re.attribution_rejected" | "re.event_dead_lettered" | "personnel.sms.previewed" | "personnel.sms.campaign_created" | "personnel.sms.campaign_confirmed" | "personnel.sms.campaign_cancelled" | "personnel.sms.recipient_suppressed" | "personnel.sms.delivery_succeeded" | "personnel.sms.delivery_failed" | "personnel.sms.delivery_dead_lettered" | "personnel.sms.billing_entry_created" | "personnel.sms.export_attempt_blocked";
+                action?: "login_link_requested" | "login_link_denied" | "login_link_failed" | "login_success" | "logout" | "auth.magic_link.host_binding_rejected" | "auth.magic_link.environment_binding_rejected" | "auth.session_family.created" | "auth.session_family.revoked" | "auth.host_session.created" | "auth.host_session.revoked" | "auth.global_logout" | "auth.account_contexts.viewed" | "auth.context_handoff.issued" | "auth.context_handoff.consumed" | "auth.context_handoff.rejected" | "auth.context_handoff.replay_rejected" | "auth.account_deep_link.rejected" | "invitation.created" | "invitation.resent" | "invitation.revoked" | "invitation.accepted" | "membership.created" | "membership.activated" | "membership.suspended" | "membership.deactivated" | "branch_assignment.granted" | "branch_assignment.revoked" | "branch.created" | "branch.profile_updated" | "branch.archived" | "branch.operating_hours_updated" | "branch.calendar_exception_set" | "branch.calendar_exception_removed" | "branch.day_opened" | "branch.day_closed" | "branch.day_reopened" | "permission.override.created" | "permission.override.updated" | "permission.override.revoked" | "permission.override.denied_self_escalation" | "permission.write_denied" | "mfa.enrollment_started" | "mfa.enrollment_confirmed" | "mfa.challenge_succeeded" | "mfa.challenge_failed" | "mfa.recovery_code_used" | "mfa.recovery_codes_regenerated" | "mfa.step_up_succeeded" | "mfa.step_up_denied" | "service_category.created" | "service_category.updated" | "service_category.archived" | "service.created" | "service.updated" | "service.archived" | "personnel_eligibility.assigned" | "personnel_eligibility.revoked" | "personnel_availability.updated" | "personnel_availability.emergency_unavailable" | "client.created" | "client.updated" | "client_consent.opted_in" | "client_consent.opted_out" | "appointment.created" | "appointment.assigned" | "appointment.transferred" | "appointment.rescheduled" | "appointment.checked_in" | "appointment.cancelled" | "appointment.no_show" | "appointment.queued" | "queue.configuration.updated" | "walk_in.created" | "queue_entry.created" | "queue_entry.assigned" | "queue_entry.called" | "queue_entry.started" | "queue_entry.completed" | "queue_entry.transferred" | "queue_entry.reordered" | "queue_entry.cancelled" | "queue_entry.no_show" | "queue_entry.wait_estimate_overridden" | "service_session.started" | "service_session.completed" | "service_session.cancelled" | "invoice.created" | "invoice.updated_draft" | "invoice.finalized" | "invoice.void_requested" | "invoice.voided" | "invoice.void_rejected" | "invoice.adjusted" | "customer_payment.recorded" | "customer_payment.duplicate_suspected" | "customer_payment.duplicate_override_approved" | "customer_payment.recorded_exception" | "customer_payment.validated" | "customer_payment.rejected" | "customer_payment.correction_requested" | "customer_payment.reference_corrected" | "customer_payment.resubmitted" | "receipt.issued" | "receipt.reissued" | "receipt.downloaded" | "refund.requested" | "refund.approved" | "refund.rejected" | "refund.finalized" | "finance_dispute.opened" | "finance_dispute.review_started" | "finance_dispute.resolved" | "finance_dispute.rejected" | "cash_up.draft_updated" | "cash_up.submitted" | "cash_up.approved" | "cash_up.rejected" | "cash_up.correction_requested" | "cash_up.resubmitted" | "cash_up.locked" | "financial_period.locked" | "financial_period.reopen_requested" | "financial_period.reopen_approved" | "financial_period.reopened" | "finance_export.requested" | "finance_export.generated" | "finance_export.failed" | "finance_export.downloaded" | "finance_export.expired" | "finance_export.revoked" | "unauthorized_access" | "file.upload_accepted" | "file.upload_rejected" | "file.scan_clean" | "file.scan_infected" | "file.scan_failed" | "file.available" | "file.downloaded" | "file.access_denied" | "file.expired_or_deleted" | "audit.flagged_event.created" | "audit.flagged_event.review_started" | "audit.flagged_event.resolved" | "audit.flagged_event.dismissed" | "audit.flagged_event.reopened" | "audit_export.requested" | "audit_export.generated" | "audit_export.failed" | "audit_export.downloaded" | "audit_export.expired" | "audit_export.revoked" | "platform_settings.updated" | "platform_billing.settings_updated" | "platform.feature_flag.change_requested" | "platform.feature_flag.change_approved" | "platform.feature_flag.change_rejected" | "platform.feature_flag.change_cancelled" | "platform.feature_flag.applied" | "platform.feature_flag.paused" | "platform.internal_access.invited" | "platform.internal_access.invitation_resent" | "platform.internal_access.invitation_revoked" | "platform.internal_access.permissions_changed" | "platform.internal_access.suspended" | "platform.internal_access.reactivated" | "platform.internal_access.deactivated" | "platform.internal_access.sessions_revoked" | "platform_sms_billing.rule_scheduled" | "platform_sms_billing.rule_cancelled" | "subscription_plan.created" | "subscription_plan.metadata_updated" | "subscription_plan.retired" | "subscription_plan_price.created" | "subscription_plan_price.scheduled" | "subscription_plan_price.cancelled" | "plan_entitlement.updated" | "preferred_personnel_fee_rule.created" | "preferred_personnel_fee_rule.approved" | "preferred_personnel_fee_rule.superseded" | "preferred_personnel_fee_rule.cancelled" | "subscription.created" | "subscription.trial_started" | "subscription.activated" | "subscription.read_only_grace_entered" | "subscription.overdue" | "subscription.suspended_billing" | "subscription.cancelled" | "subscription.expired" | "subscription.recovered" | "merchant.billing_status_changed" | "subscription.plan_change_scheduled" | "subscription.plan_change_applied" | "subscription.plan_change_cancelled" | "merchant.profile_updated" | "merchant.suspended" | "merchant.reactivated" | "merchant.deactivated" | "subscription_invoice.issued" | "subscription_invoice.overdue" | "subscription_invoice.voided" | "subscription_invoice.pdf_generated" | "billing_escalation.reminder" | "billing_escalation.grace_entered" | "billing_escalation.overdue" | "billing_escalation.suspended" | "billing_escalation.recovered" | "promotion.created" | "promotion.draft_updated" | "promotion.approved" | "promotion.activated" | "promotion.paused" | "promotion.resumed" | "promotion.expired" | "promotion.cancelled" | "free_period_offer.created" | "free_period_offer.draft_updated" | "free_period_offer.approved" | "free_period_offer.activated" | "free_period_offer.paused" | "free_period_offer.resumed" | "free_period_offer.expired" | "free_period_offer.cancelled" | "platform_fee.original_recorded" | "platform_fee.aggregated" | "platform_fee.invoiced" | "platform_fee.reversed" | "platform_fee.adjusted" | "platform_fee.dispute_created" | "platform_fee.dispute_review_started" | "platform_fee.dispute_resolved" | "platform_fee.dispute_rejected" | "platform_fee.configuration_created" | "platform_fee.configuration_updated" | "platform_fee.configuration_approved" | "platform_fee.configuration_superseded" | "platform_fee.configuration_cancelled" | "compensation.plan.created" | "compensation.plan.updated_draft" | "compensation.plan.submitted" | "compensation.plan.approved" | "compensation.plan.backdated_change_approved" | "compensation.plan.activated" | "compensation.plan.rejected" | "compensation.plan.cancelled" | "compensation.plan.superseded" | "compensation.plan.expired" | "commission_rule.created" | "commission_rule.updated_draft" | "commission_rule.submitted" | "commission_rule.approved" | "commission_rule.activated" | "commission_rule.rejected" | "commission_rule.cancelled" | "commission_rule.ended" | "commission_rule.expired" | "compensation.salary.accrued" | "compensation.salary.reversed" | "compensation.salary.adjusted" | "compensation.commission.earned" | "compensation.commission.reversed" | "compensation.adjustment.created" | "compensation.handoff.failed" | "payout_run.created" | "payout_run.updated_draft" | "payout_run.submitted" | "payout_run.verified" | "payout_run.approved_standard" | "payout_run.high_value_approved" | "payout_run.rejected" | "payout_run.cancelled" | "payout_run.marked_paid" | "earnings_statement.generated" | "earnings_query.created" | "earnings_query.assigned" | "earnings_query.resolved" | "earnings_query.rejected" | "re.referral_captured" | "re.attribution_confirmed" | "re.attribution_rejected" | "re.event_dead_lettered" | "personnel.sms.previewed" | "personnel.sms.campaign_created" | "personnel.sms.campaign_confirmed" | "personnel.sms.campaign_cancelled" | "personnel.sms.recipient_suppressed" | "personnel.sms.delivery_succeeded" | "personnel.sms.delivery_failed" | "personnel.sms.delivery_dead_lettered" | "personnel.sms.billing_entry_created" | "personnel.sms.export_attempt_blocked";
                 severity?: "info" | "notice" | "warning" | "high" | "critical";
                 actor?: string;
                 /** @description user ULID */
@@ -17133,6 +18027,54 @@ export interface operations {
             401: components["responses"]["AuthenticationException"];
             403: components["responses"]["AuthorizationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.billing-credits.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            invoice_id: string;
+                            merchant: {
+                                id: string;
+                                name: string;
+                            };
+                            description: string;
+                            type: string;
+                            amount: {
+                                amount: string;
+                                currency: string;
+                                formatted: string;
+                            };
+                            created_at: string;
+                        }[];
+                        meta: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -17533,6 +18475,477 @@ export interface operations {
             };
         };
     };
+    "platform.dashboard.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `PlatformDashboardResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformDashboardResource"];
+                        meta: {
+                            /** @constant */
+                            authorization_authority: "platform.merchant.view via MerchantPolicy::viewGovernance";
+                            read_only: boolean;
+                            /** @constant */
+                            gate_policy: "A section blocked by an external gate reports availability=disabled_by_gate with null values. It is never reported as zero and never as healthy.";
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.feature-flag-change-requests.approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform feature flag change request ulid */
+                platformFeatureFlagChangeRequest: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["DecideFeatureFlagChangeRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformFeatureFlagChangeRequestResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformFeatureFlagChangeRequestResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.feature-flag-change-requests.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform feature flag change request ulid */
+                platformFeatureFlagChangeRequest: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["DecideFeatureFlagChangeRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformFeatureFlagChangeRequestResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformFeatureFlagChangeRequestResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.feature-flag-change-requests.reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform feature flag change request ulid */
+                platformFeatureFlagChangeRequest: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["DecideFeatureFlagChangeRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformFeatureFlagChangeRequestResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformFeatureFlagChangeRequestResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.feature-flags.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            definition: string;
+                            state: {
+                                id: string;
+                                environment: string;
+                                state: string;
+                                rollout_basis_points: number;
+                                effective_from: string;
+                                effective_to: string;
+                                version: number;
+                                approved_configuration_hash: string | null;
+                                targets: {
+                                    type: string;
+                                    value: string;
+                                }[];
+                            } | null;
+                            /** @description No row for this environment is the DEFAULT state, and the default is off. */
+                            effective_state: string | "inactive";
+                        }[];
+                        meta: {
+                            environment: string;
+                            catalogue_size: number;
+                            /** @description An empty catalogue is truthful: no platform feature flag has been authorized. */
+                            catalogue_is_empty: boolean;
+                            /** @constant */
+                            catalogue_source: "config/platform-feature-flags.php";
+                            /** @constant */
+                            note: "The catalogue is code. The API cannot create a flag key, and an unknown key is rejected.";
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.feature-flags.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                flagKey: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            definition: string;
+                            state: {
+                                id: string;
+                                environment: string;
+                                state: string;
+                                rollout_basis_points: number;
+                                effective_from: string;
+                                effective_to: string;
+                                version: number;
+                                approved_configuration_hash: string | null;
+                                targets: {
+                                    type: string;
+                                    value: string;
+                                }[];
+                            } | null;
+                            /** @description No row for this environment is the DEFAULT state, and the default is off. */
+                            effective_state: string | "inactive";
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Not found (foreign-tenant ids 404 without existence leak) */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.feature-flags.change-requests.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                flagKey: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RequestFeatureFlagChangeRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Not found (foreign-tenant ids 404 without existence leak) */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.feature-flags.history.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                flagKey: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            [key: string]: {
+                                id: string;
+                                action: string;
+                                before_hash: string | null;
+                                after_hash: string | null;
+                                before_configuration: string | null;
+                                after_configuration: string | null;
+                                actor: string;
+                                reason: string | null;
+                                correlation_id: string | null;
+                                created_at: string;
+                            };
+                        } | {
+                            id: string;
+                            action: string;
+                            before_hash: string | null;
+                            after_hash: string | null;
+                            before_configuration: string | null;
+                            after_configuration: string | null;
+                            actor: string;
+                            reason: string | null;
+                            correlation_id: string | null;
+                            created_at: string;
+                        }[];
+                        meta: {
+                            append_only: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Not found (foreign-tenant ids 404 without existence leak) */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.feature-flags.pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                flagKey: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PauseFeatureFlagRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            definition: string;
+                            state: {
+                                id: string;
+                                environment: string;
+                                state: string;
+                                rollout_basis_points: number;
+                                effective_from: string;
+                                effective_to: string;
+                                version: number;
+                                approved_configuration_hash: string | null;
+                                targets: {
+                                    type: string;
+                                    value: string;
+                                }[];
+                            } | null;
+                            /** @description No row for this environment is the DEFAULT state, and the default is off. */
+                            effective_state: string | "inactive";
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Not found (foreign-tenant ids 404 without existence leak) */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     "platform.free-period-offers.index": {
         parameters: {
             query?: {
@@ -17865,6 +19278,520 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.invitations.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `PlatformAccessInvitationResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccessInvitationResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.invitations.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitePlatformAdministratorRequest"];
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            accepted: boolean;
+                            /** @constant */
+                            message: "If this address can be invited, an invitation has been sent.";
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.invitations.resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform access invitation ulid */
+                platformAccessInvitation: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlatformAccessLifecycleReasonRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformAccessInvitationResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccessInvitationResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.invitations.revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform access invitation ulid */
+                platformAccessInvitation: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlatformAccessLifecycleReasonRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformAccessInvitationResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccessInvitationResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.users.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `PlatformAccessMembershipResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccessMembershipResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.users.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform access membership ulid */
+                platformAccessMembership: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `PlatformAccessMembershipResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccessMembershipResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.users.deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform access membership ulid */
+                platformAccessMembership: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlatformAccessLifecycleReasonRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformAccessMembershipResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccessMembershipResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.users.permissions.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform access membership ulid */
+                platformAccessMembership: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePlatformAccessPermissionsRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformAccessMembershipResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccessMembershipResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.users.reactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform access membership ulid */
+                platformAccessMembership: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlatformAccessLifecycleReasonRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformAccessMembershipResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccessMembershipResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.users.sessions.revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform access membership ulid */
+                platformAccessMembership: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlatformAccessLifecycleReasonRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            membership_id: string;
+                            sessions_revoked: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.internal-access.users.suspend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform access membership ulid */
+                platformAccessMembership: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlatformAccessLifecycleReasonRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformAccessMembershipResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccessMembershipResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
             /** @description Rate limited */
@@ -19337,6 +21264,667 @@ export interface operations {
                 };
             };
             422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.sms-billing-charge-reconciliation.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            as_of: string;
+                            status_rollup: {
+                                status: string;
+                                entry_count: number;
+                                amount_minor: number;
+                            }[];
+                            invoice_mapping: {
+                                linked_count: number;
+                                linked_amount_minor: number;
+                                unlinked_count: number;
+                                unlinked_amount_minor: number;
+                            };
+                            thresholds: {
+                                billable_units_this_month: number;
+                                billable_units_previous_month: number;
+                                warning_threshold_units: string;
+                                /** @enum {string} */
+                                warning_state: "warning" | "ok" | "not_configured";
+                                anomaly_threshold_basis_points: string;
+                                growth_basis_points: number | null;
+                                /** @enum {string} */
+                                anomaly_state: "anomaly" | "ok" | "insufficient_history" | "not_configured";
+                            };
+                            disclosed_tax: {
+                                tax_basis_points: string;
+                                disclosed_tax_minor: number | null;
+                                disclosed_total_minor: string | null;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.sms-billing-settings.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The resources are nested as RESOURCES, not as `->resolve()` arrays. JsonResource is
+             *     JsonSerializable, so the emitted JSON is byte-identical either way — but `->resolve()`
+             *     erases the type, and the OpenAPI generator (Scramble) infers the response schema from
+             *     the static return type. Under `->resolve()` it published `current`/`next` as untyped
+             *     ARRAYS and never registered a SmsBillingRuleResource component at all, so every
+             *     generated client was typed wrongly for an object it actually receives. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            current: components["schemas"]["SmsBillingRuleResource"] | null;
+                            next: components["schemas"]["SmsBillingRuleResource"] | null;
+                            currency: string;
+                            /** @constant */
+                            currency_authority: "platform_billing_settings";
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.sms-billing-settings.cost-notice-preview": {
+        parameters: {
+            query: {
+                recipient_count: number;
+                segment_count: number;
+                as_of?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            rule_id: string;
+                            effective_from: string;
+                            currency: string;
+                            recipient_count: Record<string, never> | null;
+                            segment_count: Record<string, never> | null;
+                            billable_units: string;
+                            unit_cost_minor: number;
+                            amount_minor: number;
+                            tax_basis_points: number | null;
+                            disclosed_tax_minor: number;
+                            disclosed_total_minor: string;
+                            notice: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.sms-billing-settings.versions.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SmsBillingRuleResource"][];
+                        meta: {
+                            current_page: number;
+                            last_page: number;
+                            per_page: number;
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.sms-billing-settings.versions.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScheduleSmsBillingRuleRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SmsBillingRuleResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.sms-billing-settings.versions.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The sms billing rule ulid */
+                smsBillingRule: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelSmsBillingRuleRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SmsBillingRuleResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.sms-billing-usage.index": {
+        parameters: {
+            query?: {
+                merchant?: string | null;
+                from?: string | null;
+                to?: string | null;
+                per_page?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            usage_month: string;
+                            merchant_id: string | null;
+                            currency: string;
+                            message_count: number;
+                            recipient_count: number;
+                            billable_units: number;
+                            amount_minor: number;
+                        }[];
+                        meta: {
+                            current_page: number;
+                            last_page: number;
+                            per_page: number;
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.subscription-escalations.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            merchant: {
+                                id: string;
+                                name: string;
+                            };
+                            event_type: string;
+                            from_billing_status: string;
+                            to_billing_status: string;
+                            reason: string;
+                            /** @description Absolute timestamps only — a governance record never says "3 days ago". */
+                            period_boundary: string;
+                            created_at: string;
+                        }[];
+                        meta: {
+                            current_page: number;
+                            last_page: number;
+                            per_page: number;
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.subscription-invoices.index": {
+        parameters: {
+            query?: {
+                status?: "draft" | "issued" | "pending_payment" | "partially_paid" | "paid" | "overdue" | "payment_failed" | "reconciliation_required" | "void" | null;
+                merchant?: string | null;
+                issued_from?: string | null;
+                issued_to?: string | null;
+                due_from?: string | null;
+                due_to?: string | null;
+                sort?: "issued_at" | "due_at" | "total_minor" | "created_at" | null;
+                direction?: "asc" | "desc" | null;
+                per_page?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `PlatformSubscriptionInvoiceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformSubscriptionInvoiceResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.subscription-invoices.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The subscription invoice ulid */
+                subscriptionInvoice: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `PlatformSubscriptionInvoiceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformSubscriptionInvoiceResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.subscription-operations.summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            as_of: string;
+                            subscriptions_by_status: string;
+                            invoices_by_status: string;
+                            cohorts: {
+                                trialing: string;
+                                in_grace: string;
+                                overdue: string;
+                                suspended_billing: string;
+                                cancelled_or_expired: string;
+                            };
+                            funnel: {
+                                trial_started: string;
+                                converted_to_active: string;
+                                lapsed: string;
+                            };
+                            totals: {
+                                subscriptions: number;
+                                invoices: number;
+                                open_invoice_balance_minor: number;
+                            };
+                        };
+                        meta: {
+                            /** @description A number on a governance screen is not evidence unless it says what it counts. */
+                            definitions: {
+                                /** @constant */
+                                subscriptions_by_status: "Count of merchant_subscriptions rows per record status, at the instant shown.";
+                                /** @constant */
+                                invoices_by_status: "Count of subscription_invoices rows per invoice status, at the instant shown.";
+                                /** @constant */
+                                cohorts: "Lifecycle groupings derived from the same record statuses; a subscription appears in exactly one.";
+                                /** @constant */
+                                funnel: "Trial-to-active progression derived from current record status only — it is not a historical cohort study.";
+                                /** @constant */
+                                open_invoice_balance_minor: "Sum of balance_minor over issued, pending_payment, partially_paid and overdue invoices, in integer minor units.";
+                            };
+                            /** @constant */
+                            time_range: "Point-in-time as of the as_of timestamp; no figure is a rolling window.";
+                            /** @constant */
+                            authorization_authority: "merchants.billing_status";
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.subscriptions.index": {
+        parameters: {
+            query?: {
+                status?: "trialing" | "active" | "read_only_grace" | "overdue" | "suspended_billing" | "cancelled" | "expired" | null;
+                billing_interval?: "weekly" | "bi_weekly" | "monthly" | "quarterly" | "annual" | null;
+                merchant?: string | null;
+                plan?: string | null;
+                renewal_from?: string | null;
+                renewal_to?: string | null;
+                trial_ends_from?: string | null;
+                trial_ends_to?: string | null;
+                has_scheduled_plan_change?: boolean | null;
+                sort?: "current_period_end" | "trial_ends_at" | "created_at" | null;
+                direction?: "asc" | "desc" | null;
+                per_page?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `PlatformSubscriptionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformSubscriptionResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "platform.subscriptions.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The merchant subscription ulid */
+                merchantSubscription: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `PlatformSubscriptionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformSubscriptionResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Rate limited */
             429: {
                 headers: {

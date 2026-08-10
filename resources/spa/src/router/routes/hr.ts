@@ -1,9 +1,20 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { requiresAccount, requiresActiveMerchant, requiresAuth, requiresPermission } from '@/router/guards';
 
-export const hrRoutes: RouteRecordRaw[] = [
-  // Public staff invitation acceptance (Scope §3.4). No auth — the emailed token
-  // is the credential. Rendered standalone under the AuthLayout.
+/**
+ * Public staff invitation acceptance (Scope §3.4). No auth — the emailed token is the credential.
+ *
+ * Exported SEPARATELY from `hrRoutes` (Phase UI-08 Increment 7B). It sat inside the HR tree for
+ * historical reasons, and once the router became host-scoped that placement removed it from seven
+ * of the eight account hosts — including every host whose public landing page offers the
+ * accept-invitation call to action, which is how the UI-06 browser suite caught it.
+ *
+ * It is not an HR-account screen. Acceptance happens BEFORE a membership exists, which is exactly
+ * why `requires-account-coverage.json` records it as unguarded by design and why the UI/UX plan
+ * excludes it from the 160 authenticated pages. It belongs with the shared public and auth surface
+ * that every host serves.
+ */
+export const invitationRoutes: RouteRecordRaw[] = [
   {
     path: '/staff/accept',
     component: () => import('@/layouts/AuthLayout.vue'),
@@ -15,6 +26,9 @@ export const hrRoutes: RouteRecordRaw[] = [
       },
     ],
   },
+];
+
+export const hrRoutes: RouteRecordRaw[] = [
   {
     path: '/hr',
     // Phase UI-04 (UI01-NAV-002): HR has its own shell. It previously mounted BranchLayout.

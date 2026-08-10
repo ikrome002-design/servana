@@ -217,14 +217,16 @@
       "route": "platform.get-started",
       "layout": "PlatformAdminLayout",
       "status": "implemented",
-      "phase": "Phase 11",
+      "phase": "UI-08",
       "spec": "platform/platform-get-started.md",
-      "title": "Super Administrator get-started",
+      "title": "Super Administrator get started",
       "roles": [
         "super_administrator"
       ],
-      "permissions": [],
-      "summary": "Guided get-started checklist for platform governance setup."
+      "permissions": [
+        "platform.billing_settings.view"
+      ],
+      "summary": "Contract page §5.4.2. Seven configuration steps in dependency order, evidenced by SIX shipped reads (billing settings, plans with nested prices and entitlements, preferred-personnel fee rules, SMS billing settings, registration monitor, MFA status) composed with Promise.allSettled so one unreadable endpoint degrades only its own step. The Wallet and Refer & Earn step is blocked by External Gate W, is never manually completable, and is excluded from the completion denominator."
     },
     {
       "key": "merchant-landing",
@@ -1842,36 +1844,17 @@
       "status": "implemented",
       "phase": "Phase 20A",
       "spec": "platform/platform-billing-settings.md",
-      "title": "Billing settings / plans / prices",
+      "title": "Platform billing settings",
       "roles": [
         "super_administrator"
       ],
       "permissions": [
-        "platform.settings.view",
         "platform.billing_settings.view",
-        "platform.plan.view",
-        "platform.preferred_personnel_fee.manage",
+        "platform.billing_settings.update",
+        "platform.settings.view",
         "platform.platform_fee.configure"
       ],
-      "summary": "One coherent platform surface with accessible tabs: general settings, billing settings (three canonical billing modes), subscription plans (non-price metadata; retire preserves history), effective-dated plan prices (five intervals; overlap-rejected; only future prices cancellable; historical/current read-only), plan entitlements (enable/disable/limit; no merchant-subscription binding), and preferred-personnel fee rules (fixed/percentage; platform-default/service scope; supersede-not-edit; approve/cancel). Each tab is permission-gated (UX only); the API enforces platform scope, MFA and a fresh step-up on sensitive mutations. Adds the Phase 20E percentage platform-fee configuration tab (create/update-draft/approve/supersede/cancel; approved terms immutable so a change supersedes; the shared tier is shown by its canonical label). NO registration monitoring or plan-management (Phase 20B)."
-    },
-    {
-      "key": "platform-promotions",
-      "domain": "platform",
-      "route": "platform.promotions",
-      "layout": "PlatformAdminLayout",
-      "status": "implemented",
-      "phase": "Phase 20C",
-      "spec": "platform/platform-promotions.md",
-      "title": "Promotions / free periods",
-      "roles": [
-        "super_administrator"
-      ],
-      "permissions": [
-        "platform.promotion.manage",
-        "platform.free_period_offer.manage"
-      ],
-      "summary": "Consolidated Super-Administrator surface for promotional discounts and free-period offers: draft/approve/pause/resume/cancel with mandatory reason, MFA + fresh step-up (server-enforced), immutable approved terms. Backend authoritative; controls are UX-only permission gates."
+      "summary": "Contract page §5.4.3. Platform-wide billing configuration: the three canonical billing modes, effective-dated settings versions, trial, grace, overdue and suspension boundaries, and the percentage platform-fee configuration. Composes the shipped Phase 20A and 20E sections unchanged; approved terms are immutable, so a change supersedes rather than edits. Plans, prices, promotions and preferred-personnel fees are now contract pages of their own."
     },
     {
       "key": "platform-wallet-config",
@@ -1910,27 +1893,6 @@
       "gate": "external_gate_w"
     },
     {
-      "key": "platform-registration-monitoring",
-      "domain": "platform",
-      "route": "platform.registration-monitoring",
-      "layout": "PlatformAdminLayout",
-      "status": "implemented",
-      "phase": "Phase 20B",
-      "spec": "platform/platform-registration-monitoring.md",
-      "title": "Registration monitoring / merchant governance",
-      "roles": [
-        "super_administrator"
-      ],
-      "permissions": [
-        "platform.registration_monitor.view",
-        "platform.merchant.view",
-        "platform.merchant.suspend",
-        "platform.merchant.reactivate",
-        "platform.merchant.deactivate"
-      ],
-      "summary": "One consolidated Super-Admin surface (accessible tabs): registration monitoring + merchant directory/detail with operational vs billing status shown separately, and suspend/reactivate/deactivate governance (mandatory reason + confirmation + fresh merchant_governance step-up; mutates merchants.status only). The 'Merchant directory' nav label routes here too. NO merchant-create/first-admin/impersonation/payment/Wallet UI."
-    },
-    {
       "key": "platform-audit-reports",
       "domain": "platform",
       "route": null,
@@ -1938,15 +1900,276 @@
       "status": "disabled_by_gate",
       "phase": "Phase 21N",
       "spec": null,
-      "title": "Platform audit / reports",
+      "title": "Platform reports",
       "roles": [
         "super_administrator"
       ],
       "permissions": [
         "platform.audit.view"
       ],
-      "summary": "Super Administrator platform audit REPORTS (Plan §27.3 Super Administrator list). Re-attributed from Phase 19 to Phase 21N in Phase 23: Plan §69 places the whole reporting catalogue in Phase 21N, and every §27.3 Audit-role screen (branch audit log, flagged-event review, compensation/finance audit, masked export) is already implemented by Phase 19. Blocked while 21N is blocked.",
+      "summary": "Contract page §5.4.17. The platform reporting catalogue (Plan §69) is owned by Phase 21N, which Plan §80.1 makes dependent on Phase 20D-W, which is behind External Gate W. The contract report set is majority Wallet-derived, so a report page delivered now would misreport platform revenue and recovery. Platform AUDIT is a separate, implemented contract page (§5.4.18).",
       "gate": "external_gate_w"
+    },
+    {
+      "key": "platform-dashboard",
+      "domain": "platform",
+      "route": "platform.dashboard",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "UI-08",
+      "spec": "platform/platform-dashboard.md",
+      "title": "Platform governance dashboard",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.merchant.view"
+      ],
+      "summary": "Contract page §5.4.1. One SERVER-side aggregate read (GET /api/v1/platform/dashboard) over registrations, merchant lifecycle, commercial configuration, billing operations, audit and integrations. The browser computes no total: every other platform read is paginated, so a client-side aggregation over page one would misreport the platform on the very screen used to govern it. The integrations section renders External Gate W, never a zero and never a healthy state."
+    },
+    {
+      "key": "platform-billing-plans",
+      "domain": "platform",
+      "route": "platform.billing-plans",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "Phase 20A",
+      "spec": "platform/platform-billing-plans.md",
+      "title": "Plans and entitlements",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.plan.view",
+        "platform.plan.manage"
+      ],
+      "summary": "Contract page §5.4.4. Subscription plan metadata and the SERVER-enforced entitlements attached to each plan. Selecting a plan reveals its entitlements on the same page. Retiring a plan preserves existing subscription history, and nothing selected here creates a frontend-only restriction."
+    },
+    {
+      "key": "platform-billing-prices",
+      "domain": "platform",
+      "route": "platform.billing-prices",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "Phase 20A",
+      "spec": "platform/platform-billing-prices.md",
+      "title": "Plan prices and billing periods",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.plan.view",
+        "platform.plan_price.manage"
+      ],
+      "summary": "Contract page §5.4.5. Effective-dated plan prices across the five billing intervals. Overlapping effective ranges are rejected server-side, only future prices are cancellable, and current and historical prices are read-only so an issued invoice can never be rewritten."
+    },
+    {
+      "key": "platform-billing-promotions",
+      "domain": "platform",
+      "route": "platform.billing-promotions",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "Phase 20C",
+      "spec": "platform/platform-billing-promotions.md",
+      "title": "Promotional discounts",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.promotion.manage"
+      ],
+      "summary": "Contract page §5.4.6. Percentage or fixed-amount promotions with deterministic targeting. At most ONE discount applies to a subscription issuance, resolved server-side by the settled precedence order (merchant beats plan, plan beats billing mode, billing mode beats global), and an applied discount is captured as an immutable snapshot on the invoice it affected. Shares the Phase 20C form with free-period offers through a single-concern prop rather than a duplicated implementation."
+    },
+    {
+      "key": "platform-billing-free-periods",
+      "domain": "platform",
+      "route": "platform.billing-free-periods",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "Phase 20C",
+      "spec": "platform/platform-billing-free-periods.md",
+      "title": "Free-period offers",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.free_period_offer.manage"
+      ],
+      "summary": "Contract page §5.4.7. Free-period offers with the same deterministic targeting, lifecycle and immutability rules as promotional discounts, rendered through the same shared Phase 20C form. Draft, approve, pause, resume and cancel each require a mandatory reason, MFA and a fresh server-enforced step-up."
+    },
+    {
+      "key": "platform-billing-preferred-personnel-fees",
+      "domain": "platform",
+      "route": "platform.billing-preferred-personnel-fees",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "Phase 20A",
+      "spec": "platform/platform-billing-preferred-personnel-fees.md",
+      "title": "Preferred personnel fee rules",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.preferred_personnel_fee.manage"
+      ],
+      "summary": "Contract page §5.4.8. Fixed or percentage preferred-personnel fee rules at platform-default or per-service scope. Rules supersede rather than edit, so a rule that priced a past booking stays intact; approve and cancel require MFA and a fresh step-up."
+    },
+    {
+      "key": "platform-billing-sms",
+      "domain": "platform",
+      "route": "platform.billing-sms",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "UI-08",
+      "spec": "platform/platform-billing-sms.md",
+      "title": "SMS billing settings",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.billing_settings.view",
+        "platform.billing_settings.update"
+      ],
+      "summary": "Contract page §5.4.9 (COR-UI08-001). Effective-dated platform SMS billing rules, per-merchant usage and charge reconciliation. A rule that has priced a segment is immutable: a change is a scheduled successor, and a scheduled rule may be cancelled before it takes effect. The page shows no recipient, no message body and no contact list, because SMS recipient export does not exist anywhere in Servana."
+    },
+    {
+      "key": "platform-billing-subscriptions",
+      "domain": "platform",
+      "route": "platform.billing-subscriptions",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "UI-08",
+      "spec": "platform/platform-billing-subscriptions.md",
+      "title": "Subscription operations",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.merchant.view"
+      ],
+      "summary": "Contract page §5.4.13 (COR-UI08-001). Platform-wide monitoring of subscriptions, subscription invoices, billing credits and escalations over seven READ projections. There is no mutation of any kind: no record-payment, mark-paid, edit-invoice, override-state, create-credit or query-provider control exists, because a subscription state is changed by the billing lifecycle and an issued invoice is immutable."
+    },
+    {
+      "key": "platform-merchant-registrations",
+      "domain": "platform",
+      "route": "platform.merchant-registrations",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "Phase 20B",
+      "spec": "platform/platform-merchant-registrations.md",
+      "title": "Registration monitoring",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.registration_monitor.view"
+      ],
+      "summary": "Contract page §5.4.10. Chronological self-registration feed with operational status, billing status and setup status shown separately, filtered by the one status parameter the shipped read allowlists, paginated from the server, and deep-linking to each merchant. There is NO approve, activate, create-merchant, first-administrator or KYC control, and none exists in the API. Risk indicators, duplicate-business warnings, velocity, IP and device metadata, referral anomalies and governance-note history have no backing field and are named as unavailable rather than rendered."
+    },
+    {
+      "key": "platform-merchants",
+      "domain": "platform",
+      "route": "platform.merchants",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "Phase 20B",
+      "spec": "platform/platform-merchants.md",
+      "title": "Merchant directory",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.merchant.view"
+      ],
+      "summary": "Contract page §5.4.11. Platform-wide directory of self-registered merchants. A row is a LINK to the merchant detail route, so a merchant record can be opened, bookmarked and shared; there is no embedded detail pane and no governance control here. No create-merchant, first-administrator, impersonation, membership, branch-creation or staff-creation control exists. Search, the plan, billing-mode, trial-cohort, overdue and risk filters, saved filters and a masked export have no backing operation and are named as unavailable rather than offered."
+    },
+    {
+      "key": "platform-merchant-detail",
+      "domain": "platform",
+      "route": "platform.merchant-detail",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "Phase 20B",
+      "spec": "platform/platform-merchant-detail.md",
+      "title": "Merchant detail and governance",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.merchant.view",
+        "platform.merchant.suspend",
+        "platform.merchant.reactivate",
+        "platform.merchant.deactivate"
+      ],
+      "summary": "Contract page §5.4.12. Governs one merchant, resolved from the route ULID on mount and on every parameter change, never from a row selected in the directory. Operational status and billing status are two separate, prominently labelled cards, and a governance action changes the operational status ONLY: a billing suspension is cleared by the billing lifecycle, never by reactivation here. Suspend, reactivate and deactivate each require a mandatory reason, an impact preview, explicit confirmation, MFA and a fresh server-enforced merchant_governance step-up. An unknown and a refused merchant render the SAME message, so a URL cannot enumerate the platform. No impersonation, setup completion, branch or staff creation, invoice, payment, receipt or queue action exists."
+    },
+    {
+      "key": "platform-audit",
+      "domain": "platform",
+      "route": "platform.audit",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "Phase 19",
+      "spec": "platform/platform-audit.md",
+      "title": "Platform audit",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.audit.view"
+      ],
+      "summary": "Contract page §5.4.18. The append-only platform governance, billing, integration, security and administrative chain (merchant_id IS NULL), filtered by action, severity, actor, date and sort order, paginated, with a readable before-and-after view of the masked context and the correlation identifier. Read-only by contract: audit_logs rejects UPDATE and DELETE at the database level and no endpoint accepts either. No chain-integrity indicator is rendered because no endpoint exposes one, and no export control is offered because platform.audit.export is planned and owned by Phase 23 while the shipped audit exports are branch-scoped merchant exports."
+    },
+    {
+      "key": "platform-platform-access",
+      "domain": "platform",
+      "route": "platform.platform-access",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "UI-08",
+      "spec": "platform/platform-platform-access.md",
+      "title": "Internal platform access",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.internal_access.view",
+        "platform.internal_access.manage"
+      ],
+      "summary": "Contract page §5.4.19 (COR-UI08-001). Invitation, permission and lifecycle management for internal Citrus platform users only. A platform user can never be given a merchant role, merchant membership, branch assignment or staff profile. Self-escalation is refused, the last active administrator cannot be removed or suspended, and every sensitive action requires MFA and a fresh step-up."
+    },
+    {
+      "key": "platform-feature-flags",
+      "domain": "platform",
+      "route": "platform.feature-flags",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "UI-08",
+      "spec": "platform/platform-feature-flags.md",
+      "title": "Platform feature flags",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [
+        "platform.settings.view",
+        "platform.settings.update"
+      ],
+      "summary": "Contract page §5.4.20 (COR-UI08-001). Maker and checker feature-flag governance with an append-only history. A flag can never grant a permission, bypass an entitlement, bypass a billing state or open an external gate: it only enables or disables an already-authorized capability."
+    },
+    {
+      "key": "platform-account",
+      "domain": "platform",
+      "route": "platform.account",
+      "layout": "PlatformAdminLayout",
+      "status": "implemented",
+      "phase": "UI-08",
+      "spec": "platform/platform-account.md",
+      "title": "Account and security",
+      "roles": [
+        "super_administrator"
+      ],
+      "permissions": [],
+      "summary": "Contract page §5.4.22. The signed-in Super Administrator own identity, two-factor enrollment and recovery codes, active sessions with remote revocation, and display preferences. Every endpoint it calls is own-scope and carries no user identifier, and a foreign session identifier returns 404 rather than 403. Management of other platform users belongs exclusively to internal platform access. There is no password, one-time-code login or passkey control, because Servana authenticates with Magic Links only, and no control here can lower the platform two-factor requirement."
     },
     {
       "key": "merchant-platform-fees",

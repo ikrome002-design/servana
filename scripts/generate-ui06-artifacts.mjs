@@ -137,6 +137,8 @@ async function routeTable() {
     ['resources/spa/src/router/routes/auth.ts', '/src/router/routes/auth.ts', 'authRoutes'],
     ['resources/spa/src/router/routes/merchant.ts', '/src/router/routes/merchant.ts', 'merchantRoutes'],
     ['resources/spa/src/router/routes/hr.ts', '/src/router/routes/hr.ts', 'hrRoutes'],
+    // Invitation acceptance is pre-membership and registered on every host, outside the guarded HR tree.
+    ['resources/spa/src/router/routes/hr.ts', '/src/router/routes/hr.ts', 'invitationRoutes'],
     ['resources/spa/src/router/routes/branch.ts', '/src/router/routes/branch.ts', 'branchRoutes'],
     ['resources/spa/src/router/routes/finance.ts', '/src/router/routes/finance.ts', 'financeRoutes'],
     ['resources/spa/src/router/routes/frontOffice.ts', '/src/router/routes/frontOffice.ts', 'frontOfficeRoutes'],

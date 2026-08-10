@@ -72,6 +72,19 @@ enum StepUpAction: string
     // A real, implemented route; excluded from businessActions() like the other live-route actions.
     case PlatformFeeDisputeResolution = 'platform_fee_dispute_resolution';
 
+    // COR-UI08-001 (Phase UI-08) — every production-sensitive platform feature-flag change,
+    // INCLUDING the emergency pause path. Pause needs no second approver because it moves a flag
+    // towards deny and never away from it, but it still needs a fresh step-up: an operator ending a
+    // rollout in a hurry is exactly when a stale session should not be trusted.
+    case PlatformFeatureFlagChange = 'platform_feature_flag_change';
+
+    // COR-UI08-001 (Phase UI-08) — internal platform-access administration: invite, resend, revoke,
+    // permission change, suspend, reactivate, deactivate and session-family revocation. A real,
+    // implemented route group; excluded from the test-harness businessActions() like every other
+    // live-route action. It carries its OWN classification rather than borrowing
+    // BillingConfiguration, so a step-up assertion stays traceable to the action it protects.
+    case PlatformAccessAdministration = 'platform_access_administration';
+
     // Phase 20G — Finance manual compensation-adjustment creation (fresh step-up + high-severity audit,
     // §19.3). A real, implemented route; excluded from the test-harness businessActions() like the other
     // live-route actions. Distinct from CompensationBackdatedChange (plan-approval), per §11.7.
@@ -103,6 +116,8 @@ enum StepUpAction: string
             self::MerchantGovernance => 'Phase 20B (implemented)',
             self::PlatformFeeDisputeResolution => 'Phase 20E (implemented)',
             self::CompensationAdjustmentCreate => 'Phase 20G (implemented)',
+            self::PlatformAccessAdministration => 'Phase UI-08 / COR-UI08-001 (implemented)',
+            self::PlatformFeatureFlagChange => 'Phase UI-08 / COR-UI08-001 (implemented)',
         };
     }
 

@@ -20,7 +20,7 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import type { RouteLocationRaw } from 'vue-router';
 import SvAccountContextSwitcher from '@/components/ui/SvAccountContextSwitcher.vue';
-import { SvIconLogout, SvIconPreferences, SvIconProfile, SvIconSecurity } from '@/design-system/icons';
+import { SvIconCheck, SvIconLogout, SvIconPreferences, SvIconProfile, SvIconSecurity } from '@/design-system/icons';
 
 const props = withDefaults(
   defineProps<{
@@ -34,8 +34,15 @@ const props = withDefaults(
     profileTo?: RouteLocationRaw | null;
     securityTo?: RouteLocationRaw | null;
     preferencesTo?: RouteLocationRaw | null;
+    /**
+     * The guided setup companion (Phase UI-08 §5.4.2). The UI/UX contract requires it to be
+     * reopenable AFTER dismissal, and a dismissed page cannot offer its own way back — so the
+     * account menu carries the route. Optional, like every other link here: an account whose owner
+     * phase has not yet delivered the route passes nothing and the entry simply does not render.
+     */
+    getStartedTo?: RouteLocationRaw | null;
   }>(),
-  { contextLabel: null, profileTo: null, securityTo: null, preferencesTo: null },
+  { contextLabel: null, profileTo: null, securityTo: null, preferencesTo: null, getStartedTo: null },
 );
 
 const emit = defineEmits<{ logout: [] }>();
@@ -64,6 +71,7 @@ const links = computed(() =>
     { key: 'profile', label: 'Profile', to: props.profileTo, icon: SvIconProfile },
     { key: 'security', label: 'Security', to: props.securityTo, icon: SvIconSecurity },
     { key: 'preferences', label: 'Preferences', to: props.preferencesTo, icon: SvIconPreferences },
+    { key: 'get-started', label: 'Get started', to: props.getStartedTo, icon: SvIconCheck },
   ].filter((link) => link.to !== null),
 );
 

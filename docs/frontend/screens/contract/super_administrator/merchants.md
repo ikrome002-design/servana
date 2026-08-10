@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `platform.registration-monitoring` at `/platform/registration-monitoring` (routes/platform.ts), delivery **consolidated**. This runtime route also serves other contract pages — the collapse recorded as `UI01-NAV-001`. Owner phase **UI-08** splits it into a dedicated page. The runtime path uses the account's path prefix rather than the host-relative contract path `/merchants`; owner phase **UI-08** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `platform.merchants` at `/merchants` (routes/platform.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-08**
 - **Backend owner phase:** **Phase 20B**
 - **Implementation status:** `implemented`
-- **Runtime route:** `platform.registration-monitoring`
-- **Route delivery:** `consolidated`
+- **Runtime route:** `platform.merchants`
+- **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `platform.registration-monitoring` (recorded in `docs/frontend/screens/platform/platform-registration-monitoring.md`).
-- **Data fields:** One consolidated Super-Admin surface (accessible tabs): registration monitoring + merchant directory/detail with operational vs billing status shown separately, and suspend/reactivate/deactivate governance (mandatory reason + confirmation + fresh merchant_governance step-up; mutates merchants.status only). The 'Merchant directory' nav label routes here too. NO merchant-create/first-admin/impersonation/payment/Wallet UI.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `platform.merchants` (recorded in `docs/frontend/screens/platform/platform-merchants.md`).
+- **Data fields:** Contract page §5.4.11. Platform-wide directory of self-registered merchants. A row is a LINK to the merchant detail route, so a merchant record can be opened, bookmarked and shared; there is no embedded detail pane and no governance control here. No create-merchant, first-administrator, impersonation, membership, branch-creation or staff-creation control exists. Search, the plan, billing-mode, trial-cohort, overdue and risk filters, saved filters and a masked export have no backing operation and are named as unavailable rather than offered.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

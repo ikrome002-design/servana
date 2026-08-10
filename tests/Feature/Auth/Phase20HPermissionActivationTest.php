@@ -65,10 +65,26 @@ it('keeps its sixteen keys active as later phases extend the matrix', function (
     }
 
     // Phase 23 / REM-SCR-002A retired the legacy duplicate `merchant.profile.manage` when it
-    // activated the canonical successors, so the catalogue is 167 — it shrank by one legacy
-    // duplicate and has never grown.
+    // activated the canonical successors, taking the catalogue to 167.
+    //
+    // COR-UI08-001 is the FIRST authorization that legitimately grows the catalogue: the product
+    // owner authorized exactly two internal-platform-access keys so UI-08 could deliver navigation
+    // map §5.4.19 instead of shipping a fabricated page. The invariant this test protects is
+    // unchanged and is now stated more strictly than before: a phase never INVENTS a canonical key,
+    // so every key beyond the 167 baseline must be itemised by a recorded authorization. Bumping a
+    // bare total would have let the next unauthorized key through silently.
+    $authorizedGrowth = [
+        // COR-UI08-001 — docs/decisions/cor-ui08-001-super-administrator-backend-enablement.md
+        'platform.internal_access.view',
+        'platform.internal_access.manage',
+    ];
+
     expect(count($matrix->activeKeys()) + count($matrix->plannedKeys()))
-        ->toBe(167, 'the catalogue only ever shrinks by a retired legacy duplicate — never grows');
+        ->toBe(167 + count($authorizedGrowth), 'the catalogue grows only by keys itemised in a recorded product-owner authorization');
+
+    foreach ($authorizedGrowth as $key) {
+        expect($active)->toHaveKey($key, "{$key} is authorized by COR-UI08-001 and must be active");
+    }
 });
 
 it('grants the payout/earnings keys to exactly the right roles and no others', function (): void {

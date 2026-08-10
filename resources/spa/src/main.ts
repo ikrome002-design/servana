@@ -3,7 +3,7 @@ import { createApp } from 'vue';
 
 import App from '@/App.vue';
 import { initAccountContext } from '@/host/accountHostContext';
-import { router } from '@/router';
+import { createRouterForCurrentHost } from '@/router';
 import { setUnauthorizedHandler } from '@/services/apiClient';
 import { useAuthStore } from '@/stores/authStore';
 import '@/style.css';
@@ -12,6 +12,20 @@ import '@/style.css';
 // so no account-entry decision can be made without it (Phase UI-02; ADR-016/017). It is
 // presentation context only and never affects authorization.
 initAccountContext();
+
+/*
+ * ORDER IS THE POINT (Phase UI-08 Increment 7B).
+ *
+ * The router is built AFTER the account context is resolved, and only then, because it registers
+ * exactly one account's route tree. A module-level `import { router }` would have constructed it
+ * at import time — before `initAccountContext()` had run — which is why the router previously had
+ * to carry all eight accounts at once and why the Super Administrator's canonical paths could not
+ * be registered: `/audit`, `/dashboard`, `/account` and `/reports` collide across accounts.
+ *
+ * The host still decides nothing about authority. It selects which experience is mounted; every
+ * protected route re-checks the server, and the server is the boundary (ADR-017).
+ */
+const router = createRouterForCurrentHost();
 
 const app = createApp(App).use(createPinia()).use(router);
 

@@ -62,8 +62,24 @@ it('keeps its two keys active as later phases extend the matrix, with no legacy 
         expect($active)->toHaveKey($key);
     }
 
+    // COR-UI08-001 is the FIRST authorization that legitimately grows the catalogue past 167: the
+    // product owner authorized exactly two internal-platform-access keys so UI-08 could deliver
+    // navigation map §5.4.19 rather than ship a fabricated page. The Phase 21S invariant is
+    // unchanged — no phase INVENTS a canonical key — and is now stated more strictly, because every
+    // key beyond the baseline must be itemised by a recorded authorization rather than merely fit
+    // under a bumped total.
+    $authorizedGrowth = [
+        // COR-UI08-001 — docs/decisions/cor-ui08-001-super-administrator-backend-enablement.md
+        'platform.internal_access.view',
+        'platform.internal_access.manage',
+    ];
+
     expect(count($matrix->activeKeys()) + count($matrix->plannedKeys()))
-        ->toBe(167, 'the catalogue only ever shrinks by a retired legacy duplicate — never grows');
+        ->toBe(167 + count($authorizedGrowth), 'the catalogue grows only by keys itemised in a recorded product-owner authorization');
+
+    foreach ($authorizedGrowth as $key) {
+        expect($active)->toHaveKey($key, "{$key} is authorized by COR-UI08-001 and must be active");
+    }
 });
 
 it('grants both keys to PERSONNEL and to no other role, by default or by override', function (): void {

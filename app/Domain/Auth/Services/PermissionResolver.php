@@ -7,6 +7,8 @@ namespace App\Domain\Auth\Services;
 use App\Domain\Auth\Enums\PermissionOverrideEffect;
 use App\Domain\Auth\Models\MerchantUserPermissionOverride;
 use App\Domain\Merchants\Models\MerchantUser;
+use App\Domain\PlatformAccess\Enums\PlatformAccessStatus;
+use App\Domain\PlatformAccess\Models\PlatformAccessPermissionOverride;
 
 /**
  * Resolves the effective permission set for a membership (Plan §10.3).
@@ -57,11 +59,41 @@ final class PermissionResolver
      *
      * @return list<string>
      */
-    public function forPlatformStaff(): array
+    public function forPlatformStaff(?int $userId = null): array
     {
-        return array_values(array_unique(
+        $resolved = array_values(array_unique(
             $this->registry->defaultGrantsFor(PermissionRegistry::ROLE_SUPER_ADMIN)
         ));
+
+        if ($userId === null) {
+            return $resolved;
+        }
+
+        /*
+         | COR-UI08-001 (Phase UI-08): subtract this administrator's DENY overrides.
+         |
+         | Deny-only by construction — `platform_access_permission_overrides.effect` is
+         | CHECK-constrained to 'deny' and a trigger rejects any non-platform permission — so this
+         | can only ever REMOVE a key. There is deliberately no grant branch to mirror the
+         | membership resolver's: adding one would make self-escalation representable.
+         */
+        $denied = PlatformAccessPermissionOverride::query()
+            ->whereHas(
+                'membership',
+                static fn ($query) => $query->where('user_id', $userId)
+                    ->where('status', PlatformAccessStatus::Active->value),
+            )
+            ->with('permission')
+            ->get()
+            ->map(static fn (PlatformAccessPermissionOverride $override): ?string => $override->permission?->key)
+            ->filter()
+            ->all();
+
+        if ($denied === []) {
+            return $resolved;
+        }
+
+        return array_values(array_diff($resolved, $denied));
     }
 
     /**

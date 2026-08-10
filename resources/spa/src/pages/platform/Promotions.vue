@@ -34,15 +34,33 @@ interface TabDef {
   label: string;
   permission: string;
 }
+
+/**
+ * Phase UI-08: `only` renders exactly ONE section, with no page heading and no tablist.
+ *
+ * The UI/UX contract requires §5.4.6 (Promotional Discounts) and §5.4.7 (Free-Period Offers) to be
+ * two distinct pages. Their forms, validation, precedence rules and lifecycle actions are the same
+ * substantial code, so the canonical pages COMPOSE this section with `only` set rather than
+ * duplicating it — the plan encourages shared form/table components and forbids six copies of the
+ * same business logic. Each canonical page owns its own route, title, `h1` and tests.
+ *
+ * `only: null` preserves the original consolidated behaviour for the legacy `/platform/promotions`
+ * route until Increment 7B retires it.
+ */
+const props = withDefaults(defineProps<{ only?: TabKey | null }>(), { only: null });
+
 const allTabs: TabDef[] = [
   { key: 'promotions', label: 'Promotional discounts', permission: 'platform.promotion.manage' },
   { key: 'free-periods', label: 'Free-period offers', permission: 'platform.free_period_offer.manage' },
 ];
-const tabs = computed<TabDef[]>(() => allTabs.filter((t) => can(t.permission)));
-const activeKey = ref<TabKey>('promotions');
-const currentKey = computed<TabKey>(() =>
-  tabs.value.some((t) => t.key === activeKey.value) ? activeKey.value : (tabs.value[0]?.key ?? 'promotions'),
+const tabs = computed<TabDef[]>(() =>
+  allTabs.filter((t) => (props.only === null || t.key === props.only) && can(t.permission)),
 );
+const activeKey = ref<TabKey>('promotions');
+const currentKey = computed<TabKey>(() => {
+  if (props.only !== null) return props.only;
+  return tabs.value.some((t) => t.key === activeKey.value) ? activeKey.value : (tabs.value[0]?.key ?? 'promotions');
+});
 
 const scopeOptions = [
   { value: 'all_new_merchants', label: 'All new merchants (global)' },
@@ -224,7 +242,11 @@ onMounted(() => {
     aria-labelledby="promotions-heading"
     class="promotions"
   >
-    <header class="promotions__header">
+    <!-- Suppressed when composed into a canonical page: that page owns the single `h1`. -->
+    <header
+      v-if="only === null"
+      class="promotions__header"
+    >
       <h1
         id="promotions-heading"
         class="promotions__title"
@@ -245,7 +267,9 @@ onMounted(() => {
     </div>
 
     <template v-else>
+      <!-- A single-concern page has nothing to switch between, so it renders no tablist. -->
       <div
+        v-if="only === null"
         class="promotions__tabs"
         role="tablist"
         aria-label="Promotion sections"

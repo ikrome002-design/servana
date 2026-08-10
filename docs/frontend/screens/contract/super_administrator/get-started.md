@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `platform.get-started` at `/platform/get-started` (routes/platform.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/get-started`; owner phase **UI-08** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `platform.get-started` at `/get-started` (routes/platform.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -35,7 +35,7 @@
 ## Data and behaviour
 
 - **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `platform.get-started` (recorded in `docs/frontend/screens/platform/platform-get-started.md`).
-- **Data fields:** Guided get-started checklist for platform governance setup.
+- **Data fields:** Contract page §5.4.2. Seven configuration steps in dependency order, evidenced by SIX shipped reads (billing settings, plans with nested prices and entitlements, preferred-personnel fee rules, SMS billing settings, registration monitor, MFA status) composed with Promise.allSettled so one unreadable endpoint degrades only its own step. The Wallet and Refer & Earn step is blocked by External Gate W, is never manually completable, and is excluded from the completion denominator.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).
@@ -46,7 +46,7 @@
 
 - **Authorization:** Backend `auth:sanctum` + Form Request + Policy + `EnsurePermission` is the security boundary. Everything below is UX visibility only (ADR-017).
 - **Permission-any:** — none
-- **Permission-all:** — none
+- **Permission-all:** `platform.billing_settings.view`
 - **Tenant scope:** Platform-only; merchant users are refused without record enumeration.
 - **Branch scope:** Not branch-scoped.
 - **Own-scope:** Not own-scoped.

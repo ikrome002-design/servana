@@ -271,12 +271,21 @@ test.describe('Role denial (frontend UX; the API is the boundary)', () => {
     await page.route(/\/api\/v1\/finance\/payout-runs(\?|$)/, (r) => r.fulfill(forbidden('forbidden')));
     await page.goto('/finance/payout-runs');
 
-    await expect(page).toHaveURL(/\/access-denied/);
+      /*
+       * Phase UI-08 Increment 7B made the router host-scoped, so this refusal is now STRICTER
+       * than a denial page: the account that owns this route has no tree registered on the
+       * served host, so the address does not exist there at all. The surface still never
+       * mounts, which is what this case is about.
+       */
+    await expect(page.getByTestId('public-not-found')).toBeVisible();
     await expect(page.getByTestId('payout-forbidden')).toHaveCount(0);
     // Role-safe: neither the forbidden account nor the held one is disclosed.
     const shown = await page.locator('#app').innerText();
+    // The refusal must not name the account that OWNS the screen, nor confirm it exists.
     expect(shown).not.toContain('merchant_finance');
-    expect(shown).not.toContain('merchant_personnel');
+    // It may name the viewer's OWN served account — the not-found page offers a way home, and
+    // telling someone which account they are already on discloses nothing new.
+    expect(shown).not.toContain('payout');
   });
 
   test('a Finance user without mark-paid never sees the mark-paid control', async ({ page }) => {

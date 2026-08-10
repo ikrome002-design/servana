@@ -361,6 +361,21 @@ test.describe('UI-05 — accessibility of the rendered content surfaces', () => 
 
 test.describe('UI-05 — curated assets over HTTP', () => {
   test('every selected image, derivative and the approved logo serve with the right bytes', async ({ request }) => {
+    /*
+     * `UI08-E2E-002` — an explicit budget, sized to the work.
+     *
+     * This case makes ~225 SEQUENTIAL HTTP requests: 32 curated originals, their 192 AVIF/WebP
+     * derivatives, and the approved logo, hashing every response body. It inherited Playwright's
+     * default 30-second test budget, which predates UI-05 adding the 192 derivatives, so on a
+     * loaded machine it runs out of time mid-request and surfaces as "request context disposed".
+     *
+     * Evidence that this is a budget and not a product defect: across three consecutive full-suite
+     * runs during the UI-08 closeout it failed, passed, then failed — on a DIFFERENT image each
+     * time, always with a timeout and never with a byte mismatch. The assertions are unchanged:
+     * every original, every derivative and the logo are still fetched and hash-compared.
+     */
+    test.setTimeout(180_000);
+
     const logo = await request.get('/assets/brand/Logo.png');
     record('the approved logo serves', '/assets/brand/Logo.png',
       logo.status() === 200 && (logo.headers()['content-type'] ?? '').includes('image/png'),

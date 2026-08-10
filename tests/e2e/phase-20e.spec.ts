@@ -123,8 +123,10 @@ test.describe('Super Administrator platform-fee configuration', () => {
   test('shows the Platform fees tab and an active config as read-only with supersede', async ({ page }) => {
     await stubMe(page, { isPlatformStaff: true, permissions: ['platform.platform_fee.configure'] });
     await stubConfig(page);
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Platform fees' }).click();
+    // Increment 7B: `/billing/settings` is the canonical page and composes the platform-fee
+    // section directly, so there is no tab to click. `/platform/billing-settings` still resolves
+    // here through the compatibility redirect.
+    await page.goto('/billing/settings');
     await expect(page.getByRole('heading', { name: 'Percentage platform-fee configuration' })).toBeVisible();
     // Active config: supersede offered, no in-place edit; the canonical "Shared" label, never split_tier.
     await expect(page.getByRole('button', { name: 'Supersede' })).toBeVisible();
@@ -136,8 +138,7 @@ test.describe('Super Administrator platform-fee configuration', () => {
   test('validates a shared tier without a split and does not submit', async ({ page }) => {
     await stubMe(page, { isPlatformStaff: true, permissions: ['platform.platform_fee.configure'] });
     await stubConfig(page);
-    await page.goto('/platform/billing-settings');
-    await page.getByRole('tab', { name: 'Platform fees' }).click();
+    await page.goto('/billing/settings');
     await page.getByRole('button', { name: 'New draft configuration' }).click();
     await page.locator('#pf-tier').selectOption('shared');
     await page.locator('#pf-bps').fill('250');
@@ -153,8 +154,10 @@ test.describe('Super Administrator platform-fee configuration', () => {
   test('hides configuration entirely without the configure permission', async ({ page }) => {
     await stubMe(page, { isPlatformStaff: true, permissions: ['platform.settings.view'] });
     await stubConfig(page);
-    await page.goto('/platform/billing-settings');
-    await expect(page.getByRole('tab', { name: 'Platform fees' })).toHaveCount(0);
+    await page.goto('/billing/settings');
+    // A denied section is ABSENT, not a disabled tab: nothing advertises the capability.
+    await expect(page.getByRole('heading', { name: 'Percentage platform-fee configuration' })).toHaveCount(0);
+    await expect(page.getByRole('tab')).toHaveCount(0);
   });
 });
 

@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "f28ca6fcbbed367dc15a534a35dfc7fa8494ef8ac41f27b2f7e27910ef3db8a5",
+  "canonical_authority_sha256": "68cc24873d9f25c8e6dc05b8d5104327109b558d653e16b9411894ea765e3a91",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
-  "permission_matrix_sha256": "c3877f0e671abdb1f8dc0be9bd4ae06b4aed5bf36c44e427e3fa0e062099f166",
-  "screen_inventory_sha256": "0871fc7bce5d6999cb15d1931a54a01a4c385bd794cae386ac32d0c36a200281",
+  "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
+  "screen_inventory_sha256": "5c89abe54f46bdac725e8b0a7137e09fba0e327daadc0d864da91140b92f64ca",
   "purpose": "Every authenticated account route tree declares the account it requires, and the guard is attached. Read from the router records, not from source text.",
   "boundary": "The route guard is defence in depth and UX only. It does not replace auth:sanctum, tenant/branch middleware, policies, permission middleware or own-scope query constraints. Changing the Host header alone still grants nothing (AccountHostDoesNotAuthorizeTest).",
   "pre_existing_guarded_tree": "super_administrator (/platform, Phase UI-03, closing UI01-ROLE-001)",
@@ -84,24 +84,35 @@
       "root": "/platform",
       "account_key": "super_administrator",
       "declared_in": "routes/platform.ts",
-      "routes_in_tree": 5,
-      "routes_declaring_account": 5,
+      "routes_in_tree": 18,
+      "routes_declaring_account": 18,
+      "routes_outside_the_declared_prefix": [
+        "platform.dashboard",
+        "platform.get-started",
+        "platform.billing-settings",
+        "platform.billing-plans",
+        "platform.billing-prices",
+        "platform.billing-promotions",
+        "platform.billing-free-periods",
+        "platform.billing-preferred-personnel-fees",
+        "platform.billing-sms",
+        "platform.billing-subscriptions",
+        "platform.merchant-registrations",
+        "platform.merchants",
+        "platform.merchant-detail",
+        "platform.audit",
+        "platform.platform-access",
+        "platform.account"
+      ],
       "routes_missing_account": []
     },
     {
-      "root": "/merchant",
+      "root": "/merchant + /onboarding/first-time-setup",
       "account_key": "merchant_administrator",
       "declared_in": "routes/merchant.ts",
-      "routes_in_tree": 10,
-      "routes_declaring_account": 10,
-      "routes_missing_account": []
-    },
-    {
-      "root": "/onboarding/first-time-setup",
-      "account_key": "merchant_administrator",
-      "declared_in": "routes/merchant.ts",
-      "routes_in_tree": 1,
-      "routes_declaring_account": 1,
+      "routes_in_tree": 11,
+      "routes_declaring_account": 11,
+      "routes_outside_the_declared_prefix": [],
       "routes_missing_account": []
     },
     {
@@ -110,6 +121,7 @@
       "declared_in": "routes/branch.ts",
       "routes_in_tree": 14,
       "routes_declaring_account": 14,
+      "routes_outside_the_declared_prefix": [],
       "routes_missing_account": []
     },
     {
@@ -118,6 +130,7 @@
       "declared_in": "routes/hr.ts",
       "routes_in_tree": 10,
       "routes_declaring_account": 10,
+      "routes_outside_the_declared_prefix": [],
       "routes_missing_account": []
     },
     {
@@ -126,6 +139,7 @@
       "declared_in": "routes/finance.ts",
       "routes_in_tree": 23,
       "routes_declaring_account": 23,
+      "routes_outside_the_declared_prefix": [],
       "routes_missing_account": []
     },
     {
@@ -134,6 +148,7 @@
       "declared_in": "routes/frontOffice.ts",
       "routes_in_tree": 19,
       "routes_declaring_account": 19,
+      "routes_outside_the_declared_prefix": [],
       "routes_missing_account": []
     },
     {
@@ -142,6 +157,7 @@
       "declared_in": "routes/personnel.ts",
       "routes_in_tree": 7,
       "routes_declaring_account": 7,
+      "routes_outside_the_declared_prefix": [],
       "routes_missing_account": []
     },
     {
@@ -150,15 +166,11 @@
       "declared_in": "routes/audit.ts",
       "routes_in_tree": 11,
       "routes_declaring_account": 11,
+      "routes_outside_the_declared_prefix": [],
       "routes_missing_account": []
     }
   ],
   "authenticated_routes_outside_an_account_tree": [
-    {
-      "name": "staff.accept",
-      "path": "/staff/accept",
-      "reason": "Invitation acceptance happens before the membership exists; UI/UX plan §7.5 excludes it from the 160."
-    },
     {
       "name": "search",
       "path": "/search",
