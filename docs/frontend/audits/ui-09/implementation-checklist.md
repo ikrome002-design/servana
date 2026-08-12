@@ -99,5 +99,9 @@ complete only when its evidence is committed in this branch. Plan authority: UI/
 - [x] Final proof, PROGRESS, CHANGELOG and traceability updated for truthful `local_complete` state.
 - [x] One local-completion changeset: `ui-09: implement merchant administrator experience` (this
   commit; no checkpoint commit preceded it).
-- [ ] Push, PR, exact-head CI, governance, squash merge and synchronized clean `main` (the remaining
-  automated lifecycle; no UI-10, backend Phase 25 or Gate-W activation).
+- [x] Initial changeset pushed and PR #59 opened against `main` at `0142d0a`.
+- [x] Initial CI `31614642395` investigated: Frontend and Backend independently named the same stale
+  UI-06 generated route projection; no second backend defect was hidden in the aggregate.
+- [x] `UI09-CI-001` corrects only that generated consumer and records focused regression proof.
+- [ ] Push the corrective commit, obtain five-job exact-head CI, record governance, squash merge and
+  synchronize clean `main` (no UI-10, backend Phase 25 or Gate-W activation).

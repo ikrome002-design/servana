@@ -641,30 +641,58 @@
       "declared_in": "resources/spa/src/router/routes/public.ts"
     },
     {
-      "name": "merchant.compensation-summary",
-      "path": "compensation-summary",
-      "absolute_path": "/merchant/compensation-summary",
+      "name": "merchant.account",
+      "path": "/account",
+      "absolute_path": "/account",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.branch-detail",
+      "path": "/branches/:branchUlid",
+      "absolute_path": "/branches/:branchUlid",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.branches",
+      "path": "/branches",
+      "absolute_path": "/branches",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.compensation",
+      "path": "/compensation",
+      "absolute_path": "/compensation",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.compensation-payout-approvals",
+      "path": "/compensation/payout-approvals",
+      "absolute_path": "/compensation/payout-approvals",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
     {
       "name": "merchant.dashboard",
-      "path": "dashboard",
-      "absolute_path": "/merchant/dashboard",
+      "path": "/dashboard",
+      "absolute_path": "/dashboard",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.finance-period-reopen-approvals",
+      "path": "/finance/period-reopen-approvals",
+      "absolute_path": "/finance/period-reopen-approvals",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
     {
       "name": "merchant.get-started",
-      "path": "get-started",
-      "absolute_path": "/merchant/get-started",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/merchant.ts"
-    },
-    {
-      "name": "merchant.invoices",
-      "path": "subscription-invoices",
-      "absolute_path": "/merchant/subscription-invoices",
+      "path": "/get-started",
+      "absolute_path": "/get-started",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
@@ -676,16 +704,9 @@
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
     {
-      "name": "merchant.period-reopen-approvals",
-      "path": "period-reopen-approvals",
-      "absolute_path": "/merchant/period-reopen-approvals",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/merchant.ts"
-    },
-    {
-      "name": "merchant.plan",
-      "path": "plan",
-      "absolute_path": "/merchant/plan",
+      "name": "merchant.merchant-profile",
+      "path": "/merchant/profile",
+      "absolute_path": "/merchant/profile",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
@@ -697,26 +718,47 @@
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
     {
-      "name": "merchant.profile",
-      "path": "profile",
-      "absolute_path": "/merchant/profile",
+      "name": "merchant.setup",
+      "path": "/setup",
+      "absolute_path": "/setup",
+      "aliases": [
+        "/onboarding/first-time-setup"
+      ],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.staff",
+      "path": "/staff",
+      "absolute_path": "/staff",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
     {
       "name": "merchant.subscription",
-      "path": "subscription",
-      "absolute_path": "/merchant/subscription",
+      "path": "/subscription",
+      "absolute_path": "/subscription",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
     {
-      "name": "onboarding.first-time-setup",
-      "path": "/onboarding/first-time-setup",
-      "absolute_path": "/onboarding/first-time-setup",
-      "aliases": [
-        "/setup"
-      ],
+      "name": "merchant.subscription-invoice-detail",
+      "path": "/subscription/invoices/:invoiceUlid",
+      "absolute_path": "/subscription/invoices/:invoiceUlid",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.subscription-invoices",
+      "path": "/subscription/invoices",
+      "absolute_path": "/subscription/invoices",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.subscription-plan",
+      "path": "/subscription/plan",
+      "absolute_path": "/subscription/plan",
+      "aliases": [],
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
     {

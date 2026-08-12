@@ -47,8 +47,11 @@ and whole-product Playwright **1,255/1,255** with no flaky/skipped case. Axe rep
 production-host proof passed **44/44** against the recorded PHP/Nginx images. Composer/npm high gates
 and gitleaks are clean. Proof: `docs/proof/ui-09.md`; artifacts: `docs/frontend/audits/ui-09/`.
 
-This changeset is the branch's single local-completion commit. Pull request, required exact-head CI,
-truthful solo-maintainer governance and merge remain; none of those future facts is claimed here.
+The branch's single local-completion commit is `0142d0a`; PR #59 was opened from that exact head.
+Initial CI `31614642395` found one stale generated UI-06 route projection through both the Frontend
+contract step and Backend's `Ui06GeneratedArtifactStalenessTest` (all other 3,537 Pest tests passed).
+`UI09-CI-001` regenerates only that derived consumer from the canonical route module. Corrected-head
+CI, truthful solo-maintainer governance and merge remain; none of those future facts is claimed here.
 
 ### Phase UI-08 — Super Administrator experience — verified complete
 
