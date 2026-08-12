@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
 import { useSubscriptionInvoiceStore } from '@/stores/subscriptionInvoiceStore';
@@ -72,15 +73,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mx-auto flex max-w-4xl flex-col gap-6">
-    <header>
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Subscription and billing
-      </h1>
-      <p class="mt-1 text-sm text-text-muted">
-        Your Servana subscription, current plan and billing status.
-      </p>
-    </header>
+  <div class="mx-auto flex max-w-6xl flex-col gap-6">
+    <SvPageHeader
+      title="Subscription and billing"
+      eyebrow="Account plan"
+      description="See the plan that powers your merchant account, its billing position and the next action that needs owner attention."
+    />
 
     <p
       v-if="!canView"
@@ -119,146 +117,142 @@ onMounted(async () => {
         </div>
 
         <!-- Status summary -->
-        <SvCard>
-          <dl class="grid gap-4 sm:grid-cols-2">
+        <SvCard
+          padding="none"
+          class="overflow-hidden border-t-4 border-t-sv-brand"
+        >
+          <div class="grid gap-5 bg-sv-surface-warm p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-6">
             <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Subscription status
-              </dt>
-              <dd
-                class="mt-1 text-base font-semibold text-heading"
-                data-testid="subscription-status"
-              >
-                {{ label(SUBSCRIPTION_STATUS_LABELS, sub.status) }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Billing status
-              </dt>
-              <dd
-                class="mt-1 text-base font-semibold text-heading"
-                data-testid="billing-status"
-              >
-                {{ label(BILLING_STATUS_LABELS, sub.billing_status) }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+              <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
                 Current plan
-              </dt>
-              <dd class="mt-1 text-base text-text">
+              </p>
+              <h2 class="mt-1 font-display text-2xl font-bold text-heading">
                 {{ sub.plan?.name ?? 'Not available' }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Price
-              </dt>
-              <dd class="mt-1 text-base text-text">
+              </h2>
+              <p class="mt-1 text-base text-text">
                 {{ formatMoney(sub.price.amount_minor, sub.price.currency) }}
                 <span class="text-text-muted">/ {{ sub.billing_interval }}</span>
-              </dd>
+              </p>
             </div>
-            <div>
+            <div class="flex flex-wrap gap-2 md:justify-end">
+              <span
+                class="rounded-full border border-sv-success-border bg-sv-success-bg px-3 py-1 text-sm font-semibold text-sv-success-fg"
+              >
+                <span data-testid="subscription-status">{{ label(SUBSCRIPTION_STATUS_LABELS, sub.status) }}</span>
+                subscription
+              </span>
+              <span
+                class="rounded-full border border-sv-info-border bg-sv-info-bg px-3 py-1 text-sm font-semibold text-sv-info-fg"
+              >
+                <span data-testid="billing-status">{{ label(BILLING_STATUS_LABELS, sub.billing_status) }}</span>
+                billing
+              </span>
+            </div>
+          </div>
+          <dl class="grid gap-5 p-5 md:grid-cols-2 md:p-6">
+            <div class="rounded-control bg-surface-alt p-4">
               <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
                 Trial period
               </dt>
-              <dd class="mt-1 text-base text-text">
+              <dd class="mt-2 text-base font-medium text-text">
                 {{ dateOnly(sub.trial_started_at) }} → {{ dateOnly(sub.trial_ends_at) }}
               </dd>
             </div>
-            <div>
+            <div class="rounded-control bg-surface-alt p-4">
               <dt class="text-xs font-semibold uppercase tracking-wide text-text-muted">
-                Current period
+                Current billing period
               </dt>
-              <dd class="mt-1 text-base text-text">
+              <dd class="mt-2 text-base font-medium text-text">
                 {{ sub.current_period_start }} → {{ sub.current_period_end }}
               </dd>
             </div>
           </dl>
         </SvCard>
 
-        <!-- Scheduled plan change -->
-        <SvCard>
-          <h2 class="font-display text-lg font-bold text-heading">
-            Scheduled plan change
-          </h2>
-          <p
-            v-if="!sub.scheduled_plan_change"
-            class="mt-2 text-sm text-text-muted"
-            data-testid="no-scheduled-change"
-          >
-            No plan change is scheduled. Changes take effect at the next billing cycle with no
-            proration.
-          </p>
-          <p
-            v-else
-            class="mt-2 text-sm text-text"
-            data-testid="scheduled-change-summary"
-          >
-            Changing to <strong>{{ sub.scheduled_plan_change?.target_plan?.name ?? 'Not available' }}</strong>
-            ({{ formatMoney(sub.scheduled_plan_change.target_price.amount_minor, sub.scheduled_plan_change.target_price.currency) }})
-            on <strong>{{ sub.scheduled_plan_change.effective_at }}</strong>.
-          </p>
-          <div
-            v-if="can('merchant.subscription.plan_change')"
-            class="mt-4"
-          >
-            <RouterLink
-              :to="{ name: 'merchant.plan' }"
-              class="text-sm font-semibold text-heading underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              Manage plan
-            </RouterLink>
-          </div>
-        </SvCard>
-
-        <!-- Latest invoice -->
-        <SvCard>
-          <div class="flex items-center justify-between gap-4">
+        <div class="grid gap-6 lg:grid-cols-2">
+          <!-- Scheduled plan change -->
+          <SvCard class="h-full">
             <h2 class="font-display text-lg font-bold text-heading">
-              Latest invoice
+              Scheduled plan change
             </h2>
-            <RouterLink
-              v-if="can('merchant.subscription.invoice.view')"
-              :to="{ name: 'merchant.invoices' }"
-              class="text-sm font-semibold text-heading underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            <p
+              v-if="!sub.scheduled_plan_change"
+              class="mt-2 text-sm text-text-muted"
+              data-testid="no-scheduled-change"
             >
-              All invoices
-            </RouterLink>
-          </div>
-          <p
-            v-if="latestInvoice === null"
-            class="mt-2 text-sm text-text-muted"
-          >
-            No invoices have been issued yet.
-          </p>
-          <div
-            v-else
-            class="mt-2 text-sm text-text"
-            data-testid="latest-invoice"
-          >
-            <p>
-              <strong>{{ latestInvoice.invoice_number ?? 'Draft' }}</strong> ·
-              {{ formatMoney(latestInvoice.total_minor, latestInvoice.currency) }} ·
-              {{ latestInvoice.status }}
+              No plan change is scheduled. Changes take effect at the next billing cycle with no
+              proration.
             </p>
             <p
-              v-if="latestInvoice.payment_reference_pending"
-              class="mt-1 text-text-muted"
+              v-else
+              class="mt-2 text-sm text-text"
+              data-testid="scheduled-change-summary"
             >
-              Payment reference pending — see your billing dashboard
+              Changing to <strong>{{ sub.scheduled_plan_change?.target_plan?.name ?? 'Not available' }}</strong>
+              ({{ formatMoney(sub.scheduled_plan_change.target_price.amount_minor, sub.scheduled_plan_change.target_price.currency) }})
+              on <strong>{{ sub.scheduled_plan_change.effective_at }}</strong>.
             </p>
-          </div>
-        </SvCard>
+            <div
+              v-if="can('merchant.subscription.plan_change')"
+              class="mt-4"
+            >
+              <RouterLink
+                :to="{ name: 'merchant.subscription-plan' }"
+                class="text-sm font-semibold text-heading underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                Manage plan
+              </RouterLink>
+            </div>
+          </SvCard>
 
-        <SvButton
-          variant="secondary"
-          @click="store.fetchSubscription()"
-        >
-          Refresh
-        </SvButton>
+          <!-- Latest invoice -->
+          <SvCard class="h-full">
+            <div class="flex items-center justify-between gap-4">
+              <h2 class="font-display text-lg font-bold text-heading">
+                Latest invoice
+              </h2>
+              <RouterLink
+                v-if="can('merchant.subscription.invoice.view')"
+                :to="{ name: 'merchant.subscription-invoices' }"
+                class="text-sm font-semibold text-heading underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                All invoices
+              </RouterLink>
+            </div>
+            <p
+              v-if="latestInvoice === null"
+              class="mt-2 text-sm text-text-muted"
+            >
+              No invoices have been issued yet.
+            </p>
+            <div
+              v-else
+              class="mt-2 text-sm text-text"
+              data-testid="latest-invoice"
+            >
+              <p>
+                <strong>{{ latestInvoice.invoice_number ?? 'Draft' }}</strong> ·
+                {{ formatMoney(latestInvoice.total_minor, latestInvoice.currency) }} ·
+                {{ latestInvoice.status }}
+              </p>
+              <p
+                v-if="latestInvoice.payment_reference_pending"
+                class="mt-1 text-text-muted"
+              >
+                Payment reference pending — see your billing dashboard
+              </p>
+            </div>
+          </SvCard>
+        </div>
+
+        <div class="flex justify-end">
+          <SvButton
+            variant="secondary"
+            @click="store.fetchSubscription()"
+          >
+            Refresh subscription
+          </SvButton>
+        </div>
       </div>
     </SvStateBoundary>
   </div>

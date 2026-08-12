@@ -47,7 +47,7 @@ it('lets an active merchant owner reach the dashboard', function (): void {
     $this->actingAs($owner, 'sanctum')
         ->getJson('/api/v1/merchant/dashboard')
         ->assertStatus(200)
-        ->assertJsonPath('data.shell.ready', true);
+        ->assertJsonPath('data.overview.get_started.setup_complete', true);
 });
 
 it('blocks an active merchant owner from the setup endpoint', function (): void {

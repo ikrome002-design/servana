@@ -89,13 +89,17 @@ function setupPayload(array $overrides = []): array
 
 it('shows current setup progress to the pending owner', function (): void {
     [$user] = pendingOwner();
+    [$planUlid, $priceUlid] = setupPlanPriceUlids();
 
     $this->actingAs($user, 'sanctum')
         ->getJson('/api/v1/merchant-registration/first-time-setup')
         ->assertStatus(200)
         ->assertJsonPath('data.setup.required', true)
         ->assertJsonPath('data.setup.current_step', 'service_fee_tier')
-        ->assertJsonStructure(['data' => ['merchant', 'setup', 'options' => ['service_fee_tiers']]]);
+        ->assertJsonStructure(['data' => ['merchant', 'setup', 'options' => ['service_fee_tiers', 'subscription_plans']]])
+        ->assertJsonPath('data.options.subscription_plans.0.id', $planUlid)
+        ->assertJsonPath('data.options.subscription_plans.0.prices.0.id', $priceUlid)
+        ->assertJsonPath('data.options.subscription_plans.0.prices.0.currency', 'KES');
 });
 
 it('completes setup transactionally: tier, profile, branch, invited staff, active', function (): void {

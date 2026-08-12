@@ -945,7 +945,7 @@ pages:
     owner_phase: UI-09
     backend_owner_phase: "Phase 6"
     implementation_status: implemented
-    runtime_route_name: "onboarding.first-time-setup"
+    runtime_route_name: "merchant.setup"
     route_delivery: "dedicated"
     permission_any: []
     permission_all: []
@@ -1053,7 +1053,7 @@ pages:
     owner_phase: UI-09
     backend_owner_phase: "Phase 23"
     implementation_status: implemented
-    runtime_route_name: "merchant.profile"
+    runtime_route_name: "merchant.merchant-profile"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -1088,13 +1088,12 @@ pages:
     route_path: "/branches"
     screen_key_path: "contract/merchant_administrator/branches.md"
     owner_phase: UI-09
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 7"
+    implementation_status: implemented
+    runtime_route_name: "merchant.branches"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all:
-      - "merchant.branch.view_all"
+    permission_all: []
     scope: merchant
     requires_mfa: true
     requires_step_up: false
@@ -1125,13 +1124,12 @@ pages:
     route_path: "/branches/:branchUlid"
     screen_key_path: "contract/merchant_administrator/branch-detail.md"
     owner_phase: UI-09
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 7"
+    implementation_status: implemented
+    runtime_route_name: "merchant.branch-detail"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all:
-      - "merchant.branch.view_all"
+    permission_all: []
     scope: merchant
     requires_mfa: true
     requires_step_up: false
@@ -1162,12 +1160,13 @@ pages:
     route_path: "/staff"
     screen_key_path: "contract/merchant_administrator/staff.md"
     owner_phase: UI-09
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-09"
+    implementation_status: implemented
+    runtime_route_name: "merchant.staff"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "branches.manage_users_lifecycle"
     scope: merchant
     requires_mfa: true
     requires_step_up: false
@@ -1237,7 +1236,7 @@ pages:
     owner_phase: UI-09
     backend_owner_phase: "Phase 20B"
     implementation_status: implemented
-    runtime_route_name: "merchant.plan"
+    runtime_route_name: "merchant.subscription-plan"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -1274,7 +1273,7 @@ pages:
     owner_phase: UI-09
     backend_owner_phase: "Phase 20B"
     implementation_status: implemented
-    runtime_route_name: "merchant.invoices"
+    runtime_route_name: "merchant.subscription-invoices"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -1309,12 +1308,13 @@ pages:
     route_path: "/subscription/invoices/:invoiceUlid"
     screen_key_path: "contract/merchant_administrator/subscription-invoice-detail.md"
     owner_phase: UI-09
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 20B"
+    implementation_status: implemented
+    runtime_route_name: "merchant.subscription-invoice-detail"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "merchant.subscription.invoice.view"
     scope: merchant
     requires_mfa: true
     requires_step_up: false
@@ -1563,7 +1563,7 @@ pages:
     owner_phase: UI-09
     backend_owner_phase: "Phase 20H"
     implementation_status: implemented
-    runtime_route_name: "merchant.compensation-summary"
+    runtime_route_name: "merchant.compensation"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -1598,15 +1598,16 @@ pages:
     route_path: "/compensation/payout-approvals"
     screen_key_path: "contract/merchant_administrator/compensation-payout-approvals.md"
     owner_phase: UI-09
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 20H"
+    implementation_status: implemented
+    runtime_route_name: "merchant.compensation-payout-approvals"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "merchant.payout.approve_high_value"
     scope: merchant
     requires_mfa: true
-    requires_step_up: false
+    requires_step_up: true
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
     gate: null
@@ -1636,7 +1637,7 @@ pages:
     owner_phase: UI-09
     backend_owner_phase: "Phase 18B"
     implementation_status: implemented
-    runtime_route_name: "merchant.period-reopen-approvals"
+    runtime_route_name: "merchant.finance-period-reopen-approvals"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -1743,10 +1744,10 @@ pages:
     route_path: "/account"
     screen_key_path: "contract/merchant_administrator/account.md"
     owner_phase: UI-09
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-03/UI-04"
+    implementation_status: implemented
+    runtime_route_name: "merchant.account"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all: []
     scope: merchant

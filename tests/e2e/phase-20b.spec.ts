@@ -229,14 +229,18 @@ test.describe('Subscription invoices', () => {
     await expect.poll(() => downloadRequested).toBe(true);
   });
 
-  test('never shows any Wallet / STK / PayBill / payment control', async ({ page }) => {
+  test('offers no Wallet / STK / PayBill / payment control while showing the truthful Gate W state', async ({ page }) => {
     await stubMe(page, { role: 'merchant_admin', permissions: MERCHANT_PERMS });
     await stubSubscription(page);
     await page.goto('/merchant/subscription-invoices');
     await expect(page.getByTestId('invoice-number')).toBeVisible();
     for (const forbidden of ['Pay now', 'STK', 'PayBill', 'Till', 'M-Pesa', 'Wallet']) {
-      await expect(page.getByText(forbidden, { exact: false })).toHaveCount(0);
+      await expect(page.getByRole('button', { name: new RegExp(forbidden, 'i') })).toHaveCount(0);
+      await expect(page.locator('a[href]').filter({ hasText: forbidden })).toHaveCount(0);
     }
+    const gated = page.locator('[aria-disabled="true"]').filter({ hasText: 'External Gate W' }).first();
+    await expect(gated).toBeVisible();
+    await expect(gated).not.toHaveAttribute('href');
   });
 });
 

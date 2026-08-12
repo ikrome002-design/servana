@@ -133,8 +133,15 @@ test.describe('Finance payout runs', () => {
     await page.locator('#mark-paid-date').fill('2026-07-15');
     await page.getByTestId('mark-paid-submit').click();
     await expect(page.getByTestId('payout-status')).toContainText('external settlement');
-    // No provider/Wallet labels.
-    for (const banned of ['Wallet', 'STK', 'PayBill', 'Daraja']) await expect(page.getByText(banned, { exact: false })).toHaveCount(0);
+    // No provider action exists. Gate W navigation may name the unavailable capability truthfully,
+    // but it remains disabled and cannot become a payment runtime control.
+    for (const banned of ['Wallet', 'STK', 'PayBill', 'Daraja']) {
+      await expect(page.getByRole('button', { name: new RegExp(banned, 'i') })).toHaveCount(0);
+      await expect(page.locator('a[href]').filter({ hasText: banned })).toHaveCount(0);
+    }
+    const gated = page.locator('[aria-disabled="true"]').filter({ hasText: 'External Gate W' }).first();
+    await expect(gated).toBeVisible();
+    await expect(gated).not.toHaveAttribute('href');
   });
 
   test('surfaces a safe fresh step-up state when mark-paid is stale, with a reachable verify flow', async ({ page }) => {
@@ -168,14 +175,18 @@ test.describe('Merchant Administrator compensation summary', () => {
     await page.route(/\/api\/v1\/merchant\/compensation-summary(\?|$)/, (r) => r.fulfill(ok({ data: summary })));
     await page.route(/\/api\/v1\/merchant\/payout-runs\/[^/]+\/approve-high-value$/, (r) => r.fulfill(ok({ data: run('approved') })));
     await page.route(/\/api\/v1\/merchant\/payout-runs(\?|$)/, (r) => r.fulfill(ok({ data: [hvRun], meta: meta([hvRun]) })));
-    await page.goto('/merchant/compensation-summary');
+    await page.goto('/compensation');
     await expect(page.getByRole('heading', { name: 'Compensation summary' })).toBeVisible();
   }
 
-  test('shows currency-grouped totals and approves a high-value run, never a mark-paid control', async ({ page }) => {
+  test('keeps summary and high-value approval responsibilities separate, with no mark-paid control', async ({ page }) => {
     await goto(page);
     await expect(page.getByTestId('outstanding-card')).toHaveCount(2);
     await expect(page.getByTestId('pending-high-value')).toHaveText('1');
+    await expect(page.getByText('Mark paid')).toHaveCount(0);
+
+    await page.goto('/compensation/payout-approvals');
+    await expect(page.getByRole('heading', { level: 1, name: 'High-value payout approvals' })).toBeVisible();
     await expect(page.getByText('Mark paid')).toHaveCount(0);
     await page.getByTestId('approve-high-value-01HRUN00000000000000000000').click();
     await page.getByTestId('approve-submit').click();

@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `merchant.profile` at `/merchant/profile` (routes/merchant.ts), delivery **dedicated**.
+> A real runtime route renders this page today: `merchant.merchant-profile` at `/merchant/profile` (routes/merchant.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-09**
 - **Backend owner phase:** **Phase 23**
 - **Implementation status:** `implemented`
-- **Runtime route:** `merchant.profile`
+- **Runtime route:** `merchant.merchant-profile`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.profile` (recorded in `docs/frontend/screens/merchant/merchant-profile.md`).
-- **Data fields:** Merchant Administrator views and edits the merchant BUSINESS profile — business category, contact phone/email, receipt display name, address, town and timezone — and sees the current logo. Delivered by REM-SCR-002A as a corrective remediation for a Plan §27.3 launch screen omitted by its owning phase. Business name, slug, country, service-fee tier and every billing/lifecycle column are read-only context; the logo is uploaded through the existing Phase 10F scanned pipeline, never a second path.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.merchant-profile` (recorded in `docs/frontend/screens/merchant/merchant-profile.md`).
+- **Data fields:** Merchant Administrator views and edits the merchant business profile, uploads or replaces its private scanned logo, previews invoice/receipt branding, and sees safe replacement metadata. Business name, slug, country, service-fee tier and every billing/lifecycle column remain read-only context.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

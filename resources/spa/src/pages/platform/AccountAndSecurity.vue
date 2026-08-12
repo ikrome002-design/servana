@@ -47,6 +47,10 @@ import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useAuthStore } from '@/stores/authStore';
 import { useSessionFamilyStore, type HostSessionView } from '@/stores/sessionFamilyStore';
 
+const props = withDefaults(defineProps<{ experience?: 'platform' | 'merchant' }>(), {
+  experience: 'platform',
+});
+
 const auth = useAuthStore();
 const sessions = useSessionFamilyStore();
 
@@ -62,6 +66,15 @@ const user = computed(() => auth.user);
 const mfa = computed(() => auth.mfa);
 const mfaEnrolled = computed(() => mfa.value?.enrolled === true);
 const mfaConfirmed = computed(() => mfa.value?.confirmed === true);
+const pageDescription = computed(() => props.experience === 'merchant'
+  ? 'Your own identity, Magic Link security, active account sessions and display preference. Staff access is managed from the Merchant staff lifecycle page.'
+  : 'Your own identity, sign-in security, active sessions and display preferences. Other platform users are managed under internal platform access.');
+const mfaPolicyNote = computed(() => props.experience === 'merchant'
+  ? 'Two-factor authentication is required for the Merchant Administrator account and cannot be turned off or weakened from this page.'
+  : 'Two-factor authentication is required for platform roles and cannot be turned off or weakened from this page. There is no control here that would lower it, and the server would refuse one.');
+const scopeNote = computed(() => props.experience === 'merchant'
+  ? 'This page changes your own identity and sessions only. It cannot view, edit, suspend or sign out another merchant user, and it cannot tell you whether another account exists.'
+  : 'This page changes your own account only. It cannot view, edit, suspend or sign out another platform user, and it cannot tell you whether another account exists.');
 
 const sessionColumns: SvColumn<HostSessionView>[] = [
   { key: 'host', label: 'Account host', priority: 'primary', value: (row) => row.host },
@@ -133,12 +146,12 @@ async function revokePending(): Promise<void> {
 <template>
   <div
     class="mx-auto w-full max-w-4xl"
-    data-testid="platform-account-screen"
+    :data-testid="experience === 'merchant' ? 'merchant-account-screen' : 'platform-account-screen'"
   >
     <SvPageHeader
       title="Account and security"
       eyebrow="Your account"
-      description="Your own identity, sign-in security, active sessions and display preferences. Other platform users are managed under internal platform access."
+      :description="pageDescription"
     />
 
     <!-- Identity ------------------------------------------------------------------------------ -->
@@ -312,9 +325,7 @@ async function revokePending(): Promise<void> {
         class="mt-4 text-xs text-sv-text-muted"
         data-testid="account-mfa-policy-note"
       >
-        Two-factor authentication is required for platform roles and cannot be turned off or
-        weakened from this page. There is no control here that would lower it, and the server would
-        refuse one.
+        {{ mfaPolicyNote }}
       </p>
     </SvCard>
 
@@ -443,8 +454,7 @@ async function revokePending(): Promise<void> {
       class="mt-6 text-xs text-sv-text-muted"
       data-testid="account-scope-note"
     >
-      This page changes your own account only. It cannot view, edit, suspend or sign out another
-      platform user, and it cannot tell you whether another account exists.
+      {{ scopeNote }}
     </p>
 
     <SvConfirmDialog

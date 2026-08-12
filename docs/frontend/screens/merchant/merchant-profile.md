@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 23**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `merchant-profile`
-- **Route name and URL:** `merchant.profile`
+- **Route name and URL:** `merchant.merchant-profile`
 - **Layout:** `MerchantLayout`
 - **Allowed roles:** `merchant_administrator`
 - **Required permissions:** `merchant.profile.view`, `merchant.profile.update` (frontend visibility only; backend EnsurePermission + policy is authoritative)
@@ -11,7 +11,7 @@
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Merchant Administrator views and edits the merchant BUSINESS profile — business category, contact phone/email, receipt display name, address, town and timezone — and sees the current logo. Delivered by REM-SCR-002A as a corrective remediation for a Plan §27.3 launch screen omitted by its owning phase. Business name, slug, country, service-fee tier and every billing/lifecycle column are read-only context; the logo is uploaded through the existing Phase 10F scanned pipeline, never a second path.
+- **Fields and displayed data:** Merchant Administrator views and edits the merchant business profile, uploads or replaces its private scanned logo, previews invoice/receipt branding, and sees safe replacement metadata. Business name, slug, country, service-fee tier and every billing/lifecycle column remain read-only context.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

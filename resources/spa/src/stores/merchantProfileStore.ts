@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { apiClient } from '@/services/apiClient';
 import type { MerchantProfile, MerchantProfileUpdate } from '@/types/models';
+import type { UploadedFileResource } from '@/components/files/SvFileUpload.vue';
 
 /**
  * Merchant business profile (REM-SCR-002A; Plan §27.3 Merchant Administrator "merchant profile").
@@ -14,6 +15,7 @@ export const useMerchantProfileStore = defineStore('merchantProfile', () => {
   const profile = ref<MerchantProfile | null>(null);
   const loading = ref(false);
   const saving = ref(false);
+  const logoUploading = ref(false);
   /** Field-scoped validation errors from the API envelope (`error.fields`). */
   const fieldErrors = ref<Record<string, string[]>>({});
 
@@ -21,6 +23,7 @@ export const useMerchantProfileStore = defineStore('merchantProfile', () => {
     profile.value = null;
     loading.value = false;
     saving.value = false;
+    logoUploading.value = false;
     fieldErrors.value = {};
   }
 
@@ -67,7 +70,20 @@ export const useMerchantProfileStore = defineStore('merchantProfile', () => {
     return data.data.url;
   }
 
-  return { profile, loading, saving, fieldErrors, fetchProfile, updateProfile, logoUrl, $reset };
+  async function uploadLogo(file: File, purpose: string): Promise<UploadedFileResource> {
+    logoUploading.value = true;
+    const body = new FormData();
+    body.append('purpose', purpose);
+    body.append('file', file);
+    try {
+      const { data } = await apiClient.post<{ data: UploadedFileResource }>('/files', body);
+      return data.data;
+    } finally {
+      logoUploading.value = false;
+    }
+  }
+
+  return { profile, loading, saving, logoUploading, fieldErrors, fetchProfile, updateProfile, uploadLogo, logoUrl, $reset };
 });
 
 /** Pull `error.fields` out of the API error envelope without assuming a client shape. */

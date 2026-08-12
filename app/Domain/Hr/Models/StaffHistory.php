@@ -10,6 +10,7 @@ use App\Domain\Tenancy\Concerns\BelongsToMerchant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -26,6 +27,7 @@ use Illuminate\Support\Str;
  * @property int|null $changed_by
  * @property string|null $reason
  * @property string $approval_status
+ * @property Carbon|null $created_at
  */
 class StaffHistory extends Model
 {

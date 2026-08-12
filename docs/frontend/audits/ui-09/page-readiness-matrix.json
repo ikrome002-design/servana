@@ -1,0 +1,267 @@
+{
+  "schema": "servana.ui09.page-readiness-matrix.v1",
+  "phase": "UI-09",
+  "account": "merchant_administrator",
+  "host": "servana.ke",
+  "base_commit": "b435f4840649687bef3d54e61424d88047a10d4b",
+  "measured_at": "2026-08-11",
+  "classification_legend": {
+    "A": "Complete in substance; canonical UI-09 integration and proof only.",
+    "B": "Backend ready; dedicated frontend page missing or incomplete.",
+    "C": "Functionality exists on a consolidated or legacy screen and must be reconciled to the canonical contract.",
+    "D": "Underlying backend capability is complete but one narrow truthful read projection is missing.",
+    "E": "Core workflow is blocked by a current external gate and remains disabled_by_gate.",
+    "F": "Would require unauthorized authority or an unresolved binding ambiguity."
+  },
+  "permission_baseline": { "total": 169, "active": 134, "planned": 35, "new_keys_authorized": 0 },
+  "target_disposition": { "implemented": 15, "disabled_by_gate": 8, "removed_by_authority": 0, "planned": 0, "total": 23 },
+  "calculation": "15 + 8 + 0 = 23; planned = 0",
+  "blocking_ambiguities": [],
+  "pages": [
+    {
+      "screen_key": "setup", "route_name": "merchant.setup", "route_path": "/setup", "navigation_group": "Pre-dashboard onboarding",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented", "readiness_class": "B",
+      "current_route_exists": true, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 6 + Phase 20B", "api_dependencies": ["GET/POST /api/v1/merchant-registration/first-time-setup"],
+      "api_readiness": "POST is complete and atomic; GET lacks the already-existing active plan/price options required by POST.",
+      "permission_any": [], "permission_all": [], "permission_statuses": [], "scope": "merchant pending_setup owner only",
+      "mfa": true, "step_up": false, "billing_state_behavior": "setup allowlist", "entitlement_behavior": "selected plan creates the trial subscription; trial remains anchored to account creation",
+      "external_gate": null, "existing_browser_evidence": ["FirstTimeSetup.spec.ts", "onboarding E2E legacy route evidence"],
+      "known_consolidated_or_legacy_route": "/onboarding/first-time-setup alias /setup", "shared_route_owners": [],
+      "work_required": "Add real plan/interval selection, billing phone explanation, review, resumable device draft, correct dashboard redirect, and focused proof.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "dashboard", "route_name": "merchant.dashboard", "route_path": "/dashboard", "navigation_group": "Home",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented", "readiness_class": "D",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": false,
+      "backend_owner_phase": "Phase 6 plus completed operational domains", "api_dependencies": ["GET /api/v1/merchant/dashboard"],
+      "api_readiness": "Current endpoint is a shell only; completed tenant-scoped subscription, branch, invitation and compensation data can support a narrow owner aggregate.",
+      "permission_any": [], "permission_all": [], "permission_statuses": [], "scope": "merchant tenant-wide",
+      "mfa": true, "step_up": false, "billing_state_behavior": "read allowed according to account allowlist", "entitlement_behavior": "show actual plan branch capacity; never bypass it",
+      "external_gate": null, "existing_browser_evidence": ["releaseAudit legacy /merchant/dashboard"],
+      "known_consolidated_or_legacy_route": "/merchant/dashboard placeholder-shaped dashboard", "shared_route_owners": [],
+      "work_required": "Replace shell/stub with a narrow truthful aggregate and ownership-only actions; canonicalize route.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "get-started", "route_name": "merchant.get-started", "route_path": "/get-started", "navigation_group": "Home",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented", "readiness_class": "D",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 11 plus completed domains", "api_dependencies": ["GET /api/v1/merchant/dashboard", "GET /api/v1/merchant/profile", "GET /api/v1/branches", "GET /api/v1/staff-invitations", "GET /api/v1/subscription"],
+      "api_readiness": "Legacy checklist stores manual checkmarks only; the dashboard projection can expose truthful observed completion without a new mutation.",
+      "permission_any": [], "permission_all": [], "permission_statuses": [], "scope": "merchant tenant-wide observations",
+      "mfa": true, "step_up": false, "billing_state_behavior": "read allowed; blocked operational work stays assigned to its role", "entitlement_behavior": "show capacity and upgrade route only",
+      "external_gate": null, "existing_browser_evidence": ["GetStartedChecklist.spec.ts", "RoleGetStarted component evidence"],
+      "known_consolidated_or_legacy_route": "/merchant/get-started", "shared_route_owners": [],
+      "work_required": "Use observed server state, name the responsible role, keep dismissal/reopen device preference, and canonicalize route.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "merchant-profile", "route_name": "merchant.merchant-profile", "route_path": "/merchant/profile", "navigation_group": "Merchant",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented", "readiness_class": "A",
+      "current_route_exists": true, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 23", "api_dependencies": ["GET/PATCH /api/v1/merchant/profile", "POST /api/v1/files purpose=merchant_logo"],
+      "api_readiness": "Scoped profile read/update and scanned logo pipeline exist.",
+      "permission_any": [], "permission_all": ["merchant.profile.view"], "permission_statuses": ["merchant.profile.view: active", "merchant.profile.update: active"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "read allowed; update blocked in billing read-only", "entitlement_behavior": "none",
+      "external_gate": null, "existing_browser_evidence": ["MerchantProfile.spec.ts", "release audit"],
+      "known_consolidated_or_legacy_route": null, "shared_route_owners": [],
+      "work_required": "Canonical route-name integration, verify logo/profile completeness and browser evidence.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "branches", "route_name": "merchant.branches", "route_path": "/branches", "navigation_group": "Merchant",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented", "readiness_class": "C",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 6/Phase 20B entitlement enforcement", "api_dependencies": ["GET/POST /api/v1/branches", "GET /api/v1/subscription"],
+      "api_readiness": "Scoped branch list/create exists; creation uses active branches.create and server entitlement enforcement.",
+      "permission_any": [], "permission_all": ["branches.create"], "permission_statuses": ["branches.create: active", "merchant.branch.view_all: planned and not used"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "read allowed; create follows billing mutation gate", "entitlement_behavior": "server blocks creation above active subscription entitlement",
+      "external_gate": null, "existing_browser_evidence": ["BranchList.spec.ts", "BranchCreate.spec.ts", "branches-staff-invitations.spec.ts"],
+      "known_consolidated_or_legacy_route": "/branch/list and /branch/create", "shared_route_owners": ["merchant_branch legacy shell"],
+      "work_required": "Provide one canonical owner list/create page with capacity truth and no Branch Manager operational controls.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "branch-detail", "route_name": "merchant.branch-detail", "route_path": "/branches/:branchUlid", "navigation_group": "Merchant",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented", "readiness_class": "D",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 6 plus completed branch domains", "api_dependencies": ["GET /api/v1/branches/{branch}", "narrow owner branch-overview projection"],
+      "api_readiness": "Scoped branch profile exists; required read-only owner overview needs a narrow projection over completed domains.",
+      "permission_any": [], "permission_all": ["branches.create"], "permission_statuses": ["branches.create: active", "merchant.branch.view_all: planned and not used"], "scope": "merchant plus branch; foreign ULID 404",
+      "mfa": true, "step_up": false, "billing_state_behavior": "reads allowed; mutations retain their route gates", "entitlement_behavior": "read-only entitlement context",
+      "external_gate": null, "existing_browser_evidence": ["legacy BranchDetail and cross-tenant branch tests"],
+      "known_consolidated_or_legacy_route": "/branch/:id", "shared_route_owners": ["merchant_branch legacy shell"],
+      "work_required": "Owner-specific detail with truthful summary and responsible-role labels; no operational edit surface.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "staff", "route_name": "merchant.staff", "route_path": "/staff", "navigation_group": "Merchant",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented", "readiness_class": "D",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": false,
+      "backend_owner_phase": "Phase 6/Phase 23 hardening", "api_dependencies": ["narrow GET /api/v1/merchant/staff-overview", "staff lifecycle mutations", "staff invitation APIs"],
+      "api_readiness": "Lifecycle/invitation writes exist; HR-only GET /staff must stay denied. A narrow Merchant Admin projection is authorized by existing lifecycle authority.",
+      "permission_any": [], "permission_all": ["branches.manage_users_lifecycle"], "permission_statuses": ["branches.manage_users_lifecycle: active", "staff.view: active HR-only and not widened"], "scope": "merchant tenant-wide, owner-safe fields",
+      "mfa": true, "step_up": false, "billing_state_behavior": "read allowed; lifecycle mutations follow current gate", "entitlement_behavior": "none",
+      "external_gate": null, "existing_browser_evidence": ["branches-staff-invitations.spec.ts", "StaffReadAuthorizationTest"],
+      "known_consolidated_or_legacy_route": "/hr/staff is forbidden to Merchant Admin", "shared_route_owners": [],
+      "work_required": "Add narrow safe projection and owner page; exclude phone/client PII and HR operational controls.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "subscription", "route_name": "merchant.subscription", "route_path": "/subscription", "navigation_group": "Subscription & Billing",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented", "readiness_class": "C",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 20B", "api_dependencies": ["GET /api/v1/subscription", "GET /api/v1/subscription/scheduled-plan-change"],
+      "api_readiness": "Complete scoped self-service reads; no Wallet mutation exists.",
+      "permission_any": [], "permission_all": ["merchant.subscription.view"], "permission_statuses": ["merchant.subscription.view: active"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "read allowlist", "entitlement_behavior": "real plan limits and usage",
+      "external_gate": null, "existing_browser_evidence": ["SubscriptionDashboard.spec.ts"],
+      "known_consolidated_or_legacy_route": "/merchant/subscription", "shared_route_owners": [],
+      "work_required": "Canonicalize and ensure payment/recovery actions stay truthful while Gate W is closed.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "subscription-plan", "route_name": "merchant.subscription-plan", "route_path": "/subscription/plan", "navigation_group": "Subscription & Billing",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented", "readiness_class": "C",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 20B", "api_dependencies": ["GET /api/v1/subscription/plans", "POST /api/v1/subscription/scheduled-plan-change", "POST .../cancel"],
+      "api_readiness": "Complete, no-proration, next-cycle scheduled change contract.",
+      "permission_any": [], "permission_all": ["merchant.subscription.plan_change"], "permission_statuses": ["merchant.subscription.plan_change: active"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "reads allowed; schedule/cancel blocked in billing read-only", "entitlement_behavior": "effective price and branch limits are server-provided",
+      "external_gate": null, "existing_browser_evidence": ["PlanManagement.spec.ts"],
+      "known_consolidated_or_legacy_route": "/merchant/plan", "shared_route_owners": [],
+      "work_required": "Canonicalize and preserve exact next-cycle/no-proration explanation.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "subscription-invoices", "route_name": "merchant.subscription-invoices", "route_path": "/subscription/invoices", "navigation_group": "Subscription & Billing",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented", "readiness_class": "C",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 20B", "api_dependencies": ["GET /api/v1/subscription-invoices"],
+      "api_readiness": "Complete scoped paginated invoice read.",
+      "permission_any": [], "permission_all": ["merchant.subscription.invoice.view"], "permission_statuses": ["merchant.subscription.invoice.view: active"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "read allowed", "entitlement_behavior": "none",
+      "external_gate": null, "existing_browser_evidence": ["SubscriptionInvoices.spec.ts"],
+      "known_consolidated_or_legacy_route": "/merchant/subscription-invoices", "shared_route_owners": [],
+      "work_required": "Canonicalize and link every row to the canonical detail page.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "subscription-invoice-detail", "route_name": "merchant.subscription-invoice-detail", "route_path": "/subscription/invoices/:invoiceUlid", "navigation_group": "Subscription & Billing",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented", "readiness_class": "B",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": true,
+      "backend_owner_phase": "Phase 20B", "api_dependencies": ["GET /api/v1/subscription-invoices/{invoice}", "POST PDF generation", "GET PDF download-link"],
+      "api_readiness": "Scoped detail and document routes are complete; Wallet payment initiation is absent and must not be faked.",
+      "permission_any": [], "permission_all": ["merchant.subscription.invoice.view"], "permission_statuses": ["merchant.subscription.invoice.view: active", "merchant.subscription.invoice.download: active"], "scope": "merchant; foreign invoice ULID 404",
+      "mfa": true, "step_up": false, "billing_state_behavior": "detail/existing document read allowed; new PDF follows billing gate", "entitlement_behavior": "none",
+      "external_gate": null, "existing_browser_evidence": ["SubscriptionInvoiceController feature tests"],
+      "known_consolidated_or_legacy_route": "invoice list only", "shared_route_owners": [],
+      "work_required": "Build dedicated detail/document page; display payment workflow as unavailable behind Gate W, not as success.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "subscription-payment-attempts", "route_name": "merchant.subscription-payment-attempts", "route_path": "/subscription/payment-attempts", "navigation_group": "Subscription & Billing",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate", "readiness_class": "E",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": false, "backend_owner_phase": null,
+      "api_dependencies": [], "api_readiness": "Provider-owned Wallet collection attempt runtime absent.", "permission_any": [], "permission_all": [], "permission_statuses": [], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "inert", "entitlement_behavior": "none", "external_gate": "external_gate_w",
+      "existing_browser_evidence": ["navigation gate tests"], "known_consolidated_or_legacy_route": null, "shared_route_owners": [],
+      "work_required": "Keep visible, disabled, exact Gate W reason; no route/component/data.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "subscription-recovery", "route_name": "merchant.subscription-recovery", "route_path": "/subscription/recovery", "navigation_group": "Subscription & Billing",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate", "readiness_class": "E",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": false, "backend_owner_phase": null,
+      "api_dependencies": [], "api_readiness": "Wallet collection/recovery workflow absent.", "permission_any": [], "permission_all": [], "permission_statuses": [], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "inert while Gate W closed", "entitlement_behavior": "none", "external_gate": "external_gate_w",
+      "existing_browser_evidence": ["navigation gate tests"], "known_consolidated_or_legacy_route": null, "shared_route_owners": [],
+      "work_required": "Keep visible, disabled, exact Gate W reason; no route/component/data.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "reports", "route_name": "merchant.reports", "route_path": "/reports", "navigation_group": "Reports",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate", "readiness_class": "E",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": false, "backend_owner_phase": null,
+      "api_dependencies": [], "api_readiness": "Merchant reporting aggregate/export authority remains transitively blocked by Gate W.", "permission_any": [], "permission_all": [], "permission_statuses": ["merchant.report: planned and not activated"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "inert", "entitlement_behavior": "none", "external_gate": "external_gate_w",
+      "existing_browser_evidence": ["navigation gate tests"], "known_consolidated_or_legacy_route": null, "shared_route_owners": [],
+      "work_required": "Keep visible, disabled, exact Gate W reason; no zero metrics or export.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "reports-branches", "route_name": "merchant.reports-branches", "route_path": "/reports/branches", "navigation_group": "Reports",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate", "readiness_class": "E",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": false, "backend_owner_phase": null,
+      "api_dependencies": [], "api_readiness": "Canonical branch-performance report runtime absent and gated.", "permission_any": [], "permission_all": [], "permission_statuses": ["merchant.report: planned and not activated"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "inert", "entitlement_behavior": "none", "external_gate": "external_gate_w",
+      "existing_browser_evidence": ["navigation gate tests"], "known_consolidated_or_legacy_route": null, "shared_route_owners": [],
+      "work_required": "Keep visible, disabled, exact Gate W reason; no route/component/data.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "reports-services", "route_name": "merchant.reports-services", "route_path": "/reports/services", "navigation_group": "Reports",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate", "readiness_class": "E",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": false, "backend_owner_phase": null,
+      "api_dependencies": [], "api_readiness": "Canonical service-revenue report runtime absent and gated.", "permission_any": [], "permission_all": [], "permission_statuses": ["merchant.report: planned and not activated"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "inert", "entitlement_behavior": "none", "external_gate": "external_gate_w",
+      "existing_browser_evidence": ["navigation gate tests"], "known_consolidated_or_legacy_route": null, "shared_route_owners": [],
+      "work_required": "Keep visible, disabled, exact Gate W reason; no route/component/data.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "reports-staff", "route_name": "merchant.reports-staff", "route_path": "/reports/staff", "navigation_group": "Reports",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate", "readiness_class": "E",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": false, "backend_owner_phase": null,
+      "api_dependencies": [], "api_readiness": "Canonical privacy-safe staff-performance report runtime absent and gated.", "permission_any": [], "permission_all": [], "permission_statuses": ["merchant.report: planned and not activated"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "inert", "entitlement_behavior": "none", "external_gate": "external_gate_w",
+      "existing_browser_evidence": ["navigation gate tests"], "known_consolidated_or_legacy_route": null, "shared_route_owners": [],
+      "work_required": "Keep visible, disabled, exact Gate W reason; no route/component/data.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "compensation", "route_name": "merchant.compensation", "route_path": "/compensation", "navigation_group": "Compensation & Approvals",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented", "readiness_class": "C",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 20H", "api_dependencies": ["GET /api/v1/merchant/compensation-summary"], "api_readiness": "Complete masked merchant-scoped summary.",
+      "permission_any": [], "permission_all": ["merchant.compensation_summary.view"], "permission_statuses": ["merchant.compensation_summary.view: active"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "read allowed", "entitlement_behavior": "none", "external_gate": null,
+      "existing_browser_evidence": ["CompensationSummary.spec.ts", "phase-20h.spec.ts"], "known_consolidated_or_legacy_route": "/merchant/compensation-summary also contains approvals", "shared_route_owners": [],
+      "work_required": "Canonicalize summary and split approvals into their own route.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "compensation-payout-approvals", "route_name": "merchant.compensation-payout-approvals", "route_path": "/compensation/payout-approvals", "navigation_group": "Compensation & Approvals",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented", "readiness_class": "C",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 20H", "api_dependencies": ["GET /api/v1/merchant/payout-runs", "GET detail", "POST approve-high-value"], "api_readiness": "Complete scoped approval list/detail and idempotent fresh-step-up mutation.",
+      "permission_any": [], "permission_all": ["merchant.payout.approve_high_value"], "permission_statuses": ["merchant.payout.approve_high_value: active"], "scope": "merchant",
+      "mfa": true, "step_up": true, "billing_state_behavior": "approval follows current financial mutation policy", "entitlement_behavior": "threshold is server authority", "external_gate": null,
+      "existing_browser_evidence": ["phase-20h.spec.ts", "Phase20HPayoutRunApiTest"], "known_consolidated_or_legacy_route": "approval panel in /merchant/compensation-summary", "shared_route_owners": [],
+      "work_required": "Split to dedicated canonical page; owner cannot create, verify, standard-approve or mark paid.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "finance-period-reopen-approvals", "route_name": "merchant.finance-period-reopen-approvals", "route_path": "/finance/period-reopen-approvals", "navigation_group": "Compensation & Approvals",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented", "readiness_class": "C",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase 18B", "api_dependencies": ["period reopen request list/detail approve/reject APIs"], "api_readiness": "Complete owner-exception workflow.",
+      "permission_any": [], "permission_all": ["merchant.period_reopen.approve_exception"], "permission_statuses": ["merchant.period_reopen.approve_exception: active"], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "existing governance behavior", "entitlement_behavior": "none", "external_gate": null,
+      "existing_browser_evidence": ["PeriodReopenApprovals.spec.ts", "cash-up-period-lock.spec.ts"], "known_consolidated_or_legacy_route": "/merchant/period-reopen-approvals", "shared_route_owners": [],
+      "work_required": "Canonicalize route and prove Merchant Admin cannot execute the reopen.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "reports-daily", "route_name": "merchant.reports-daily", "route_path": "/reports/daily", "navigation_group": "Reports",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate", "readiness_class": "E",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": false, "backend_owner_phase": null,
+      "api_dependencies": [], "api_readiness": "Phase 21N daily report delivery is transitively blocked by External Gate W.", "permission_any": [], "permission_all": [], "permission_statuses": [], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "inert", "entitlement_behavior": "none", "external_gate": "external_gate_w",
+      "existing_browser_evidence": ["navigation gate tests"], "known_consolidated_or_legacy_route": null, "shared_route_owners": [],
+      "work_required": "Keep visible, disabled, exact Gate W reason; no PDF/archive data.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "notifications", "route_name": "merchant.notifications", "route_path": "/notifications", "navigation_group": "Utility",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate", "readiness_class": "E",
+      "current_route_exists": false, "current_component_exists": false, "current_store_exists": false, "backend_owner_phase": null,
+      "api_dependencies": [], "api_readiness": "Phase 21N notification centre is transitively blocked by External Gate W.", "permission_any": [], "permission_all": [], "permission_statuses": [], "scope": "merchant",
+      "mfa": true, "step_up": false, "billing_state_behavior": "inert", "entitlement_behavior": "none", "external_gate": "external_gate_w",
+      "existing_browser_evidence": ["navigation gate tests"], "known_consolidated_or_legacy_route": null, "shared_route_owners": [],
+      "work_required": "Keep visible, disabled, exact Gate W reason; no badge count or preference mutation.", "blocking_ambiguity_id": null
+    },
+    {
+      "screen_key": "account", "route_name": "merchant.account", "route_path": "/account", "navigation_group": "Utility",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented", "readiness_class": "B",
+      "current_route_exists": false, "current_component_exists": true, "current_store_exists": true,
+      "backend_owner_phase": "Phase UI-03/UI-04", "api_dependencies": ["GET /api/v1/me", "MFA APIs", "GET/DELETE /api/v1/auth/sessions", "PATCH /api/v1/auth/preferences"],
+      "api_readiness": "Complete own-account APIs; no cross-user lookup or password route.",
+      "permission_any": [], "permission_all": [], "permission_statuses": [], "scope": "authenticated user own scope across held account contexts",
+      "mfa": true, "step_up": false, "billing_state_behavior": "account/security allowlist", "entitlement_behavior": "none", "external_gate": null,
+      "existing_browser_evidence": ["PlatformAuditAndAccount.spec.ts", "UI-03 account/session E2E"], "known_consolidated_or_legacy_route": "/account on Super Administrator host uses a platform-worded component", "shared_route_owners": ["super_administrator owns its separate host-relative /account"],
+      "work_required": "Create Merchant-owner wording and canonical route using the same own-scope security stores; preserve Magic Link-only truth.", "blocking_ambiguity_id": null
+    }
+  ]
+}

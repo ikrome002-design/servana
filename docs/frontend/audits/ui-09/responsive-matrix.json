@@ -1,0 +1,20 @@
+{
+  "schema": "servana.ui09.responsive-matrix.v1",
+  "phase": "UI-09",
+  "browser": "Playwright Chromium built SPA",
+  "implemented_pages_checked": 15,
+  "widths": [
+    { "px": 360, "pages": 15, "horizontal_overflow": 0, "layout": "mobile left drawer" },
+    { "px": 767, "pages": 15, "horizontal_overflow": 0, "layout": "mobile left drawer" },
+    { "px": 768, "pages": 15, "horizontal_overflow": 0, "layout": "collapsible tablet rail" },
+    { "px": 1024, "pages": 15, "horizontal_overflow": 0, "layout": "collapsible tablet rail" },
+    { "px": 1025, "pages": 15, "horizontal_overflow": 0, "layout": "persistent desktop sidebar" },
+    { "px": 1280, "pages": 15, "horizontal_overflow": 0, "layout": "persistent desktop sidebar" },
+    { "px": 1440, "pages": 15, "horizontal_overflow": 0, "layout": "persistent desktop sidebar" }
+  ],
+  "zoom": { "equivalent": "200%", "viewport_css_px": 720, "horizontal_overflow": false },
+  "drawer": { "focus_wrap": true, "escape_closes": true, "backdrop_closes": true, "focus_returns_to_opener": true },
+  "footer_obstruction": false,
+  "device_detection_javascript": false,
+  "test_result": { "command": "npx playwright test tests/e2e/ui-09-merchant-administrator-experience.spec.ts --reporter=line", "passed": 65, "failed": 0, "skipped": 0, "exit_code": 0, "duration_seconds": 247.6 }
+}

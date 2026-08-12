@@ -1,0 +1,33 @@
+{
+  "schema": "servana.ui09.page-contract-matrix.v1",
+  "phase": "UI-09",
+  "account": "merchant_administrator",
+  "host": "servana.ke",
+  "source": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+  "totals": { "implemented": 15, "disabled_by_gate": 8, "planned": 0, "removed_by_authority": 0, "total": 23 },
+  "pages": [
+    { "screen_key": "setup", "route_name": "merchant.setup", "route_path": "/setup", "status": "implemented", "group": "Pre-dashboard onboarding", "visibility": "primary", "component": "@/pages/onboarding/FirstTimeSetup.vue" },
+    { "screen_key": "dashboard", "route_name": "merchant.dashboard", "route_path": "/dashboard", "status": "implemented", "group": "Home", "visibility": "primary", "component": "@/pages/merchant/Dashboard.vue" },
+    { "screen_key": "get-started", "route_name": "merchant.get-started", "route_path": "/get-started", "status": "implemented", "group": "Home", "visibility": "primary", "component": "@/pages/get-started/RoleGetStarted.vue" },
+    { "screen_key": "merchant-profile", "route_name": "merchant.merchant-profile", "route_path": "/merchant/profile", "status": "implemented", "group": "Merchant", "visibility": "primary", "component": "@/pages/merchant/MerchantProfile.vue" },
+    { "screen_key": "branches", "route_name": "merchant.branches", "route_path": "/branches", "status": "implemented", "group": "Merchant", "visibility": "primary", "component": "@/pages/branch/BranchList.vue" },
+    { "screen_key": "branch-detail", "route_name": "merchant.branch-detail", "route_path": "/branches/:branchUlid", "status": "implemented", "group": "Merchant", "visibility": "contextual_child", "component": "@/pages/merchant/MerchantBranchDetail.vue" },
+    { "screen_key": "staff", "route_name": "merchant.staff", "route_path": "/staff", "status": "implemented", "group": "Merchant", "visibility": "primary", "component": "@/pages/merchant/StaffOverview.vue" },
+    { "screen_key": "subscription", "route_name": "merchant.subscription", "route_path": "/subscription", "status": "implemented", "group": "Subscription & Billing", "visibility": "primary", "component": "@/pages/merchant/SubscriptionDashboard.vue" },
+    { "screen_key": "subscription-plan", "route_name": "merchant.subscription-plan", "route_path": "/subscription/plan", "status": "implemented", "group": "Subscription & Billing", "visibility": "primary", "component": "@/pages/merchant/PlanManagement.vue" },
+    { "screen_key": "subscription-invoices", "route_name": "merchant.subscription-invoices", "route_path": "/subscription/invoices", "status": "implemented", "group": "Subscription & Billing", "visibility": "primary", "component": "@/pages/merchant/SubscriptionInvoices.vue" },
+    { "screen_key": "subscription-invoice-detail", "route_name": "merchant.subscription-invoice-detail", "route_path": "/subscription/invoices/:invoiceUlid", "status": "implemented", "group": "Subscription & Billing", "visibility": "contextual_child", "component": "@/pages/merchant/SubscriptionInvoiceDetail.vue" },
+    { "screen_key": "subscription-payment-attempts", "route_name": "merchant.subscription-payment-attempts", "route_path": "/subscription/payment-attempts", "status": "disabled_by_gate", "group": "Subscription & Billing", "visibility": "primary", "component": null },
+    { "screen_key": "subscription-recovery", "route_name": "merchant.subscription-recovery", "route_path": "/subscription/recovery", "status": "disabled_by_gate", "group": "Subscription & Billing", "visibility": "primary", "component": null },
+    { "screen_key": "reports", "route_name": "merchant.reports", "route_path": "/reports", "status": "disabled_by_gate", "group": "Reports", "visibility": "primary", "component": null },
+    { "screen_key": "reports-branches", "route_name": "merchant.reports-branches", "route_path": "/reports/branches", "status": "disabled_by_gate", "group": "Reports", "visibility": "primary", "component": null },
+    { "screen_key": "reports-services", "route_name": "merchant.reports-services", "route_path": "/reports/services", "status": "disabled_by_gate", "group": "Reports", "visibility": "primary", "component": null },
+    { "screen_key": "reports-staff", "route_name": "merchant.reports-staff", "route_path": "/reports/staff", "status": "disabled_by_gate", "group": "Reports", "visibility": "primary", "component": null },
+    { "screen_key": "compensation", "route_name": "merchant.compensation", "route_path": "/compensation", "status": "implemented", "group": "Compensation & Approvals", "visibility": "primary", "component": "@/pages/merchant/CompensationSummary.vue" },
+    { "screen_key": "compensation-payout-approvals", "route_name": "merchant.compensation-payout-approvals", "route_path": "/compensation/payout-approvals", "status": "implemented", "group": "Compensation & Approvals", "visibility": "primary", "component": "@/pages/merchant/CompensationSummary.vue" },
+    { "screen_key": "finance-period-reopen-approvals", "route_name": "merchant.finance-period-reopen-approvals", "route_path": "/finance/period-reopen-approvals", "status": "implemented", "group": "Compensation & Approvals", "visibility": "primary", "component": "@/pages/merchant/PeriodReopenApprovals.vue" },
+    { "screen_key": "reports-daily", "route_name": "merchant.reports-daily", "route_path": "/reports/daily", "status": "disabled_by_gate", "group": "Reports", "visibility": "primary", "component": null },
+    { "screen_key": "notifications", "route_name": "merchant.notifications", "route_path": "/notifications", "status": "disabled_by_gate", "group": "Utility", "visibility": "primary", "component": null },
+    { "screen_key": "account", "route_name": "merchant.account", "route_path": "/account", "status": "implemented", "group": "Utility", "visibility": "primary", "component": "@/pages/merchant/AccountAndSecurity.vue" }
+  ]
+}

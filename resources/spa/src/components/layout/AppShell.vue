@@ -2,13 +2,11 @@
 import { computed, nextTick, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import HeaderGroupNavigation from '@/components/navigation/HeaderGroupNavigation.vue';
-import RoleNavigation from '@/components/navigation/RoleNavigation.vue';
 import SvFixedFooter from '@/components/ui/SvFixedFooter.vue';
 import SvNotificationsControl from '@/components/ui/SvNotificationsControl.vue';
 import SvProfileControl from '@/components/ui/SvProfileControl.vue';
 import { SvIconClose, SvIconMenu } from '@/design-system/icons';
 import { flattenNavigation, navigationTree } from '@/navigation/navigationFilter';
-import { navigationFor } from '@/navigation/roleNavigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useMerchantStore } from '@/stores/merchantStore';
 import { ROLE_ENTRY, type RoleIdentity } from '@/types/roles';
@@ -47,14 +45,13 @@ const auth = useAuthStore();
 const merchant = useMerchantStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
-const items = computed(() => navigationFor(props.identity));
 const placement = computed(() => entry.value.navPlacement);
 
 /**
  * Phase UI-08: the header account renders the GROUPED navigation tree rather than the flat list.
  * `navigationTree()` is the same filtered value the drawer renders, so the two surfaces cannot
- * disagree about what a user may see. Sidebar accounts keep the flat `navigationFor()` list until
- * their own owner phase (UI-09 … UI-15) reconciles them.
+ * disagree about what a user may see. UI-09 moves sidebar accounts onto the same grouped tree;
+ * placement still differs, and this remains discoverability rather than authorization.
  */
 const navigationNodes = computed(() =>
   navigationTree(props.identity, { permissions: auth.permissions }),
@@ -65,14 +62,14 @@ const pageTitle = computed(() => {
   const fromTree = flattenNavigation(navigationNodes.value).find((n) => n.routeName === route.name);
   if (fromTree) return fromTree.label;
 
-  const active = items.value.find((i) => i.routeName === route.name);
-  return active?.label ?? entry.value.label;
+  return entry.value.label;
 });
 
 // Mobile drawer (sidebar roles) / header disclosure (super admin).
 const navOpen = ref(false);
 const triggerRef = ref<HTMLButtonElement | null>(null);
 const panelRef = ref<HTMLElement | null>(null);
+const railExpanded = ref(false);
 
 async function openNav(): Promise<void> {
   navOpen.value = true;
@@ -92,7 +89,30 @@ function onNavigate(): void {
   if (navOpen.value) closeNav();
 }
 function onPanelKeydown(e: KeyboardEvent): void {
-  if (e.key === 'Escape') closeNav();
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeNav();
+    return;
+  }
+
+  if (e.key !== 'Tab') return;
+
+  const focusable = Array.from(
+    panelRef.value?.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex="0"]',
+    ) ?? [],
+  ).filter((element) => !element.hasAttribute('disabled'));
+  if (focusable.length === 0) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
 }
 
 // Close the drawer/disclosure on route change.
@@ -131,7 +151,7 @@ const isHeaderNav = computed(() => placement.value === 'header');
             v-if="!isHeaderNav"
             ref="triggerRef"
             type="button"
-            class="inline-flex h-11 w-11 items-center justify-center rounded-control text-text hover:bg-surface-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary lg:hidden"
+            class="inline-flex h-11 w-11 items-center justify-center rounded-control text-text hover:bg-surface-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:hidden"
             :aria-expanded="navOpen"
             aria-controls="role-nav-drawer"
             aria-label="Open navigation menu"
@@ -186,7 +206,7 @@ const isHeaderNav = computed(() => placement.value === 'header');
             :name="auth.user.name"
             :account-label="entry.label"
             :context-label="merchant.name ?? null"
-            :get-started-to="isHeaderNav ? { name: entry.getStartedRouteName } : null"
+            :get-started-to="{ name: entry.getStartedRouteName }"
             @logout="logout"
           />
 
@@ -213,14 +233,59 @@ const isHeaderNav = computed(() => placement.value === 'header');
 
     <div class="flex flex-1">
       <!-- Sidebar roles: desktop persistent primary navigation. -->
-      <nav
+      <div
         v-if="!isHeaderNav"
-        aria-label="Primary navigation"
         class="hidden w-64 shrink-0 border-r border-border bg-surface p-3 lg:block"
         data-testid="sidebar-primary-nav"
       >
-        <RoleNavigation :items="items" />
-      </nav>
+        <HeaderGroupNavigation
+          :nodes="navigationNodes"
+          variant="stacked"
+        />
+      </div>
+
+      <!-- Tablet-only collapsible rail. It is layout-driven by CSS, never device detection. -->
+      <aside
+        v-if="!isHeaderNav"
+        class="hidden shrink-0 flex-col border-r border-border bg-surface md:flex lg:hidden"
+        :class="railExpanded ? 'w-64' : 'w-[4.5rem]'"
+        data-testid="tablet-navigation-rail"
+      >
+        <button
+          type="button"
+          class="sv-focus-ring m-3 inline-flex min-h-sv-touch items-center justify-center rounded-control border border-border px-2 text-sm font-semibold text-heading"
+          :aria-expanded="railExpanded"
+          aria-controls="tablet-navigation-content"
+          :aria-label="railExpanded ? 'Collapse navigation rail' : 'Expand navigation rail'"
+          data-testid="tablet-navigation-toggle"
+          @click="railExpanded = !railExpanded"
+        >
+          <SvIconClose
+            v-if="railExpanded"
+            aria-hidden="true"
+            class="h-5 w-5"
+          />
+          <SvIconMenu
+            v-else
+            aria-hidden="true"
+            class="h-5 w-5"
+          />
+          <span
+            v-if="railExpanded"
+            class="ml-2"
+          >Collapse</span>
+        </button>
+        <div
+          v-show="railExpanded"
+          id="tablet-navigation-content"
+          class="min-h-0 flex-1 overflow-y-auto p-3 pt-0"
+        >
+          <HeaderGroupNavigation
+            :nodes="navigationNodes"
+            variant="stacked"
+          />
+        </div>
+      </aside>
 
       <!--
         `min-w-0` is load-bearing (Plan §28). As a flex item, `main` defaults to
@@ -245,7 +310,7 @@ const isHeaderNav = computed(() => placement.value === 'header');
       <div
         v-if="navOpen"
         class="fixed inset-0 z-50"
-        :class="isHeaderNav ? 'md:hidden' : 'lg:hidden'"
+        :class="'md:hidden'"
       >
         <div
           class="absolute inset-0 bg-black/50"
@@ -282,14 +347,8 @@ const isHeaderNav = computed(() => placement.value === 'header');
             defects appear.
           -->
           <HeaderGroupNavigation
-            v-if="isHeaderNav"
             :nodes="navigationNodes"
             variant="stacked"
-            @navigate="onNavigate"
-          />
-          <RoleNavigation
-            v-else
-            :items="items"
             @navigate="onNavigate"
           />
         </div>

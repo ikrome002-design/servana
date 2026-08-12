@@ -178,6 +178,8 @@ export interface MerchantProfile {
   } | null;
   /** Current logo: public file id + safe filename only. Never a path, URL or signature. */
   logo: { id: string; filename: string } | null;
+  /** Ten most recent clean replacements; safe metadata only. */
+  logo_history: Array<{ id: string; filename: string; available_at: string | null }>;
 }
 
 export interface MerchantProfileUpdate {

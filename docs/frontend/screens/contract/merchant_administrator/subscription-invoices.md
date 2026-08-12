@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `merchant.invoices` at `/merchant/subscription-invoices` (routes/merchant.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/subscription/invoices`; owner phase **UI-09** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `merchant.subscription-invoices` at `/subscription/invoices` (routes/merchant.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-09**
 - **Backend owner phase:** **Phase 20B**
 - **Implementation status:** `implemented`
-- **Runtime route:** `merchant.invoices`
+- **Runtime route:** `merchant.subscription-invoices`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.invoices` (recorded in `docs/frontend/screens/merchant/subscription-invoices.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.subscription-invoices` (recorded in `docs/frontend/screens/merchant/subscription-invoices.md`).
 - **Data fields:** Invoice list/detail (number, period, plan/price snapshot, amounts/currency/balance, status, issued/due dates, payment-reference-pending). Generate PDF is a mutation blocked in billing read-only; download of an existing PDF is a read allowed in read-only. NO Wallet/STK/PayBill-Till/provider/payment UI.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

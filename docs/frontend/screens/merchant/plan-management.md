@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 20B**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `plan-management`
-- **Route name and URL:** `merchant.plan`
+- **Route name and URL:** `merchant.subscription-plan`
 - **Layout:** `MerchantLayout`
 - **Allowed roles:** `merchant_administrator`
 - **Required permissions:** `merchant.subscription.plan_change` (frontend visibility only; backend EnsurePermission + policy is authoritative)

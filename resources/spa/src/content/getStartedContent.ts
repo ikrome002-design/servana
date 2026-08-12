@@ -24,6 +24,10 @@ export interface GetStartedItem {
   /** Owning phase for not-yet-live steps (truthful, no fake routes). */
   phase?: string;
   kind: GetStartedItemKind;
+  /** Server-observed items cannot be manually claimed complete by the owner. */
+  completion?: 'manual' | 'server';
+  /** Role responsible for the underlying work; display-only and never an authority grant. */
+  responsibleRole?: string;
 }
 
 const ACKNOWLEDGE: GetStartedItem = {
@@ -43,13 +47,14 @@ const superAdministrator: GetStartedItem[] = [
 ];
 
 const merchantAdministrator: GetStartedItem[] = [
-  { id: 'verify-email', label: 'Verify email', phase: 'Phase 6', kind: 'action' },
-  { id: 'choose-subscription-plan', label: 'Choose subscription plan', phase: 'Phase 20A', kind: 'action' },
-  { id: 'confirm-merchant-profile', label: 'Confirm merchant profile', routeName: 'onboarding.first-time-setup', kind: 'action' },
-  { id: 'create-first-branch', label: 'Create first branch', routeName: 'branch.create', kind: 'action' },
-  { id: 'invite-branch-manager-hr', label: 'Invite Branch Manager and HR', phase: 'Phase 7', kind: 'action' },
-  { id: 'confirm-billing-mpesa-phone', label: 'Confirm billing/M-Pesa phone', phase: 'Phase 20D', kind: 'action' },
-  { id: 'finish-setup', label: 'Finish setup', routeName: 'onboarding.first-time-setup', kind: 'action' },
+  { id: 'verify-email', label: 'Verify email and complete mandatory setup', routeName: 'merchant.dashboard', kind: 'action', completion: 'server', responsibleRole: 'Merchant Administrator' },
+  { id: 'choose-subscription-plan', label: 'Choose plan and billing interval', routeName: 'merchant.subscription-plan', kind: 'action', completion: 'server', responsibleRole: 'Merchant Administrator' },
+  { id: 'confirm-merchant-profile', label: 'Confirm merchant profile and logo', routeName: 'merchant.merchant-profile', kind: 'action', completion: 'server', responsibleRole: 'Merchant Administrator' },
+  { id: 'create-first-branch', label: 'Create the first entitled branch', routeName: 'merchant.branches', kind: 'action', completion: 'server', responsibleRole: 'Merchant Administrator' },
+  { id: 'invite-branch-manager-hr', label: 'Invite and activate the initial Branch Manager and HR', routeName: 'merchant.staff', kind: 'action', completion: 'server', responsibleRole: 'Merchant Administrator' },
+  { id: 'confirm-billing-mpesa-phone', label: 'Confirm billing/M-Pesa phone', routeName: 'merchant.merchant-profile', kind: 'action', completion: 'server', responsibleRole: 'Merchant Administrator' },
+  { id: 'operational-role-readiness', label: 'Activate Branch Manager, HR, Finance, and Front Office owners', routeName: 'merchant.staff', kind: 'action', completion: 'server', responsibleRole: 'Merchant Administrator' },
+  { id: 'review-first-daily-reports', label: 'Review the first day-close, cash-up, validation, receipt, and payout workflows', phase: 'External Gate W', kind: 'action', completion: 'server', responsibleRole: 'Branch Manager and Finance' },
   ACKNOWLEDGE,
 ];
 

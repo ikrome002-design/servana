@@ -112,6 +112,10 @@ const P23_VERIFIED_PHASES = [
     // exception, NOT independent approval. Reconciled live on the
     // phase-ui-07-navigation-screen-contracts branch.
     'UI-06',
+    // UI-07 merged as PR #57 (squash 16d544c5); UI-08 merged as PR #58 (squash b435f484),
+    // with final five-job CI run 31403883471 successful and the reviewed tree equal to the
+    // merge tree. Both were reconciled from live Git/GitHub evidence on the UI-09 branch.
+    'UI-07', 'UI-08',
 ];
 
 /**
@@ -122,11 +126,12 @@ const P23_VERIFIED_PHASES = [
  *
  * @var list<string>
  */
-const P23_UI_PHASES_VERIFIED = ['UI-00', 'UI-01', 'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06'];
+const P23_UI_PHASES_VERIFIED = [
+    'UI-00', 'UI-01', 'UI-02', 'UI-03', 'UI-04', 'UI-05', 'UI-06', 'UI-07', 'UI-08',
+];
 
 /** @var list<string> */
 const P23_UI_PHASES_UNVERIFIED = [
-    'UI-07', 'UI-08',
     'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17',
 ];
 
@@ -147,7 +152,7 @@ const P23_UNVERIFIED_PHASES = ['20D-W', '21R-B', '21N', '25', ...P23_UI_PHASES_U
  * e6afe832, Phase UI-05 after PR #55 merged as the squash commit e6664f2e, and Phase UI-06 after
  * PR #56 merged as the squash commit 6b67ad2e).
  */
-const P23_IN_FLIGHT_PHASE = 'UI-07';
+const P23_IN_FLIGHT_PHASE = 'UI-09';
 
 /**
  * Phases a `deferred_future_phase` row may name: the remaining backend phases plus every UI phase
@@ -155,8 +160,9 @@ const P23_IN_FLIGHT_PHASE = 'UI-07';
  *
  * @var list<string>
  */
-const P23_DEFERRABLE_PHASES = ['21N', '25', 'UI-06',
-    'UI-07', 'UI-08', 'UI-09', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17'];
+const P23_DEFERRABLE_PHASES = [
+    '21N', '25', 'UI-10', 'UI-11', 'UI-12', 'UI-13', 'UI-14', 'UI-15', 'UI-16', 'UI-17',
+];
 
 /** @return list<array<string, string>> */
 function p23TraceRows(): array

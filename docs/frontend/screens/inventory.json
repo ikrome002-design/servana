@@ -184,7 +184,7 @@
     {
       "key": "first-time-setup",
       "domain": "onboarding",
-      "route": "onboarding.first-time-setup",
+      "route": "merchant.setup",
       "layout": "Standalone",
       "status": "implemented",
       "phase": "Phase 6",
@@ -769,7 +769,7 @@
     {
       "key": "merchant-profile",
       "domain": "merchant",
-      "route": "merchant.profile",
+      "route": "merchant.merchant-profile",
       "layout": "MerchantLayout",
       "status": "implemented",
       "phase": "Phase 23",
@@ -782,7 +782,46 @@
         "merchant.profile.view",
         "merchant.profile.update"
       ],
-      "summary": "Merchant Administrator views and edits the merchant BUSINESS profile — business category, contact phone/email, receipt display name, address, town and timezone — and sees the current logo. Delivered by REM-SCR-002A as a corrective remediation for a Plan §27.3 launch screen omitted by its owning phase. Business name, slug, country, service-fee tier and every billing/lifecycle column are read-only context; the logo is uploaded through the existing Phase 10F scanned pipeline, never a second path."
+      "summary": "Merchant Administrator views and edits the merchant business profile, uploads or replaces its private scanned logo, previews invoice/receipt branding, and sees safe replacement metadata. Business name, slug, country, service-fee tier and every billing/lifecycle column remain read-only context."
+    },
+    {
+      "key": "merchant-branches",
+      "domain": "merchant",
+      "route": "merchant.branches",
+      "layout": "MerchantLayout",
+      "status": "implemented",
+      "phase": "UI-09",
+      "spec": "merchant/merchant-branches.md",
+      "title": "Merchant branches",
+      "roles": ["merchant_administrator"],
+      "permissions": [],
+      "summary": "Tenant-wide branch directory with entitlement-aware creation and canonical owner detail links."
+    },
+    {
+      "key": "merchant-branch-detail",
+      "domain": "merchant",
+      "route": "merchant.branch-detail",
+      "layout": "MerchantLayout",
+      "status": "implemented",
+      "phase": "UI-09",
+      "spec": "merchant/merchant-branch-detail.md",
+      "title": "Merchant branch detail",
+      "roles": ["merchant_administrator"],
+      "permissions": [],
+      "summary": "Scoped owner oversight for one branch with explicit Branch Manager, HR, Front Office and Finance responsibility boundaries and no operational override."
+    },
+    {
+      "key": "merchant-staff-overview",
+      "domain": "merchant",
+      "route": "merchant.staff",
+      "layout": "MerchantLayout",
+      "status": "implemented",
+      "phase": "UI-09",
+      "spec": "merchant/merchant-staff-overview.md",
+      "title": "Staff overview and lifecycle",
+      "roles": ["merchant_administrator"],
+      "permissions": ["branches.manage_users_lifecycle"],
+      "summary": "Paginated tenant-wide safe membership projection with Branch Manager/HR invitation, lifecycle impact confirmation, session counts and branch/status history; phone and client data are absent."
     },
     {
       "key": "subscription-dashboard",
@@ -804,7 +843,7 @@
     {
       "key": "plan-management",
       "domain": "merchant",
-      "route": "merchant.plan",
+      "route": "merchant.subscription-plan",
       "layout": "MerchantLayout",
       "status": "implemented",
       "phase": "Phase 20B",
@@ -821,7 +860,7 @@
     {
       "key": "subscription-invoices",
       "domain": "merchant",
-      "route": "merchant.invoices",
+      "route": "merchant.subscription-invoices",
       "layout": "MerchantLayout",
       "status": "implemented",
       "phase": "Phase 20B",
@@ -834,6 +873,19 @@
         "merchant.subscription.invoice.view"
       ],
       "summary": "Invoice list/detail (number, period, plan/price snapshot, amounts/currency/balance, status, issued/due dates, payment-reference-pending). Generate PDF is a mutation blocked in billing read-only; download of an existing PDF is a read allowed in read-only. NO Wallet/STK/PayBill-Till/provider/payment UI."
+    },
+    {
+      "key": "subscription-invoice-detail",
+      "domain": "merchant",
+      "route": "merchant.subscription-invoice-detail",
+      "layout": "MerchantLayout",
+      "status": "implemented",
+      "phase": "UI-09",
+      "spec": "merchant/subscription-invoice-detail.md",
+      "title": "Subscription invoice detail",
+      "roles": ["merchant_administrator"],
+      "permissions": ["merchant.subscription.invoice.view", "merchant.subscription.invoice.download"],
+      "summary": "Immutable merchant-to-Servana invoice snapshot with private PDF generation/download and an exact External Gate W treatment in place of payment initiation or success."
     },
     {
       "key": "merchant-reports",
@@ -856,7 +908,7 @@
     {
       "key": "compensation-summary",
       "domain": "merchant",
-      "route": "merchant.compensation-summary",
+      "route": "merchant.compensation",
       "layout": "MerchantLayout",
       "status": "implemented",
       "phase": "Phase 20H",
@@ -866,15 +918,27 @@
         "merchant_administrator"
       ],
       "permissions": [
-        "merchant.compensation_summary.view",
-        "merchant.payout.approve_high_value"
+        "merchant.compensation_summary.view"
       ],
-      "summary": "Merchant-Administrator compensation overview + high-value payout approvals: masked, merchant-wide, currency-grouped totals (outstanding liability by currency, paid by currency, payout runs by status, pending high-value approvals; never combined across currencies), and a high-value approval queue where the Merchant Administrator approves a run above the snapshotted threshold (fresh step-up + Idempotency-Key server-enforced). The Merchant Administrator never creates, verifies, or marks paid. The browser computes no authoritative money. Servana moves no money; no Wallet/provider UI."
+      "summary": "Masked merchant-wide, currency-grouped compensation liabilities and payout-run status. The Merchant Administrator never configures compensation, creates or verifies a payout run, or marks one paid."
+    },
+    {
+      "key": "merchant-payout-approvals",
+      "domain": "merchant",
+      "route": "merchant.compensation-payout-approvals",
+      "layout": "MerchantLayout",
+      "status": "implemented",
+      "phase": "UI-09",
+      "spec": "merchant/merchant-payout-approvals.md",
+      "title": "High-value payout approvals",
+      "roles": ["merchant_administrator"],
+      "permissions": ["merchant.payout.approve_high_value"],
+      "summary": "Dedicated high-value approval queue using the existing fresh-step-up, idempotency, maker/checker and audit authority. No payout preparation, verification or mark-paid controls."
     },
     {
       "key": "merchant-period-reopen-approvals",
       "domain": "merchant",
-      "route": "merchant.period-reopen-approvals",
+      "route": "merchant.finance-period-reopen-approvals",
       "layout": "MerchantLayout",
       "status": "implemented",
       "phase": "Phase 18B",
@@ -887,6 +951,19 @@
         "merchant.period_reopen.approve_exception"
       ],
       "summary": "Merchant Administrator exceptional period-reopen approvals: lists exception-required period locks with a pending Finance reopen request and an 'Approve reopen' action. The approver must differ from the Finance requester (backend-enforced). The Merchant Administrator holds ONLY exceptional-reopen approval — NO routine locking or reopen execution controls appear here (those are Finance)."
+    },
+    {
+      "key": "merchant-account-security",
+      "domain": "merchant",
+      "route": "merchant.account",
+      "layout": "MerchantLayout",
+      "status": "implemented",
+      "phase": "UI-09",
+      "spec": "merchant/merchant-account-security.md",
+      "title": "Merchant account and security",
+      "roles": ["merchant_administrator"],
+      "permissions": [],
+      "summary": "Own-scope identity, verified email, mandatory MFA, Magic Link sessions, theme preference and account-context switching with Merchant-specific wording and no password controls."
     },
     {
       "key": "service-catalogue",

@@ -2013,6 +2013,22 @@ export interface paths {
         patch: operations["merchant.profile.update"];
         trace?: never;
     };
+    "/api/v1/merchant/staff-overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["merchant.staff-overview.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/payment-recording-groups": {
         parameters: {
             query?: never;
@@ -5759,6 +5775,11 @@ export interface components {
                 id: string;
                 filename: string;
             } | null;
+            logo_history: {
+                id: string;
+                filename: string;
+                available_at: string;
+            }[];
         };
         /** MerchantRegistrationMonitorResource */
         MerchantRegistrationMonitorResource: {
@@ -15056,6 +15077,21 @@ export interface operations {
                             };
                             options: {
                                 service_fee_tiers: unknown[];
+                                /** @description The POST already requires an active plan and its currently-effective price.
+                                 *     Pending-setup owners cannot call the active-merchant subscription catalogue,
+                                 *     so this read exposes exactly those public ULIDs and integer-minor prices here. */
+                                subscription_plans: {
+                                    id: string;
+                                    name: string;
+                                    description: string | null;
+                                    tier: string | null;
+                                    prices: {
+                                        id: string;
+                                        amount_minor: number;
+                                        currency: string;
+                                        billing_interval: string;
+                                    }[];
+                                }[];
                             };
                         };
                     };
@@ -15268,14 +15304,102 @@ export interface operations {
                     "application/json": {
                         data: {
                             merchant: components["schemas"]["MerchantResource"];
-                            shell: {
-                                sections: [
-                                    "overview",
-                                    "branches",
-                                    "staff",
-                                    "reports"
-                                ];
-                                ready: boolean;
+                            overview: {
+                                subscription: {
+                                    status: string;
+                                    billing_status: string;
+                                    billing_read_only: boolean;
+                                    plan_name: string;
+                                    billing_interval: string;
+                                    amount_minor: string;
+                                    currency: string;
+                                    trial_ends_at: string;
+                                    current_period_end: string;
+                                    scheduled_change: boolean;
+                                };
+                                billing: {
+                                    next_invoice: {
+                                        id: string;
+                                        invoice_number: string | null;
+                                        status: string;
+                                        balance_minor: number;
+                                        currency: string;
+                                        due_at: string;
+                                    } | null;
+                                    outstanding_by_currency: {
+                                        currency: string;
+                                        amount_minor: number;
+                                    }[];
+                                    payment_runtime: {
+                                        available: boolean;
+                                        /** @constant */
+                                        reason: "External Gate W — Wallet by Citrus collections readiness";
+                                    };
+                                };
+                                branches: {
+                                    total: number;
+                                    active: number;
+                                    suspended: number;
+                                    archived: number;
+                                    limit: number | null;
+                                    remaining_capacity: Record<string, never> | null;
+                                };
+                                staff: {
+                                    active: number;
+                                    invited: number;
+                                    suspended: number;
+                                    deactivated: number;
+                                    pending_owner_invitations: number;
+                                };
+                                get_started: {
+                                    setup_complete: boolean;
+                                    subscription_selected: boolean;
+                                    profile_complete: string;
+                                    logo_uploaded: boolean;
+                                    billing_phone_confirmed: string;
+                                    first_branch_created: boolean;
+                                    initial_team_invited: boolean;
+                                    initial_team_active: boolean;
+                                    operational_roles_active: boolean;
+                                    daily_reports: {
+                                        available: boolean;
+                                        /** @constant */
+                                        reason: "External Gate W — Wallet by Citrus collections readiness";
+                                    };
+                                };
+                                compensation: {
+                                    outstanding_liability_by_currency: {
+                                        currency: string;
+                                        gross_salary_accrual_minor: string;
+                                        salary_reversal_minor: string;
+                                        net_salary_liability_minor: string;
+                                        gross_earned_commission_minor: string;
+                                        commission_reversal_minor: string;
+                                        net_commission_liability_minor: string;
+                                        compensation_adjustment_minor: string;
+                                        combined_net_liability_minor: string;
+                                    }[];
+                                    paid_by_currency: {
+                                        currency: string;
+                                        paid_gross_minor: number;
+                                        run_count: number;
+                                    }[];
+                                    payout_runs_by_status: {
+                                        [key: string]: number;
+                                    };
+                                    pending_high_value_approvals: number;
+                                } | null;
+                                reporting: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "External Gate W — Wallet by Citrus collections readiness";
+                                    omitted_metrics: [
+                                        "validated_revenue",
+                                        "branch_performance",
+                                        "staff_performance",
+                                        "daily_reports"
+                                    ];
+                                };
                             };
                         };
                     };
@@ -15534,6 +15658,92 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "merchant.staff-overview.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "created_at" | "-created_at" | "activated_at" | "-activated_at";
+                search?: string;
+                role?: "merchant_admin" | "branch_manager" | "hr" | "finance" | "front_office" | "personnel" | "audit";
+                status?: "invited" | "active" | "suspended" | "deactivated";
+                branch_ulid?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: ({
+                            id: string;
+                            staff_profile_id: string;
+                            display_name: string;
+                            email: string;
+                            role: string;
+                            status: string;
+                            account_status: string;
+                            activated_at: string;
+                            last_login_at: string;
+                            branches: ({
+                                id: string;
+                                name: string;
+                                code: string;
+                            } | null)[];
+                            active_session_count: number;
+                            assignment_history: ({
+                                branch: string;
+                                status: string;
+                                assigned_at: string;
+                                revoked_at: string;
+                            } | null)[];
+                            status_history: string | string[];
+                            can: {
+                                manage_lifecycle: string;
+                            };
+                        } | null)[];
+                        meta: {
+                            current_page: number;
+                            last_page: number;
+                            per_page: number;
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
             422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {

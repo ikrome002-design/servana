@@ -12,6 +12,7 @@ import {
   stubSuperAdmin,
   watchBrowserHealth,
 } from './support/ui08Platform';
+import { stubMerchant, stubMerchantApi } from './support/ui09Merchant';
 
 /**
  * Phase UI-08 Increment 10 — the Super Administrator browser proof.
@@ -290,13 +291,17 @@ test.describe('Header navigation', () => {
 // ── Security negatives ─────────────────────────────────────────────────────────────────────────
 
 test.describe('Security negatives', () => {
-  test('a merchant host does not even carry the Super Administrator addresses', async ({ page }) => {
+  test('a merchant host serves its own dashboard but none of the Super Administrator-only addresses', async ({ page }) => {
     // Host scoping (Increment 7B) is stronger than a denial page: on a merchant host the Super
     // Administrator route tree is never registered, so its paths do not exist at all.
-    await stubSuperAdmin(page, { accountKey: 'merchant_administrator', accountKeys: ['merchant_administrator'] });
-    await stubPlatformApi(page);
+    await stubMerchant(page);
+    await stubMerchantApi(page);
 
-    for (const path of ['/dashboard', '/merchants', '/audit', '/platform-access']) {
+    await page.goto('/dashboard');
+    await expect(page.getByTestId('merchant-dashboard')).toBeVisible();
+    await expect(page.getByTestId('platform-dashboard-screen')).toHaveCount(0);
+
+    for (const path of ['/merchants', '/audit', '/platform-access']) {
       await page.goto(path);
       await expect(notFound(page), `${path} must not exist on a merchant host`).toBeVisible();
       await expect(page.getByTestId('platform-dashboard-screen')).toHaveCount(0);

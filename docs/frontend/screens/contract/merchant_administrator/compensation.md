@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `merchant.compensation-summary` at `/merchant/compensation-summary` (routes/merchant.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/compensation`; owner phase **UI-09** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `merchant.compensation` at `/compensation` (routes/merchant.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-09**
 - **Backend owner phase:** **Phase 20H**
 - **Implementation status:** `implemented`
-- **Runtime route:** `merchant.compensation-summary`
+- **Runtime route:** `merchant.compensation`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.compensation-summary` (recorded in `docs/frontend/screens/merchant/merchant-compensation-summary.md`).
-- **Data fields:** Merchant-Administrator compensation overview + high-value payout approvals: masked, merchant-wide, currency-grouped totals (outstanding liability by currency, paid by currency, payout runs by status, pending high-value approvals; never combined across currencies), and a high-value approval queue where the Merchant Administrator approves a run above the snapshotted threshold (fresh step-up + Idempotency-Key server-enforced). The Merchant Administrator never creates, verifies, or marks paid. The browser computes no authoritative money. Servana moves no money; no Wallet/provider UI.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.compensation` (recorded in `docs/frontend/screens/merchant/merchant-compensation-summary.md`).
+- **Data fields:** Masked merchant-wide, currency-grouped compensation liabilities and payout-run status. The Merchant Administrator never configures compensation, creates or verifies a payout run, or marks one paid.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

@@ -23,6 +23,7 @@ const PROFILE = {
   country: 'KE',
   merchant: { id: 'm1', name: 'Glow', slug: 'glow', status: 'active', service_fee_tier: null },
   logo: null,
+  logo_history: [],
 };
 
 function signIn(permissions: string[]): void {

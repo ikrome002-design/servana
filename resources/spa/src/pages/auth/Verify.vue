@@ -31,7 +31,7 @@ async function verify(): Promise<void> {
     // to their role-specific landing (Phase 11). The MFA gate and merchant-active
     // guard still run on the destination — the API remains the security boundary.
     if (auth.setupRequired()) {
-      await router.replace({ name: 'onboarding.first-time-setup' });
+      await router.replace({ name: 'merchant.setup' });
     } else {
       await router.replace({ name: landingRouteName() });
     }

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import GetStartedChecklist from '@/components/onboarding/GetStartedChecklist.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useGetStartedStore } from '@/stores/getStartedStore';
+import { useMerchantDashboardStore } from '@/stores/merchantDashboardStore';
 import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
 
 /**
@@ -16,6 +17,7 @@ import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
 const route = useRoute();
 const auth = useAuthStore();
 const store = useGetStartedStore();
+const merchantDashboard = useMerchantDashboardStore();
 
 const identity = computed<RoleIdentity | null>(() => {
   const meta = route.meta.roleIdentity;
@@ -24,6 +26,26 @@ const identity = computed<RoleIdentity | null>(() => {
     : null;
 });
 const userId = computed(() => auth.user?.id ?? null);
+const observedCompletedIds = computed<string[]>(() => {
+  if (identity.value !== 'merchant_administrator') return [];
+  const readiness = merchantDashboard.overview?.get_started;
+  if (!readiness) return [];
+
+  const ids: string[] = [];
+  if (auth.user?.email_verified_at && readiness.setup_complete) ids.push('verify-email');
+  if (readiness.subscription_selected) ids.push('choose-subscription-plan');
+  if (readiness.profile_complete && readiness.logo_uploaded) ids.push('confirm-merchant-profile');
+  if (readiness.first_branch_created) ids.push('create-first-branch');
+  if (readiness.initial_team_active) ids.push('invite-branch-manager-hr');
+  if (readiness.billing_phone_confirmed) ids.push('confirm-billing-mpesa-phone');
+  if (readiness.operational_roles_active) ids.push('operational-role-readiness');
+  if (readiness.daily_reports.available) ids.push('review-first-daily-reports');
+  return ids;
+});
+
+onMounted(() => {
+  if (identity.value === 'merchant_administrator') void merchantDashboard.fetchOverview();
+});
 
 const dismissed = computed(() =>
   identity.value && userId.value
@@ -65,6 +87,7 @@ function reopen(): void {
         v-else
         :identity="identity"
         :user-id="userId"
+        :observed-completed-ids="observedCompletedIds"
         @dismiss="onDismiss"
       />
     </template>

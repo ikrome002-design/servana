@@ -203,8 +203,8 @@ export const SCREENS: AuditScreen[] = [
   // --- onboarding ------------------------------------------------------------
   {
     key: 'first-time-setup',
-    route: 'onboarding.first-time-setup',
-    path: '/onboarding/first-time-setup',
+    route: 'merchant.setup',
+    path: '/setup',
     role: 'merchant_administrator',
     bootstrap: { setupRequired: true },
     state: 'static',
@@ -270,14 +270,20 @@ export const SCREENS: AuditScreen[] = [
 
   // --- Merchant Administrator ------------------------------------------------
   { key: 'merchant-landing', route: 'merchant.landing', path: '/merchant', role: 'merchant_administrator', state: 'static' },
-  { key: 'merchant-get-started', route: 'merchant.get-started', path: '/merchant/get-started', role: 'merchant_administrator', state: 'static' },
-  { key: 'merchant-dashboard', route: 'merchant.dashboard', path: '/merchant/dashboard', role: 'merchant_administrator', state: 'populated' },
-  { key: 'merchant-profile', route: 'merchant.profile', path: '/merchant/profile', role: 'merchant_administrator', state: 'populated' },
-  { key: 'subscription-dashboard', route: 'merchant.subscription', path: '/merchant/subscription', role: 'merchant_administrator', state: 'populated' },
-  { key: 'plan-management', route: 'merchant.plan', path: '/merchant/plan', role: 'merchant_administrator', state: 'populated' },
-  { key: 'subscription-invoices', route: 'merchant.invoices', path: '/merchant/subscription-invoices', role: 'merchant_administrator', state: 'populated' },
-  { key: 'compensation-summary', route: 'merchant.compensation-summary', path: '/merchant/compensation-summary', role: 'merchant_administrator', state: 'populated' },
-  { key: 'merchant-period-reopen-approvals', route: 'merchant.period-reopen-approvals', path: '/merchant/period-reopen-approvals', role: 'merchant_administrator', state: 'populated' },
+  { key: 'merchant-get-started', route: 'merchant.get-started', path: '/get-started', role: 'merchant_administrator', state: 'static' },
+  { key: 'merchant-dashboard', route: 'merchant.dashboard', path: '/dashboard', role: 'merchant_administrator', state: 'populated' },
+  { key: 'merchant-profile', route: 'merchant.merchant-profile', path: '/merchant/profile', role: 'merchant_administrator', state: 'populated' },
+  { key: 'merchant-branches', route: 'merchant.branches', path: '/branches', role: 'merchant_administrator', state: 'populated' },
+  { key: 'merchant-branch-detail', route: 'merchant.branch-detail', path: `/branches/${IDS.branch}`, role: 'merchant_administrator', state: 'populated' },
+  { key: 'merchant-staff-overview', route: 'merchant.staff', path: '/staff', role: 'merchant_administrator', state: 'populated' },
+  { key: 'subscription-dashboard', route: 'merchant.subscription', path: '/subscription', role: 'merchant_administrator', state: 'populated' },
+  { key: 'plan-management', route: 'merchant.subscription-plan', path: '/subscription/plan', role: 'merchant_administrator', state: 'populated' },
+  { key: 'subscription-invoices', route: 'merchant.subscription-invoices', path: '/subscription/invoices', role: 'merchant_administrator', state: 'populated' },
+  { key: 'subscription-invoice-detail', route: 'merchant.subscription-invoice-detail', path: `/subscription/invoices/${IDS.invoice}`, role: 'merchant_administrator', state: 'populated' },
+  { key: 'compensation-summary', route: 'merchant.compensation', path: '/compensation', role: 'merchant_administrator', state: 'populated' },
+  { key: 'merchant-payout-approvals', route: 'merchant.compensation-payout-approvals', path: '/compensation/payout-approvals', role: 'merchant_administrator', state: 'populated' },
+  { key: 'merchant-period-reopen-approvals', route: 'merchant.finance-period-reopen-approvals', path: '/finance/period-reopen-approvals', role: 'merchant_administrator', state: 'populated' },
+  { key: 'merchant-account-security', route: 'merchant.account', path: '/account', role: 'merchant_administrator', state: 'static' },
   { key: 'merchant-platform-fees', route: 'merchant.platform-fees', path: '/merchant/platform-fees', role: 'merchant_administrator', state: 'populated' },
   { key: 'branch-create', route: 'branch.create', path: '/branch/create', role: 'merchant_administrator', state: 'static' },
 
@@ -483,6 +489,7 @@ const MERCHANT_PROFILE = {
     service_fee_tier: 'standard',
   },
   logo: { id: IDS.file, filename: 'glow-studio-logo.png' },
+  logo_history: [],
 };
 
 /** Branch calendar rows covering every type: three full-day closures plus modified hours. */
@@ -916,13 +923,25 @@ export async function assertShellUsable(page: Page, screen: AuditScreen, viewpor
   await expect(main, `${label}: main landmark`).toBeVisible();
 
   const platform = screen.role === 'super_administrator';
-  // Sidebar roles collapse below lg (1024); the platform header nav collapses below md (768).
-  const collapsed = platform ? viewport.width < 768 : viewport.width < 1024;
-  if (collapsed) {
+  const mobile = viewport.width < 768;
+  const tablet = !platform && viewport.width >= 768 && viewport.width < 1025;
+  // ADR-018 keeps Super Administrator navigation in the header from tablet upward. All other
+  // account shells use the drawer only on mobile, the collapsible rail on tablet, and the persistent
+  // sidebar at the exact desktop floor. This mirrors the token-owned 767/768 and 1024/1025 edges.
+  if (mobile) {
     await expect(
       page.locator('[data-testid="nav-drawer-trigger"]'),
       `${label}: mobile navigation trigger`,
     ).toBeVisible();
+  } else if (tablet) {
+    await expect(
+      page.locator('[data-testid="tablet-navigation-rail"]'),
+      `${label}: tablet navigation rail`,
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-testid="nav-drawer-trigger"]'),
+      `${label}: mobile navigation trigger is absent on tablet`,
+    ).toBeHidden();
   } else {
     await expect(
       page.locator(platform ? '[data-testid="header-primary-nav"]' : '[data-testid="sidebar-primary-nav"]'),

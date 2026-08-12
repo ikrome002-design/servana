@@ -1,0 +1,32 @@
+{
+  "schema": "servana.ui09.accessibility-matrix.v1",
+  "phase": "UI-09",
+  "standard": "WCAG 2.1 AA",
+  "axe": {
+    "light_pages": [
+      "setup", "dashboard", "get-started", "merchant-profile", "branches", "branch-detail", "staff",
+      "subscription", "subscription-plan", "subscription-invoices", "subscription-invoice-detail",
+      "compensation", "compensation-payout-approvals", "finance-period-reopen-approvals", "account"
+    ],
+    "dark_pages": ["dashboard", "staff", "subscription-invoice-detail", "account"],
+    "dark_drawer": true,
+    "serious": 0,
+    "critical": 0
+  },
+  "interaction": {
+    "skip_link": true,
+    "logical_page_heading": true,
+    "visible_focus": true,
+    "keyboard_navigation": true,
+    "drawer_focus_trap": true,
+    "drawer_escape": true,
+    "drawer_focus_restore": true,
+    "active_navigation_aria_current": true,
+    "form_label_error_association": true,
+    "minimum_touch_target_px": 44,
+    "duplicate_ids": 0,
+    "keyboard_traps": 0,
+    "reduced_motion": true
+  },
+  "local_defect": { "id": "UI09-A11Y-001", "root_cause": "Orange semantic text token was below AA contrast for small eyebrow copy", "fix": "Use text-text-muted for the affected setup and branch-list eyebrow labels", "lifecycle": "local_complete" }
+}

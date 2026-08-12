@@ -13,16 +13,29 @@ import type { RoleIdentity } from '@/types/roles';
  * links target only live routes; future steps show their owning phase and never
  * link anywhere.
  */
-const props = defineProps<{ identity: RoleIdentity; userId: string }>();
+const props = withDefaults(defineProps<{
+  identity: RoleIdentity;
+  userId: string;
+  observedCompletedIds?: string[];
+}>(), { observedCompletedIds: () => [] });
 const emit = defineEmits<{ dismiss: [] }>();
 
 const store = useGetStartedStore();
 const items = computed(() => getStartedChecklist(props.identity));
-const progress = computed(() => store.progress(props.userId, props.identity));
+const observed = computed(() => new Set(props.observedCompletedIds));
+const isCompleted = (itemId: string): boolean => observed.value.has(itemId)
+  || store.isCompleted(props.userId, props.identity, itemId);
+const progress = computed(() => {
+  const completed = items.value.filter((item) => isCompleted(item.id)).length;
+  const total = items.value.length;
+  return { completed, total, percent: total === 0 ? 0 : Math.round((completed / total) * 100) };
+});
 
 const ackOpen = ref(false);
 
 function toggle(itemId: string): void {
+  const item = items.value.find((candidate) => candidate.id === itemId);
+  if (item?.completion === 'server') return;
   store.toggle(props.userId, props.identity, itemId);
 }
 
@@ -48,7 +61,23 @@ function onAcknowledged(): void {
     </header>
 
     <!-- Progress -->
-    <div class="mb-4">
+    <div class="mb-5 rounded-card border border-border bg-sv-surface-warm p-4 md:p-5">
+      <div class="mb-3 flex items-end justify-between gap-4">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+            Setup progress
+          </p>
+          <p class="mt-1 font-display text-2xl font-bold text-heading">
+            {{ progress.percent }}%
+          </p>
+        </div>
+        <p
+          class="text-sm font-semibold text-text"
+          aria-live="polite"
+        >
+          {{ progress.completed }} of {{ progress.total }} complete
+        </p>
+      </div>
       <div
         role="progressbar"
         :aria-valuenow="progress.percent"
@@ -62,31 +91,34 @@ function onAcknowledged(): void {
           :style="{ width: `${progress.percent}%` }"
         />
       </div>
-      <p
-        class="mt-2 text-sm font-medium text-text"
-        aria-live="polite"
-      >
-        {{ progress.completed }} of {{ progress.total }} complete
-      </p>
     </div>
 
-    <ul class="space-y-2">
+    <ul class="space-y-3">
       <li
         v-for="item in items"
         :key="item.id"
-        class="flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-4 py-3"
+        class="flex items-center justify-between gap-3 rounded-card border px-4 py-3"
+        :class="isCompleted(item.id)
+          ? 'border-sv-success-border bg-sv-success-bg'
+          : 'border-border bg-surface'"
       >
         <label class="flex flex-1 items-center gap-3 text-sm text-text">
           <input
             type="checkbox"
             class="h-5 w-5 rounded border-border text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60"
-            :checked="store.isCompleted(userId, identity, item.id)"
-            :disabled="item.kind === 'acknowledge'"
+            :checked="isCompleted(item.id)"
+            :disabled="item.kind === 'acknowledge' || item.completion === 'server'"
             :data-testid="`checklist-${item.id}`"
             @change="toggle(item.id)"
           >
-          <span :class="store.isCompleted(userId, identity, item.id) ? 'text-text-muted line-through' : ''">
-            {{ item.label }}
+          <span>
+            <span :class="isCompleted(item.id) ? 'font-medium text-heading' : ''">{{ item.label }}</span>
+            <span
+              v-if="item.responsibleRole"
+              class="mt-1 block text-xs text-text-muted"
+            >
+              {{ isCompleted(item.id) ? 'Observed complete' : 'Next action' }} · {{ item.responsibleRole }}
+            </span>
           </span>
         </label>
 

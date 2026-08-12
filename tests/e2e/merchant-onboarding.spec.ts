@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { stubAccountContextFor } from "./support/roleBootstrap";
+import { stubMerchantApi } from "./support/ui09Merchant";
 import { expect, test, type Page, type Route } from "@playwright/test";
 
 /*
@@ -14,7 +15,7 @@ import { expect, test, type Page, type Route } from "@playwright/test";
  | - redirecting a pending_setup merchant owner to first-time setup;
  | - completing all first-time setup steps;
  | - refreshing the authenticated bootstrap state after setup;
- | - routing the active Merchant Administrator to the Phase 11 role landing; and
+ | - routing the active Merchant Administrator to the canonical owner dashboard; and
  | - meeting WCAG 2.0 A/AA automated accessibility checks.
  |
  | The genuine backend and Mailpit behavior remains covered by the backend
@@ -29,8 +30,6 @@ const FIRST_TIME_SETUP_ROUTE =
 
 const REGISTRATION_SUCCESS_MESSAGE =
     "If this is a new business, we have sent a sign-in link.";
-
-const MERCHANT_LANDING_HEADING = "Serve Better. Run Smarter. Grow Steadily.";
 
 const OWNER = {
     id: "01J0000000000000000000USER",
@@ -213,7 +212,7 @@ test.describe("Merchant onboarding UI", () => {
 
         await page.goto("/merchant");
 
-        await expect(page).toHaveURL(/\/onboarding\/first-time-setup\/?$/);
+        await expect(page).toHaveURL(/\/setup\/?$/);
 
         await expect(
             page.getByRole("heading", {
@@ -222,16 +221,17 @@ test.describe("Merchant onboarding UI", () => {
         ).toBeVisible();
     });
 
-    test("completing the wizard activates the merchant and lands on the role landing", async ({
+    test("completing the five-step wizard activates the merchant and lands on the owner dashboard", async ({
         page,
     }) => {
         let completed = false;
 
         await clearBootstrapRoutes(page);
         await stubCsrfCookie(page);
-        // Phase UI-07: the wizard and the merchant landing it completes into are both Merchant
-        // Administrator routes, so the harness must serve that account's host context.
+        // The setup wizard and owner dashboard are both Merchant Administrator routes, so the
+        // harness must serve that account's host context throughout the activation transition.
         await stubAccountContextFor(page, "merchant_administrator");
+        await stubMerchantApi(page);
 
         await page.route(CURRENT_USER_ROUTE, async (route) => {
             const payload = completed
@@ -242,17 +242,21 @@ test.describe("Merchant onboarding UI", () => {
         });
 
         await page.route(FIRST_TIME_SETUP_ROUTE, async (route) => {
+            if (route.request().method() === "GET") {
+                await route.fallback();
+                return;
+            }
             completed = true;
 
             await fulfillJson(route, {
                 data: {
                     merchant: MERCHANT_ACTIVE,
-                    redirect: "merchant.landing",
+                    redirect: "merchant.dashboard",
                 },
             });
         });
 
-        await page.goto("/onboarding/first-time-setup");
+        await page.goto("/setup");
 
         await expect(
             page.getByRole("heading", {
@@ -260,7 +264,8 @@ test.describe("Merchant onboarding UI", () => {
             }),
         ).toBeVisible();
 
-        await test.step("select the service fee tier", async () => {
+        await test.step("select the plan and service fee tier", async () => {
+            await page.locator("#subscription_plan_price").selectOption({ index: 1 });
             await page.locator("#service_fee_tier").selectOption("split_tier");
 
             await page
@@ -299,6 +304,14 @@ test.describe("Merchant onboarding UI", () => {
 
             await page.locator("#hr_email").fill("hr@demo.co.ke");
 
+            await page
+                .getByRole("button", {
+                    name: "Continue",
+                })
+                .click();
+        });
+
+        await test.step("review and submit the complete setup once", async () => {
             const setupResponse = page.waitForResponse((response) => {
                 const pathname = new URL(response.url()).pathname;
 
@@ -318,11 +331,11 @@ test.describe("Merchant onboarding UI", () => {
             await setupResponse;
         });
 
-        await expect(page).toHaveURL(/\/merchant\/?$/);
+        await expect(page).toHaveURL(/\/dashboard\/?$/);
 
         await expect(
             page.getByRole("heading", {
-                name: MERCHANT_LANDING_HEADING,
+                name: "Welcome, Paul Nderitu",
             }),
         ).toBeVisible();
     });
@@ -340,8 +353,8 @@ test.describe("Merchant onboarding UI", () => {
 
         await stubPendingSetupOwner(page);
 
-        await test.step("axe scan: /onboarding/first-time-setup", async () => {
-            await page.goto("/onboarding/first-time-setup");
+        await test.step("axe scan: /setup", async () => {
+            await page.goto("/setup");
             await expect(page.locator("body")).toBeVisible();
             await assertNoWcagViolations(page);
         });
