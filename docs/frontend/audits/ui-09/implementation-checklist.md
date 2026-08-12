@@ -103,5 +103,9 @@ complete only when its evidence is committed in this branch. Plan authority: UI/
 - [x] Initial CI `31614642395` investigated: Frontend and Backend independently named the same stale
   UI-06 generated route projection; no second backend defect was hidden in the aggregate.
 - [x] `UI09-CI-001` corrects only that generated consumer and records focused regression proof.
+- [x] Replacement CI `31617605102` advanced past the Frontend contract and exposed
+  `UI09-CI-002`: two UI-06 test assertions still encoded the retired setup-route alias direction.
+- [x] `UI09-CI-002` updates only that predecessor test consumer to canonical `merchant.setup`;
+  runtime routes and the compatibility alias are unchanged.
 - [ ] Push the corrective commit, obtain five-job exact-head CI, record governance, squash merge and
   synchronize clean `main` (no UI-10, backend Phase 25 or Gate-W activation).

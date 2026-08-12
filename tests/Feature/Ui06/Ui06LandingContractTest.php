@@ -389,10 +389,11 @@ it('registers every public route UI/UX plan §4.2 requires on every host', funct
 
 it('provides registration and setup for the merchant host', function (): void {
     $matrix = ui06Audit('public-route-matrix');
+    $paths = collect($matrix['routes'])->pluck('absolute_path')->all();
     $aliases = collect($matrix['routes'])->pluck('aliases')->flatten()->all();
 
     expect($aliases)->toContain('/register');
-    expect($aliases)->toContain('/setup');
+    expect($paths)->toContain('/setup');
 });
 
 it('keeps the plan-named paths as aliases of one implementation, not second pages', function (): void {
@@ -402,7 +403,7 @@ it('keeps the plan-named paths as aliases of one implementation, not second page
     expect($routes['auth.login']['absolute_path'])->toBe('/auth/login');
     expect($routes['auth.login']['aliases'])->toBe(['/login', '/auth/magic-link/request']);
     expect($routes['auth.verify']['aliases'])->toBe(['/auth/magic-link/consume']);
-    expect($routes['onboarding.first-time-setup']['aliases'])->toBe(['/setup']);
+    expect($routes['merchant.setup']['aliases'])->toBe(['/onboarding/first-time-setup']);
 });
 
 it('keeps the invitation-acceptance route host-relative', function (): void {

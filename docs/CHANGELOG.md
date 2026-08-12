@@ -51,7 +51,11 @@ The branch's single local-completion commit is `0142d0a`; PR #59 was opened from
 Initial CI `31614642395` found one stale generated UI-06 route projection through both the Frontend
 contract step and Backend's `Ui06GeneratedArtifactStalenessTest` (all other 3,537 Pest tests passed).
 `UI09-CI-001` regenerates only that derived consumer from the canonical route module. Corrected-head
-CI, truthful solo-maintainer governance and merge remain; none of those future facts is claimed here.
+run `31617605102` then exposed two UI-06 test assertions that still treated `/setup` as the alias of
+the retired onboarding route. `UI09-CI-002` aligns only that predecessor consumer with canonical
+`merchant.setup` at `/setup` and its `/onboarding/first-time-setup` compatibility alias. Final
+exact-head CI, truthful solo-maintainer governance and merge remain; none of those future facts is
+claimed here.
 
 ### Phase UI-08 — Super Administrator experience — verified complete
 
