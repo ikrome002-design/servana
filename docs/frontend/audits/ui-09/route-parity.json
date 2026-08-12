@@ -1,0 +1,35 @@
+{
+  "schema": "servana.ui09.route-parity.v1",
+  "phase": "UI-09",
+  "account": "merchant_administrator",
+  "host": "servana.ke",
+  "implemented_routes": [
+    { "screen_key": "setup", "route_name": "merchant.setup", "route_path": "/setup" },
+    { "screen_key": "dashboard", "route_name": "merchant.dashboard", "route_path": "/dashboard" },
+    { "screen_key": "get-started", "route_name": "merchant.get-started", "route_path": "/get-started" },
+    { "screen_key": "merchant-profile", "route_name": "merchant.merchant-profile", "route_path": "/merchant/profile" },
+    { "screen_key": "branches", "route_name": "merchant.branches", "route_path": "/branches" },
+    { "screen_key": "branch-detail", "route_name": "merchant.branch-detail", "route_path": "/branches/:branchUlid" },
+    { "screen_key": "staff", "route_name": "merchant.staff", "route_path": "/staff" },
+    { "screen_key": "subscription", "route_name": "merchant.subscription", "route_path": "/subscription" },
+    { "screen_key": "subscription-plan", "route_name": "merchant.subscription-plan", "route_path": "/subscription/plan" },
+    { "screen_key": "subscription-invoices", "route_name": "merchant.subscription-invoices", "route_path": "/subscription/invoices" },
+    { "screen_key": "subscription-invoice-detail", "route_name": "merchant.subscription-invoice-detail", "route_path": "/subscription/invoices/:invoiceUlid" },
+    { "screen_key": "compensation", "route_name": "merchant.compensation", "route_path": "/compensation" },
+    { "screen_key": "compensation-payout-approvals", "route_name": "merchant.compensation-payout-approvals", "route_path": "/compensation/payout-approvals" },
+    { "screen_key": "finance-period-reopen-approvals", "route_name": "merchant.finance-period-reopen-approvals", "route_path": "/finance/period-reopen-approvals" },
+    { "screen_key": "account", "route_name": "merchant.account", "route_path": "/account" }
+  ],
+  "gated_no_route": [
+    "subscription-payment-attempts", "subscription-recovery", "reports", "reports-branches",
+    "reports-services", "reports-staff", "reports-daily", "notifications"
+  ],
+  "compatibility_redirects": [
+    "/onboarding/first-time-setup -> /setup", "/merchant/dashboard -> /dashboard",
+    "/merchant/get-started -> /get-started", "/merchant/subscription -> /subscription",
+    "/merchant/plan -> /subscription/plan", "/merchant/subscription-invoices -> /subscription/invoices",
+    "/merchant/compensation-summary -> /compensation",
+    "/merchant/period-reopen-approvals -> /finance/period-reopen-approvals"
+  ],
+  "result": "15 canonical runtime routes match; all 8 gated identities have no route/component/store; legacy redirects stay same-account and guarded"
+}

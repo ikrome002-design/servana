@@ -16,6 +16,13 @@ function makeRouter(): Router {
     routes: [
       { path: '/', name: 'test.home', component: stub },
       { path: '/branch/create', name: 'branch.create', component: stub },
+      { path: '/branches', name: 'branch.list', component: stub },
+      { path: '/branch-services', name: 'branch.services', component: stub },
+      { path: '/dashboard', name: 'merchant.dashboard', component: stub },
+      { path: '/merchant-profile', name: 'merchant.merchant-profile', component: stub },
+      { path: '/merchant-branches', name: 'merchant.branches', component: stub },
+      { path: '/merchant-staff', name: 'merchant.staff', component: stub },
+      { path: '/merchant-plan', name: 'merchant.subscription-plan', component: stub },
       { path: '/onboarding', name: 'onboarding.first-time-setup', component: stub },
       { path: '/legal/:doc(data-policy|privacy-policy|terms-of-service)', name: 'public.legal', component: stub },
       { path: '/legal/:role/:doc', name: 'legal.document', component: stub },
@@ -32,20 +39,36 @@ describe('GetStartedChecklist', () => {
     document.body.innerHTML = '';
   });
 
-  it('toggling an item persists completion', async () => {
+  it('toggling a manual item persists completion', async () => {
     const router = makeRouter();
     router.push('/');
     await router.isReady();
     const wrapper = mount(GetStartedChecklist, {
-      props: { identity: ROLE, userId: USER },
+      props: { identity: 'merchant_branch', userId: USER },
       global: { plugins: [router] },
     });
 
-    await wrapper.find('[data-testid="checklist-verify-email"]').setValue(true);
+    await wrapper.find('[data-testid="checklist-confirm-branch-profile"]').setValue(true);
     await flushPromises();
 
-    expect(useGetStartedStore().isCompleted(USER, ROLE, 'verify-email')).toBe(true);
+    expect(useGetStartedStore().isCompleted(USER, 'merchant_branch', 'confirm-branch-profile')).toBe(true);
     expect(wrapper.text()).toContain('1 of');
+  });
+
+  it('renders server-observed owner completion without permitting a manual claim', async () => {
+    const router = makeRouter();
+    router.push('/');
+    await router.isReady();
+    const wrapper = mount(GetStartedChecklist, {
+      props: { identity: ROLE, userId: USER, observedCompletedIds: ['verify-email'] },
+      global: { plugins: [router] },
+    });
+
+    const checkbox = wrapper.find<HTMLInputElement>('[data-testid="checklist-verify-email"]');
+    expect(checkbox.element.checked).toBe(true);
+    expect(checkbox.attributes('disabled')).toBeDefined();
+    expect(wrapper.text()).toContain('Observed complete');
+    expect(useGetStartedStore().isCompleted(USER, ROLE, 'verify-email')).toBe(false);
   });
 
   it('emits dismiss when the user dismisses', async () => {

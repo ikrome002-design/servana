@@ -68,7 +68,7 @@ describe('Verify.vue', () => {
     mount(Verify);
     await flushPromises();
 
-    expect(replace).toHaveBeenCalledWith({ name: 'onboarding.first-time-setup' });
+    expect(replace).toHaveBeenCalledWith({ name: 'merchant.setup' });
   });
 
   it('shows a uniform error for an invalid or expired token', async () => {

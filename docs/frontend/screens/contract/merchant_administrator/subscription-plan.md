@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `merchant.plan` at `/merchant/plan` (routes/merchant.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/subscription/plan`; owner phase **UI-09** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `merchant.subscription-plan` at `/subscription/plan` (routes/merchant.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-09**
 - **Backend owner phase:** **Phase 20B**
 - **Implementation status:** `implemented`
-- **Runtime route:** `merchant.plan`
+- **Runtime route:** `merchant.subscription-plan`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.plan` (recorded in `docs/frontend/screens/merchant/plan-management.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.subscription-plan` (recorded in `docs/frontend/screens/merchant/plan-management.md`).
 - **Data fields:** Available plans + effective prices, current plan, schedule/cancel a NO-PRORATION next-cycle change with a server-computed effective date (no client-supplied/immediate change). Mutation controls removed in billing read-only; EnsureBillingMutable is authoritative. Structured 409/422 surfaced.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

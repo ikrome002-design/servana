@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1\Onboarding;
 
+use App\Domain\Billing\Enums\SubscriptionPlanStatus;
+use App\Domain\Billing\Models\SubscriptionPlan;
+use App\Domain\Billing\Models\SubscriptionPlanPrice;
 use App\Domain\Merchants\Enums\ServiceFeeTier;
 use App\Domain\Onboarding\Actions\CompleteFirstTimeSetup;
 use App\Domain\Onboarding\Data\FirstTimeSetupData;
@@ -13,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Onboarding\CompleteFirstTimeSetupRequest;
 use App\Http\Resources\MerchantResource;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -32,6 +36,32 @@ final class FirstTimeSetupController extends Controller
         // Middleware guarantees a pending_setup merchant context here.
         abort_if($merchant === null, 403);
 
+        $setupDate = CarbonImmutable::now('Africa/Nairobi')->toDateString();
+        $plans = SubscriptionPlan::query()
+            ->where('status', SubscriptionPlanStatus::Active->value)
+            ->with(['prices' => static fn ($query) => $query
+                ->whereDate('effective_from', '<=', $setupDate)
+                ->where(static fn ($effective) => $effective
+                    ->whereNull('effective_to')
+                    ->orWhereDate('effective_to', '>', $setupDate))
+                ->orderBy('billing_interval')
+                ->orderBy('currency')])
+            ->orderBy('sort_order')
+            ->orderBy('key')
+            ->get()
+            ->map(static fn (SubscriptionPlan $plan): array => [
+                'id' => $plan->ulid,
+                'name' => $plan->name,
+                'description' => $plan->description,
+                'tier' => $plan->tier,
+                'prices' => $plan->prices->map(static fn (SubscriptionPlanPrice $price): array => [
+                    'id' => $price->ulid,
+                    'amount_minor' => $price->amount_minor,
+                    'currency' => $price->currency,
+                    'billing_interval' => $price->billing_interval->value,
+                ])->values()->all(),
+            ])->values()->all();
+
         return response()->json([
             'data' => [
                 'merchant' => MerchantResource::make($merchant),
@@ -47,6 +77,10 @@ final class FirstTimeSetupController extends Controller
                         ],
                         ServiceFeeTier::cases(),
                     ),
+                    // The POST already requires an active plan and its currently-effective price.
+                    // Pending-setup owners cannot call the active-merchant subscription catalogue,
+                    // so this read exposes exactly those public ULIDs and integer-minor prices here.
+                    'subscription_plans' => $plans,
                 ],
             ],
         ]);

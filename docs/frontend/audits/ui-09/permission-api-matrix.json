@@ -1,0 +1,26 @@
+{
+  "schema": "servana.ui09.permission-api-matrix.v1",
+  "phase": "UI-09",
+  "permission_catalogue": { "total": 169, "active": 134, "planned": 35, "added_by_ui09": 0, "activated_by_ui09": 0 },
+  "pages": [
+    { "screen_key": "setup", "permissions": [], "apis": ["GET /api/v1/merchant-registration/first-time-setup", "POST /api/v1/merchant-registration/first-time-setup"], "scope": "pending_setup merchant owner" },
+    { "screen_key": "dashboard", "permissions": [], "apis": ["GET /api/v1/merchant/dashboard"], "scope": "tenant" },
+    { "screen_key": "get-started", "permissions": [], "apis": ["GET /api/v1/merchant/dashboard"], "scope": "tenant observations" },
+    { "screen_key": "merchant-profile", "permissions": ["merchant.profile.view", "merchant.profile.update"], "apis": ["GET/PATCH /api/v1/merchant/profile", "POST /api/v1/files"], "scope": "tenant" },
+    { "screen_key": "branches", "permissions": ["branches.create"], "apis": ["GET/POST /api/v1/branches", "GET /api/v1/subscription"], "scope": "tenant" },
+    { "screen_key": "branch-detail", "permissions": ["branches.create"], "apis": ["GET /api/v1/branches/{branch}"], "scope": "tenant-scoped branch; foreign ULID 404" },
+    { "screen_key": "staff", "permissions": ["branches.manage_users_lifecycle"], "apis": ["GET /api/v1/merchant/staff-overview", "POST /api/v1/staff/{staff}/{action}", "POST /api/v1/staff-invitations"], "scope": "tenant-safe projection" },
+    { "screen_key": "subscription", "permissions": ["merchant.subscription.view"], "apis": ["GET /api/v1/subscription"], "scope": "tenant" },
+    { "screen_key": "subscription-plan", "permissions": ["merchant.subscription.plan_change"], "apis": ["GET /api/v1/subscription/plans", "POST /api/v1/subscription/scheduled-plan-change"], "scope": "tenant" },
+    { "screen_key": "subscription-invoices", "permissions": ["merchant.subscription.invoice.view"], "apis": ["GET /api/v1/subscription-invoices"], "scope": "tenant" },
+    { "screen_key": "subscription-invoice-detail", "permissions": ["merchant.subscription.invoice.view", "merchant.subscription.invoice.download"], "apis": ["GET /api/v1/subscription-invoices/{invoice}", "POST/GET PDF operations"], "scope": "tenant-scoped invoice; foreign ULID 404" },
+    { "screen_key": "compensation", "permissions": ["merchant.compensation_summary.view"], "apis": ["GET /api/v1/merchant/compensation-summary"], "scope": "tenant masked summary" },
+    { "screen_key": "compensation-payout-approvals", "permissions": ["merchant.payout.approve_high_value"], "apis": ["GET /api/v1/merchant/payout-runs", "POST high-value approval"], "scope": "tenant; fresh step-up for mutation" },
+    { "screen_key": "finance-period-reopen-approvals", "permissions": ["merchant.period_reopen.approve_exception"], "apis": ["GET/POST /api/v1/period-locks approval operations"], "scope": "tenant; approval without Finance execution" },
+    { "screen_key": "account", "permissions": [], "apis": ["GET /api/v1/me", "MFA/session/theme own-scope APIs"], "scope": "authenticated user own scope" }
+  ],
+  "gated_pages_have_no_api": [
+    "subscription-payment-attempts", "subscription-recovery", "reports", "reports-branches",
+    "reports-services", "reports-staff", "reports-daily", "notifications"
+  ]
+}

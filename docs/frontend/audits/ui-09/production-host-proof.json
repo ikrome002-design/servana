@@ -1,0 +1,62 @@
+{
+  "schema": "servana.ui09.production-host-proof.v1",
+  "phase": "UI-09",
+  "source_state": "final stabilized runtime source after the Larastan correction, before documentation-only closeout",
+  "images": [
+    {
+      "tag": "servana-ui09-php:audit",
+      "id": "sha256:90eeff392d1420c75606a4afd79d10143b76a9729e24dd81d825076b7d0162cb",
+      "size_bytes": 905606645,
+      "created_utc": "2026-08-12T15:45:42.8995447Z",
+      "dockerfile": "docker/php.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0,
+      "build_duration_seconds": 135.6
+    },
+    {
+      "tag": "servana-ui09-nginx:audit",
+      "id": "sha256:247251061fa4b80c0bd8783af53f393e3628c1fc21318bf4c3473d2ad0f3ac4d",
+      "size_bytes": 317547834,
+      "created_utc": "2026-08-12T15:18:31.330083144Z",
+      "dockerfile": "docker/nginx.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0,
+      "build_duration_seconds": 14.0
+    }
+  ],
+  "unchanged_image_not_rebuilt": "docker/php.Dockerfile dev target; it is seeded only from unchanged Composer manifests and bind-mounts runtime source",
+  "topology": {
+    "network": "ui09-proof-net",
+    "app": "ui09-proof-app with network alias app, array session/cache, sync queue and ephemeral local SQLite",
+    "edge": "ui09-proof-nginx on 127.0.0.1:8109",
+    "project_volume_mounted": false,
+    "production_dns_or_tls_touched": false,
+    "removed_after_proof": true
+  },
+  "nginx_syntax": { "exit_code": 0, "result": "syntax is ok; test is successful" },
+  "canonical_host": {
+    "command": "node scripts/ui09-production-host-proof.mjs http://127.0.0.1:8109",
+    "host": "servana.ke",
+    "implemented_routes_200_with_merchant_context": 15,
+    "gated_routes_ordinary_shell_only": 8,
+    "compatibility_paths_same_account": 8,
+    "wrong_branch_host_checks": 3,
+    "unknown_host_refused": true,
+    "fingerprinted_assets_and_mime": "all referenced assets 200 with expected MIME",
+    "javascript_source_map_status": 404,
+    "passed": 44,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "production_route_count": 344,
+  "failed_run_classification": {
+    "observed": "First disposable run returned HTTP 500 for every account shell request; unknown-host refusal still passed",
+    "category": "environment/resource contention",
+    "root_cause": "The proof-only APP_KEY fixture decoded to 31 bytes, so Laravel rejected the AES-256 key before route handling",
+    "why_root_cause": "Every route failed identically in Encrypter.php and no UI route/component code ran",
+    "fix": "Recreated only the disposable proof containers with a valid 32-byte ephemeral key",
+    "source_files_changed": [],
+    "rerun": "44 passed, 0 failed, exit 0",
+    "product_defect": false
+  }
+}

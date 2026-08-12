@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "68cc24873d9f25c8e6dc05b8d5104327109b558d653e16b9411894ea765e3a91",
+  "canonical_authority_sha256": "1469385ca0e88a3d56c975663ac9613aa13a51bd5e147b804b104094e687311e",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "5c89abe54f46bdac725e8b0a7137e09fba0e327daadc0d864da91140b92f64ca",
+  "screen_inventory_sha256": "2950ecaba0cd664b13abfda1c86288d70fdb7bbc173cfa13abeae4a1ab02f4ae",
   "purpose": "Every account route group and page component is lazily loaded. No eager barrel imports 160 pages.",
   "rule": "UI/UX plan §6.5 — do not import 160 pages into the initial bundle.",
   "route_groups": [
@@ -690,8 +690,120 @@
       "in_initial_bundle": false
     },
     {
-      "route_name": "onboarding.first-time-setup",
-      "route_path": "/onboarding/first-time-setup",
+      "route_name": "merchant.setup",
+      "route_path": "/setup",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.dashboard",
+      "route_path": "/dashboard",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.get-started",
+      "route_path": "/get-started",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.merchant-profile",
+      "route_path": "/merchant/profile",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.branches",
+      "route_path": "/branches",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.branch-detail",
+      "route_path": "/branches/:branchUlid",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.staff",
+      "route_path": "/staff",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.subscription",
+      "route_path": "/subscription",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.subscription-plan",
+      "route_path": "/subscription/plan",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.subscription-invoices",
+      "route_path": "/subscription/invoices",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.subscription-invoice-detail",
+      "route_path": "/subscription/invoices/:invoiceUlid",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.compensation",
+      "route_path": "/compensation",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.compensation-payout-approvals",
+      "route_path": "/compensation/payout-approvals",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.finance-period-reopen-approvals",
+      "route_path": "/finance/period-reopen-approvals",
+      "declared_in": "routes/merchant.ts",
+      "account_key": "merchant_administrator",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "merchant.account",
+      "route_path": "/account",
       "declared_in": "routes/merchant.ts",
       "account_key": "merchant_administrator",
       "lazy": true,
@@ -706,72 +818,8 @@
       "in_initial_bundle": false
     },
     {
-      "route_name": "merchant.get-started",
-      "route_path": "/merchant/get-started",
-      "declared_in": "routes/merchant.ts",
-      "account_key": "merchant_administrator",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
-      "route_name": "merchant.dashboard",
-      "route_path": "/merchant/dashboard",
-      "declared_in": "routes/merchant.ts",
-      "account_key": "merchant_administrator",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
-      "route_name": "merchant.period-reopen-approvals",
-      "route_path": "/merchant/period-reopen-approvals",
-      "declared_in": "routes/merchant.ts",
-      "account_key": "merchant_administrator",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
-      "route_name": "merchant.profile",
-      "route_path": "/merchant/profile",
-      "declared_in": "routes/merchant.ts",
-      "account_key": "merchant_administrator",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
-      "route_name": "merchant.subscription",
-      "route_path": "/merchant/subscription",
-      "declared_in": "routes/merchant.ts",
-      "account_key": "merchant_administrator",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
-      "route_name": "merchant.plan",
-      "route_path": "/merchant/plan",
-      "declared_in": "routes/merchant.ts",
-      "account_key": "merchant_administrator",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
-      "route_name": "merchant.invoices",
-      "route_path": "/merchant/subscription-invoices",
-      "declared_in": "routes/merchant.ts",
-      "account_key": "merchant_administrator",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
       "route_name": "merchant.platform-fees",
       "route_path": "/merchant/platform-fees",
-      "declared_in": "routes/merchant.ts",
-      "account_key": "merchant_administrator",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
-      "route_name": "merchant.compensation-summary",
-      "route_path": "/merchant/compensation-summary",
       "declared_in": "routes/merchant.ts",
       "account_key": "merchant_administrator",
       "lazy": true,

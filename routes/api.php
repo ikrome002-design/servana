@@ -50,6 +50,7 @@ use App\Http\Controllers\Api\V1\Invoicing\InvoiceController;
 use App\Http\Controllers\Api\V1\Invoicing\InvoiceVoidController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantDashboardController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantProfileController;
+use App\Http\Controllers\Api\V1\Merchant\MerchantStaffOverviewController;
 use App\Http\Controllers\Api\V1\Merchant\MerchantSubscriptionController;
 use App\Http\Controllers\Api\V1\Merchant\SubscriptionInvoiceController;
 use App\Http\Controllers\Api\V1\Messaging\PersonnelServedClientController;
@@ -288,6 +289,9 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
         Route::middleware(EnsureMerchantActive::class)->group(function (): void {
             Route::get('merchant/dashboard', [MerchantDashboardController::class, 'show'])
                 ->name('merchant.dashboard');
+            Route::get('merchant/staff-overview', [MerchantStaffOverviewController::class, 'index'])
+                ->middleware(EnsurePermission::class.':branches.manage_users_lifecycle')
+                ->name('merchant.staff-overview.index');
 
             // REM-SCR-002A — merchant BUSINESS PROFILE (Plan §27.3 Merchant Administrator
             // "merchant profile"). The 1:1 profile row is created at registration and filled by

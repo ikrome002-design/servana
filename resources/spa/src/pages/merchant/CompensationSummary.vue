@@ -14,6 +14,10 @@ import { usePayoutRunStore, type PayoutRun } from '@/stores/payoutRunStore';
 import { formatMoney } from '@/utils/money';
 import { payoutRunStatusLabel } from '@/content/payout';
 
+const props = withDefaults(defineProps<{ mode?: 'combined' | 'summary' | 'approvals' }>(), {
+  mode: 'combined',
+});
+
 /**
  * Merchant Administrator — Compensation summary + high-value payout approvals (Plan §62/§63, §10.2,
  * §19.3; Phase 20H). The Merchant Administrator holds ONLY the compensation-summary READ + high-value
@@ -30,6 +34,11 @@ const { can } = useCan();
 
 const canView = computed(() => can('merchant.compensation_summary.view'));
 const canApproveHighValue = computed(() => can('merchant.payout.approve_high_value'));
+const showSummary = computed(() => props.mode !== 'approvals');
+const showApprovals = computed(() => props.mode !== 'summary');
+const denied = computed(() =>
+  (showSummary.value && !canView.value) || (showApprovals.value && !canApproveHighValue.value),
+);
 
 /* ---------------------------------------------------------------- a11y */
 const statusRegion = ref<HTMLElement | null>(null);
@@ -66,17 +75,20 @@ const queueState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
 const statusRows = computed(() => Object.entries(summaryStore.summary.payout_runs_by_status));
 
 async function loadAll(): Promise<void> {
-  await Promise.all([summaryStore.fetchSummary(), payoutStore.fetchRuns('merchant', 1)]);
+  await Promise.all([
+    ...(showSummary.value && canView.value ? [summaryStore.fetchSummary()] : []),
+    ...(showApprovals.value && canApproveHighValue.value ? [payoutStore.fetchRuns('merchant', 1)] : []),
+  ]);
 }
 onMounted(() => {
-  if (canView.value) void loadAll();
+  if (!denied.value) void loadAll();
 });
 watch(
   () => auth.branchIds,
   () => {
     summaryStore.$reset();
     payoutStore.$reset();
-    if (canView.value) void loadAll();
+    if (!denied.value) void loadAll();
   },
 );
 
@@ -130,12 +142,19 @@ async function submitApprove(): Promise<void> {
 <template>
   <section class="mx-auto max-w-5xl px-4 py-6">
     <h1 class="font-display text-2xl font-bold text-heading">
-      Compensation summary
+      {{ showApprovals && !showSummary ? 'High-value payout approvals' : 'Compensation summary' }}
     </h1>
     <p class="mt-1 max-w-3xl text-sm text-text-muted">
-      What your business owes staff and what has been paid, grouped by currency, plus payout runs that need
-      your high-value approval. Amounts are shown exactly as Servana calculated them and are never combined
-      across currencies. This is an overview — it does not move any money.
+      <template v-if="showApprovals && !showSummary">
+        Review only payout runs that crossed the server-configured high-value threshold. Approval
+        needs a fresh identity step-up and allows Finance to record an external payment; Servana
+        does not move money.
+      </template>
+      <template v-else>
+        What your business owes staff and what has been paid, grouped by currency. Amounts are shown
+        exactly as Servana calculated them and are never combined across currencies. This overview
+        cannot create, verify, standard-approve or mark a payout as paid.
+      </template>
     </p>
 
     <p
@@ -149,13 +168,13 @@ async function submitApprove(): Promise<void> {
     </p>
 
     <div
-      v-if="summaryStore.forbidden || !canView"
+      v-if="summaryStore.forbidden || denied"
       data-testid="summary-forbidden"
       class="mt-6"
     >
       <SvCard padding="md">
         <p class="text-sm text-text-muted">
-          You do not have access to the compensation summary.
+          You do not have access to this compensation surface.
         </p>
       </SvCard>
     </div>
@@ -163,6 +182,7 @@ async function submitApprove(): Promise<void> {
     <template v-else>
       <!-- summary -->
       <SvStateBoundary
+        v-if="showSummary"
         class="mt-6"
         :state="summaryState"
         :error-message="summaryStore.error ?? undefined"
@@ -269,6 +289,7 @@ async function submitApprove(): Promise<void> {
 
       <!-- high-value approval queue -->
       <section
+        v-if="showApprovals"
         aria-labelledby="queue-heading"
         class="mt-8"
       >

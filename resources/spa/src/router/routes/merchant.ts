@@ -1,28 +1,128 @@
-import type { RouteRecordRaw } from 'vue-router';
-import { requiresAccount, requiresActiveMerchant, requiresAuth, requiresPendingSetup } from '@/router/guards';
+import type { RouteLocationGeneric, RouteRecordRaw } from 'vue-router';
+import {
+  requiresAccount,
+  requiresActiveMerchant,
+  requiresAuth,
+  requiresPendingSetup,
+} from '@/router/guards';
+
+/** Merchant Administrator canonical host-relative tree (Phase UI-09; ADR-016/ADR-017). */
+const layout = () => import('@/layouts/MerchantLayout.vue');
+const to = (name: string) => (from: RouteLocationGeneric) => ({
+  name,
+  query: from.query,
+  hash: from.hash,
+});
 
 export const merchantRoutes: RouteRecordRaw[] = [
-  // First-time setup wizard (Scope §3.2). Standalone page (no merchant nav),
-  // gated to a signed-in owner whose setup is still required.
-  //
-  // Phase UI-06: `/setup` is the public route contract's name for this page on the Merchant
-  // Administrator host (UI/UX plan §4.2). It is an ALIAS of the one implementation, so the same
-  // `requiresAuth` + `requiresPendingSetup` guards apply to both paths — a separate route would
-  // have been a second, ungoverned way in.
   {
-    path: '/onboarding/first-time-setup',
-    alias: ['/setup'],
-    name: 'onboarding.first-time-setup',
+    path: '/setup',
+    alias: ['/onboarding/first-time-setup'],
+    name: 'merchant.setup',
     component: () => import('@/pages/onboarding/FirstTimeSetup.vue'),
-    // Phase UI-07: first-time setup is contract page §6.4.1 and belongs to the Merchant
-    // Administrator account, so it carries the account guard like the rest of that tree.
     beforeEnter: [requiresAuth, requiresAccount('merchant_administrator'), requiresPendingSetup],
-    meta: { accountKey: 'merchant_administrator' },
+    meta: { accountKey: 'merchant_administrator', roleIdentity: 'merchant_administrator', screenKey: 'setup' },
   },
   {
+    path: '/',
+    component: layout,
+    beforeEnter: [requiresAuth, requiresActiveMerchant, requiresAccount('merchant_administrator')],
+    meta: { accountKey: 'merchant_administrator' },
+    children: [
+      {
+        path: '/dashboard',
+        name: 'merchant.dashboard',
+        component: () => import('@/pages/merchant/Dashboard.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'dashboard' },
+      },
+      {
+        path: '/get-started',
+        name: 'merchant.get-started',
+        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'get-started' },
+      },
+      {
+        path: '/merchant/profile',
+        name: 'merchant.merchant-profile',
+        component: () => import('@/pages/merchant/MerchantProfile.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'merchant-profile' },
+      },
+      {
+        path: '/branches',
+        name: 'merchant.branches',
+        component: () => import('@/pages/branch/BranchList.vue'),
+        props: { merchantOwnerView: true },
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'branches' },
+      },
+      {
+        path: '/branches/:branchUlid',
+        name: 'merchant.branch-detail',
+        component: () => import('@/pages/merchant/MerchantBranchDetail.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'branch-detail' },
+      },
+      {
+        path: '/staff',
+        name: 'merchant.staff',
+        component: () => import('@/pages/merchant/StaffOverview.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'staff' },
+      },
+      {
+        path: '/subscription',
+        name: 'merchant.subscription',
+        component: () => import('@/pages/merchant/SubscriptionDashboard.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'subscription' },
+      },
+      {
+        path: '/subscription/plan',
+        name: 'merchant.subscription-plan',
+        component: () => import('@/pages/merchant/PlanManagement.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'subscription-plan' },
+      },
+      {
+        path: '/subscription/invoices',
+        name: 'merchant.subscription-invoices',
+        component: () => import('@/pages/merchant/SubscriptionInvoices.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'subscription-invoices' },
+      },
+      {
+        path: '/subscription/invoices/:invoiceUlid',
+        name: 'merchant.subscription-invoice-detail',
+        component: () => import('@/pages/merchant/SubscriptionInvoiceDetail.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'subscription-invoice-detail' },
+      },
+      {
+        path: '/compensation',
+        name: 'merchant.compensation',
+        component: () => import('@/pages/merchant/CompensationSummary.vue'),
+        props: { mode: 'summary' },
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'compensation' },
+      },
+      {
+        path: '/compensation/payout-approvals',
+        name: 'merchant.compensation-payout-approvals',
+        component: () => import('@/pages/merchant/CompensationSummary.vue'),
+        props: { mode: 'approvals' },
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'compensation-payout-approvals' },
+      },
+      {
+        path: '/finance/period-reopen-approvals',
+        name: 'merchant.finance-period-reopen-approvals',
+        component: () => import('@/pages/merchant/PeriodReopenApprovals.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'finance-period-reopen-approvals' },
+      },
+      {
+        path: '/account',
+        name: 'merchant.account',
+        component: () => import('@/pages/merchant/AccountAndSecurity.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: 'account' },
+      },
+    ],
+  },
+  {
+    // Authenticated role landing and compatibility URLs with real existing consumers. Every target
+    // re-enters the guarded canonical tree and query/hash are retained.
     path: '/merchant',
-    component: () => import('@/layouts/MerchantLayout.vue'),
-    // Phase UI-07 — the account guard UI-03 deferred to this phase.
+    component: layout,
     beforeEnter: [requiresAuth, requiresActiveMerchant, requiresAccount('merchant_administrator')],
     meta: { accountKey: 'merchant_administrator' },
     children: [
@@ -30,65 +130,21 @@ export const merchantRoutes: RouteRecordRaw[] = [
         path: '',
         name: 'merchant.landing',
         component: () => import('@/pages/landing/RoleLanding.vue'),
-        meta: { roleIdentity: 'merchant_administrator' },
+        meta: { roleIdentity: 'merchant_administrator', screenKey: null },
       },
+      { path: 'dashboard', redirect: to('merchant.dashboard') },
+      { path: 'get-started', redirect: to('merchant.get-started') },
+      { path: 'subscription', redirect: to('merchant.subscription') },
+      { path: 'plan', redirect: to('merchant.subscription-plan') },
+      { path: 'subscription-invoices', redirect: to('merchant.subscription-invoices') },
+      { path: 'compensation-summary', redirect: to('merchant.compensation') },
+      { path: 'period-reopen-approvals', redirect: to('merchant.finance-period-reopen-approvals') },
       {
-        path: 'get-started',
-        name: 'merchant.get-started',
-        component: () => import('@/pages/get-started/RoleGetStarted.vue'),
-        meta: { roleIdentity: 'merchant_administrator' },
-      },
-      {
-        path: 'dashboard',
-        name: 'merchant.dashboard',
-        component: () => import('@/pages/merchant/Dashboard.vue'),
-      },
-      {
-        path: 'period-reopen-approvals',
-        name: 'merchant.period-reopen-approvals',
-        component: () => import('@/pages/merchant/PeriodReopenApprovals.vue'),
-      },
-      // REM-SCR-002A — merchant business profile (Plan §27.3 Merchant Administrator "merchant
-      // profile"). Backend authoritative: `merchant.profile.view` / `merchant.profile.update` +
-      // MerchantProfilePolicy + EnsureBillingMutable on the write.
-      {
-        path: 'profile',
-        name: 'merchant.profile',
-        component: () => import('@/pages/merchant/MerchantProfile.vue'),
-      },
-      // Phase 20B — subscription self-service (Merchant Administrator). Backend remains
-      // authoritative (MerchantSubscriptionPolicy + EnsureBillingMutable); these are UX surfaces.
-      {
-        path: 'subscription',
-        name: 'merchant.subscription',
-        component: () => import('@/pages/merchant/SubscriptionDashboard.vue'),
-      },
-      {
-        path: 'plan',
-        name: 'merchant.plan',
-        component: () => import('@/pages/merchant/PlanManagement.vue'),
-      },
-      {
-        path: 'subscription-invoices',
-        name: 'merchant.invoices',
-        component: () => import('@/pages/merchant/SubscriptionInvoices.vue'),
-      },
-      {
-        // Phase 20E — merchant-wide masked platform-fee visibility + dispute creation. Backend
-        // authoritative (server-side merchant scope + `platform_fee.view`/`platform_fee.dispute`).
+        // Supporting Phase 20E screen retained outside the 23-page UI-09 count.
         path: 'platform-fees',
         name: 'merchant.platform-fees',
         component: () => import('@/pages/billing/PlatformFees.vue'),
-        meta: { roleIdentity: 'merchant_administrator' },
-      },
-      {
-        // Phase 20H — Merchant Administrator compensation summary + high-value payout approvals. Backend
-        // authoritative (`merchant.compensation_summary.view` masked read; `merchant.payout
-        // .approve_high_value` + fresh step-up + Idempotency-Key). MA never creates/verifies/marks-paid.
-        path: 'compensation-summary',
-        name: 'merchant.compensation-summary',
-        component: () => import('@/pages/merchant/CompensationSummary.vue'),
-        meta: { roleIdentity: 'merchant_administrator' },
+        meta: { roleIdentity: 'merchant_administrator', screenKey: null },
       },
     ],
   },

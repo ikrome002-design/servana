@@ -294,11 +294,12 @@ it('collides with no operation ID already in the committed OpenAPI contract', fu
         );
     }
 
-    expect($existing)->toHaveCount(
-        $baseline + $implemented + count($itemised),
-        'the OpenAPI contract carries '.count($existing).' operations; expected the '.$baseline
-        .' baseline plus the '.$implemented.' implemented corrective operations plus the '
-        .count($itemised).' separately itemised operation(s)',
+    $ui08CompletionFloor = $baseline + $implemented + count($itemised);
+    expect(count($existing))->toBeGreaterThanOrEqual(
+        $ui08CompletionFloor,
+        'the OpenAPI contract carries '.count($existing).' operations; it must retain at least the '
+        .$ui08CompletionFloor.' operations proven when UI-08 completed. Later phases may add '
+        .'operations without rewriting this historical UI-08 contract.',
     );
 
     expect($baseline + 33)->toBe(ui08Matrix()['expected_after_all_four_domains']['openapi_operations']);

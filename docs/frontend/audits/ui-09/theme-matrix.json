@@ -1,0 +1,17 @@
+{
+  "schema": "servana.ui09.theme-matrix.v1",
+  "phase": "UI-09",
+  "cases": [
+    { "case": "first visit with OS light", "expected": "light", "actual": "light", "result": "pass" },
+    { "case": "first visit with OS dark", "expected": "light", "actual": "light", "result": "pass" },
+    { "case": "explicit dark", "expected": "dark", "actual": "dark", "result": "pass" },
+    { "case": "explicit dark reload", "expected": "dark", "actual": "dark", "result": "pass" },
+    { "case": "explicit light", "expected": "light", "actual": "light", "result": "pass" },
+    { "case": "signed-in in-app browser dark reload", "expected": "dark", "actual": "dark", "result": "pass" }
+  ],
+  "theme_flash_observed": false,
+  "brand_token_only": true,
+  "approved_icon_system": true,
+  "axe_dark_serious": 0,
+  "axe_dark_critical": 0
+}

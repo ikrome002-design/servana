@@ -1,0 +1,21 @@
+{
+  "schema": "servana.ui09.historical-evidence-baseline.v1",
+  "phase": "UI-09",
+  "captured_before_final_full_playwright": true,
+  "algorithm": "SHA-256 over UTF-8 ordered lines of repository-relative path, NUL, file SHA-256",
+  "frozen_historical_directories": [
+    { "path": "docs/frontend/audits/ui-01", "files": 8, "aggregate_sha256": "8b576dc762da0fce9f8e6bc6307092e0668e4f6da9615ee89521526e7626f09a" },
+    { "path": "docs/frontend/audits/ui-04", "files": 15, "aggregate_sha256": "46a47780af6b0f855ed738d076d16a772b10c7c4f2c6e945dac9473238aba553" },
+    { "path": "docs/frontend/audits/ui-05", "files": 10, "aggregate_sha256": "c40443d0f0c7f413beea174d6e7c527ccb2dac3592e1d33ca3f9851b7ca20e04" },
+    { "path": "docs/frontend/audits/ui-06", "files": 51, "aggregate_sha256": "77cefa3383be302ee62cd5adb00a6549ebfaa17bb65341b39d90d1a07010ad6a" },
+    { "path": "docs/frontend/audits/ui-08", "files": 50, "aggregate_sha256": "d7b55df4ce90d6dc12325bad6958e02b291b89f34527a1a21c40725d5794a9fc" }
+  ],
+  "deterministic_current_projection": {
+    "path": "docs/frontend/audits/ui-07",
+    "files": 16,
+    "aggregate_sha256": "325454a5613bb491637490998545a152b80f691bb74597052dfdb48180840ef0",
+    "policy": "Must match the current generator; never restore an older historical hash over authorized UI-09 navigation projections"
+  },
+  "new_evidence": "docs/frontend/audits/ui-09 is expected to change only when its own focused/full proof is rerun",
+  "restoration_policy": "After full Playwright, compare aggregates and Git paths; restore only individually proven test-generated frozen mutations, never wholesale checkout or git clean"
+}

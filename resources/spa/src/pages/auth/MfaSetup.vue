@@ -73,7 +73,7 @@ async function finish(): Promise<void> {
   // A pending owner still completes setup first; everyone else goes to their
   // role landing. The MFA gate re-checks challenge state on the destination.
   if (auth.setupRequired()) {
-    await router.replace({ name: 'onboarding.first-time-setup' });
+    await router.replace({ name: 'merchant.setup' });
   } else {
     await router.replace({ name: landingRouteName() });
   }

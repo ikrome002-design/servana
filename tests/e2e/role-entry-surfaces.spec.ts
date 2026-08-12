@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { ROLES, stubBootstrap } from './support/roleBootstrap';
+import { stubMerchantApi } from './support/ui09Merchant';
 
 /*
  | Phase 11 role-entry surfaces (Plan §27.2). Each role lands on its own live
@@ -29,14 +30,15 @@ test.describe('role landing pages', () => {
 test.describe('get-started persistence', () => {
   const role = ROLES.find((r) => r.identity === 'merchant_administrator')!;
 
-  test('checklist completion survives reload and dismiss/reopen works', async ({ page }) => {
+  test('server-observed completion survives reload and dismiss/reopen works', async ({ page }) => {
     await stubBootstrap(page, role);
+    await stubMerchantApi(page);
     await page.goto(`${role.path}/get-started`);
 
     const firstItem = page.locator('[data-testid="checklist-verify-email"]');
     await expect(firstItem).toBeVisible();
-    await firstItem.check();
     await expect(firstItem).toBeChecked();
+    await expect(firstItem).toBeDisabled();
 
     await page.reload();
     await expect(page.locator('[data-testid="checklist-verify-email"]')).toBeChecked();
@@ -48,6 +50,7 @@ test.describe('get-started persistence', () => {
     await expect(page.locator('[data-testid="reopen-get-started"]')).toBeVisible();
     await page.locator('[data-testid="reopen-get-started"]').click();
     await expect(page.locator('[data-testid="checklist-verify-email"]')).toBeChecked();
+    await expect(page.locator('[data-testid="checklist-verify-email"]')).toBeDisabled();
   });
 });
 

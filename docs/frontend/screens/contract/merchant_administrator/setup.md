@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `onboarding.first-time-setup` at `/onboarding/first-time-setup` (routes/merchant.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/setup`; owner phase **UI-09** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `merchant.setup` at `/setup` (routes/merchant.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-09**
 - **Backend owner phase:** **Phase 6**
 - **Implementation status:** `implemented`
-- **Runtime route:** `onboarding.first-time-setup`
+- **Runtime route:** `merchant.setup`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `onboarding.first-time-setup` (recorded in `docs/frontend/screens/onboarding/first-time-setup.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.setup` (recorded in `docs/frontend/screens/onboarding/first-time-setup.md`).
 - **Data fields:** Owner first-time setup wizard gating dashboard access.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

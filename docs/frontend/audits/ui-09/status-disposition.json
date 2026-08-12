@@ -1,0 +1,29 @@
+{
+  "schema": "servana.ui09.status-disposition.v1",
+  "phase": "UI-09",
+  "lifecycle": "local_complete",
+  "totals": { "implemented": 15, "disabled_by_gate": 8, "planned": 0, "removed_by_authority": 0, "total": 23 },
+  "implemented": [
+    "setup", "dashboard", "get-started", "merchant-profile", "branches", "branch-detail", "staff",
+    "subscription", "subscription-plan", "subscription-invoices", "subscription-invoice-detail",
+    "compensation", "compensation-payout-approvals", "finance-period-reopen-approvals", "account"
+  ],
+  "disabled_by_gate": [
+    { "screen_key": "subscription-payment-attempts", "gate": "external_gate_w", "reason": "Wallet by Citrus collections readiness" },
+    { "screen_key": "subscription-recovery", "gate": "external_gate_w", "reason": "Wallet by Citrus collections readiness" },
+    { "screen_key": "reports", "gate": "external_gate_w", "reason": "Wallet by Citrus collections readiness" },
+    { "screen_key": "reports-branches", "gate": "external_gate_w", "reason": "Wallet by Citrus collections readiness" },
+    { "screen_key": "reports-services", "gate": "external_gate_w", "reason": "Wallet by Citrus collections readiness" },
+    { "screen_key": "reports-staff", "gate": "external_gate_w", "reason": "Wallet by Citrus collections readiness" },
+    { "screen_key": "reports-daily", "gate": "external_gate_w", "reason": "Wallet by Citrus collections readiness" },
+    { "screen_key": "notifications", "gate": "external_gate_w", "reason": "Wallet by Citrus collections readiness" }
+  ],
+  "invariants": {
+    "self_registration_only_merchant_creation": true,
+    "setup_only_pre_dashboard_operational_gate": true,
+    "dashboard_post_setup_home": true,
+    "gate_w_closed": true,
+    "ui10_started": false,
+    "phase25_started": false
+  }
+}

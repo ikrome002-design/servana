@@ -123,7 +123,7 @@ export function requiresActiveMerchant(
 
   // A pending_setup owner must finish first-time setup before the dashboard.
   if (auth.setupRequired() || merchant.isPendingSetup()) {
-    next({ name: 'onboarding.first-time-setup' });
+    next({ name: 'merchant.setup' });
     return;
   }
 
@@ -153,7 +153,7 @@ export function requiresPendingSetup(
   }
 
   if (!auth.setupRequired() && !merchant.isPendingSetup()) {
-    next({ name: 'merchant.landing' });
+    next({ name: 'merchant.dashboard' });
     return;
   }
 

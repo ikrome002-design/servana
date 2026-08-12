@@ -83,6 +83,7 @@ describe('HeaderGroupNavigation.vue — Increment 9A', () => {
         { path: '/platform-access', name: 'platform.platform-access', component: Blank },
         { path: '/platform/feature-flags', name: 'platform.feature-flags', component: Blank },
         { path: '/account', name: 'platform.account', component: Blank },
+        { path: '/merchants/:merchantUlid', name: 'platform.merchant-detail', component: Blank },
       ],
     });
     router.push('/dashboard');
@@ -123,6 +124,25 @@ describe('HeaderGroupNavigation.vue — Increment 9A', () => {
     await home.trigger('click');
     await flushPromises();
     expect(wrapper.find('[data-testid="nav-link-sa.dashboard"]').attributes('aria-current')).toBe('page');
+  });
+
+  it('keeps a visible parent current while its contextual detail child is active', async () => {
+    const parent = node({
+      key: 'sa.merchants',
+      label: 'Merchant Directory',
+      group: 'Merchants',
+      routeName: 'platform.merchants',
+      children: [node({
+        key: 'sa.merchant-detail',
+        label: 'Merchant detail',
+        group: 'Merchants',
+        routeName: 'platform.merchant-detail',
+      })],
+    });
+    await router.push('/merchants/01JQMERCHANT');
+    const wrapper = await mountNav('stacked', [parent]);
+
+    expect(wrapper.find('[data-testid="nav-stacked-link-sa.merchants"]').attributes('aria-current')).toBe('page');
   });
 
   it('renders a gated entry as inert, named, and without a destination', async () => {

@@ -1,0 +1,47 @@
+{
+  "schema": "servana.ui09.browser-proof.v1",
+  "phase": "UI-09",
+  "account": "merchant_administrator",
+  "focused_playwright": {
+    "command": "npx playwright test tests/e2e/ui-09-merchant-administrator-experience.spec.ts --reporter=line",
+    "built_spa": true,
+    "fixtures": "synthetic API payloads; genuine Vue router, Pinia stores, components and shell",
+    "passed": 65,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "duration_seconds": 247.6,
+    "unexpected_console_errors": 0,
+    "unexpected_failed_requests": 0,
+    "uncaught_page_errors": 0
+  },
+  "coverage": {
+    "implemented_pages": 15,
+    "gated_pages": 8,
+    "loading_error_empty_states": true,
+    "wrong_account_denial": true,
+    "foreign_branch_non_enumeration": true,
+    "foreign_invoice_non_enumeration": true,
+    "billing_entitlement_truth": true,
+    "forbidden_controls_absent": true
+  },
+  "signed_in_in_app_browser": {
+    "runtime": "real local Laravel/Nginx/Vite stack through a disposable loopback proof proxy",
+    "data": "synthetic local Merchant Administrator; no production data",
+    "journey": ["self-registration", "Magic Link consume", "mandatory TOTP enrollment", "recovery acknowledgement", "five-step atomic setup", "dashboard"],
+    "pages_inspected": ["/dashboard", "/staff", "/branches", "/branches/{ownedBranch}", "/account"],
+    "observations": [
+      "live dashboard showed actual trial subscription, one branch and three memberships",
+      "staff projection returned three safe membership records and no password control",
+      "branch detail kept Branches current and declared operational responsibility boundaries",
+      "account showed Magic Link, confirmed MFA, own sessions/theme and zero password fields",
+      "dark preference survived reload and was returned to light before finalization"
+    ],
+    "catalogue_note": "The empty local plan selector was traced to an empty development subscription catalogue; a clearly synthetic active local plan/price fixture enabled the journey. The GET endpoint and focused backend tests already prove effective catalogue filtering.",
+    "tokens_or_secrets_recorded": false,
+    "tabs_finalized": true,
+    "disposable_proxy_removed": true
+  },
+  "screenshots": "docs/frontend/audits/ui-09/screenshot-index.json"
+}

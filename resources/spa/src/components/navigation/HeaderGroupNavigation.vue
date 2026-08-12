@@ -57,6 +57,10 @@ const route = useRoute();
  */
 const GROUP_ORDER: readonly string[] = [
   'Home',
+  'Merchant',
+  'Subscription & Billing',
+  'Reports',
+  'Compensation & Approvals',
   'Billing & Commercial',
   'Merchants',
   'Billing Operations',
@@ -114,17 +118,22 @@ const groups = computed<NavGroup[]>(() => {
 const overflowGroups = computed(() => groups.value.slice(INLINE_GROUP_COUNT));
 
 /** The group containing the active route — kept visibly current even while collapsed. */
+const containsActive = (item: NavigationNode): boolean =>
+  (item.routeName !== null && item.routeName === route.name) || item.children.some(containsActive);
+
 const activeGroupName = computed<string | null>(() => {
   for (const group of groups.value) {
-    if (group.items.some((item) => item.routeName !== null && item.routeName === route.name)) {
+    if (group.items.some(containsActive)) {
       return group.name;
     }
   }
   return null;
 });
 
-const isActive = (item: NavigationNode): boolean =>
-  item.routeName !== null && item.routeName === route.name;
+// Contextual detail routes are children in the canonical tree but are deliberately not rendered
+// as a second primary-navigation item. Keep their visible parent current so a user opening an
+// invoice or branch does not lose where they are in the left navigation.
+const isActive = (item: NavigationNode): boolean => containsActive(item);
 
 // ---------------------------------------------------------------------------------------------
 // Disclosure state
@@ -239,7 +248,7 @@ onBeforeUnmount(() => {
 <template>
   <nav
     ref="rootRef"
-    aria-label="Platform primary navigation"
+    aria-label="Primary navigation"
     :data-testid="variant === 'header' ? 'header-primary-nav' : 'stacked-primary-nav'"
   >
     <!-- ============================ Header variant ============================ -->

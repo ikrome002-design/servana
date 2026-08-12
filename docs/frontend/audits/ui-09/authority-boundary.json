@@ -1,0 +1,20 @@
+{
+  "schema": "servana.ui09.authority-boundary.v1",
+  "phase": "UI-09",
+  "account": "merchant_administrator",
+  "result": "pass",
+  "boundaries": [
+    { "id": "setup-only-gate", "property": "Pending owner reaches only /setup; active owner is redirected to /dashboard", "proof": ["router guards", "FirstTimeSetupTest", "focused Playwright"] },
+    { "id": "account-host", "property": "Route requires server-resolved merchant_administrator account and held account context", "proof": ["requiresAccount", "wrong-account Playwright denial"] },
+    { "id": "tenant-branch", "property": "Foreign branch ULID is non-enumerating 404", "proof": ["Ui09MerchantAuthorityTest", "focused Playwright"] },
+    { "id": "tenant-invoice", "property": "Foreign subscription invoice ULID is non-enumerating 404", "proof": ["existing invoice policy tests", "focused Playwright"] },
+    { "id": "staff-safe-projection", "property": "Owner directory omits phone/client data and contact export; HR staff.view remains unchanged", "proof": ["Ui09MerchantStaffOverviewTest", "focused Playwright"] },
+    { "id": "staff-role-split", "property": "Owner may invite Branch Manager/HR and administer lifecycle; HR retains operational setup, eligibility, availability and compensation configuration", "proof": ["Scope authority", "focused Playwright"] },
+    { "id": "financial-step-up", "property": "High-value payout mutation requires existing permission and fresh MFA step-up", "proof": ["route middleware/policy", "focused Playwright"] },
+    { "id": "period-reopen", "property": "Owner may approve exceptional request but cannot execute Finance reopen", "proof": ["permission matrix", "focused Playwright"] },
+    { "id": "magic-link-only", "property": "Own account shows Magic Link/MFA/session/theme controls and no password or cross-user controls", "proof": ["signed-in in-app browser", "focused Playwright"] },
+    { "id": "gate-w", "property": "No Wallet/provider mutation, reports/daily reports/notifications runtime, fake zero metrics or direct integration", "proof": ["8 no-route cases", "navigation gate case"] },
+    { "id": "non-operational-owner", "property": "No service/pricing/commission/personnel-assignment, payment validation, receipt issuance or operational day controls", "proof": ["focused forbidden-control scan"] }
+  ],
+  "catalogue_change": { "permissions_added": 0, "permissions_activated": 0, "policies_added": 0, "migrations_added": 0 }
+}

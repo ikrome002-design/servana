@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import SvFileUpload, { type UploadedFileResource } from '@/components/files/SvFileUpload.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
@@ -21,6 +22,7 @@ const notifications = useNotificationStore();
 
 const loadFailed = ref(false);
 const logoHref = ref<string | null>(null);
+const logoPreviewHref = ref<string | null>(null);
 
 // UX only — EnsurePermission + MerchantProfilePolicy are the boundary.
 const canUpdate = computed(() => permissions.can('merchant.profile.update'));
@@ -67,6 +69,30 @@ onMounted(async () => {
 watch(() => store.profile?.logo?.id, async () => {
   logoHref.value = await store.logoUrl();
 });
+
+onBeforeUnmount(() => {
+  if (logoPreviewHref.value) URL.revokeObjectURL(logoPreviewHref.value);
+});
+
+async function uploadLogo(file: File, purpose: string): Promise<UploadedFileResource> {
+  if (logoPreviewHref.value) URL.revokeObjectURL(logoPreviewHref.value);
+  logoPreviewHref.value = URL.createObjectURL(file);
+  return store.uploadLogo(file, purpose);
+}
+
+function onLogoUploaded(file: UploadedFileResource): void {
+  notifications.addToast({
+    type: 'success',
+    message: file.lifecycle_status === 'available'
+      ? 'Business logo replaced.'
+      : 'Logo uploaded and queued for security scanning.',
+  });
+  if (file.lifecycle_status === 'available') void store.fetchProfile();
+}
+
+function onLogoRejected(message: string): void {
+  notifications.addToast({ type: 'error', message });
+}
 
 function errorsFor(field: string): string[] {
   return store.fieldErrors[field] ?? [];
@@ -136,7 +162,7 @@ async function save(): Promise<void> {
             No logo uploaded yet.
           </p>
           <p
-            v-else
+            v-else-if="store.profile.logo"
             class="mt-1 text-sm text-text"
           >
             <a
@@ -147,6 +173,29 @@ async function save(): Promise<void> {
             >{{ store.profile.logo.filename }}</a>
             <span v-else>{{ store.profile.logo.filename }}</span>
           </p>
+          <img
+            v-if="logoPreviewHref || logoHref"
+            :src="logoPreviewHref ?? logoHref ?? undefined"
+            alt="Current merchant logo preview"
+            class="mt-3 h-24 w-24 rounded-card border border-border bg-white object-contain p-2"
+          >
+          <SvFileUpload
+            v-if="canUpdate"
+            class="mt-4"
+            purpose="merchant_logo"
+            label="Upload or replace merchant logo"
+            :uploader="uploadLogo"
+            @uploaded="onLogoUploaded"
+            @rejected="onLogoRejected"
+          />
+          <div v-if="store.profile.logo_history.length > 0" class="mt-4">
+            <h3 class="text-sm font-semibold text-heading">Replacement history</h3>
+            <ul class="mt-2 space-y-1 text-sm text-text-muted" aria-label="Logo replacement history">
+              <li v-for="entry in store.profile.logo_history" :key="entry.id">
+                {{ entry.filename }}<span v-if="entry.available_at"> · {{ new Date(entry.available_at).toLocaleDateString('en-KE') }}</span>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <form

@@ -6,6 +6,8 @@ import type { ServiceFeeTier } from '@/types/models';
 
 export interface FirstTimeSetupForm {
   service_fee_tier: ServiceFeeTier | '';
+  subscription_plan_ulid: string;
+  subscription_plan_price_ulid: string;
   business_category: string;
   contact_phone: string;
   contact_email: string;
@@ -28,6 +30,8 @@ export interface FirstTimeSetupForm {
 export function emptyFirstTimeSetupForm(): FirstTimeSetupForm {
   return {
     service_fee_tier: '',
+    subscription_plan_ulid: '',
+    subscription_plan_price_ulid: '',
     business_category: '',
     contact_phone: '',
     contact_email: '',
@@ -52,10 +56,89 @@ export function emptyFirstTimeSetupForm(): FirstTimeSetupForm {
 export const useOnboardingStore = defineStore('onboarding', () => {
   const form = ref<FirstTimeSetupForm>(emptyFirstTimeSetupForm());
   const submitting = ref(false);
+  const loading = ref(false);
+  const loadError = ref<string | null>(null);
+  const serviceFeeTiers = ref<Array<{ value: ServiceFeeTier; label: string }>>([]);
+  const subscriptionPlans = ref<Array<{
+    id: string;
+    name: string;
+    description: string | null;
+    tier: string | null;
+    prices: Array<{
+      id: string;
+      amount_minor: number;
+      currency: string;
+      billing_interval: string;
+    }>;
+  }>>([]);
+
+  const DRAFT_VERSION = 1;
+
+  function draftKey(): string | null {
+    const userId = useAuthStore().user?.id;
+    return userId ? `servana.setup.v${DRAFT_VERSION}.${userId}` : null;
+  }
+
+  function restoreDraft(): void {
+    const key = draftKey();
+    if (key === null) return;
+    try {
+      const stored = JSON.parse(localStorage.getItem(key) ?? 'null') as {
+        version?: number;
+        form?: Partial<FirstTimeSetupForm>;
+      } | null;
+      if (stored?.version !== DRAFT_VERSION || stored.form === undefined) return;
+      form.value = {
+        ...emptyFirstTimeSetupForm(),
+        ...stored.form,
+        branch: { ...emptyFirstTimeSetupForm().branch, ...(stored.form.branch ?? {}) },
+      };
+    } catch {
+      // A corrupt/unavailable device draft never weakens server validation.
+    }
+  }
+
+  function saveDraft(): void {
+    const key = draftKey();
+    if (key === null) return;
+    try {
+      localStorage.setItem(key, JSON.stringify({ version: DRAFT_VERSION, form: form.value }));
+    } catch {
+      // Setup still works in this session when storage is unavailable.
+    }
+  }
+
+  function clearDraft(): void {
+    const key = draftKey();
+    if (key !== null) localStorage.removeItem(key);
+  }
+
+  async function load(): Promise<void> {
+    loading.value = true;
+    loadError.value = null;
+    try {
+      const { data } = await apiClient.get<{
+        data: {
+          options: {
+            service_fee_tiers: Array<{ value: ServiceFeeTier; label: string }>;
+            subscription_plans: typeof subscriptionPlans.value;
+          };
+        };
+      }>('/merchant-registration/first-time-setup');
+      serviceFeeTiers.value = data.data.options.service_fee_tiers;
+      subscriptionPlans.value = data.data.options.subscription_plans;
+      restoreDraft();
+    } catch {
+      loadError.value = 'We couldn’t load the setup options. Check your connection and try again.';
+    } finally {
+      loading.value = false;
+    }
+  }
 
   function reset(): void {
     form.value = emptyFirstTimeSetupForm();
     submitting.value = false;
+    clearDraft();
   }
 
   /** Submit the completed setup; throws on validation/HTTP error for the caller. */
@@ -70,5 +153,17 @@ export const useOnboardingStore = defineStore('onboarding', () => {
     }
   }
 
-  return { form, submitting, reset, complete };
+  return {
+    form,
+    submitting,
+    loading,
+    loadError,
+    serviceFeeTiers,
+    subscriptionPlans,
+    load,
+    saveDraft,
+    clearDraft,
+    reset,
+    complete,
+  };
 });

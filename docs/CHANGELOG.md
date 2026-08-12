@@ -6,7 +6,58 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-08 — Super Administrator experience (`phase-ui-08-super-administrator-experience`) — local_complete pending PR CI/review/merge
+### Phase UI-09 — Merchant Administrator experience (`phase-ui-09-merchant-administrator-experience`) — local complete
+
+Off verified `main` = `b435f4840649687bef3d54e61424d88047a10d4b` (the Phase UI-08 PR #58
+squash merge). The authorized contract is exactly 23 Merchant Administrator pages; External Gate W
+and Phase 21N stay closed. UI-10, backend Phase 25 and provider-owned runtime work are excluded.
+
+All **23** contract entries are accounted for: **15 implemented**, **8 `disabled_by_gate`**, **0
+planned**, **0 removed**. The global authenticated contract remains **160** pages. UI-09 adds no
+permission key: the catalogue remains **169 total / 134 active / 35 planned**. The OpenAPI contract
+is **337 operations**.
+
+#### Added — Merchant Administrator ownership experience
+
+- A modern owner-oriented left shell: persistent desktop sidebar, intentional tablet rail and
+  focus-trapped mobile drawer, with canonical grouped navigation and truthful inert Gate-W entries.
+- Real setup, owner dashboard and observed Get Started journey; Merchant Profile with the private
+  logo pipeline; branch portfolio/detail and a narrow, tenant-safe staff lifecycle directory.
+- Canonical subscription overview, plan, invoice directory/detail, compensation summary, payout and
+  finance-reopen approvals, plus own-account identity, MFA, sessions and theme controls.
+- Tenant/account/owner-role enforcement remains server-side. Foreign branch and invoice identifiers
+  do not enumerate, Merchant Admin gains no HR operational scope, and no personnel contact export,
+  provider operation, Wallet collection or fabricated report/metric was introduced.
+
+#### Changed — deliberate visual/product-design refinement
+
+The dashboard now uses brand and status accents with clearer ownership hierarchy; Get Started uses
+a warm progress composition rather than dead struck-through rows; Branches reads as a purposeful
+portfolio rather than sparse generic cards; Subscription gives the active plan and billing state
+the dominant visual weight. All refinements remain truthful to server data and are polished in
+light/dark at 360, 767, 768, 1024, 1025, 1280 and 1440 px plus 200% zoom.
+
+#### Quality
+
+Final local evidence: corrected PostgreSQL parallel suite **2,971 passed / 14 skipped / 48,712
+assertions**; Pint **1,880 files clean**; Larastan level 8 **1,437 analyzed / 0 errors**; ESLint 0
+errors, vue-tsc clean, Vitest **1,364**, production build green; focused UI-09 Playwright **65/65**
+and whole-product Playwright **1,255/1,255** with no flaky/skipped case. Axe reported 0 serious and
+0 critical findings, all responsive widths had zero horizontal overflow, and the final disposable
+production-host proof passed **44/44** against the recorded PHP/Nginx images. Composer/npm high gates
+and gitleaks are clean. Proof: `docs/proof/ui-09.md`; artifacts: `docs/frontend/audits/ui-09/`.
+
+The branch's single local-completion commit is `0142d0a`; PR #59 was opened from that exact head.
+Initial CI `31614642395` found one stale generated UI-06 route projection through both the Frontend
+contract step and Backend's `Ui06GeneratedArtifactStalenessTest` (all other 3,537 Pest tests passed).
+`UI09-CI-001` regenerates only that derived consumer from the canonical route module. Corrected-head
+run `31617605102` then exposed two UI-06 test assertions that still treated `/setup` as the alias of
+the retired onboarding route. `UI09-CI-002` aligns only that predecessor consumer with canonical
+`merchant.setup` at `/setup` and its `/onboarding/first-time-setup` compatibility alias. Final
+exact-head CI, truthful solo-maintainer governance and merge remain; none of those future facts is
+claimed here.
+
+### Phase UI-08 — Super Administrator experience — verified complete
 
 Off `main` = `16d544c58747a1d69ef390c2d4511c649315fde7` (the Phase UI-07 PR #57 merge commit).
 Proof: `docs/proof/ui-08.md`. Artifacts: `docs/frontend/audits/ui-08/`, `docs/backend/audits/ui-08/`.
@@ -14,7 +65,14 @@ Plan authority: UI/UX plan §5.4 (the 22-page Super Administrator contract), §7
 §21; ADR-016, ADR-017, ADR-018, ADR-021, ADR-024, ADR-025; Plan §9, §10.2, §10.3, §22, §24.1, §70,
 §80.1, §80.2. Product-owner decision: `COR-UI08-001`.
 
-**No pull request was created.** UI-08 stops at a pushed branch by instruction.
+PR [#58](https://github.com/ikrome002-design/servana/pull/58) merged as squash
+`b435f4840649687bef3d54e61424d88047a10d4b` at `2026-08-10T15:55:21Z`. Final reviewed head
+`2fdf878427f9a87b2e02055d1191e73621292669` and merge share tree
+`60a1085a42c7bc3bec793fe6a15a62a350ca02c7`. Final CI run `31403883471` completed all five
+required jobs successfully. Governance comment `5242660629` records the solo-maintainer process;
+`reviewDecision` was blank and GitHub returned zero submitted reviews, which is **not** independent
+approval. The source branch is deleted locally and remotely. All fourteen merged UI-08 closures are
+now `verified_complete`.
 
 #### Added — the Super Administrator account experience
 

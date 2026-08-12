@@ -14757,10 +14757,71 @@
                                                         "service_fee_tiers": {
                                                             "type": "array",
                                                             "items": {}
+                                                        },
+                                                        "subscription_plans": {
+                                                            "type": "array",
+                                                            "description": "The POST already requires an active plan and its currently-effective price.\nPending-setup owners cannot call the active-merchant subscription catalogue,\nso this read exposes exactly those public ULIDs and integer-minor prices here.",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "description": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "tier": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "prices": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "id": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "amount_minor": {
+                                                                                    "type": "integer"
+                                                                                },
+                                                                                "currency": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "billing_interval": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "id",
+                                                                                "amount_minor",
+                                                                                "currency",
+                                                                                "billing_interval"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "description",
+                                                                    "tier",
+                                                                    "prices"
+                                                                ]
+                                                            }
                                                         }
                                                     },
                                                     "required": [
-                                                        "service_fee_tiers"
+                                                        "service_fee_tiers",
+                                                        "subscription_plans"
                                                     ]
                                                 }
                                             },
@@ -15153,46 +15214,410 @@
                                                 "merchant": {
                                                     "$ref": "#/components/schemas/MerchantResource"
                                                 },
-                                                "shell": {
+                                                "overview": {
                                                     "type": "object",
                                                     "properties": {
-                                                        "sections": {
-                                                            "type": "array",
-                                                            "prefixItems": [
-                                                                {
-                                                                    "type": "string",
-                                                                    "const": "overview"
+                                                        "subscription": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "status": {
+                                                                    "type": "string"
                                                                 },
-                                                                {
-                                                                    "type": "string",
-                                                                    "const": "branches"
+                                                                "billing_status": {
+                                                                    "type": "string"
                                                                 },
-                                                                {
-                                                                    "type": "string",
-                                                                    "const": "staff"
+                                                                "billing_read_only": {
+                                                                    "type": "boolean"
                                                                 },
-                                                                {
-                                                                    "type": "string",
-                                                                    "const": "reports"
+                                                                "plan_name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "billing_interval": {
+                                                                    "type": "string"
+                                                                },
+                                                                "amount_minor": {
+                                                                    "type": "string"
+                                                                },
+                                                                "currency": {
+                                                                    "type": "string"
+                                                                },
+                                                                "trial_ends_at": {
+                                                                    "type": "string"
+                                                                },
+                                                                "current_period_end": {
+                                                                    "type": "string"
+                                                                },
+                                                                "scheduled_change": {
+                                                                    "type": "boolean"
                                                                 }
-                                                            ],
-                                                            "minItems": 4,
-                                                            "maxItems": 4,
-                                                            "additionalItems": false
+                                                            },
+                                                            "required": [
+                                                                "status",
+                                                                "billing_status",
+                                                                "billing_read_only",
+                                                                "plan_name",
+                                                                "billing_interval",
+                                                                "amount_minor",
+                                                                "currency",
+                                                                "trial_ends_at",
+                                                                "current_period_end",
+                                                                "scheduled_change"
+                                                            ]
                                                         },
-                                                        "ready": {
-                                                            "type": "boolean"
+                                                        "billing": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "next_invoice": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "invoice_number": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "balance_minor": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "currency": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "due_at": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "invoice_number",
+                                                                        "status",
+                                                                        "balance_minor",
+                                                                        "currency",
+                                                                        "due_at"
+                                                                    ]
+                                                                },
+                                                                "outstanding_by_currency": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "currency": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "amount_minor": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "currency",
+                                                                            "amount_minor"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "payment_runtime": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "available": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "reason": {
+                                                                            "type": "string",
+                                                                            "const": "External Gate W — Wallet by Citrus collections readiness"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "available",
+                                                                        "reason"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "next_invoice",
+                                                                "outstanding_by_currency",
+                                                                "payment_runtime"
+                                                            ]
+                                                        },
+                                                        "branches": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "total": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "active": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "suspended": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "archived": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "limit": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "remaining_capacity": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "total",
+                                                                "active",
+                                                                "suspended",
+                                                                "archived",
+                                                                "limit",
+                                                                "remaining_capacity"
+                                                            ]
+                                                        },
+                                                        "staff": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "active": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "invited": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "suspended": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "deactivated": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "pending_owner_invitations": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "active",
+                                                                "invited",
+                                                                "suspended",
+                                                                "deactivated",
+                                                                "pending_owner_invitations"
+                                                            ]
+                                                        },
+                                                        "get_started": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "setup_complete": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "subscription_selected": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "profile_complete": {
+                                                                    "type": "string"
+                                                                },
+                                                                "logo_uploaded": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "billing_phone_confirmed": {
+                                                                    "type": "string"
+                                                                },
+                                                                "first_branch_created": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "initial_team_invited": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "initial_team_active": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "operational_roles_active": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "daily_reports": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "available": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "reason": {
+                                                                            "type": "string",
+                                                                            "const": "External Gate W — Wallet by Citrus collections readiness"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "available",
+                                                                        "reason"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "setup_complete",
+                                                                "subscription_selected",
+                                                                "profile_complete",
+                                                                "logo_uploaded",
+                                                                "billing_phone_confirmed",
+                                                                "first_branch_created",
+                                                                "initial_team_invited",
+                                                                "initial_team_active",
+                                                                "operational_roles_active",
+                                                                "daily_reports"
+                                                            ]
+                                                        },
+                                                        "compensation": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "outstanding_liability_by_currency": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "currency": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "gross_salary_accrual_minor": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "salary_reversal_minor": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "net_salary_liability_minor": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "gross_earned_commission_minor": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "commission_reversal_minor": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "net_commission_liability_minor": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "compensation_adjustment_minor": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "combined_net_liability_minor": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "currency",
+                                                                            "gross_salary_accrual_minor",
+                                                                            "salary_reversal_minor",
+                                                                            "net_salary_liability_minor",
+                                                                            "gross_earned_commission_minor",
+                                                                            "commission_reversal_minor",
+                                                                            "net_commission_liability_minor",
+                                                                            "compensation_adjustment_minor",
+                                                                            "combined_net_liability_minor"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "paid_by_currency": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "currency": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "paid_gross_minor": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "run_count": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "currency",
+                                                                            "paid_gross_minor",
+                                                                            "run_count"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "payout_runs_by_status": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "pending_high_value_approvals": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "outstanding_liability_by_currency",
+                                                                "paid_by_currency",
+                                                                "payout_runs_by_status",
+                                                                "pending_high_value_approvals"
+                                                            ]
+                                                        },
+                                                        "reporting": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "available": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "reason": {
+                                                                    "type": "string",
+                                                                    "const": "External Gate W — Wallet by Citrus collections readiness"
+                                                                },
+                                                                "omitted_metrics": {
+                                                                    "type": "array",
+                                                                    "prefixItems": [
+                                                                        {
+                                                                            "type": "string",
+                                                                            "const": "validated_revenue"
+                                                                        },
+                                                                        {
+                                                                            "type": "string",
+                                                                            "const": "branch_performance"
+                                                                        },
+                                                                        {
+                                                                            "type": "string",
+                                                                            "const": "staff_performance"
+                                                                        },
+                                                                        {
+                                                                            "type": "string",
+                                                                            "const": "daily_reports"
+                                                                        }
+                                                                    ],
+                                                                    "minItems": 4,
+                                                                    "maxItems": 4,
+                                                                    "additionalItems": false
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "available",
+                                                                "reason",
+                                                                "omitted_metrics"
+                                                            ]
                                                         }
                                                     },
                                                     "required": [
-                                                        "sections",
-                                                        "ready"
+                                                        "subscription",
+                                                        "billing",
+                                                        "branches",
+                                                        "staff",
+                                                        "get_started",
+                                                        "compensation",
+                                                        "reporting"
                                                     ]
                                                 }
                                             },
                                             "required": [
                                                 "merchant",
-                                                "shell"
+                                                "overview"
                                             ]
                                         }
                                     },
@@ -15741,6 +16166,304 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/merchant/staff-overview": {
+            "get": {
+                "operationId": "merchant.staff-overview.index",
+                "tags": [
+                    "MerchantStaffOverview"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at",
+                                "activated_at",
+                                "-activated_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 100
+                        }
+                    },
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "merchant_admin",
+                                "branch_manager",
+                                "hr",
+                                "finance",
+                                "front_office",
+                                "personnel",
+                                "audit"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "invited",
+                                "active",
+                                "suspended",
+                                "deactivated"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "branch_ulid",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": [
+                                                    "object",
+                                                    "null"
+                                                ],
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "staff_profile_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "display_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "email": {
+                                                        "type": "string"
+                                                    },
+                                                    "role": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "account_status": {
+                                                        "type": "string"
+                                                    },
+                                                    "activated_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "last_login_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "branches": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "code": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "code"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "active_session_count": {
+                                                        "type": "integer"
+                                                    },
+                                                    "assignment_history": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "branch": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "assigned_at": {
+                                                                    "type": "string"
+                                                                },
+                                                                "revoked_at": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "branch",
+                                                                "status",
+                                                                "assigned_at",
+                                                                "revoked_at"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "status_history": {
+                                                        "anyOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                },
+                                                                "minItems": 0,
+                                                                "maxItems": 0,
+                                                                "additionalItems": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    "can": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "manage_lifecycle": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "manage_lifecycle"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "staff_profile_id",
+                                                    "display_name",
+                                                    "email",
+                                                    "role",
+                                                    "status",
+                                                    "account_status",
+                                                    "activated_at",
+                                                    "last_login_at",
+                                                    "branches",
+                                                    "active_session_count",
+                                                    "assignment_history",
+                                                    "status_history",
+                                                    "can"
+                                                ]
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "last_page",
+                                                "per_page",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": ""
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -40350,6 +41073,28 @@
                             "id",
                             "filename"
                         ]
+                    },
+                    "logo_history": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "filename": {
+                                    "type": "string"
+                                },
+                                "available_at": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "filename",
+                                "available_at"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -40363,7 +41108,8 @@
                     "timezone",
                     "country",
                     "merchant",
-                    "logo"
+                    "logo",
+                    "logo_history"
                 ],
                 "title": "MerchantProfileResource"
             },

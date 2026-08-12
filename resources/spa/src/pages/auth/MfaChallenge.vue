@@ -30,7 +30,7 @@ const submit = form.handleSubmit(async ({ code }) => {
     }
 
     if (auth.setupRequired()) {
-      await router.replace({ name: 'onboarding.first-time-setup' });
+      await router.replace({ name: 'merchant.setup' });
     } else {
       await router.replace({ name: landingRouteName() });
     }

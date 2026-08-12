@@ -244,6 +244,12 @@ async function download(): Promise<void> {
               v-if="canDownload"
               class="flex flex-wrap gap-3"
             >
+              <RouterLink
+                :to="{ name: 'merchant.subscription-invoice-detail', params: { invoiceUlid: selected.id } }"
+                class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-border px-4 py-2 text-sm font-semibold text-heading"
+              >
+                Open invoice detail
+              </RouterLink>
               <!-- Generate: mutation; disabled in billing read-only (backend also blocks). -->
               <SvButton
                 :loading="working"

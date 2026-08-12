@@ -60,6 +60,19 @@ final class MerchantProfileResource extends JsonResource
                 'id' => $logo->ulid,
                 'filename' => $logo->safe_download_filename,
             ],
+            'logo_history' => UploadedFile::query()
+                ->where('merchant_id', $this->merchant_id)
+                ->where('purpose', 'merchant_logo')
+                ->where('lifecycle_status', 'available')
+                ->where('scan_status', 'clean')
+                ->latest('id')
+                ->limit(10)
+                ->get()
+                ->map(static fn (UploadedFile $file): array => [
+                    'id' => $file->ulid,
+                    'filename' => $file->safe_download_filename,
+                    'available_at' => $file->available_at?->toIso8601String(),
+                ])->values(),
         ];
     }
 

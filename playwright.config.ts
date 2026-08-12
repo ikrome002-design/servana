@@ -21,6 +21,9 @@ export default defineConfig({
     command: 'npm run build && npm run preview',
     url: 'http://localhost:4173',
     reuseExistingServer: !process.env['CI'],
-    timeout: 120_000,
+    // A clean Windows/Docker Desktop checkout routinely needs more than two minutes for the
+    // mandatory vue-tsc + Vite production build before preview can bind. Keep the gate strict,
+    // but allow the same ten-minute ceiling already used by the production-image build path.
+    timeout: 600_000,
   },
 });

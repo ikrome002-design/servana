@@ -1,0 +1,47 @@
+{
+  "schema": "servana.ui08.defect-closure.v1",
+  "phase": "UI-08",
+  "status": "verified_complete",
+  "purpose": "Consolidated index of the fourteen UI-08 closures already proved in the merged implementation checklist and phase proof. This file adds no new closure claim.",
+  "merge_evidence": {
+    "pull_request": 58,
+    "url": "https://github.com/ikrome002-design/servana/pull/58",
+    "final_head": "2fdf878427f9a87b2e02055d1191e73621292669",
+    "merge_commit": "b435f4840649687bef3d54e61424d88047a10d4b",
+    "reviewed_tree": "60a1085a42c7bc3bec793fe6a15a62a350ca02c7",
+    "merge_tree": "60a1085a42c7bc3bec793fe6a15a62a350ca02c7",
+    "merged_at": "2026-08-10T15:55:21Z",
+    "ci_run": 31403883471,
+    "required_jobs_success": 5,
+    "governance_comment": 5242660629,
+    "review_decision": null,
+    "submitted_reviews": 0,
+    "independent_approval": false,
+    "source_branch_deleted_local": true,
+    "source_branch_deleted_remote": true
+  },
+  "evidence": [
+    "docs/proof/ui-08.md",
+    "docs/frontend/audits/ui-08/implementation-checklist.md",
+    "docs/frontend/audits/ui-08/page-readiness-matrix.json",
+    "docs/frontend/audits/ui-08/route-activation-matrix.json",
+    "docs/frontend/audits/ui-08/gate-disposition.json",
+    "docs/frontend/audits/ui-08/screenshot-index.json"
+  ],
+  "closures": [
+    { "defect_id": "UI08-API-001", "status": "verified_complete", "category": "api_contract" },
+    { "defect_id": "UI08-API-002", "status": "verified_complete", "category": "api_contract" },
+    { "defect_id": "UI08-NAV-001", "status": "verified_complete", "category": "navigation" },
+    { "defect_id": "UI08-NAV-002", "status": "verified_complete", "category": "navigation" },
+    { "defect_id": "UI08-NAV-003", "status": "verified_complete", "category": "navigation" },
+    { "defect_id": "UI08-A11Y-001", "status": "verified_complete", "category": "accessibility" },
+    { "defect_id": "UI08-RESP-001", "status": "verified_complete", "category": "responsive" },
+    { "defect_id": "UI08-AUDIT-001", "status": "verified_complete", "category": "audit_coverage" },
+    { "defect_id": "UI08-EXPORT-001", "status": "verified_complete", "category": "export_hardening" },
+    { "defect_id": "UI08-E2E-001", "status": "verified_complete", "category": "test_harness" },
+    { "defect_id": "UI08-E2E-002", "status": "verified_complete", "category": "test_budget" },
+    { "defect_id": "UI08-ROUTE-002", "status": "verified_complete", "category": "routing" },
+    { "defect_id": "UI08-ROUTE-003", "status": "verified_complete", "category": "routing" },
+    { "defect_id": "UI08-RENDER-001", "status": "verified_complete", "category": "runtime_rendering" }
+  ]
+}

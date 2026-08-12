@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `merchant.period-reopen-approvals` at `/merchant/period-reopen-approvals` (routes/merchant.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/finance/period-reopen-approvals`; owner phase **UI-09** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `merchant.finance-period-reopen-approvals` at `/finance/period-reopen-approvals` (routes/merchant.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-09**
 - **Backend owner phase:** **Phase 18B**
 - **Implementation status:** `implemented`
-- **Runtime route:** `merchant.period-reopen-approvals`
+- **Runtime route:** `merchant.finance-period-reopen-approvals`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.period-reopen-approvals` (recorded in `docs/frontend/screens/merchant/merchant-period-reopen-approvals.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `merchant.finance-period-reopen-approvals` (recorded in `docs/frontend/screens/merchant/merchant-period-reopen-approvals.md`).
 - **Data fields:** Merchant Administrator exceptional period-reopen approvals: lists exception-required period locks with a pending Finance reopen request and an 'Approve reopen' action. The approver must differ from the Finance requester (backend-enforced). The Merchant Administrator holds ONLY exceptional-reopen approval — NO routine locking or reopen execution controls appear here (those are Finance).
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

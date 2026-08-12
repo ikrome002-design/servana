@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 6**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `first-time-setup`
-- **Route name and URL:** `onboarding.first-time-setup`
+- **Route name and URL:** `merchant.setup`
 - **Layout:** `Standalone`
 - **Allowed roles:** `merchant_administrator`
 - **Required permissions:** — (frontend visibility only; backend EnsurePermission + policy is authoritative)

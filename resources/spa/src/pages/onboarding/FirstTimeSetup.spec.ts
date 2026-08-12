@@ -3,14 +3,38 @@ import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const post = vi.fn();
-const get = vi.fn((...args: unknown[]) => {
-  void args;
-  return Promise.resolve({ data: { data: { user: null } } });
-});
+const setupOptions = {
+  data: {
+    options: {
+      service_fee_tiers: [
+        { value: 'split_tier', label: 'Split tier' },
+        { value: 'business_centric', label: 'Business-centric' },
+        { value: 'customer_centric', label: 'Customer-centric' },
+      ],
+      subscription_plans: [{
+        id: '01JPLAN0000000000000000000',
+        name: 'Starter',
+        description: 'Starter plan',
+        tier: 'starter',
+        prices: [{
+          id: '01JPRICE000000000000000000',
+          amount_minor: 250000,
+          currency: 'KES',
+          billing_interval: 'monthly',
+        }],
+      }],
+    },
+  },
+};
+const get = vi.fn((url: string) => Promise.resolve(
+  url === '/merchant-registration/first-time-setup'
+    ? { data: setupOptions }
+    : { data: { data: { user: null } } },
+));
 vi.mock('@/services/apiClient', () => ({
   apiClient: {
     post: (...a: unknown[]) => post(...a),
-    get: (...a: unknown[]) => get(...a),
+    get: (url: string) => get(url),
   },
   primeCsrfCookie: () => Promise.resolve(),
 }));
@@ -36,7 +60,11 @@ function primaryButton(wrapper: ReturnType<typeof mountWizard>) {
 }
 
 async function fillAndAdvanceToLastStep(wrapper: ReturnType<typeof mountWizard>) {
-  // Step 1 — tier.
+  await flushPromises();
+  // Step 1 — plan and tier.
+  await wrapper.find('#subscription_plan_price').setValue(
+    '01JPLAN0000000000000000000:01JPRICE000000000000000000',
+  );
   await wrapper.find('#service_fee_tier').setValue('split_tier');
   await primaryButton(wrapper).trigger('click'); // Continue
   // Step 2 — profile.
@@ -50,6 +78,7 @@ async function fillAndAdvanceToLastStep(wrapper: ReturnType<typeof mountWizard>)
   // Step 4 — staff.
   await wrapper.find('#branch_manager_email').setValue('bm@demo.co.ke');
   await wrapper.find('#hr_email').setValue('hr@demo.co.ke');
+  await primaryButton(wrapper).trigger('click'); // Continue to review.
 }
 
 describe('FirstTimeSetup.vue', () => {
@@ -57,26 +86,38 @@ describe('FirstTimeSetup.vue', () => {
     setActivePinia(createPinia());
     post.mockReset();
     get.mockClear();
+    get.mockImplementation((url: string) => Promise.resolve(
+      url === '/merchant-registration/first-time-setup'
+        ? { data: setupOptions }
+        : { data: { data: { user: null } } },
+    ));
     routerPush.mockReset();
   });
 
-  it('renders the 4-step stepper starting at the tier step', () => {
+  it('renders the 5-step stepper starting at plan and fee selection', async () => {
     const wrapper = mountWizard();
+    await flushPromises();
     expect(wrapper.find('#service_fee_tier').exists()).toBe(true);
-    expect(wrapper.findAll('ol[aria-label="Setup progress"] li')).toHaveLength(4);
+    expect(wrapper.find('#subscription_plan_price').exists()).toBe(true);
+    expect(wrapper.findAll('ol[aria-label="Setup progress"] li')).toHaveLength(5);
   });
 
   it('blocks advancing past the tier step until a tier is chosen', async () => {
     const wrapper = mountWizard();
+    await flushPromises();
 
     expect(primaryButton(wrapper).attributes('disabled')).toBeDefined();
 
+    await wrapper.find('#subscription_plan_price').setValue(
+      '01JPLAN0000000000000000000:01JPRICE000000000000000000',
+    );
     await wrapper.find('#service_fee_tier').setValue('customer_centric');
     expect(primaryButton(wrapper).attributes('disabled')).toBeUndefined();
   });
 
   it('persists the selected service fee tier into the store', async () => {
     const wrapper = mountWizard();
+    await flushPromises();
     await wrapper.find('#service_fee_tier').setValue('business_centric');
 
     expect(useOnboardingStore().form.service_fee_tier).toBe('business_centric');
@@ -84,8 +125,6 @@ describe('FirstTimeSetup.vue', () => {
 
   it('submits the full payload and routes to the dashboard on completion', async () => {
     post.mockResolvedValueOnce({ data: { data: { merchant: { status: 'active' } } } });
-    get.mockResolvedValueOnce({ data: { data: { user: null } } }); // re-bootstrap
-
     const wrapper = mountWizard();
     await fillAndAdvanceToLastStep(wrapper);
 
@@ -96,12 +135,14 @@ describe('FirstTimeSetup.vue', () => {
       '/merchant-registration/first-time-setup',
       expect.objectContaining({
         service_fee_tier: 'split_tier',
+        subscription_plan_ulid: '01JPLAN0000000000000000000',
+        subscription_plan_price_ulid: '01JPRICE000000000000000000',
         business_category: 'Salon',
         branch: expect.objectContaining({ name: 'Main Branch', code: 'MAIN' }),
         branch_manager_email: 'bm@demo.co.ke',
         hr_email: 'hr@demo.co.ke',
       }),
     );
-    expect(routerPush).toHaveBeenCalledWith({ name: 'merchant.landing' });
+    expect(routerPush).toHaveBeenCalledWith({ name: 'merchant.dashboard' });
   });
 });
