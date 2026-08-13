@@ -31,7 +31,8 @@
     "nav:negative-controls": "node scripts/ui07-negative-controls.mjs",
     "ui08:check": "node scripts/check-ui08-audit-artifacts.mjs",
     "ui09:check": "node scripts/check-ui09-audit-artifacts.mjs",
-    "ui10:check": "node scripts/check-ui10-audit-artifacts.mjs"
+    "ui10:check": "node scripts/check-ui10-audit-artifacts.mjs",
+    "ui11:check": "node scripts/check-ui11-audit-artifacts.mjs"
   },
   "dependencies": {
     "@heroicons/vue": "2.2.0",

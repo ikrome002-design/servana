@@ -1,0 +1,13 @@
+{
+  "schema": "servana.ui11.accessibility-matrix.v1",
+  "phase": "UI-11",
+  "axe": {
+    "light_pages": ["dashboard", "get-started", "staff", "staff-invite", "staff-detail", "staff-detail-lifecycle", "eligibility", "availability", "compensation", "compensation-detail", "compensation-setup", "compensation-history", "payouts", "audit", "account"],
+    "dark_representative": ["dashboard", "audit"],
+    "serious": 0,
+    "critical": 0
+  },
+  "keyboard": { "skip_link": true, "drawer_focus_trap": true, "escape_restores_focus": true, "typed_lifecycle_confirmation": true },
+  "targets_minimum_px": 44,
+  "browser_test": "tests/e2e/ui-11-human-resource-experience.spec.ts"
+}

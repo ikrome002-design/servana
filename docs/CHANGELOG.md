@@ -6,7 +6,32 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-10 — Branch experience (`phase-ui-10-branch-experience`) — local complete pending lifecycle
+### Phase UI-11 — Human Resource experience (`phase-ui-11-human-resource-experience`) — local complete
+
+Started from verified UI-10 squash `d7988dca90ad8694dee4c0b066f2581155fcb40a`. The exact
+19-page Human Resource contract has readiness A2/B6/C5/D2/E4/F0 and a target disposition of
+**15 implemented / 4 `disabled_by_gate` / 0 planned / 0 removed_by_authority = 19**. UI-11 will
+reuse shipped branch-scoped staff, invitation, lifecycle, eligibility, availability, compensation
+and payout-preparation authority; a narrow presentation-only dashboard/audit read seam may expose
+completed facts but cannot create a business transition. Edit Staff Profile and Role/Branch
+Assignment remain inert because their canonical server mutation authority is inactive/absent; HR
+Reports and Notifications remain owned by Phase 21N after Gate W. Permission baseline remains
+**169 total / 134 active / 35 planned**. Gate W stays closed; UI-12 and Phase 25 are excluded.
+
+UI-11 now provides the exact five-group Human Resource shell and 15 live host-relative pages for
+dashboard, Get Started, staff/invitations/detail/lifecycle, eligibility, availability, compensation
+list/detail/setup/history, payout preparation, masked HR audit activity and own-account security.
+Three narrow same-branch presentation GETs move OpenAPI from 341 to **344 operations** without a new
+mutation or permission. Edit Profile, Role/Branch Assignment, Reports and Notifications remain
+visible and inert with no route/component/network runtime; Gate W and Phase 21N remain closed.
+
+Final local gates: PostgreSQL **2,981 passed / 14 skipped / 49,015 assertions**; Vitest
+**1,379/1,379**; Playwright affected **115/115** and whole product **1,393/1,393**; all 15 pages
+axe serious/critical zero and seven responsive widths overflow-free. Production PHP `660ec8b0…`
+and Nginx `9bb1ca75…` passed Nginx syntax and **40/40** isolated no-volume HR-host checks. Frozen
+historical evidence was restored byte-for-byte. This pre-commit entry claims neither PR CI nor merge.
+
+### Phase UI-10 — Branch experience (`phase-ui-10-branch-experience`) — verified complete
 
 Started from verified UI-09 squash `84b7f803ea06124772eb87252552bb54e2a41416`. All **18** Branch
 contract entries are accounted for: **15 implemented**, **3 `disabled_by_gate`**, **0 planned** and
@@ -60,6 +85,13 @@ both named the same stale `docs/frontend/audits/ui-06/public-route-matrix.json` 
 3,541 passed / 5 skipped / 51,545 assertions). UI10-CI-001 applies the established rule that this
 file is a current router projection inside an otherwise historical UI-06 directory, regenerates
 only that changed artifact and requires a replacement five-job exact-head run.
+
+Replacement exact-head run `31667335687` passed Backend, Frontend, Docker, Security and E2E on
+final head `e5f2a6fb…`. Governance comment `5276187980` records the truthful solo-maintainer
+process; submitted reviews and approvals were both zero and the review decision was blank, so no
+independent approval is claimed. PR #60 merged normally as squash `d7988dca…` at
+`2026-08-13T05:04:49Z`; source and merge tree are equal at `0a75dedd…`; local and remote source
+branches are absent. All eleven UI-10 closures are `verified_complete`.
 
 ### Phase UI-09 — Merchant Administrator experience — verified complete
 

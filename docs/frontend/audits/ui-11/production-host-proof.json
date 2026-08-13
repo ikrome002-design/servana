@@ -1,0 +1,53 @@
+{
+  "schema": "servana.ui11.production-host-proof.v1",
+  "phase": "UI-11",
+  "source_state": "final stabilized runtime source after authoritative PostgreSQL, Vitest and whole-product Playwright gates; before documentation-only closeout",
+  "images": [
+    {
+      "tag": "servana-ui11-php:audit",
+      "id": "sha256:660ec8b0ec8d8350da408dde7d475eb815fb30edad9623fc618f7e4db872f4c7",
+      "size_bytes": 911016705,
+      "created_utc": "2026-08-13T17:25:48.944823499Z",
+      "dockerfile": "docker/php.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0,
+      "build_duration_seconds": 658.9
+    },
+    {
+      "tag": "servana-ui11-nginx:audit",
+      "id": "sha256:9bb1ca7509991e05fca3b588a1a73fcf4153bf75b327b73d415ac1a96fc6061f",
+      "size_bytes": 317631283,
+      "created_utc": "2026-08-13T17:27:02.956539955Z",
+      "dockerfile": "docker/nginx.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0,
+      "build_duration_seconds": 34.2
+    }
+  ],
+  "topology": {
+    "network": "ui11-proof-net",
+    "app": "ui11-proof-app with network alias app, array session/cache, sync queue and ephemeral local SQLite setting",
+    "edge": "ui11-proof-nginx on 127.0.0.1:8111",
+    "project_volume_mounted": false,
+    "production_dns_or_tls_touched": false,
+    "removed_after_proof": true,
+    "remaining_named_containers": 0,
+    "remaining_named_networks": 0
+  },
+  "nginx_syntax": { "exit_code": 0, "result": "syntax is ok; test is successful" },
+  "canonical_host": {
+    "command": "node scripts/ui11-production-host-proof.mjs http://127.0.0.1:8111",
+    "host": "hr.servana.ke",
+    "implemented_routes_200_with_hr_context": 15,
+    "gated_routes_ordinary_shell_only": 4,
+    "compatibility_paths_same_account": 8,
+    "wrong_account_collision_checks": 3,
+    "unknown_host_refused": true,
+    "fingerprinted_assets_and_mime": "all seven referenced assets returned 200 with expected MIME",
+    "javascript_source_map_status": 404,
+    "passed": 40,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "production_route_count": 351
+}

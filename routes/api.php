@@ -43,6 +43,8 @@ use App\Http\Controllers\Api\V1\Compensation\PersonnelEarningsQueryController;
 use App\Http\Controllers\Api\V1\Files\FileController;
 use App\Http\Controllers\Api\V1\FinanceDisputes\FinanceDisputeController;
 use App\Http\Controllers\Api\V1\FinanceExports\FinanceExportController;
+use App\Http\Controllers\Api\V1\Hr\HrServiceOptionController;
+use App\Http\Controllers\Api\V1\Hr\HrWorkspaceController;
 use App\Http\Controllers\Api\V1\Hr\PermissionOverrideController;
 use App\Http\Controllers\Api\V1\Hr\PermissionPreviewController;
 use App\Http\Controllers\Api\V1\Hr\StaffController;
@@ -533,6 +535,19 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 ->name('staff-invitations.revoke');
 
             // Staff roster + lifecycle (Scope §3.4). Authority is StaffProfilePolicy.
+            // UI-11 HR overview/audit are narrow presentations over the same branch-scoped
+            // operational authority. They add no mutation and never expose the Audit account's
+            // broader event catalogue or export workflow.
+            Route::get('hr/workspace', [HrWorkspaceController::class, 'show'])
+                ->middleware(EnsurePermission::class.':staff.view')
+                ->name('hr.workspace.show');
+            Route::get('hr/audit-activity', [HrWorkspaceController::class, 'audit'])
+                ->middleware(EnsurePermission::class.':staff.view')
+                ->name('hr.audit-activity.index');
+            Route::get('hr/service-options', [HrServiceOptionController::class, 'index'])
+                ->middleware(EnsurePermission::class.':personnel.eligibility.manage')
+                ->name('hr.service-options.index');
+
             Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
             Route::get('staff/{staff}', [StaffController::class, 'show'])->name('staff.show');
             Route::post('staff/{staff}/suspend', [StaffController::class, 'suspend'])

@@ -65,13 +65,13 @@ test.describe('Branch Manager service catalogue', () => {
 test.describe('HR service eligibility', () => {
   test('selects a service and lists assignable personnel', async ({ page }) => {
     await stubMe(page, 'hr', ['personnel.eligibility.manage', 'staff.view']);
-    await page.route('**/api/v1/services**', (r) =>
-      r.fulfill(ok({ data: [{ id: 's1', name: 'Gel manicure', price_minor: 1000, currency: 'KES', duration_minutes: 30, status: 'active' }] })),
+    await page.route('**/api/v1/hr/service-options**', (r) =>
+      r.fulfill(ok({ data: [{ ulid: 's1', name: 'Gel manicure' }] })),
     );
-    await page.route('**/api/v1/staff**', (r) => r.fulfill(ok({ data: [{ id: 'sp1', display_name: 'Brian K', first_name: 'Brian', last_name: 'K', phone: '', role: 'personnel', role_title: null, status: 'active', employment_type: 'full_time', employment_status: 'employed', primary_branch_id: 'b1', is_active: true }] })));
+    await page.route(/\/api\/v1\/staff(\?|$)/, (r) => r.fulfill(ok({ data: [{ id: 'sp1', display_name: 'Brian K', first_name: 'Brian', last_name: 'K', phone: '', role: 'personnel', role_title: null, status: 'active', employment_type: 'full_time', employment_status: 'employed', primary_branch_id: 'b1', is_active: true }] })));
     await page.route('**/api/v1/services/s1/eligibility', (r) => r.fulfill(ok({ data: [] })));
 
-    await page.goto('/hr/eligibility');
+    await page.goto('/eligibility');
     await expect(page.getByRole('heading', { name: 'Service eligibility' })).toBeVisible();
     await page.selectOption('#service', 's1');
     await expect(page.getByTestId('assign-eligibility')).toBeVisible();

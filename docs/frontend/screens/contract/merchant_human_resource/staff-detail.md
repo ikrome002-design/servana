@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `hr.staff-profile` at `/hr/staff/:id` (routes/hr.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/staff/:staffUlid`; owner phase **UI-11** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `hr.staff-detail` at `/staff/:staffUlid` (routes/hr.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-11**
 - **Backend owner phase:** **Phase 7**
 - **Implementation status:** `implemented`
-- **Runtime route:** `hr.staff-profile`
+- **Runtime route:** `hr.staff-detail`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `hr.staff-profile` (recorded in `docs/frontend/screens/hr/hr-staff-profile.md`).
-- **Data fields:** Staff member profile and lifecycle.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `hr.staff-detail` (recorded in `docs/frontend/screens/hr/hr-staff-detail.md`).
+- **Data fields:** Branch-scoped staff identity, readiness, access status, and compensation entry point.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

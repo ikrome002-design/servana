@@ -1,0 +1,46 @@
+{
+  "schema": "servana.ui11.browser-proof.v1",
+  "phase": "UI-11",
+  "account": "merchant_human_resource",
+  "focused_playwright": {
+    "command": "npx playwright test tests/e2e/ui-11-human-resource-experience.spec.ts --project=chromium --reporter=line",
+    "built_spa": true,
+    "fixtures": "synthetic masked API payloads; genuine Vue router, Pinia stores, components and shared shell",
+    "passed": 47, "failed": 0, "flaky": 0, "skipped": 0, "exit_code": 0, "duration_seconds": 120.0,
+    "unexpected_console_errors": 0, "unexpected_failed_requests": 0, "uncaught_page_errors": 0
+  },
+  "affected_cross_phase_playwright": {
+    "command": "npx playwright test tests/e2e/catalogue-clients.spec.ts tests/e2e/hardening-accessibility.spec.ts tests/e2e/phase-20f.spec.ts tests/e2e/phase-20h.spec.ts tests/e2e/ui-11-human-resource-experience.spec.ts --project=chromium --reporter=line",
+    "collected": 115, "passed": 115, "failed": 0, "exit_code": 0, "duration_seconds": 275.7
+  },
+  "whole_product_playwright": {
+    "command": "npm run e2e -- --reporter=line",
+    "collected": 1393, "passed": 1393, "failed": 0, "flaky": 0, "skipped": 0,
+    "exit_code": 0, "duration_seconds": 3617.8, "duration_display": "1.0h"
+  },
+  "coverage": {
+    "implemented_pages": 15, "gated_pages": 4, "navigation_groups": 5,
+    "wrong_account_denial": true, "missing_account_denial": true,
+    "self_escalation_export_finance_checker_controls_absent": true,
+    "responsive_widths": [360, 767, 768, 1024, 1025, 1280, 1440],
+    "zoom_200_equivalent": true, "theme_persistence": true, "axe_serious_critical_zero": true
+  },
+  "failed_run_history": [
+    {
+      "result": "whole run exceeded the first wrapper while an HR-payout axe scan reached its 30-second test bound",
+      "classification": "accessibility harness budget",
+      "correction": "raise only the four-scan release-audit case to 60 seconds; focused scan green"
+    },
+    {
+      "result": "run stopped after 1,233 passes when 160 theme cases were predictably failing",
+      "classification": "theme initializer harness defect",
+      "correction": "restore explicit per-case initialization, then preserve user changes only across reloads in the same case"
+    },
+    {
+      "result": "1,381 passed / 12 failed / 1,393 collected",
+      "classification": "stale predecessor consumers plus one real theme/contrast contract defect",
+      "correction": "update retired HR route consumers, dedicated compensation history navigation and payout forbidden fixture; use a solid brand dashboard field; persist theme without overriding reload changes"
+    }
+  ],
+  "screenshots": "docs/frontend/audits/ui-11/screenshot-index.json"
+}

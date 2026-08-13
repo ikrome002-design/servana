@@ -1,0 +1,34 @@
+{
+  "schema": "servana.ui11.gate-disposition.v1",
+  "phase": "UI-11",
+  "lifecycle": "local_complete",
+  "external_gate_w_closed": true,
+  "phase_21n_closed": true,
+  "entries": [
+    {
+      "screen_key": "staff-detail-edit", "route_path": "/staff/:staffUlid/edit", "owner": "Phase 20F profile mutation contract",
+      "entry_condition": "A separately authorized profile-update API, active canonical permission and policy/Form Request contract exist",
+      "reason": "No staff profile update operation exists and staff.profile.update remains planned",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    },
+    {
+      "screen_key": "staff-detail-access", "route_path": "/staff/:staffUlid/access", "owner": "Phase 20F role/branch assignment contract",
+      "entry_condition": "Separately authorized role and branch assignment mutations, active canonical permissions and policies exist",
+      "reason": "The retired preview assigned nothing; staff.role.assign and staff.branch.assign remain planned",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    },
+    {
+      "screen_key": "reports", "route_path": "/reports", "owner": "Phase 21N after 20D-W / External Gate W",
+      "entry_condition": "External Gate W and 20D-W complete, then the Phase 21N report catalogue/runtime is authorized",
+      "reason": "No Human Resource report catalogue, materialized view or delivery runtime exists",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    },
+    {
+      "screen_key": "notifications", "route_path": "/notifications", "owner": "Phase 21N after 20D-W / External Gate W",
+      "entry_condition": "External Gate W and 20D-W complete before notification persistence/delivery is authorized under 21N",
+      "reason": "No Human Resource notification persistence or delivery runtime exists",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    }
+  ],
+  "forbidden_fabrication": ["profile update success", "role assignment", "branch assignment", "report PDF", "scheduled delivery", "notification record", "Wallet status"]
+}

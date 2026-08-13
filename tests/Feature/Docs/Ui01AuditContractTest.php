@@ -308,6 +308,15 @@ it('classifies every implementation claim exactly once from the permitted vocabu
         // and their specs went with the routes because nothing referenced them any more.
         'platform-promotions' => 'UI-08 / Increment 7B — split into platform-billing-promotions and platform-billing-free-periods; docs/proof/ui-08.md',
         'platform-registration-monitoring' => 'UI-08 / Increment 7B — split into platform-merchant-registrations, platform-merchants and platform-merchant-detail; docs/proof/ui-08.md',
+
+        // Phase UI-11 replaced three predecessor HR implementation identities with the exact
+        // Human Resource contract pages. Invitation administration is now the canonical
+        // `/staff/invite` page, payout preparation is `/payouts`, and the former generic staff
+        // profile is the canonical parameterised `/staff/:staffUlid` detail. The old routes and
+        // specs were removed only after their live capability was preserved in those successors.
+        'hr-invitations' => 'UI-11 — consolidated into hr-staff-invite; docs/frontend/audits/ui-11/route-activation-matrix.json',
+        'hr-payout-prep' => 'UI-11 — renamed to hr-payouts; docs/frontend/audits/ui-11/route-activation-matrix.json',
+        'hr-staff-profile' => 'UI-11 — replaced by hr-staff-detail; docs/frontend/audits/ui-11/route-activation-matrix.json',
     ];
 
     $inventoryKeys = array_column($inventory['screens'], 'key');

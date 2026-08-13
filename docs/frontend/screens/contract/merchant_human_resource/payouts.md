@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `hr.payout-runs` at `/hr/payout-runs` (routes/hr.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/payouts`; owner phase **UI-11** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `hr.payouts` at `/payouts` (routes/hr.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-11**
 - **Backend owner phase:** **Phase 20H**
 - **Implementation status:** `implemented`
-- **Runtime route:** `hr.payout-runs`
+- **Runtime route:** `hr.payouts`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `hr.payout-runs` (recorded in `docs/frontend/screens/hr/hr-payout-runs.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `hr.payouts` (recorded in `docs/frontend/screens/hr/hr-payouts.md`).
 - **Data fields:** Branch-scoped HR payout DRAFT workflow: list/filter payout runs, create a run for a branch + pay period + currency (Servana snapshots the eligible earned salary/commission/adjustments server-side — the browser never enters amounts or items), edit a draft (re-snapshot), submit (freeze + claim ledgers), and cancel a draft. HR never verifies, approves, or marks paid (Plan §10.2). Invalid transitions surface a safe state; the browser computes no authoritative total. Servana moves no money; no Wallet/provider UI.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

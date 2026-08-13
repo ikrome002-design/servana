@@ -3,16 +3,16 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "cc494a1d2827c9349a5576dded622cfcf864d335e4c8469b87139f852f6f80c1",
+  "canonical_authority_sha256": "f9f1aa59bbcebd28a7d06f907fcae0da15637bfd187dede4dce19c30baeb6e5d",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "075b1c0c5fbf80e2b174f10458c1d3ff4387e0ff21e8f25b610ee8103e4088ff",
+  "screen_inventory_sha256": "f2b1d99b56ccec9fdb530116393df04d89b6813c19335592f3fd05089f87154d",
   "purpose": "The contract register (what is REQUIRED) against the runtime screen register (what is BUILT). The two are reconciled, never summed.",
   "contract_pages": 160,
-  "inventory_rows": 153,
-  "inventory_authenticated_rows": 136,
+  "inventory_rows": 161,
+  "inventory_authenticated_rows": 144,
   "inventory_excluded_rows": 17,
   "excluded_classification": {
     "predicate": "inventory row domain in ['public','legal','auth','access-state','onboarding','search']",
@@ -26,7 +26,7 @@
       "search"
     ]
   },
-  "implemented_contract_pages_with_inventory_row": 99,
+  "implemented_contract_pages_with_inventory_row": 105,
   "implemented_contract_pages_without_inventory_row": [],
   "authenticated_inventory_rows_not_referenced_by_contract": [
     {
@@ -82,6 +82,18 @@
       "route": "hr.landing",
       "status": "implemented",
       "phase": "Phase 11"
+    },
+    {
+      "key": "merchant-hr-staff-invite-support",
+      "route": "merchant.hr-invitations",
+      "status": "implemented",
+      "phase": "UI-11"
+    },
+    {
+      "key": "hr-permission-preview",
+      "route": null,
+      "status": "disabled_by_gate",
+      "phase": "UI-11"
     },
     {
       "key": "finance-landing",
@@ -271,8 +283,8 @@
     }
   ],
   "inventory_status_totals": {
-    "disabled_by_gate": 5,
-    "implemented": 142,
+    "disabled_by_gate": 6,
+    "implemented": 149,
     "removed_by_authority": 6
   }
 }

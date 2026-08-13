@@ -43,7 +43,12 @@ describe('StaffList.vue', () => {
     await flushPromises();
 
     const badges = wrapper.findAll('[data-testid="staff-status"]').map((b) => b.text());
-    expect(badges).toEqual(['invited', 'active', 'suspended', 'deactivated']);
+    expect(badges).toEqual([
+      'Access status:invited',
+      'Access status:active',
+      'Access status:suspended',
+      'Access status:deactivated',
+    ]);
   });
 
   it('shows an empty state when there is no staff', async () => {
@@ -51,6 +56,6 @@ describe('StaffList.vue', () => {
     const wrapper = mountPage();
     await flushPromises();
 
-    expect(wrapper.text()).toContain('No staff yet.');
+    expect(wrapper.text()).toContain('No staff members match these filters.');
   });
 });

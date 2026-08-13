@@ -3,6 +3,9 @@ import axios from 'axios';
 import { onMounted } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
+import SvAlert from '@/components/ui/SvAlert.vue';
+import SvStatusBadge from '@/components/ui/SvStatusBadge.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import { useForm } from '@/composables/useForm';
@@ -40,6 +43,9 @@ const form = useForm<{ email: string; branch_id: string; role: string }>({
 
 onMounted(async () => {
   await Promise.all([staff.fetchInvitations(), branches.fetchBranches()]);
+  if (!auth.isMerchantAdmin() && branches.branches.length === 1) {
+    form.values.branch_id = branches.branches[0]!.id;
+  }
 });
 
 const submit = form.handleSubmit(async (values) => {
@@ -49,6 +55,9 @@ const submit = form.handleSubmit(async (values) => {
     await staff.invite({ ...values });
     notifications.addToast({ type: 'success', message: 'Invitation sent.' });
     form.reset();
+    if (!auth.isMerchantAdmin() && branches.branches.length === 1) {
+      form.values.branch_id = branches.branches[0]!.id;
+    }
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.apiError) {
       if (err.apiError.code === 'validation_failed') {
@@ -74,15 +83,28 @@ async function revoke(id: string): Promise<void> {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Staff invitations
-    </h1>
+  <section
+    class="mx-auto max-w-6xl"
+    data-testid="hr-staff-invite"
+  >
+    <SvPageHeader
+      title="Invite staff"
+      eyebrow="Staff"
+      description="Invite an operational user into the assigned branch. The server controls which target roles you may issue."
+    />
+
+    <SvAlert
+      v-if="!auth.isMerchantAdmin()"
+      severity="info"
+      title="Human Resource target roles"
+    >
+      You may invite Front Office, Finance, Personnel and Audit users into this branch. You cannot invite or activate a Merchant Administrator or move someone across branches.
+    </SvAlert>
 
     <SvCard
-      as="div"
+      as="section"
       padding="lg"
-      class="mt-6 max-w-lg"
+      class="mt-5 max-w-2xl border-t-4 border-t-sv-brand"
     >
       <form
         class="flex flex-col gap-4"
@@ -126,8 +148,8 @@ async function revoke(id: string): Promise<void> {
     </SvCard>
 
     <ul
-      class="mt-8 flex flex-col gap-3"
-      aria-label="Pending invitations"
+      class="mt-8 grid gap-3 lg:grid-cols-2"
+      aria-label="Staff invitations"
     >
       <li
         v-for="invitation in staff.invitations"
@@ -142,10 +164,20 @@ async function revoke(id: string): Promise<void> {
               <p class="font-medium text-text">
                 {{ invitation.email }}
               </p>
-              <p class="text-sm text-text-muted">
-                {{ invitation.role }} · {{ invitation.status }}
+              <p class="text-sm capitalize text-text-muted">
+                {{ invitation.role.replaceAll('_', ' ') }}
               </p>
             </div>
+            <SvStatusBadge
+              :label="invitation.status"
+              :tone="invitation.status === 'accepted' ? 'success' : invitation.status === 'pending' ? 'warning' : 'neutral'"
+              size="sm"
+            />
+          </div>
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+            <p class="text-xs text-text-muted">
+              Expires {{ new Date(invitation.expires_at).toLocaleString('en-KE') }}
+            </p>
             <div
               v-if="invitation.status === 'pending'"
               class="flex gap-2"

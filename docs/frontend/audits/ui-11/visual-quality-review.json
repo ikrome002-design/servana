@@ -1,0 +1,18 @@
+{
+  "schema": "servana.ui11.visual-quality-review.v1",
+  "phase": "UI-11",
+  "account": "merchant_human_resource",
+  "reviewed": true,
+  "principles": [
+    "People and branch context lead the hierarchy; financial facts are explicitly declared terms, never calculated earnings.",
+    "The dashboard uses a deterministic solid brand field so automated contrast proof matches the rendered hierarchy.",
+    "Lifecycle mutation is isolated from read detail and names the subject, consequence and typed confirmation.",
+    "Audit visibility is a masked HR-domain projection, visually distinct from the Audit account.",
+    "Gated profile/access/report/notification entries stay discoverable but inert and dependency-specific."
+  ],
+  "themes": { "default": "light", "dark_supported": true, "preference_persists": true },
+  "invented_metrics": 0,
+  "raw_tokens_exposed": 0,
+  "screenshots": "docs/frontend/audits/ui-11/screenshot-index.json",
+  "outcome": "accepted for UI-11 implementation evidence; UI-16 retains final cross-account visual-release authority"
+}

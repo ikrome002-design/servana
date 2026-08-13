@@ -6,6 +6,7 @@ import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
 import { useGetStartedStore } from '@/stores/getStartedStore';
+import { useHrWorkspaceStore } from '@/stores/hrWorkspaceStore';
 import { useMerchantDashboardStore } from '@/stores/merchantDashboardStore';
 import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
 
@@ -20,6 +21,7 @@ const auth = useAuthStore();
 const store = useGetStartedStore();
 const merchantDashboard = useMerchantDashboardStore();
 const branchExperience = useBranchExperienceStore();
+const hrWorkspace = useHrWorkspaceStore();
 
 const identity = computed<RoleIdentity | null>(() => {
   const meta = route.meta.roleIdentity;
@@ -37,6 +39,17 @@ const observedCompletedIds = computed<string[]>(() => {
     if (readiness.calendar_configured) ids.push('set-operating-hours-calendar');
     if (readiness.service_catalogue_ready) ids.push('build-service-catalogue', 'set-service-pricing-durations');
     if (readiness.day_opened) ids.push('open-branch-day');
+    return ids;
+  }
+  if (identity.value === 'merchant_human_resource') {
+    const readiness = hrWorkspace.overview?.get_started;
+    if (!readiness) return [];
+    const ids: string[] = [];
+    if (readiness.staff_invited) ids.push('invite-staff');
+    if (readiness.eligibility_configured) ids.push('set-service-eligibility');
+    if (readiness.availability_configured) ids.push('set-availability');
+    if (readiness.compensation_configured) ids.push('configure-compensation-models');
+    if (readiness.missing_compensation_reviewed) ids.push('review-missing-compensation');
     return ids;
   }
   if (identity.value !== 'merchant_administrator') return [];
@@ -58,6 +71,7 @@ const observedCompletedIds = computed<string[]>(() => {
 onMounted(() => {
   if (identity.value === 'merchant_administrator') void merchantDashboard.fetchOverview();
   if (identity.value === 'merchant_branch') void branchExperience.fetchOverview();
+  if (identity.value === 'merchant_human_resource') void hrWorkspace.fetchOverview();
 });
 
 const dismissed = computed(() =>

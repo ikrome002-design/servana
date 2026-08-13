@@ -7,6 +7,7 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { apiClient } from '@/services/apiClient';
@@ -107,7 +108,7 @@ function removeException(row: AvailabilityException): void {
 }
 
 async function loadStaff(): Promise<void> {
-  const { data } = await apiClient.get<{ data: StaffProfile[] }>('/staff');
+  const { data } = await apiClient.get<{ data: StaffProfile[] }>('/staff', { params: { per_page: 100, status: 'active', employment_status: 'employed' } });
   staff.value = data.data;
 }
 
@@ -177,14 +178,15 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-brand-deep dark:text-text">
-      Availability
-    </h1>
-    <p class="mt-1 text-sm text-text-muted">
-      Set working days, shifts, breaks, and time off for personnel in your branch.
-      Times are in <span class="font-medium">Africa/Nairobi</span>.
-    </p>
+  <section
+    class="mx-auto max-w-6xl"
+    data-testid="hr-availability"
+  >
+    <SvPageHeader
+      title="Availability and shifts"
+      eyebrow="Workforce readiness"
+      description="Set recurring shifts, breaks, date exceptions and emergency unavailability for personnel in your assigned branch. Times use Africa/Nairobi."
+    />
 
     <!-- No-permission state (UX only; the API is the boundary). -->
     <SvCard

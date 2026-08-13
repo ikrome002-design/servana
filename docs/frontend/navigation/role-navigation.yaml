@@ -342,6 +342,11 @@ merchant_branch:
     route: branch.account
     phase: Phase UI-04
 merchant_human_resource:
+  - key: merchant_human_resource.dashboard
+    label: Dashboard
+    availability: live
+    route: hr.dashboard
+    phase: Phase UI-11 (COR-UI11-001)
   - key: merchant_human_resource.get-started
     label: Get Started
     availability: live
@@ -356,7 +361,7 @@ merchant_human_resource:
   - key: merchant_human_resource.staff-invite
     label: Invite Staff
     availability: live
-    route: hr.invitations
+    route: hr.staff-invite
     permission: staff.invite
     phase: Phase 7
   - key: merchant_human_resource.eligibility
@@ -380,19 +385,30 @@ merchant_human_resource:
   - key: merchant_human_resource.payouts
     label: Payout Run Preparation
     availability: live
-    route: hr.payout-runs
+    route: hr.payouts
     permission: payout_run.create
     phase: Phase 20H
   - key: merchant_human_resource.reports
     label: HR Reports
     availability: gated
-    gate: external_gate_w
-    phase: UI-11
+    gate: phase_21n_blocked_by_external_gate_w
+    phase: Phase 21N after Phase 20D-W / Gate W
+  - key: merchant_human_resource.audit
+    label: HR Audit Activity
+    availability: live
+    route: hr.audit
+    permission: staff.view
+    phase: Phase UI-11 (COR-UI11-001)
   - key: merchant_human_resource.notifications
     label: Notifications
     availability: gated
-    gate: external_gate_w
-    phase: UI-11
+    gate: phase_21n_blocked_by_external_gate_w
+    phase: Phase 21N after Phase 20D-W / Gate W
+  - key: merchant_human_resource.account
+    label: Account and Preferences
+    availability: live
+    route: hr.account
+    phase: Phase UI-03
 merchant_finance:
   - key: merchant_finance.dashboard
     label: Dashboard

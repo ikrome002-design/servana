@@ -6,7 +6,7 @@ import { authRoutes } from './routes/auth';
 import { branchRoutes } from './routes/branch';
 import { financeRoutes } from './routes/finance';
 import { frontOfficeRoutes } from './routes/frontOffice';
-import { hrRoutes, invitationRoutes } from './routes/hr';
+import { hrRoutes, invitationRoutes, merchantHrInvitationRoutes } from './routes/hr';
 import { merchantRoutes } from './routes/merchant';
 import { personnelRoutes } from './routes/personnel';
 import { platformRoutes } from './routes/platform';
@@ -31,24 +31,14 @@ import { searchRoutes } from './routes/search';
 const ACCOUNT_ROUTE_TREES: ReadonlyArray<{ owners: readonly string[]; routes: RouteRecordRaw[] }> = [
   { owners: ['super_administrator'], routes: platformRoutes },
   { owners: ['merchant_administrator'], routes: merchantRoutes },
+  { owners: ['merchant_administrator'], routes: merchantHrInvitationRoutes },
   /*
-   * A TREE CAN HAVE MORE THAN ONE OWNER, and the owner set — not the URL prefix — decides which
-   * hosts register it.
-   *
-   * Plan §10.2 gives the Merchant Administrator branch creation and the branch record screens
-   * ("create branches: Merchant Administrator owns within entitlement; Branch Manager: no") and the
-   * initial Branch Manager / HR invitations, so `/branch/…` and `/hr/invitations` are legitimately
-   * served on the Merchant Administrator host as well as on their own. Their tree roots already
-   * say so — `requiresAccount('merchant_branch', 'merchant_administrator')` — and
-   * `requires-account-coverage.json` records the same five shared screens.
-   *
-   * Registering strictly one tree per account silently removed those screens from the Merchant
-   * Administrator host, which is what the Phase 13 browser suite caught. Registration follows the
-   * declared owners; the per-route guard still decides which CHILDREN each account may enter, so
-   * the Merchant Administrator gets the shared screens and none of the branch-only ones.
+   * Plan §10.2 gives the Merchant Administrator branch creation and branch record screens, so the
+   * Branch tree is deliberately shared. HR's nineteen-page account tree is never shared: the one
+   * historical Merchant Administrator invitation URL is the separate supporting route above.
    */
   { owners: ['merchant_branch', 'merchant_administrator'], routes: branchRoutes },
-  { owners: ['merchant_human_resource', 'merchant_administrator'], routes: hrRoutes },
+  { owners: ['merchant_human_resource'], routes: hrRoutes },
   { owners: ['merchant_finance'], routes: financeRoutes },
   { owners: ['merchant_front_office'], routes: frontOfficeRoutes },
   { owners: ['merchant_personnel'], routes: personnelRoutes },

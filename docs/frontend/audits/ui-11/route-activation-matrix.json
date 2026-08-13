@@ -1,0 +1,32 @@
+{
+  "schema": "servana.ui11.route-activation.v1",
+  "phase": "UI-11",
+  "lifecycle": "local_complete",
+  "account": "merchant_human_resource",
+  "host": "hr.servana.ke",
+  "implemented_routes": [
+    { "screen_key": "dashboard", "route_name": "hr.dashboard", "route_path": "/dashboard" },
+    { "screen_key": "get-started", "route_name": "hr.get-started", "route_path": "/get-started" },
+    { "screen_key": "staff", "route_name": "hr.staff", "route_path": "/staff" },
+    { "screen_key": "staff-invite", "route_name": "hr.staff-invite", "route_path": "/staff/invite" },
+    { "screen_key": "staff-detail", "route_name": "hr.staff-detail", "route_path": "/staff/:staffUlid" },
+    { "screen_key": "staff-detail-lifecycle", "route_name": "hr.staff-detail-lifecycle", "route_path": "/staff/:staffUlid/lifecycle" },
+    { "screen_key": "eligibility", "route_name": "hr.eligibility", "route_path": "/eligibility" },
+    { "screen_key": "availability", "route_name": "hr.availability", "route_path": "/availability" },
+    { "screen_key": "compensation", "route_name": "hr.compensation", "route_path": "/compensation" },
+    { "screen_key": "compensation-detail", "route_name": "hr.compensation-detail", "route_path": "/compensation/:staffUlid" },
+    { "screen_key": "compensation-setup", "route_name": "hr.compensation-setup", "route_path": "/compensation/:staffUlid/setup" },
+    { "screen_key": "compensation-history", "route_name": "hr.compensation-history", "route_path": "/compensation/:staffUlid/history" },
+    { "screen_key": "payouts", "route_name": "hr.payouts", "route_path": "/payouts" },
+    { "screen_key": "audit", "route_name": "hr.audit", "route_path": "/audit" },
+    { "screen_key": "account", "route_name": "hr.account", "route_path": "/account" }
+  ],
+  "gated_no_route": ["staff-detail-edit", "staff-detail-access", "reports", "notifications"],
+  "compatibility_redirects": [
+    "/hr/get-started -> /get-started", "/hr/staff -> /staff", "/hr/invitations -> /staff/invite",
+    "/hr/staff/:id -> /staff/:staffUlid", "/hr/eligibility -> /eligibility",
+    "/hr/availability -> /availability", "/hr/compensation -> /compensation",
+    "/hr/payout-runs -> /payouts"
+  ],
+  "result": "15 canonical host-relative routes match the generated contract; all 4 gated identities have no runtime route; guarded same-account compatibility redirects grant no authority"
+}

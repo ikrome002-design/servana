@@ -6,6 +6,8 @@ namespace App\Http\Requests\Hr;
 
 use App\Domain\Hr\Enums\StaffEmploymentStatus;
 use App\Domain\Hr\Enums\StaffEmploymentType;
+use App\Domain\Merchants\Enums\MerchantUserRole;
+use App\Domain\Merchants\Enums\MerchantUserStatus;
 use App\Http\Api\ApiPagination;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -30,6 +32,9 @@ final class StaffIndexRequest extends FormRequest
         return [
             ...ApiPagination::rules(),
             ...ApiPagination::sortRule(self::SORTS),
+            'search' => ['sometimes', 'string', 'max:120'],
+            'role' => ['sometimes', 'string', Rule::in(array_column(MerchantUserRole::cases(), 'value'))],
+            'status' => ['sometimes', 'string', Rule::in(array_column(MerchantUserStatus::cases(), 'value'))],
             'employment_status' => ['sometimes', 'string', Rule::in(array_column(StaffEmploymentStatus::cases(), 'value'))],
             'employment_type' => ['sometimes', 'string', Rule::in(array_column(StaffEmploymentType::cases(), 'value'))],
         ];

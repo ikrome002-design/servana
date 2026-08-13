@@ -9,20 +9,51 @@ import type { StaffInvitation, StaffProfile } from '@/types/models';
  */
 export const useStaffStore = defineStore('staff', () => {
   const staff = ref<StaffProfile[]>([]);
+  const current = ref<StaffProfile | null>(null);
   const invitations = ref<StaffInvitation[]>([]);
   const loading = ref(false);
+  const error = ref<string | null>(null);
+  const meta = ref<{ current_page: number; last_page: number; per_page: number; total: number } | null>(null);
 
   function $reset(): void {
     staff.value = [];
+    current.value = null;
     invitations.value = [];
     loading.value = false;
+    error.value = null;
+    meta.value = null;
   }
 
-  async function fetchStaff(): Promise<void> {
+  async function fetchStaff(params: Record<string, string | number> = {}): Promise<void> {
     loading.value = true;
+    error.value = null;
     try {
-      const { data } = await apiClient.get<{ data: StaffProfile[] }>('/staff');
+      const { data } = await apiClient.get<{
+        data: StaffProfile[];
+        meta?: { current_page: number; last_page: number; per_page: number; total: number };
+      }>('/staff', { params });
       staff.value = data.data;
+      meta.value = data.meta ?? null;
+    } catch {
+      error.value = 'We couldn’t load the staff roster.';
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function fetchStaffMember(id: string): Promise<StaffProfile> {
+    loading.value = true;
+    error.value = null;
+    try {
+      const { data } = await apiClient.get<{ data: StaffProfile }>(`/staff/${id}`);
+      current.value = data.data;
+      const index = staff.value.findIndex((member) => member.id === id);
+      if (index === -1) staff.value = [data.data, ...staff.value];
+      else staff.value[index] = data.data;
+      return data.data;
+    } catch (cause) {
+      error.value = 'We couldn’t load this staff member.';
+      throw cause;
     } finally {
       loading.value = false;
     }
@@ -75,23 +106,30 @@ export const useStaffStore = defineStore('staff', () => {
   async function suspendStaff(id: string, reason?: string): Promise<void> {
     const { data } = await apiClient.post<{ data: StaffProfile }>(`/staff/${id}/suspend`, { reason });
     staff.value = staff.value.map((s) => (s.id === id ? data.data : s));
+    if (current.value?.id === id) current.value = data.data;
   }
 
   async function activateStaff(id: string): Promise<void> {
     const { data } = await apiClient.post<{ data: StaffProfile }>(`/staff/${id}/activate`);
     staff.value = staff.value.map((s) => (s.id === id ? data.data : s));
+    if (current.value?.id === id) current.value = data.data;
   }
 
   async function deactivateStaff(id: string, reason?: string): Promise<void> {
     const { data } = await apiClient.post<{ data: StaffProfile }>(`/staff/${id}/deactivate`, { reason });
     staff.value = staff.value.map((s) => (s.id === id ? data.data : s));
+    if (current.value?.id === id) current.value = data.data;
   }
 
   return {
     staff,
+    current,
     invitations,
     loading,
+    error,
+    meta,
     fetchStaff,
+    fetchStaffMember,
     fetchInvitations,
     invite,
     resendInvitation,

@@ -79,8 +79,8 @@ test.describe('HR payout runs', () => {
       if (r.request().method() === 'POST') return r.fulfill(created({ data: run('draft') }));
       return r.fulfill(ok({ data: [run('draft')], meta: meta([run('draft')]) }));
     });
-    await page.goto('/hr/payout-runs');
-    await expect(page.getByRole('heading', { name: 'Payout runs' })).toBeVisible();
+    await page.goto('/payouts');
+    await expect(page.getByRole('heading', { name: 'Payout run preparation' })).toBeVisible();
   }
 
   test('creates a draft, sees server-snapshotted items, and submits — never a mark-paid control', async ({ page }) => {
@@ -102,7 +102,7 @@ test.describe('HR payout runs', () => {
 
   test('shows a safe forbidden state without the payout permission', async ({ page }) => {
     await stubMe(page, { role: 'hr', permissions: [] });
-    await page.goto('/hr/payout-runs');
+    await page.goto('/payouts');
     await expect(page.getByTestId('payout-forbidden')).toBeVisible();
   });
 });
@@ -322,8 +322,8 @@ test.describe('Responsive, zoom, keyboard and accessibility', () => {
   async function gotoHr(page: Page): Promise<void> {
     await stubMe(page, { role: 'hr', permissions: ['payout_run.create'] });
     await page.route(/\/api\/v1\/hr\/payout-runs(\?|$)/, (r) => r.fulfill(ok({ data: [run('draft')], meta: meta([run('draft')]) })));
-    await page.goto('/hr/payout-runs');
-    await expect(page.getByRole('heading', { name: 'Payout runs' })).toBeVisible();
+    await page.goto('/payouts');
+    await expect(page.getByRole('heading', { name: 'Payout run preparation' })).toBeVisible();
   }
 
   for (const width of [360, 768, 1280]) {

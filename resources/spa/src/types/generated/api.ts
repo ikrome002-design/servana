@@ -1709,6 +1709,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/hr/audit-activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["hr.audit-activity.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/hr/payout-runs": {
         parameters: {
             query?: never;
@@ -1781,6 +1797,38 @@ export interface paths {
             cookie?: never;
         };
         get: operations["hr.permission-preview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/service-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["hr.service-options.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hr/workspace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["hr.workspace.show"];
         put?: never;
         post?: never;
         delete?: never;
@@ -7311,6 +7359,14 @@ export interface components {
             can: {
                 [key: string]: boolean;
             };
+        };
+        /**
+         * StaffLifecycleRequest
+         * @description Validates staff lifecycle payloads. Policy authorization stays in StaffController;
+         *     the reason remains optional for backwards-compatible activation/suspension callers.
+         */
+        StaffLifecycleRequest: {
+            reason?: string | null;
         };
         /** StaffProfileResource */
         StaffProfileResource: {
@@ -14602,6 +14658,79 @@ export interface operations {
             };
         };
     };
+    "hr.audit-activity.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "created_at" | "-created_at";
+                severity?: "info" | "notice" | "warning" | "high" | "critical";
+                domain?: "staff" | "readiness" | "compensation" | "payout";
+                action?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `AuditLogResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AuditLogResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     "hr.payout-runs.index": {
         parameters: {
             query?: {
@@ -14892,6 +15021,190 @@ export interface operations {
                             role: string;
                             default_grants: string[];
                             grantable: string[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "hr.service-options.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `CompensationSelectableServiceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CompensationSelectableServiceResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "hr.workspace.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            overview: {
+                                branch: {
+                                    id: string;
+                                    name: string;
+                                    code: string;
+                                    town: string | null;
+                                };
+                                staff: {
+                                    total: number;
+                                    active: string;
+                                    by_access_status: {
+                                        [key: string]: number;
+                                    };
+                                    pending_invitations: number;
+                                };
+                                readiness: {
+                                    eligible_staff: number;
+                                    without_eligibility: Record<string, never> | null;
+                                    available_staff: number;
+                                    without_availability: Record<string, never> | null;
+                                    configured_compensation: number;
+                                    without_compensation: Record<string, never> | null;
+                                };
+                                compensation: {
+                                    by_status: {
+                                        [key: string]: number;
+                                    };
+                                    drafts_requiring_action: number;
+                                };
+                                payouts: {
+                                    by_status: {
+                                        [key: string]: number;
+                                    };
+                                    awaiting_finance: number;
+                                };
+                                tasks: [
+                                    {
+                                        /** @constant */
+                                        key: "pending-invitations";
+                                        /** @constant */
+                                        label: "Pending staff invitations";
+                                        count: number;
+                                        /** @constant */
+                                        route_name: "hr.staff-invite";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "eligibility-gaps";
+                                        /** @constant */
+                                        label: "Active staff without service eligibility";
+                                        count: Record<string, never> | null;
+                                        /** @constant */
+                                        route_name: "hr.eligibility";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "availability-gaps";
+                                        /** @constant */
+                                        label: "Active staff without availability";
+                                        count: Record<string, never> | null;
+                                        /** @constant */
+                                        route_name: "hr.availability";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "compensation-gaps";
+                                        /** @constant */
+                                        label: "Active staff without active or scheduled terms";
+                                        count: Record<string, never> | null;
+                                        /** @constant */
+                                        route_name: "hr.compensation";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "draft-plans";
+                                        /** @constant */
+                                        label: "Draft compensation plans";
+                                        count: number;
+                                        /** @constant */
+                                        route_name: "hr.compensation";
+                                    }
+                                ];
+                                get_started: {
+                                    staff_invited: string;
+                                    eligibility_configured: boolean;
+                                    availability_configured: boolean;
+                                    compensation_configured: boolean;
+                                    missing_compensation_reviewed: string;
+                                };
+                                reports: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "Phase 21N reporting runtime is blocked by External Gate W";
+                                };
+                                notifications: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "Phase 21N notification runtime is blocked by External Gate W";
+                                };
+                            };
                         };
                     };
                 };
@@ -24508,6 +24821,9 @@ export interface operations {
             query?: {
                 per_page?: number;
                 sort?: "display_name" | "-display_name" | "created_at" | "-created_at";
+                search?: string;
+                role?: "merchant_admin" | "branch_manager" | "hr" | "finance" | "front_office" | "personnel" | "audit";
+                status?: "invited" | "active" | "suspended" | "deactivated";
                 employment_status?: "employed" | "on_leave" | "terminated";
                 employment_type?: "full_time" | "part_time" | "contract" | "commission_only";
             };
@@ -24876,7 +25192,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["StaffLifecycleRequest"];
+            };
+        };
         responses: {
             /** @description `StaffProfileResource` */
             200: {
@@ -24900,15 +25220,7 @@ export interface operations {
                 };
             };
             404: components["responses"]["ModelNotFoundException"];
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -25077,9 +25389,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": {
-                    reason?: string;
-                };
+                "application/json": components["schemas"]["StaffLifecycleRequest"];
             };
         };
         responses: {
@@ -25105,15 +25415,7 @@ export interface operations {
                 };
             };
             404: components["responses"]["ModelNotFoundException"];
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -25294,9 +25596,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": {
-                    reason?: string;
-                };
+                "application/json": components["schemas"]["StaffLifecycleRequest"];
             };
         };
         responses: {
@@ -25322,15 +25622,7 @@ export interface operations {
                 };
             };
             404: components["responses"]["ModelNotFoundException"];
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {

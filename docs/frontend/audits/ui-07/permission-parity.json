@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "cc494a1d2827c9349a5576dded622cfcf864d335e4c8469b87139f852f6f80c1",
+  "canonical_authority_sha256": "f9f1aa59bbcebd28a7d06f907fcae0da15637bfd187dede4dce19c30baeb6e5d",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "075b1c0c5fbf80e2b174f10458c1d3ff4387e0ff21e8f25b610ee8103e4088ff",
+  "screen_inventory_sha256": "f2b1d99b56ccec9fdb530116393df04d89b6813c19335592f3fd05089f87154d",
   "purpose": "Every permission referenced by the contract exists in the canonical matrix. UI-07 creates, activates, retires and re-grants NO permission key.",
   "permission_matrix_keys": 169,
   "contract_permission_references": [
@@ -25,7 +25,9 @@
     "cash_up.view",
     "client.create",
     "client.view",
+    "compensation.history.view",
     "compensation.liability.view",
+    "compensation.plan.create",
     "compensation.plan.view",
     "customer_payment.record",
     "customer_payment.validate",
@@ -73,7 +75,7 @@
     "service.view",
     "service_session.view",
     "staff.invite",
-    "staff.role.assign",
+    "staff.suspend",
     "staff.view"
   ],
   "unknown_permission_references": [],
@@ -205,7 +207,7 @@
     },
     {
       "key": "merchant_human_resource.dashboard",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-11"
     },
     {
@@ -215,37 +217,17 @@
     },
     {
       "key": "merchant_human_resource.staff-detail-edit",
-      "implementation_status": "planned",
+      "implementation_status": "disabled_by_gate",
       "owner_phase": "UI-11"
     },
     {
-      "key": "merchant_human_resource.staff-detail-lifecycle",
-      "implementation_status": "planned",
-      "owner_phase": "UI-11"
-    },
-    {
-      "key": "merchant_human_resource.compensation-detail",
-      "implementation_status": "planned",
-      "owner_phase": "UI-11"
-    },
-    {
-      "key": "merchant_human_resource.compensation-setup",
-      "implementation_status": "planned",
-      "owner_phase": "UI-11"
-    },
-    {
-      "key": "merchant_human_resource.compensation-history",
-      "implementation_status": "planned",
+      "key": "merchant_human_resource.staff-detail-access",
+      "implementation_status": "disabled_by_gate",
       "owner_phase": "UI-11"
     },
     {
       "key": "merchant_human_resource.reports",
       "implementation_status": "disabled_by_gate",
-      "owner_phase": "UI-11"
-    },
-    {
-      "key": "merchant_human_resource.audit",
-      "implementation_status": "planned",
       "owner_phase": "UI-11"
     },
     {
@@ -255,7 +237,7 @@
     },
     {
       "key": "merchant_human_resource.account",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-11"
     },
     {

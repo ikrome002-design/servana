@@ -185,6 +185,9 @@ interface StubOpts {
 
 async function stubCompensation(page: Page, opts: StubOpts = {}): Promise<void> {
   const plans = opts.plans ?? [plan()];
+  await page.route(/\/api\/v1\/staff\/[^/]+$/, (r) =>
+    r.fulfill(ok({ data: { id: '01STAFF0000000000000000001', display_name: 'Jane Doe', status: 'active' } })),
+  );
   await page.route(/\/api\/v1\/staff(\?|$)/, (r) =>
     r.fulfill(ok({ data: [{ id: '01STAFF0000000000000000001', display_name: 'Jane Doe', status: 'active' }] })),
   );
@@ -218,7 +221,7 @@ async function stubCompensation(page: Page, opts: StubOpts = {}): Promise<void> 
 async function gotoHr(page: Page, plans?: unknown[]): Promise<void> {
   await stubMe(page, { role: 'hr', permissions: HR_KEYS });
   await stubCompensation(page, plans ? { plans } : {});
-  await page.goto('/hr/compensation');
+  await page.goto('/compensation');
   await expect(page.getByRole('heading', { name: 'Compensation', level: 1 })).toBeVisible();
 }
 
@@ -274,6 +277,7 @@ test.describe('HR compensation configuration', () => {
     await expect(page.getByTestId('comp-status')).toContainText('Active');
 
     await page.getByTestId('view-01PLAN00000000000000000001').click();
+    await page.getByRole('link', { name: 'Review change history' }).click();
     await expect(page.getByTestId('history-event').first()).toContainText('Created');
   });
 
@@ -321,7 +325,7 @@ test.describe('Backdated approval', () => {
       plans: [backdated()],
       approveResponse: { status: 403, code: 'step_up_required', message: 'A fresh step-up is required.' },
     });
-    await page.goto('/hr/compensation');
+    await page.goto('/compensation');
     await page.getByTestId('approve-01PLAN00000000000000000001').click();
     await page.locator('#comp-confirm-reason').fill('Retroactive agreement');
     await page.locator('#comp-ack-preview').check();
@@ -341,7 +345,7 @@ test.describe('Backdated approval', () => {
         message: 'The person who submitted a compensation change cannot approve it.',
       },
     });
-    await page.goto('/hr/compensation');
+    await page.goto('/compensation');
     await page.getByTestId('approve-01PLAN00000000000000000001').click();
     await page.locator('#comp-confirm-reason').fill('Self approval attempt');
     await page.locator('#comp-ack-preview').check();
@@ -370,14 +374,14 @@ test.describe('Role boundaries', () => {
   test('HR without compensation.plan.view cannot reach the screen', async ({ page }) => {
     await stubMe(page, { role: 'hr', permissions: ['staff.view'] });
     await stubCompensation(page);
-    await page.goto('/hr/compensation');
+    await page.goto('/compensation');
     await expect(page.getByRole('heading', { name: 'Compensation', level: 1 })).toHaveCount(0);
   });
 
   test('a view-only HR holder gets no mutation control', async ({ page }) => {
     await stubMe(page, { role: 'hr', permissions: ['compensation.plan.view'] });
     await stubCompensation(page);
-    await page.goto('/hr/compensation');
+    await page.goto('/compensation');
     await expect(page.getByTestId('plan-row')).toBeVisible();
     await expect(page.getByTestId('open-plan-create')).toHaveCount(0);
     await expect(page.getByTestId('open-rule-create')).toHaveCount(0);
@@ -512,10 +516,11 @@ test.describe('Responsive, zoom, keyboard and accessibility', () => {
       expect(results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);
     });
 
-    test(`passes axe on the detail + history dialog (${scheme})`, async ({ page }) => {
+    test(`passes axe on the dedicated compensation history page (${scheme})`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: scheme });
       await gotoHr(page);
       await page.getByTestId('view-01PLAN00000000000000000001').click();
+      await page.getByRole('link', { name: 'Review change history' }).click();
       await expect(page.getByTestId('history-event').first()).toBeVisible();
       const results = await new AxeBuilder({ page }).analyze();
       expect(results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);
