@@ -87,6 +87,10 @@ const GATE_LABELS: Readonly<Record<string, string>> = {
   external_gate_w: 'External Gate W — Wallet by Citrus collections readiness',
   phase_21n_blocked_by_external_gate_w:
     'Phase 21N, which is itself blocked by External Gate W — Wallet by Citrus collections readiness',
+  staff_profile_mutation_contract:
+    'the staff-profile mutation API and canonical permission contract',
+  staff_access_assignment_contract:
+    'the staff role-and-branch assignment API and canonical permission contract',
 };
 
 function gateStatement(gate: string, backendOwnerPhase: string | null): string {

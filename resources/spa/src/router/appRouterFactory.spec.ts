@@ -42,14 +42,12 @@ describe('createAppRouter — one account tree per host (Increment 7B)', () => {
   /**
    * A host registers its own tree plus any tree it CO-OWNS — and never one it does not own.
    *
-   * Plan §10.2 gives the Merchant Administrator branch creation, the branch record screens and the
-   * initial Branch Manager / HR invitations, so the `/branch` and `/hr` trees declare two owners
-   * apiece (`requiresAccount('merchant_branch', 'merchant_administrator')`). Asserting one tree per
-   * host was the wrong model: it silently removed five shared screens from the Merchant
-   * Administrator host, which the Phase 13 browser suite caught.
+   * Plan §10.2 gives the Merchant Administrator branch creation and branch record screens, so the
+   * `/branch` tree declares two owners. The historical Merchant Administrator HR-invitation URL is
+   * registered as one narrow supporting route; the canonical HR account tree remains HR-only.
    */
   const CO_OWNED: Readonly<Record<string, string[]>> = {
-    merchant_administrator: ['merchant_administrator', 'merchant_branch', 'merchant_human_resource'],
+    merchant_administrator: ['merchant_administrator', 'merchant_branch'],
   };
 
   it('registers the account tree plus any tree the account co-owns, and nothing else', () => {

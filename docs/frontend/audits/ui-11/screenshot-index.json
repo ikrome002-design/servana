@@ -1,0 +1,198 @@
+{
+  "schema": "servana.ui11.screenshot-index.v1",
+  "phase": "UI-11",
+  "account": "merchant_human_resource",
+  "host": "hr.servana.ke",
+  "data_provenance": "synthetic; no real person, credential, token or provider payload",
+  "status": "UI-11 implementation evidence; not a UI-16 release-approved visual baseline",
+  "captures": [
+    {
+      "file": "screenshots/dashboard-dark-200-percent-equivalent.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "dark",
+      "bytes": 36920,
+      "sha256": "336066ec92251a8878c2b3b1f840dc87c6030c9f07da464784c2f6fa271b9cf8"
+    },
+    {
+      "file": "screenshots/desktop-light-account.png",
+      "screen_key": "account",
+      "route": "/account",
+      "theme": "light",
+      "bytes": 114237,
+      "sha256": "7ce9a657ce10cd488931a24c6d1ed51836fd4de09f57fa72a4c59fda520a985f"
+    },
+    {
+      "file": "screenshots/desktop-light-audit.png",
+      "screen_key": "audit",
+      "route": "/audit",
+      "theme": "light",
+      "bytes": 112698,
+      "sha256": "38dbd16ea23520444c486abbcdbda1fd2b21568f314268a52fde88101a4af1d7"
+    },
+    {
+      "file": "screenshots/desktop-light-availability.png",
+      "screen_key": "availability",
+      "route": "/availability",
+      "theme": "light",
+      "bytes": 90227,
+      "sha256": "6d6b6b7ca1a2e2ea6c1cb39585484e8cca3c7e04fd1364f384a347c25c87352c"
+    },
+    {
+      "file": "screenshots/desktop-light-compensation-detail.png",
+      "screen_key": "compensation-detail",
+      "route": "/compensation/01HZZSTAFF0000000000000000",
+      "theme": "light",
+      "bytes": 107044,
+      "sha256": "b1897de80a92dfe26e0c4619695d2ab653cd9d33184c603cc058c77d9736842f"
+    },
+    {
+      "file": "screenshots/desktop-light-compensation-history.png",
+      "screen_key": "compensation-history",
+      "route": "/compensation/01HZZSTAFF0000000000000000/history",
+      "theme": "light",
+      "bytes": 83979,
+      "sha256": "ae4465c07485373b284c7d6e1e929d8189ba7a7f48e94e8347dd41eebfcd9ef4"
+    },
+    {
+      "file": "screenshots/desktop-light-compensation-setup.png",
+      "screen_key": "compensation-setup",
+      "route": "/compensation/01HZZSTAFF0000000000000000/setup",
+      "theme": "light",
+      "bytes": 108042,
+      "sha256": "cff7c372e9ad5dbb4e8a0d2d3e521a7b6197cf9f6f2d81fb11e87c4ddf988925"
+    },
+    {
+      "file": "screenshots/desktop-light-compensation.png",
+      "screen_key": "compensation",
+      "route": "/compensation",
+      "theme": "light",
+      "bytes": 95056,
+      "sha256": "b0946679dc2f41762c9b33d338544da7250610478204e859e1ac7f43b77cc241"
+    },
+    {
+      "file": "screenshots/desktop-light-dashboard.png",
+      "screen_key": "dashboard",
+      "route": "/dashboard",
+      "theme": "light",
+      "bytes": 142773,
+      "sha256": "efe4dcb3c57148db567e91d2c8e6e2b9ab6729fa222c074cc5e83a90c4150d9f"
+    },
+    {
+      "file": "screenshots/desktop-light-eligibility.png",
+      "screen_key": "eligibility",
+      "route": "/eligibility",
+      "theme": "light",
+      "bytes": 88047,
+      "sha256": "23d39c7ac555dcd37d1058f1b10b69e38a71f120bd8659e112466a24348c056e"
+    },
+    {
+      "file": "screenshots/desktop-light-get-started.png",
+      "screen_key": "get-started",
+      "route": "/get-started",
+      "theme": "light",
+      "bytes": 124360,
+      "sha256": "8eba40fbb08d1145fc07bef43d59be19b8a4212a9d525be0cf3f46ca8d2ab6bf"
+    },
+    {
+      "file": "screenshots/desktop-light-payouts.png",
+      "screen_key": "payouts",
+      "route": "/payouts",
+      "theme": "light",
+      "bytes": 97719,
+      "sha256": "79e6924805ce2980dd5283415630775b7cdc3ec4dfb6d6f4add621c462070610"
+    },
+    {
+      "file": "screenshots/desktop-light-staff-detail-lifecycle.png",
+      "screen_key": "staff-detail-lifecycle",
+      "route": "/staff/01HZZSTAFF0000000000000000/lifecycle",
+      "theme": "light",
+      "bytes": 122487,
+      "sha256": "bdf0d1739b6f9e572faaf7c949779863b7f0bbeb2ced912c0f1fe569bff23acb"
+    },
+    {
+      "file": "screenshots/desktop-light-staff-detail.png",
+      "screen_key": "staff-detail",
+      "route": "/staff/01HZZSTAFF0000000000000000",
+      "theme": "light",
+      "bytes": 146668,
+      "sha256": "7c127fee126846e41ade8f3bef997186f3cb2e033ffb3da676974acf78fd2fb9"
+    },
+    {
+      "file": "screenshots/desktop-light-staff-invite.png",
+      "screen_key": "staff-invite",
+      "route": "/staff/invite",
+      "theme": "light",
+      "bytes": 97673,
+      "sha256": "f1fc6e59e18f16751ebe7e9f6e58f5efcd651a52f39a21a457db60e93b7a884a"
+    },
+    {
+      "file": "screenshots/desktop-light-staff.png",
+      "screen_key": "staff",
+      "route": "/staff",
+      "theme": "light",
+      "bytes": 100756,
+      "sha256": "2e74f9dda27451f6c5cba01503d4db07e93bfae14d7ac62d2d68fcd820bffb70"
+    },
+    {
+      "file": "screenshots/responsive-1024.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 74800,
+      "sha256": "ec46cab8832990073483a9494cc7045a9949f0f146a564634fb6facd2f6b4fc2"
+    },
+    {
+      "file": "screenshots/responsive-1025.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 113143,
+      "sha256": "9df008d8b3f9bcb6e99ed949adc9dc8b02d1b438ccdc4ddc99e9338412cfac47"
+    },
+    {
+      "file": "screenshots/responsive-1280.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 113124,
+      "sha256": "8c67137172f89dbc3c63db4ea54ed8bb0aec9f80aad527398822469c0885fa53"
+    },
+    {
+      "file": "screenshots/responsive-1440.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 114237,
+      "sha256": "7ce9a657ce10cd488931a24c6d1ed51836fd4de09f57fa72a4c59fda520a985f"
+    },
+    {
+      "file": "screenshots/responsive-360.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 60079,
+      "sha256": "97e325d23744f068460b54340bb0eacb78091e791b996578d032dbdb280be3aa"
+    },
+    {
+      "file": "screenshots/responsive-767.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 70180,
+      "sha256": "f285376a4dbc2053400c280d96e7e6ae27c5e9cd4828219f68b97b05237fd4ab"
+    },
+    {
+      "file": "screenshots/responsive-768.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 76044,
+      "sha256": "bff7f74087bd739f1284b94ecdd12d68fb2a63b9da4b059863ce3c2fe15f42f5"
+    }
+  ],
+  "totals": {
+    "captures": 23,
+    "implemented_page_captures": 15
+  }
+}

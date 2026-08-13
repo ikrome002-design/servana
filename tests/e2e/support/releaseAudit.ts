@@ -286,6 +286,7 @@ export const SCREENS: AuditScreen[] = [
   { key: 'merchant-account-security', route: 'merchant.account', path: '/account', role: 'merchant_administrator', state: 'static' },
   { key: 'merchant-platform-fees', route: 'merchant.platform-fees', path: '/merchant/platform-fees', role: 'merchant_administrator', state: 'populated' },
   { key: 'branch-create', route: 'merchant.branch-create', path: '/branches/create', role: 'merchant_administrator', state: 'static' },
+  { key: 'merchant-hr-staff-invite-support', route: 'merchant.hr-invitations', path: '/hr/invitations', role: 'merchant_administrator', state: 'populated' },
   // --- Branch Manager --------------------------------------------------------
   { key: 'branch-landing', route: 'branch.landing', path: '/branch', role: 'merchant_branch', state: 'static' },
   { key: 'branch-dashboard', route: 'branch.dashboard', path: '/dashboard', role: 'merchant_branch', state: 'populated' },
@@ -309,15 +310,21 @@ export const SCREENS: AuditScreen[] = [
 
   // --- HR --------------------------------------------------------------------
   { key: 'hr-landing', route: 'hr.landing', path: '/hr', role: 'merchant_human_resource', state: 'static' },
-  { key: 'hr-get-started', route: 'hr.get-started', path: '/hr/get-started', role: 'merchant_human_resource', state: 'static' },
-  { key: 'hr-staff', route: 'hr.staff', path: '/hr/staff', role: 'merchant_human_resource', state: 'populated' },
-  { key: 'hr-staff-profile', route: 'hr.staff-profile', path: `/hr/staff/${IDS.staff}`, role: 'merchant_human_resource', state: 'populated' },
-  { key: 'hr-invitations', route: 'hr.invitations', path: '/hr/invitations', role: 'merchant_human_resource', state: 'populated' },
-  { key: 'hr-permission-preview', route: 'hr.permission-preview', path: '/hr/permission-preview', role: 'merchant_human_resource', state: 'populated' },
-  { key: 'service-eligibility', route: 'hr.eligibility', path: '/hr/eligibility', role: 'merchant_human_resource', state: 'populated' },
-  { key: 'personnel-availability', route: 'hr.availability', path: '/hr/availability', role: 'merchant_human_resource', state: 'populated' },
-  { key: 'hr-compensation', route: 'hr.compensation', path: '/hr/compensation', role: 'merchant_human_resource', state: 'populated' },
-  { key: 'hr-payout-prep', route: 'hr.payout-runs', path: '/hr/payout-runs', role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-dashboard', route: 'hr.dashboard', path: '/dashboard', role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-get-started', route: 'hr.get-started', path: '/get-started', role: 'merchant_human_resource', state: 'static' },
+  { key: 'hr-staff', route: 'hr.staff', path: '/staff', role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-staff-invite', route: 'hr.staff-invite', path: '/staff/invite', role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-staff-detail', route: 'hr.staff-detail', path: `/staff/${IDS.staff}`, role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-staff-lifecycle', route: 'hr.staff-detail-lifecycle', path: `/staff/${IDS.staff}/lifecycle`, role: 'merchant_human_resource', state: 'populated' },
+  { key: 'service-eligibility', route: 'hr.eligibility', path: '/eligibility', role: 'merchant_human_resource', state: 'populated' },
+  { key: 'personnel-availability', route: 'hr.availability', path: '/availability', role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-compensation', route: 'hr.compensation', path: '/compensation', role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-compensation-detail', route: 'hr.compensation-detail', path: `/compensation/${IDS.staff}`, role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-compensation-setup', route: 'hr.compensation-setup', path: `/compensation/${IDS.staff}/setup`, role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-compensation-history', route: 'hr.compensation-history', path: `/compensation/${IDS.staff}/history`, role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-payouts', route: 'hr.payouts', path: '/payouts', role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-audit', route: 'hr.audit', path: '/audit', role: 'merchant_human_resource', state: 'populated' },
+  { key: 'hr-account', route: 'hr.account', path: '/account', role: 'merchant_human_resource', state: 'static' },
 
   // --- Finance ---------------------------------------------------------------
   { key: 'finance-landing', route: 'finance.landing', path: '/finance', role: 'merchant_finance', state: 'static' },
@@ -623,6 +630,40 @@ const AUDIT_EVENT = {
   can: { view: true },
 };
 
+const HR_STAFF = {
+  id: IDS.staff,
+  first_name: 'Amina',
+  last_name: 'Wanjiku',
+  display_name: 'Amina Wanjiku',
+  phone: '+254712000333',
+  role: 'personnel',
+  role_title: 'Senior Stylist',
+  status: 'active',
+  employment_type: 'full_time',
+  employment_status: 'employed',
+  primary_branch_id: IDS.branch,
+  is_active: true,
+  can: { view: true, manage: true },
+};
+
+const HR_OVERVIEW = {
+  branch: { id: IDS.branch, name: 'Westlands Branch', code: 'WST', town: 'Nairobi' },
+  staff: { total: 8, active: 6, by_access_status: { active: 6, invited: 1, suspended: 1 }, pending_invitations: 1 },
+  readiness: { eligible_staff: 5, without_eligibility: 1, available_staff: 4, without_availability: 2, configured_compensation: 3, without_compensation: 3 },
+  compensation: { by_status: { active: 3, draft: 2 }, drafts_requiring_action: 2 },
+  payouts: { by_status: { draft: 1, submitted: 2 }, awaiting_finance: 2 },
+  tasks: [
+    { key: 'pending-invitations', label: 'Pending staff invitations', count: 1, route_name: 'hr.staff-invite' },
+    { key: 'eligibility-gaps', label: 'Active staff without service eligibility', count: 1, route_name: 'hr.eligibility' },
+    { key: 'availability-gaps', label: 'Active staff without availability', count: 2, route_name: 'hr.availability' },
+    { key: 'compensation-gaps', label: 'Active staff without active or scheduled terms', count: 3, route_name: 'hr.compensation' },
+    { key: 'draft-plans', label: 'Draft compensation plans', count: 2, route_name: 'hr.compensation' },
+  ],
+  get_started: { staff_invited: true, eligibility_configured: true, availability_configured: true, compensation_configured: true, missing_compensation_reviewed: false },
+  reports: { available: false, reason: 'Phase 21N is blocked by External Gate W' },
+  notifications: { available: false, reason: 'Phase 21N is blocked by External Gate W' },
+};
+
 const SHARED_FIXTURES: Fixture[] = [
   // --- REM-SCR-002A: merchant business profile -------------------------------
   { match: /^\/merchant\/profile$/, body: { data: MERCHANT_PROFILE } },
@@ -654,25 +695,21 @@ const SHARED_FIXTURES: Fixture[] = [
   },
 
   // --- HR roster (the staff-profile screen resolves its row from this list) ----
+  { match: /^\/hr\/workspace$/, body: { data: { overview: HR_OVERVIEW } } },
+  {
+    match: /^\/hr\/audit-activity$/,
+    body: {
+      data: [{ ...AUDIT_EVENT, action: 'membership.suspended', actor: 'a***@glowstudio.co.ke', subject_type: 'MerchantUser' }],
+      meta: { ...EMPTY_LIST.meta, total: 1 },
+    },
+  },
+  { match: /^\/hr\/service-options$/, body: { data: [{ ulid: id('SERVICE'), name: 'Signature cut and finish' }] } },
+  { match: /^\/staff\/[^/]+$/, body: { data: HR_STAFF } },
   {
     match: /^\/staff$/,
     body: {
-      data: [
-        {
-          id: IDS.staff,
-          first_name: 'Amina',
-          last_name: 'Wanjiku',
-          display_name: 'Amina Wanjiku',
-          phone: '+254712000333',
-          role: 'personnel',
-          role_title: 'Senior Stylist',
-          status: 'active',
-          employment_type: 'permanent',
-          employment_status: 'active',
-          primary_branch_id: IDS.branch,
-          is_active: true,
-        },
-      ],
+      data: [HR_STAFF],
+      meta: { ...EMPTY_LIST.meta, total: 1 },
     },
   },
 
@@ -768,7 +805,15 @@ export async function prepare(
   await page.clock.setFixedTime(new Date(AUDIT_INSTANT_UTC));
 
   const theme = opts.theme ?? 'light';
-  await page.addInitScript((t) => localStorage.setItem('servana.theme', t), theme);
+  await page.addInitScript((t) => {
+    const marker = 'servana.release-audit-initial-theme';
+    // A new explicit prepare(light|dark) replaces the preceding case's value. Reloading within
+    // that same prepared case leaves a user-selected value alone, which proves real persistence.
+    if (sessionStorage.getItem(marker) !== t) {
+      localStorage.setItem('servana.theme', t);
+      sessionStorage.setItem(marker, t);
+    }
+  }, theme);
 
   /*
    * The account context the Laravel shell embeds (Phase UI-02/UI-03). `vite preview` serves a
@@ -789,6 +834,7 @@ export async function prepare(
     const accountKeyForContext = screen.role === 'public' ? 'merchant_administrator' : screen.role;
     await page.addInitScript((accountKey) => {
       const inject = (): void => {
+        if (document.head === null) return;
         if (document.getElementById('servana-account-context') !== null) return;
         const element = document.createElement('script');
         element.id = 'servana-account-context';
@@ -802,9 +848,7 @@ export async function prepare(
         document.head.appendChild(element);
       };
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('readystatechange', inject, { once: true });
-      }
+      if (document.readyState === 'loading') document.addEventListener('readystatechange', inject);
       inject();
     }, accountKeyForContext);
   }

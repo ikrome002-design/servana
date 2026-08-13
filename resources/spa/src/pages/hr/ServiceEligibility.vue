@@ -3,6 +3,7 @@ import axios from 'axios';
 import { computed, onMounted, ref, watch } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { apiClient } from '@/services/apiClient';
@@ -17,11 +18,12 @@ const catalogue = useCatalogueStore();
 const notifications = useNotificationStore();
 
 const selectedService = ref('');
+const services = ref<Array<{ ulid: string; name: string }>>([]);
 const staff = ref<StaffProfile[]>([]);
 const staffToAdd = ref('');
 const loadingEligibility = ref(false);
 
-const serviceOptions = computed(() => catalogue.services.map((s) => ({ value: s.id, label: s.name })));
+const serviceOptions = computed(() => services.value.map((service) => ({ value: service.ulid, label: service.name })));
 
 const eligibleIds = computed(() => new Set(catalogue.eligibility.filter((e) => e.active).map((e) => e.staff_profile_id)));
 
@@ -38,9 +40,12 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
 });
 
 onMounted(async () => {
-  await catalogue.fetchServices({ status: 'active' });
-  const { data } = await apiClient.get<{ data: StaffProfile[] }>('/staff');
-  staff.value = data.data;
+  const [serviceResponse, staffResponse] = await Promise.all([
+    apiClient.get<{ data: Array<{ ulid: string; name: string }> }>('/hr/service-options'),
+    apiClient.get<{ data: StaffProfile[] }>('/staff', { params: { per_page: 100, status: 'active', employment_status: 'employed' } }),
+  ]);
+  services.value = serviceResponse.data.data;
+  staff.value = staffResponse.data.data;
 });
 
 watch(selectedService, async (id) => {
@@ -77,13 +82,15 @@ async function revoke(staffProfileId: string | null | undefined): Promise<void> 
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Service eligibility
-    </h1>
-    <p class="mt-1 text-sm text-text-muted">
-      Manage which personnel may perform each service in your branch.
-    </p>
+  <section
+    class="mx-auto max-w-5xl"
+    data-testid="hr-service-eligibility"
+  >
+    <SvPageHeader
+      title="Service eligibility"
+      eyebrow="Workforce readiness"
+      description="Assign active branch services to personnel. Human Resource does not configure service names, prices or durations here."
+    />
 
     <SvCard
       as="div"

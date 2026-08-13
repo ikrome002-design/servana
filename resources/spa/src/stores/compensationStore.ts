@@ -21,6 +21,7 @@ export type CommissionRule = components['schemas']['CommissionRuleResource'];
 /** Minimal branch-scoped service option for the selected-services multi-select (§9.1; {ulid, name} only). */
 export type SelectableService = components['schemas']['CompensationSelectableServiceResource'];
 export type CompensationPlanHistoryEntry = components['schemas']['CompensationPlanHistoryResource'];
+export type StaffCompensationHistoryEntry = CompensationPlanHistoryEntry & { plan_id: string };
 export type CompensationModel = components['schemas']['CompensationModel'];
 export type SalaryPeriod = components['schemas']['SalaryPeriod'];
 
@@ -131,6 +132,7 @@ export const useCompensationStore = defineStore('compensation', () => {
   const plans = ref<CompensationPlan[]>([]);
   const current = ref<CompensationPlan | null>(null);
   const history = ref<CompensationPlanHistoryEntry[]>([]);
+  const staffHistory = ref<StaffCompensationHistoryEntry[]>([]);
   const rules = ref<CommissionRule[]>([]);
   const serviceOptions = ref<SelectableService[]>([]);
   const serviceOptionsLoading = ref(false);
@@ -150,6 +152,7 @@ export const useCompensationStore = defineStore('compensation', () => {
     plans.value = [];
     current.value = null;
     history.value = [];
+    staffHistory.value = [];
     rules.value = [];
     serviceOptions.value = [];
     serviceOptionsLoading.value = false;
@@ -221,6 +224,28 @@ export const useCompensationStore = defineStore('compensation', () => {
     }
   }
 
+  /** Aggregate append-only histories for one staff member's versioned plans. */
+  async function fetchStaffHistory(staffId: string): Promise<void> {
+    historyLoading.value = true;
+    staffHistory.value = [];
+    try {
+      const { data } = await apiClient.get<{ data: CompensationPlan[] }>('/compensation-plans', {
+        params: { staff_profile_id: staffId, per_page: 100, sort: '-created_at' },
+      });
+      const pages = await Promise.all(data.data.map(async (plan) => {
+        const response = await apiClient.get<{ data: CompensationPlanHistoryEntry[] }>(
+          `/compensation-plans/${plan.id}/history`,
+        );
+        return response.data.data.map((event) => ({ ...event, plan_id: plan.id }));
+      }));
+      staffHistory.value = pages.flat().sort((left, right) =>
+        String(right.occurred_at ?? '').localeCompare(String(left.occurred_at ?? '')),
+      );
+    } finally {
+      historyLoading.value = false;
+    }
+  }
+
   async function fetchCommissionRules(): Promise<void> {
     const { data } = await apiClient.get<{ data: CommissionRule[] }>('/commission-rules', { params: {} });
     rules.value = data.data;
@@ -273,6 +298,7 @@ export const useCompensationStore = defineStore('compensation', () => {
     plans,
     current,
     history,
+    staffHistory,
     rules,
     serviceOptions,
     serviceOptionsLoading,
@@ -287,6 +313,7 @@ export const useCompensationStore = defineStore('compensation', () => {
     fetchPlans,
     fetchPlan,
     fetchHistory,
+    fetchStaffHistory,
     fetchCommissionRules,
     fetchServiceOptions,
     createCommissionRule,

@@ -70,10 +70,10 @@
       "account": "merchant_human_resource",
       "shell_path": "/hr",
       "navigation_placement": "sidebar",
-      "expected_entries": 9,
-      "rendered_entries": 9,
+      "expected_entries": 12,
+      "rendered_entries": 12,
       "planned_entries_rendered": 0,
-      "links_with_destination": 7,
+      "links_with_destination": 10,
       "console_errors": 0,
       "page_errors": 0,
       "failed_requests": 0

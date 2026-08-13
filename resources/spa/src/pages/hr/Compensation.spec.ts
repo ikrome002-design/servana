@@ -87,22 +87,6 @@ function plan(overrides: Record<string, unknown> = {}) {
   };
 }
 
-const historyEvents = [
-  {
-    id: '01H1',
-    event: 'created',
-    event_label: 'Created',
-    from_status: null,
-    to_status: 'draft',
-    changed_fields: null,
-    was_backdated: false,
-    change_reason: 'Promotion',
-    effective_from: '2026-08-01',
-    actor_display_name: 'Ada HR',
-    occurred_at: '2026-07-01T00:00:00+00:00',
-  },
-];
-
 function mockLoaded(plans: unknown[] = [plan()]): void {
   get.mockImplementation((url: string) => {
     if (url === '/staff') {
@@ -111,7 +95,6 @@ function mockLoaded(plans: unknown[] = [plan()]): void {
     if (url === '/commission-rules') return Promise.resolve({ data: { data: [rule] } });
     if (url === '/compensation-plans') return Promise.resolve({ data: { data: structuredClone(plans) } });
     if (url === '/compensation-plans/01PLAN') return Promise.resolve({ data: { data: structuredClone(plans[0]) } });
-    if (url === '/compensation-plans/01PLAN/history') return Promise.resolve({ data: { data: historyEvents } });
     return Promise.resolve({ data: { data: [] } });
   });
 }
@@ -129,6 +112,11 @@ const mountPage = () =>
         SvDialog: {
           template: '<div v-if="open" role="dialog"><h2>{{ title }}</h2><p>{{ description }}</p><slot /></div>',
           props: ['open', 'title', 'description'],
+        },
+        RouterLink: {
+          name: 'RouterLink',
+          props: ['to'],
+          template: '<a><slot /></a>',
         },
       },
     },
@@ -611,42 +599,34 @@ describe('Compensation.vue (HR)', () => {
     expect(wrapper.find('[data-testid="cancel-01PLAN"]').exists()).toBe(false);
   });
 
-  /* ---------------------------------------------------------------- detail + history */
+  /* ---------------------------------------------------------------- canonical detail routing */
 
-  it('renders the server history verbatim and never synthesizes an event', async () => {
+  it('links each plan to the canonical staff compensation detail without fetching hidden list history', async () => {
     mockLoaded();
     const wrapper = mountPage();
     await flushPromises();
 
-    await wrapper.find('[data-testid="view-01PLAN"]').trigger('click');
-    await flushPromises();
-
-    expect(get).toHaveBeenCalledWith('/compensation-plans/01PLAN/history');
-    const events = wrapper.findAll('[data-testid="history-event"]');
-    expect(events).toHaveLength(1);
-    expect(events[0].text()).toContain('Created');
-    expect(events[0].text()).toContain('Ada HR');
+    expect(wrapper.findComponent({ name: 'RouterLink' }).props('to')).toEqual({
+      name: 'hr.compensation-detail',
+      params: { staffUlid: '01STAFF' },
+    });
+    expect(get).not.toHaveBeenCalledWith('/compensation-plans/01PLAN/history');
   });
 
-  it('shows no history for a holder without compensation.history.view', async () => {
+  it('does not synthesize a history denial inside the list for a holder without compensation.history.view', async () => {
     const auth = useAuthStore();
     auth.permissions = HR_KEYS.filter((k) => k !== 'compensation.history.view');
     mockLoaded();
     const wrapper = mountPage();
     await flushPromises();
 
-    await wrapper.find('[data-testid="view-01PLAN"]').trigger('click');
-    await flushPromises();
-
     expect(get).not.toHaveBeenCalledWith('/compensation-plans/01PLAN/history');
-    expect(wrapper.text()).toContain('You do not have access to the change history.');
+    expect(wrapper.text()).not.toContain('You do not have access to the change history.');
   });
 
   it('exposes the public reference and no internal numeric id or contact data', async () => {
     mockLoaded();
     const wrapper = mountPage();
-    await flushPromises();
-    await wrapper.find('[data-testid="view-01PLAN"]').trigger('click');
     await flushPromises();
 
     const text = wrapper.text();

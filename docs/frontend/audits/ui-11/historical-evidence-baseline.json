@@ -1,0 +1,41 @@
+{
+  "schema": "servana.ui11.historical-evidence-baseline.v1",
+  "phase": "UI-11",
+  "captured_before_final_full_playwright": true,
+  "algorithm": "SHA-256 over sorted UTF-8 repository-relative path, NUL, file SHA-256 lines joined by LF",
+  "frozen_historical_directories": [
+    { "path": "docs/frontend/audits/ui-01", "files": 8, "aggregate_sha256": "8c3ffaf289d3d61d0ac16e17273007d317b7b5e796755c965be2d4452548d236" },
+    { "path": "docs/frontend/audits/ui-04", "files": 15, "aggregate_sha256": "46a47780af6b0f855ed738d076d16a772b10c7c4f2c6e945dac9473238aba553" },
+    { "path": "docs/frontend/audits/ui-05", "files": 10, "aggregate_sha256": "c40443d0f0c7f413beea174d6e7c527ccb2dac3592e1d33ca3f9851b7ca20e04" },
+    { "path": "docs/frontend/audits/ui-08", "files": 50, "aggregate_sha256": "d7b55df4ce90d6dc12325bad6958e02b291b89f34527a1a21c40725d5794a9fc" }
+  ],
+  "mixed_historical_and_current_projection": {
+    "path": "docs/frontend/audits/ui-06",
+    "files_excluding_current_projection": 50,
+    "aggregate_sha256": "3fc9e6ccfa24b8335e87f7894f938bfbf2fcb246f785c43b32bedbd271e5d7ae",
+    "current_projection_exclusion": "docs/frontend/audits/ui-06/public-route-matrix.json",
+    "policy": "Preserve every other UI-06 path byte-for-byte; regenerate only the public route projection from current routing authority"
+  },
+  "intentional_predecessor_lifecycle_updates": [
+    { "path": "docs/frontend/audits/ui-09", "files": 45, "aggregate_sha256": "401f60c2e10974983fbd1ee6fa50771521c004b0879c7642400489cb1e71f5f4", "policy": "Preserve verified UI-09 lifecycle evidence" },
+    { "path": "docs/frontend/audits/ui-10", "files": 36, "aggregate_sha256": "0204a6021b0e0dda916336211ceab727642c469547e116f58de611063d74a1f2", "policy": "Preserve UI-11-owned verified PR #60 lifecycle reconciliation and current UI-10 evidence" }
+  ],
+  "current_generated_projection": {
+    "path": "docs/frontend/audits/ui-07",
+    "files": 16,
+    "aggregate_sha256": "433b50680dcb5ac6d93cc8587a860b6ef65f49703cfe04f92dd71af3d7209456",
+    "policy": "Must match current UI-11 canonical navigation and screen inventory; never restore an older HR projection"
+  },
+  "current_ui11_evidence": "docs/frontend/audits/ui-11 is preserved; browser-written UI-11 screenshots/index are canonical implementation evidence",
+  "restoration_policy": "Compare exact paths after full Playwright; restore only individually proven browser-written frozen mutations. Preserve all current generated projections and UI-11 evidence.",
+  "post_run_verification": {
+    "frozen_aggregates_match_baseline": ["ui-01", "ui-04", "ui-05", "ui-06-excluding-public-route-matrix", "ui-08", "ui-09"],
+    "ui10_reconciled_aggregate_sha256": "0204a6021b0e0dda916336211ceab727642c469547e116f58de611063d74a1f2",
+    "ui07_current_projection_files": 16,
+    "ui07_current_projection_aggregate_sha256": "509f806089cdbfa4f4b4c878049a3695191b24e79bbe4920cc8221c64f3f7f7f",
+    "ui06_current_public_route_matrix_sha256": "75ca22c0aef287a2c2e8c55db1a9804c38dff9b721aa01711c5466276b85810f",
+    "ui11_screenshot_index_sha256": "0c11697c297a6d94c1e02ba64e011a0eb123cc567009d710935b7e762648a3c3",
+    "ui11_screenshot_captures": 23,
+    "result": "Frozen evidence restored byte-for-byte; current projections regenerated from the finalized UI-11 tree, including the one-file UI-06 route projection caught by exact-head CI."
+  }
+}

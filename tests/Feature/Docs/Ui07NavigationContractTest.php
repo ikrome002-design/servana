@@ -441,9 +441,17 @@ it('names the exact gate on every gate-blocked page and gives it no destination'
 
     expect($gated)->not->toBeEmpty();
 
+    $accountSpecificGates = [
+        'merchant_human_resource.staff-detail-edit' => 'staff_profile_mutation_contract',
+        'merchant_human_resource.staff-detail-access' => 'staff_access_assignment_contract',
+        'merchant_human_resource.reports' => 'phase_21n_blocked_by_external_gate_w',
+        'merchant_human_resource.notifications' => 'phase_21n_blocked_by_external_gate_w',
+    ];
+
     foreach ($gated as $page) {
+        $expectedGate = $accountSpecificGates[$page['key']] ?? 'external_gate_w';
         expect($page['gate'])->not->toBeNull();
-        expect($page['gate'])->toBe('external_gate_w');
+        expect($page['gate'])->toBe($expectedGate);
         expect($page['runtime_route_name'])->toBeNull();
     }
 });
@@ -649,7 +657,7 @@ it('never describes a page that is not implemented as though it were', function 
         if ($page['implementation_status'] === 'planned') {
             expect($body)->toContain('no Vue Router record and no navigation link is exposed');
         } else {
-            expect($body)->toContain('Blocked by **external_gate_w**');
+            expect($body)->toContain("Blocked by **{$page['gate']}**");
         }
 
         // An unresolved field must always name the owner phase that resolves it — never a bare TBD.

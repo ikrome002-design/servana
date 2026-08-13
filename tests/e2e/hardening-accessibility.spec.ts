@@ -97,9 +97,9 @@ const ALL_STATUSES = [
 
 async function gotoStaff(page: Page): Promise<void> {
   await stubMe(page);
-  await page.route('**/api/v1/staff', (r) => r.fulfill(ok({ data: ALL_STATUSES })));
-  await page.goto('/hr/staff');
-  await expect(page.getByRole('heading', { name: 'Staff', level: 1 })).toBeVisible();
+  await page.route(/\/api\/v1\/staff(\?|$)/, (r) => r.fulfill(ok({ data: ALL_STATUSES })));
+  await page.goto('/staff');
+  await expect(page.getByRole('heading', { name: 'Staff roster', level: 1 })).toBeVisible();
 }
 
 test.describe('HR staff roster — status badge contrast', () => {
@@ -107,16 +107,16 @@ test.describe('HR staff roster — status badge contrast', () => {
     await gotoStaff(page);
     const badges = page.getByTestId('staff-status');
     await expect(badges).toHaveCount(4);
-    await expect(badges.nth(0)).toHaveText('invited');
-    await expect(badges.nth(1)).toHaveText('active');
-    await expect(badges.nth(2)).toHaveText('suspended');
-    await expect(badges.nth(3)).toHaveText('deactivated');
+    await expect(badges.nth(0)).toHaveText('Access status:invited');
+    await expect(badges.nth(1)).toHaveText('Access status:active');
+    await expect(badges.nth(2)).toHaveText('Access status:suspended');
+    await expect(badges.nth(3)).toHaveText('Access status:deactivated');
   });
 
   // Status is never conveyed by colour alone — the label text carries it.
   test('badge label text remains the status carrier', async ({ page }) => {
     await gotoStaff(page);
-    await expect(page.getByTestId('staff-status').first()).toHaveText('invited');
+    await expect(page.getByTestId('staff-status').first()).toHaveText('Access status:invited');
   });
 
   for (const scheme of ['light', 'dark'] as const) {

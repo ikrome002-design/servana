@@ -10,8 +10,9 @@ use App\Domain\Tenancy\TenantContext;
 use App\Http\Api\ApiPagination;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hr\StaffIndexRequest;
+use App\Http\Requests\Hr\StaffLifecycleRequest;
 use App\Http\Resources\StaffProfileResource;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
@@ -51,6 +52,26 @@ final class StaffController extends Controller
             $query->whereIn('primary_branch_id', $this->context->branchIds());
         }
 
+        if (isset($filters['search'])) {
+            $term = '%'.$filters['search'].'%';
+            $query->where(static function (Builder $search) use ($term): void {
+                $search
+                    ->where('display_name', 'ilike', $term)
+                    ->orWhere('first_name', 'ilike', $term)
+                    ->orWhere('last_name', 'ilike', $term)
+                    ->orWhere('role_title', 'ilike', $term)
+                    ->orWhere('phone', 'ilike', $term);
+            });
+        }
+
+        if (isset($filters['role'])) {
+            $query->whereHas('merchantUser', static fn (Builder $membership): Builder => $membership->where('role', $filters['role']));
+        }
+
+        if (isset($filters['status'])) {
+            $query->whereHas('merchantUser', static fn (Builder $membership): Builder => $membership->where('status', $filters['status']));
+        }
+
         if (isset($filters['employment_status'])) {
             $query->where('employment_status', $filters['employment_status']);
         }
@@ -74,19 +95,19 @@ final class StaffController extends Controller
         return StaffProfileResource::make($staff->load(['merchantUser', 'primaryBranch']));
     }
 
-    public function suspend(Request $request, StaffProfile $staff, StaffLifecycleService $service): StaffProfileResource
+    public function suspend(StaffLifecycleRequest $request, StaffProfile $staff, StaffLifecycleService $service): StaffProfileResource
     {
         $this->authorizeScoped('manage', $staff);
         $membership = $staff->merchantUser;
         abort_if($membership === null, 404);
 
-        $reason = $request->input('reason');
+        $reason = $request->validated('reason');
         $service->suspend($membership, $request->user(), is_string($reason) ? $reason : null);
 
         return StaffProfileResource::make($staff->fresh(['merchantUser', 'primaryBranch']));
     }
 
-    public function activate(Request $request, StaffProfile $staff, StaffLifecycleService $service): StaffProfileResource
+    public function activate(StaffLifecycleRequest $request, StaffProfile $staff, StaffLifecycleService $service): StaffProfileResource
     {
         $this->authorizeScoped('manage', $staff);
         $membership = $staff->merchantUser;
@@ -97,13 +118,13 @@ final class StaffController extends Controller
         return StaffProfileResource::make($staff->fresh(['merchantUser', 'primaryBranch']));
     }
 
-    public function deactivate(Request $request, StaffProfile $staff, StaffLifecycleService $service): StaffProfileResource
+    public function deactivate(StaffLifecycleRequest $request, StaffProfile $staff, StaffLifecycleService $service): StaffProfileResource
     {
         $this->authorizeScoped('manage', $staff);
         $membership = $staff->merchantUser;
         abort_if($membership === null, 404);
 
-        $reason = $request->input('reason');
+        $reason = $request->validated('reason');
         $service->deactivate($membership, $request->user(), is_string($reason) ? $reason : null);
 
         return StaffProfileResource::make($staff->fresh(['merchantUser', 'primaryBranch']));

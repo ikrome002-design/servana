@@ -390,6 +390,23 @@
       "summary": "Live HR role home."
     },
     {
+      "key": "hr-dashboard",
+      "domain": "hr",
+      "route": "hr.dashboard",
+      "layout": "HumanResourceLayout",
+      "status": "implemented",
+      "phase": "UI-11",
+      "spec": "hr/hr-dashboard.md",
+      "title": "HR dashboard",
+      "roles": [
+        "merchant_human_resource"
+      ],
+      "permissions": [
+        "staff.view"
+      ],
+      "summary": "Branch-scoped workforce readiness, configuration status, and actionable HR task home."
+    },
+    {
       "key": "hr-get-started",
       "domain": "hr",
       "route": "hr.get-started",
@@ -422,55 +439,88 @@
       "summary": "Branch-scoped staff roster."
     },
     {
-      "key": "hr-invitations",
+      "key": "hr-staff-invite",
       "domain": "hr",
-      "route": "hr.invitations",
-      "layout": "BranchLayout",
+      "route": "hr.staff-invite",
+      "layout": "HumanResourceLayout",
       "status": "implemented",
-      "phase": "Phase 7",
-      "spec": "hr/hr-invitations.md",
-      "title": "Staff invitations",
+      "phase": "UI-11",
+      "spec": "hr/hr-staff-invite.md",
+      "title": "Invite staff",
       "roles": [
         "merchant_human_resource"
       ],
       "permissions": [
         "staff.invite"
       ],
-      "summary": "Manage staff invitations."
+      "summary": "Invite an operational merchant user into HR's assigned branch."
+    },
+    {
+      "key": "merchant-hr-staff-invite-support",
+      "domain": "merchant",
+      "route": "merchant.hr-invitations",
+      "layout": "MerchantLayout",
+      "status": "implemented",
+      "phase": "UI-11",
+      "spec": "merchant/merchant-hr-staff-invite-support.md",
+      "title": "Invite HR staff",
+      "roles": [
+        "merchant_administrator"
+      ],
+      "permissions": [
+        "staff.invite"
+      ],
+      "summary": "Narrow Merchant Administrator supporting route for the shipped HR invitation authority; it does not register the HR account tree."
     },
     {
       "key": "hr-permission-preview",
       "domain": "hr",
-      "route": "hr.permission-preview",
-      "layout": "BranchLayout",
-      "status": "implemented",
-      "phase": "Phase 8",
-      "spec": "hr/hr-permission-preview.md",
-      "title": "Permission preview",
+      "route": null,
+      "layout": "HumanResourceLayout",
+      "status": "disabled_by_gate",
+      "phase": "UI-11",
+      "spec": null,
+      "title": "Role and branch assignment",
       "roles": [
         "merchant_human_resource"
       ],
-      "permissions": [
-        "staff.role.assign"
-      ],
-      "summary": "Preview default grants for a role before assignment."
+      "permissions": [],
+      "summary": "Disabled until the staff role-and-branch assignment API and canonical permission contract are delivered.",
+      "gate": "staff_access_assignment_contract"
     },
     {
-      "key": "hr-staff-profile",
+      "key": "hr-staff-detail",
       "domain": "hr",
-      "route": "hr.staff-profile",
-      "layout": "BranchLayout",
+      "route": "hr.staff-detail",
+      "layout": "HumanResourceLayout",
       "status": "implemented",
-      "phase": "Phase 7",
-      "spec": "hr/hr-staff-profile.md",
-      "title": "Staff profile",
+      "phase": "UI-11",
+      "spec": "hr/hr-staff-detail.md",
+      "title": "Staff detail",
       "roles": [
         "merchant_human_resource"
       ],
       "permissions": [
         "staff.view"
       ],
-      "summary": "Staff member profile and lifecycle."
+      "summary": "Branch-scoped staff identity, readiness, access status, and compensation entry point."
+    },
+    {
+      "key": "hr-staff-lifecycle",
+      "domain": "hr",
+      "route": "hr.staff-detail-lifecycle",
+      "layout": "HumanResourceLayout",
+      "status": "implemented",
+      "phase": "UI-11",
+      "spec": "hr/hr-staff-lifecycle.md",
+      "title": "Staff lifecycle",
+      "roles": [
+        "merchant_human_resource"
+      ],
+      "permissions": [
+        "staff.suspend"
+      ],
+      "summary": "Branch-scoped staff suspension, reactivation, and deactivation with explicit confirmation."
     },
     {
       "key": "finance-landing",
@@ -1320,14 +1370,65 @@
       "summary": "Branch-scoped, HR-only compensation-plan and commission-rule configuration: plan list with status/backdated/pending-approval indicators, plan detail with append-only history, commission-rule and plan draft forms (F1 model shape, F4 value shape, preferred-personnel-fee basis inclusion), and the named submit/approve/reject/cancel transitions (approval requires a fresh step-up and a different approver). Phase 20G §9.1: a selected_services commission-rule draft shows a branch-scoped service multi-select whose options load from the narrow compensation-scoped GET /commission-rule-service-options endpoint (authorized by compensation.plan.view, never service.view which HR cannot hold; returns {ulid,name} for the acting branch's active services only) — at least one service required, add/remove only while draft, server-returned selections hydrate, stale selection cleared when applies_to changes, non-draft memberships read-only; selected_service_ulids are submitted and the server persists immutable draft memberships. Configuration only — no earned commission, salary ledger, commission ledger, payout, earnings statement, liability or Wallet/provider surface exists here."
     },
     {
-      "key": "hr-payout-prep",
+      "key": "hr-compensation-detail",
       "domain": "hr",
-      "route": "hr.payout-runs",
-      "layout": "BranchLayout",
+      "route": "hr.compensation-detail",
+      "layout": "HumanResourceLayout",
       "status": "implemented",
-      "phase": "Phase 20H",
-      "spec": "hr/hr-payout-runs.md",
-      "title": "Payout runs",
+      "phase": "UI-11",
+      "spec": "hr/hr-compensation-detail.md",
+      "title": "Compensation detail",
+      "roles": [
+        "merchant_human_resource"
+      ],
+      "permissions": [
+        "compensation.plan.view"
+      ],
+      "summary": "Staff-addressed current, scheduled, and historical compensation configuration without earnings data."
+    },
+    {
+      "key": "hr-compensation-setup",
+      "domain": "hr",
+      "route": "hr.compensation-setup",
+      "layout": "HumanResourceLayout",
+      "status": "implemented",
+      "phase": "UI-11",
+      "spec": "hr/hr-compensation-setup.md",
+      "title": "Compensation setup",
+      "roles": [
+        "merchant_human_resource"
+      ],
+      "permissions": [
+        "compensation.plan.create"
+      ],
+      "summary": "Create an effective-dated compensation plan for one staff member using the shipped configuration workflow."
+    },
+    {
+      "key": "hr-compensation-history",
+      "domain": "hr",
+      "route": "hr.compensation-history",
+      "layout": "HumanResourceLayout",
+      "status": "implemented",
+      "phase": "UI-11",
+      "spec": "hr/hr-compensation-history.md",
+      "title": "Compensation change history",
+      "roles": [
+        "merchant_human_resource"
+      ],
+      "permissions": [
+        "compensation.history.view"
+      ],
+      "summary": "Append-only compensation plan event history for one branch-scoped staff member."
+    },
+    {
+      "key": "hr-payouts",
+      "domain": "hr",
+      "route": "hr.payouts",
+      "layout": "HumanResourceLayout",
+      "status": "implemented",
+      "phase": "UI-11",
+      "spec": "hr/hr-payouts.md",
+      "title": "Payout run preparation",
       "roles": [
         "merchant_human_resource"
       ],
@@ -1338,6 +1439,38 @@
         "payout_run.cancel_draft"
       ],
       "summary": "Branch-scoped HR payout DRAFT workflow: list/filter payout runs, create a run for a branch + pay period + currency (Servana snapshots the eligible earned salary/commission/adjustments server-side — the browser never enters amounts or items), edit a draft (re-snapshot), submit (freeze + claim ledgers), and cancel a draft. HR never verifies, approves, or marks paid (Plan §10.2). Invalid transitions surface a safe state; the browser computes no authoritative total. Servana moves no money; no Wallet/provider UI."
+    },
+    {
+      "key": "hr-audit",
+      "domain": "hr",
+      "route": "hr.audit",
+      "layout": "HumanResourceLayout",
+      "status": "implemented",
+      "phase": "UI-11",
+      "spec": "hr/hr-audit.md",
+      "title": "HR audit activity",
+      "roles": [
+        "merchant_human_resource"
+      ],
+      "permissions": [
+        "staff.view"
+      ],
+      "summary": "Masked, branch-scoped HR activity timeline with server-side filters and pagination."
+    },
+    {
+      "key": "hr-account",
+      "domain": "hr",
+      "route": "hr.account",
+      "layout": "HumanResourceLayout",
+      "status": "implemented",
+      "phase": "UI-11",
+      "spec": "hr/hr-account.md",
+      "title": "Account and preferences",
+      "roles": [
+        "merchant_human_resource"
+      ],
+      "permissions": [],
+      "summary": "HR user's own identity, sessions, preferences, and assigned branch context."
     },
     {
       "key": "finance-task-inbox",

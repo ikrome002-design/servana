@@ -96,8 +96,8 @@ if (existsSync(join(audit, 'production-host-proof.json'))) {
 
 if (existsSync(join(audit, 'defect-closure.json'))) {
   const closure = json('defect-closure.json');
-  if (closure.closures.some((item) => item.lifecycle !== 'local_complete') || closure.local_complete !== closure.closures.length || closure.verified_complete !== 0) {
-    problems.push('UI-10 closures must remain local_complete until the next phase reconciles the merge');
+  if (closure.closures.some((item) => item.lifecycle !== 'verified_complete') || closure.verified_complete !== closure.closures.length || closure.local_complete !== 0) {
+    problems.push('UI-10 closures must be verified_complete after PR #60 merge reconciliation');
   }
 }
 

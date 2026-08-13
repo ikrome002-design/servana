@@ -3,16 +3,16 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "cc494a1d2827c9349a5576dded622cfcf864d335e4c8469b87139f852f6f80c1",
+  "canonical_authority_sha256": "f9f1aa59bbcebd28a7d06f907fcae0da15637bfd187dede4dce19c30baeb6e5d",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "075b1c0c5fbf80e2b174f10458c1d3ff4387e0ff21e8f25b610ee8103e4088ff",
+  "screen_inventory_sha256": "f2b1d99b56ccec9fdb530116393df04d89b6813c19335592f3fd05089f87154d",
   "purpose": "The canonical contract against the ACTUAL Vue Router records, loaded through the real modules rather than parsed from source text.",
   "loading_method": "Vite SSR transform of resources/spa/src/router/routes/*.ts — never a regular expression over source.",
-  "runtime_named_routes": 136,
-  "runtime_routes_with_lazy_component": 136,
+  "runtime_named_routes": 142,
+  "runtime_routes_with_lazy_component": 142,
   "runtime_routes_without_lazy_component": [],
   "duplicate_runtime_route_names": [],
   "duplicate_runtime_paths": [],
@@ -22,6 +22,7 @@
       "accounts": [
         "merchant_audit",
         "merchant_branch",
+        "merchant_human_resource",
         "super_administrator"
       ]
     },
@@ -30,6 +31,7 @@
       "accounts": [
         "merchant_administrator",
         "merchant_branch",
+        "merchant_human_resource",
         "super_administrator"
       ]
     },
@@ -38,6 +40,7 @@
       "accounts": [
         "merchant_administrator",
         "merchant_branch",
+        "merchant_human_resource",
         "super_administrator"
       ]
     },
@@ -45,7 +48,8 @@
       "path": "/staff",
       "accounts": [
         "merchant_administrator",
-        "merchant_branch"
+        "merchant_branch",
+        "merchant_human_resource"
       ]
     },
     {
@@ -67,12 +71,20 @@
       "accounts": [
         "merchant_administrator",
         "merchant_branch",
+        "merchant_human_resource",
         "super_administrator"
+      ]
+    },
+    {
+      "path": "/compensation",
+      "accounts": [
+        "merchant_administrator",
+        "merchant_human_resource"
       ]
     }
   ],
   "contract_route_names_colliding_with_runtime": [],
-  "implemented_pages": 99,
+  "implemented_pages": 105,
   "planned_pages_with_runtime_route": [],
   "removed_pages_with_runtime_route": [],
   "consolidated_runtime_routes": [
@@ -86,8 +98,8 @@
   ],
   "path_shape_conformance": {
     "note": "The contract path is host-relative; the current router prefixes it with the account path segment (UI01-ROUTE-003). Each owning UI phase reconciles shape when it implements its account.",
-    "conformant": 50,
-    "prefixed": 49
+    "conformant": 65,
+    "prefixed": 40
   },
   "rows": [
     {
@@ -787,12 +799,12 @@
       "key": "merchant_human_resource.dashboard",
       "contract_route_name": "hr.dashboard",
       "contract_route_path": "/dashboard",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "hr.dashboard",
+      "runtime_route_path": "/dashboard",
+      "runtime_declared_in": "routes/hr.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_human_resource.get-started",
@@ -800,7 +812,7 @@
       "contract_route_path": "/get-started",
       "implementation_status": "implemented",
       "runtime_route_name": "hr.get-started",
-      "runtime_route_path": "/hr/get-started",
+      "runtime_route_path": "/get-started",
       "runtime_declared_in": "routes/hr.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -811,7 +823,7 @@
       "contract_route_path": "/staff",
       "implementation_status": "implemented",
       "runtime_route_name": "hr.staff",
-      "runtime_route_path": "/hr/staff",
+      "runtime_route_path": "/staff",
       "runtime_declared_in": "routes/hr.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -821,8 +833,8 @@
       "contract_route_name": "hr.staff-invite",
       "contract_route_path": "/staff/invite",
       "implementation_status": "implemented",
-      "runtime_route_name": "hr.invitations",
-      "runtime_route_path": "/hr/invitations",
+      "runtime_route_name": "hr.staff-invite",
+      "runtime_route_path": "/staff/invite",
       "runtime_declared_in": "routes/hr.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -832,8 +844,8 @@
       "contract_route_name": "hr.staff-detail",
       "contract_route_path": "/staff/:staffUlid",
       "implementation_status": "implemented",
-      "runtime_route_name": "hr.staff-profile",
-      "runtime_route_path": "/hr/staff/:id",
+      "runtime_route_name": "hr.staff-detail",
+      "runtime_route_path": "/staff/:staffUlid",
       "runtime_declared_in": "routes/hr.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -842,7 +854,7 @@
       "key": "merchant_human_resource.staff-detail-edit",
       "contract_route_name": "hr.staff-detail-edit",
       "contract_route_path": "/staff/:staffUlid/edit",
-      "implementation_status": "planned",
+      "implementation_status": "disabled_by_gate",
       "runtime_route_name": null,
       "runtime_route_path": null,
       "runtime_declared_in": null,
@@ -853,7 +865,18 @@
       "key": "merchant_human_resource.staff-detail-lifecycle",
       "contract_route_name": "hr.staff-detail-lifecycle",
       "contract_route_path": "/staff/:staffUlid/lifecycle",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
+      "runtime_route_name": "hr.staff-detail-lifecycle",
+      "runtime_route_path": "/staff/:staffUlid/lifecycle",
+      "runtime_declared_in": "routes/hr.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
+    },
+    {
+      "key": "merchant_human_resource.staff-detail-access",
+      "contract_route_name": "hr.staff-detail-access",
+      "contract_route_path": "/staff/:staffUlid/access",
+      "implementation_status": "disabled_by_gate",
       "runtime_route_name": null,
       "runtime_route_path": null,
       "runtime_declared_in": null,
@@ -861,23 +884,12 @@
       "route_delivery": null
     },
     {
-      "key": "merchant_human_resource.staff-detail-access",
-      "contract_route_name": "hr.staff-detail-access",
-      "contract_route_path": "/staff/:staffUlid/access",
-      "implementation_status": "implemented",
-      "runtime_route_name": "hr.permission-preview",
-      "runtime_route_path": "/hr/permission-preview",
-      "runtime_declared_in": "routes/hr.ts",
-      "lazy_component": true,
-      "route_delivery": "dedicated"
-    },
-    {
       "key": "merchant_human_resource.eligibility",
       "contract_route_name": "hr.eligibility",
       "contract_route_path": "/eligibility",
       "implementation_status": "implemented",
       "runtime_route_name": "hr.eligibility",
-      "runtime_route_path": "/hr/eligibility",
+      "runtime_route_path": "/eligibility",
       "runtime_declared_in": "routes/hr.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -888,7 +900,7 @@
       "contract_route_path": "/availability",
       "implementation_status": "implemented",
       "runtime_route_name": "hr.availability",
-      "runtime_route_path": "/hr/availability",
+      "runtime_route_path": "/availability",
       "runtime_declared_in": "routes/hr.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -899,7 +911,7 @@
       "contract_route_path": "/compensation",
       "implementation_status": "implemented",
       "runtime_route_name": "hr.compensation",
-      "runtime_route_path": "/hr/compensation",
+      "runtime_route_path": "/compensation",
       "runtime_declared_in": "routes/hr.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -908,42 +920,42 @@
       "key": "merchant_human_resource.compensation-detail",
       "contract_route_name": "hr.compensation-detail",
       "contract_route_path": "/compensation/:staffUlid",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "hr.compensation-detail",
+      "runtime_route_path": "/compensation/:staffUlid",
+      "runtime_declared_in": "routes/hr.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_human_resource.compensation-setup",
       "contract_route_name": "hr.compensation-setup",
       "contract_route_path": "/compensation/:staffUlid/setup",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "hr.compensation-setup",
+      "runtime_route_path": "/compensation/:staffUlid/setup",
+      "runtime_declared_in": "routes/hr.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_human_resource.compensation-history",
       "contract_route_name": "hr.compensation-history",
       "contract_route_path": "/compensation/:staffUlid/history",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "hr.compensation-history",
+      "runtime_route_path": "/compensation/:staffUlid/history",
+      "runtime_declared_in": "routes/hr.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_human_resource.payouts",
       "contract_route_name": "hr.payouts",
       "contract_route_path": "/payouts",
       "implementation_status": "implemented",
-      "runtime_route_name": "hr.payout-runs",
-      "runtime_route_path": "/hr/payout-runs",
+      "runtime_route_name": "hr.payouts",
+      "runtime_route_path": "/payouts",
       "runtime_declared_in": "routes/hr.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -963,12 +975,12 @@
       "key": "merchant_human_resource.audit",
       "contract_route_name": "hr.audit",
       "contract_route_path": "/audit",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "hr.audit",
+      "runtime_route_path": "/audit",
+      "runtime_declared_in": "routes/hr.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_human_resource.notifications",
@@ -985,12 +997,12 @@
       "key": "merchant_human_resource.account",
       "contract_route_name": "hr.account",
       "contract_route_path": "/account",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "hr.account",
+      "runtime_route_path": "/account",
+      "runtime_declared_in": "routes/hr.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_finance.dashboard",

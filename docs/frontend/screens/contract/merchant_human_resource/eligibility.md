@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `hr.eligibility` at `/hr/eligibility` (routes/hr.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/eligibility`; owner phase **UI-11** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `hr.eligibility` at `/eligibility` (routes/hr.ts), delivery **dedicated**.
 
 ## Identity
 

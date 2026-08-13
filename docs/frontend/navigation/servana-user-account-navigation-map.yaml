@@ -2441,10 +2441,10 @@ pages:
     route_path: "/dashboard"
     screen_key_path: "contract/merchant_human_resource/dashboard.md"
     owner_phase: UI-11
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-11 (COR-UI11-001)"
+    implementation_status: implemented
+    runtime_route_name: "hr.dashboard"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all: []
     scope: branch
@@ -2552,7 +2552,7 @@ pages:
     owner_phase: UI-11
     backend_owner_phase: "Phase 7"
     implementation_status: implemented
-    runtime_route_name: "hr.invitations"
+    runtime_route_name: "hr.staff-invite"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -2589,7 +2589,7 @@ pages:
     owner_phase: UI-11
     backend_owner_phase: "Phase 7"
     implementation_status: implemented
-    runtime_route_name: "hr.staff-profile"
+    runtime_route_name: "hr.staff-detail"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -2624,8 +2624,8 @@ pages:
     route_path: "/staff/:staffUlid/edit"
     screen_key_path: "contract/merchant_human_resource/staff-detail-edit.md"
     owner_phase: UI-11
-    backend_owner_phase: null
-    implementation_status: planned
+    backend_owner_phase: "Phase 20F"
+    implementation_status: disabled_by_gate
     runtime_route_name: null
     route_delivery: null
     permission_any: []
@@ -2635,7 +2635,7 @@ pages:
     requires_step_up: false
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
-    gate: null
+    gate: "staff_profile_mutation_contract"
     navigation_visibility: contextual_child
     non_navigation_reason: "Contextual child reached from its parent screen; the authoritative map places it under that parent rather than in primary navigation."
     forbidden_for:
@@ -2660,12 +2660,13 @@ pages:
     route_path: "/staff/:staffUlid/lifecycle"
     screen_key_path: "contract/merchant_human_resource/staff-detail-lifecycle.md"
     owner_phase: UI-11
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 7 (UI-11 canonical composition)"
+    implementation_status: implemented
+    runtime_route_name: "hr.staff-detail-lifecycle"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "staff.suspend"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -2696,19 +2697,18 @@ pages:
     route_path: "/staff/:staffUlid/access"
     screen_key_path: "contract/merchant_human_resource/staff-detail-access.md"
     owner_phase: UI-11
-    backend_owner_phase: "Phase 8"
-    implementation_status: implemented
-    runtime_route_name: "hr.permission-preview"
-    route_delivery: "dedicated"
+    backend_owner_phase: "Phase 20F"
+    implementation_status: disabled_by_gate
+    runtime_route_name: null
+    route_delivery: null
     permission_any: []
-    permission_all:
-      - "staff.role.assign"
+    permission_all: []
     scope: branch
     requires_mfa: false
     requires_step_up: false
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
-    gate: null
+    gate: "staff_access_assignment_contract"
     navigation_visibility: contextual_child
     non_navigation_reason: "Contextual child reached from its parent screen; the authoritative map places it under that parent rather than in primary navigation."
     forbidden_for:
@@ -2844,12 +2844,13 @@ pages:
     route_path: "/compensation/:staffUlid"
     screen_key_path: "contract/merchant_human_resource/compensation-detail.md"
     owner_phase: UI-11
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 20F (UI-11 canonical composition)"
+    implementation_status: implemented
+    runtime_route_name: "hr.compensation-detail"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "compensation.plan.view"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -2880,12 +2881,13 @@ pages:
     route_path: "/compensation/:staffUlid/setup"
     screen_key_path: "contract/merchant_human_resource/compensation-setup.md"
     owner_phase: UI-11
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 20F (UI-11 canonical composition)"
+    implementation_status: implemented
+    runtime_route_name: "hr.compensation-setup"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "compensation.plan.create"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -2916,12 +2918,13 @@ pages:
     route_path: "/compensation/:staffUlid/history"
     screen_key_path: "contract/merchant_human_resource/compensation-history.md"
     owner_phase: UI-11
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 20F (UI-11 canonical composition)"
+    implementation_status: implemented
+    runtime_route_name: "hr.compensation-history"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "compensation.history.view"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -2954,7 +2957,7 @@ pages:
     owner_phase: UI-11
     backend_owner_phase: "Phase 20H"
     implementation_status: implemented
-    runtime_route_name: "hr.payout-runs"
+    runtime_route_name: "hr.payouts"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -2989,7 +2992,7 @@ pages:
     route_path: "/reports"
     screen_key_path: "contract/merchant_human_resource/reports.md"
     owner_phase: UI-11
-    backend_owner_phase: null
+    backend_owner_phase: "Phase 21N after Phase 20D-W / Gate W"
     implementation_status: disabled_by_gate
     runtime_route_name: null
     route_delivery: null
@@ -3000,7 +3003,7 @@ pages:
     requires_step_up: false
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
-    gate: "external_gate_w"
+    gate: "phase_21n_blocked_by_external_gate_w"
     navigation_visibility: primary
     non_navigation_reason: null
     forbidden_for:
@@ -3025,12 +3028,13 @@ pages:
     route_path: "/audit"
     screen_key_path: "contract/merchant_human_resource/audit.md"
     owner_phase: UI-11
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-11 (COR-UI11-001)"
+    implementation_status: implemented
+    runtime_route_name: "hr.audit"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "staff.view"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -3061,7 +3065,7 @@ pages:
     route_path: "/notifications"
     screen_key_path: "contract/merchant_human_resource/notifications.md"
     owner_phase: UI-11
-    backend_owner_phase: null
+    backend_owner_phase: "Phase 21N after Phase 20D-W / Gate W"
     implementation_status: disabled_by_gate
     runtime_route_name: null
     route_delivery: null
@@ -3072,7 +3076,7 @@ pages:
     requires_step_up: false
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
-    gate: "external_gate_w"
+    gate: "phase_21n_blocked_by_external_gate_w"
     navigation_visibility: primary
     non_navigation_reason: null
     forbidden_for:
@@ -3097,10 +3101,10 @@ pages:
     route_path: "/account"
     screen_key_path: "contract/merchant_human_resource/account.md"
     owner_phase: UI-11
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-03"
+    implementation_status: implemented
+    runtime_route_name: "hr.account"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all: []
     scope: branch

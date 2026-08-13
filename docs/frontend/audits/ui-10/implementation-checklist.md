@@ -48,7 +48,7 @@ Persistent session-resume marker for `phase-ui-10-branch-experience`. Authority:
 - [x] Local-completion commit `c73d1be…`, push and exact non-draft PR #60.
 - [x] Preserve initial exact-head run `31665290449`: Docker/Security/E2E success; Frontend/Backend
   failed only because the UI-06 current public-route projection was restored as frozen.
-- [ ] Push UI10-CI-001 correction, obtain replacement exact-head five-job CI, truthful governance,
+- [x] Push UI10-CI-001 correction, obtain replacement exact-head five-job CI, truthful governance,
   squash merge, branch cleanup and clean synchronized `main`.
 
 ## Current disposition and next action
@@ -81,8 +81,12 @@ Persistent session-resume marker for `phase-ui-10-branch-experience`. Authority:
 - Production proof: PHP `56c853a1…`, Nginx `fd348f4d…`; Nginx syntax and 38/38 no-volume host proof
   green; disposable topology removed. Composer/npm 0; gitleaks no leaks; Git integrity green.
 - Defects: UI10-DATA-001, UI10-NAV-001, UI10-AUTH-001, UI10-RESP-001, UI10-VIS-001,
-  UI10-TEST-001…005 and UI10-CI-001 are `local_complete`; the late traceability consumer correction passed 15/15;
-  merge is required before promotion.
-- Exact next action: commit and push only UI10-CI-001's current projection/evidence correction,
-  require replacement exact-head five-job CI, record truthful governance, squash merge, delete
-  branches and return to clean synchronized `main`.
+  UI10-TEST-001…005 and UI10-CI-001 are `verified_complete`; the late traceability consumer
+  correction passed 15/15 and replacement exact-head CI passed all five jobs.
+- Lifecycle closure: PR #60 merged at `2026-08-13T05:04:49Z`; final source head
+  `e5f2a6fb3201e8369333569618ed11a3d8c56ac0`; squash
+  `d7988dca90ad8694dee4c0b066f2581155fcb40a`; source/merge tree
+  `0a75deddaba345c9d501605fd96c0c4108d41708`; final run `31667335687` had Backend,
+  Frontend, Docker, Security and E2E all successful. Governance comment `5276187980`; zero
+  submitted reviews and blank review decision, therefore no independent approval. The local and
+  remote source branch are absent. Reconciled live exactly once during UI-11 startup.

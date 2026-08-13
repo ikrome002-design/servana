@@ -1,17 +1,17 @@
-# Screen specification — Payout runs
+# Screen specification — Compensation detail
 
-> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 20H**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
+> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **UI-11**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
-- **Screen key:** `hr-payout-prep`
-- **Route name and URL:** `hr.payout-runs`
-- **Layout:** `BranchLayout`
+- **Screen key:** `hr-compensation-detail`
+- **Route name and URL:** `hr.compensation-detail`
+- **Layout:** `HumanResourceLayout`
 - **Allowed roles:** `merchant_human_resource`
-- **Required permissions:** `payout_run.create`, `payout_run.update_draft`, `payout_run.submit`, `payout_run.cancel_draft` (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Required permissions:** `compensation.plan.view` (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Branch-scoped HR payout DRAFT workflow: list/filter payout runs, create a run for a branch + pay period + currency (Servana snapshots the eligible earned salary/commission/adjustments server-side — the browser never enters amounts or items), edit a draft (re-snapshot), submit (freeze + claim ledgers), and cancel a draft. HR never verifies, approves, or marks paid (Plan §10.2). Invalid transitions surface a safe state; the browser computes no authoritative total. Servana moves no money; no Wallet/provider UI.
+- **Fields and displayed data:** Staff-addressed current, scheduled, and historical compensation configuration without earnings data.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

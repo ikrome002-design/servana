@@ -1,0 +1,41 @@
+{
+  "schema": "servana.ui11.page-readiness.v1",
+  "phase": "UI-11",
+  "account": "merchant_human_resource",
+  "host": "hr.servana.ke",
+  "baseline": {
+    "authenticated_pages": 160,
+    "account_pages": 19,
+    "openapi_operations": 341,
+    "permissions": { "total": 169, "active": 134, "planned": 35 }
+  },
+  "class_counts": { "A": 2, "B": 6, "C": 5, "D": 2, "E": 4, "F": 0 },
+  "target_disposition": {
+    "implemented": 15,
+    "disabled_by_gate": 4,
+    "planned": 0,
+    "removed_by_authority": 0,
+    "total": 19
+  },
+  "entries": [
+    { "key": "dashboard", "path": "/dashboard", "class": "D", "disposition": "implemented", "evidence": "Shipped staff, invitation, eligibility, availability, compensation and payout tables; no aggregate HR presentation read", "work": "Narrow branch-scoped HR workspace overview with no new mutation authority" },
+    { "key": "get-started", "path": "/get-started", "class": "B", "disposition": "implemented", "evidence": "Shared resumable checklist exists but compensation steps are stale phase labels and completion is not observed", "work": "Canonical links and server-observed readiness" },
+    { "key": "staff", "path": "/staff", "class": "B", "disposition": "implemented", "evidence": "GET /staff + staff.view + branch scope exist", "work": "Canonical route, server filters/search/pagination and polished roster" },
+    { "key": "staff-invite", "path": "/staff/invite", "class": "B", "disposition": "implemented", "evidence": "Invitation create/list/resend/revoke APIs and staff.invite exist", "work": "Canonical route, allowed-role presentation and invitation state" },
+    { "key": "staff-detail", "path": "/staff/:staffUlid", "class": "B", "disposition": "implemented", "evidence": "GET /staff/{staff} + StaffProfilePolicy::view exist", "work": "Direct deep-link fetch and role-true detail/readiness composition" },
+    { "key": "staff-detail-edit", "path": "/staff/:staffUlid/edit", "class": "E", "disposition": "disabled_by_gate", "evidence": "No profile update API; staff.profile.update is planned", "gate": "staff_profile_mutation_contract", "owner": "backend permission/profile contract reconciliation" },
+    { "key": "staff-detail-lifecycle", "path": "/staff/:staffUlid/lifecycle", "class": "C", "disposition": "implemented", "evidence": "Suspend/activate/deactivate APIs, StaffProfilePolicy and immediate revocation service exist", "work": "Canonical deep link, Form Request validation, typed confirmation and server response state" },
+    { "key": "staff-detail-access", "path": "/staff/:staffUlid/access", "class": "E", "disposition": "disabled_by_gate", "evidence": "Current page is only a generic permission preview; no role/branch assignment mutation; canonical keys planned", "gate": "staff_access_assignment_contract", "owner": "backend permission/assignment contract reconciliation" },
+    { "key": "eligibility", "path": "/eligibility", "class": "B", "disposition": "implemented", "evidence": "Branch service-eligibility CRUD and personnel.eligibility.manage exist", "work": "Workflow hierarchy, states and responsive proof" },
+    { "key": "availability", "path": "/availability", "class": "A", "disposition": "implemented", "evidence": "Complete branch-scoped availability and emergency-override UI/API already shipped", "work": "Canonical presentation and release proof" },
+    { "key": "compensation", "path": "/compensation", "class": "B", "disposition": "implemented", "evidence": "Compensation plan/rule APIs, state machine, store and monolithic UI exist", "work": "Canonical list role and deep-link separation" },
+    { "key": "compensation-detail", "path": "/compensation/:staffUlid", "class": "C", "disposition": "implemented", "evidence": "Plan index/show data exists by staff_profile_id", "work": "Personnel-addressed detail composition" },
+    { "key": "compensation-setup", "path": "/compensation/:staffUlid/setup", "class": "C", "disposition": "implemented", "evidence": "Plan/rule create and draft-update contracts exist", "work": "Dedicated effective-dated setup form; setup only, no earnings calculation" },
+    { "key": "compensation-history", "path": "/compensation/:staffUlid/history", "class": "C", "disposition": "implemented", "evidence": "Append-only plan history API and compensation.history.view exist", "work": "Personnel-addressed history route" },
+    { "key": "payouts", "path": "/payouts", "class": "A", "disposition": "implemented", "evidence": "HR payout create/draft/submit/cancel UI/API exist and Finance transitions are separate", "work": "Canonical route and explicit maker-only handoff" },
+    { "key": "reports", "path": "/reports", "class": "E", "disposition": "disabled_by_gate", "evidence": "Phase 21N reporting catalogue/runtime is blocked by Gate W", "gate": "phase_21n_blocked_by_external_gate_w", "owner": "Phase 21N after 20D-W/Gate W" },
+    { "key": "audit", "path": "/audit", "class": "D", "disposition": "implemented", "evidence": "Append-only audit substrate exists but Audit-account surface is forbidden to HR", "work": "Narrow HR-domain event projection authorized by existing HR operational reads; no raw audit takeover/export" },
+    { "key": "notifications", "path": "/notifications", "class": "E", "disposition": "disabled_by_gate", "evidence": "No Phase 21N notification runtime", "gate": "phase_21n_blocked_by_external_gate_w", "owner": "Phase 21N after 20D-W/Gate W" },
+    { "key": "account", "path": "/account", "class": "C", "disposition": "implemented", "evidence": "Shared own-scope Magic Link/MFA/session/theme contracts exist", "work": "HR account wrapper and active-branch context" }
+  ]
+}

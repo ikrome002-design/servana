@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> Blocked by **external_gate_w**. The navigation entry is rendered disabled and names the gate; it has no live destination, and no Wallet, Refer & Earn, notification or provider runtime exists behind it. Owner phase **UI-11** implements the page once the gate opens.
+> Blocked by **phase_21n_blocked_by_external_gate_w**. The navigation entry is rendered disabled and names the gate; it has no live destination, and no Wallet, Refer & Earn, notification or provider runtime exists behind it. Owner phase **UI-11** implements the page once the gate opens.
 
 ## Identity
 
@@ -26,11 +26,11 @@
 ## Ownership and status
 
 - **UI owner phase:** **UI-11**
-- **Backend owner phase:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
+- **Backend owner phase:** **Phase 21N after Phase 20D-W / Gate W**
 - **Implementation status:** `disabled_by_gate`
 - **Runtime route:** none — no runtime route is registered
 - **Route delivery:** not applicable
-- **External gate:** `external_gate_w`
+- **External gate:** `phase_21n_blocked_by_external_gate_w`
 
 ## Data and behaviour
 

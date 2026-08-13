@@ -5,6 +5,7 @@ import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
@@ -52,8 +53,6 @@ const canSubmit = computed(() => can('compensation.plan.submit'));
 const canApprove = computed(() => can('compensation.plan.approve'));
 const canReject = computed(() => can('compensation.plan.reject'));
 const canCancel = computed(() => can('compensation.plan.cancel'));
-const canViewHistory = computed(() => can('compensation.history.view'));
-
 const statusRegion = ref<HTMLElement | null>(null);
 const statusMessage = ref<string>('');
 const lastFocused = ref<HTMLElement | null>(null);
@@ -159,30 +158,6 @@ const statusClass: Record<string, string> = {
 
 function badgeClass(status: string): string {
   return statusClass[status] ?? 'bg-surface-alt text-text-muted';
-}
-
-/* ------------------------------------------------------------------ detail + history */
-
-const detail = ref<CompensationPlan | null>(null);
-
-async function openDetail(plan: CompensationPlan): Promise<void> {
-  rememberFocus();
-  detail.value = plan;
-  actionError.value = null;
-  try {
-    detail.value = await store.fetchPlan(plan.id);
-  } catch {
-    actionError.value = 'Unable to load this compensation plan.';
-  }
-  if (canViewHistory.value) {
-    await store.fetchHistory(plan.id).catch(() => undefined);
-  }
-}
-
-function closeDetail(): void {
-  detail.value = null;
-  store.history = [];
-  restoreFocus();
 }
 
 /* ------------------------------------------------------------------ commission-rule draft */
@@ -568,7 +543,6 @@ async function confirm(): Promise<void> {
     confirming.value = null;
     confirmTarget.value = null;
     restoreFocus();
-    if (detail.value !== null) detail.value = updated;
     await announce(`Compensation plan is now ${updated.status_label}.`);
     await store.fetchPlans();
   } catch (err) {
@@ -613,16 +587,15 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <!-- `text-heading` (not `text-brand-deep`) — the heading token is the adaptive one; brand-deep is
-         deliberately NOT overridden in dark mode because it is the CTA-on-orange colour (ADR-009). -->
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Compensation
-    </h1>
-    <p class="mt-1 max-w-3xl text-sm text-text-muted">
-      Compensation plans and commission rules for staff in your branch. Everything here is a
-      configured term that will apply from its effective date — no amounts are calculated here.
-    </p>
+  <section
+    class="mx-auto max-w-6xl"
+    data-testid="hr-compensation"
+  >
+    <SvPageHeader
+      title="Compensation list"
+      eyebrow="Compensation"
+      description="Review effective-dated compensation plans and commission rules in your branch. This workspace configures declared terms only."
+    />
 
     <!-- Async result announcement; focus moves here after a mutation succeeds. -->
     <p
@@ -735,15 +708,19 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
                   <p class="mt-1 text-xs text-text-muted">
                     Effective from {{ plan.effective_from }}<span v-if="plan.effective_to"> to {{ plan.effective_to }}</span>
                   </p>
+                  <p class="mt-1 break-all text-xs text-text-muted">
+                    Reference {{ plan.id }}
+                  </p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                  <SvButton
-                    variant="ghost"
+                  <RouterLink
+                    v-if="plan.staff_profile_id"
+                    class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control px-3 py-2 text-sm font-semibold text-heading underline"
                     :data-testid="`view-${plan.id}`"
-                    @click="openDetail(plan)"
+                    :to="{ name: 'hr.compensation-detail', params: { staffUlid: plan.staff_profile_id } }"
                   >
-                    View
-                  </SvButton>
+                    View staff terms
+                  </RouterLink>
                   <SvButton
                     v-if="canUpdateDraft && plan.capabilities.can_update_draft"
                     variant="secondary"
@@ -842,162 +819,6 @@ function applyApiError(err: unknown, target: Record<string, string[]>, fallback:
         </ul>
       </section>
     </template>
-
-    <!-- ------------------------------------------------------------------ detail + history -->
-    <SvDialog
-      :open="detail !== null"
-      title="Compensation plan"
-      description="Configured terms and the append-only change history for this plan."
-      @close="closeDetail"
-    >
-      <div
-        v-if="detail"
-        class="flex flex-col gap-4"
-      >
-        <dl class="grid gap-3 sm:grid-cols-2">
-          <div>
-            <dt class="text-xs text-text-muted">
-              Staff member
-            </dt>
-            <dd class="text-sm text-text">
-              {{ detail.staff_display_name ?? '—' }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs text-text-muted">
-              Status
-            </dt>
-            <dd class="text-sm text-text">
-              {{ detail.status_label }}
-              <span v-if="detail.is_backdated"> · Backdated</span>
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs text-text-muted">
-              Compensation model
-            </dt>
-            <dd class="text-sm text-text">
-              {{ detail.compensation_model_label }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs text-text-muted">
-              Salary terms
-            </dt>
-            <dd class="text-sm text-text">
-              {{ salaryTerms(detail) }}
-              <span v-if="detail.salary_payout_day"> · payout day {{ detail.salary_payout_day }}</span>
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs text-text-muted">
-              Commission rule
-            </dt>
-            <dd class="text-sm text-text">
-              {{ ruleTerms(detail) }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs text-text-muted">
-              Preferred-personnel fee
-            </dt>
-            <dd class="text-sm text-text">
-              {{ preferredFeeCopy(detail) }}
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs text-text-muted">
-              Effective window
-            </dt>
-            <dd class="text-sm text-text">
-              {{ detail.effective_from }}<span v-if="detail.effective_to"> → {{ detail.effective_to }}</span>
-            </dd>
-          </div>
-          <div>
-            <dt class="text-xs text-text-muted">
-              Reference
-            </dt>
-            <dd class="break-all text-sm text-text">
-              {{ detail.id }}
-            </dd>
-          </div>
-          <div class="sm:col-span-2">
-            <dt class="text-xs text-text-muted">
-              Change reason
-            </dt>
-            <dd class="text-sm text-text">
-              {{ detail.change_reason ?? '—' }}
-            </dd>
-          </div>
-        </dl>
-
-        <section aria-labelledby="comp-history-heading">
-          <h3
-            id="comp-history-heading"
-            class="text-sm font-semibold text-text"
-          >
-            History
-          </h3>
-          <p
-            v-if="!canViewHistory"
-            class="mt-1 text-sm text-text-muted"
-          >
-            You do not have access to the change history.
-          </p>
-          <p
-            v-else-if="store.historyLoading"
-            role="status"
-            class="mt-1 text-sm text-text-muted"
-          >
-            Loading history…
-          </p>
-          <p
-            v-else-if="store.history.length === 0"
-            class="mt-1 text-sm text-text-muted"
-            data-testid="history-empty"
-          >
-            No history recorded yet.
-          </p>
-          <ol
-            v-else
-            class="mt-2 flex flex-col gap-2"
-          >
-            <li
-              v-for="event in store.history"
-              :key="event.id"
-              data-testid="history-event"
-              class="border-l-2 border-border pl-3 text-sm"
-            >
-              <p class="text-text">
-                {{ event.event_label }}
-                <span
-                  v-if="event.was_backdated"
-                  class="ml-1 rounded-control bg-warning/15 px-1.5 py-0.5 text-xs font-medium text-text"
-                >Backdated approval</span>
-              </p>
-              <p class="text-xs text-text-muted">
-                {{ event.occurred_at }} · {{ event.actor_display_name ?? 'System' }}
-              </p>
-              <p
-                v-if="event.change_reason"
-                class="text-xs text-text-muted"
-              >
-                {{ event.change_reason }}
-              </p>
-            </li>
-          </ol>
-        </section>
-
-        <div class="flex justify-end">
-          <SvButton
-            variant="secondary"
-            @click="closeDetail"
-          >
-            Close
-          </SvButton>
-        </div>
-      </div>
-    </SvDialog>
 
     <!-- ------------------------------------------------------------------ commission-rule draft -->
     <SvDialog

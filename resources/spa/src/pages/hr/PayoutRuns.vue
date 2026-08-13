@@ -6,6 +6,7 @@ import SvCard from '@/components/ui/SvCard.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useCan } from '@/composables/useCan';
 import { useAuthStore } from '@/stores/authStore';
@@ -241,15 +242,15 @@ function mapMutationError(err: unknown, setError: (msg: string) => void, fieldEr
 </script>
 
 <template>
-  <section class="mx-auto max-w-5xl px-4 py-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Payout runs
-    </h1>
-    <p class="mt-1 max-w-3xl text-sm text-text-muted">
-      Prepare a payout run for a branch and pay period. Servana snapshots the eligible salary, commission
-      and adjustments your staff have earned — you never enter the amounts. Submit a run to send it to
-      Finance. This does not move any money.
-    </p>
+  <section
+    class="mx-auto max-w-5xl"
+    data-testid="hr-payouts"
+  >
+    <SvPageHeader
+      title="Payout run preparation"
+      eyebrow="Compensation"
+      description="Prepare and submit server-snapshotted branch payout runs to Finance. Human Resource never verifies, approves, marks paid or moves money."
+    />
 
     <p
       ref="statusRegion"

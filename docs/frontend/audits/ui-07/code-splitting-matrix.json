@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "cc494a1d2827c9349a5576dded622cfcf864d335e4c8469b87139f852f6f80c1",
+  "canonical_authority_sha256": "f9f1aa59bbcebd28a7d06f907fcae0da15637bfd187dede4dce19c30baeb6e5d",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "075b1c0c5fbf80e2b174f10458c1d3ff4387e0ff21e8f25b610ee8103e4088ff",
+  "screen_inventory_sha256": "f2b1d99b56ccec9fdb530116393df04d89b6813c19335592f3fd05089f87154d",
   "purpose": "Every account route group and page component is lazily loaded. No eager barrel imports 160 pages.",
   "rule": "UI/UX plan §6.5 — do not import 160 pages into the initial bundle.",
   "route_groups": [
@@ -650,8 +650,8 @@
       "in_initial_bundle": false
     },
     {
-      "route_name": "hr.landing",
-      "route_path": "/hr",
+      "route_name": "hr.dashboard",
+      "route_path": "/dashboard",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,
@@ -659,7 +659,7 @@
     },
     {
       "route_name": "hr.get-started",
-      "route_path": "/hr/get-started",
+      "route_path": "/get-started",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,
@@ -667,31 +667,31 @@
     },
     {
       "route_name": "hr.staff",
-      "route_path": "/hr/staff",
+      "route_path": "/staff",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "hr.invitations",
-      "route_path": "/hr/invitations",
+      "route_name": "hr.staff-invite",
+      "route_path": "/staff/invite",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "hr.permission-preview",
-      "route_path": "/hr/permission-preview",
+      "route_name": "hr.staff-detail",
+      "route_path": "/staff/:staffUlid",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "hr.staff-profile",
-      "route_path": "/hr/staff/:id",
+      "route_name": "hr.staff-detail-lifecycle",
+      "route_path": "/staff/:staffUlid/lifecycle",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,
@@ -699,7 +699,7 @@
     },
     {
       "route_name": "hr.eligibility",
-      "route_path": "/hr/eligibility",
+      "route_path": "/eligibility",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,
@@ -707,7 +707,7 @@
     },
     {
       "route_name": "hr.availability",
-      "route_path": "/hr/availability",
+      "route_path": "/availability",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,
@@ -715,15 +715,63 @@
     },
     {
       "route_name": "hr.compensation",
-      "route_path": "/hr/compensation",
+      "route_path": "/compensation",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "hr.payout-runs",
-      "route_path": "/hr/payout-runs",
+      "route_name": "hr.compensation-detail",
+      "route_path": "/compensation/:staffUlid",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.compensation-setup",
+      "route_path": "/compensation/:staffUlid/setup",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.compensation-history",
+      "route_path": "/compensation/:staffUlid/history",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.payouts",
+      "route_path": "/payouts",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.audit",
+      "route_path": "/audit",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.account",
+      "route_path": "/account",
+      "declared_in": "routes/hr.ts",
+      "account_key": "merchant_human_resource",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "hr.landing",
+      "route_path": "/hr",
       "declared_in": "routes/hr.ts",
       "account_key": "merchant_human_resource",
       "lazy": true,

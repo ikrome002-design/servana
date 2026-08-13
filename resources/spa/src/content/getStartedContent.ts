@@ -68,11 +68,11 @@ const branchManager: GetStartedItem[] = [
 ];
 
 const humanResource: GetStartedItem[] = [
-  { id: 'invite-staff', label: 'Invite staff', routeName: 'hr.invitations', kind: 'action' },
-  { id: 'set-service-eligibility', label: 'Set service eligibility', routeName: 'hr.eligibility', kind: 'action' },
-  { id: 'set-availability', label: 'Set availability', routeName: 'hr.availability', kind: 'action' },
-  { id: 'configure-compensation-models', label: 'Configure personnel compensation models', phase: 'Phase 20F', kind: 'action' },
-  { id: 'review-missing-compensation', label: 'Review missing-compensation warnings', phase: 'Phase 20F', kind: 'action' },
+  { id: 'invite-staff', label: 'Invite operational staff', routeName: 'hr.staff-invite', kind: 'action', completion: 'server', responsibleRole: 'Human Resource' },
+  { id: 'set-service-eligibility', label: 'Set service eligibility', routeName: 'hr.eligibility', kind: 'action', completion: 'server', responsibleRole: 'Human Resource' },
+  { id: 'set-availability', label: 'Set availability and shifts', routeName: 'hr.availability', kind: 'action', completion: 'server', responsibleRole: 'Human Resource' },
+  { id: 'configure-compensation-models', label: 'Configure personnel compensation models', routeName: 'hr.compensation', kind: 'action', completion: 'server', responsibleRole: 'Human Resource' },
+  { id: 'review-missing-compensation', label: 'Resolve missing-compensation warnings', routeName: 'hr.dashboard', kind: 'action', completion: 'server', responsibleRole: 'Human Resource' },
   ACKNOWLEDGE,
 ];
 

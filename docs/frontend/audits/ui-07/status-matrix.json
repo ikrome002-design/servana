@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "cc494a1d2827c9349a5576dded622cfcf864d335e4c8469b87139f852f6f80c1",
+  "canonical_authority_sha256": "f9f1aa59bbcebd28a7d06f907fcae0da15637bfd187dede4dce19c30baeb6e5d",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "075b1c0c5fbf80e2b174f10458c1d3ff4387e0ff21e8f25b610ee8103e4088ff",
+  "screen_inventory_sha256": "f2b1d99b56ccec9fdb530116393df04d89b6813c19335592f3fd05089f87154d",
   "purpose": "Implementation status across the contract, and what each status means at runtime.",
   "allowed_statuses": [
     "disabled_by_gate",
@@ -23,9 +23,9 @@
     "removed_by_authority": "Absent from the router, all navigation surfaces and every live audit set."
   },
   "totals": {
-    "disabled_by_gate": 25,
-    "implemented": 99,
-    "planned": 36
+    "disabled_by_gate": 27,
+    "implemented": 105,
+    "planned": 28
   },
   "by_account": {
     "super_administrator": {
@@ -41,9 +41,8 @@
       "implemented": 15
     },
     "merchant_human_resource": {
-      "disabled_by_gate": 2,
-      "implemented": 9,
-      "planned": 8
+      "disabled_by_gate": 4,
+      "implemented": 15
     },
     "merchant_finance": {
       "disabled_by_gate": 3,
@@ -164,14 +163,26 @@
       "label": "Notifications"
     },
     {
+      "key": "merchant_human_resource.staff-detail-edit",
+      "gate": "staff_profile_mutation_contract",
+      "owner_phase": "UI-11",
+      "label": "Edit Staff Profile"
+    },
+    {
+      "key": "merchant_human_resource.staff-detail-access",
+      "gate": "staff_access_assignment_contract",
+      "owner_phase": "UI-11",
+      "label": "Role and Branch Assignment"
+    },
+    {
       "key": "merchant_human_resource.reports",
-      "gate": "external_gate_w",
+      "gate": "phase_21n_blocked_by_external_gate_w",
       "owner_phase": "UI-11",
       "label": "HR Reports"
     },
     {
       "key": "merchant_human_resource.notifications",
-      "gate": "external_gate_w",
+      "gate": "phase_21n_blocked_by_external_gate_w",
       "owner_phase": "UI-11",
       "label": "Notifications"
     },

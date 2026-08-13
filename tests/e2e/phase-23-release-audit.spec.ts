@@ -220,6 +220,11 @@ const AXE_COMBOS = [
 
 for (const screen of SCREENS) {
   test(`axe: ${screen.key}`, async ({ page }) => {
+    // Each catalogue case performs four complete axe scans (light/dark × mobile/desktop).
+    // Near the end of the hour-long serial release audit, Chromium can legitimately take more
+    // than the global 30-second test default even though a fresh focused case completes in 11s.
+    // Keep a bounded per-case budget without weakening any scan, viewport, theme or assertion.
+    test.setTimeout(60_000);
     for (const combo of AXE_COMBOS) {
       await prepare(page, screen, { theme: combo.theme });
       await page.setViewportSize({ width: combo.width, height: combo.height });

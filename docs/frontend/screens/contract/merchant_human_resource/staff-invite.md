@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `hr.invitations` at `/hr/invitations` (routes/hr.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/staff/invite`; owner phase **UI-11** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `hr.staff-invite` at `/staff/invite` (routes/hr.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-11**
 - **Backend owner phase:** **Phase 7**
 - **Implementation status:** `implemented`
-- **Runtime route:** `hr.invitations`
+- **Runtime route:** `hr.staff-invite`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `hr.invitations` (recorded in `docs/frontend/screens/hr/hr-invitations.md`).
-- **Data fields:** Manage staff invitations.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `hr.staff-invite` (recorded in `docs/frontend/screens/hr/hr-staff-invite.md`).
+- **Data fields:** Invite an operational merchant user into HR's assigned branch.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

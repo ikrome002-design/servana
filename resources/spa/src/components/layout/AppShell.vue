@@ -9,6 +9,7 @@ import { SvIconClose, SvIconMenu } from '@/design-system/icons';
 import { flattenNavigation, navigationTree } from '@/navigation/navigationFilter';
 import { useAuthStore } from '@/stores/authStore';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
+import { useHrWorkspaceStore } from '@/stores/hrWorkspaceStore';
 import { useMerchantStore } from '@/stores/merchantStore';
 import { ROLE_ENTRY, type RoleIdentity } from '@/types/roles';
 
@@ -45,16 +46,22 @@ const router = useRouter();
 const auth = useAuthStore();
 const merchant = useMerchantStore();
 const branchExperience = useBranchExperienceStore();
+const hrWorkspace = useHrWorkspaceStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
 const placement = computed(() => entry.value.navPlacement);
-const contextLabel = computed(() => props.identity === 'merchant_branch'
-  ? branchExperience.overview?.branch.name ?? merchant.name
-  : merchant.name);
+const contextLabel = computed(() => {
+  if (props.identity === 'merchant_branch') return branchExperience.overview?.branch.name ?? merchant.name;
+  if (props.identity === 'merchant_human_resource') return hrWorkspace.overview?.branch.name ?? merchant.name;
+  return merchant.name;
+});
 
 onMounted(() => {
   if (props.identity === 'merchant_branch' && branchExperience.overview === null) {
     void branchExperience.fetchOverview();
+  }
+  if (props.identity === 'merchant_human_resource' && hrWorkspace.overview === null) {
+    void hrWorkspace.fetchOverview();
   }
 });
 
@@ -201,7 +208,7 @@ const isHeaderNav = computed(() => placement.value === 'header');
           <span
             v-if="!isHeaderNav && contextLabel"
             class="mr-2 hidden text-sm text-text-muted sm:inline"
-            :data-testid="identity === 'merchant_branch' ? 'branch-context' : 'merchant-context'"
+            :data-testid="identity === 'merchant_branch' || identity === 'merchant_human_resource' ? 'branch-context' : 'merchant-context'"
           >{{ contextLabel }}</span>
 
           <SvNotificationsControl />

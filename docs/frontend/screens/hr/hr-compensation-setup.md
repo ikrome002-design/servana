@@ -1,17 +1,17 @@
-# Screen specification — Permission preview
+# Screen specification — Compensation setup
 
-> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 8**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
+> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **UI-11**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
-- **Screen key:** `hr-permission-preview`
-- **Route name and URL:** `hr.permission-preview`
-- **Layout:** `BranchLayout`
+- **Screen key:** `hr-compensation-setup`
+- **Route name and URL:** `hr.compensation-setup`
+- **Layout:** `HumanResourceLayout`
 - **Allowed roles:** `merchant_human_resource`
-- **Required permissions:** `staff.role.assign` (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Required permissions:** `compensation.plan.create` (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Preview default grants for a role before assignment.
+- **Fields and displayed data:** Create an effective-dated compensation plan for one staff member using the shipped configuration workflow.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.
