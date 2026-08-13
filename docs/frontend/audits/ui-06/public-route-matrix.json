@@ -599,37 +599,72 @@
       "declared_in": "resources/spa/src/router/routes/public.ts"
     },
     {
+      "name": "hr.account",
+      "path": "/account",
+      "absolute_path": "/account",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.audit",
+      "path": "/audit",
+      "absolute_path": "/audit",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
       "name": "hr.availability",
-      "path": "availability",
-      "absolute_path": "/hr/availability",
+      "path": "/availability",
+      "absolute_path": "/availability",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/hr.ts"
     },
     {
       "name": "hr.compensation",
-      "path": "compensation",
-      "absolute_path": "/hr/compensation",
+      "path": "/compensation",
+      "absolute_path": "/compensation",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.compensation-detail",
+      "path": "/compensation/:staffUlid",
+      "absolute_path": "/compensation/:staffUlid",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.compensation-history",
+      "path": "/compensation/:staffUlid/history",
+      "absolute_path": "/compensation/:staffUlid/history",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.compensation-setup",
+      "path": "/compensation/:staffUlid/setup",
+      "absolute_path": "/compensation/:staffUlid/setup",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.dashboard",
+      "path": "/dashboard",
+      "absolute_path": "/dashboard",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/hr.ts"
     },
     {
       "name": "hr.eligibility",
-      "path": "eligibility",
-      "absolute_path": "/hr/eligibility",
+      "path": "/eligibility",
+      "absolute_path": "/eligibility",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/hr.ts"
     },
     {
       "name": "hr.get-started",
-      "path": "get-started",
-      "absolute_path": "/hr/get-started",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/hr.ts"
-    },
-    {
-      "name": "hr.invitations",
-      "path": "invitations",
-      "absolute_path": "/hr/invitations",
+      "path": "/get-started",
+      "absolute_path": "/get-started",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/hr.ts"
     },
@@ -641,30 +676,37 @@
       "declared_in": "resources/spa/src/router/routes/hr.ts"
     },
     {
-      "name": "hr.payout-runs",
-      "path": "payout-runs",
-      "absolute_path": "/hr/payout-runs",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/hr.ts"
-    },
-    {
-      "name": "hr.permission-preview",
-      "path": "permission-preview",
-      "absolute_path": "/hr/permission-preview",
+      "name": "hr.payouts",
+      "path": "/payouts",
+      "absolute_path": "/payouts",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/hr.ts"
     },
     {
       "name": "hr.staff",
-      "path": "staff",
-      "absolute_path": "/hr/staff",
+      "path": "/staff",
+      "absolute_path": "/staff",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/hr.ts"
     },
     {
-      "name": "hr.staff-profile",
-      "path": "staff/:id",
-      "absolute_path": "/hr/staff/:id",
+      "name": "hr.staff-detail",
+      "path": "/staff/:staffUlid",
+      "absolute_path": "/staff/:staffUlid",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.staff-detail-lifecycle",
+      "path": "/staff/:staffUlid/lifecycle",
+      "absolute_path": "/staff/:staffUlid/lifecycle",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/hr.ts"
+    },
+    {
+      "name": "hr.staff-invite",
+      "path": "/staff/invite",
+      "absolute_path": "/staff/invite",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/hr.ts"
     },

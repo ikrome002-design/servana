@@ -33,9 +33,9 @@
     "ui10_reconciled_aggregate_sha256": "0204a6021b0e0dda916336211ceab727642c469547e116f58de611063d74a1f2",
     "ui07_current_projection_files": 16,
     "ui07_current_projection_aggregate_sha256": "509f806089cdbfa4f4b4c878049a3695191b24e79bbe4920cc8221c64f3f7f7f",
-    "ui06_current_public_route_matrix_sha256": "694499acd74d22238a88cf2251bec58e4dd87216a8d399c6015fb0fd8e8dcdef",
+    "ui06_current_public_route_matrix_sha256": "75ca22c0aef287a2c2e8c55db1a9804c38dff9b721aa01711c5466276b85810f",
     "ui11_screenshot_index_sha256": "0c11697c297a6d94c1e02ba64e011a0eb123cc567009d710935b7e762648a3c3",
     "ui11_screenshot_captures": 23,
-    "result": "Frozen evidence restored byte-for-byte; current projections regenerated from the finalized UI-11 tree."
+    "result": "Frozen evidence restored byte-for-byte; current projections regenerated from the finalized UI-11 tree, including the one-file UI-06 route projection caught by exact-head CI."
   }
 }
