@@ -301,11 +301,17 @@ test.describe('Security negatives', () => {
     await expect(page.getByTestId('merchant-dashboard')).toBeVisible();
     await expect(page.getByTestId('platform-dashboard-screen')).toHaveCount(0);
 
-    for (const path of ['/merchants', '/audit', '/platform-access']) {
+    for (const path of ['/merchants', '/platform-access']) {
       await page.goto(path);
       await expect(notFound(page), `${path} must not exist on a merchant host`).toBeVisible();
       await expect(page.getByTestId('platform-dashboard-screen')).toHaveCount(0);
     }
+    // `/audit` is now a canonical Branch-account path. On the Merchant Administrator host the
+    // account guard denies it without revealing or rendering either audit experience.
+    await page.goto('/audit');
+    await expect(page).toHaveURL(/\/access-denied$/);
+    await expect(page.getByTestId('platform-dashboard-screen')).toHaveCount(0);
+    await expect(page.getByTestId('branch-audit-screen')).toHaveCount(0);
     // And nothing names the account that does own them.
     await expect(page.getByText(/super administrator/i)).toHaveCount(0);
   });

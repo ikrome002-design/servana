@@ -125,22 +125,22 @@ screens:
     spec: branch/branch-get-started.md
   - key: branch-list
     domain: branch
-    route: branch.list
-    status: implemented
-    phase: Phase 7
-    spec: branch/branch-list.md
+    route: ~
+    status: removed_by_authority
+    phase: UI-10
+    spec: ~
   - key: branch-create
-    domain: branch
-    route: branch.create
+    domain: merchant
+    route: merchant.branch-create
     status: implemented
-    phase: Phase 7
-    spec: branch/branch-create.md
+    phase: UI-10
+    spec: merchant/merchant-branch-create.md
   - key: branch-detail
     domain: branch
-    route: branch.detail
-    status: implemented
-    phase: Phase 7
-    spec: branch/branch-detail.md
+    route: ~
+    status: removed_by_authority
+    phase: UI-10
+    spec: ~
   - key: branch-operating-hours
     domain: branch
     route: branch.operating-hours
@@ -370,6 +370,78 @@ screens:
     status: implemented
     phase: UI-09
     spec: merchant/merchant-account-security.md
+  - key: branch-dashboard
+    domain: branch
+    route: branch.dashboard
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-dashboard.md
+  - key: branch-profile
+    domain: branch
+    route: branch.branch-profile
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-profile.md
+  - key: branch-operating-calendar
+    domain: branch
+    route: branch.branch-calendar
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-operating-calendar.md
+  - key: branch-day-operations
+    domain: branch
+    route: branch.branch-day
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-day-operations.md
+  - key: branch-staff-overview
+    domain: branch
+    route: branch.staff
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-staff-overview.md
+  - key: branch-queue-read-view
+    domain: branch
+    route: branch.operations-queue
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-queue-read-view.md
+  - key: branch-appointments-read-view
+    domain: branch
+    route: branch.operations-appointments
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-appointments-read-view.md
+  - key: branch-invoices-read-view
+    domain: branch
+    route: branch.finance-invoices
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-invoices-read-view.md
+  - key: branch-payments-read-view
+    domain: branch
+    route: branch.finance-payments
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-payments-read-view.md
+  - key: branch-receipts-read-view
+    domain: branch
+    route: branch.finance-receipts
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-receipts-read-view.md
+  - key: branch-audit-log
+    domain: branch
+    route: branch.audit
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-audit-log.md
+  - key: branch-account-security
+    domain: branch
+    route: branch.account
+    status: implemented
+    phase: UI-10
+    spec: branch/branch-account-security.md
   - key: service-catalogue
     domain: branch
     route: branch.services
@@ -390,22 +462,22 @@ screens:
     spec: hr/personnel-availability.md
   - key: personnel-schedule
     domain: branch
-    route: branch.personnel-schedule
-    status: implemented
-    phase: Phase 15B
-    spec: branch/personnel-schedule.md
+    route: ~
+    status: removed_by_authority
+    phase: UI-10
+    spec: ~
   - key: branch-appointments
     domain: branch
-    route: branch.appointments
-    status: implemented
-    phase: Phase 16A
-    spec: branch/branch-appointments.md
+    route: ~
+    status: removed_by_authority
+    phase: UI-10
+    spec: ~
   - key: branch-queue
     domain: branch
-    route: branch.queue
-    status: implemented
-    phase: Phase 16B
-    spec: branch/branch-queue.md
+    route: ~
+    status: removed_by_authority
+    phase: UI-10
+    spec: ~
   - key: branch-queue-configuration
     domain: branch
     route: branch.queue-configuration
@@ -414,10 +486,10 @@ screens:
     spec: branch/branch-queue-configuration.md
   - key: branch-calendar
     domain: branch
-    route: branch.calendar
-    status: implemented
-    phase: Phase 23
-    spec: branch/branch-calendar.md
+    route: ~
+    status: removed_by_authority
+    phase: UI-10
+    spec: ~
   - key: branch-cash-up
     domain: branch
     route: branch.cash-up

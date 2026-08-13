@@ -390,7 +390,7 @@ test.describe('REM-SCR-002A — merchant profile determinism', () => {
 });
 
 test.describe('REM-SCR-002B — branch calendar determinism', () => {
-  const screen = SCREENS.find((s) => s.key === 'branch-calendar')!;
+  const screen = SCREENS.find((s) => s.key === 'branch-operating-calendar')!;
 
   test('creates a future full-day closure, reloads, and still shows it', async ({ page }) => {
     await prepare(page, screen);
@@ -471,7 +471,7 @@ test.describe('REM-SCR-002B — branch calendar determinism', () => {
 
 test.describe('audit fixtures are deterministic', () => {
   test('uses fixed identifiers and a pinned Nairobi clock, never the wall clock', async ({ page }) => {
-    const screen = SCREENS.find((s) => s.key === 'branch-calendar')!;
+    const screen = SCREENS.find((s) => s.key === 'branch-operating-calendar')!;
     await prepare(page, screen);
     await open(page, screen);
 

@@ -8,9 +8,9 @@ use App\Domain\Branches\Actions\CloseBranchDay;
 use App\Domain\Branches\Actions\OpenBranchDay;
 use App\Domain\Branches\Models\MerchantBranch;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Branches\BranchDayTransitionRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 /**
  * Branch day open/close (Scope §3.3 Day Opening/Closing). Branch-scoped
@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
  */
 final class BranchDayController extends Controller
 {
-    public function open(Request $request, MerchantBranch $branch, OpenBranchDay $action): JsonResponse
+    public function open(BranchDayTransitionRequest $request, MerchantBranch $branch, OpenBranchDay $action): JsonResponse
     {
         /** @var User $actor */
         $actor = $request->user();
@@ -29,7 +29,7 @@ final class BranchDayController extends Controller
         ]);
     }
 
-    public function close(Request $request, MerchantBranch $branch, CloseBranchDay $action): JsonResponse
+    public function close(BranchDayTransitionRequest $request, MerchantBranch $branch, CloseBranchDay $action): JsonResponse
     {
         /** @var User $actor */
         $actor = $request->user();

@@ -47,7 +47,7 @@ import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useAuthStore } from '@/stores/authStore';
 import { useSessionFamilyStore, type HostSessionView } from '@/stores/sessionFamilyStore';
 
-const props = withDefaults(defineProps<{ experience?: 'platform' | 'merchant' }>(), {
+const props = withDefaults(defineProps<{ experience?: 'platform' | 'merchant' | 'branch' }>(), {
   experience: 'platform',
 });
 
@@ -66,19 +66,34 @@ const user = computed(() => auth.user);
 const mfa = computed(() => auth.mfa);
 const mfaEnrolled = computed(() => mfa.value?.enrolled === true);
 const mfaConfirmed = computed(() => mfa.value?.confirmed === true);
-const pageDescription = computed(() => props.experience === 'merchant'
-  ? 'Your own identity, Magic Link security, active account sessions and display preference. Staff access is managed from the Merchant staff lifecycle page.'
-  : 'Your own identity, sign-in security, active sessions and display preferences. Other platform users are managed under internal platform access.');
-const mfaPolicyNote = computed(() => props.experience === 'merchant'
-  ? 'Two-factor authentication is required for the Merchant Administrator account and cannot be turned off or weakened from this page.'
-  : 'Two-factor authentication is required for platform roles and cannot be turned off or weakened from this page. There is no control here that would lower it, and the server would refuse one.');
-const scopeNote = computed(() => props.experience === 'merchant'
-  ? 'This page changes your own identity and sessions only. It cannot view, edit, suspend or sign out another merchant user, and it cannot tell you whether another account exists.'
-  : 'This page changes your own account only. It cannot view, edit, suspend or sign out another platform user, and it cannot tell you whether another account exists.');
+const pageDescription = computed(() => {
+  if (props.experience === 'merchant') return 'Your own identity, Magic Link security, active account sessions and display preference. Staff access is managed from the Merchant staff lifecycle page.';
+  if (props.experience === 'branch') return 'Your own identity, Magic Link security, assigned-branch context, active sessions and display preference.';
+  return 'Your own identity, sign-in security, active sessions and display preferences. Other platform users are managed under internal platform access.';
+});
+const mfaPolicyNote = computed(() => {
+  if (props.experience === 'merchant') return 'Two-factor authentication is required for the Merchant Administrator account and cannot be turned off or weakened from this page.';
+  if (props.experience === 'branch') return 'This page can strengthen your own sign-in with two-factor authentication. It never changes branch permissions or another user’s security.';
+  return 'Two-factor authentication is required for platform roles and cannot be turned off or weakened from this page. There is no control here that would lower it, and the server would refuse one.';
+});
+const scopeNote = computed(() => props.experience === 'platform'
+  ? 'This page changes your own account only. It cannot view, edit, suspend or sign out another platform user, and it cannot tell you whether another account exists.'
+  : 'This page changes your own identity and sessions only. It cannot view, edit, suspend or sign out another merchant user, and it cannot tell you whether another account exists.');
+
+const experienceLabels: Readonly<Record<string, string>> = {
+  super_administrator: 'Super Administrator',
+  merchant_administrator: 'Merchant Administrator',
+  merchant_audit: 'Audit',
+  merchant_branch: 'Branch Manager',
+  merchant_finance: 'Finance',
+  merchant_front_office: 'Front Office',
+  merchant_human_resource: 'Human Resource',
+  merchant_personnel: 'Personnel',
+};
 
 const sessionColumns: SvColumn<HostSessionView>[] = [
   { key: 'host', label: 'Account host', priority: 'primary', value: (row) => row.host },
-  { key: 'account_key', label: 'Experience', priority: 'secondary', value: (row) => row.account_key },
+  { key: 'account_key', label: 'Experience', priority: 'secondary', value: (row) => experienceLabels[row.account_key] ?? 'Servana account' },
   { key: 'last_activity_at', label: 'Last active', priority: 'secondary', value: (row) => row.last_activity_at },
   { key: 'merchant_name', label: 'Merchant', priority: 'detail', value: (row) => row.merchant_name ?? '—' },
   { key: 'created_at', label: 'Signed in', priority: 'detail', value: (row) => row.created_at ?? '—' },
@@ -146,7 +161,7 @@ async function revokePending(): Promise<void> {
 <template>
   <div
     class="mx-auto w-full max-w-4xl"
-    :data-testid="experience === 'merchant' ? 'merchant-account-screen' : 'platform-account-screen'"
+    :data-testid="experience === 'platform' ? 'platform-account-screen' : `${experience}-account-screen`"
   >
     <SvPageHeader
       title="Account and security"

@@ -238,11 +238,35 @@ merchant_administrator:
     route: merchant.account
     phase: Phase UI-03/UI-04
 merchant_branch:
+  - key: merchant_branch.dashboard
+    label: Dashboard
+    availability: live
+    route: branch.dashboard
+    permission: branch.dashboard.view
+    phase: Phase UI-10 (COR-UI10-001)
   - key: merchant_branch.get-started
     label: Get Started
     availability: live
     route: branch.get-started
     phase: Phase 11
+  - key: merchant_branch.branch-profile
+    label: Branch Profile
+    availability: live
+    route: branch.branch-profile
+    permission: branch.profile.manage
+    phase: Phase 7
+  - key: merchant_branch.branch-calendar
+    label: Operating Calendar
+    availability: live
+    route: branch.branch-calendar
+    permission: branch.calendar.manage
+    phase: Phase 7
+  - key: merchant_branch.branch-day
+    label: Branch Day Operations
+    availability: live
+    route: branch.branch-day
+    permission: day.open_close
+    phase: Phase 7
   - key: merchant_branch.services
     label: Service Catalogue
     availability: live
@@ -252,21 +276,39 @@ merchant_branch:
   - key: merchant_branch.staff
     label: Staff and Availability Overview
     availability: live
-    route: branch.personnel-schedule
+    route: branch.staff
     permission: branch.dashboard.view
     phase: Phase 15B
   - key: merchant_branch.operations-queue
     label: Queue Read View
     availability: live
-    route: branch.queue
+    route: branch.operations-queue
     permission: branch.dashboard.view
     phase: Phase 16B
   - key: merchant_branch.operations-appointments
     label: Appointments Read View
     availability: live
-    route: branch.appointments
+    route: branch.operations-appointments
     permission: branch.dashboard.view
     phase: Phase 16A
+  - key: merchant_branch.finance-invoices
+    label: Invoices Read View
+    availability: live
+    route: branch.finance-invoices
+    permission: branch.dashboard.view
+    phase: Phase UI-10 (COR-UI10-001)
+  - key: merchant_branch.finance-payments
+    label: Payment Records Read View
+    availability: live
+    route: branch.finance-payments
+    permission: branch.dashboard.view
+    phase: Phase UI-10 (COR-UI10-001)
+  - key: merchant_branch.finance-receipts
+    label: Receipts Read View
+    availability: live
+    route: branch.finance-receipts
+    permission: receipt.view
+    phase: Phase 18B
   - key: merchant_branch.cash-up
     label: Cash-Up Submission
     availability: live
@@ -278,6 +320,12 @@ merchant_branch:
     availability: gated
     gate: external_gate_w
     phase: UI-10
+  - key: merchant_branch.audit
+    label: Branch Audit Log
+    availability: live
+    route: branch.audit
+    permission: reports.view
+    phase: Phase UI-10 (COR-UI10-001)
   - key: merchant_branch.subscription-payment
     label: Subscription Payment and Recovery
     availability: gated
@@ -288,6 +336,11 @@ merchant_branch:
     availability: gated
     gate: external_gate_w
     phase: UI-10
+  - key: merchant_branch.account
+    label: Account and Preferences
+    availability: live
+    route: branch.account
+    phase: Phase UI-04
 merchant_human_resource:
   - key: merchant_human_resource.get-started
     label: Get Started

@@ -113,7 +113,7 @@ const UNAUTHENTICATED_ERROR = {
     },
 } as const;
 
-function adminBootstrap(): unknown {
+function adminBootstrap() {
     return {
         data: {
             user: OWNER,
@@ -133,6 +133,19 @@ function adminBootstrap(): unknown {
                 current_step: "done",
                 completed_at: "2026-06-14T00:00:00+00:00",
             },
+        },
+    };
+}
+
+function branchManagerBootstrap() {
+    return {
+        data: {
+            ...adminBootstrap().data,
+            membership: { ...MEMBERSHIP, role: "branch_manager" },
+            memberships: [{ ...MEMBERSHIP, role: "branch_manager" }],
+            account_keys: ["merchant_branch"],
+            permissions: ["branch.profile.manage", "branch.profile.update", "branch.calendar.manage"],
+            branch_ids: [BRANCH.id],
         },
     };
 }
@@ -180,6 +193,16 @@ async function stubAdmin(page: Page): Promise<void> {
     });
 }
 
+async function stubBranchManager(page: Page): Promise<void> {
+    await clearBootstrapRoutes(page);
+    await stubCsrfCookie(page);
+    await stubAccountContextFor(page, "merchant_branch");
+
+    await page.route(CURRENT_USER_ROUTE, async (route) => {
+        await fulfillJson(route, branchManagerBootstrap());
+    });
+}
+
 async function stubLoggedOut(page: Page): Promise<void> {
     await clearBootstrapRoutes(page);
     await stubCsrfCookie(page);
@@ -217,7 +240,7 @@ test.describe("Branches + staff invitations UI", () => {
             });
         });
 
-        await page.goto("/branch/list");
+        await page.goto("/branches");
 
         await expect(
             page.getByRole("heading", {
@@ -263,17 +286,17 @@ test.describe("Branches + staff invitations UI", () => {
             });
         });
 
-        await page.goto("/branch/create");
+        await page.goto("/branches/create");
 
         await page.locator("#name").fill("Kilimani Branch");
         await page.locator("#code").fill("KIL001");
         await page.locator('button[type="submit"]').click();
 
-        await expect(page).toHaveURL(/\/branch\/list\/?$/);
+        await expect(page).toHaveURL(/\/branches\/?$/);
     });
 
-    test("merchant admin updates branch operating hours", async ({ page }) => {
-        await stubAdmin(page);
+    test("branch manager updates branch operating hours", async ({ page }) => {
+        await stubBranchManager(page);
 
         await page.route(OPERATING_HOURS_ROUTE, async (route) => {
             await fulfillJson(route, {

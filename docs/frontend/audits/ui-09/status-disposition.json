@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui09.status-disposition.v1",
   "phase": "UI-09",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "totals": { "implemented": 15, "disabled_by_gate": 8, "planned": 0, "removed_by_authority": 0, "total": 23 },
   "implemented": [
     "setup", "dashboard", "get-started", "merchant-profile", "branches", "branch-detail", "staff",

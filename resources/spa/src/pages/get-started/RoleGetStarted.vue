@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import GetStartedChecklist from '@/components/onboarding/GetStartedChecklist.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuthStore } from '@/stores/authStore';
+import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
 import { useGetStartedStore } from '@/stores/getStartedStore';
 import { useMerchantDashboardStore } from '@/stores/merchantDashboardStore';
 import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
@@ -18,6 +19,7 @@ const route = useRoute();
 const auth = useAuthStore();
 const store = useGetStartedStore();
 const merchantDashboard = useMerchantDashboardStore();
+const branchExperience = useBranchExperienceStore();
 
 const identity = computed<RoleIdentity | null>(() => {
   const meta = route.meta.roleIdentity;
@@ -27,6 +29,16 @@ const identity = computed<RoleIdentity | null>(() => {
 });
 const userId = computed(() => auth.user?.id ?? null);
 const observedCompletedIds = computed<string[]>(() => {
+  if (identity.value === 'merchant_branch') {
+    const readiness = branchExperience.overview?.get_started;
+    if (!readiness) return [];
+    const ids: string[] = [];
+    if (readiness.profile_complete) ids.push('confirm-branch-profile');
+    if (readiness.calendar_configured) ids.push('set-operating-hours-calendar');
+    if (readiness.service_catalogue_ready) ids.push('build-service-catalogue', 'set-service-pricing-durations');
+    if (readiness.day_opened) ids.push('open-branch-day');
+    return ids;
+  }
   if (identity.value !== 'merchant_administrator') return [];
   const readiness = merchantDashboard.overview?.get_started;
   if (!readiness) return [];
@@ -45,6 +57,7 @@ const observedCompletedIds = computed<string[]>(() => {
 
 onMounted(() => {
   if (identity.value === 'merchant_administrator') void merchantDashboard.fetchOverview();
+  if (identity.value === 'merchant_branch') void branchExperience.fetchOverview();
 });
 
 const dismissed = computed(() =>

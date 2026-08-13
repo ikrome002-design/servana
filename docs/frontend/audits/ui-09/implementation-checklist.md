@@ -107,5 +107,11 @@ complete only when its evidence is committed in this branch. Plan authority: UI/
   `UI09-CI-002`: two UI-06 test assertions still encoded the retired setup-route alias direction.
 - [x] `UI09-CI-002` updates only that predecessor test consumer to canonical `merchant.setup`;
   runtime routes and the compatibility alias are unchanged.
-- [ ] Push the corrective commit, obtain five-job exact-head CI, record governance, squash merge and
-  synchronize clean `main` (no UI-10, backend Phase 25 or Gate-W activation).
+- [x] Corrective head `59d10333340d66b2fc900783964ccbc4581ec9e4` obtained exact-head run
+  `31618625302` with all five required jobs successful.
+- [x] Truthful solo-maintainer governance recorded in comment `5269937398`: zero submitted reviews,
+  blank review decision, and explicitly no independent approval.
+- [x] PR #59 squash-merged as `84b7f803ea06124772eb87252552bb54e2a41416` at
+  `2026-08-12T17:06:03Z`; reviewed-head tree and merge tree both
+  `3077b246089ca28dea3c9a372c0443c7111e956d`.
+- [x] Source branch deleted locally and remotely; clean `main` synchronized before UI-10 began.

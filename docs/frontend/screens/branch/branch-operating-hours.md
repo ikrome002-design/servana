@@ -5,7 +5,7 @@
 - **Screen key:** `branch-operating-hours`
 - **Route name and URL:** `branch.operating-hours`
 - **Layout:** `BranchLayout`
-- **Allowed roles:** `merchant_administrator`, `merchant_branch`
+- **Allowed roles:** `merchant_branch`
 - **Required permissions:** `branch.profile.update` (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.

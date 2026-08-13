@@ -18,16 +18,22 @@ function makeRouter(): Router {
       { path: '/search', name: 'search', component: stub },
       { path: '/branch', name: 'branch.landing', component: stub },
       { path: '/branch/get-started', name: 'branch.get-started', component: stub },
-      { path: '/branch/list', name: 'branch.list', component: stub },
-      // Phase UI-07: Branch navigation is now derived from the canonical page contract, so the
+      // Phase UI-10: Branch navigation is derived from the activated canonical page contract, so the
       // test router must resolve every runtime route the Branch contract entries point at.
-      { path: '/branch/:id', name: 'branch.detail', component: stub },
-      { path: '/branch/:id/calendar', name: 'branch.calendar', component: stub },
-      { path: '/branch/services', name: 'branch.services', component: stub },
-      { path: '/branch/personnel-schedule', name: 'branch.personnel-schedule', component: stub },
-      { path: '/branch/queue', name: 'branch.queue', component: stub },
-      { path: '/branch/appointments', name: 'branch.appointments', component: stub },
-      { path: '/branch/cash-up', name: 'branch.cash-up', component: stub },
+      { path: '/dashboard', name: 'branch.dashboard', component: stub },
+      { path: '/branch/profile', name: 'branch.branch-profile', component: stub },
+      { path: '/branch/calendar', name: 'branch.branch-calendar', component: stub },
+      { path: '/branch/day', name: 'branch.branch-day', component: stub },
+      { path: '/services', name: 'branch.services', component: stub },
+      { path: '/staff', name: 'branch.staff', component: stub },
+      { path: '/operations/queue', name: 'branch.operations-queue', component: stub },
+      { path: '/operations/appointments', name: 'branch.operations-appointments', component: stub },
+      { path: '/finance/invoices', name: 'branch.finance-invoices', component: stub },
+      { path: '/finance/payments', name: 'branch.finance-payments', component: stub },
+      { path: '/finance/receipts', name: 'branch.finance-receipts', component: stub },
+      { path: '/cash-up', name: 'branch.cash-up', component: stub },
+      { path: '/audit', name: 'branch.audit', component: stub },
+      { path: '/account', name: 'branch.account', component: stub },
     ],
   });
 }
@@ -69,8 +75,8 @@ describe('RoleNavigation', () => {
     expect(gated?.attributes('aria-disabled')).toBe('true');
     expect(wrapper.findAll('a').some((a) => a.text() === 'Branch Reports')).toBe(false);
 
-    // A planned entry is absent entirely — UI/UX plan §7.2 forbids the dead link that a
-    // disabled placeholder for unbuilt work would be.
+    // An implemented but unauthorized entry is absent; permission filtering is a UX layer and
+    // the server remains the security boundary.
     expect(wrapper.text()).not.toContain('Branch Day Operations');
   });
 

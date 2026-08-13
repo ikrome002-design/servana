@@ -107,6 +107,9 @@ const P23_NON_DOCUMENT_ROUTES = [
     'payment-recording-groups.store' => 'Payment recording, not a document surface.',
     'payment-recording-groups.exception' => 'Payment exception recording, not a document surface.',
 
+    // Phase UI-10 — Branch Manager financial visibility is JSON-only and read-only.
+    'branches.financial-visibility.invoices' => 'Branch invoice LIST — a paginated, branch-scoped JSON visibility projection. It produces no file, signed link, or download accounting surface.',
+
     // Phase UI-08 (COR-UI08-001) — Subscription Operations monitoring reads.
     'platform.subscription-invoices.index' => 'Platform SUBSCRIPTION-invoice list — a paginated, permissioned JSON projection for platform monitoring. No file is produced, no signed link is issued, and there is no download accounting to harden. Distinct from the merchant-client `invoices.*` surface above.',
     'platform.subscription-invoices.show' => 'Platform SUBSCRIPTION-invoice detail — the same paginated JSON projection for one record. An issued subscription invoice is immutable and this route serves no document; a PDF, if a later phase attaches one, would be served through the file domain and would enter this matrix then.',

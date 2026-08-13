@@ -79,7 +79,7 @@ onMounted(load);
 <template>
   <section class="mx-auto w-full max-w-xl p-4 md:p-6">
     <RouterLink
-      :to="{ name: 'branch.queue' }"
+      :to="{ name: 'branch.operations-queue' }"
       class="text-sm font-semibold text-heading underline"
     >
       <SvIconBack

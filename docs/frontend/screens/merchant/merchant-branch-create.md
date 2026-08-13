@@ -1,17 +1,17 @@
-# Screen specification — Personnel schedule
+# Screen specification — Create branch
 
-> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 15B**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
+> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **UI-10**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
-- **Screen key:** `personnel-schedule`
-- **Route name and URL:** `branch.personnel-schedule`
-- **Layout:** `BranchLayout`
-- **Allowed roles:** `merchant_branch`
-- **Required permissions:** `branch.dashboard.view` (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Screen key:** `branch-create`
+- **Route name and URL:** `merchant.branch-create`
+- **Layout:** `MerchantLayout`
+- **Allowed roles:** `merchant_administrator`
+- **Required permissions:** `merchant.branch.create` (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Branch Manager READ-ONLY personnel schedule visibility: current availability state, today's working intervals, breaks, temporary unavailability, the weekly schedule, and active eligible services. No edit, save, emergency, eligibility, or replacement controls — mutation is HR-only and backend-enforced.
+- **Fields and displayed data:** Supporting entitlement-gated Merchant Administrator branch-creation form reached from the canonical branch directory. It is not a separate authenticated navigation-contract page and Branch Manager never owns it.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

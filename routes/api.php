@@ -15,9 +15,12 @@ use App\Http\Controllers\Api\V1\Auth\UserPreferencesController;
 use App\Http\Controllers\Api\V1\Billing\PlatformFeeDisputeController;
 use App\Http\Controllers\Api\V1\Billing\PlatformFeeLedgerController;
 use App\Http\Controllers\Api\V1\Branch\PreferredPersonnelFeeRuleReadController;
+use App\Http\Controllers\Api\V1\Branches\BranchAuditVisibilityController;
 use App\Http\Controllers\Api\V1\Branches\BranchCalendarExceptionController;
 use App\Http\Controllers\Api\V1\Branches\BranchController;
 use App\Http\Controllers\Api\V1\Branches\BranchDayController;
+use App\Http\Controllers\Api\V1\Branches\BranchExperienceController;
+use App\Http\Controllers\Api\V1\Branches\BranchFinancialVisibilityController;
 use App\Http\Controllers\Api\V1\Branches\BranchOperatingHoursController;
 use App\Http\Controllers\Api\V1\Branches\BranchPersonnelOptionController;
 use App\Http\Controllers\Api\V1\CashUps\CashUpController;
@@ -425,6 +428,24 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
 
             Route::middleware(EnsureBranchScope::class)->group(function (): void {
                 Route::get('branches/{branch}', [BranchController::class, 'show'])->name('branches.show');
+
+                // Phase UI-10 — narrow assigned-branch compositions. Branch dashboard/read
+                // visibility is an existing Branch Manager authority; these projections do not
+                // call the Front Office invoice policy, Finance payment policy, or raw Audit-account
+                // surface and never expose their mutation controls. The {branch} boundary ensures a
+                // foreign ULID is 404 and a same-tenant unassigned branch is 403.
+                Route::get('branches/{branch}/dashboard', [BranchExperienceController::class, 'show'])
+                    ->middleware(EnsurePermission::class.':branch.dashboard.view')
+                    ->name('branches.dashboard.show');
+                Route::get('branches/{branch}/financial-visibility/invoices', [BranchFinancialVisibilityController::class, 'invoices'])
+                    ->middleware(EnsurePermission::class.':branch.dashboard.view')
+                    ->name('branches.financial-visibility.invoices');
+                Route::get('branches/{branch}/financial-visibility/payment-records', [BranchFinancialVisibilityController::class, 'payments'])
+                    ->middleware(EnsurePermission::class.':branch.dashboard.view')
+                    ->name('branches.financial-visibility.payment-records');
+                Route::get('branches/{branch}/audit-events', [BranchAuditVisibilityController::class, 'index'])
+                    ->middleware(EnsurePermission::class.':reports.view')
+                    ->name('branches.audit-events.index');
 
                 // Phase 20A — Branch Manager read-only view of the EFFECTIVE preferred-personnel
                 // fee rule (branch scope; no platform MFA/step-up). Management is Super-Admin only.

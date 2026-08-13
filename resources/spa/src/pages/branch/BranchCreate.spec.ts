@@ -41,7 +41,7 @@ describe('BranchCreate.vue', () => {
     await flushPromises();
 
     expect(post).toHaveBeenCalledWith('/branches', expect.objectContaining({ name: 'Kilimani', code: 'KIL001' }));
-    expect(push).toHaveBeenCalledWith({ name: 'branch.list' });
+    expect(push).toHaveBeenCalledWith({ name: 'merchant.branches' });
   });
 
   it('maps server validation errors onto the fields', async () => {
