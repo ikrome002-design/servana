@@ -1,0 +1,32 @@
+{
+  "schema": "servana.ui10.route-activation.v1",
+  "phase": "UI-10",
+  "lifecycle": "local_complete",
+  "account": "merchant_branch",
+  "host": "branch.servana.ke",
+  "implemented_routes": [
+    { "screen_key": "dashboard", "route_name": "branch.dashboard", "route_path": "/dashboard" },
+    { "screen_key": "get-started", "route_name": "branch.get-started", "route_path": "/get-started" },
+    { "screen_key": "branch-profile", "route_name": "branch.branch-profile", "route_path": "/branch/profile" },
+    { "screen_key": "branch-calendar", "route_name": "branch.branch-calendar", "route_path": "/branch/calendar" },
+    { "screen_key": "branch-day", "route_name": "branch.branch-day", "route_path": "/branch/day" },
+    { "screen_key": "services", "route_name": "branch.services", "route_path": "/services" },
+    { "screen_key": "staff", "route_name": "branch.staff", "route_path": "/staff" },
+    { "screen_key": "operations-queue", "route_name": "branch.operations-queue", "route_path": "/operations/queue" },
+    { "screen_key": "operations-appointments", "route_name": "branch.operations-appointments", "route_path": "/operations/appointments" },
+    { "screen_key": "finance-invoices", "route_name": "branch.finance-invoices", "route_path": "/finance/invoices" },
+    { "screen_key": "finance-payments", "route_name": "branch.finance-payments", "route_path": "/finance/payments" },
+    { "screen_key": "finance-receipts", "route_name": "branch.finance-receipts", "route_path": "/finance/receipts" },
+    { "screen_key": "cash-up", "route_name": "branch.cash-up", "route_path": "/cash-up" },
+    { "screen_key": "audit", "route_name": "branch.audit", "route_path": "/audit" },
+    { "screen_key": "account", "route_name": "branch.account", "route_path": "/account" }
+  ],
+  "gated_no_route": ["reports", "subscription-payment", "notifications"],
+  "compatibility_redirects": [
+    "/branch/dashboard -> /dashboard", "/branch/get-started -> /get-started",
+    "/branch/services -> /services", "/branch/personnel-schedule -> /staff",
+    "/branch/queue -> /operations/queue", "/branch/appointments -> /operations/appointments",
+    "/branch/cash-up -> /cash-up"
+  ],
+  "result": "15 canonical host-relative routes match the generated contract; all 3 gated identities have no runtime route; guarded same-account compatibility redirects do not grant authority"
+}

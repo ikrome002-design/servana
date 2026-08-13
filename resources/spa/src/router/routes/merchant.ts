@@ -55,6 +55,12 @@ export const merchantRoutes: RouteRecordRaw[] = [
         meta: { roleIdentity: 'merchant_administrator', screenKey: 'branches' },
       },
       {
+        path: '/branches/create',
+        name: 'merchant.branch-create',
+        component: () => import('@/pages/branch/BranchCreate.vue'),
+        meta: { roleIdentity: 'merchant_administrator', screenKey: null },
+      },
+      {
         path: '/branches/:branchUlid',
         name: 'merchant.branch-detail',
         component: () => import('@/pages/merchant/MerchantBranchDetail.vue'),

@@ -42,6 +42,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $archived_at
  * @property int|null $created_by
  * @property int|null $updated_by
+ * @property-read Merchant $merchant
  */
 class MerchantBranch extends Model
 {

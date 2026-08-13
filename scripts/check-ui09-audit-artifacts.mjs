@@ -59,7 +59,7 @@ if (existsSync(join(audit, 'status-disposition.json'))) {
   if (counted.implemented !== 15 || counted.disabled_by_gate !== 8 || (counted.planned ?? 0) !== 0) {
     problems.push('canonical navigation is not at final 15 implemented / 8 gated / 0 planned');
   }
-  if (status.lifecycle !== 'local_complete') problems.push('UI-09 artifact lifecycle must be local_complete before merge');
+  if (status.lifecycle !== 'verified_complete') problems.push('UI-09 artifact lifecycle must be verified_complete after PR #59 merge reconciliation');
 }
 
 if (existsSync(join(audit, 'route-parity.json'))) {
@@ -104,7 +104,8 @@ if (existsSync(join(audit, 'browser-proof.json'))) {
 
 if (existsSync(join(audit, 'defect-closure.json'))) {
   const closure = json('defect-closure.json');
-  if (closure.closures.some((item) => item.lifecycle !== 'local_complete')) problems.push('UI-09 closures cannot be verified_complete before merge');
+  if (closure.closures.some((item) => item.lifecycle !== 'verified_complete')) problems.push('UI-09 closures must be verified_complete after PR #59 merge reconciliation');
+  if (closure.verified_complete !== 15 || closure.local_complete !== 0) problems.push('UI-09 closure totals must be 15 verified / 0 local after merge reconciliation');
 }
 
 if (existsSync(join(audit, 'screenshot-index.json'))) {

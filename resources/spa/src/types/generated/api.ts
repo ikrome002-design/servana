@@ -760,6 +760,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/branches/{branch}/audit-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["branches.audit-events.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/branches/{branch}/calendar-exceptions": {
         parameters: {
             query?: never;
@@ -810,6 +826,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/branches/{branch}/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["branches.dashboard.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/branches/{branch}/day/close": {
         parameters: {
             query?: never;
@@ -836,6 +868,38 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["branches.day.open"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/branches/{branch}/financial-visibility/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["branches.financial-visibility.invoices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/branches/{branch}/financial-visibility/payment-records": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["branches.financial-visibility.payment-records"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -4925,6 +4989,46 @@ export interface components {
             closes_at: string | null;
             reason: string | null;
             created_at: string;
+        };
+        /** BranchInvoiceVisibilityResource */
+        BranchInvoiceVisibilityResource: {
+            id: string;
+            invoice_number: string | null;
+            status: string;
+            total_minor: number;
+            validated_paid_minor: number;
+            balance_minor: number;
+            currency: string;
+            finalized_at: string;
+            created_at: string;
+            can: {
+                create: boolean;
+                update: boolean;
+                finalize: boolean;
+                void: boolean;
+                adjust: boolean;
+            };
+        };
+        /** BranchPaymentVisibilityResource */
+        BranchPaymentVisibilityResource: {
+            id: string;
+            invoice?: {
+                id: string;
+                invoice_number: string | null;
+            } | null;
+            status: string;
+            total_amount_minor: number;
+            currency: string;
+            recorded_at: string;
+            submitted_for_validation_at: string;
+            validated_at: string;
+            created_at: string;
+            can: {
+                record: boolean;
+                validate: boolean;
+                reject: boolean;
+                correct_reference: boolean;
+            };
         };
         /** BranchPersonnelOptionResource */
         BranchPersonnelOptionResource: {
@@ -10737,6 +10841,82 @@ export interface operations {
             };
         };
     };
+    "branches.audit-events.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "created_at" | "-created_at";
+                severity?: "info" | "notice" | "warning" | "high" | "critical";
+                action?: string;
+            };
+            header?: never;
+            path: {
+                /** @description The branch ulid */
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `AuditLogResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AuditLogResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     "branches.calendar-exceptions.index": {
         parameters: {
             query?: {
@@ -11073,6 +11253,160 @@ export interface operations {
             };
         };
     };
+    "branches.dashboard.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The branch ulid */
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            overview: {
+                                branch: {
+                                    id: string;
+                                    name: string;
+                                    code: string;
+                                    address: string | null;
+                                    town: string | null;
+                                    phone: string | null;
+                                    email: string | null;
+                                    business_category: string | null;
+                                    status: string;
+                                    status_reason: string | null;
+                                    archived_at: string;
+                                };
+                                business_date: string;
+                                day: {
+                                    id: string;
+                                    status: string;
+                                    opened_at: string;
+                                    closed_at: string;
+                                    queue_is_open: string | boolean;
+                                    close_blockers: ("active_appointments" | "active_queue_entries" | "in_progress_sessions")[];
+                                    financial_close_blockers: ("cash_up_not_approved" | "pending_payment_validations" | "unissued_receipts")[];
+                                };
+                                services: {
+                                    total: number;
+                                    active: number;
+                                    archived: number;
+                                };
+                                staff: {
+                                    active: number;
+                                };
+                                queue: {
+                                    total: number;
+                                    active: number;
+                                    by_status: {
+                                        [key: string]: number;
+                                    };
+                                };
+                                appointments: {
+                                    today: number;
+                                    active_today: number;
+                                    by_status: {
+                                        [key: string]: number;
+                                    };
+                                };
+                                financial: {
+                                    invoices_total: number;
+                                    invoices_by_status: {
+                                        [key: string]: number;
+                                    };
+                                    invoices_with_balance: number;
+                                    pending_payment_validations: number;
+                                    receipts_issued_today: number;
+                                    validated_revenue_by_currency: {
+                                        currency: string;
+                                        amount_minor: number;
+                                    }[];
+                                };
+                                cash_up: {
+                                    id: string;
+                                    status: string;
+                                    /** @constant */
+                                    currency: "KES";
+                                    expected_minor: number;
+                                    counted_minor: number;
+                                    variance_minor: number;
+                                } | null;
+                                billing: {
+                                    status: string;
+                                    next_invoice: {
+                                        id: string;
+                                        invoice_number: string | null;
+                                        status: string;
+                                        balance_minor: number;
+                                        currency: string;
+                                        due_at: string;
+                                    } | null;
+                                    payment_runtime: {
+                                        available: boolean;
+                                        /** @constant */
+                                        reason: "External Gate W — Wallet by Citrus collections readiness";
+                                    };
+                                };
+                                reporting: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "Phase 21N reporting runtime is not implemented";
+                                };
+                                notifications: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "External Gate W — Wallet by Citrus collections readiness";
+                                };
+                                get_started: {
+                                    profile_complete: string;
+                                    calendar_configured: boolean;
+                                    service_catalogue_ready: boolean;
+                                    staff_ready: boolean;
+                                    day_opened: string | boolean;
+                                    cash_up_prepared: boolean;
+                                    reports: {
+                                        available: boolean;
+                                        /** @constant */
+                                        reason: "Phase 21N reporting runtime is not implemented";
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     "branches.day.close": {
         parameters: {
             query?: never;
@@ -11109,15 +11443,7 @@ export interface operations {
                 };
             };
             404: components["responses"]["ModelNotFoundException"];
-            /** @description Validation failed */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelope"];
-                };
-            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -11165,8 +11491,9 @@ export interface operations {
                 };
             };
             404: components["responses"]["ModelNotFoundException"];
-            /** @description Validation failed */
-            422: {
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11174,6 +11501,147 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+        };
+    };
+    "branches.financial-visibility.invoices": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "created_at" | "-created_at" | "finalized_at" | "-finalized_at";
+                status?: "draft" | "issued" | "partially_paid" | "paid" | "void_pending" | "voided" | "adjusted" | "refund_pending" | "adjustment_required";
+            };
+            header?: never;
+            path: {
+                /** @description The branch ulid */
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `BranchInvoiceVisibilityResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["BranchInvoiceVisibilityResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "branches.financial-visibility.payment-records": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "created_at" | "-created_at" | "recorded_at" | "-recorded_at";
+                status?: "draft" | "recorded" | "pending_validation" | "validated" | "rejected" | "correction_required" | "reversed";
+            };
+            header?: never;
+            path: {
+                /** @description The branch ulid */
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `BranchPaymentVisibilityResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["BranchPaymentVisibilityResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {

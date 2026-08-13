@@ -5713,6 +5713,242 @@
                 ]
             }
         },
+        "/api/v1/branches/{branch}/audit-events": {
+            "get": {
+                "operationId": "branches.audit-events.index",
+                "tags": [
+                    "BranchAuditVisibility"
+                ],
+                "parameters": [
+                    {
+                        "name": "branch",
+                        "in": "path",
+                        "required": true,
+                        "description": "The branch ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "severity",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "info",
+                                "notice",
+                                "warning",
+                                "high",
+                                "critical"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 160
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `AuditLogResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AuditLogResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/branches/{branch}/calendar-exceptions": {
             "get": {
                 "operationId": "branches.calendar-exceptions.index",
@@ -6380,6 +6616,591 @@
                 ]
             }
         },
+        "/api/v1/branches/{branch}/dashboard": {
+            "get": {
+                "operationId": "branches.dashboard.show",
+                "tags": [
+                    "BranchExperience"
+                ],
+                "parameters": [
+                    {
+                        "name": "branch",
+                        "in": "path",
+                        "required": true,
+                        "description": "The branch ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "overview": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "branch": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "code": {
+                                                                    "type": "string"
+                                                                },
+                                                                "address": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "town": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "phone": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "email": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "business_category": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status_reason": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "archived_at": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "code",
+                                                                "address",
+                                                                "town",
+                                                                "phone",
+                                                                "email",
+                                                                "business_category",
+                                                                "status",
+                                                                "status_reason",
+                                                                "archived_at"
+                                                            ]
+                                                        },
+                                                        "business_date": {
+                                                            "type": "string"
+                                                        },
+                                                        "day": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "opened_at": {
+                                                                    "type": "string"
+                                                                },
+                                                                "closed_at": {
+                                                                    "type": "string"
+                                                                },
+                                                                "queue_is_open": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "string"
+                                                                        },
+                                                                        {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "close_blockers": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "active_appointments",
+                                                                            "active_queue_entries",
+                                                                            "in_progress_sessions"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "financial_close_blockers": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "cash_up_not_approved",
+                                                                            "pending_payment_validations",
+                                                                            "unissued_receipts"
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "status",
+                                                                "opened_at",
+                                                                "closed_at",
+                                                                "queue_is_open",
+                                                                "close_blockers",
+                                                                "financial_close_blockers"
+                                                            ]
+                                                        },
+                                                        "services": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "total": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        {
+                                                                            "type": "number"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "active": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "archived": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "total",
+                                                                "active",
+                                                                "archived"
+                                                            ]
+                                                        },
+                                                        "staff": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "active": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "active"
+                                                            ]
+                                                        },
+                                                        "queue": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "total": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        {
+                                                                            "type": "number"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "active": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        {
+                                                                            "type": "number"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "by_status": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "total",
+                                                                "active",
+                                                                "by_status"
+                                                            ]
+                                                        },
+                                                        "appointments": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "today": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        {
+                                                                            "type": "number"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "active_today": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        {
+                                                                            "type": "number"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "by_status": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "today",
+                                                                "active_today",
+                                                                "by_status"
+                                                            ]
+                                                        },
+                                                        "financial": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "invoices_total": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        {
+                                                                            "type": "number"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "invoices_by_status": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "invoices_with_balance": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "pending_payment_validations": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "receipts_issued_today": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "validated_revenue_by_currency": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "currency": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "amount_minor": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "currency",
+                                                                            "amount_minor"
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "invoices_total",
+                                                                "invoices_by_status",
+                                                                "invoices_with_balance",
+                                                                "pending_payment_validations",
+                                                                "receipts_issued_today",
+                                                                "validated_revenue_by_currency"
+                                                            ]
+                                                        },
+                                                        "cash_up": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "currency": {
+                                                                    "type": "string",
+                                                                    "const": "KES"
+                                                                },
+                                                                "expected_minor": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "counted_minor": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "variance_minor": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "status",
+                                                                "currency",
+                                                                "expected_minor",
+                                                                "counted_minor",
+                                                                "variance_minor"
+                                                            ]
+                                                        },
+                                                        "billing": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "next_invoice": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "invoice_number": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "balance_minor": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "currency": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "due_at": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "invoice_number",
+                                                                        "status",
+                                                                        "balance_minor",
+                                                                        "currency",
+                                                                        "due_at"
+                                                                    ]
+                                                                },
+                                                                "payment_runtime": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "available": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "reason": {
+                                                                            "type": "string",
+                                                                            "const": "External Gate W — Wallet by Citrus collections readiness"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "available",
+                                                                        "reason"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "status",
+                                                                "next_invoice",
+                                                                "payment_runtime"
+                                                            ]
+                                                        },
+                                                        "reporting": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "available": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "reason": {
+                                                                    "type": "string",
+                                                                    "const": "Phase 21N reporting runtime is not implemented"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "available",
+                                                                "reason"
+                                                            ]
+                                                        },
+                                                        "notifications": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "available": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "reason": {
+                                                                    "type": "string",
+                                                                    "const": "External Gate W — Wallet by Citrus collections readiness"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "available",
+                                                                "reason"
+                                                            ]
+                                                        },
+                                                        "get_started": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "profile_complete": {
+                                                                    "type": "string"
+                                                                },
+                                                                "calendar_configured": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "service_catalogue_ready": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "staff_ready": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "day_opened": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "string"
+                                                                        },
+                                                                        {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "cash_up_prepared": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "reports": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "available": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "reason": {
+                                                                            "type": "string",
+                                                                            "const": "Phase 21N reporting runtime is not implemented"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "available",
+                                                                        "reason"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "profile_complete",
+                                                                "calendar_configured",
+                                                                "service_catalogue_ready",
+                                                                "staff_ready",
+                                                                "day_opened",
+                                                                "cash_up_prepared",
+                                                                "reports"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "branch",
+                                                        "business_date",
+                                                        "day",
+                                                        "services",
+                                                        "staff",
+                                                        "queue",
+                                                        "appointments",
+                                                        "financial",
+                                                        "cash_up",
+                                                        "billing",
+                                                        "reporting",
+                                                        "notifications",
+                                                        "get_started"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "overview"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/branches/{branch}/day/close": {
             "post": {
                 "operationId": "branches.day.close",
@@ -6445,14 +7266,7 @@
                         "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "422": {
-                        "description": "Validation failed",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorEnvelope"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "429": {
                         "description": "Rate limited",
@@ -6537,7 +7351,10 @@
                         "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "422": {
-                        "description": "Validation failed",
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6545,6 +7362,462 @@
                                 }
                             }
                         }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/branches/{branch}/financial-visibility/invoices": {
+            "get": {
+                "operationId": "branches.financial-visibility.invoices",
+                "tags": [
+                    "BranchFinancialVisibility"
+                ],
+                "parameters": [
+                    {
+                        "name": "branch",
+                        "in": "path",
+                        "required": true,
+                        "description": "The branch ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at",
+                                "finalized_at",
+                                "-finalized_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "draft",
+                                "issued",
+                                "partially_paid",
+                                "paid",
+                                "void_pending",
+                                "voided",
+                                "adjusted",
+                                "refund_pending",
+                                "adjustment_required"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `BranchInvoiceVisibilityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BranchInvoiceVisibilityResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/branches/{branch}/financial-visibility/payment-records": {
+            "get": {
+                "operationId": "branches.financial-visibility.payment-records",
+                "tags": [
+                    "BranchFinancialVisibility"
+                ],
+                "parameters": [
+                    {
+                        "name": "branch",
+                        "in": "path",
+                        "required": true,
+                        "description": "The branch ulid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at",
+                                "recorded_at",
+                                "-recorded_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "draft",
+                                "recorded",
+                                "pending_validation",
+                                "validated",
+                                "rejected",
+                                "correction_required",
+                                "reversed"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `BranchPaymentVisibilityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BranchPaymentVisibilityResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "429": {
                         "description": "Rate limited",
@@ -38311,6 +39584,166 @@
                     "created_at"
                 ],
                 "title": "BranchCalendarExceptionResource"
+            },
+            "BranchInvoiceVisibilityResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "invoice_number": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "total_minor": {
+                        "type": "integer"
+                    },
+                    "validated_paid_minor": {
+                        "type": "integer"
+                    },
+                    "balance_minor": {
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "finalized_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "can": {
+                        "type": "object",
+                        "properties": {
+                            "create": {
+                                "type": "boolean"
+                            },
+                            "update": {
+                                "type": "boolean"
+                            },
+                            "finalize": {
+                                "type": "boolean"
+                            },
+                            "void": {
+                                "type": "boolean"
+                            },
+                            "adjust": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "create",
+                            "update",
+                            "finalize",
+                            "void",
+                            "adjust"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "invoice_number",
+                    "status",
+                    "total_minor",
+                    "validated_paid_minor",
+                    "balance_minor",
+                    "currency",
+                    "finalized_at",
+                    "created_at",
+                    "can"
+                ],
+                "title": "BranchInvoiceVisibilityResource"
+            },
+            "BranchPaymentVisibilityResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "invoice": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "invoice_number": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "invoice_number"
+                        ]
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "total_amount_minor": {
+                        "type": "integer"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "recorded_at": {
+                        "type": "string"
+                    },
+                    "submitted_for_validation_at": {
+                        "type": "string"
+                    },
+                    "validated_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "can": {
+                        "type": "object",
+                        "properties": {
+                            "record": {
+                                "type": "boolean"
+                            },
+                            "validate": {
+                                "type": "boolean"
+                            },
+                            "reject": {
+                                "type": "boolean"
+                            },
+                            "correct_reference": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "record",
+                            "validate",
+                            "reject",
+                            "correct_reference"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "total_amount_minor",
+                    "currency",
+                    "recorded_at",
+                    "submitted_for_validation_at",
+                    "validated_at",
+                    "created_at",
+                    "can"
+                ],
+                "title": "BranchPaymentVisibilityResource"
             },
             "BranchPersonnelOptionResource": {
                 "type": "object",

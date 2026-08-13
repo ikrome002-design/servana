@@ -27,6 +27,7 @@ const branch = {
 // Render the RouterLink slot so link/button text (e.g. "Add branch") is asserted.
 const mountPage = () =>
   mount(BranchList, {
+    props: { merchantOwnerView: true },
     global: { stubs: { RouterLink: { template: '<a><slot /></a>' } } },
   });
 

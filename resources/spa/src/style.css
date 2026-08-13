@@ -83,7 +83,7 @@
    * consume the screen: it caps its own height and scrolls INTERNALLY. The page still never
    * scrolls horizontally.
    */
-  @media (max-height: 26rem) {
+  @media (max-height: 32rem) {
     .sv-fixed-footer {
       max-block-size: var(--sv-footer-height-zoom-fallback);
       overflow-y: auto;

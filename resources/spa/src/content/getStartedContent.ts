@@ -59,11 +59,11 @@ const merchantAdministrator: GetStartedItem[] = [
 ];
 
 const branchManager: GetStartedItem[] = [
-  { id: 'confirm-branch-profile', label: 'Confirm branch profile', routeName: 'branch.list', kind: 'action' },
-  { id: 'set-operating-hours-calendar', label: 'Set operating hours and calendar', routeName: 'branch.list', kind: 'action' },
+  { id: 'confirm-branch-profile', label: 'Confirm branch profile', routeName: 'branch.branch-profile', kind: 'action' },
+  { id: 'set-operating-hours-calendar', label: 'Set operating hours and calendar', routeName: 'branch.branch-calendar', kind: 'action' },
   { id: 'build-service-catalogue', label: 'Build the service catalogue', routeName: 'branch.services', kind: 'action' },
   { id: 'set-service-pricing-durations', label: 'Set service pricing and durations', routeName: 'branch.services', kind: 'action' },
-  { id: 'open-branch-day', label: 'Open the branch day', phase: 'Phase 16B', kind: 'action' },
+  { id: 'open-branch-day', label: 'Open the branch day', routeName: 'branch.branch-day', kind: 'action' },
   ACKNOWLEDGE,
 ];
 

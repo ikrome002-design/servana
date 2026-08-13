@@ -1,0 +1,45 @@
+{
+  "schema": "servana.ui10.visual-quality-review.v1",
+  "phase": "UI-10",
+  "reviewed": {
+    "desktop_light_pages": 15,
+    "viewport": "1440x900",
+    "representative_dark": ["dashboard"],
+    "tablet": [768, 1024],
+    "mobile": [360, 767],
+    "highest_density": ["dashboard", "cash-up", "account"]
+  },
+  "criteria": {
+    "hierarchy": "pass", "legibility": "pass", "whitespace": "pass", "information_density": "pass",
+    "action_clarity": "pass", "brand_fidelity": "pass", "role_truth": "pass", "perceived_polish": "pass"
+  },
+  "strengths": [
+    "Dashboard uses branch-day pulse as the dominant landmark and places task/readiness cards before secondary context",
+    "Branch Day makes state and close blockers visually dominant and names Finance as independent checker",
+    "Financial pages are visibly read-only and explicitly name Front Office/Finance ownership without exposing references or client contact",
+    "Cash-Up separates immutable server-derived expected values from Branch-entered counted values and provides one dominant submit action",
+    "Empty states name the responsible role or next action instead of inventing filler metrics",
+    "Shared sidebar, tablet rail and mobile drawer retain branch context and exact canonical grouping"
+  ],
+  "refinements": [
+    {
+      "problem": "Branch Day rendered database blocker keys as lower-case machine text",
+      "change": "Humanize and sentence-case blocker labels while preserving exact server authority",
+      "verification": "BranchDay component coverage, typecheck and final 52-case focused Playwright"
+    },
+    {
+      "problem": "Account session evidence exposed the internal merchant_branch account key as presentation copy",
+      "change": "Map known account keys to human-readable account labels with a safe generic fallback",
+      "verification": "PlatformAuditAndAccount component coverage, typecheck and final account screenshot"
+    },
+    {
+      "problem": "Full-page screenshot stitching repeated the viewport-fixed footer midway through tall evidence images",
+      "change": "Capture exact 1440x900 and responsive viewports for implementation evidence",
+      "verification": "24-file screenshot index with deterministic SHA-256 hashes"
+    }
+  ],
+  "invented_metrics": false,
+  "raw_color_or_parallel_design_system": false,
+  "formal_release_baseline_owner": "UI-16",
+  "result": "pass"
+}

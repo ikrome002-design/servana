@@ -1,0 +1,20 @@
+{
+  "schema": "servana.ui10.responsive-matrix.v1",
+  "phase": "UI-10",
+  "browser": "Playwright Chromium built SPA",
+  "implemented_pages_checked": 15,
+  "widths": [
+    { "px": 360, "pages": 15, "horizontal_overflow": 0, "layout": "mobile left drawer" },
+    { "px": 767, "pages": 15, "horizontal_overflow": 0, "layout": "mobile left drawer" },
+    { "px": 768, "pages": 15, "horizontal_overflow": 0, "layout": "collapsible tablet rail" },
+    { "px": 1024, "pages": 15, "horizontal_overflow": 0, "layout": "collapsible tablet rail" },
+    { "px": 1025, "pages": 15, "horizontal_overflow": 0, "layout": "persistent desktop sidebar" },
+    { "px": 1280, "pages": 15, "horizontal_overflow": 0, "layout": "persistent desktop sidebar" },
+    { "px": 1440, "pages": 15, "horizontal_overflow": 0, "layout": "persistent desktop sidebar" }
+  ],
+  "zoom": { "equivalent": "200%", "viewport_css_px": { "width": 640, "height": 450 }, "horizontal_overflow": false, "reserve_at_least_rendered_footer": true },
+  "drawer": { "focus_wrap": true, "escape_closes": true, "focus_returns_to_opener": true },
+  "footer_obstruction": false,
+  "device_detection_javascript": false,
+  "test_result": { "command": "npx playwright test tests/e2e/ui-10-branch-experience.spec.ts --project=chromium --reporter=line", "passed": 52, "failed": 0, "skipped": 0, "exit_code": 0, "duration_seconds": 145.6 }
+}

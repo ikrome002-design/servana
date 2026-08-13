@@ -1,0 +1,33 @@
+{
+  "schema": "servana.ui10.historical-evidence-baseline.v1",
+  "phase": "UI-10",
+  "captured_before_final_full_playwright": true,
+  "algorithm": "SHA-256 over UTF-8 ordered lines of repository-relative path, NUL, file SHA-256",
+  "frozen_historical_directories": [
+    { "path": "docs/frontend/audits/ui-01", "files": 8, "aggregate_sha256": "caf60a1bb04e255a84ca82cf073e1b218f723add585428ee922341e9a1525a88" },
+    { "path": "docs/frontend/audits/ui-04", "files": 15, "aggregate_sha256": "37063c2177dc76901333eb6325c2ed78d7ac71288df434296b64b2fe1bf46441" },
+    { "path": "docs/frontend/audits/ui-05", "files": 10, "aggregate_sha256": "97737b85b00a5082a9215378aac4517b1520829322f379c50e848f368ddba8ce" },
+    { "path": "docs/frontend/audits/ui-08", "files": 50, "aggregate_sha256": "610dbad95ded92896c5a183066fbd63f4ffdb15f6242dbe4bc3b648696491544" }
+  ],
+  "mixed_historical_and_current_projection": {
+    "path": "docs/frontend/audits/ui-06",
+    "pre_run_files": 51,
+    "pre_run_aggregate_sha256": "f4c49b6a8a6e3c94613773775f9add2ed124713f3ccbebcb7ae99179c7789f99",
+    "current_projection_exclusion": "docs/frontend/audits/ui-06/public-route-matrix.json",
+    "policy": "Preserve every other UI-06 path byte-for-byte; regenerate public-route-matrix.json from the current router and never restore it as frozen evidence"
+  },
+  "intentional_predecessor_lifecycle_update": {
+    "path": "docs/frontend/audits/ui-09",
+    "files": 45,
+    "aggregate_sha256": "4d702ff5747a1911153cd00622ff44ca4539afa9dcd2fb032f4dcf6241d053a3",
+    "policy": "UI-10 owns only the verified PR #59 lifecycle reconciliation; generated/current evidence must not be rolled back"
+  },
+  "current_generated_projection": {
+    "path": "docs/frontend/audits/ui-07",
+    "files": 16,
+    "aggregate_sha256": "21ed65bed89bd74b7ff413a223a3dd8c20109d24d71b41f17117c3f1fca655c7",
+    "policy": "Must match current UI-10 canonical source and generator; never restore an older Branch status projection"
+  },
+  "current_ui10_evidence": "docs/frontend/audits/ui-10 is preserved and regenerated only by its own focused evidence writer",
+  "restoration_policy": "After full Playwright compare aggregates and Git paths; restore only individually proven test-written frozen mutations, never broad checkout, restore or clean. Current generated projections, including the UI-06 public route matrix, must advance with UI-10 source."
+}

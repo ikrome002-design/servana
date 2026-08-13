@@ -25,7 +25,7 @@ const submit = form.handleSubmit(async (values) => {
   try {
     await branches.createBranch(values);
     notifications.addToast({ type: 'success', message: 'Branch created.' });
-    await router.push({ name: 'branch.list' });
+    await router.push({ name: 'merchant.branches' });
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.apiError) {
       if (err.apiError.code === 'validation_failed') {

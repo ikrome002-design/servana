@@ -28,5 +28,5 @@
     "keyboard_traps": 0,
     "reduced_motion": true
   },
-  "local_defect": { "id": "UI09-A11Y-001", "root_cause": "Orange semantic text token was below AA contrast for small eyebrow copy", "fix": "Use text-text-muted for the affected setup and branch-list eyebrow labels", "lifecycle": "local_complete" }
+  "local_defect": { "id": "UI09-A11Y-001", "root_cause": "Orange semantic text token was below AA contrast for small eyebrow copy", "fix": "Use text-text-muted for the affected setup and branch-list eyebrow labels", "lifecycle": "verified_complete" }
 }

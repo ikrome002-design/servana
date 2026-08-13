@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "1469385ca0e88a3d56c975663ac9613aa13a51bd5e147b804b104094e687311e",
+  "canonical_authority_sha256": "cc494a1d2827c9349a5576dded622cfcf864d335e4c8469b87139f852f6f80c1",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "2950ecaba0cd664b13abfda1c86288d70fdb7bbc173cfa13abeae4a1ab02f4ae",
+  "screen_inventory_sha256": "075b1c0c5fbf80e2b174f10458c1d3ff4387e0ff21e8f25b610ee8103e4088ff",
   "purpose": "One screen specification per contract page: no missing spec, no orphan spec, no spec shared by two pages.",
   "spec_directory": "docs/frontend/screens/contract",
   "expected_specs": 160,
@@ -286,7 +286,7 @@
     {
       "key": "merchant_branch.dashboard",
       "spec": "docs/frontend/screens/contract/merchant_branch/dashboard.md",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-10"
     },
     {
@@ -298,19 +298,19 @@
     {
       "key": "merchant_branch.branch-profile",
       "spec": "docs/frontend/screens/contract/merchant_branch/branch-profile.md",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-10"
     },
     {
       "key": "merchant_branch.branch-calendar",
       "spec": "docs/frontend/screens/contract/merchant_branch/branch-calendar.md",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-10"
     },
     {
       "key": "merchant_branch.branch-day",
       "spec": "docs/frontend/screens/contract/merchant_branch/branch-day.md",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-10"
     },
     {
@@ -340,19 +340,19 @@
     {
       "key": "merchant_branch.finance-invoices",
       "spec": "docs/frontend/screens/contract/merchant_branch/finance-invoices.md",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-10"
     },
     {
       "key": "merchant_branch.finance-payments",
       "spec": "docs/frontend/screens/contract/merchant_branch/finance-payments.md",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-10"
     },
     {
       "key": "merchant_branch.finance-receipts",
       "spec": "docs/frontend/screens/contract/merchant_branch/finance-receipts.md",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-10"
     },
     {
@@ -370,7 +370,7 @@
     {
       "key": "merchant_branch.audit",
       "spec": "docs/frontend/screens/contract/merchant_branch/audit.md",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-10"
     },
     {
@@ -388,7 +388,7 @@
     {
       "key": "merchant_branch.account",
       "spec": "docs/frontend/screens/contract/merchant_branch/account.md",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-10"
     },
     {

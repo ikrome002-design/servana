@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "1469385ca0e88a3d56c975663ac9613aa13a51bd5e147b804b104094e687311e",
+  "canonical_authority_sha256": "cc494a1d2827c9349a5576dded622cfcf864d335e4c8469b87139f852f6f80c1",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "2950ecaba0cd664b13abfda1c86288d70fdb7bbc173cfa13abeae4a1ab02f4ae",
+  "screen_inventory_sha256": "075b1c0c5fbf80e2b174f10458c1d3ff4387e0ff21e8f25b610ee8103e4088ff",
   "purpose": "One UI owner phase per contract page, and the backend phase that actually delivered the runtime screen. Backend ownership is read from the screen inventory and is NEVER inferred from UI phase numbering.",
   "ui_owner_by_account": {
     "super_administrator": "UI-08",
@@ -31,7 +31,7 @@
     "UI-15": 15
   },
   "backend_owner_totals": {
-    "not-yet-delivered": 65,
+    "not-yet-delivered": 56,
     "Phase 11": 8,
     "Phase 15A": 5,
     "Phase 15B": 2,
@@ -40,7 +40,7 @@
     "Phase 16C": 2,
     "Phase 17": 3,
     "Phase 18A": 3,
-    "Phase 18B": 12,
+    "Phase 18B": 13,
     "Phase 19": 8,
     "Phase 20A": 4,
     "Phase 20B": 7,
@@ -55,12 +55,14 @@
     "Phase 22": 1,
     "Phase 23": 1,
     "Phase 6": 2,
-    "Phase 7": 5,
+    "Phase 7": 8,
     "Phase 8": 1,
     "Phase UI-03": 1,
     "Phase UI-03/UI-04": 1,
+    "Phase UI-04": 1,
     "Phase UI-08 (COR-UI08-001)": 5,
-    "Phase UI-09": 1
+    "Phase UI-09": 1,
+    "Phase UI-10 (COR-UI10-001)": 4
   },
   "rows": [
     {
@@ -473,9 +475,9 @@
       "account_type": "merchant_branch",
       "screen_key": "dashboard",
       "ui_owner_phase": "UI-10",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase UI-10 (COR-UI10-001)",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_branch.get-started",
@@ -491,27 +493,27 @@
       "account_type": "merchant_branch",
       "screen_key": "branch-profile",
       "ui_owner_phase": "UI-10",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase 7",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_branch.branch-calendar",
       "account_type": "merchant_branch",
       "screen_key": "branch-calendar",
       "ui_owner_phase": "UI-10",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase 7",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_branch.branch-day",
       "account_type": "merchant_branch",
       "screen_key": "branch-day",
       "ui_owner_phase": "UI-10",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase 7",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_branch.services",
@@ -554,27 +556,27 @@
       "account_type": "merchant_branch",
       "screen_key": "finance-invoices",
       "ui_owner_phase": "UI-10",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase UI-10 (COR-UI10-001)",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_branch.finance-payments",
       "account_type": "merchant_branch",
       "screen_key": "finance-payments",
       "ui_owner_phase": "UI-10",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase UI-10 (COR-UI10-001)",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_branch.finance-receipts",
       "account_type": "merchant_branch",
       "screen_key": "finance-receipts",
       "ui_owner_phase": "UI-10",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase 18B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_branch.cash-up",
@@ -599,9 +601,9 @@
       "account_type": "merchant_branch",
       "screen_key": "audit",
       "ui_owner_phase": "UI-10",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase UI-10 (COR-UI10-001)",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_branch.subscription-payment",
@@ -626,9 +628,9 @@
       "account_type": "merchant_branch",
       "screen_key": "account",
       "ui_owner_phase": "UI-10",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase UI-04",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_human_resource.dashboard",

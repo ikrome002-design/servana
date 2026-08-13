@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import HeaderGroupNavigation from '@/components/navigation/HeaderGroupNavigation.vue';
 import SvFixedFooter from '@/components/ui/SvFixedFooter.vue';
@@ -8,6 +8,7 @@ import SvProfileControl from '@/components/ui/SvProfileControl.vue';
 import { SvIconClose, SvIconMenu } from '@/design-system/icons';
 import { flattenNavigation, navigationTree } from '@/navigation/navigationFilter';
 import { useAuthStore } from '@/stores/authStore';
+import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
 import { useMerchantStore } from '@/stores/merchantStore';
 import { ROLE_ENTRY, type RoleIdentity } from '@/types/roles';
 
@@ -43,9 +44,19 @@ const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
 const merchant = useMerchantStore();
+const branchExperience = useBranchExperienceStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
 const placement = computed(() => entry.value.navPlacement);
+const contextLabel = computed(() => props.identity === 'merchant_branch'
+  ? branchExperience.overview?.branch.name ?? merchant.name
+  : merchant.name);
+
+onMounted(() => {
+  if (props.identity === 'merchant_branch' && branchExperience.overview === null) {
+    void branchExperience.fetchOverview();
+  }
+});
 
 /**
  * Phase UI-08: the header account renders the GROUPED navigation tree rather than the flat list.
@@ -188,10 +199,10 @@ const isHeaderNav = computed(() => placement.value === 'header');
         <div class="flex items-center gap-1">
           <!-- Merchant/branch context for sidebar roles. -->
           <span
-            v-if="!isHeaderNav && merchant.name"
+            v-if="!isHeaderNav && contextLabel"
             class="mr-2 hidden text-sm text-text-muted sm:inline"
-            data-testid="merchant-context"
-          >{{ merchant.name }}</span>
+            :data-testid="identity === 'merchant_branch' ? 'branch-context' : 'merchant-context'"
+          >{{ contextLabel }}</span>
 
           <SvNotificationsControl />
 
@@ -205,7 +216,7 @@ const isHeaderNav = computed(() => placement.value === 'header');
             v-if="auth.user"
             :name="auth.user.name"
             :account-label="entry.label"
-            :context-label="merchant.name ?? null"
+            :context-label="contextLabel ?? null"
             :get-started-to="{ name: entry.getStartedRouteName }"
             @logout="logout"
           />

@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `branch.appointments` at `/branch/appointments` (routes/branch.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/operations/appointments`; owner phase **UI-10** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `branch.operations-appointments` at `/operations/appointments` (routes/branch.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-10**
 - **Backend owner phase:** **Phase 16A**
 - **Implementation status:** `implemented`
-- **Runtime route:** `branch.appointments`
+- **Runtime route:** `branch.operations-appointments`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `branch.appointments` (recorded in `docs/frontend/screens/branch/branch-appointments.md`).
-- **Data fields:** Branch Manager READ-ONLY appointment visibility: date, masked client summary, service, assigned personnel, status, start/end time. No create, assign, transfer, reschedule, cancel, check-in, or no-show controls — appointment operations are Front Office only and backend-enforced; unmasked client contact is never shown.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `branch.operations-appointments` (recorded in `docs/frontend/screens/branch/branch-appointments-read-view.md`).
+- **Data fields:** Read-only visibility of current and future assigned-branch appointments without Front Office scheduling controls.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

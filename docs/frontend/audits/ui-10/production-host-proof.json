@@ -1,0 +1,52 @@
+{
+  "schema": "servana.ui10.production-host-proof.v1",
+  "phase": "UI-10",
+  "source_state": "final stabilized runtime source after the whole-product cold-route harness correction, before documentation-only closeout",
+  "images": [
+    {
+      "tag": "servana-ui10-php:audit",
+      "id": "sha256:56c853a1b2c8f4b07fa0845b04df50da5288cead59799673fc0fa17d2249cd43",
+      "size_bytes": 908438922,
+      "created_utc": "2026-08-13T03:02:04.375269824Z",
+      "dockerfile": "docker/php.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0,
+      "build_duration_seconds": 1029.1
+    },
+    {
+      "tag": "servana-ui10-nginx:audit",
+      "id": "sha256:fd348f4d45cc9ed8c761d854280621f9431099caf6e41fbcad3b10ecb2f5000b",
+      "size_bytes": 317579259,
+      "created_utc": "2026-08-13T03:04:23.64013184Z",
+      "dockerfile": "docker/nginx.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0,
+      "build_duration_seconds": 89.4
+    }
+  ],
+  "unchanged_image_not_rebuilt": "docker/php.Dockerfile dev target; it is seeded only from unchanged Composer manifests and bind-mounts runtime source",
+  "topology": {
+    "network": "ui10-proof-net",
+    "app": "ui10-proof-app with network alias app, array session/cache, sync queue and ephemeral local SQLite",
+    "edge": "ui10-proof-nginx on 127.0.0.1:8110",
+    "project_volume_mounted": false,
+    "production_dns_or_tls_touched": false,
+    "removed_after_proof": true
+  },
+  "nginx_syntax": { "exit_code": 0, "result": "syntax is ok; test is successful" },
+  "canonical_host": {
+    "command": "node scripts/ui10-production-host-proof.mjs http://127.0.0.1:8110",
+    "host": "branch.servana.ke",
+    "implemented_routes_200_with_branch_context": 15,
+    "gated_routes_ordinary_shell_only": 3,
+    "compatibility_paths_same_account": 7,
+    "wrong_account_collision_checks": 3,
+    "unknown_host_refused": true,
+    "fingerprinted_assets_and_mime": "all seven referenced assets returned 200 with expected MIME",
+    "javascript_source_map_status": 404,
+    "passed": 38,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "production_route_count": 348
+}

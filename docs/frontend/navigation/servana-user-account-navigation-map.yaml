@@ -1780,12 +1780,13 @@ pages:
     route_path: "/dashboard"
     screen_key_path: "contract/merchant_branch/dashboard.md"
     owner_phase: UI-10
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-10 (COR-UI10-001)"
+    implementation_status: implemented
+    runtime_route_name: "branch.dashboard"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "branch.dashboard.view"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -1852,13 +1853,13 @@ pages:
     route_path: "/branch/profile"
     screen_key_path: "contract/merchant_branch/branch-profile.md"
     owner_phase: UI-10
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 7"
+    implementation_status: implemented
+    runtime_route_name: "branch.branch-profile"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
-      - "branch.profile.view"
+      - "branch.profile.manage"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -1889,13 +1890,13 @@ pages:
     route_path: "/branch/calendar"
     screen_key_path: "contract/merchant_branch/branch-calendar.md"
     owner_phase: UI-10
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 7"
+    implementation_status: implemented
+    runtime_route_name: "branch.branch-calendar"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
-      - "branch.profile.view"
+      - "branch.calendar.manage"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -1926,12 +1927,13 @@ pages:
     route_path: "/branch/day"
     screen_key_path: "contract/merchant_branch/branch-day.md"
     owner_phase: UI-10
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 7"
+    implementation_status: implemented
+    runtime_route_name: "branch.branch-day"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "day.open_close"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -2001,7 +2003,7 @@ pages:
     owner_phase: UI-10
     backend_owner_phase: "Phase 15B"
     implementation_status: implemented
-    runtime_route_name: "branch.personnel-schedule"
+    runtime_route_name: "branch.staff"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -2038,7 +2040,7 @@ pages:
     owner_phase: UI-10
     backend_owner_phase: "Phase 16B"
     implementation_status: implemented
-    runtime_route_name: "branch.queue"
+    runtime_route_name: "branch.operations-queue"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -2075,7 +2077,7 @@ pages:
     owner_phase: UI-10
     backend_owner_phase: "Phase 16A"
     implementation_status: implemented
-    runtime_route_name: "branch.appointments"
+    runtime_route_name: "branch.operations-appointments"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -2110,12 +2112,13 @@ pages:
     route_path: "/finance/invoices"
     screen_key_path: "contract/merchant_branch/finance-invoices.md"
     owner_phase: UI-10
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-10 (COR-UI10-001)"
+    implementation_status: implemented
+    runtime_route_name: "branch.finance-invoices"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "branch.dashboard.view"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -2146,12 +2149,13 @@ pages:
     route_path: "/finance/payments"
     screen_key_path: "contract/merchant_branch/finance-payments.md"
     owner_phase: UI-10
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-10 (COR-UI10-001)"
+    implementation_status: implemented
+    runtime_route_name: "branch.finance-payments"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "branch.dashboard.view"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -2182,12 +2186,13 @@ pages:
     route_path: "/finance/receipts"
     screen_key_path: "contract/merchant_branch/finance-receipts.md"
     owner_phase: UI-10
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 18B"
+    implementation_status: implemented
+    runtime_route_name: "branch.finance-receipts"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "receipt.view"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -2291,12 +2296,13 @@ pages:
     route_path: "/audit"
     screen_key_path: "contract/merchant_branch/audit.md"
     owner_phase: UI-10
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-10 (COR-UI10-001)"
+    implementation_status: implemented
+    runtime_route_name: "branch.audit"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "reports.view"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -2399,10 +2405,10 @@ pages:
     route_path: "/account"
     screen_key_path: "contract/merchant_branch/account.md"
     owner_phase: UI-10
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-04"
+    implementation_status: implemented
+    runtime_route_name: "branch.account"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all: []
     scope: branch

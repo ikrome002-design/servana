@@ -1,0 +1,228 @@
+{
+  "schema": "servana.ui10.page-readiness.v1",
+  "phase": "UI-10",
+  "account": "merchant_branch",
+  "host": "branch.servana.ke",
+  "baseline": {
+    "branch_pages": 18,
+    "global_pages": 160,
+    "permissions": { "total": 169, "active": 134, "planned": 35 },
+    "openapi_operations": 337,
+    "external_gate_w": "closed"
+  },
+  "rows": [
+    {
+      "screen_key": "dashboard", "route_name": "branch.dashboard", "route_path": "/dashboard", "navigation_group": "Home",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": null, "shared_route_owners": [],
+      "store_or_read_model": "BranchWorkspaceReadModel + branchExperienceStore", "backend_owner_phase": "completed branch/scheduling/financial domains; UI-10 narrow read",
+      "api_operations": ["GET /api/v1/branches/{branch}/dashboard"], "api_readiness": "implemented by UI-10 after class-D audit",
+      "permission_any": ["branch.dashboard.view"], "permission_all": [], "permission_status": "active; no new key",
+      "scope": "merchant + assigned branch", "mfa": false, "step_up": false, "entitlement_behavior": "server-derived", "billing_or_read_only_behavior": "reads allowed; mutations gated independently",
+      "external_gate": null, "existing_tests_or_browser_proof": [], "missing_work": ["truthful aggregate", "canonical route/component", "states", "component/E2E/authz proof"],
+      "classification": "D", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "get-started", "route_name": "branch.get-started", "route_path": "/get-started", "navigation_group": "Home",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented",
+      "current_route_exists": true, "current_component_exists": true, "legacy_or_consolidated_surface": "/branch/get-started -> RoleGetStarted.vue", "shared_route_owners": ["all account get-started experiences"],
+      "store_or_read_model": "RoleGetStarted + Branch workspace facts", "backend_owner_phase": "Phase 11 plus completed domains",
+      "api_operations": ["GET /api/v1/branches/{branch}/dashboard"], "api_readiness": "implemented and consumed by UI-10",
+      "permission_any": ["branch.dashboard.view"], "permission_all": [], "permission_status": "active",
+      "scope": "branch", "mfa": false, "step_up": false, "entitlement_behavior": "observed server truth", "billing_or_read_only_behavior": "gated steps cannot be manually completed",
+      "external_gate": null, "existing_tests_or_browser_proof": ["shared RoleGetStarted tests"], "missing_work": ["canonical route", "branch checklist persistence/reopen", "responsible-role labels", "browser proof"],
+      "classification": "C", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "branch-profile", "route_name": "branch.branch-profile", "route_path": "/branch/profile", "navigation_group": "Branch Setup",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": "/branch/:id -> BranchDetail.vue", "shared_route_owners": ["merchant_administrator legacy branch oversight"],
+      "store_or_read_model": "branchStore", "backend_owner_phase": "completed Phase 7/20A branch profile",
+      "api_operations": ["GET /api/v1/branches/{branch}", "PATCH /api/v1/branches/{branch}"], "api_readiness": "ready; dedicated own-branch page missing",
+      "permission_any": [], "permission_all": ["branch.profile.manage"], "permission_status": "active runtime successor seam; planned branch.profile.view is not activated",
+      "scope": "assigned branch", "mfa": false, "step_up": false, "entitlement_behavior": "existing branch policy", "billing_or_read_only_behavior": "read allowed; mutation blocked in read-only",
+      "external_gate": null, "existing_tests_or_browser_proof": ["BranchCrudTest", "BranchRouteBindingTest"], "missing_work": ["dedicated safe component", "canonical route", "closure-blocker presentation", "browser proof"],
+      "classification": "C", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "branch-calendar", "route_name": "branch.branch-calendar", "route_path": "/branch/calendar", "navigation_group": "Branch Setup",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": "/branch/:id/operating-hours + /branch/:id/calendar", "shared_route_owners": [],
+      "store_or_read_model": "branchStore + branchCalendarStore", "backend_owner_phase": "completed branch calendar",
+      "api_operations": ["GET/PUT /api/v1/branches/{branch}/operating-hours", "GET/POST/PATCH/DELETE /api/v1/branches/{branch}/calendar-exceptions"], "api_readiness": "ready; canonical combined page missing",
+      "permission_any": [], "permission_all": ["branch.profile.manage", "branch.calendar.manage"], "permission_status": "active",
+      "scope": "assigned branch", "mfa": false, "step_up": false, "entitlement_behavior": "existing", "billing_or_read_only_behavior": "reads allowed; writes block",
+      "external_gate": null, "existing_tests_or_browser_proof": ["BranchOperatingHoursTest", "BranchCalendarExceptionApiTest", "BranchCalendar.spec.ts"], "missing_work": ["combined canonical component", "closure impact copy", "canonical route", "browser proof"],
+      "classification": "C", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "branch-day", "route_name": "branch.branch-day", "route_path": "/branch/day", "navigation_group": "Branch Operations",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": "queue configuration exposes partial current-day state", "shared_route_owners": [],
+      "store_or_read_model": "BranchWorkspaceReadModel + branchDayStore", "backend_owner_phase": "completed branch day/cash-up/scheduling domains; UI-10 narrow read",
+      "api_operations": ["GET /api/v1/branches/{branch}/dashboard", "POST /api/v1/branches/{branch}/day/open", "POST /api/v1/branches/{branch}/day/close"], "api_readiness": "implemented read/blocker projection plus existing mutations",
+      "permission_any": ["branch.dashboard.view"], "permission_all": ["day.open_close"], "permission_status": "active; planned branch.day.* keys remain inactive",
+      "scope": "assigned branch + Nairobi business date", "mfa": false, "step_up": false, "entitlement_behavior": "existing lifecycle gates", "billing_or_read_only_behavior": "mutations blocked; reads allowed",
+      "external_gate": null, "existing_tests_or_browser_proof": ["BranchDayLifecycleTest", "BranchDayCloseCashUpGuardTest"], "missing_work": ["read projection", "dominant lifecycle component", "blocker links", "browser proof"],
+      "classification": "D", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "services", "route_name": "branch.services", "route_path": "/services", "navigation_group": "Branch Operations",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented",
+      "current_route_exists": true, "current_component_exists": true, "legacy_or_consolidated_surface": "/branch/services", "shared_route_owners": [],
+      "store_or_read_model": "serviceStore + branchPreferredFeeStore", "backend_owner_phase": "Phase 15A/20A complete",
+      "api_operations": ["GET/POST /api/v1/services", "PATCH /api/v1/services/{service}", "POST /api/v1/services/{service}/archive", "GET /api/v1/branch/preferred-personnel-fee-rule"], "api_readiness": "ready",
+      "permission_any": [], "permission_all": ["service.view"], "permission_status": "service view/create/update/archive active",
+      "scope": "assigned branch", "mfa": false, "step_up": false, "entitlement_behavior": "server-enforced", "billing_or_read_only_behavior": "read allowed; catalogue mutation blocked",
+      "external_gate": null, "existing_tests_or_browser_proof": ["ServiceCatalogue.spec.ts", "service API suites"], "missing_work": ["canonical route", "UI-10 visual/states/browser proof"],
+      "classification": "A", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "staff", "route_name": "branch.staff", "route_path": "/staff", "navigation_group": "Branch Operations",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented",
+      "current_route_exists": true, "current_component_exists": true, "legacy_or_consolidated_surface": "/branch/personnel-schedule", "shared_route_owners": [],
+      "store_or_read_model": "availabilityStore + narrow Branch personnel options", "backend_owner_phase": "Phase 15B/23 complete",
+      "api_operations": ["GET /api/v1/branch/personnel-options", "GET /api/v1/staff/{staff}/availability"], "api_readiness": "ready for masked overview; page currently one-person schedule",
+      "permission_any": ["branch.dashboard.view"], "permission_all": [], "permission_status": "active; staff.view remains HR-only",
+      "scope": "assigned branch", "mfa": false, "step_up": false, "entitlement_behavior": "read only", "billing_or_read_only_behavior": "allow read",
+      "external_gate": null, "existing_tests_or_browser_proof": ["PersonnelSchedule.spec.ts", "BranchPersonnelOptionsTest"], "missing_work": ["readiness-first overview", "canonical route", "HR-owner labels", "browser proof"],
+      "classification": "B", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "operations-queue", "route_name": "branch.operations-queue", "route_path": "/operations/queue", "navigation_group": "Operational Visibility",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented",
+      "current_route_exists": true, "current_component_exists": true, "legacy_or_consolidated_surface": "/branch/queue", "shared_route_owners": [],
+      "store_or_read_model": "queueStore", "backend_owner_phase": "Phase 16B complete",
+      "api_operations": ["GET /api/v1/queue"], "api_readiness": "ready; policy accepts branch.dashboard.view read only",
+      "permission_any": ["branch.dashboard.view"], "permission_all": [], "permission_status": "active; no queue mutation key",
+      "scope": "assigned branch", "mfa": false, "step_up": false, "entitlement_behavior": "read only", "billing_or_read_only_behavior": "allow read",
+      "external_gate": null, "existing_tests_or_browser_proof": ["QueueBranchClosureTest", "queue E2E"], "missing_work": ["canonical route", "read-only visual refinement", "browser security proof"],
+      "classification": "A", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "operations-appointments", "route_name": "branch.operations-appointments", "route_path": "/operations/appointments", "navigation_group": "Operational Visibility",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented",
+      "current_route_exists": true, "current_component_exists": true, "legacy_or_consolidated_surface": "/branch/appointments", "shared_route_owners": [],
+      "store_or_read_model": "appointmentStore", "backend_owner_phase": "Phase 16A complete",
+      "api_operations": ["GET /api/v1/appointments"], "api_readiness": "ready; policy accepts branch.dashboard.view read only",
+      "permission_any": ["branch.dashboard.view"], "permission_all": [], "permission_status": "active; no appointment mutation key",
+      "scope": "assigned branch", "mfa": false, "step_up": false, "entitlement_behavior": "read only", "billing_or_read_only_behavior": "allow read",
+      "external_gate": null, "existing_tests_or_browser_proof": ["AppointmentBranchClosureTest", "appointments E2E"], "missing_work": ["canonical route", "closure-overlay/read-only polish", "browser security proof"],
+      "classification": "A", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "finance-invoices", "route_name": "branch.finance-invoices", "route_path": "/finance/invoices", "navigation_group": "Financial Visibility",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": "InvoiceList is Front Office/Finance authority", "shared_route_owners": [],
+      "store_or_read_model": "required BranchFinancialVisibilityQuery + branchFinanceStore", "backend_owner_phase": "Phase 17 complete; UI-10 narrow read",
+      "api_operations": ["GET /api/v1/branches/{branch}/financial-visibility/invoices"], "api_readiness": "implemented narrow paginated projection; invoice.view still excludes Branch Manager",
+      "permission_any": ["branch.dashboard.view", "reports.view"], "permission_all": [], "permission_status": "both active; do not grant invoice.view/create",
+      "scope": "assigned branch, masked", "mfa": false, "step_up": false, "entitlement_behavior": "read only", "billing_or_read_only_behavior": "allow read",
+      "external_gate": null, "existing_tests_or_browser_proof": ["Invoice policy denial is existing"], "missing_work": ["narrow paginated projection", "read-only component", "isolation/forbidden mutation proof"],
+      "classification": "D", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "finance-payments", "route_name": "branch.finance-payments", "route_path": "/finance/payments", "navigation_group": "Financial Visibility",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": "PaymentGroupList is Finance authority", "shared_route_owners": [],
+      "store_or_read_model": "required BranchFinancialVisibilityQuery + branchFinanceStore", "backend_owner_phase": "Phase 18A/B complete; UI-10 narrow read",
+      "api_operations": ["GET /api/v1/branches/{branch}/financial-visibility/payment-records"], "api_readiness": "implemented narrow paginated projection; customer_payment.view still excludes Branch Manager",
+      "permission_any": ["branch.dashboard.view", "reports.view"], "permission_all": [], "permission_status": "active visibility keys; no record/validate/reject/correct permission",
+      "scope": "assigned branch, references masked", "mfa": false, "step_up": false, "entitlement_behavior": "read only", "billing_or_read_only_behavior": "allow read",
+      "external_gate": null, "existing_tests_or_browser_proof": ["Payment maker/checker denial suites"], "missing_work": ["narrow paginated projection", "read-only component", "server denial proof"],
+      "classification": "D", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "finance-receipts", "route_name": "branch.finance-receipts", "route_path": "/finance/receipts", "navigation_group": "Financial Visibility",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented",
+      "current_route_exists": false, "current_component_exists": true, "legacy_or_consolidated_surface": "finance ReceiptList.vue can supply read presentation but exposes Finance context", "shared_route_owners": ["merchant_finance", "merchant_front_office"],
+      "store_or_read_model": "receiptStore", "backend_owner_phase": "Phase 18B complete",
+      "api_operations": ["GET /api/v1/receipts", "GET /api/v1/receipts/{receipt}", "POST download-link"], "api_readiness": "ready; receipt.view active for Branch Manager",
+      "permission_any": [], "permission_all": ["receipt.view"], "permission_status": "active; receipt.reissue absent",
+      "scope": "assigned branch", "mfa": false, "step_up": false, "entitlement_behavior": "read/download only", "billing_or_read_only_behavior": "allow existing reads/download",
+      "external_gate": null, "existing_tests_or_browser_proof": ["Receipt API tests", "ReceiptList runtime"], "missing_work": ["Branch-safe read-only page", "canonical route", "no reissue proof"],
+      "classification": "C", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "cash-up", "route_name": "branch.cash-up", "route_path": "/cash-up", "navigation_group": "Branch Operations",
+      "current_implementation_status": "implemented", "target_implementation_status": "implemented",
+      "current_route_exists": true, "current_component_exists": true, "legacy_or_consolidated_surface": "/branch/cash-up", "shared_route_owners": [],
+      "store_or_read_model": "cashUpStore", "backend_owner_phase": "Phase 18B complete",
+      "api_operations": ["GET/PUT /api/v1/branches/{branch}/cash-ups/{date}", "POST submit/resubmit"], "api_readiness": "ready; expected totals server-derived",
+      "permission_any": [], "permission_all": ["branch.cash_up.submit"], "permission_status": "active; maker incompatible with cash_up.approve",
+      "scope": "assigned branch + business date", "mfa": false, "step_up": false, "entitlement_behavior": "existing", "billing_or_read_only_behavior": "mutation/period lock enforced",
+      "external_gate": null, "existing_tests_or_browser_proof": ["CashUp.spec.ts", "cash-up maker/checker suites"], "missing_work": ["canonical route", "visual/state refinement", "browser maker/checker proof"],
+      "classification": "A", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "reports", "route_name": "branch.reports", "route_path": "/reports", "navigation_group": "Reporting",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": null, "shared_route_owners": [],
+      "store_or_read_model": null, "backend_owner_phase": "Phase 21N blocked",
+      "api_operations": [], "api_readiness": "core report catalogue/materialized views unavailable",
+      "permission_any": [], "permission_all": ["branch.report.view"], "permission_status": "planned; legacy reports.view does not deliver the required report contract",
+      "scope": "branch", "mfa": false, "step_up": false, "entitlement_behavior": "gated", "billing_or_read_only_behavior": "no fake export/PDF",
+      "external_gate": "External Gate W -> 20D-W -> 21N", "existing_tests_or_browser_proof": [], "missing_work": ["owned by Phase 21N after Gate W"],
+      "classification": "E", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "audit", "route_name": "branch.audit", "route_path": "/audit", "navigation_group": "Reporting",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": "Audit account raw log UI is intentionally separate", "shared_route_owners": [],
+      "store_or_read_model": "required BranchAuditVisibilityQuery + branchAuditStore", "backend_owner_phase": "Phase 19 complete; UI-10 narrow read",
+      "api_operations": ["GET /api/v1/branches/{branch}/audit-events"], "api_readiness": "implemented masked paginated projection; Branch Manager has no raw Audit-account key by design",
+      "permission_any": ["branch.dashboard.view", "reports.view"], "permission_all": [], "permission_status": "active visibility keys; no audit workflow permission",
+      "scope": "assigned branch, field-masked, read only", "mfa": false, "step_up": false, "entitlement_behavior": "read only", "billing_or_read_only_behavior": "allow read",
+      "external_gate": null, "existing_tests_or_browser_proof": ["Audit immutability and branch-scope suites"], "missing_work": ["narrow segmented projection", "read-only page", "masking/isolation proof"],
+      "classification": "D", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "subscription-payment", "route_name": "branch.subscription-payment", "route_path": "/subscription/payment", "navigation_group": "Billing Notice",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": null, "shared_route_owners": [],
+      "store_or_read_model": null, "backend_owner_phase": "Phase 20D-W blocked",
+      "api_operations": [], "api_readiness": "Wallet collection runtime unavailable",
+      "permission_any": [], "permission_all": ["merchant.subscription.pay_from_branch"], "permission_status": "planned; requires MFA when eventually active",
+      "scope": "branch-context merchant invoice", "mfa": true, "step_up": "per future payment contract", "entitlement_behavior": "gated", "billing_or_read_only_behavior": "no success at initiation",
+      "external_gate": "External Gate W / 20D-W", "existing_tests_or_browser_proof": [], "missing_work": ["owned by 20D-W after Gate W"],
+      "classification": "E", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "notifications", "route_name": "branch.notifications", "route_path": "/notifications", "navigation_group": "Utility",
+      "current_implementation_status": "disabled_by_gate", "target_implementation_status": "disabled_by_gate",
+      "current_route_exists": false, "current_component_exists": false, "legacy_or_consolidated_surface": null, "shared_route_owners": [],
+      "store_or_read_model": null, "backend_owner_phase": "Phase 21N blocked",
+      "api_operations": [], "api_readiness": "notification persistence/delivery unavailable",
+      "permission_any": [], "permission_all": [], "permission_status": "no active Branch notification contract",
+      "scope": "branch", "mfa": false, "step_up": false, "entitlement_behavior": "gated", "billing_or_read_only_behavior": "no fake records/network calls",
+      "external_gate": "External Gate W -> 20D-W -> 21N", "existing_tests_or_browser_proof": [], "missing_work": ["owned by Phase 21N"],
+      "classification": "E", "blocking_ambiguity": null
+    },
+    {
+      "screen_key": "account", "route_name": "branch.account", "route_path": "/account", "navigation_group": "Utility",
+      "current_implementation_status": "planned", "target_implementation_status": "implemented",
+      "current_route_exists": false, "current_component_exists": true, "legacy_or_consolidated_surface": "shared own-account/session/MFA/preferences surfaces", "shared_route_owners": ["platform", "merchant_administrator"],
+      "store_or_read_model": "authStore + account/session/MFA/theme stores", "backend_owner_phase": "R3/R6/UI-03/UI-04 complete",
+      "api_operations": ["GET/PATCH /api/v1/me", "session family and MFA endpoints"], "api_readiness": "ready; Branch presentation missing",
+      "permission_any": [], "permission_all": [], "permission_status": "own-account scope",
+      "scope": "own identity + assigned branch", "mfa": "optional enrollment; future gated actions may require", "step_up": false, "entitlement_behavior": "own scope", "billing_or_read_only_behavior": "preferences remain available",
+      "external_gate": null, "existing_tests_or_browser_proof": ["UI-03 session/MFA tests", "Merchant account component"], "missing_work": ["Branch-safe shared component/route", "active branch header", "browser proof"],
+      "classification": "C", "blocking_ambiguity": null
+    }
+  ],
+  "classification_totals": { "A": 4, "B": 1, "C": 5, "D": 5, "E": 3, "F": 0 },
+  "target_disposition": { "implemented": 15, "disabled_by_gate": 3, "planned": 0, "removed_by_authority": 0, "total": 18 },
+  "permission_delta_expected": { "added": 0, "activated": 0 },
+  "final_execution": {
+    "lifecycle": "local_complete",
+    "implemented": 15,
+    "disabled_by_gate": 3,
+    "planned": 0,
+    "removed_by_authority": 0,
+    "openapi_operations": 341,
+    "permission_delta": { "added": 0, "activated": 0 },
+    "focused_backend": { "tests": 4, "assertions": 57 },
+    "focused_browser": { "passed": 52, "failed": 0 }
+  },
+  "blocking_ambiguities": []
+}

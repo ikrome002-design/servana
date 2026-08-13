@@ -306,11 +306,11 @@
     {
       "key": "branch-list",
       "domain": "branch",
-      "route": "branch.list",
+      "route": null,
       "layout": "BranchLayout",
-      "status": "implemented",
-      "phase": "Phase 7",
-      "spec": "branch/branch-list.md",
+      "status": "removed_by_authority",
+      "phase": "UI-10",
+      "spec": null,
       "title": "Branch directory",
       "roles": [
         "merchant_administrator",
@@ -320,16 +320,16 @@
         "merchant.branch.view_all",
         "branch.profile.view"
       ],
-      "summary": "Branch directory list."
+      "summary": "Retired after UI-09 delivered the Merchant Administrator branch directory at merchant.branches and UI-10 made the assigned-branch profile the Branch account authority."
     },
     {
       "key": "branch-create",
-      "domain": "branch",
-      "route": "branch.create",
-      "layout": "BranchLayout",
+      "domain": "merchant",
+      "route": "merchant.branch-create",
+      "layout": "MerchantLayout",
       "status": "implemented",
-      "phase": "Phase 7",
-      "spec": "branch/branch-create.md",
+      "phase": "UI-10",
+      "spec": "merchant/merchant-branch-create.md",
       "title": "Create branch",
       "roles": [
         "merchant_administrator"
@@ -337,16 +337,16 @@
       "permissions": [
         "merchant.branch.create"
       ],
-      "summary": "Create a merchant branch (entitlement-gated)."
+      "summary": "Supporting entitlement-gated Merchant Administrator branch-creation form reached from the canonical branch directory. It is not a separate authenticated navigation-contract page and Branch Manager never owns it."
     },
     {
       "key": "branch-detail",
       "domain": "branch",
-      "route": "branch.detail",
+      "route": null,
       "layout": "BranchLayout",
-      "status": "implemented",
-      "phase": "Phase 7",
-      "spec": "branch/branch-detail.md",
+      "status": "removed_by_authority",
+      "phase": "UI-10",
+      "spec": null,
       "title": "Branch detail",
       "roles": [
         "merchant_administrator",
@@ -355,7 +355,7 @@
       "permissions": [
         "branch.profile.view"
       ],
-      "summary": "Branch profile detail."
+      "summary": "Retired in favor of merchant.branch-detail for owner oversight and branch.branch-profile for the assigned Branch Manager context."
     },
     {
       "key": "branch-operating-hours",
@@ -367,7 +367,6 @@
       "spec": "branch/branch-operating-hours.md",
       "title": "Operating hours",
       "roles": [
-        "merchant_administrator",
         "merchant_branch"
       ],
       "permissions": [
@@ -966,6 +965,162 @@
       "summary": "Own-scope identity, verified email, mandatory MFA, Magic Link sessions, theme preference and account-context switching with Merchant-specific wording and no password controls."
     },
     {
+      "key": "branch-dashboard",
+      "domain": "branch",
+      "route": "branch.dashboard",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-dashboard.md",
+      "title": "Branch dashboard",
+      "roles": ["merchant_branch"],
+      "permissions": ["branch.dashboard.view"],
+      "summary": "Live assigned-branch operating home with server-derived readiness, day state, workload, cash-up, catalogue, and performance facts."
+    },
+    {
+      "key": "branch-profile",
+      "domain": "branch",
+      "route": "branch.branch-profile",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-profile.md",
+      "title": "Branch profile",
+      "roles": ["merchant_branch"],
+      "permissions": ["branch.profile.manage"],
+      "summary": "Assigned-branch identity, contact, address, category and status context with branch-scoped profile management authority."
+    },
+    {
+      "key": "branch-operating-calendar",
+      "domain": "branch",
+      "route": "branch.branch-calendar",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-operating-calendar.md",
+      "title": "Operating calendar",
+      "roles": ["merchant_branch"],
+      "permissions": ["branch.calendar.manage"],
+      "summary": "Canonical Branch account route for weekly operating hours, split sessions and date-specific branch calendar exceptions."
+    },
+    {
+      "key": "branch-day-operations",
+      "domain": "branch",
+      "route": "branch.branch-day",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-day-operations.md",
+      "title": "Branch day operations",
+      "roles": ["merchant_branch"],
+      "permissions": ["day.open_close"],
+      "summary": "Server-authoritative branch business-day state machine with explicit opening, closing and unresolved close-blocker treatment."
+    },
+    {
+      "key": "branch-staff-overview",
+      "domain": "branch",
+      "route": "branch.staff",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-staff-overview.md",
+      "title": "Staff and availability overview",
+      "roles": ["merchant_branch"],
+      "permissions": ["branch.dashboard.view"],
+      "summary": "Read-only assigned-branch personnel readiness, availability and scheduling context without taking over HR assignment authority."
+    },
+    {
+      "key": "branch-queue-read-view",
+      "domain": "branch",
+      "route": "branch.operations-queue",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-queue-read-view.md",
+      "title": "Queue read view",
+      "roles": ["merchant_branch"],
+      "permissions": ["branch.dashboard.view"],
+      "summary": "Read-only branch queue monitoring that preserves Front Office ownership of assignment and transfer actions."
+    },
+    {
+      "key": "branch-appointments-read-view",
+      "domain": "branch",
+      "route": "branch.operations-appointments",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-appointments-read-view.md",
+      "title": "Appointments read view",
+      "roles": ["merchant_branch"],
+      "permissions": ["branch.dashboard.view"],
+      "summary": "Read-only visibility of current and future assigned-branch appointments without Front Office scheduling controls."
+    },
+    {
+      "key": "branch-invoices-read-view",
+      "domain": "branch",
+      "route": "branch.finance-invoices",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-invoices-read-view.md",
+      "title": "Invoices read view",
+      "roles": ["merchant_branch"],
+      "permissions": ["branch.dashboard.view"],
+      "summary": "Paginated branch-scoped invoice status and revenue visibility with every invoice mutation capability explicitly absent."
+    },
+    {
+      "key": "branch-payments-read-view",
+      "domain": "branch",
+      "route": "branch.finance-payments",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-payments-read-view.md",
+      "title": "Payment records read view",
+      "roles": ["merchant_branch"],
+      "permissions": ["branch.dashboard.view"],
+      "summary": "Paginated branch-scoped payment-record status visibility without recording, validation, rejection or reference-correction authority."
+    },
+    {
+      "key": "branch-receipts-read-view",
+      "domain": "branch",
+      "route": "branch.finance-receipts",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-receipts-read-view.md",
+      "title": "Receipts read view",
+      "roles": ["merchant_branch"],
+      "permissions": ["receipt.view"],
+      "summary": "Assigned-branch receipt visibility after Finance validation with no issue, reissue or validation controls."
+    },
+    {
+      "key": "branch-audit-log",
+      "domain": "branch",
+      "route": "branch.audit",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-audit-log.md",
+      "title": "Branch audit log",
+      "roles": ["merchant_branch"],
+      "permissions": ["reports.view"],
+      "summary": "Paginated read-only branch audit-event projection that complements, but does not replace, the dedicated Audit account."
+    },
+    {
+      "key": "branch-account-security",
+      "domain": "branch",
+      "route": "branch.account",
+      "layout": "BranchLayout",
+      "status": "implemented",
+      "phase": "UI-10",
+      "spec": "branch/branch-account-security.md",
+      "title": "Branch account and preferences",
+      "roles": ["merchant_branch"],
+      "permissions": [],
+      "summary": "Own-scope identity, verified email, MFA, Magic Link sessions, theme preference and account-context switching with Branch wording and no passwords."
+    },
+    {
       "key": "service-catalogue",
       "domain": "branch",
       "route": "branch.services",
@@ -1022,11 +1177,11 @@
     {
       "key": "personnel-schedule",
       "domain": "branch",
-      "route": "branch.personnel-schedule",
+      "route": null,
       "layout": "BranchLayout",
-      "status": "implemented",
-      "phase": "Phase 15B",
-      "spec": "branch/personnel-schedule.md",
+      "status": "removed_by_authority",
+      "phase": "UI-10",
+      "spec": null,
       "title": "Personnel schedule",
       "roles": [
         "merchant_branch"
@@ -1034,16 +1189,16 @@
       "permissions": [
         "branch.dashboard.view"
       ],
-      "summary": "Branch Manager READ-ONLY personnel schedule visibility: current availability state, today's working intervals, breaks, temporary unavailability, the weekly schedule, and active eligible services. No edit, save, emergency, eligibility, or replacement controls — mutation is HR-only and backend-enforced."
+      "summary": "Retired in favor of the canonical UI-10 branch.staff route, which preserves this read-only schedule and availability behavior."
     },
     {
       "key": "branch-appointments",
       "domain": "branch",
-      "route": "branch.appointments",
+      "route": null,
       "layout": "BranchLayout",
-      "status": "implemented",
-      "phase": "Phase 16A",
-      "spec": "branch/branch-appointments.md",
+      "status": "removed_by_authority",
+      "phase": "UI-10",
+      "spec": null,
       "title": "Appointments (read-only)",
       "roles": [
         "merchant_branch"
@@ -1051,16 +1206,16 @@
       "permissions": [
         "branch.dashboard.view"
       ],
-      "summary": "Branch Manager READ-ONLY appointment visibility: date, masked client summary, service, assigned personnel, status, start/end time. No create, assign, transfer, reschedule, cancel, check-in, or no-show controls — appointment operations are Front Office only and backend-enforced; unmasked client contact is never shown."
+      "summary": "Retired in favor of the canonical UI-10 branch.operations-appointments route, which preserves the same read-only authority boundary."
     },
     {
       "key": "branch-queue",
       "domain": "branch",
-      "route": "branch.queue",
+      "route": null,
       "layout": "BranchLayout",
-      "status": "implemented",
-      "phase": "Phase 16B",
-      "spec": "branch/branch-queue.md",
+      "status": "removed_by_authority",
+      "phase": "UI-10",
+      "spec": null,
       "title": "Queue (read-only)",
       "roles": [
         "merchant_branch"
@@ -1068,7 +1223,7 @@
       "permissions": [
         "branch.dashboard.view"
       ],
-      "summary": "Branch Manager READ-ONLY queue visibility: position, masked client, service, assigned personnel, status, assignment mode, and labelled wait estimate. No create, assign, transfer, reorder, call, start, complete, cancel, or no-show controls — queue operations are Front Office only and backend-enforced. Links to the separate queue settings screen."
+      "summary": "Retired in favor of the canonical UI-10 branch.operations-queue route, which preserves the same read-only authority boundary."
     },
     {
       "key": "branch-queue-configuration",
@@ -1091,11 +1246,11 @@
     {
       "key": "branch-calendar",
       "domain": "branch",
-      "route": "branch.calendar",
+      "route": null,
       "layout": "BranchLayout",
-      "status": "implemented",
-      "phase": "Phase 23",
-      "spec": "branch/branch-calendar.md",
+      "status": "removed_by_authority",
+      "phase": "UI-10",
+      "spec": null,
       "title": "Branch calendar",
       "roles": [
         "merchant_branch"
@@ -1103,7 +1258,7 @@
       "permissions": [
         "branch.calendar.manage"
       ],
-      "summary": "Branch Manager creates, edits and removes date-specific calendar exceptions — public holiday, special closure, emergency closure (all full-day) and modified hours — over the existing branch_calendar_exceptions table. Exactly one exception per date. Delivered by REM-SCR-002B as a corrective remediation for a Plan §27.3 launch screen omitted by its owning phase: the table, model and the AppointmentBranchScheduleValidator that honours these dates all already shipped, but no operator surface existed. Day open/pause/close remains the separate Branch Day workflow."
+      "summary": "Retired in favor of the canonical UI-10 branch.branch-calendar route, which preserves the completed date-exception behavior."
     },
     {
       "key": "branch-cash-up",

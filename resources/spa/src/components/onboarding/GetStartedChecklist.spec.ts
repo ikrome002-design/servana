@@ -16,8 +16,10 @@ function makeRouter(): Router {
     routes: [
       { path: '/', name: 'test.home', component: stub },
       { path: '/branch/create', name: 'branch.create', component: stub },
-      { path: '/branches', name: 'branch.list', component: stub },
       { path: '/branch-services', name: 'branch.services', component: stub },
+      { path: '/branch-profile', name: 'branch.branch-profile', component: stub },
+      { path: '/branch-calendar', name: 'branch.branch-calendar', component: stub },
+      { path: '/branch-day', name: 'branch.branch-day', component: stub },
       { path: '/dashboard', name: 'merchant.dashboard', component: stub },
       { path: '/merchant-profile', name: 'merchant.merchant-profile', component: stub },
       { path: '/merchant-branches', name: 'merchant.branches', component: stub },

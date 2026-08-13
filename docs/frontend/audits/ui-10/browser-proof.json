@@ -1,0 +1,57 @@
+{
+  "schema": "servana.ui10.browser-proof.v1",
+  "phase": "UI-10",
+  "account": "merchant_branch",
+  "focused_playwright": {
+    "command": "npx playwright test tests/e2e/ui-10-branch-experience.spec.ts --project=chromium --reporter=line",
+    "built_spa": true,
+    "fixtures": "synthetic API payloads; genuine Vue router, Pinia stores, components and shared shell",
+    "passed": 52, "failed": 0, "flaky": 0, "skipped": 0, "exit_code": 0, "duration_seconds": 145.6,
+    "unexpected_console_errors": 0, "unexpected_failed_requests": 0, "uncaught_page_errors": 0
+  },
+  "whole_product_playwright": {
+    "command": "npm run e2e",
+    "collected": 1325,
+    "passed": 1325,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "duration_seconds": 2815.7,
+    "duration_display": "46.8m"
+  },
+  "coverage": {
+    "implemented_pages": 15, "gated_pages": 3, "exact_navigation_groups": 8,
+    "wrong_account_denial": true, "missing_account_denial": true,
+    "forbidden_finance_front_office_hr_controls_absent": true, "cash_up_checker_controls_absent": true,
+    "responsive_widths": [360, 767, 768, 1024, 1025, 1280, 1440],
+    "zoom_200_equivalent": true, "theme_persistence": true, "axe_serious_critical_zero": true
+  },
+  "failed_run_history": [
+    {
+      "result": "48 passed / 3 failed",
+      "classification": "test harness/assertion defects",
+      "root_causes": ["two host/account cases reused one page and overlapping stubs", "cash-up assertion expected copy not in the source", "footer assertion measured an offscreen card"],
+      "correction": "fresh page cases and semantic/structural assertions; no product authority or expected behavior weakened"
+    },
+    {
+      "result": "50 passed / 2 failed",
+      "classification": "Docker/host resource contention plus test harness gesture defect",
+      "root_causes": ["first Chromium page setup exceeded 30 seconds immediately after a six-minute PostgreSQL refresh", "synthetic wheel scrolling depended on browser focus even though the reserve was correct"],
+      "correction": "focused startup rerun green; assert computed reserve/footer/root geometry directly; complete 52-case rerun green"
+    },
+    {
+      "result": "1314 passed / 8 failed / 1322 collected / 49.4m",
+      "classification": "stale predecessor/current-projection consumers after the authority-driven Branch route replacement",
+      "root_causes": ["three Branch CRUD/operating-hours cases still navigated retired paths", "two Phase 23 fixture lookups used the retired branch-calendar inventory key", "UI-08 expected /audit to be absent even though the Branch host now owns it", "UI-09 Branches linked to a removed create-route name"],
+      "correction": "classify retired inventory entries as removed_by_authority, restore the supporting Merchant create route, and update protected-property assertions for canonical Branch/account ownership; focused 8/8"
+    },
+    {
+      "result": "1324 passed / 1 failed / 1325 collected / 47.4m",
+      "classification": "cold first-route harness readiness bound",
+      "root_causes": ["the first lazy Front Office route had not mounted inside Playwright's five-second expect default on a cold Windows production preview; the captured tree contained only the empty toast status landmark", "the same list route and stubbed payload passed its three later responsive cases and the following twelve appointment cases"],
+      "correction": "retain the semantic heading assertion with a bounded 15-second cold-chunk readiness timeout; fresh-preview focused 1/1 in 3.6s; authoritative final whole-product run 1325/1325"
+    }
+  ],
+  "screenshots": "docs/frontend/audits/ui-10/screenshot-index.json"
+}

@@ -6,7 +6,62 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-09 — Merchant Administrator experience (`phase-ui-09-merchant-administrator-experience`) — local complete
+### Phase UI-10 — Branch experience (`phase-ui-10-branch-experience`) — local complete pending lifecycle
+
+Started from verified UI-09 squash `84b7f803ea06124772eb87252552bb54e2a41416`. All **18** Branch
+contract entries are accounted for: **15 implemented**, **3 `disabled_by_gate`**, **0 planned** and
+**0 removed**. The global contract remains 160 pages. Four narrow assigned-branch reads move
+OpenAPI from **337 to 341 operations**; no permission was added or activated, preserving
+**169 total / 134 active / 35 planned**.
+
+#### Added — Branch control workspace
+
+- Exact eight-group left navigation with persistent desktop sidebar, tablet rail, accessible mobile
+  drawer, active branch identity and canonical host-relative routes.
+- Truthful assigned-branch Dashboard and observed Get Started; Branch Profile, Operating Calendar
+  and a state/blocker-dominant Branch Day workspace.
+- Branch-owned service catalogue and cash-up submission; HR-controlled staff availability,
+  queue/appointment operational visibility and invoice/payment/receipt financial visibility remain
+  read-only where authority requires it.
+- A masked assigned-branch audit timeline and Branch-specific own-account/security presentation.
+- Four Form-Request/permission/tenant/branch-scoped API reads: Dashboard, invoices, payment records
+  and audit events. They add no business transition and do not bypass existing domain policies.
+
+#### Gated — no fabricated runtime
+
+Branch Reports remains owned by Phase 21N; Subscription Payment and Recovery remains owned by
+20D-W after External Gate W; Notifications remains owned by 21N after 20D-W. All three entries are
+visible and inert with no route, component, fake record, provider request, report PDF or payment
+success. Gate W remains closed.
+
+#### Changed — deliberate visual/product-design refinement
+
+Dashboard makes the operating pulse the dominant landmark; Branch Day prioritizes state and close
+blockers; financial context is visibly read-only; Cash-Up separates server-derived expected values
+from counted inputs. Creative review refined machine blocker labels, session experience labels and
+viewport evidence without inventing a metric or raw design token. The shared short-viewport footer
+fallback now protects the 200%-equivalent obstruction contract through 32rem.
+
+#### Quality and lifecycle
+
+Focused PostgreSQL: **4 tests / 57 assertions**. Final local gates: Pint **1,892**; Larastan level 8
+**1,448 / 0 errors**; PostgreSQL parallel **2,976 passed / 14 skipped / 48,859 assertions**; ESLint
+0 errors; TypeScript clean; Vitest **1,371/1,371**; production build **1,277 modules**. Focused
+Playwright **52/52** in 145.6s and final whole-product Playwright **1,325/1,325** in 46.8m cover all
+live/gated pages, 360/767/768/1024/1025/1280/1440 px, 200% equivalent, light/dark and axe
+serious/critical 0. Frozen evidence was restored exactly while current projections remain current.
+Production PHP `56c853a1…` and Nginx `fd348f4d…` passed Nginx syntax plus **38/38** isolated
+canonical-host checks. Composer/npm/gitleaks/Git integrity gates are green. This pre-commit entry
+does not claim PR CI or merge. UI-11 and Phase 25 were not started; Gate W remains closed.
+
+Implementation commit `c73d1be…` opened non-draft PR #60. Initial exact-head run `31665290449`
+passed Docker, Security and E2E; Frontend's UI-06 artifact check and Backend's only failed Pest test
+both named the same stale `docs/frontend/audits/ui-06/public-route-matrix.json` (Backend otherwise
+3,541 passed / 5 skipped / 51,545 assertions). UI10-CI-001 applies the established rule that this
+file is a current router projection inside an otherwise historical UI-06 directory, regenerates
+only that changed artifact and requires a replacement five-job exact-head run.
+
+### Phase UI-09 — Merchant Administrator experience — verified complete
 
 Off verified `main` = `b435f4840649687bef3d54e61424d88047a10d4b` (the Phase UI-08 PR #58
 squash merge). The authorized contract is exactly 23 Merchant Administrator pages; External Gate W
@@ -54,8 +109,12 @@ contract step and Backend's `Ui06GeneratedArtifactStalenessTest` (all other 3,53
 run `31617605102` then exposed two UI-06 test assertions that still treated `/setup` as the alias of
 the retired onboarding route. `UI09-CI-002` aligns only that predecessor consumer with canonical
 `merchant.setup` at `/setup` and its `/onboarding/first-time-setup` compatibility alias. Final
-exact-head CI, truthful solo-maintainer governance and merge remain; none of those future facts is
-claimed here.
+exact-head CI `31618625302` subsequently passed all five required jobs on final reviewed head
+`59d10333340d66b2fc900783964ccbc4581ec9e4`. Governance comment `5269937398` truthfully records
+zero reviews and no independent approval. GitHub squash-merged PR #59 as
+`84b7f803ea06124772eb87252552bb54e2a41416` at `2026-08-12T17:06:03Z` without an admin bypass;
+reviewed-head and merge trees both equal `3077b246089ca28dea3c9a372c0443c7111e956d`, and the source
+branch was deleted locally and remotely. All fifteen UI-09 closures are `verified_complete`.
 
 ### Phase UI-08 — Super Administrator experience — verified complete
 

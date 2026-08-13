@@ -1,17 +1,17 @@
-# Screen specification — Branch detail
+# Screen specification — Payment records read view
 
-> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 7**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
+> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **UI-10**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
-- **Screen key:** `branch-detail`
-- **Route name and URL:** `branch.detail`
+- **Screen key:** `branch-payments-read-view`
+- **Route name and URL:** `branch.finance-payments`
 - **Layout:** `BranchLayout`
-- **Allowed roles:** `merchant_administrator`, `merchant_branch`
-- **Required permissions:** `branch.profile.view` (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Allowed roles:** `merchant_branch`
+- **Required permissions:** `branch.dashboard.view` (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Branch profile detail.
+- **Fields and displayed data:** Paginated branch-scoped payment-record status visibility without recording, validation, rejection or reference-correction authority.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

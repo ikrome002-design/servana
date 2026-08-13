@@ -202,7 +202,7 @@ describe('screen inventory coverage', () => {
     const gaps = screens
       .filter(
         (s) =>
-          NOT_LIVE(s)
+          s.status === 'planned'
           && VERIFIED_PHASES.has(s.phase)
           && !REGISTERED_RELEASE_GAPS.has(s.key),
       )
@@ -248,7 +248,7 @@ describe('screen inventory coverage', () => {
     const unknown = screens
       .filter(
         (s) =>
-          NOT_LIVE(s)
+          s.status === 'planned'
           && !UNSHIPPED_PHASES.has(s.phase)
           && !REGISTERED_RELEASE_GAPS.has(s.key),
       )

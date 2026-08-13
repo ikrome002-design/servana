@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `branch.queue` at `/branch/queue` (routes/branch.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/operations/queue`; owner phase **UI-10** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `branch.operations-queue` at `/operations/queue` (routes/branch.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-10**
 - **Backend owner phase:** **Phase 16B**
 - **Implementation status:** `implemented`
-- **Runtime route:** `branch.queue`
+- **Runtime route:** `branch.operations-queue`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `branch.queue` (recorded in `docs/frontend/screens/branch/branch-queue.md`).
-- **Data fields:** Branch Manager READ-ONLY queue visibility: position, masked client, service, assigned personnel, status, assignment mode, and labelled wait estimate. No create, assign, transfer, reorder, call, start, complete, cancel, or no-show controls — queue operations are Front Office only and backend-enforced. Links to the separate queue settings screen.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `branch.operations-queue` (recorded in `docs/frontend/screens/branch/branch-queue-read-view.md`).
+- **Data fields:** Read-only branch queue monitoring that preserves Front Office ownership of assignment and transfer actions.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

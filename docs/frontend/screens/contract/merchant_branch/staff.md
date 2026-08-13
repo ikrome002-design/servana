@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `branch.personnel-schedule` at `/branch/personnel-schedule` (routes/branch.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/staff`; owner phase **UI-10** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `branch.staff` at `/staff` (routes/branch.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-10**
 - **Backend owner phase:** **Phase 15B**
 - **Implementation status:** `implemented`
-- **Runtime route:** `branch.personnel-schedule`
+- **Runtime route:** `branch.staff`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `branch.personnel-schedule` (recorded in `docs/frontend/screens/branch/personnel-schedule.md`).
-- **Data fields:** Branch Manager READ-ONLY personnel schedule visibility: current availability state, today's working intervals, breaks, temporary unavailability, the weekly schedule, and active eligible services. No edit, save, emergency, eligibility, or replacement controls — mutation is HR-only and backend-enforced.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `branch.staff` (recorded in `docs/frontend/screens/branch/branch-staff-overview.md`).
+- **Data fields:** Read-only assigned-branch personnel readiness, availability and scheduling context without taking over HR assignment authority.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

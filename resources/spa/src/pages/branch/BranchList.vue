@@ -32,7 +32,10 @@ const activeBranches = computed(() => branches.branches.filter((branch) => branc
     >
       <template #actions>
         <PermissionGate permission="branches.create">
-          <RouterLink :to="{ name: 'branch.create' }">
+          <RouterLink
+            v-if="merchantOwnerView"
+            :to="{ name: 'merchant.branch-create' }"
+          >
             <SvButton variant="primary">
               Add branch
             </SvButton>
@@ -116,7 +119,7 @@ const activeBranches = computed(() => branches.branches.filter((branch) => branc
           <RouterLink
             :to="merchantOwnerView
               ? { name: 'merchant.branch-detail', params: { branchUlid: branch.id } }
-              : { name: 'branch.detail', params: { id: branch.id } }"
+              : { name: 'branch.branch-profile' }"
             class="sv-focus-ring mt-4 inline-flex min-h-sv-touch items-center rounded-control text-sm font-semibold text-heading underline underline-offset-2"
           >
             View branch

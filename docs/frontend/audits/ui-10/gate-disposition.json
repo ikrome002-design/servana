@@ -1,0 +1,28 @@
+{
+  "schema": "servana.ui10.gate-disposition.v1",
+  "phase": "UI-10",
+  "lifecycle": "local_complete",
+  "external_gate_w_closed": true,
+  "phase_21n_closed": true,
+  "entries": [
+    {
+      "screen_key": "reports", "route_path": "/reports", "owner": "Phase 21N",
+      "entry_condition": "External Gate W and 20D-W complete, then the 21N report catalogue/materialized-view runtime is authorized and implemented",
+      "reason": "The canonical Branch report catalogue and scheduled/private report runtime do not exist",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    },
+    {
+      "screen_key": "subscription-payment", "route_path": "/subscription/payment", "owner": "Phase 20D-W",
+      "entry_condition": "External Gate W proves Wallet by Citrus collections readiness and Phase 20D-W is separately authorized",
+      "reason": "No provider-orchestrated collection attempt or recovery runtime is available",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    },
+    {
+      "screen_key": "notifications", "route_path": "/notifications", "owner": "Phase 21N",
+      "entry_condition": "20D-W completes after Gate W, then notification persistence/delivery is authorized under 21N",
+      "reason": "No Branch notification persistence or delivery runtime exists",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    }
+  ],
+  "forbidden_fabrication": ["Wallet status", "payment attempt", "payment success", "notification record", "report PDF", "scheduled delivery"]
+}

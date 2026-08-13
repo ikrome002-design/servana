@@ -120,7 +120,12 @@ test.describe('Front Office appointments', () => {
     await stubAppointments(page);
     await page.goto('/front-office/appointments');
 
-    await expect(page.getByRole('heading', { name: 'Appointments' })).toBeVisible();
+    // This is the first lazy route in the whole-product run. On a cold Windows
+    // production preview its route chunk can mount after Playwright's 5-second
+    // expect default, while the app still exposes only the empty toast status
+    // landmark. Keep the semantic readiness assertion, but give the cold chunk
+    // the same bounded startup tolerance already afforded to the preview build.
+    await expect(page.getByRole('heading', { name: 'Appointments' })).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText('Amina Yusuf')).toBeVisible();
     await expect(page.getByTestId('status-badge').first()).toHaveText('Confirmed');
 

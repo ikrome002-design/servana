@@ -1,0 +1,108 @@
+{
+  "schema": "servana.ui10.defect-closure.v1",
+  "phase": "UI-10",
+  "merge_required_for_verified_complete": true,
+  "closures": [
+    {
+      "id": "UI10-DATA-001", "severity_category": "high / product truth",
+      "observed_problem": "Dashboard, Branch Day, financial context and audit lacked truthful assigned-branch read contracts",
+      "evidence": "Readiness classes D=5 and predecessor OpenAPI 337 operations",
+      "root_cause": "Completed domain facts were available only through paginated or higher-authority surfaces and could not be safely composed in the browser",
+      "precise_fix": "Add four Form-Request/permission/branch-scoped narrow read operations and BranchWorkspaceReadModel; expose no new mutation",
+      "tests_proof": "BranchExperienceApiTest 4/57; OpenAPI 341; focused Playwright 52/52",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 PR exact-head CI, governance and squash merge are reconciled by the next authorized phase"
+    },
+    {
+      "id": "UI10-NAV-001", "severity_category": "high / information architecture",
+      "observed_problem": "Nine Branch contract entries were planned and live pages remained on legacy prefixed paths",
+      "evidence": "Baseline 6 implemented / 9 planned / 3 gated",
+      "root_cause": "The generic predecessor Branch tree predated the host-relative 18-page contract",
+      "precise_fix": "Activate 15 canonical routes under the guarded Branch host tree, preserve same-account compatibility redirects, and keep exactly three gates inert",
+      "tests_proof": "branchCanonicalRoutes.spec; nav:check; ui10:check; focused Playwright route/gate cases",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-AUTH-001", "severity_category": "critical / authority boundary",
+      "observed_problem": "Reusing Finance, Front Office, HR or raw Audit pages would either deny Branch or expose forbidden controls/data",
+      "evidence": "Permission matrix and existing policy denials; Branch owns visibility but not those mutations",
+      "root_cause": "Those surfaces couple read presentation to another account's business authority",
+      "precise_fix": "Use masked/minimal Branch projections and role-specific read views; preserve policy denial for invoice/payment/HR/checker mutations",
+      "tests_proof": "Assigned/foreign tenant 403/404 and forbidden endpoint assertions; browser control-absence cases",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-RESP-001", "severity_category": "high / responsive accessibility",
+      "observed_problem": "At a 640x450 200%-equivalent viewport the rendered fixed footer was 105px while the active reserve was 88px",
+      "evidence": "Focused browser geometry footer height 105 / reserve 88 before correction",
+      "root_cause": "The short-viewport fallback began at 26rem, below the required 450px zoom-equivalent height",
+      "precise_fix": "Apply the existing token-driven zoom fallback through 32rem and assert computed reserve is at least the rendered footer",
+      "tests_proof": "Focused 200% case and final 52/52 browser run",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-VIS-001", "severity_category": "medium / product-design clarity",
+      "observed_problem": "Machine blocker keys and an internal account identifier leaked into otherwise polished role presentation",
+      "evidence": "1440x900 Branch Day and Account creative review",
+      "root_cause": "Server/contract identifiers were rendered without a presentation mapping",
+      "precise_fix": "Humanize Branch Day blocker labels and map session account keys to account names with a safe fallback",
+      "tests_proof": "Typecheck; 32 focused component tests; final visual catalogue and 52/52 browser run",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-TEST-001", "severity_category": "high / backend contract regression",
+      "observed_problem": "The first full backend suite passed 2,973 tests but failed three generated/traceability consumers after the four UI-10 reads and route activation",
+      "evidence": "OpenAPI nullable invoice shape was stale; Phase 23 export classification omitted the new non-document read; UI-07 runtime inventory omitted twelve newly activated Branch screens",
+      "root_cause": "Current generated and cross-phase contract consumers still encoded the predecessor Branch runtime state",
+      "precise_fix": "Correct the nullable resource type, classify the new invoice read, enroll activated screens and regenerate OpenAPI, TypeScript and current UI-07 projections",
+      "tests_proof": "Focused correction 60/60 with 4,614 assertions; final PostgreSQL suite 2,976 passed, 14 skipped, 48,859 assertions",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-TEST-002", "severity_category": "high / frontend contract regression",
+      "observed_problem": "The first full Vitest run failed thirteen stale fixtures, router mocks, inventory claims and fixed load-time assumptions",
+      "evidence": "Failures clustered only in predecessor consumers of the changed Branch route/status authority",
+      "root_cause": "Generated fixtures and shared mocks were not advanced with the canonical inventory while tests still treated every non-live entry as planned",
+      "precise_fix": "Regenerate fixtures/projections, update router mocks, distinguish planned from removed_by_authority and keep equivalent account/route invariants",
+      "tests_proof": "Focused component/router 27/27; final Vitest 135 files / 1,371 tests; typecheck and build green",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-TEST-003", "severity_category": "high / whole-product route regression",
+      "observed_problem": "The first whole-product Playwright run passed 1,314 cases and failed eight stale predecessor route/fixture assumptions",
+      "evidence": "Three Branch CRUD/operating-hours cases, two Phase 23 deterministic fixture cases, one UI-08 host collision and one UI-09 Branches link failed from one authority transition cluster",
+      "root_cause": "Retired Branch paths remained represented as live consumers, the supporting Merchant create route was accidentally retired, and older account tests did not recognize Branch ownership of /audit",
+      "precise_fix": "Classify retired inventory rows, restore the Merchant-owned supporting create route, and update same/foreign-account assertions without weakening denial or determinism",
+      "tests_proof": "Focused 8/8; final whole-product Playwright 1,325/1,325",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-TEST-004", "severity_category": "medium / browser harness readiness",
+      "observed_problem": "A replacement whole-product run passed 1,324 cases but the first lazy Front Office route did not mount before a five-second heading assertion",
+      "evidence": "Captured accessibility tree exposed only the empty toast status landmark; three later list cases and the next twelve appointment cases passed against the same route and stubs",
+      "root_cause": "A cold Windows production-preview route chunk occasionally exceeds Playwright's default expect timeout even though the preview and page continue loading correctly",
+      "precise_fix": "Keep the semantic heading readiness assertion and give only the cold first-route case a bounded 15-second timeout",
+      "tests_proof": "Fresh-preview focused 1/1 in 3.6 seconds; authoritative final whole-product Playwright 1,325/1,325 in 46.8 minutes",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-TEST-005", "severity_category": "medium / traceability currency",
+      "observed_problem": "The final targeted traceability run rejected two verified historical rows whose frontend-route fields still named retired Branch routes",
+      "evidence": "SRV-SEC-001 claimed branch.personnel-schedule and SRV-BRANCH-CALENDAR-001 claimed branch.calendar; neither exists in the current screen inventory",
+      "root_cause": "UI-10 correctly retired predecessor route names, but those two historical requirement rows had not advanced their current frontend evidence fields to the canonical presentation",
+      "precise_fix": "Point only the frontend evidence fields to branch.staff and branch.branch-calendar while preserving the historical requirement, backend, test and merge evidence",
+      "tests_proof": "Phase23TraceabilityTest 15/15; UI07NavigationContractTest 39/39 in the preceding targeted run",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-CI-001", "severity_category": "high / generated contract staleness",
+      "observed_problem": "Initial exact-head run 31665290449 failed Frontend's UI-06 artifact check and Backend's one generated-staleness test while Docker, Security and E2E succeeded",
+      "evidence": "Both failed logs name only docs/frontend/audits/ui-06/public-route-matrix.json; Backend still passed 3,541 tests with 5 skipped and 51,545 assertions",
+      "root_cause": "UI-10 historical cleanup classified the whole UI-06 audit directory as frozen even though public-route-matrix.json is generated from the current router",
+      "precise_fix": "Regenerate the UI-06 artifacts, commit only the changed public route projection, and classify that exact path as current within the otherwise historical UI-06 directory",
+      "tests_proof": "UI-06 generator --check and Ui06GeneratedArtifactStalenessTest; replacement exact-head five-job CI required",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "Replacement exact-head five-job CI, governance and UI-10 squash merge reconciliation"
+    }
+  ],
+  "verified_complete": 0,
+  "local_complete": 11
+}
