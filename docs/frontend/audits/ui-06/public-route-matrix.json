@@ -165,44 +165,79 @@
       "declared_in": "resources/spa/src/router/routes/auth.ts"
     },
     {
-      "name": "branch.appointments",
-      "path": "appointments",
-      "absolute_path": "/branch/appointments",
+      "name": "branch.account",
+      "path": "/account",
+      "absolute_path": "/account",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
     {
-      "name": "branch.calendar",
-      "path": ":id/calendar",
-      "absolute_path": "/branch/:id/calendar",
+      "name": "branch.audit",
+      "path": "/audit",
+      "absolute_path": "/audit",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.branch-calendar",
+      "path": "/branch/calendar",
+      "absolute_path": "/branch/calendar",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.branch-day",
+      "path": "/branch/day",
+      "absolute_path": "/branch/day",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.branch-profile",
+      "path": "/branch/profile",
+      "absolute_path": "/branch/profile",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
     {
       "name": "branch.cash-up",
-      "path": "cash-up",
-      "absolute_path": "/branch/cash-up",
+      "path": "/cash-up",
+      "absolute_path": "/cash-up",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
     {
-      "name": "branch.create",
-      "path": "create",
-      "absolute_path": "/branch/create",
+      "name": "branch.dashboard",
+      "path": "/dashboard",
+      "absolute_path": "/dashboard",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
     {
-      "name": "branch.detail",
-      "path": ":id",
-      "absolute_path": "/branch/:id",
+      "name": "branch.finance-invoices",
+      "path": "/finance/invoices",
+      "absolute_path": "/finance/invoices",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.finance-payments",
+      "path": "/finance/payments",
+      "absolute_path": "/finance/payments",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.finance-receipts",
+      "path": "/finance/receipts",
+      "absolute_path": "/finance/receipts",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
     {
       "name": "branch.get-started",
-      "path": "get-started",
-      "absolute_path": "/branch/get-started",
+      "path": "/get-started",
+      "absolute_path": "/get-started",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
@@ -214,13 +249,6 @@
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
     {
-      "name": "branch.list",
-      "path": "list",
-      "absolute_path": "/branch/list",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/branch.ts"
-    },
-    {
       "name": "branch.operating-hours",
       "path": ":id/operating-hours",
       "absolute_path": "/branch/:id/operating-hours",
@@ -228,9 +256,16 @@
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
     {
-      "name": "branch.personnel-schedule",
-      "path": "personnel-schedule",
-      "absolute_path": "/branch/personnel-schedule",
+      "name": "branch.operations-appointments",
+      "path": "/operations/appointments",
+      "absolute_path": "/operations/appointments",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.operations-queue",
+      "path": "/operations/queue",
+      "absolute_path": "/operations/queue",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
@@ -238,13 +273,6 @@
       "name": "branch.platform-fees",
       "path": "platform-fees",
       "absolute_path": "/branch/platform-fees",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/branch.ts"
-    },
-    {
-      "name": "branch.queue",
-      "path": "queue",
-      "absolute_path": "/branch/queue",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
@@ -257,8 +285,15 @@
     },
     {
       "name": "branch.services",
-      "path": "services",
-      "absolute_path": "/branch/services",
+      "path": "/services",
+      "absolute_path": "/services",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/branch.ts"
+    },
+    {
+      "name": "branch.staff",
+      "path": "/staff",
+      "absolute_path": "/staff",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/branch.ts"
     },
@@ -644,6 +679,13 @@
       "name": "merchant.account",
       "path": "/account",
       "absolute_path": "/account",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/merchant.ts"
+    },
+    {
+      "name": "merchant.branch-create",
+      "path": "/branches/create",
+      "absolute_path": "/branches/create",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },

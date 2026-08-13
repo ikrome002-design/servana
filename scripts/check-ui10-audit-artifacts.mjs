@@ -101,6 +101,17 @@ if (existsSync(join(audit, 'defect-closure.json'))) {
   }
 }
 
+if (existsSync(join(audit, 'historical-evidence-baseline.json'))) {
+  const history = json('historical-evidence-baseline.json');
+  const mixed = history.mixed_historical_and_current_projection;
+  if (history.frozen_historical_directories.some((entry) => entry.path === 'docs/frontend/audits/ui-06')) {
+    problems.push('UI-06 cannot be wholly frozen because its public route matrix is a current projection');
+  }
+  if (mixed?.path !== 'docs/frontend/audits/ui-06' || mixed?.current_projection_exclusion !== 'docs/frontend/audits/ui-06/public-route-matrix.json') {
+    problems.push('historical baseline must classify the UI-06 public route matrix as current');
+  }
+}
+
 if (existsSync(join(audit, 'screenshot-index.json'))) {
   const screenshots = json('screenshot-index.json');
   if (screenshots.totals.implemented_page_captures !== 15) problems.push('screenshot evidence must cover all 15 implemented pages');

@@ -54,6 +54,13 @@ Production PHP `56c853a1…` and Nginx `fd348f4d…` passed Nginx syntax plus **
 canonical-host checks. Composer/npm/gitleaks/Git integrity gates are green. This pre-commit entry
 does not claim PR CI or merge. UI-11 and Phase 25 were not started; Gate W remains closed.
 
+Implementation commit `c73d1be…` opened non-draft PR #60. Initial exact-head run `31665290449`
+passed Docker, Security and E2E; Frontend's UI-06 artifact check and Backend's only failed Pest test
+both named the same stale `docs/frontend/audits/ui-06/public-route-matrix.json` (Backend otherwise
+3,541 passed / 5 skipped / 51,545 assertions). UI10-CI-001 applies the established rule that this
+file is a current router projection inside an otherwise historical UI-06 directory, regenerates
+only that changed artifact and requires a replacement five-job exact-head run.
+
 ### Phase UI-09 — Merchant Administrator experience — verified complete
 
 Off verified `main` = `b435f4840649687bef3d54e61424d88047a10d4b` (the Phase UI-08 PR #58

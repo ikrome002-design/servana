@@ -92,8 +92,17 @@
       "precise_fix": "Point only the frontend evidence fields to branch.staff and branch.branch-calendar while preserving the historical requirement, backend, test and merge evidence",
       "tests_proof": "Phase23TraceabilityTest 15/15; UI07NavigationContractTest 39/39 in the preceding targeted run",
       "lifecycle": "local_complete", "future_verified_complete_condition": "UI-10 merge lifecycle reconciliation"
+    },
+    {
+      "id": "UI10-CI-001", "severity_category": "high / generated contract staleness",
+      "observed_problem": "Initial exact-head run 31665290449 failed Frontend's UI-06 artifact check and Backend's one generated-staleness test while Docker, Security and E2E succeeded",
+      "evidence": "Both failed logs name only docs/frontend/audits/ui-06/public-route-matrix.json; Backend still passed 3,541 tests with 5 skipped and 51,545 assertions",
+      "root_cause": "UI-10 historical cleanup classified the whole UI-06 audit directory as frozen even though public-route-matrix.json is generated from the current router",
+      "precise_fix": "Regenerate the UI-06 artifacts, commit only the changed public route projection, and classify that exact path as current within the otherwise historical UI-06 directory",
+      "tests_proof": "UI-06 generator --check and Ui06GeneratedArtifactStalenessTest; replacement exact-head five-job CI required",
+      "lifecycle": "local_complete", "future_verified_complete_condition": "Replacement exact-head five-job CI, governance and UI-10 squash merge reconciliation"
     }
   ],
   "verified_complete": 0,
-  "local_complete": 10
+  "local_complete": 11
 }

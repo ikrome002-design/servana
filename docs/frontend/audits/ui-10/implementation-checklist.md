@@ -45,8 +45,11 @@ Persistent session-resume marker for `phase-ui-10-branch-experience`. Authority:
 - [x] Creative review, responsive/a11y/theme matrices and targeted refinements.
 - [x] Source freeze, final heavy-gate cycle, historical restoration, production-host proof and
   security/integrity scans.
-- [ ] One local-completion commit, push, non-draft PR, exact-head CI, truthful governance, squash
-  merge, branch cleanup and clean synchronized `main`.
+- [x] Local-completion commit `c73d1be…`, push and exact non-draft PR #60.
+- [x] Preserve initial exact-head run `31665290449`: Docker/Security/E2E success; Frontend/Backend
+  failed only because the UI-06 current public-route projection was restored as frozen.
+- [ ] Push UI10-CI-001 correction, obtain replacement exact-head five-job CI, truthful governance,
+  squash merge, branch cleanup and clean synchronized `main`.
 
 ## Current disposition and next action
 
@@ -73,12 +76,13 @@ Persistent session-resume marker for `phase-ui-10-branch-experience`. Authority:
 - Whole-product browser: authoritative **1,325/1,325** in 46.8m. Preserve the first full-run
   1,314/1,322 stale-consumer RCA and replacement 1,324/1,325 cold-route RCA.
 - Historical evidence: 54 exact predecessor files restored; 124 exact accidental UI-01 images
-  removed; zero frozen-path drift; current UI-07/UI-10 projections pass their checks.
+  removed; zero frozen-path drift. UI10-CI-001 then proved UI-06 `public-route-matrix.json` is a
+  current projection; regenerate it and exclude only that path from frozen restoration.
 - Production proof: PHP `56c853a1…`, Nginx `fd348f4d…`; Nginx syntax and 38/38 no-volume host proof
   green; disposable topology removed. Composer/npm 0; gitleaks no leaks; Git integrity green.
-- Defects: UI10-DATA-001, UI10-NAV-001, UI10-AUTH-001, UI10-RESP-001, UI10-VIS-001 and
-  UI10-TEST-001…005 are `local_complete`; the late traceability consumer correction passed 15/15;
+- Defects: UI10-DATA-001, UI10-NAV-001, UI10-AUTH-001, UI10-RESP-001, UI10-VIS-001,
+  UI10-TEST-001…005 and UI10-CI-001 are `local_complete`; the late traceability consumer correction passed 15/15;
   merge is required before promotion.
-- Exact next action: create the single local-completion commit, push, open the exact non-draft PR,
-  require exact-head five-job CI, record truthful governance, squash merge, delete branches and
-  return to clean synchronized `main`.
+- Exact next action: commit and push only UI10-CI-001's current projection/evidence correction,
+  require replacement exact-head five-job CI, record truthful governance, squash merge, delete
+  branches and return to clean synchronized `main`.
