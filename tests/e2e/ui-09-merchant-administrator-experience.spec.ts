@@ -208,7 +208,7 @@ test.describe('Authority, tenancy, setup and financial boundaries', () => {
   });
 
   test('wrong account host denies without disclosure', async ({ page }) => {
-    await openMerchant(page, '/dashboard', { accountKey: 'merchant_finance', accountKeys: ['merchant_administrator'] });
+    await openMerchant(page, '/merchant/profile', { accountKey: 'merchant_finance', accountKeys: ['merchant_administrator'] });
     await expect(notFound(page)).toBeVisible();
     await expect(page.getByTestId('merchant-dashboard')).toHaveCount(0);
   });

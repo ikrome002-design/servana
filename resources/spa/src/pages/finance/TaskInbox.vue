@@ -67,7 +67,7 @@ interface Tile {
 
 const tiles = computed<Tile[]>(() =>
   [
-    { key: 'validations', label: 'Payments pending validation', count: pendingValidations.value, route: 'finance.pending-validations', visible: canValidate.value },
+    { key: 'validations', label: 'Payments pending validation', count: pendingValidations.value, route: 'finance.payments-validations', visible: canValidate.value },
     { key: 'refund-approval', label: 'Refunds awaiting approval', count: refundsAwaitingApproval.value, route: 'finance.refunds', visible: canApproveRefund.value },
     { key: 'refund-finalization', label: 'Refunds awaiting finalization', count: refundsAwaitingFinalization.value, route: 'finance.refunds', visible: canFinalizeRefund.value },
     { key: 'disputes', label: 'Disputes open or under review', count: openDisputes.value, route: 'finance.disputes', visible: canDispute.value },

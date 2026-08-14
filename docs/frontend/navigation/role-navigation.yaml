@@ -414,7 +414,8 @@ merchant_finance:
     label: Dashboard
     availability: live
     route: finance.dashboard
-    phase: Phase 18B
+    permission: customer_payment.view
+    phase: Phase UI-12
   - key: merchant_finance.get-started
     label: Get Started
     availability: live
@@ -423,14 +424,21 @@ merchant_finance:
   - key: merchant_finance.tasks
     label: Finance Task Inbox
     availability: live
-    route: finance.dashboard
-    phase: Phase 18B
+    route: finance.tasks
+    permission: customer_payment.view
+    phase: Phase UI-12
   - key: merchant_finance.payments-validations
     label: Pending Validations
     availability: live
-    route: finance.pending-validations
+    route: finance.payments-validations
     permission: customer_payment.validate
     phase: Phase 18B
+  - key: merchant_finance.payments-duplicates
+    label: Duplicate Reference Review
+    availability: live
+    route: finance.payments-duplicates
+    permission: customer_payment.duplicate_override
+    phase: Phase UI-12
   - key: merchant_finance.invoices
     label: Invoices
     availability: live
@@ -440,9 +448,15 @@ merchant_finance:
   - key: merchant_finance.payments
     label: Payment Records
     availability: live
-    route: finance.payment-records
+    route: finance.payments
     permission: customer_payment.view
     phase: Phase 18A
+  - key: merchant_finance.payments-partial-split
+    label: Partial and Split Payments
+    availability: live
+    route: finance.payments-partial-split
+    permission: customer_payment.view
+    phase: Phase UI-12
   - key: merchant_finance.receipts
     label: Receipts
     availability: live
@@ -476,31 +490,36 @@ merchant_finance:
   - key: merchant_finance.payouts
     label: Payout Runs
     availability: live
-    route: finance.payout-runs
+    route: finance.payouts
     permission: payout_run.verify
     phase: Phase 20H
   - key: merchant_finance.compensation-liabilities
     label: Commission and Salary Liabilities
     availability: live
-    route: finance.liabilities
+    route: finance.compensation-liabilities
     permission: compensation.liability.view
     phase: Phase 20G
   - key: merchant_finance.compensation-queries
     label: Earnings Queries
     availability: live
-    route: finance.earnings-queries
+    route: finance.compensation-queries
     permission: earnings_query.respond
     phase: Phase 20H
+  - key: merchant_finance.subscription
+    label: Subscription Billing
+    availability: gated
+    gate: external_gate_w
+    phase: Phase 20D-W
   - key: merchant_finance.subscription-payment-attempts
     label: Subscription Payment Attempts
     availability: gated
     gate: external_gate_w
-    phase: UI-12
+    phase: Phase 20D-W
   - key: merchant_finance.reports
     label: Finance Reports
     availability: gated
     gate: external_gate_w
-    phase: UI-12
+    phase: Phase 21N
   - key: merchant_finance.exports
     label: Exports
     availability: live
@@ -517,7 +536,12 @@ merchant_finance:
     label: Notifications
     availability: gated
     gate: external_gate_w
-    phase: UI-12
+    phase: Phase 21N
+  - key: merchant_finance.settings
+    label: Finance Settings and Security
+    availability: live
+    route: finance.settings
+    phase: Phase UI-12
 merchant_front_office:
   - key: merchant_front_office.get-started
     label: Get Started

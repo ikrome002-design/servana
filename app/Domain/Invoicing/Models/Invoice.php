@@ -9,6 +9,7 @@ use App\Domain\Clients\Models\Client;
 use App\Domain\Invoicing\Enums\InvoiceStatus;
 use App\Domain\Invoicing\Services\InvoiceStateMachine;
 use App\Domain\Merchants\Models\Merchant;
+use App\Domain\Payments\Models\PaymentRecordingGroup;
 use App\Domain\Search\Concerns\SearchableDocument;
 use App\Domain\Tenancy\Concerns\BelongsToBranch;
 use App\Domain\Tenancy\Concerns\BelongsToMerchant;
@@ -172,6 +173,12 @@ class Invoice extends Model
     public function items(): HasMany
     {
         return $this->hasMany(InvoiceItem::class);
+    }
+
+    /** @return HasMany<PaymentRecordingGroup, $this> */
+    public function paymentGroups(): HasMany
+    {
+        return $this->hasMany(PaymentRecordingGroup::class);
     }
 
     /** @return BelongsTo<Invoice, $this> */

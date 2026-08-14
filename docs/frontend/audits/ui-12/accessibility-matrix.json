@@ -1,0 +1,13 @@
+{
+  "schema": "servana.ui12.accessibility-matrix.v1",
+  "phase": "UI-12",
+  "axe": {
+    "light_pages": ["dashboard", "get-started", "tasks", "payments-validations", "payments-validation-detail", "payments-duplicates", "invoices", "payments", "payments-partial-split", "receipts", "disputes", "refunds", "cash-up", "periods", "payouts", "compensation-liabilities", "compensation-queries", "exports", "audit", "settings"],
+    "serious": 0,
+    "critical": 0
+  },
+  "keyboard": { "drawer_reachable": true, "escape_restores_focus": true, "gated_reasons_focusable": true },
+  "motion": { "prefers_reduced_motion_honoured": true, "task_surface_transition_seconds": 0.00001 },
+  "targets_minimum_px": 44,
+  "browser_test": "tests/e2e/ui-12-finance-experience.spec.ts"
+}

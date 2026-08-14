@@ -164,7 +164,7 @@ test.describe('Finance payment records', () => {
     await stubMe(page, 'finance', ['customer_payment.view', 'customer_payment.duplicate_override']);
     await page.route('**/api/v1/payment-recording-groups?**', (r) => r.fulfill(ok({ data: [group({ status: 'recorded' })] })));
     await page.goto('/finance/payment-records');
-    await expect(page.getByRole('heading', { name: 'Payment recordings', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Payment records', exact: true })).toBeVisible();
     await expect(page.getByTestId('group-status-badge')).toContainText(/duplicate review/i);
 
     await page.route('**/api/v1/payment-recording-groups/grp1', (r) =>

@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 20H**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `finance-earnings-queries`
-- **Route name and URL:** `finance.earnings-queries`
+- **Route name and URL:** `finance.compensation-queries`
 - **Layout:** `FinanceLayout`
 - **Allowed roles:** `merchant_finance`
 - **Required permissions:** `earnings_query.respond` (frontend visibility only; backend EnsurePermission + policy is authoritative)

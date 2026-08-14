@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `finance.dashboard` at `/finance/dashboard` (routes/finance.ts), delivery **consolidated**. This runtime route also serves other contract pages — the collapse recorded as `UI01-NAV-001`. Owner phase **UI-12** splits it into a dedicated page. The runtime path uses the account's path prefix rather than the host-relative contract path `/tasks`; owner phase **UI-12** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `finance.tasks` at `/tasks` (routes/finance.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -26,15 +26,15 @@
 ## Ownership and status
 
 - **UI owner phase:** **UI-12**
-- **Backend owner phase:** **Phase 18B**
+- **Backend owner phase:** **Phase UI-12**
 - **Implementation status:** `implemented`
-- **Runtime route:** `finance.dashboard`
-- **Route delivery:** `consolidated`
+- **Runtime route:** `finance.tasks`
+- **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `finance.dashboard` (recorded in `docs/frontend/screens/finance/finance-task-inbox.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `finance.tasks` (recorded in `docs/frontend/screens/finance/finance-task-inbox.md`).
 - **Data fields:** Capability-gated Finance home surfacing everything awaiting action: payment groups pending validation or requiring correction, refunds awaiting approval / finalization, disputes open or under review, cash-ups awaiting review, period reopen requests, and exports queued/processing/failed. Each tile is shown only when the role holds the relevant capability and links to its full surface. Counts are UX only; the backend is the authoritative boundary.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
@@ -46,7 +46,7 @@
 
 - **Authorization:** Backend `auth:sanctum` + Form Request + Policy + `EnsurePermission` is the security boundary. Everything below is UX visibility only (ADR-017).
 - **Permission-any:** — none
-- **Permission-all:** — none
+- **Permission-all:** `customer_payment.view`
 - **Tenant scope:** Merchant-scoped via `BelongsToMerchant`; foreign ULIDs resolve to 404.
 - **Branch scope:** Not branch-scoped.
 - **Own-scope:** Not own-scoped.

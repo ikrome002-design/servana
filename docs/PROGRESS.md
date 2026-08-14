@@ -122,13 +122,72 @@ while the repository records said the work was complete.
 | UI-08 | Super Administrator experience (22 pages) | ✅ `verified_complete` | PR [#58](https://github.com/ikrome002-design/servana/pull/58) merged — **squash** `b435f484…` (single parent `16d544c5…`), final reviewed head `2fdf8784…`, source tree == merge tree `60a1085a…`, merged `2026-08-10T15:55:21Z`. Final CI run `31403883471` five checks SUCCESS; governance comment `5242660629`; `reviewDecision` blank / 0 submitted reviews (**not** independent approval); branch deleted local + remote. **17 implemented / 5 `disabled_by_gate` / 0 planned / 0 removed = 22**. All fourteen UI-08 closures promoted to `verified_complete`. | [ui-08.md](proof/ui-08.md) | Reconciled live on the UI-09 branch |
 | UI-09 | Merchant Administrator experience (23 pages) | ✅ `verified_complete` | PR [#59](https://github.com/ikrome002-design/servana/pull/59) merged — squash `84b7f803…`, final reviewed head `59d10333…`, equal source/merge tree `3077b246…`, merged `2026-08-12T17:06:03Z`. Final exact-head CI `31618625302` five jobs SUCCESS; governance comment `5269937398`; review decision blank / 0 reviews (**not** independent approval); source branches deleted. **15 implemented / 8 `disabled_by_gate` / 0 planned / 0 removed = 23**; all fifteen UI-09 closures promoted. | [ui-09.md](proof/ui-09.md) | Reconciled live on the UI-10 branch |
 | UI-10 | Branch experience (18 pages) | ✅ `verified_complete` | PR [#60](https://github.com/ikrome002-design/servana/pull/60) merged — squash `d7988dca…`, final head `e5f2a6fb…`, equal source/merge tree `0a75dedd…`, merged `2026-08-13T05:04:49Z`. Replacement exact-head run `31667335687` had Backend/Frontend/Docker/Security/E2E all successful; initial failed run `31665290449` is preserved. Governance comment `5276187980`; blank decision / 0 reviews (**not** independent approval); source branch deleted local + remote. **15 implemented / 3 disabled_by_gate / 0 planned / 0 removed = 18**; all eleven closures promoted. | [ui-10.md](proof/ui-10.md) | Reconciled live exactly once on the UI-11 branch |
-| UI-11 | Human Resource experience (19 pages) | 🟢 `local_complete` | `phase-ui-11-human-resource-experience` from verified UI-10 squash `d7988dca…`; exact **15 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 19**; OpenAPI 344; permissions unchanged 169/134/35. PostgreSQL 2,981/14-skip/49,015 assertions; Vitest 1,379/1,379; Playwright 1,393/1,393; production host 40/40. No PR/CI/merge claim yet; Gate W and Phase 21N remain closed. | [ui-11.md](proof/ui-11.md) | UI-10 merged/reconciled; local implementation and release gates complete |
-| UI-12 | Finance experience (24 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-11 | Human Resource experience (19 pages) | ✅ `verified_complete` | PR [#61](https://github.com/ikrome002-design/servana/pull/61) merged — normal squash `dc74e28a…`, final reviewed head `38bb9014…`, equal reviewed/merge tree `ce181099…`, merged `2026-08-13T18:30:14Z`. Initial run `31727621418` preserved its UI-06 current-projection failure; replacement exact-head run `31728277786` passed Backend/Frontend/Docker/Security/E2E. Governance comment `5284811253`; blank/NONE decision, 0 reviews, 0 approvals (**not** independent approval); source branches absent. **15 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 19**; all eleven closures promoted. | [ui-11.md](proof/ui-11.md) | Reconciled live exactly once on the UI-12 branch |
+| UI-12 | Finance experience (24 pages) | 🟡 `local_complete` pending PR lifecycle | `phase-ui-12-finance-experience` from verified UI-11 squash `dc74e28a…`. **20 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 24**; OpenAPI 296 paths/347 operations; permissions unchanged 169/134/35; focused Finance 59/59 and final whole product 1,461/1,461; PHP/Nginx images plus `finance.servana.ke` no-volume proof 46/46. Seventeen closures are local_complete. This record ships in the single local-completion commit; push/PR fields remain pending until those events exist. | [ui-12.md](proof/ui-12.md) | Gate W/20D-W/21R-B/21N closed; no UI-13 or Phase 25 work |
 | UI-13 | Front Office experience (19 pages) | ⬜ Not started | — | — | UI-07 merged |
 | UI-14 | Personnel experience (20 pages) | ⬜ Not started | — | — | UI-07 merged |
 | UI-15 | Audit experience (15 pages) | ⬜ Not started | — | — | UI-07 merged |
 | UI-16 | Responsive, accessibility, theme, visual regression | ⬜ Not started | — | — | UI-08…UI-15 merged |
 | UI-17 | Performance, security, production deployment, closeout | ⬜ Not started | — | — | UI-16 merged |
+
+### Phase UI-12 — Finance experience — local complete pending PR lifecycle
+
+Branch `phase-ui-12-finance-experience`, base `dc74e28a8288fc24045ceadc9e4d7de474a7ad2f`.
+PR #61 was reconciled exactly once: final head `38bb9014…`, exact-head CI `31728277786`, governance
+comment `5284811253`, zero reviews/approvals, blank/`NONE` review decision, no independent approval,
+normal squash `dc74e28a…`, equal tree `ce181099…`, and both predecessor branches absent.
+
+- Readiness **A3/B12/C1/D4/E4/F0**; six readable images inspected at
+  `C:\Users\nderu\Documents\Development\Product\Template\UI-UX Design Inspiration`. Adopted
+  summary-to-detail hierarchy, asymmetric composition, compact financial density, grouped records
+  and restrained depth; rejected foreign branding/colors, provider/payment-card controls,
+  passwords, unsupported charts and fabricated states. Servana tokens remained authoritative.
+- Exact Finance disposition: 20 live canonical routes (`/dashboard`, `/get-started`, `/tasks`,
+  `/payments/validations`, its group detail, `/payments/duplicates`, `/invoices`, `/payments`,
+  `/payments/partial-split`, `/receipts`, `/disputes`, `/refunds`, `/cash-up`, `/periods`, `/payouts`,
+  `/compensation/liabilities`, `/compensation/queries`, `/exports`, `/audit`, `/settings`); four
+  inert routes (`/subscription`, `/subscription/payment-attempts`, `/reports`, `/notifications`);
+  zero planned/removed contract entries. The retired non-contract `/finance/platform-fees` has no
+  alias. Seven Finance navigation groups, seven-item Get Started journey and prioritized task inbox
+  are role-true across desktop/sidebar, tablet rail and focus-trapped mobile drawer.
+- Three read-only Finance presentation APIs moved OpenAPI **293/344 → 296/347**. The permission
+  catalogue remains **169 total / 134 active / 35 planned**: zero keys, grants or authority widened.
+  Server policies/Form Requests/tenant and assigned-branch scope remain the boundary; validation,
+  receipts, duplicate override, refunds, cash-up, period locks, payouts, liabilities, earnings
+  queries, export masking/reason, MFA/fresh step-up, idempotency and maker/checker rules are preserved.
+- Local backend closure: focused UI-12 API **4 tests / 52 assertions**; Pint **1,908 files clean**;
+  Larastan level 8 **1,462 units / 0 errors**. The first full PostgreSQL pass had 2,983 passing tests
+  plus two stale OpenAPI projection failures; regeneration closed them 9/15 focused. The second had
+  **2,984 passed / 14 skipped / 48,725 assertions** plus one UI-01 removal-register consumer failure;
+  its docs/test-only registration closed **15 tests / 2,145 assertions** and did not invalidate the
+  runtime suite under the explicit invalidation matrix.
+- Frontend: ESLint **0 errors** (487 pre-existing warnings), TypeScript clean, Vitest **141 files /
+  1,390 tests**, production build **1,299 modules**. Focused UI-12 Playwright **59/59**. The first
+  full run preserved **1,453 pass / 8 fail**; UI12-014/UI12-015 corrected two route-authorization
+  defects and six stale consumers. Final authoritative whole product: **1,461/1,461**, no
+  failed/flaky/skipped case, 45.8 minutes. Twenty pages passed all seven widths, 200% equivalent,
+  fixed-footer clearance, light-default/persistent-dark, reduced motion, keyboard/focus and axe
+  **0 serious / 0 critical**.
+- Historical protection: **250 frozen files** baseline-verified; **45** exact browser-written files
+  restored inside that baseline. Final scope review caught 10 additional tracked predecessor proof
+  files and 112 run-suffixed additions outside the initial baseline; the 10 were restored exactly,
+  the 112 removed exactly, and UI12-017 records the baseline omission. UI-06 public routes and all
+  UI-07 current projections were regenerated and checked. Final images: PHP `ffa9d301…` /
+  930,033,679 bytes and Nginx `2ea187e8…` /
+  317,663,194 bytes. Nginx syntax and isolated no-volume `finance.servana.ke` proof passed **46/46**;
+  production route count 354; proof containers/network removed.
+- Composer audit: zero advisories. npm audit: zero vulnerabilities. Gitleaks pre-commit and full
+  77-commit scans: zero leaks; UI12-016 records the directory-mode match on the already-registered,
+  reproducible design-token SHA-256 false positive. `git fsck --full` found dangling objects only,
+  no corruption. Defects **UI12-001…UI12-017** are `local_complete`; none are open.
+- Skipped/remaining ownership: External Gate W and 20D-W remain closed; 21R-B/21N remain blocked;
+  `REM-EXP-001` remains Phase 21N retention-convergence work; `REM-PERM-002` requires a product-owner
+  permission decision before Phase 25 exit; `UI07-ENV-001` remains separately authorized
+  scheduling/service-session time-freezing work before Phase 25; UI-16 retains cross-account visual
+  release authority. UI-13 and backend Phase 25 were not started.
+
+The local-completion commit, push and PR lifecycle are deliberately not claimed in this pre-commit
+record. They will be populated by actual Git/GitHub evidence only.
 
 ### Source inventory summary (proven in UI-00, not assumed)
 

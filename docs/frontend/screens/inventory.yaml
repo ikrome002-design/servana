@@ -564,15 +564,21 @@ screens:
     status: implemented
     phase: UI-11
     spec: hr/hr-account.md
-  - key: finance-task-inbox
+  - key: finance-dashboard
     domain: finance
     route: finance.dashboard
     status: implemented
-    phase: Phase 18B
+    phase: Phase UI-12
+    spec: finance/finance-dashboard.md
+  - key: finance-task-inbox
+    domain: finance
+    route: finance.tasks
+    status: implemented
+    phase: Phase UI-12
     spec: finance/finance-task-inbox.md
   - key: finance-pending-validations
     domain: finance
-    route: finance.pending-validations
+    route: finance.payments-validations
     status: implemented
     phase: Phase 18B
     spec: finance/finance-pending-validations.md
@@ -638,13 +644,13 @@ screens:
     spec: finance/finance-exports.md
   - key: finance-payouts
     domain: finance
-    route: finance.payout-runs
+    route: finance.payouts
     status: implemented
     phase: Phase 20H
     spec: finance/finance-payout-runs.md
   - key: finance-earnings-queries
     domain: finance
-    route: finance.earnings-queries
+    route: finance.compensation-queries
     status: implemented
     phase: Phase 20H
     spec: finance/finance-earnings-queries.md
@@ -764,22 +770,40 @@ screens:
     spec: front-office/front-office-receipt-detail.md
   - key: finance-payment-records
     domain: finance
-    route: finance.payment-records
+    route: finance.payments
     status: implemented
     phase: Phase 18A
     spec: finance/finance-payment-records.md
   - key: finance-payment-records-detail
     domain: finance
-    route: finance.payment-records.detail
+    route: finance.payments-validation-detail
     status: implemented
     phase: Phase 18A
     spec: finance/finance-payment-records-detail.md
+  - key: finance-duplicate-references
+    domain: finance
+    route: finance.payments-duplicates
+    status: implemented
+    phase: Phase UI-12
+    spec: finance/finance-duplicate-references.md
+  - key: finance-partial-split-payments
+    domain: finance
+    route: finance.payments-partial-split
+    status: implemented
+    phase: Phase UI-12
+    spec: finance/finance-partial-split-payments.md
   - key: finance-audit
     domain: finance
     route: finance.audit
     status: implemented
     phase: Phase 19
     spec: finance/finance-audit.md
+  - key: finance-settings
+    domain: finance
+    route: finance.settings
+    status: implemented
+    phase: Phase UI-12
+    spec: finance/finance-settings.md
   - key: personnel-appointments
     domain: personnel
     route: personnel.appointments
@@ -939,15 +963,9 @@ screens:
     status: implemented
     phase: Phase 20E
     spec: branch/branch-platform-fees.md
-  - key: finance-platform-fees
-    domain: finance
-    route: finance.platform-fees
-    status: implemented
-    phase: Phase 20E
-    spec: finance/finance-platform-fees.md
   - key: finance-compensation-liabilities
     domain: finance
-    route: finance.liabilities
+    route: finance.compensation-liabilities
     status: implemented
     phase: Phase 20G
     spec: finance/finance-compensation-liabilities.md

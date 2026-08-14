@@ -12992,6 +12992,215 @@
                 ]
             }
         },
+        "/api/v1/finance/duplicate-references": {
+            "get": {
+                "operationId": "finance.duplicate-references.index",
+                "tags": [
+                    "FinanceWorkspace"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "checked_at",
+                                "-checked_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "method",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/PaymentMethod"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `FinanceDuplicateReviewResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FinanceDuplicateReviewResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/finance/earnings-queries": {
             "get": {
                 "operationId": "finance.earnings-queries.index",
@@ -13375,6 +13584,217 @@
                                 }
                             }
                         }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/finance/partial-split-payments": {
+            "get": {
+                "operationId": "finance.partial-split-payments.index",
+                "tags": [
+                    "FinanceWorkspace"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at",
+                                "finalized_at",
+                                "-finalized_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/InvoiceStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `FinancePartialSplitInvoiceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FinancePartialSplitInvoiceResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "429": {
                         "description": "Rate limited",
@@ -14103,6 +14523,618 @@
                                 }
                             }
                         }
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/finance/workspace": {
+            "get": {
+                "operationId": "finance.workspace.show",
+                "tags": [
+                    "FinanceWorkspace"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "overview": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "branch_context": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "label": {
+                                                                    "type": "string"
+                                                                },
+                                                                "branches": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "code": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "town": {
+                                                                                "type": [
+                                                                                    "string",
+                                                                                    "null"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "id",
+                                                                            "name",
+                                                                            "code",
+                                                                            "town"
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "label",
+                                                                "branches"
+                                                            ]
+                                                        },
+                                                        "payments": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "pending_validation": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "duplicate_risk": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "pending_recorded": {
+                                                                    "type": "array",
+                                                                    "items": {}
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "pending_validation",
+                                                                "duplicate_risk",
+                                                                "pending_recorded"
+                                                            ]
+                                                        },
+                                                        "invoices": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "outstanding": {
+                                                                    "type": "string"
+                                                                },
+                                                                "outstanding_balance": {
+                                                                    "type": "array",
+                                                                    "items": {}
+                                                                },
+                                                                "validated_payments": {
+                                                                    "type": "array",
+                                                                    "items": {}
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "outstanding",
+                                                                "outstanding_balance",
+                                                                "validated_payments"
+                                                            ]
+                                                        },
+                                                        "controls": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "original_receipts": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "active_disputes": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "refunds_requiring_action": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "cash_ups_requiring_review": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "open_periods": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "reopen_requests": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "original_receipts",
+                                                                "active_disputes",
+                                                                "refunds_requiring_action",
+                                                                "cash_ups_requiring_review",
+                                                                "open_periods",
+                                                                "reopen_requests"
+                                                            ]
+                                                        },
+                                                        "compensation": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "salary_due": {
+                                                                    "type": "array",
+                                                                    "items": {}
+                                                                },
+                                                                "commission_due": {
+                                                                    "type": "array",
+                                                                    "items": {}
+                                                                },
+                                                                "payouts_requiring_action": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                },
+                                                                "earnings_queries_requiring_action": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "salary_due",
+                                                                "commission_due",
+                                                                "payouts_requiring_action",
+                                                                "earnings_queries_requiring_action"
+                                                            ]
+                                                        },
+                                                        "tasks": {
+                                                            "type": "array",
+                                                            "prefixItems": [
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "payment-validations"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Payment groups awaiting validation"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer",
+                                                                            "minimum": 0
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "const": "high"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "finance.payments-validations"
+                                                                        },
+                                                                        "step_up_required": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "maker_checker": {
+                                                                            "type": "string",
+                                                                            "const": "Finance checker"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "severity",
+                                                                        "route_name",
+                                                                        "step_up_required",
+                                                                        "maker_checker"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "duplicate-references"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Duplicate references held for review"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer",
+                                                                            "minimum": 0
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "const": "critical"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "finance.payments-duplicates"
+                                                                        },
+                                                                        "step_up_required": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "maker_checker": {
+                                                                            "type": "string",
+                                                                            "const": "Finance checker"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "severity",
+                                                                        "route_name",
+                                                                        "step_up_required",
+                                                                        "maker_checker"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "cash-up-review"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Cash-ups awaiting checker review"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer",
+                                                                            "minimum": 0
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "const": "high"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "finance.cash-up"
+                                                                        },
+                                                                        "step_up_required": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "maker_checker": {
+                                                                            "type": "string",
+                                                                            "const": "Finance checker"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "severity",
+                                                                        "route_name",
+                                                                        "step_up_required",
+                                                                        "maker_checker"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "refunds"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "External refunds awaiting a decision"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer",
+                                                                            "minimum": 0
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "const": "high"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "finance.refunds"
+                                                                        },
+                                                                        "step_up_required": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "maker_checker": {
+                                                                            "type": "string",
+                                                                            "const": "Finance checker"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "severity",
+                                                                        "route_name",
+                                                                        "step_up_required",
+                                                                        "maker_checker"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "disputes"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Open finance disputes"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer",
+                                                                            "minimum": 0
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "const": "medium"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "finance.disputes"
+                                                                        },
+                                                                        "step_up_required": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "maker_checker": {
+                                                                            "type": "string",
+                                                                            "const": "Finance checker"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "severity",
+                                                                        "route_name",
+                                                                        "step_up_required",
+                                                                        "maker_checker"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "period-reopen"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Period reopen requests"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer",
+                                                                            "minimum": 0
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "const": "critical"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "finance.periods"
+                                                                        },
+                                                                        "step_up_required": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "maker_checker": {
+                                                                            "type": "string",
+                                                                            "const": "Finance checker"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "severity",
+                                                                        "route_name",
+                                                                        "step_up_required",
+                                                                        "maker_checker"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "payouts"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Payout runs awaiting Finance"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer",
+                                                                            "minimum": 0
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "const": "high"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "finance.payouts"
+                                                                        },
+                                                                        "step_up_required": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "maker_checker": {
+                                                                            "type": "string",
+                                                                            "const": "Finance checker"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "severity",
+                                                                        "route_name",
+                                                                        "step_up_required",
+                                                                        "maker_checker"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "earnings-queries"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Earnings queries awaiting response"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer",
+                                                                            "minimum": 0
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "const": "medium"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "finance.compensation-queries"
+                                                                        },
+                                                                        "step_up_required": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "maker_checker": {
+                                                                            "type": "string",
+                                                                            "const": "Finance checker"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "severity",
+                                                                        "route_name",
+                                                                        "step_up_required",
+                                                                        "maker_checker"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "minItems": 8,
+                                                            "maxItems": 8,
+                                                            "additionalItems": false
+                                                        },
+                                                        "subscription": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "available": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "reason": {
+                                                                    "type": "string",
+                                                                    "const": "External Gate W is closed. Phase 20D-W has no Wallet payment, attempt, allocation or reconciliation runtime."
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "available",
+                                                                "reason"
+                                                            ]
+                                                        },
+                                                        "reports": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "available": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "reason": {
+                                                                    "type": "string",
+                                                                    "const": "Phase 21N reporting and notification runtime is blocked until External Gate W and Phase 20D-W complete."
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "available",
+                                                                "reason"
+                                                            ]
+                                                        },
+                                                        "notifications": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "available": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "reason": {
+                                                                    "type": "string",
+                                                                    "const": "Phase 21N reporting and notification runtime is blocked until External Gate W and Phase 20D-W complete."
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "available",
+                                                                "reason"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "branch_context",
+                                                        "payments",
+                                                        "invoices",
+                                                        "controls",
+                                                        "compensation",
+                                                        "tasks",
+                                                        "subscription",
+                                                        "reports",
+                                                        "notifications"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "overview"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "429": {
                         "description": "Rate limited",
@@ -42280,6 +43312,161 @@
                 ],
                 "title": "FinanceDisputeResource"
             },
+            "FinanceDuplicateReviewResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "method": {
+                        "type": "string"
+                    },
+                    "result": {
+                        "type": "string"
+                    },
+                    "match_type": {
+                        "type": "string",
+                        "const": "exact_normalized_reference"
+                    },
+                    "risk": {
+                        "type": "string",
+                        "const": "high"
+                    },
+                    "reference_masked": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "amount": {
+                        "type": "object",
+                        "properties": {
+                            "amount": {
+                                "type": "integer"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "formatted": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "amount",
+                            "currency",
+                            "formatted"
+                        ]
+                    },
+                    "checked_at": {
+                        "type": "string"
+                    },
+                    "current": {
+                        "type": "object",
+                        "properties": {
+                            "group_id": {
+                                "type": "string"
+                            },
+                            "group_status": {
+                                "type": "string"
+                            },
+                            "invoice_id": {
+                                "type": "string"
+                            },
+                            "invoice_number": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "recorded_by": {
+                                "type": "string"
+                            },
+                            "recorded_at": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "group_id",
+                            "group_status",
+                            "invoice_id",
+                            "invoice_number",
+                            "recorded_by",
+                            "recorded_at"
+                        ]
+                    },
+                    "conflict": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "payment_id": {
+                                "type": "string"
+                            },
+                            "group_id": {
+                                "type": "string"
+                            },
+                            "group_status": {
+                                "type": "string"
+                            },
+                            "invoice_id": {
+                                "type": "string"
+                            },
+                            "invoice_number": {
+                                "type": "string"
+                            },
+                            "amount": {
+                                "type": "object",
+                                "properties": {
+                                    "amount": {
+                                        "type": "integer"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "formatted": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "amount",
+                                    "currency",
+                                    "formatted"
+                                ]
+                            },
+                            "paid_at": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "payment_id",
+                            "group_id",
+                            "group_status",
+                            "invoice_id",
+                            "invoice_number",
+                            "amount",
+                            "paid_at"
+                        ]
+                    },
+                    "can_override": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "method",
+                    "result",
+                    "match_type",
+                    "risk",
+                    "reference_masked",
+                    "amount",
+                    "checked_at",
+                    "current",
+                    "conflict",
+                    "can_override"
+                ],
+                "title": "FinanceDuplicateReviewResource"
+            },
             "FinanceExportResource": {
                 "type": "object",
                 "properties": {
@@ -42382,6 +43569,265 @@
                     "created_at"
                 ],
                 "title": "FinanceExportResource"
+            },
+            "FinancePartialSplitInvoiceResource": {
+                "type": "object",
+                "properties": {
+                    "invoice": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "number": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "status": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "number",
+                            "status",
+                            "created_at"
+                        ]
+                    },
+                    "balance": {
+                        "type": "object",
+                        "properties": {
+                            "total": {
+                                "type": "object",
+                                "properties": {
+                                    "amount": {
+                                        "type": "integer"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "formatted": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "amount",
+                                    "currency",
+                                    "formatted"
+                                ]
+                            },
+                            "validated": {
+                                "type": "object",
+                                "properties": {
+                                    "amount": {
+                                        "type": "integer"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "formatted": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "amount",
+                                    "currency",
+                                    "formatted"
+                                ]
+                            },
+                            "pending_recorded": {
+                                "type": "object",
+                                "properties": {
+                                    "amount": {
+                                        "type": "integer"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "formatted": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "amount",
+                                    "currency",
+                                    "formatted"
+                                ]
+                            },
+                            "remaining": {
+                                "type": "object",
+                                "properties": {
+                                    "amount": {
+                                        "type": [
+                                            "object",
+                                            "null"
+                                        ]
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "formatted": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "amount",
+                                    "currency",
+                                    "formatted"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "total",
+                            "validated",
+                            "pending_recorded",
+                            "remaining"
+                        ]
+                    },
+                    "group_count": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "has_multiple_groups": {
+                        "type": "boolean"
+                    },
+                    "has_multi_method_group": {
+                        "type": "boolean"
+                    },
+                    "groups": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "status": {
+                                    "type": "string"
+                                },
+                                "total": {
+                                    "type": "object",
+                                    "properties": {
+                                        "amount": {
+                                            "type": "integer"
+                                        },
+                                        "currency": {
+                                            "type": "string"
+                                        },
+                                        "formatted": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "amount",
+                                        "currency",
+                                        "formatted"
+                                    ]
+                                },
+                                "recorded_at": {
+                                    "type": "string"
+                                },
+                                "maker": {
+                                    "type": "string"
+                                },
+                                "receipt": {
+                                    "type": [
+                                        "object",
+                                        "null"
+                                    ],
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "number": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "number"
+                                    ]
+                                },
+                                "components": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "method": {
+                                                "type": "string"
+                                            },
+                                            "status": {
+                                                "type": "string"
+                                            },
+                                            "amount": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "amount": {
+                                                        "type": "integer"
+                                                    },
+                                                    "currency": {
+                                                        "type": "string"
+                                                    },
+                                                    "formatted": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "amount",
+                                                    "currency",
+                                                    "formatted"
+                                                ]
+                                            },
+                                            "reference_masked": {
+                                                "type": [
+                                                    "string",
+                                                    "null"
+                                                ]
+                                            },
+                                            "duplicate_risk": {
+                                                "type": "boolean"
+                                            }
+                                        },
+                                        "required": [
+                                            "id",
+                                            "method",
+                                            "status",
+                                            "amount",
+                                            "reference_masked",
+                                            "duplicate_risk"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "status",
+                                "total",
+                                "recorded_at",
+                                "maker",
+                                "receipt",
+                                "components"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "invoice",
+                    "balance",
+                    "group_count",
+                    "has_multiple_groups",
+                    "has_multi_method_group",
+                    "groups"
+                ],
+                "title": "FinancePartialSplitInvoiceResource"
             },
             "FinancialPeriodLockResource": {
                 "type": "object",
@@ -43093,6 +44539,22 @@
                     "can"
                 ],
                 "title": "InvoiceResource"
+            },
+            "InvoiceStatus": {
+                "type": "string",
+                "description": "Merchant-Client Invoice lifecycle states (Plan §25.3, §13.8, §40; Phase 17). Mirrors the DB CHECK. Status is never assigned directly; every change goes through a named domain action via {@see InvoiceStateMachine}. Phase 17 reaches only `draft → issued → void_pending → voided|issued` and `issued → adjusted`; the payment-driven and post-payment transitions are defined and unit-tested here but are Phase-18B-driven (no Phase 17 endpoint can make an invoice `paid`).\n",
+                "enum": [
+                    "draft",
+                    "issued",
+                    "partially_paid",
+                    "paid",
+                    "void_pending",
+                    "voided",
+                    "adjusted",
+                    "refund_pending",
+                    "adjustment_required"
+                ],
+                "title": "InvoiceStatus"
             },
             "MarkPayoutRunPaidRequest": {
                 "type": "object",

@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 18B**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `finance-pending-validations`
-- **Route name and URL:** `finance.pending-validations`
+- **Route name and URL:** `finance.payments-validations`
 - **Layout:** `FinanceLayout`
 - **Allowed roles:** `merchant_finance`
 - **Required permissions:** `customer_payment.validate` (frontend visibility only; backend EnsurePermission + policy is authoritative)

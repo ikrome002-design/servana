@@ -1,0 +1,18 @@
+{
+  "schema": "servana.ui12.responsive-matrix.v1",
+  "phase": "UI-12",
+  "implemented_pages": 20,
+  "widths": [
+    { "px": 360, "pages": 20, "horizontal_overflow": 0, "navigation": "drawer" },
+    { "px": 767, "pages": 20, "horizontal_overflow": 0, "navigation": "drawer" },
+    { "px": 768, "pages": 20, "horizontal_overflow": 0, "navigation": "tablet rail" },
+    { "px": 1024, "pages": 20, "horizontal_overflow": 0, "navigation": "tablet rail" },
+    { "px": 1025, "pages": 20, "horizontal_overflow": 0, "navigation": "desktop sidebar" },
+    { "px": 1280, "pages": 20, "horizontal_overflow": 0, "navigation": "desktop sidebar" },
+    { "px": 1440, "pages": 20, "horizontal_overflow": 0, "navigation": "desktop sidebar" }
+  ],
+  "zoom_200_percent_equivalent": true,
+  "footer_fixed": true,
+  "footer_obstruction": false,
+  "browser_test": "tests/e2e/ui-12-finance-experience.spec.ts"
+}

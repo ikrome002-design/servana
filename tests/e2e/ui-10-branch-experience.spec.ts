@@ -112,7 +112,7 @@ test.describe('shell, authority and role boundaries', () => {
   });
 
   test('wrong account host fails closed', async ({ page }) => {
-    await openBranch(page, '/dashboard', { accountKey: 'merchant_finance' });
+    await openBranch(page, '/branch/profile', { accountKey: 'merchant_finance' });
     await expect(page.getByTestId('public-not-found')).toBeVisible();
     await expect(page.getByTestId('branch-dashboard')).toHaveCount(0);
   });

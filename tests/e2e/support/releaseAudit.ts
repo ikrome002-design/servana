@@ -328,28 +328,31 @@ export const SCREENS: AuditScreen[] = [
 
   // --- Finance ---------------------------------------------------------------
   { key: 'finance-landing', route: 'finance.landing', path: '/finance', role: 'merchant_finance', state: 'static' },
-  { key: 'finance-get-started', route: 'finance.get-started', path: '/finance/get-started', role: 'merchant_finance', state: 'static' },
-  { key: 'finance-task-inbox', route: 'finance.dashboard', path: '/finance/dashboard', role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-pending-validations', route: 'finance.pending-validations', path: '/finance/pending-validations', role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-receipts', route: 'finance.receipts', path: '/finance/receipts', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-get-started', route: 'finance.get-started', path: '/get-started', role: 'merchant_finance', state: 'static' },
+  { key: 'finance-dashboard', route: 'finance.dashboard', path: '/dashboard', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-task-inbox', route: 'finance.tasks', path: '/tasks', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-pending-validations', route: 'finance.payments-validations', path: '/payments/validations', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-payment-records-detail', route: 'finance.payments-validation-detail', path: `/payments/validations/${IDS.paymentGroup}`, role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-duplicate-references', route: 'finance.payments-duplicates', path: '/payments/duplicates', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-receipts', route: 'finance.receipts', path: '/receipts', role: 'merchant_finance', state: 'populated' },
   { key: 'finance-receipt-detail', route: 'finance.receipts.detail', path: `/finance/receipts/${IDS.receipt}`, role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-refunds', route: 'finance.refunds', path: '/finance/refunds', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-refunds', route: 'finance.refunds', path: '/refunds', role: 'merchant_finance', state: 'populated' },
   { key: 'finance-refund-detail', route: 'finance.refunds.detail', path: `/finance/refunds/${IDS.refund}`, role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-disputes', route: 'finance.disputes', path: '/finance/disputes', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-disputes', route: 'finance.disputes', path: '/disputes', role: 'merchant_finance', state: 'populated' },
   { key: 'finance-dispute-detail', route: 'finance.disputes.detail', path: `/finance/disputes/${IDS.dispute}`, role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-cash-up', route: 'finance.cash-up', path: '/finance/cash-up', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-cash-up', route: 'finance.cash-up', path: '/cash-up', role: 'merchant_finance', state: 'populated' },
   { key: 'finance-cash-up-detail', route: 'finance.cash-up.detail', path: `/finance/cash-up/${IDS.cashUp}`, role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-periods', route: 'finance.periods', path: '/finance/periods', role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-exports', route: 'finance.exports', path: '/finance/exports', role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-invoices', route: 'finance.invoices', path: '/finance/invoices', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-periods', route: 'finance.periods', path: '/periods', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-exports', route: 'finance.exports', path: '/exports', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-invoices', route: 'finance.invoices', path: '/invoices', role: 'merchant_finance', state: 'populated' },
   { key: 'finance-invoice-detail', route: 'finance.invoices.detail', path: `/finance/invoices/${IDS.invoice}`, role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-payment-records', route: 'finance.payment-records', path: '/finance/payment-records', role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-payment-records-detail', route: 'finance.payment-records.detail', path: `/finance/payment-records/${IDS.paymentGroup}`, role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-audit', route: 'finance.audit', path: '/finance/audit', role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-platform-fees', route: 'finance.platform-fees', path: '/finance/platform-fees', role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-compensation-liabilities', route: 'finance.liabilities', path: '/finance/liabilities', role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-payouts', route: 'finance.payout-runs', path: '/finance/payout-runs', role: 'merchant_finance', state: 'populated' },
-  { key: 'finance-earnings-queries', route: 'finance.earnings-queries', path: '/finance/earnings-queries', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-payment-records', route: 'finance.payments', path: '/payments', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-partial-split-payments', route: 'finance.payments-partial-split', path: '/payments/partial-split', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-audit', route: 'finance.audit', path: '/audit', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-compensation-liabilities', route: 'finance.compensation-liabilities', path: '/compensation/liabilities', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-payouts', route: 'finance.payouts', path: '/payouts', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-earnings-queries', route: 'finance.compensation-queries', path: '/compensation/queries', role: 'merchant_finance', state: 'populated' },
+  { key: 'finance-settings', route: 'finance.settings', path: '/settings', role: 'merchant_finance', state: 'static' },
 
   // --- Front Office ----------------------------------------------------------
   { key: 'front-office-landing', route: 'front-office.landing', path: '/front-office', role: 'merchant_front_office', state: 'static' },
@@ -664,7 +667,56 @@ const HR_OVERVIEW = {
   notifications: { available: false, reason: 'Phase 21N is blocked by External Gate W' },
 };
 
+const FINANCE_MONEY = { amount: 125000, currency: 'KES', formatted: 'KES 1,250.00' };
+const FINANCE_GROUP = {
+  id: IDS.paymentGroup,
+  status: 'pending_validation',
+  is_pending_validation: true,
+  currency: 'KES',
+  total: FINANCE_MONEY,
+  recorded_at: '2026-07-15T07:45:00+00:00',
+  submitted_for_validation_at: '2026-07-15T07:46:00+00:00',
+  maker: { id: id('MAKER'), name: 'Njeri Front Office' },
+  invoice: { id: IDS.invoice, invoice_number: 'INV-000241' },
+  components: [{ id: IDS.payment, method: 'mpesa_offline', amount: FINANCE_MONEY, status: 'pending_validation', reference_masked: '••••••1ABC' }],
+  duplicate_checks: [],
+};
+const FINANCE_OVERVIEW = {
+  branch_context: { label: 'Westlands Branch', branches: [{ id: IDS.branch, name: 'Westlands Branch', code: 'WST', town: 'Nairobi' }] },
+  payments: { pending_validation: 2, duplicate_risk: 1, pending_recorded: [FINANCE_MONEY] },
+  invoices: { outstanding: 3, outstanding_balance: [{ amount: 500000, currency: 'KES', formatted: 'KES 5,000.00' }], validated_payments: [{ amount: 375000, currency: 'KES', formatted: 'KES 3,750.00' }] },
+  controls: { original_receipts: 4, active_disputes: 1, refunds_requiring_action: 1, cash_ups_requiring_review: 2, open_periods: 1, reopen_requests: 1 },
+  compensation: { salary_due: [{ amount: 2500000, currency: 'KES', formatted: 'KES 25,000.00' }], commission_due: [{ amount: 350000, currency: 'KES', formatted: 'KES 3,500.00' }], payouts_requiring_action: 2, earnings_queries_requiring_action: 1 },
+  tasks: [
+    { key: 'payment-validations', label: 'Payment groups awaiting validation', count: 2, severity: 'high', route_name: 'finance.payments-validations', step_up_required: false, maker_checker: 'Finance checker' },
+    { key: 'duplicate-references', label: 'Duplicate references held for review', count: 1, severity: 'critical', route_name: 'finance.payments-duplicates', step_up_required: true, maker_checker: 'Finance checker' },
+    { key: 'cash-up-review', label: 'Cash-ups awaiting checker review', count: 2, severity: 'high', route_name: 'finance.cash-up', step_up_required: false, maker_checker: 'Finance checker' },
+  ],
+  subscription: { available: false, reason: 'External Gate W is closed. Phase 20D-W has no Wallet payment, attempt, allocation or reconciliation runtime.' },
+  reports: { available: false, reason: 'Phase 21N is blocked until External Gate W and Phase 20D-W complete.' },
+  notifications: { available: false, reason: 'Phase 21N is blocked until External Gate W and Phase 20D-W complete.' },
+};
+const FINANCE_DUPLICATE = {
+  id: id('DUPCHECK'), method: 'mpesa_offline', result: 'duplicate_suspected', match_type: 'exact_normalized_reference', risk: 'high', reference_masked: '••••••1ABC', amount: FINANCE_MONEY, checked_at: '2026-07-15T07:47:00+00:00',
+  current: { group_id: IDS.paymentGroup, group_status: 'recorded', invoice_id: IDS.invoice, invoice_number: 'INV-000241', recorded_by: 'Njeri Front Office', recorded_at: '2026-07-15T07:45:00+00:00' },
+  conflict: { payment_id: id('MATCHPAY'), group_id: id('MATCHGROUP'), group_status: 'pending_validation', invoice_id: IDS.invoice, invoice_number: 'INV-000241', amount: FINANCE_MONEY, paid_at: '2026-07-15T07:30:00+00:00' },
+  can_override: true,
+};
+const FINANCE_PARTIAL_SPLIT = {
+  invoice: { id: IDS.invoice, number: 'INV-000241', status: 'issued', created_at: '2026-07-15T07:00:00+00:00' },
+  balance: { total: { amount: 500000, currency: 'KES', formatted: 'KES 5,000.00' }, validated: { amount: 0, currency: 'KES', formatted: 'KES 0.00' }, pending_recorded: FINANCE_MONEY, remaining: { amount: 500000, currency: 'KES', formatted: 'KES 5,000.00' } },
+  group_count: 1, has_multiple_groups: false, has_multi_method_group: true,
+  groups: [{ id: IDS.paymentGroup, status: 'pending_validation', total: FINANCE_MONEY, recorded_at: '2026-07-15T07:45:00+00:00', maker: 'Njeri Front Office', receipt: null, components: [{ id: IDS.payment, method: 'mpesa_offline', status: 'pending_validation', amount: FINANCE_MONEY, reference_masked: '••••••1ABC', duplicate_risk: false }] }],
+};
+
 const SHARED_FIXTURES: Fixture[] = [
+  // --- UI-12 Finance experience ---------------------------------------------
+  { match: /^\/finance\/workspace$/, body: { data: { overview: FINANCE_OVERVIEW } } },
+  { match: /^\/finance\/duplicate-references$/, body: { data: [FINANCE_DUPLICATE], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
+  { match: /^\/finance\/partial-split-payments$/, body: { data: [FINANCE_PARTIAL_SPLIT], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/payment-recording-groups\/[^/]+$/, body: { data: FINANCE_GROUP } },
+  { match: /^\/payment-recording-groups$/, body: { data: [FINANCE_GROUP], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
+
   // --- REM-SCR-002A: merchant business profile -------------------------------
   { match: /^\/merchant\/profile$/, body: { data: MERCHANT_PROFILE } },
   {

@@ -41,6 +41,7 @@ use App\Http\Controllers\Api\V1\Compensation\MerchantCompensationController;
 use App\Http\Controllers\Api\V1\Compensation\PersonnelEarningsController;
 use App\Http\Controllers\Api\V1\Compensation\PersonnelEarningsQueryController;
 use App\Http\Controllers\Api\V1\Files\FileController;
+use App\Http\Controllers\Api\V1\Finance\FinanceWorkspaceController;
 use App\Http\Controllers\Api\V1\FinanceDisputes\FinanceDisputeController;
 use App\Http\Controllers\Api\V1\FinanceExports\FinanceExportController;
 use App\Http\Controllers\Api\V1\Hr\HrServiceOptionController;
@@ -1155,6 +1156,17 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('payment-recording-groups/{paymentRecordingGroup}', [PaymentRecordingGroupController::class, 'show'])
                 ->middleware(EnsurePermission::class.':customer_payment.view')
                 ->name('payment-recording-groups.show');
+            // UI-12 — bounded read-only Finance presentation seams over existing payment facts.
+            // These endpoints introduce no mutation authority and never expose full references.
+            Route::get('finance/workspace', [FinanceWorkspaceController::class, 'show'])
+                ->middleware(EnsurePermission::class.':customer_payment.view')
+                ->name('finance.workspace.show');
+            Route::get('finance/duplicate-references', [FinanceWorkspaceController::class, 'duplicates'])
+                ->middleware(EnsurePermission::class.':customer_payment.duplicate_override')
+                ->name('finance.duplicate-references.index');
+            Route::get('finance/partial-split-payments', [FinanceWorkspaceController::class, 'partialSplit'])
+                ->middleware(EnsurePermission::class.':customer_payment.view')
+                ->name('finance.partial-split-payments.index');
             // Phase 18B — Finance checker validates a WHOLE pending group (maker != checker
             // enforced in the action). financial_mutation → R4 idempotency; period-lock
             // enforced in the action. One validated group → one immutable event + one

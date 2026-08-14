@@ -1565,6 +1565,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/finance/duplicate-references": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["finance.duplicate-references.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/finance/earnings-queries": {
         parameters: {
             query?: never;
@@ -1607,6 +1623,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["finance.earnings-queries.respond"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/finance/partial-split-payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["finance.partial-split-payments.index"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1703,6 +1735,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["finance.payout-runs.verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/finance/workspace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["finance.workspace.show"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -5660,6 +5708,45 @@ export interface components {
                 method: string;
             } | null;
         };
+        /** FinanceDuplicateReviewResource */
+        FinanceDuplicateReviewResource: {
+            id: string;
+            method: string;
+            result: string;
+            /** @constant */
+            match_type: "exact_normalized_reference";
+            /** @constant */
+            risk: "high";
+            reference_masked: string | null;
+            amount: {
+                amount: number;
+                currency: string;
+                formatted: string;
+            };
+            checked_at: string;
+            current: {
+                group_id: string;
+                group_status: string;
+                invoice_id: string;
+                invoice_number: string | null;
+                recorded_by: string;
+                recorded_at: string;
+            };
+            conflict: {
+                payment_id: string;
+                group_id: string;
+                group_status: string;
+                invoice_id: string;
+                invoice_number: string;
+                amount: {
+                    amount: number;
+                    currency: string;
+                    formatted: string;
+                };
+                paid_at: string;
+            } | null;
+            can_override: boolean;
+        };
         /** FinanceExportResource */
         FinanceExportResource: {
             id: string;
@@ -5680,6 +5767,67 @@ export interface components {
             failure_code: string | null;
             failure_message: string | null;
             created_at: string | null;
+        };
+        /** FinancePartialSplitInvoiceResource */
+        FinancePartialSplitInvoiceResource: {
+            invoice: {
+                id: string;
+                number: string | null;
+                status: string;
+                created_at: string;
+            };
+            balance: {
+                total: {
+                    amount: number;
+                    currency: string;
+                    formatted: string;
+                };
+                validated: {
+                    amount: number;
+                    currency: string;
+                    formatted: string;
+                };
+                pending_recorded: {
+                    amount: number;
+                    currency: string;
+                    formatted: string;
+                };
+                remaining: {
+                    amount: Record<string, never> | null;
+                    currency: string;
+                    formatted: string;
+                };
+            };
+            group_count: number;
+            has_multiple_groups: boolean;
+            has_multi_method_group: boolean;
+            groups: {
+                id: string;
+                status: string;
+                total: {
+                    amount: number;
+                    currency: string;
+                    formatted: string;
+                };
+                recorded_at: string;
+                maker: string;
+                receipt: {
+                    id: string;
+                    number: number;
+                } | null;
+                components: {
+                    id: string;
+                    method: string;
+                    status: string;
+                    amount: {
+                        amount: number;
+                        currency: string;
+                        formatted: string;
+                    };
+                    reference_masked: string | null;
+                    duplicate_risk: boolean;
+                }[];
+            }[];
         };
         /** FinancialPeriodLockResource */
         FinancialPeriodLockResource: {
@@ -5872,6 +6020,13 @@ export interface components {
                 adjust: string;
             };
         };
+        /**
+         * InvoiceStatus
+         * @description Merchant-Client Invoice lifecycle states (Plan §25.3, §13.8, §40; Phase 17). Mirrors the DB CHECK. Status is never assigned directly; every change goes through a named domain action via {@see InvoiceStateMachine}. Phase 17 reaches only `draft → issued → void_pending → voided|issued` and `issued → adjusted`; the payment-driven and post-payment transitions are defined and unit-tested here but are Phase-18B-driven (no Phase 17 endpoint can make an invoice `paid`).
+         *
+         * @enum {string}
+         */
+        InvoiceStatus: "draft" | "issued" | "partially_paid" | "paid" | "void_pending" | "voided" | "adjusted" | "refund_pending" | "adjustment_required";
         /**
          * MarkPayoutRunPaidRequest
          * @description Mark an approved payout run PAID after an EXTERNAL settlement (Plan §62; §25.5; §H8). **Servana moves
@@ -14139,6 +14294,77 @@ export interface operations {
             };
         };
     };
+    "finance.duplicate-references.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "checked_at" | "-checked_at";
+                method?: components["schemas"]["PaymentMethod"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `FinanceDuplicateReviewResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["FinanceDuplicateReviewResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     "finance.earnings-queries.index": {
         parameters: {
             query?: {
@@ -14294,6 +14520,77 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "finance.partial-split-payments.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "created_at" | "-created_at" | "finalized_at" | "-finalized_at";
+                status?: components["schemas"]["InvoiceStatus"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `FinancePartialSplitInvoiceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["FinancePartialSplitInvoiceResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {
@@ -14647,6 +14944,212 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "finance.workspace.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            overview: {
+                                branch_context: {
+                                    label: string;
+                                    branches: {
+                                        id: string;
+                                        name: string;
+                                        code: string;
+                                        town: string | null;
+                                    }[];
+                                };
+                                payments: {
+                                    pending_validation: number;
+                                    duplicate_risk: number;
+                                    pending_recorded: unknown[];
+                                };
+                                invoices: {
+                                    outstanding: string;
+                                    outstanding_balance: unknown[];
+                                    validated_payments: unknown[];
+                                };
+                                controls: {
+                                    original_receipts: number;
+                                    active_disputes: number;
+                                    refunds_requiring_action: number;
+                                    cash_ups_requiring_review: number;
+                                    open_periods: number;
+                                    reopen_requests: number;
+                                };
+                                compensation: {
+                                    salary_due: unknown[];
+                                    commission_due: unknown[];
+                                    payouts_requiring_action: number;
+                                    earnings_queries_requiring_action: number;
+                                };
+                                tasks: [
+                                    {
+                                        /** @constant */
+                                        key: "payment-validations";
+                                        /** @constant */
+                                        label: "Payment groups awaiting validation";
+                                        count: number;
+                                        /** @constant */
+                                        severity: "high";
+                                        /** @constant */
+                                        route_name: "finance.payments-validations";
+                                        step_up_required: boolean;
+                                        /** @constant */
+                                        maker_checker: "Finance checker";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "duplicate-references";
+                                        /** @constant */
+                                        label: "Duplicate references held for review";
+                                        count: number;
+                                        /** @constant */
+                                        severity: "critical";
+                                        /** @constant */
+                                        route_name: "finance.payments-duplicates";
+                                        step_up_required: boolean;
+                                        /** @constant */
+                                        maker_checker: "Finance checker";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "cash-up-review";
+                                        /** @constant */
+                                        label: "Cash-ups awaiting checker review";
+                                        count: number;
+                                        /** @constant */
+                                        severity: "high";
+                                        /** @constant */
+                                        route_name: "finance.cash-up";
+                                        step_up_required: boolean;
+                                        /** @constant */
+                                        maker_checker: "Finance checker";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "refunds";
+                                        /** @constant */
+                                        label: "External refunds awaiting a decision";
+                                        count: number;
+                                        /** @constant */
+                                        severity: "high";
+                                        /** @constant */
+                                        route_name: "finance.refunds";
+                                        step_up_required: boolean;
+                                        /** @constant */
+                                        maker_checker: "Finance checker";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "disputes";
+                                        /** @constant */
+                                        label: "Open finance disputes";
+                                        count: number;
+                                        /** @constant */
+                                        severity: "medium";
+                                        /** @constant */
+                                        route_name: "finance.disputes";
+                                        step_up_required: boolean;
+                                        /** @constant */
+                                        maker_checker: "Finance checker";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "period-reopen";
+                                        /** @constant */
+                                        label: "Period reopen requests";
+                                        count: number;
+                                        /** @constant */
+                                        severity: "critical";
+                                        /** @constant */
+                                        route_name: "finance.periods";
+                                        step_up_required: boolean;
+                                        /** @constant */
+                                        maker_checker: "Finance checker";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "payouts";
+                                        /** @constant */
+                                        label: "Payout runs awaiting Finance";
+                                        count: number;
+                                        /** @constant */
+                                        severity: "high";
+                                        /** @constant */
+                                        route_name: "finance.payouts";
+                                        step_up_required: boolean;
+                                        /** @constant */
+                                        maker_checker: "Finance checker";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "earnings-queries";
+                                        /** @constant */
+                                        label: "Earnings queries awaiting response";
+                                        count: number;
+                                        /** @constant */
+                                        severity: "medium";
+                                        /** @constant */
+                                        route_name: "finance.compensation-queries";
+                                        step_up_required: boolean;
+                                        /** @constant */
+                                        maker_checker: "Finance checker";
+                                    }
+                                ];
+                                subscription: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "External Gate W is closed. Phase 20D-W has no Wallet payment, attempt, allocation or reconciliation runtime.";
+                                };
+                                reports: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "Phase 21N reporting and notification runtime is blocked until External Gate W and Phase 20D-W complete.";
+                                };
+                                notifications: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "Phase 21N reporting and notification runtime is blocked until External Gate W and Phase 20D-W complete.";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
             /** @description Rate limited */
             429: {
                 headers: {

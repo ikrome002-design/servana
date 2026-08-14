@@ -1,0 +1,35 @@
+{
+  "schema": "servana.ui12.gate-disposition.v1",
+  "phase": "UI-12",
+  "lifecycle": "local_complete",
+  "external_gate_w_closed": true,
+  "phase_20d_w_closed": true,
+  "phase_21n_closed": true,
+  "entries": [
+    {
+      "screen_key": "subscription", "route_path": "/subscription", "owner": "Phase 20D-W after External Gate W",
+      "entry_condition": "Gate W sandbox evidence is accepted; 20D-W delivers Finance-authorized Wallet payment, attempt, allocation and reconciliation contracts",
+      "reason": "The core Finance page requires Wallet payment/attempt/reconciliation truth that Phase 20B deliberately did not implement",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    },
+    {
+      "screen_key": "subscription-payment-attempts", "route_path": "/subscription/payment-attempts", "owner": "Phase 20D-W after External Gate W",
+      "entry_condition": "Gate W opens and 20D-W activates subscription.payment_attempts.view plus the Wallet attempt list/detail projection",
+      "reason": "The permission remains planned and the Wallet attempt tables, routes, event ordering contract and reconciliation runtime do not exist",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    },
+    {
+      "screen_key": "reports", "route_path": "/reports", "owner": "Phase 21N after 20D-W / External Gate W",
+      "entry_condition": "20D-W completes and Phase 21N ships the authoritative Finance report catalogue, formula read models and scheduled-report controls",
+      "reason": "No authoritative Finance report runtime exists; aggregating page-one collection data would fabricate totals",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    },
+    {
+      "screen_key": "notifications", "route_path": "/notifications", "owner": "Phase 21N after 20D-W / External Gate W",
+      "entry_condition": "20D-W completes and Phase 21N ships scoped notification persistence, reads, mark-read and preferences",
+      "reason": "Transient browser toasts and payment-recorded email do not constitute the canonical in-app notification centre",
+      "route_exists": false, "component_exists": false, "network_runtime_exists": false, "navigation": "visible and inert"
+    }
+  ],
+  "forbidden_fabrication": ["Wallet status", "provider reference", "subscription allocation", "manual mark-paid", "report total", "scheduled report", "notification record", "notification preference"]
+}

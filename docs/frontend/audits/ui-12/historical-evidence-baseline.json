@@ -1,0 +1,71 @@
+{
+  "schema": "servana.ui12.historical-evidence-baseline.v1",
+  "phase": "UI-12",
+  "captured_before_final_full_playwright": true,
+  "algorithm": "SHA-256 over sorted UTF-8 repository-relative path, NUL, file SHA-256 lines joined by LF",
+  "frozen_predecessor_proof": [
+    { "path": "docs/frontend/audits/ui-01", "files": 8, "aggregate_sha256": "8b576dc762da0fce9f8e6bc6307092e0668e4f6da9615ee89521526e7626f09a" },
+    { "path": "docs/frontend/audits/ui-04", "files": 15, "aggregate_sha256": "46a47780af6b0f855ed738d076d16a772b10c7c4f2c6e945dac9473238aba553" },
+    { "path": "docs/frontend/audits/ui-05", "files": 10, "aggregate_sha256": "c40443d0f0c7f413beea174d6e7c527ccb2dac3592e1d33ca3f9851b7ca20e04" },
+    { "path": "docs/frontend/audits/ui-08", "files": 50, "aggregate_sha256": "d7b55df4ce90d6dc12325bad6958e02b291b89f34527a1a21c40725d5794a9fc" },
+    { "path": "docs/frontend/audits/ui-09", "files": 45, "aggregate_sha256": "401f60c2e10974983fbd1ee6fa50771521c004b0879c7642400489cb1e71f5f4" },
+    { "path": "docs/frontend/audits/ui-10", "files": 36, "aggregate_sha256": "0204a6021b0e0dda916336211ceab727642c469547e116f58de611063d74a1f2" },
+    { "path": "docs/frontend/audits/ui-11", "files": 36, "aggregate_sha256": "db806089f301e0d09a7ad40855139de908be7cc24aca17fd3880f884cda312c1" }
+  ],
+  "mixed_historical_and_current_projection": {
+    "path": "docs/frontend/audits/ui-06",
+    "files_excluding_current_projection": 50,
+    "aggregate_sha256": "3fc9e6ccfa24b8335e87f7894f938bfbf2fcb246f785c43b32bedbd271e5d7ae",
+    "current_projection_exclusion": "docs/frontend/audits/ui-06/public-route-matrix.json",
+    "policy": "Restore only browser-written predecessor bytes; regenerate public-route-matrix.json from finalized routing authority"
+  },
+  "current_generated_projection": {
+    "path": "docs/frontend/audits/ui-07",
+    "files": 16,
+    "aggregate_sha256": "5b63555fc44cec0d3a95e9ce3447b91c60ff264bb5c17e5ba0a553e181ab9e16",
+    "policy": "Must match the finalized 160-page navigation and runtime screen contract; regenerate rather than restore predecessor bytes"
+  },
+  "current_ui12_proof_before_baseline_file": {
+    "path": "docs/frontend/audits/ui-12",
+    "files": 39,
+    "aggregate_sha256": "6dbdfa51f7eb6277c4fb206817b5e52faf71831428e0245bb4cf3488f9b9dc93",
+    "policy": "Preserve final UI-12 browser evidence; the authoritative run may intentionally refresh its screenshots and index"
+  },
+  "restoration_policy": "Compare exact aggregates after the full run; restore only individually proven test-written frozen predecessor paths, preserve current generated projections and UI-12 evidence, and rerun only affected deterministic checks. Never use broad clean/reset/restore.",
+  "post_run_verification": {
+    "authoritative_playwright": {
+      "collected": 1461,
+      "passed": 1461,
+      "failed": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    "frozen_predecessor_files": 250,
+    "test_written_files_changed_and_restored": 55,
+    "frozen_files_added": 0,
+    "frozen_files_removed": 0,
+    "all_frozen_aggregate_hashes_match_baseline": true,
+    "restore_scope": "45 exact tracked files named by Git inside UI-04/UI-05/UI-06/UI-08/UI-09/UI-10, excluding UI-06 public-route-matrix.json, plus 10 exact tracked docs/proof/ui-01 and docs/proof/ui-06 files proven against the verified base; no directory-wide reset or clean",
+    "additional_historical_proof_restoration": {
+      "pre_run_baseline_scope_gap_recorded_as": "UI12-017",
+      "tracked_files_restored_against_verified_base": 10,
+      "tracked_files_aggregate_sha256": "684d502297792446ee2339b186be69c3de67179b7d30ef3b44324ec269e3832e",
+      "tracked_files_match_head": true,
+      "accidental_screenshot_additions_removed": 112,
+      "accidental_additions_manifest_algorithm": "SHA-256 over sorted UTF-8 repository-relative path:size:file-SHA-256 records joined by LF, captured before deletion",
+      "accidental_additions_manifest_sha256": "f1d4c37ec05e74ff4cc5153094ff4645dcf37444100702cafb13a0996bb019e3",
+      "remaining_status_entries_in_restored_proof_scopes": 0
+    },
+    "current_projections": {
+      "ui06_public_route_matrix_sha256": "03bebceb9717773caea135a75bd8996ae1f98e646b7f1f32277d1e55837937e4",
+      "ui07_files": 16,
+      "ui07_aggregate_sha256": "7d04fdbb0d15a46ba8594640378745ea69cdeabcbf39fadb8cca8bd0d3e273df",
+      "generator_checks": "UI-06 artifacts current; UI-07 navigation current at 160 pages / 8 accounts"
+    },
+    "current_ui12_excluding_this_baseline": {
+      "files": 42,
+      "aggregate_sha256": "781f9a555ae7562a656e86becbb46274d450febcf2e48d05a15e25c89d055e9d"
+    }
+  }
+}

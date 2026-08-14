@@ -1,0 +1,42 @@
+{
+  "schema": "servana.ui12.route-activation.v1",
+  "phase": "UI-12",
+  "lifecycle": "local_complete",
+  "account": "merchant_finance",
+  "host": "finance.servana.ke",
+  "implemented_routes": [
+    { "screen_key": "dashboard", "route_name": "finance.dashboard", "route_path": "/dashboard" },
+    { "screen_key": "get-started", "route_name": "finance.get-started", "route_path": "/get-started" },
+    { "screen_key": "tasks", "route_name": "finance.tasks", "route_path": "/tasks" },
+    { "screen_key": "payments-validations", "route_name": "finance.payments-validations", "route_path": "/payments/validations" },
+    { "screen_key": "payments-validation-detail", "route_name": "finance.payments-validation-detail", "route_path": "/payments/validations/:groupUlid" },
+    { "screen_key": "payments-duplicates", "route_name": "finance.payments-duplicates", "route_path": "/payments/duplicates" },
+    { "screen_key": "invoices", "route_name": "finance.invoices", "route_path": "/invoices" },
+    { "screen_key": "payments", "route_name": "finance.payments", "route_path": "/payments" },
+    { "screen_key": "payments-partial-split", "route_name": "finance.payments-partial-split", "route_path": "/payments/partial-split" },
+    { "screen_key": "receipts", "route_name": "finance.receipts", "route_path": "/receipts" },
+    { "screen_key": "disputes", "route_name": "finance.disputes", "route_path": "/disputes" },
+    { "screen_key": "refunds", "route_name": "finance.refunds", "route_path": "/refunds" },
+    { "screen_key": "cash-up", "route_name": "finance.cash-up", "route_path": "/cash-up" },
+    { "screen_key": "periods", "route_name": "finance.periods", "route_path": "/periods" },
+    { "screen_key": "payouts", "route_name": "finance.payouts", "route_path": "/payouts" },
+    { "screen_key": "compensation-liabilities", "route_name": "finance.compensation-liabilities", "route_path": "/compensation/liabilities" },
+    { "screen_key": "compensation-queries", "route_name": "finance.compensation-queries", "route_path": "/compensation/queries" },
+    { "screen_key": "exports", "route_name": "finance.exports", "route_path": "/exports" },
+    { "screen_key": "audit", "route_name": "finance.audit", "route_path": "/audit" },
+    { "screen_key": "settings", "route_name": "finance.settings", "route_path": "/settings" }
+  ],
+  "gated_no_route": ["subscription", "subscription-payment-attempts", "reports", "notifications"],
+  "compatibility_redirects": [
+    "/finance/dashboard -> /dashboard",
+    "/finance/get-started -> /get-started",
+    "/finance/pending-validations -> /payments/validations",
+    "/finance/payment-records -> /payments",
+    "/finance/payment-records/:id -> /payments/validations/:groupUlid",
+    "/finance/liabilities -> /compensation/liabilities",
+    "/finance/payout-runs -> /payouts",
+    "/finance/earnings-queries -> /compensation/queries"
+  ],
+  "retired_no_alias": ["/finance/platform-fees"],
+  "result": "20 canonical host-relative routes match the generated Finance contract; all 4 gated identities have no route/component/request; guarded same-account redirects grant no authority"
+}
