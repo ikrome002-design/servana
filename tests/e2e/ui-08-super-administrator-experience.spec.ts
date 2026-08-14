@@ -316,10 +316,10 @@ test.describe('Security negatives', () => {
     await expect(page.getByText(/super administrator/i)).toHaveCount(0);
   });
 
-  test('holding the account is not enough when another host is served', async ({ page }) => {
+  test('another account host never registers the platform-only route tree', async ({ page }) => {
     await stubSuperAdmin(page, { accountKey: 'merchant_finance', accountKeys: ['super_administrator', 'merchant_finance'] });
     await stubPlatformApi(page);
-    await page.goto('/dashboard');
+    await page.goto('/merchants');
     await expect(notFound(page)).toBeVisible();
     await expect(page.getByTestId('platform-dashboard-screen')).toHaveCount(0);
   });

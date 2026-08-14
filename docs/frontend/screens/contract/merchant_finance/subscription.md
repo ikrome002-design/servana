@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> No runtime page implementation is active. UI-07 registers the contract identity only: **no Vue Router record and no navigation link is exposed**. Owner phase **UI-12** implements it.
+> Blocked by **external_gate_w**. The navigation entry is rendered disabled and names the gate; it has no live destination, and no Wallet, Refer & Earn, notification or provider runtime exists behind it. Owner phase **UI-12** implements the page once the gate opens.
 
 ## Identity
 
@@ -26,11 +26,11 @@
 ## Ownership and status
 
 - **UI owner phase:** **UI-12**
-- **Backend owner phase:** Not yet proven in the current repository. The owner phase must resolve this before changing `implementation_status` to `implemented`.
-- **Implementation status:** `planned`
+- **Backend owner phase:** **Phase 20D-W**
+- **Implementation status:** `disabled_by_gate`
 - **Runtime route:** none — no runtime route is registered
 - **Route delivery:** not applicable
-- **External gate:** none
+- **External gate:** `external_gate_w`
 
 ## Data and behaviour
 

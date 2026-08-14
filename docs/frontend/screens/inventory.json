@@ -1473,12 +1473,27 @@
       "summary": "HR user's own identity, sessions, preferences, and assigned branch context."
     },
     {
-      "key": "finance-task-inbox",
+      "key": "finance-dashboard",
       "domain": "finance",
       "route": "finance.dashboard",
       "layout": "FinanceLayout",
       "status": "implemented",
-      "phase": "Phase 18B",
+      "phase": "Phase UI-12",
+      "spec": "finance/finance-dashboard.md",
+      "title": "Finance dashboard",
+      "roles": [
+        "merchant_finance"
+      ],
+      "permissions": [],
+      "summary": "Assigned-branch Finance command centre with server-derived payment, invoice, control, and compensation totals kept separate by currency; priority work links; explicit maker/checker and Wallet/report/notification gate truth; and no client-authored financial facts."
+    },
+    {
+      "key": "finance-task-inbox",
+      "domain": "finance",
+      "route": "finance.tasks",
+      "layout": "FinanceLayout",
+      "status": "implemented",
+      "phase": "Phase UI-12",
       "spec": "finance/finance-task-inbox.md",
       "title": "Finance task inbox",
       "roles": [
@@ -1490,7 +1505,7 @@
     {
       "key": "finance-pending-validations",
       "domain": "finance",
-      "route": "finance.pending-validations",
+      "route": "finance.payments-validations",
       "layout": "FinanceLayout",
       "status": "implemented",
       "phase": "Phase 18B",
@@ -1685,7 +1700,7 @@
     {
       "key": "finance-payouts",
       "domain": "finance",
-      "route": "finance.payout-runs",
+      "route": "finance.payouts",
       "layout": "FinanceLayout",
       "status": "implemented",
       "phase": "Phase 20H",
@@ -1705,7 +1720,7 @@
     {
       "key": "finance-earnings-queries",
       "domain": "finance",
-      "route": "finance.earnings-queries",
+      "route": "finance.compensation-queries",
       "layout": "FinanceLayout",
       "status": "implemented",
       "phase": "Phase 20H",
@@ -2062,7 +2077,7 @@
     {
       "key": "finance-payment-records",
       "domain": "finance",
-      "route": "finance.payment-records",
+      "route": "finance.payments",
       "layout": "FinanceLayout",
       "status": "implemented",
       "phase": "Phase 18A",
@@ -2079,7 +2094,7 @@
     {
       "key": "finance-payment-records-detail",
       "domain": "finance",
-      "route": "finance.payment-records.detail",
+      "route": "finance.payments-validation-detail",
       "layout": "FinanceLayout",
       "status": "implemented",
       "phase": "Phase 18A",
@@ -2093,6 +2108,40 @@
         "customer_payment.duplicate_override"
       ],
       "summary": "Finance payment-recording detail with masked components and, when the group is held for a duplicate reference, a capability-gated override (customer_payment.duplicate_override) with a mandatory reason. The API also enforces MFA + a fresh step-up and never edits the original reference. No validation, rejection, or receipt control (Phase 18B)."
+    },
+    {
+      "key": "finance-duplicate-references",
+      "domain": "finance",
+      "route": "finance.payments-duplicates",
+      "layout": "FinanceLayout",
+      "status": "implemented",
+      "phase": "Phase UI-12",
+      "spec": "finance/finance-duplicate-references.md",
+      "title": "Duplicate reference review",
+      "roles": [
+        "merchant_finance"
+      ],
+      "permissions": [
+        "customer_payment.duplicate_override"
+      ],
+      "summary": "Assigned-branch duplicate-reference queue using masked normalized comparisons and server-owned risk facts, linking to the existing MFA and fresh-step-up override workflow without exposing raw references."
+    },
+    {
+      "key": "finance-partial-split-payments",
+      "domain": "finance",
+      "route": "finance.payments-partial-split",
+      "layout": "FinanceLayout",
+      "status": "implemented",
+      "phase": "Phase UI-12",
+      "spec": "finance/finance-partial-split-payments.md",
+      "title": "Partial and split payments",
+      "roles": [
+        "merchant_finance"
+      ],
+      "permissions": [
+        "customer_payment.view"
+      ],
+      "summary": "Read-only assigned-branch invoice reconciliation surface showing server-derived totals, validated paid amount, balance, payment groups, masked components, duplicate state, and receipt outcomes without browser-authored money."
     },
     {
       "key": "finance-audit",
@@ -2110,6 +2159,21 @@
         "finance.audit.view"
       ],
       "summary": "The Finance role's own MFA-gated, branch-scoped, masked read of the finance-domain audit trail (finance.audit.view; distinct from the Audit role's audit.finance.view). Read-only: no operational mutation and no flagged-review controls; MFA is enforced by the API and reflected in the UI."
+    },
+    {
+      "key": "finance-settings",
+      "domain": "finance",
+      "route": "finance.settings",
+      "layout": "FinanceLayout",
+      "status": "implemented",
+      "phase": "Phase UI-12",
+      "spec": "finance/finance-settings.md",
+      "title": "Finance settings and security",
+      "roles": [
+        "merchant_finance"
+      ],
+      "permissions": [],
+      "summary": "Finance user's own identity, MFA, sessions, theme, and assigned-branch security context; no merchant configuration, payment-provider credentials, subscription controls, or financial-authority changes."
     },
     {
       "key": "personnel-appointments",
@@ -2572,27 +2636,9 @@
       "summary": "Branch-attributable, read-only platform-fee visibility. The backend server-scopes entries to the actor assigned branches; no merchant-wide aggregate, no dispute or configuration controls. No Wallet/settlement UI."
     },
     {
-      "key": "finance-platform-fees",
-      "domain": "finance",
-      "route": "finance.platform-fees",
-      "layout": "FinanceLayout",
-      "status": "implemented",
-      "phase": "Phase 20E",
-      "spec": "finance/finance-platform-fees.md",
-      "title": "Platform fees",
-      "roles": [
-        "merchant_finance"
-      ],
-      "permissions": [
-        "platform_fee.view",
-        "platform_fee.dispute.review"
-      ],
-      "summary": "Finance platform-fee reconciliation view plus the dispute worklist: start review, resolve with an optional signed money change that creates an additive adjustment on a future invoice, and reject. Fresh step-up, period-lock and maker/checker are enforced by the API. The original ledger fact and issued invoices are never rewritten; there is no direct ledger edit or generic adjustment creator. No Wallet/settlement UI."
-    },
-    {
       "key": "finance-compensation-liabilities",
       "domain": "finance",
-      "route": "finance.liabilities",
+      "route": "finance.compensation-liabilities",
       "layout": "FinanceLayout",
       "status": "implemented",
       "phase": "Phase 20G",

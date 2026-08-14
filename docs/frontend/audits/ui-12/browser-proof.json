@@ -1,0 +1,63 @@
+{
+  "schema": "servana.ui12.browser-proof.v1",
+  "phase": "UI-12",
+  "account": "merchant_finance",
+  "focused_playwright": {
+    "command": "npx playwright test tests/e2e/ui-12-finance-experience.spec.ts --workers=1",
+    "built_spa": true,
+    "fixtures": "synthetic masked API payloads; genuine Vue router, Pinia stores, components and shared shell",
+    "passed": 59,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "duration_seconds": 209.3,
+    "unexpected_console_errors": 0,
+    "unexpected_failed_requests": 0,
+    "uncaught_page_errors": 0
+  },
+  "whole_product_playwright": {
+    "command": "npm run e2e -- --reporter=line",
+    "collected": 1461,
+    "passed": 1461,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "duration_seconds": 2749.8,
+    "status": "passed",
+    "log": "docs/frontend/audits/ui-12/whole-product-playwright.log"
+  },
+  "coverage": {
+    "implemented_pages": 20,
+    "gated_pages": 4,
+    "navigation_groups": 7,
+    "wrong_account_denial": true,
+    "forbidden_finance_actions_absent": true,
+    "duplicate_masking_and_reason": true,
+    "responsive_widths": [360, 767, 768, 1024, 1025, 1280, 1440],
+    "zoom_200_equivalent": true,
+    "theme_persistence": true,
+    "reduced_motion": true,
+    "axe_serious_critical_zero": true
+  },
+  "failed_run_history": [
+    {
+      "result": "57 passed / 2 failed / 59 collected",
+      "classification": "stale UI-12 harness expectations",
+      "correction": "align group-count evidence with the binding seven-group Finance contract and accept the browser's semantic 0.00001-second reduced-motion rendering"
+    },
+    {
+      "result": "58 passed / 1 failed / 59 collected; first navigation received ERR_CONNECTION_REFUSED",
+      "classification": "preview-server startup race",
+      "correction": "add a bounded preview readiness probe before product-health listeners and rerun the complete suite"
+    },
+    {
+      "result": "1453 passed / 8 failed / 1461 collected; exit 1",
+      "classification": "two Finance route-authorization defects plus six superseded cross-phase consumers",
+      "correction": "admit download-only exports, preserve the liabilities safe no-permission state, reconcile retired/canonical Finance consumers and replace colliding /dashboard wrong-host probes with account-unique routes; all eight focused cases then passed",
+      "log": "docs/frontend/audits/ui-12/whole-product-playwright-failed-1.log"
+    }
+  ],
+  "screenshots": "docs/frontend/audits/ui-12/screenshot-index.json"
+}

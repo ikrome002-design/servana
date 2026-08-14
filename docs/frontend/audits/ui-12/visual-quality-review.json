@@ -1,0 +1,19 @@
+{
+  "schema": "servana.ui12.visual-quality-review.v1",
+  "phase": "UI-12",
+  "account": "merchant_finance",
+  "reviewed": true,
+  "principles": [
+    "Branch context, priority work and authoritative financial states lead the hierarchy; the experience is a checker command centre rather than generic CRUD.",
+    "Server-owned amounts remain currency-separated and use compact summary-to-detail composition without browser-recomputed totals.",
+    "Maker/checker, validation-before-receipt, external-refund and payout separation are stated next to the affected workflows.",
+    "Sensitive references stay masked and duplicate override requires the shipped permission, fresh step-up, explicit reason and idempotent server action.",
+    "Gate W and Phase 21N destinations remain discoverable but inert and dependency-specific; no Wallet, report or notification truth is fabricated.",
+    "The seven Finance groups follow the binding order in the left navigation across responsive surfaces."
+  ],
+  "themes": { "default": "light", "dark_supported": true, "preference_persists": true },
+  "invented_metrics": 0,
+  "raw_tokens_exposed": 0,
+  "screenshots": "docs/frontend/audits/ui-12/screenshot-index.json",
+  "outcome": "accepted for UI-12 implementation evidence; UI-16 retains final cross-account visual-release authority"
+}

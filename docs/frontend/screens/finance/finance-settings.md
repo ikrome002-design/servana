@@ -1,17 +1,17 @@
-# Screen specification — Platform fees
+# Screen specification — Finance settings and security
 
-> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 20E**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
+> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase UI-12**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
-- **Screen key:** `finance-platform-fees`
-- **Route name and URL:** `finance.platform-fees`
+- **Screen key:** `finance-settings`
+- **Route name and URL:** `finance.settings`
 - **Layout:** `FinanceLayout`
 - **Allowed roles:** `merchant_finance`
-- **Required permissions:** `platform_fee.view`, `platform_fee.dispute.review` (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Required permissions:** — (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Finance platform-fee reconciliation view plus the dispute worklist: start review, resolve with an optional signed money change that creates an additive adjustment on a future invoice, and reject. Fresh step-up, period-lock and maker/checker are enforced by the API. The original ledger fact and issued invoices are never rewritten; there is no direct ledger edit or generic adjustment creator. No Wallet/settlement UI.
+- **Fields and displayed data:** Finance user's own identity, MFA, sessions, theme, and assigned-branch security context; no merchant configuration, payment-provider credentials, subscription controls, or financial-authority changes.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

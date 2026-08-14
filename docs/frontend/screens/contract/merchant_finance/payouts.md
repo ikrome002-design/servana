@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `finance.payout-runs` at `/finance/payout-runs` (routes/finance.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/payouts`; owner phase **UI-12** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `finance.payouts` at `/payouts` (routes/finance.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-12**
 - **Backend owner phase:** **Phase 20H**
 - **Implementation status:** `implemented`
-- **Runtime route:** `finance.payout-runs`
+- **Runtime route:** `finance.payouts`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `finance.payout-runs` (recorded in `docs/frontend/screens/finance/finance-payout-runs.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `finance.payouts` (recorded in `docs/frontend/screens/finance/finance-payout-runs.md`).
 - **Data fields:** Merchant-scoped Finance payout worklist: list/filter runs, verify a submitted run (Servana routes high-value runs to the Merchant Administrator), approve an ordinary run, reject (releasing the claimed liabilities via a reason), and mark an approved run PAID after an EXTERNAL settlement (external payment reference + a not-in-the-future paid date). Verify/approve/mark-paid are financial mutations — fresh step-up + Idempotency-Key are server-enforced; the mark-paid dialog states plainly that Servana records an external payment and moves no money. The raw external reference is never displayed after saving; the browser computes no authoritative total. No provider/Wallet/settlement UI.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

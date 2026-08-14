@@ -1,0 +1,238 @@
+{
+  "schema": "servana.ui12.screenshot-index.v1",
+  "phase": "UI-12",
+  "account": "merchant_finance",
+  "host": "finance.servana.ke",
+  "data_provenance": "synthetic; no real person, credential, token or provider payload",
+  "status": "UI-12 implementation evidence; not a UI-16 release-approved visual baseline",
+  "captures": [
+    {
+      "file": "screenshots/dashboard-dark-200-percent-equivalent.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "dark",
+      "bytes": 36825,
+      "sha256": "35a9a855ac280c9b3b242a55b1bf6d1309dc2580350e04088eac8f495434ca60"
+    },
+    {
+      "file": "screenshots/desktop-light-audit.png",
+      "screen_key": "audit",
+      "route": "/audit",
+      "theme": "light",
+      "bytes": 78908,
+      "sha256": "06169324b9559229be9ca23b39db0224c0ac620fb8aecfdf58da9d39f275ecd5"
+    },
+    {
+      "file": "screenshots/desktop-light-cash-up.png",
+      "screen_key": "cash-up",
+      "route": "/cash-up",
+      "theme": "light",
+      "bytes": 67698,
+      "sha256": "1003bde70df3741d3a95860097cf00f81daa28c534ca931ad046317435a1c35f"
+    },
+    {
+      "file": "screenshots/desktop-light-compensation-liabilities.png",
+      "screen_key": "compensation-liabilities",
+      "route": "/compensation/liabilities",
+      "theme": "light",
+      "bytes": 111583,
+      "sha256": "f4d80920af74b5b13acf7de25932e180fc26279c67adfe59a35a06370e3a24a5"
+    },
+    {
+      "file": "screenshots/desktop-light-compensation-queries.png",
+      "screen_key": "compensation-queries",
+      "route": "/compensation/queries",
+      "theme": "light",
+      "bytes": 79832,
+      "sha256": "6bf488b748e7fdf35651a644520e00d9950f7ee5ffe53e1a211fda03a04b57af"
+    },
+    {
+      "file": "screenshots/desktop-light-dashboard.png",
+      "screen_key": "dashboard",
+      "route": "/dashboard",
+      "theme": "light",
+      "bytes": 135944,
+      "sha256": "b81e297034e2c0d30ac594c3740c91716775bf7699223d5132a4e19bf56afffb"
+    },
+    {
+      "file": "screenshots/desktop-light-disputes.png",
+      "screen_key": "disputes",
+      "route": "/disputes",
+      "theme": "light",
+      "bytes": 65062,
+      "sha256": "1fecb770519eeab581fc7adc78550e15cb3752d34b17d4b6df62c142425bb341"
+    },
+    {
+      "file": "screenshots/desktop-light-exports.png",
+      "screen_key": "exports",
+      "route": "/exports",
+      "theme": "light",
+      "bytes": 64777,
+      "sha256": "d73aa57d6466e1e74db05deba1892ae97f176cea18c96f80586312948a54f4a2"
+    },
+    {
+      "file": "screenshots/desktop-light-get-started.png",
+      "screen_key": "get-started",
+      "route": "/get-started",
+      "theme": "light",
+      "bytes": 105395,
+      "sha256": "f4ca190ccbec5787ea2d617d2d7db756a671640fc7941c11436472db4e3b2382"
+    },
+    {
+      "file": "screenshots/desktop-light-invoices.png",
+      "screen_key": "invoices",
+      "route": "/invoices",
+      "theme": "light",
+      "bytes": 62795,
+      "sha256": "a9eda71aefa03a84ad3aa31d5b717a5f988e423a741f2ecd62af72b0cb206276"
+    },
+    {
+      "file": "screenshots/desktop-light-payments-duplicates.png",
+      "screen_key": "payments-duplicates",
+      "route": "/payments/duplicates",
+      "theme": "light",
+      "bytes": 109794,
+      "sha256": "73a3eb156a9732db67720d40336fe010f82e7fbe14e85d03f2091c33bc4ee3c0"
+    },
+    {
+      "file": "screenshots/desktop-light-payments-partial-split.png",
+      "screen_key": "payments-partial-split",
+      "route": "/payments/partial-split",
+      "theme": "light",
+      "bytes": 117071,
+      "sha256": "dd7045590878a38fcd2614ca64c21106b052d21ddc29a219a7d38550bd5268dc"
+    },
+    {
+      "file": "screenshots/desktop-light-payments-validation-detail.png",
+      "screen_key": "payments-validation-detail",
+      "route": "/payments/validations/01HZZPAYGROUP0000000000000",
+      "theme": "light",
+      "bytes": 90070,
+      "sha256": "2d12c0cf39f6ff079ba6e9543fde1a847bc9fd5c5f9cf18dcb900da2a258482e"
+    },
+    {
+      "file": "screenshots/desktop-light-payments-validations.png",
+      "screen_key": "payments-validations",
+      "route": "/payments/validations",
+      "theme": "light",
+      "bytes": 80493,
+      "sha256": "ca15280872128c28cab04bee1f27149adf7547ae5078eb2efbdc5a38bdea4059"
+    },
+    {
+      "file": "screenshots/desktop-light-payments.png",
+      "screen_key": "payments",
+      "route": "/payments",
+      "theme": "light",
+      "bytes": 79880,
+      "sha256": "228106a9c0b10495fa914071045eabbda70d209ac0e3d1e9cbe8776f78d03950"
+    },
+    {
+      "file": "screenshots/desktop-light-payouts.png",
+      "screen_key": "payouts",
+      "route": "/payouts",
+      "theme": "light",
+      "bytes": 90648,
+      "sha256": "57ac75da930a6e4eb7f3270b8157d79a9490456cde05d420769673a941f8f293"
+    },
+    {
+      "file": "screenshots/desktop-light-periods.png",
+      "screen_key": "periods",
+      "route": "/periods",
+      "theme": "light",
+      "bytes": 64056,
+      "sha256": "6424e930aae4ebc5e03972efad9dfe62dba42290a730f3bdfaa2d02e5513192d"
+    },
+    {
+      "file": "screenshots/desktop-light-receipts.png",
+      "screen_key": "receipts",
+      "route": "/receipts",
+      "theme": "light",
+      "bytes": 64229,
+      "sha256": "3b5fe816613c8973d657b18af5045060441cee5d16d4a8ef04bc6c21e4075e08"
+    },
+    {
+      "file": "screenshots/desktop-light-refunds.png",
+      "screen_key": "refunds",
+      "route": "/refunds",
+      "theme": "light",
+      "bytes": 67249,
+      "sha256": "645e0f45848cb117283723aa66c16e202298d7a8c52ab4c5cf494b4dc3eb8f00"
+    },
+    {
+      "file": "screenshots/desktop-light-settings.png",
+      "screen_key": "settings",
+      "route": "/settings",
+      "theme": "light",
+      "bytes": 110564,
+      "sha256": "2184c30305e27dc7f4c02a628899166570ba7ebb49146ecef2b56f92e5497e18"
+    },
+    {
+      "file": "screenshots/desktop-light-tasks.png",
+      "screen_key": "tasks",
+      "route": "/tasks",
+      "theme": "light",
+      "bytes": 106311,
+      "sha256": "02d7ef1b59f66dd69af5b2fdb9c670b1a0e8296fb3420d08c60dbee37f039c41"
+    },
+    {
+      "file": "screenshots/responsive-1024.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 76900,
+      "sha256": "0761f14d8be0a098b2e31b0959496c47ed43ebafeec22083e7ca33d6541187bf"
+    },
+    {
+      "file": "screenshots/responsive-1025.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 107099,
+      "sha256": "c0ca53bacd992106dac7b4245fea430df554352b12082d31690a373d00266f42"
+    },
+    {
+      "file": "screenshots/responsive-1280.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 109325,
+      "sha256": "e241b44306b91083482c187fd34cb190cbb9ebb630f6db739701c9644fb1889a"
+    },
+    {
+      "file": "screenshots/responsive-1440.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 110564,
+      "sha256": "2184c30305e27dc7f4c02a628899166570ba7ebb49146ecef2b56f92e5497e18"
+    },
+    {
+      "file": "screenshots/responsive-360.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 60762,
+      "sha256": "e9987b2ade6adce5b8eead07ca20dcd6c0a078702038212182adf74e9545fe80"
+    },
+    {
+      "file": "screenshots/responsive-767.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 71894,
+      "sha256": "4e4cda08f5999e98bc292fab5ba4c0e6d063a5db78de92c6491217ff0902b59c"
+    },
+    {
+      "file": "screenshots/responsive-768.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 77236,
+      "sha256": "d40917c07ac83b9b1e617abf07185d6e031a46c20075350587b6c29e8a2d7b9d"
+    }
+  ],
+  "totals": {
+    "captures": 28,
+    "implemented_page_captures": 20
+  }
+}

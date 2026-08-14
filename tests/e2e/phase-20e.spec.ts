@@ -175,12 +175,13 @@ test.describe('Merchant / Finance / Branch / Audit fee surface', () => {
     await expect(page.getByRole('button', { name: 'Resolve' })).toHaveCount(0);
   });
 
-  test('finance sees the dispute review controls', async ({ page }) => {
+  test('the retired Finance platform-fee destination is not aliased onto another page', async ({ page }) => {
     await stubMe(page, { role: 'finance', permissions: ['platform_fee.view', 'platform_fee.dispute', 'platform_fee.dispute.review'] });
     await stubFees(page);
     await page.goto('/finance/platform-fees');
-    await expect(page.getByRole('button', { name: 'Start review' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Reject' })).toBeVisible();
+    await expect(page.getByTestId('public-not-found')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start review' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Reject' })).toHaveCount(0);
   });
 
   test('branch / audit (view only) show no dispute-create or review controls', async ({ page }) => {

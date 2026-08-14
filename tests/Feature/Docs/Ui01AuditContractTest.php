@@ -317,6 +317,12 @@ it('classifies every implementation claim exactly once from the permitted vocabu
         'hr-invitations' => 'UI-11 — consolidated into hr-staff-invite; docs/frontend/audits/ui-11/route-activation-matrix.json',
         'hr-payout-prep' => 'UI-11 — renamed to hr-payouts; docs/frontend/audits/ui-11/route-activation-matrix.json',
         'hr-staff-profile' => 'UI-11 — replaced by hr-staff-detail; docs/frontend/audits/ui-11/route-activation-matrix.json',
+
+        // Phase UI-12 applies Appendix A's exact Finance account contract. Platform-fee
+        // configuration remains Super Administrator-owned, and the binding 24-page Finance
+        // register contains no platform-fee destination. The old Finance implementation
+        // identity therefore has no truthful successor or alias inside this account.
+        'finance-platform-fees' => 'UI-12 — removed by canonical Finance authority; docs/frontend/audits/ui-12/route-activation-matrix.json',
     ];
 
     $inventoryKeys = array_column($inventory['screens'], 'key');

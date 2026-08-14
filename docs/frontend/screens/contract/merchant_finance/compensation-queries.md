@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `finance.earnings-queries` at `/finance/earnings-queries` (routes/finance.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/compensation/queries`; owner phase **UI-12** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `finance.compensation-queries` at `/compensation/queries` (routes/finance.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-12**
 - **Backend owner phase:** **Phase 20H**
 - **Implementation status:** `implemented`
-- **Runtime route:** `finance.earnings-queries`
+- **Runtime route:** `finance.compensation-queries`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `finance.earnings-queries` (recorded in `docs/frontend/screens/finance/finance-earnings-queries.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `finance.compensation-queries` (recorded in `docs/frontend/screens/finance/finance-earnings-queries.md`).
 - **Data fields:** Finance earnings-query responder worklist: list/filter the merchant-scoped query queue and resolve or reject a query staff raised about their own earnings. An optional monetary correction on a resolve is recorded as a SEPARATE additive compensation adjustment (a direction-selector -> signed amount_minor float-free parser; a preview stating it does not edit the original earnings) — the original ledger fact is never rewritten and there is no direct ledger edit. Respond is a financial mutation (Idempotency-Key server-enforced; a replay never duplicates the correction); a terminal query shows a read-only resolved/rejected state. No Wallet/provider UI.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

@@ -68,6 +68,23 @@ const GROUP_ORDER: readonly string[] = [
   'Reporting & Audit',
   'Platform Administration',
   'Utility',
+  // Merchant account groups follow the same explicit authority. Keeping these after the shared
+  // Utility label preserves every predecessor account whose relative order is already released;
+  // Finance reorders its seven groups below to the binding UI-12 sequence.
+  'Merchant-Client Finance',
+  'Controls & Close',
+  'Compensation Finance',
+  'Subscription Finance',
+];
+
+const FINANCE_GROUP_ORDER: readonly string[] = [
+  'Home',
+  'Merchant-Client Finance',
+  'Controls & Close',
+  'Compensation Finance',
+  'Subscription Finance',
+  'Reporting & Audit',
+  'Utility',
 ];
 
 /** Groups always rendered inline, at every width from tablet up. */
@@ -92,7 +109,8 @@ const groups = computed<NavGroup[]>(() => {
 
   const ordered: NavGroup[] = [];
 
-  for (const name of GROUP_ORDER) {
+  const explicitOrder = byName.has('Merchant-Client Finance') ? FINANCE_GROUP_ORDER : GROUP_ORDER;
+  for (const name of explicitOrder) {
     const items = byName.get(name);
     if (items && items.length > 0) {
       ordered.push({ name, id: `nav-group-${slug(name)}`, items });

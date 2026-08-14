@@ -299,15 +299,15 @@
     },
     {
       "name": "finance.audit",
-      "path": "audit",
-      "absolute_path": "/finance/audit",
+      "path": "/audit",
+      "absolute_path": "/audit",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
       "name": "finance.cash-up",
-      "path": "cash-up",
-      "absolute_path": "/finance/cash-up",
+      "path": "/cash-up",
+      "absolute_path": "/cash-up",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
@@ -319,16 +319,30 @@
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
+      "name": "finance.compensation-liabilities",
+      "path": "/compensation/liabilities",
+      "absolute_path": "/compensation/liabilities",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.compensation-queries",
+      "path": "/compensation/queries",
+      "absolute_path": "/compensation/queries",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
       "name": "finance.dashboard",
-      "path": "dashboard",
-      "absolute_path": "/finance/dashboard",
+      "path": "/dashboard",
+      "absolute_path": "/dashboard",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
       "name": "finance.disputes",
-      "path": "disputes",
-      "absolute_path": "/finance/disputes",
+      "path": "/disputes",
+      "absolute_path": "/disputes",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
@@ -340,30 +354,23 @@
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
-      "name": "finance.earnings-queries",
-      "path": "earnings-queries",
-      "absolute_path": "/finance/earnings-queries",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/finance.ts"
-    },
-    {
       "name": "finance.exports",
-      "path": "exports",
-      "absolute_path": "/finance/exports",
+      "path": "/exports",
+      "absolute_path": "/exports",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
       "name": "finance.get-started",
-      "path": "get-started",
-      "absolute_path": "/finance/get-started",
+      "path": "/get-started",
+      "absolute_path": "/get-started",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
       "name": "finance.invoices",
-      "path": "invoices",
-      "absolute_path": "/finance/invoices",
+      "path": "/invoices",
+      "absolute_path": "/invoices",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
@@ -382,58 +389,58 @@
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
-      "name": "finance.liabilities",
-      "path": "liabilities",
-      "absolute_path": "/finance/liabilities",
+      "name": "finance.payments",
+      "path": "/payments",
+      "absolute_path": "/payments",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
-      "name": "finance.payment-records",
-      "path": "payment-records",
-      "absolute_path": "/finance/payment-records",
+      "name": "finance.payments-duplicates",
+      "path": "/payments/duplicates",
+      "absolute_path": "/payments/duplicates",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
-      "name": "finance.payment-records.detail",
-      "path": "payment-records/:id",
-      "absolute_path": "/finance/payment-records/:id",
+      "name": "finance.payments-partial-split",
+      "path": "/payments/partial-split",
+      "absolute_path": "/payments/partial-split",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
-      "name": "finance.payout-runs",
-      "path": "payout-runs",
-      "absolute_path": "/finance/payout-runs",
+      "name": "finance.payments-validation-detail",
+      "path": "/payments/validations/:groupUlid",
+      "absolute_path": "/payments/validations/:groupUlid",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
-      "name": "finance.pending-validations",
-      "path": "pending-validations",
-      "absolute_path": "/finance/pending-validations",
+      "name": "finance.payments-validations",
+      "path": "/payments/validations",
+      "absolute_path": "/payments/validations",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.payouts",
+      "path": "/payouts",
+      "absolute_path": "/payouts",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
       "name": "finance.periods",
-      "path": "periods",
-      "absolute_path": "/finance/periods",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/finance.ts"
-    },
-    {
-      "name": "finance.platform-fees",
-      "path": "platform-fees",
-      "absolute_path": "/finance/platform-fees",
+      "path": "/periods",
+      "absolute_path": "/periods",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
       "name": "finance.receipts",
-      "path": "receipts",
-      "absolute_path": "/finance/receipts",
+      "path": "/receipts",
+      "absolute_path": "/receipts",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
@@ -446,8 +453,8 @@
     },
     {
       "name": "finance.refunds",
-      "path": "refunds",
-      "absolute_path": "/finance/refunds",
+      "path": "/refunds",
+      "absolute_path": "/refunds",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
@@ -455,6 +462,20 @@
       "name": "finance.refunds.detail",
       "path": "refunds/:id",
       "absolute_path": "/finance/refunds/:id",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.settings",
+      "path": "/settings",
+      "absolute_path": "/settings",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/finance.ts"
+    },
+    {
+      "name": "finance.tasks",
+      "path": "/tasks",
+      "absolute_path": "/tasks",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },

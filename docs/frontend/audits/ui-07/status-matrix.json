@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "f9f1aa59bbcebd28a7d06f907fcae0da15637bfd187dede4dce19c30baeb6e5d",
+  "canonical_authority_sha256": "ba280b13fa2556f191ce195e5ff9ae9b477f3dc29358314ce264cbbc4e61de8f",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "f2b1d99b56ccec9fdb530116393df04d89b6813c19335592f3fd05089f87154d",
+  "screen_inventory_sha256": "425ca93531efaa2ff609b13bbadfcba00a518ed732d441f9f8d2ba3820a660c0",
   "purpose": "Implementation status across the contract, and what each status means at runtime.",
   "allowed_statuses": [
     "disabled_by_gate",
@@ -23,9 +23,9 @@
     "removed_by_authority": "Absent from the router, all navigation surfaces and every live audit set."
   },
   "totals": {
-    "disabled_by_gate": 27,
-    "implemented": 105,
-    "planned": 28
+    "disabled_by_gate": 28,
+    "implemented": 108,
+    "planned": 24
   },
   "by_account": {
     "super_administrator": {
@@ -45,9 +45,8 @@
       "implemented": 15
     },
     "merchant_finance": {
-      "disabled_by_gate": 3,
-      "implemented": 17,
-      "planned": 4
+      "disabled_by_gate": 4,
+      "implemented": 20
     },
     "merchant_front_office": {
       "disabled_by_gate": 2,
@@ -185,6 +184,12 @@
       "gate": "phase_21n_blocked_by_external_gate_w",
       "owner_phase": "UI-11",
       "label": "Notifications"
+    },
+    {
+      "key": "merchant_finance.subscription",
+      "gate": "external_gate_w",
+      "owner_phase": "UI-12",
+      "label": "Subscription Billing"
     },
     {
       "key": "merchant_finance.subscription-payment-attempts",

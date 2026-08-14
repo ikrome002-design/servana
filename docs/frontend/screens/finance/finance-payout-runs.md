@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 20H**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `finance-payouts`
-- **Route name and URL:** `finance.payout-runs`
+- **Route name and URL:** `finance.payouts`
 - **Layout:** `FinanceLayout`
 - **Allowed roles:** `merchant_finance`
 - **Required permissions:** `payout_run.verify`, `payout_run.approve_standard`, `payout_run.reject`, `payout_run.mark_paid` (frontend visibility only; backend EnsurePermission + policy is authoritative)

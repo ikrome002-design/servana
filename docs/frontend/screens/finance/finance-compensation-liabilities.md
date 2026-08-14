@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 20G**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `finance-compensation-liabilities`
-- **Route name and URL:** `finance.liabilities`
+- **Route name and URL:** `finance.compensation-liabilities`
 - **Layout:** `FinanceLayout`
 - **Allowed roles:** `merchant_finance`
 - **Required permissions:** `compensation.liability.view`, `compensation.adjustment.create` (frontend visibility only; backend EnsurePermission + policy is authoritative)

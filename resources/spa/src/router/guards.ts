@@ -113,6 +113,28 @@ export function requiresPermission(permission: string) {
   };
 }
 
+/**
+ * Admit a route when the server bootstrap grants at least one of its independent capabilities.
+ *
+ * This is intentionally an OR check. Some read surfaces expose separately authorized actions
+ * (for example, an existing Finance export can be downloaded without granting permission to
+ * request or revoke exports). The API remains the security boundary for every request.
+ */
+export function requiresAnyPermission(...permissions: string[]) {
+  return (
+    _to: RouteLocationNormalized,
+    _from: RouteLocationNormalized,
+    next: NavigationGuardNext,
+  ): void => {
+    const perms = usePermissionStore();
+    if (!perms.canAny(permissions)) {
+      next({ name: 'home' });
+      return;
+    }
+    next();
+  };
+}
+
 export function requiresActiveMerchant(
   _to: RouteLocationNormalized,
   _from: RouteLocationNormalized,

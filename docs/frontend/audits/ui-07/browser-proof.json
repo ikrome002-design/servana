@@ -90,10 +90,10 @@
       "account": "merchant_finance",
       "shell_path": "/finance",
       "navigation_placement": "sidebar",
-      "expected_entries": 19,
-      "rendered_entries": 19,
+      "expected_entries": 23,
+      "rendered_entries": 23,
       "planned_entries_rendered": 0,
-      "links_with_destination": 16,
+      "links_with_destination": 19,
       "console_errors": 0,
       "page_errors": 0,
       "failed_requests": 0

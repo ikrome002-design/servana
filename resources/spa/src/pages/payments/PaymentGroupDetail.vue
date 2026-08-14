@@ -65,7 +65,7 @@ const decisionTitle: Record<Decision, string> = {
 
 async function load(): Promise<void> {
   try {
-    group.value = (await store.fetchGroup(String(route.params.id))) as PaymentRecordingGroupView & {
+    group.value = (await store.fetchGroup(String(route.params.groupUlid ?? route.params.id))) as PaymentRecordingGroupView & {
       duplicate_checks?: DuplicateCheck[];
     };
   } catch {
@@ -145,10 +145,10 @@ onMounted(load);
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Payment recording
-    </h1>
+  <section class="mx-auto max-w-6xl" data-testid="finance-payment-validation-detail">
+    <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">Pending validations / group detail</p>
+    <h1 class="mt-1 font-display text-2xl font-bold text-heading">Payment validation detail</h1>
+    <p class="mt-1 text-sm text-text-muted">Review every component, then decide the server-defined group atomically. No component-only validation is available.</p>
 
     <SvStateBoundary
       class="mt-6"

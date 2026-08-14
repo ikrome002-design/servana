@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `finance.liabilities` at `/finance/liabilities` (routes/finance.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/compensation/liabilities`; owner phase **UI-12** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `finance.compensation-liabilities` at `/compensation/liabilities` (routes/finance.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-12**
 - **Backend owner phase:** **Phase 20G**
 - **Implementation status:** `implemented`
-- **Runtime route:** `finance.liabilities`
+- **Runtime route:** `finance.compensation-liabilities`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `finance.liabilities` (recorded in `docs/frontend/screens/finance/finance-compensation-liabilities.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `finance.compensation-liabilities` (recorded in `docs/frontend/screens/finance/finance-compensation-liabilities.md`).
 - **Data fields:** Finance masked, merchant-scoped compensation-liability surface: a per-currency summary (net salary, net commission, adjustments, combined net, plus gross accrual/earned and reversal totals; never combined across currencies), a filtered/paginated liability-entry list (salary accrual/reversal, earned commission/reversal) with safe source detail, a compensation-adjustment list/detail, and a capability-gated Record-adjustment dialog that posts a standalone additive positive/negative adjustment (server-derived branch/type/actors; fresh step-up + Idempotency-Key enforced by the API). The browser never computes authoritative liability money and never sends a server-owned field. A liability is not a payout, settlement, disbursement, earnings statement or paid event; no Wallet/provider UI.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

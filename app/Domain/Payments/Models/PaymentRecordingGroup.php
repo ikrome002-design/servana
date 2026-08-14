@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -127,5 +128,13 @@ class PaymentRecordingGroup extends Model
     public function records(): HasMany
     {
         return $this->hasMany(PaymentRecord::class);
+    }
+
+    /** The one successful whole-group validation event, when validation has completed. */
+    /** @return HasOne<PaymentValidationEvent, $this> */
+    public function validatedEvent(): HasOne
+    {
+        return $this->hasOne(PaymentValidationEvent::class)
+            ->where('decision', 'validated');
     }
 }

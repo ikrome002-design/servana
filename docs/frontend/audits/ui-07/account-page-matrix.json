@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "f9f1aa59bbcebd28a7d06f907fcae0da15637bfd187dede4dce19c30baeb6e5d",
+  "canonical_authority_sha256": "ba280b13fa2556f191ce195e5ff9ae9b477f3dc29358314ce264cbbc4e61de8f",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "f2b1d99b56ccec9fdb530116393df04d89b6813c19335592f3fd05089f87154d",
+  "screen_inventory_sha256": "425ca93531efaa2ff609b13bbadfcba00a518ed732d441f9f8d2ba3820a660c0",
   "purpose": "Every contract page, per account, in navigation order.",
   "accounts": [
     {
@@ -1482,7 +1482,9 @@
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
           "runtime_route_name": "finance.dashboard",
-          "permission_all": [],
+          "permission_all": [
+            "customer_payment.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "9.4.1"
@@ -1513,8 +1515,10 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "finance.dashboard",
-          "permission_all": [],
+          "runtime_route_name": "finance.tasks",
+          "permission_all": [
+            "customer_payment.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "9.4.3"
@@ -1529,7 +1533,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "finance.pending-validations",
+          "runtime_route_name": "finance.payments-validations",
           "permission_all": [
             "customer_payment.validate"
           ],
@@ -1547,7 +1551,7 @@
           "parent_key": "merchant_finance.payments-validations",
           "navigation_visibility": "contextual_child",
           "implementation_status": "implemented",
-          "runtime_route_name": "finance.payment-records.detail",
+          "runtime_route_name": "finance.payments-validation-detail",
           "permission_all": [
             "customer_payment.view"
           ],
@@ -1564,9 +1568,11 @@
           "navigation_group": "Merchant-Client Finance",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "finance.payments-duplicates",
+          "permission_all": [
+            "customer_payment.duplicate_override"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "9.4.6"
@@ -1599,7 +1605,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "finance.payment-records",
+          "runtime_route_name": "finance.payments",
           "permission_all": [
             "customer_payment.view"
           ],
@@ -1616,9 +1622,11 @@
           "navigation_group": "Merchant-Client Finance",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "finance.payments-partial-split",
+          "permission_all": [
+            "customer_payment.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "9.4.9"
@@ -1723,7 +1731,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "finance.payout-runs",
+          "runtime_route_name": "finance.payouts",
           "permission_all": [
             "payout_run.verify"
           ],
@@ -1741,7 +1749,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "finance.liabilities",
+          "runtime_route_name": "finance.compensation-liabilities",
           "permission_all": [
             "compensation.liability.view"
           ],
@@ -1759,7 +1767,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "finance.earnings-queries",
+          "runtime_route_name": "finance.compensation-queries",
           "permission_all": [
             "earnings_query.respond"
           ],
@@ -1776,11 +1784,11 @@
           "navigation_group": "Subscription Finance",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
+          "implementation_status": "disabled_by_gate",
           "runtime_route_name": null,
           "permission_all": [],
           "permission_any": [],
-          "gate": null,
+          "gate": "external_gate_w",
           "map_section": "9.4.18"
         },
         {
@@ -1876,8 +1884,8 @@
           "navigation_group": "Utility",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
+          "implementation_status": "implemented",
+          "runtime_route_name": "finance.settings",
           "permission_all": [],
           "permission_any": [],
           "gate": null,

@@ -1,0 +1,57 @@
+{
+  "schema": "servana.ui12.production-host-proof.v1",
+  "phase": "UI-12",
+  "source_state": "final stabilized runtime source after authoritative PostgreSQL, Vitest and whole-product Playwright gates; before documentation-only closeout",
+  "images": [
+    {
+      "tag": "servana-ui12-php:audit",
+      "id": "sha256:ffa9d3019e983fe226b01ec6166bcc70911b26c7c5d68d77e7a05dd229a1cd77",
+      "size_bytes": 930033679,
+      "created_utc": "2026-08-14T02:18:12.032059184Z",
+      "dockerfile": "docker/php.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0,
+      "build_duration_seconds": 1048.0
+    },
+    {
+      "tag": "servana-ui12-nginx:audit",
+      "id": "sha256:2ea187e8e5cc231f58a3340d02f52f4bd7bb4a0bc78f9f21be8f105d15648879",
+      "size_bytes": 317663194,
+      "created_utc": "2026-08-14T02:20:32.333792259Z",
+      "dockerfile": "docker/nginx.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0,
+      "build_duration_seconds": 98.1
+    }
+  ],
+  "topology": {
+    "network": "ui12-proof-net",
+    "app": "ui12-proof-app with network alias app, array session/cache, sync queue and ephemeral local SQLite setting",
+    "edge": "ui12-proof-nginx on 127.0.0.1:8112",
+    "project_volume_mounted": false,
+    "production_dns_or_tls_touched": false,
+    "removed_after_proof": true,
+    "remaining_named_containers": 0,
+    "remaining_named_networks": 0
+  },
+  "nginx_syntax": {
+    "exit_code": 0,
+    "result": "syntax is ok; test is successful"
+  },
+  "canonical_host": {
+    "command": "node scripts/ui12-production-host-proof.mjs http://127.0.0.1:8112",
+    "host": "finance.servana.ke",
+    "implemented_routes_200_with_finance_context": 20,
+    "gated_routes_ordinary_shell_only": 4,
+    "compatibility_paths_same_account": 8,
+    "retired_no_alias_ordinary_shell_only": 1,
+    "wrong_account_collision_checks": 3,
+    "unknown_host_refused": true,
+    "fingerprinted_assets_and_mime": "all seven referenced assets returned 200 with expected MIME",
+    "javascript_source_map_status": 404,
+    "passed": 46,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "production_route_count": 354
+}

@@ -77,11 +77,13 @@ const humanResource: GetStartedItem[] = [
 ];
 
 const finance: GetStartedItem[] = [
-  { id: 'review-pending-validations', label: 'Review pending validations', phase: 'Phase 18B', kind: 'action' },
-  { id: 'learn-validation-workflow', label: 'Learn the validation workflow', phase: 'Phase 18B', kind: 'action' },
-  { id: 'review-cash-up-submissions', label: 'Review cash-up submissions', phase: 'Phase 18B', kind: 'action' },
-  { id: 'review-payout-runs', label: 'Review payout runs', phase: 'Phase 20H', kind: 'action' },
-  { id: 'review-period-lock-controls', label: 'Review period-lock controls', phase: 'Phase 18B', kind: 'action' },
+  { id: 'enroll-mfa-step-up', label: 'Enroll in MFA and understand step-up', routeName: 'finance.settings', kind: 'action' },
+  { id: 'review-pending-validations', label: 'Review pending validation and method-specific reference rules', routeName: 'finance.payments-validations', kind: 'action' },
+  { id: 'review-duplicate-reference-controls', label: 'Review duplicate-reference controls', routeName: 'finance.payments-duplicates', kind: 'action' },
+  { id: 'review-cash-up-submissions', label: 'Review cash-up checker workflow', routeName: 'finance.cash-up', kind: 'action' },
+  { id: 'review-period-lock-controls', label: 'Review period lock/reopen workflow', routeName: 'finance.periods', kind: 'action' },
+  { id: 'review-payout-runs', label: 'Review payout verification/approval/mark-paid separation', routeName: 'finance.payouts', kind: 'action' },
+  { id: 'review-wallet-subscription-attempt-states', label: 'Review Wallet subscription attempt states', phase: 'External Gate W', kind: 'action' },
   ACKNOWLEDGE,
 ];
 

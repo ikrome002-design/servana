@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
+import { useRoute } from 'vue-router';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvPageHeader from '@/components/ui/SvPageHeader.vue';
+import SvPagination from '@/components/ui/SvPagination.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { usePaymentStore } from '@/stores/paymentStore';
 
@@ -11,6 +14,13 @@ import { usePaymentStore } from '@/stores/paymentStore';
  * duplicate-reference review is flagged; the override lives on the detail page.
  */
 const store = usePaymentStore();
+const route = useRoute();
+const filters = reactive({ page: 1 });
+const validationView = computed(() => route.name === 'finance.payments-validations');
+const pageTitle = computed(() => validationView.value ? 'Pending validations' : 'Payment records');
+const pageDescription = computed(() => validationView.value
+  ? 'Whole payment groups awaiting a Finance checker decision, oldest first. Each decision remains atomic across every component.'
+  : 'Recorded groups across their lifecycle. References stay masked and recognized money changes only after server validation.');
 
 const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
   if (store.loading) return 'loading';
@@ -23,26 +33,30 @@ function statusLabel(status: string): string {
   return status === 'pending_validation' ? 'Pending validation' : status === 'recorded' ? 'Held — duplicate review' : status;
 }
 
-onMounted(() => {
-  void store.fetchGroups();
-});
+function load(page = filters.page): void {
+  filters.page = page;
+  const params: Record<string, string | number> = {
+    page,
+    per_page: 20,
+    sort: validationView.value ? 'recorded_at' : '-recorded_at',
+  };
+  if (validationView.value) params.status = 'pending_validation';
+  void store.fetchGroups(params);
+}
+
+onMounted(() => load());
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Payment recordings
-    </h1>
-    <p class="mt-1 text-sm text-text-muted">
-      Recorded payments awaiting validation. Validation, receipts and refunds arrive in a later phase.
-    </p>
+  <section class="mx-auto max-w-6xl" :data-testid="validationView ? 'finance-pending-validations' : 'finance-payment-records'">
+    <SvPageHeader :title="pageTitle" eyebrow="Merchant-client finance" :description="pageDescription" />
 
     <SvStateBoundary
       class="mt-6"
       :state="boundaryState"
       empty-message="No payment recordings yet."
       error-message="We couldn’t load payment recordings."
-      @retry="() => store.fetchGroups()"
+      @retry="load()"
     >
       <ul
         class="flex flex-col gap-3"
@@ -60,7 +74,7 @@ onMounted(() => {
               <div>
                 <h2 class="font-display text-base font-semibold text-heading">
                   <RouterLink
-                    :to="{ name: 'finance.payment-records.detail', params: { id: group.id } }"
+                    :to="{ name: 'finance.payments-validation-detail', params: { groupUlid: group.id } }"
                     class="hover:underline focus-visible:underline"
                   >
                     Invoice {{ group.invoice?.invoice_number ?? '—' }}
@@ -83,6 +97,16 @@ onMounted(() => {
           </SvCard>
         </li>
       </ul>
+
+      <SvPagination
+        v-if="store.groupMeta && store.groupMeta.last_page > 1"
+        class="mt-5"
+        :current-page="store.groupMeta.current_page"
+        :last-page="store.groupMeta.last_page"
+        :total="store.groupMeta.total"
+        :per-page="store.groupMeta.per_page"
+        @change="load"
+      />
     </SvStateBoundary>
   </section>
 </template>

@@ -6,7 +6,78 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-11 — Human Resource experience (`phase-ui-11-human-resource-experience`) — local complete
+### Phase UI-12 — Finance experience (`phase-ui-12-finance-experience`) — local complete pending PR lifecycle
+
+Started from verified UI-11 squash `dc74e28a8288fc24045ceadc9e4d7de474a7ad2f`. Startup
+reconciliation proved clean synchronized `main`, PR #61's final five-job exact-head run, truthful
+solo-maintainer governance, equal reviewed/merge trees and source-branch cleanup. The exact
+24-page Finance contract was classified against shipped APIs, permissions, branch scope,
+MFA/step-up, maker/checker, period locks, External Gate W and Phase 21N before activation.
+
+All six product-owner design-reference images were readable and inspected. Their hierarchy,
+asymmetric dashboard composition, compact financial tables, grouped records, progressive
+disclosure and restrained depth guide composition only; Servana Brand Identity tokens remain the
+color authority. Foreign branding, payment-card/provider controls, password auth, unsupported
+charts, dark-only surfaces and fabricated Wallet/report/notification state are explicitly rejected.
+
+#### Added — Finance financial-control command centre
+
+- Exact seven-group left navigation and 20 canonical host-relative routes: dashboard, Get Started,
+  prioritized task inbox, payment validations/detail, duplicate review, invoices, payment records,
+  partial/split payments, receipts, disputes, external refunds, cash-up, periods, payout checking,
+  compensation liabilities, earnings queries, controlled exports, Finance audit and own security.
+- A branch-scoped `FinanceWorkspaceReadModel` plus three narrow paginated GETs for workspace,
+  duplicate-reference and partial/split presentation. OpenAPI moves **293 paths / 344 operations →
+  296 / 347**. No financial mutation, calculation rule or new permission was introduced.
+- A modern, colorful-but-controlled dashboard and task hierarchy using Servana orange, teal, green,
+  warm cream/sand and risk colors through existing semantic tokens. Recorded, pending, validated,
+  disputed, locked, approved and paid states are labelled in text and composition, never color alone.
+- Independent request state for overview, duplicate and partial/split reads, including one deduplicated
+  in-flight overview shared by the shell and page. No page-one client aggregation or unknown-as-zero.
+
+#### Preserved — financial and security authority
+
+The permission catalogue remains **169 total / 134 active / 35 planned**. Finance stays assigned-
+branch scoped and checker-first: it cannot create invoices, edit HR compensation terms, move payout
+funds or become maker/checker for the same transaction. Payment validation remains atomic; original
+receipts follow validation; duplicate override remains masked, reasoned, idempotent and fresh-step-up
+protected; refunds/cash-up/payouts retain separation of duties; locked periods fail closed. Export
+create/download remain independent capabilities, masked and audited. APIs, policies, Form Requests,
+MFA and server state remain the security boundary.
+
+#### Gated and removed ownership
+
+Subscription Billing and Subscription Payment Attempts remain owned by 20D-W after External Gate W;
+Finance Reports and Notifications remain owned by Phase 21N. All four are visible and inert with no
+route, component, request, provider/Wallet state, fake report or notification. The old non-contract
+Finance platform-fee destination is retired with **no alias**; other account-owned platform-fee
+surfaces remain intact. Final arithmetic: **20 implemented / 4 disabled_by_gate / 0 planned / 0
+removed_by_authority = 24**.
+
+#### Quality and evidence
+
+Focused API **4 tests / 52 assertions**; Pint **1,908**; Larastan L8 **1,462 units / 0 errors**.
+The final backend acceptance combines **2,984 passed / 14 skipped / 48,725 assertions** with the
+focused 15-test/2,145-assertion closure of its sole UI-01 removal-registry consumer; earlier OpenAPI
+projection failures are preserved and closed by deterministic regeneration. ESLint has 0 errors,
+TypeScript passes, Vitest passes **1,390 tests / 141 files**, and the 1,299-module build passes.
+
+Focused UI-12 Playwright passes **59/59**. The initial whole-product run preserved **1,453 passed /
+8 failed**; two route-authorization defects and six superseded consumers were corrected precisely.
+The authoritative rerun passes **1,461/1,461** with no flaky/skipped case. All 20 pages pass 360,
+767, 768, 1024, 1025, 1280 and 1440px plus 200% equivalent; axe finds 0 serious/critical; light is
+the default, dark persists, reduced motion and keyboard/focus behavior pass.
+
+Exactly 45 browser-written predecessor files were restored inside the **250-file** frozen baseline,
+whose hashes all match. Final Git scope review exposed 10 additional tracked predecessor proof files
+and 112 exact run-suffixed additions outside that initial baseline; UI12-017 records the omission,
+the 10 were restored individually from the verified base and the 112 removed individually. Current
+UI-06/UI-07 projections were regenerated. Production PHP `ffa9d301…` and Nginx `2ea187e8…` pass
+Nginx syntax and **46/46** isolated no-volume `finance.servana.ke` checks. Composer/npm audits,
+commit/pre-commit gitleaks and Git object integrity are clean. Seventeen UI-12 closures are
+`local_complete`. This entry claims no future PR CI, governance, review or merge.
+
+### Phase UI-11 — Human Resource experience (`phase-ui-11-human-resource-experience`) — verified complete
 
 Started from verified UI-10 squash `d7988dca90ad8694dee4c0b066f2581155fcb40a`. The exact
 19-page Human Resource contract has readiness A2/B6/C5/D2/E4/F0 and a target disposition of
@@ -30,6 +101,14 @@ Final local gates: PostgreSQL **2,981 passed / 14 skipped / 49,015 assertions**;
 axe serious/critical zero and seven responsive widths overflow-free. Production PHP `660ec8b0…`
 and Nginx `9bb1ca75…` passed Nginx syntax and **40/40** isolated no-volume HR-host checks. Frozen
 historical evidence was restored byte-for-byte. This pre-commit entry claims neither PR CI nor merge.
+
+PR #61 retained local-completion commit `55adab7070…` and corrected only the stale current UI-06
+route projection at final reviewed head `38bb9014df…`. Replacement exact-head run `31728277786`
+passed Backend, Frontend, Docker, Security and E2E. Governance comment `5284811253` records zero
+submitted reviews, zero approvals and blank/`NONE` review decision; no independent approval is
+claimed. The PR merged normally as squash `dc74e28a82…` at `2026-08-13T18:30:14Z`; reviewed and
+merge trees equal `ce181099a3…`; local and remote source branches are absent. All eleven UI-11
+closures are `verified_complete`.
 
 ### Phase UI-10 — Branch experience (`phase-ui-10-branch-experience`) — verified complete
 

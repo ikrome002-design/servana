@@ -3,16 +3,16 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "f9f1aa59bbcebd28a7d06f907fcae0da15637bfd187dede4dce19c30baeb6e5d",
+  "canonical_authority_sha256": "ba280b13fa2556f191ce195e5ff9ae9b477f3dc29358314ce264cbbc4e61de8f",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "f2b1d99b56ccec9fdb530116393df04d89b6813c19335592f3fd05089f87154d",
+  "screen_inventory_sha256": "425ca93531efaa2ff609b13bbadfcba00a518ed732d441f9f8d2ba3820a660c0",
   "purpose": "The canonical contract against the ACTUAL Vue Router records, loaded through the real modules rather than parsed from source text.",
   "loading_method": "Vite SSR transform of resources/spa/src/router/routes/*.ts — never a regular expression over source.",
-  "runtime_named_routes": 142,
-  "runtime_routes_with_lazy_component": 142,
+  "runtime_named_routes": 145,
+  "runtime_routes_with_lazy_component": 145,
   "runtime_routes_without_lazy_component": [],
   "duplicate_runtime_route_names": [],
   "duplicate_runtime_paths": [],
@@ -22,6 +22,7 @@
       "accounts": [
         "merchant_audit",
         "merchant_branch",
+        "merchant_finance",
         "merchant_human_resource",
         "super_administrator"
       ]
@@ -31,6 +32,7 @@
       "accounts": [
         "merchant_administrator",
         "merchant_branch",
+        "merchant_finance",
         "merchant_human_resource",
         "super_administrator"
       ]
@@ -40,6 +42,7 @@
       "accounts": [
         "merchant_administrator",
         "merchant_branch",
+        "merchant_finance",
         "merchant_human_resource",
         "super_administrator"
       ]
@@ -53,14 +56,7 @@
       ]
     },
     {
-      "path": "/finance/invoices",
-      "accounts": [
-        "merchant_branch",
-        "merchant_finance"
-      ]
-    },
-    {
-      "path": "/finance/receipts",
+      "path": "/cash-up",
       "accounts": [
         "merchant_branch",
         "merchant_finance"
@@ -76,6 +72,13 @@
       ]
     },
     {
+      "path": "/payouts",
+      "accounts": [
+        "merchant_finance",
+        "merchant_human_resource"
+      ]
+    },
+    {
       "path": "/compensation",
       "accounts": [
         "merchant_administrator",
@@ -84,22 +87,14 @@
     }
   ],
   "contract_route_names_colliding_with_runtime": [],
-  "implemented_pages": 105,
+  "implemented_pages": 108,
   "planned_pages_with_runtime_route": [],
   "removed_pages_with_runtime_route": [],
-  "consolidated_runtime_routes": [
-    {
-      "runtime_route_name": "finance.dashboard",
-      "contract_pages": [
-        "merchant_finance.dashboard",
-        "merchant_finance.tasks"
-      ]
-    }
-  ],
+  "consolidated_runtime_routes": [],
   "path_shape_conformance": {
     "note": "The contract path is host-relative; the current router prefixes it with the account path segment (UI01-ROUTE-003). Each owning UI phase reconciles shape when it implements its account.",
-    "conformant": 65,
-    "prefixed": 40
+    "conformant": 85,
+    "prefixed": 23
   },
   "rows": [
     {
@@ -1010,10 +1005,10 @@
       "contract_route_path": "/dashboard",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.dashboard",
-      "runtime_route_path": "/finance/dashboard",
+      "runtime_route_path": "/dashboard",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
-      "route_delivery": "consolidated"
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_finance.get-started",
@@ -1021,7 +1016,7 @@
       "contract_route_path": "/get-started",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.get-started",
-      "runtime_route_path": "/finance/get-started",
+      "runtime_route_path": "/get-started",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1031,19 +1026,19 @@
       "contract_route_name": "finance.tasks",
       "contract_route_path": "/tasks",
       "implementation_status": "implemented",
-      "runtime_route_name": "finance.dashboard",
-      "runtime_route_path": "/finance/dashboard",
+      "runtime_route_name": "finance.tasks",
+      "runtime_route_path": "/tasks",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
-      "route_delivery": "consolidated"
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_finance.payments-validations",
       "contract_route_name": "finance.payments-validations",
       "contract_route_path": "/payments/validations",
       "implementation_status": "implemented",
-      "runtime_route_name": "finance.pending-validations",
-      "runtime_route_path": "/finance/pending-validations",
+      "runtime_route_name": "finance.payments-validations",
+      "runtime_route_path": "/payments/validations",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1053,8 +1048,8 @@
       "contract_route_name": "finance.payments-validation-detail",
       "contract_route_path": "/payments/validations/:groupUlid",
       "implementation_status": "implemented",
-      "runtime_route_name": "finance.payment-records.detail",
-      "runtime_route_path": "/finance/payment-records/:id",
+      "runtime_route_name": "finance.payments-validation-detail",
+      "runtime_route_path": "/payments/validations/:groupUlid",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1063,12 +1058,12 @@
       "key": "merchant_finance.payments-duplicates",
       "contract_route_name": "finance.payments-duplicates",
       "contract_route_path": "/payments/duplicates",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "finance.payments-duplicates",
+      "runtime_route_path": "/payments/duplicates",
+      "runtime_declared_in": "routes/finance.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_finance.invoices",
@@ -1076,7 +1071,7 @@
       "contract_route_path": "/invoices",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.invoices",
-      "runtime_route_path": "/finance/invoices",
+      "runtime_route_path": "/invoices",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1086,8 +1081,8 @@
       "contract_route_name": "finance.payments",
       "contract_route_path": "/payments",
       "implementation_status": "implemented",
-      "runtime_route_name": "finance.payment-records",
-      "runtime_route_path": "/finance/payment-records",
+      "runtime_route_name": "finance.payments",
+      "runtime_route_path": "/payments",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1096,12 +1091,12 @@
       "key": "merchant_finance.payments-partial-split",
       "contract_route_name": "finance.payments-partial-split",
       "contract_route_path": "/payments/partial-split",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "finance.payments-partial-split",
+      "runtime_route_path": "/payments/partial-split",
+      "runtime_declared_in": "routes/finance.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_finance.receipts",
@@ -1109,7 +1104,7 @@
       "contract_route_path": "/receipts",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.receipts",
-      "runtime_route_path": "/finance/receipts",
+      "runtime_route_path": "/receipts",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1120,7 +1115,7 @@
       "contract_route_path": "/disputes",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.disputes",
-      "runtime_route_path": "/finance/disputes",
+      "runtime_route_path": "/disputes",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1131,7 +1126,7 @@
       "contract_route_path": "/refunds",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.refunds",
-      "runtime_route_path": "/finance/refunds",
+      "runtime_route_path": "/refunds",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1142,7 +1137,7 @@
       "contract_route_path": "/cash-up",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.cash-up",
-      "runtime_route_path": "/finance/cash-up",
+      "runtime_route_path": "/cash-up",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1153,7 +1148,7 @@
       "contract_route_path": "/periods",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.periods",
-      "runtime_route_path": "/finance/periods",
+      "runtime_route_path": "/periods",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1163,8 +1158,8 @@
       "contract_route_name": "finance.payouts",
       "contract_route_path": "/payouts",
       "implementation_status": "implemented",
-      "runtime_route_name": "finance.payout-runs",
-      "runtime_route_path": "/finance/payout-runs",
+      "runtime_route_name": "finance.payouts",
+      "runtime_route_path": "/payouts",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1174,8 +1169,8 @@
       "contract_route_name": "finance.compensation-liabilities",
       "contract_route_path": "/compensation/liabilities",
       "implementation_status": "implemented",
-      "runtime_route_name": "finance.liabilities",
-      "runtime_route_path": "/finance/liabilities",
+      "runtime_route_name": "finance.compensation-liabilities",
+      "runtime_route_path": "/compensation/liabilities",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1185,8 +1180,8 @@
       "contract_route_name": "finance.compensation-queries",
       "contract_route_path": "/compensation/queries",
       "implementation_status": "implemented",
-      "runtime_route_name": "finance.earnings-queries",
-      "runtime_route_path": "/finance/earnings-queries",
+      "runtime_route_name": "finance.compensation-queries",
+      "runtime_route_path": "/compensation/queries",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1195,7 +1190,7 @@
       "key": "merchant_finance.subscription",
       "contract_route_name": "finance.subscription",
       "contract_route_path": "/subscription",
-      "implementation_status": "planned",
+      "implementation_status": "disabled_by_gate",
       "runtime_route_name": null,
       "runtime_route_path": null,
       "runtime_declared_in": null,
@@ -1230,7 +1225,7 @@
       "contract_route_path": "/exports",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.exports",
-      "runtime_route_path": "/finance/exports",
+      "runtime_route_path": "/exports",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1241,7 +1236,7 @@
       "contract_route_path": "/audit",
       "implementation_status": "implemented",
       "runtime_route_name": "finance.audit",
-      "runtime_route_path": "/finance/audit",
+      "runtime_route_path": "/audit",
       "runtime_declared_in": "routes/finance.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1261,12 +1256,12 @@
       "key": "merchant_finance.settings",
       "contract_route_name": "finance.settings",
       "contract_route_path": "/settings",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "finance.settings",
+      "runtime_route_path": "/settings",
+      "runtime_declared_in": "routes/finance.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_front_office.dashboard",

@@ -49,6 +49,13 @@ export interface DuplicateConflict {
   masked_reference: string | null;
 }
 
+interface PaymentPageMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
 /** Methods whose evidence/reference is mandatory (mirrors the server rules, §41). */
 export const REFERENCE_METHODS = ['mpesa_offline', 'bank_transfer', 'card_terminal', 'voucher', 'other'];
 
@@ -63,26 +70,27 @@ export const PAYMENT_METHODS: { value: string; label: string }[] = [
 
 export const usePaymentStore = defineStore('payment', () => {
   const groups = ref<PaymentRecordingGroupView[]>([]);
+  const groupMeta = ref<PaymentPageMeta | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
   const duplicate = ref<DuplicateConflict | null>(null);
 
   function $reset(): void {
     groups.value = [];
+    groupMeta.value = null;
     loading.value = false;
     error.value = null;
     duplicate.value = null;
   }
 
   /** Finance: list the pending recording groups (customer_payment.view). */
-  async function fetchGroups(): Promise<void> {
+  async function fetchGroups(params: Record<string, string | number> = {}): Promise<void> {
     loading.value = true;
     error.value = null;
     try {
-      const { data } = await apiClient.get<{ data: PaymentRecordingGroupView[] }>('/payment-recording-groups', {
-        params: { sort: '-recorded_at' },
-      });
+      const { data } = await apiClient.get<{ data: PaymentRecordingGroupView[]; meta: PaymentPageMeta }>('/payment-recording-groups', { params });
       groups.value = data.data;
+      groupMeta.value = data.meta;
     } catch {
       error.value = 'Unable to load payment recordings.';
     } finally {
@@ -178,6 +186,7 @@ export const usePaymentStore = defineStore('payment', () => {
 
   return {
     groups,
+    groupMeta,
     loading,
     error,
     duplicate,

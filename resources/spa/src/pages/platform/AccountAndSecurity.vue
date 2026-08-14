@@ -47,7 +47,7 @@ import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useAuthStore } from '@/stores/authStore';
 import { useSessionFamilyStore, type HostSessionView } from '@/stores/sessionFamilyStore';
 
-const props = withDefaults(defineProps<{ experience?: 'platform' | 'merchant' | 'branch' | 'hr' }>(), {
+const props = withDefaults(defineProps<{ experience?: 'platform' | 'merchant' | 'branch' | 'hr' | 'finance' }>(), {
   experience: 'platform',
 });
 
@@ -70,12 +70,14 @@ const pageDescription = computed(() => {
   if (props.experience === 'merchant') return 'Your own identity, Magic Link security, active account sessions and display preference. Staff access is managed from the Merchant staff lifecycle page.';
   if (props.experience === 'branch') return 'Your own identity, Magic Link security, assigned-branch context, active sessions and display preference.';
   if (props.experience === 'hr') return 'Your own identity, Magic Link security, active Human Resource branch context, sessions and display preference.';
+  if (props.experience === 'finance') return 'Your own identity, mandatory Finance MFA, active branch context, sessions and display preference. Financial policy remains server-owned.';
   return 'Your own identity, sign-in security, active sessions and display preferences. Other platform users are managed under internal platform access.';
 });
 const mfaPolicyNote = computed(() => {
   if (props.experience === 'merchant') return 'Two-factor authentication is required for the Merchant Administrator account and cannot be turned off or weakened from this page.';
   if (props.experience === 'branch') return 'This page can strengthen your own sign-in with two-factor authentication. It never changes branch permissions or another user’s security.';
   if (props.experience === 'hr') return 'This page can strengthen your own sign-in with two-factor authentication. It cannot change your Human Resource role, branch assignment or another user’s access.';
+  if (props.experience === 'finance') return 'Two-factor authentication is mandatory for Finance access. This page cannot weaken step-up, maker/checker, period-lock or payment policy.';
   return 'Two-factor authentication is required for platform roles and cannot be turned off or weakened from this page. There is no control here that would lower it, and the server would refuse one.';
 });
 const scopeNote = computed(() => props.experience === 'platform'

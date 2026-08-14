@@ -1,0 +1,55 @@
+{
+  "schema": "servana.ui12.page-readiness.v1",
+  "phase": "UI-12",
+  "account": "merchant_finance",
+  "host": "finance.servana.ke",
+  "baseline": {
+    "authenticated_pages": 160,
+    "account_pages": 24,
+    "openapi_paths": 293,
+    "openapi_operations": 344,
+    "permissions": { "total": 169, "active": 134, "planned": 35 }
+  },
+  "class_definitions": {
+    "A": "Complete canonical page and live authority already align; polish/proof only",
+    "B": "Live domain page/API exists but canonical route or Finance composition needs reconciliation",
+    "C": "Shipped authority supports a dedicated UI-12 page through an existing endpoint or own-scope security surface",
+    "D": "Shipped domain facts require a narrow read-only Finance presentation seam",
+    "E": "Unavailable capability has a named governing gate/owner and must remain inert",
+    "F": "Unresolved material product-owner decision"
+  },
+  "class_counts": { "A": 3, "B": 12, "C": 1, "D": 4, "E": 4, "F": 0 },
+  "target_disposition": {
+    "implemented": 20,
+    "disabled_by_gate": 4,
+    "planned": 0,
+    "removed_by_authority": 0,
+    "total": 24
+  },
+  "entries": [
+    { "key": "dashboard", "path": "/dashboard", "class": "D", "disposition": "implemented", "evidence": "Shipped payment, receipt, dispute, refund, cash-up, period, compensation, payout and earnings-query facts; legacy dashboard aliases the task inbox", "work": "Narrow branch-scoped Finance workspace overview with server-owned counts and amounts" },
+    { "key": "get-started", "path": "/get-started", "class": "B", "disposition": "implemented", "evidence": "Shared resumable checklist and Finance content exist", "work": "Canonical host-relative route plus Finance workflow and gate-truth readiness" },
+    { "key": "tasks", "path": "/tasks", "class": "D", "disposition": "implemented", "evidence": "Legacy TaskInbox composes independent paginated APIs and currently doubles as dashboard", "work": "Dedicated server-derived priority task projection; no assignment/claim state invented" },
+    { "key": "payments-validations", "path": "/payments/validations", "class": "B", "disposition": "implemented", "evidence": "GET /payment-recording-groups, customer_payment.view/validate and masked group resources exist", "work": "Canonical list, pending filter, oldest-first risk presentation and deep links" },
+    { "key": "payments-validation-detail", "path": "/payments/validations/:groupUlid", "class": "B", "disposition": "implemented", "evidence": "Group detail and atomic validate/reject/correction routes exist with policy, idempotency and maker/checker controls", "work": "Canonical parameter/deep link and role-true atomic decision presentation" },
+    { "key": "payments-duplicates", "path": "/payments/duplicates", "class": "D", "disposition": "implemented", "evidence": "Durable payment_reference_checks, masked resources and step-up/idempotent override route exist; no safe queue read exists", "work": "Narrow paginated masked duplicate-review read projection and existing override action" },
+    { "key": "invoices", "path": "/invoices", "class": "B", "disposition": "implemented", "evidence": "Invoice index/detail and Finance adjustment/void authority exist", "work": "Canonical route with invoice-create control absent for Finance" },
+    { "key": "payments", "path": "/payments", "class": "B", "disposition": "implemented", "evidence": "Payment recording group index/detail exists with masked components", "work": "Canonical all-state records route and group/component hierarchy" },
+    { "key": "payments-partial-split", "path": "/payments/partial-split", "class": "D", "disposition": "implemented", "evidence": "Invoices, recording groups, component records, allocations and receipts are shipped; no bounded partial/split presentation read exists", "work": "Narrow paginated read-only projection derived from server rows; no money recomputation in Vue" },
+    { "key": "receipts", "path": "/receipts", "class": "B", "disposition": "implemented", "evidence": "Receipt list/detail/download/reissue APIs and permissions exist", "work": "Canonical route; preserve automatic-original-only and controlled reissue rules" },
+    { "key": "disputes", "path": "/disputes", "class": "B", "disposition": "implemented", "evidence": "Finance dispute list/detail/state actions exist", "work": "Canonical route and immutable source-record distinction" },
+    { "key": "refunds", "path": "/refunds", "class": "B", "disposition": "implemented", "evidence": "External refund list/detail/request/approve/finalize/reject APIs exist", "work": "Canonical route; retain external-money and maker/checker language" },
+    { "key": "cash-up", "path": "/cash-up", "class": "A", "disposition": "implemented", "evidence": "Cash-up list/detail and Finance checker actions already exist", "work": "Canonical host-relative activation and responsive proof" },
+    { "key": "periods", "path": "/periods", "class": "A", "disposition": "implemented", "evidence": "Financial-period list and controlled lock/reopen UI/API already exist", "work": "Canonical host-relative activation and locked-period proof" },
+    { "key": "payouts", "path": "/payouts", "class": "B", "disposition": "implemented", "evidence": "Finance payout verify/approve/reject/mark-paid UI/API exists with external reference only", "work": "Canonical route; preserve HR maker and Merchant Admin high-value path" },
+    { "key": "compensation-liabilities", "path": "/compensation/liabilities", "class": "B", "disposition": "implemented", "evidence": "Compensation liability and additive adjustment UI/API exists", "work": "Canonical route; no HR compensation-term editing" },
+    { "key": "compensation-queries", "path": "/compensation/queries", "class": "B", "disposition": "implemented", "evidence": "Earnings query response UI/API exists and corrections use adjustments", "work": "Canonical route and branch-assigned response presentation" },
+    { "key": "subscription", "path": "/subscription", "class": "E", "disposition": "disabled_by_gate", "evidence": "Phase 20B billing reads exist for authorized Merchant accounts, but the Finance page's core pay/attempt/allocation/reconciliation purpose and Finance permission contract require 20D-W; Gate W evidence is absent", "gate": "phase_20d_w_blocked_by_external_gate_w", "owner": "Phase 20D-W after External Gate W" },
+    { "key": "subscription-payment-attempts", "path": "/subscription/payment-attempts", "class": "E", "disposition": "disabled_by_gate", "evidence": "subscription.payment_attempts.view remains planned and no Wallet attempt runtime/table/API exists", "gate": "external_gate_w", "owner": "Phase 20D-W after External Gate W" },
+    { "key": "reports", "path": "/reports", "class": "E", "disposition": "disabled_by_gate", "evidence": "reports.view is active but no Finance report catalogue/read model/formula runtime exists; Phase 21N remains blocked", "gate": "phase_21n_blocked_by_external_gate_w", "owner": "Phase 21N after 20D-W / External Gate W" },
+    { "key": "exports", "path": "/exports", "class": "A", "disposition": "implemented", "evidence": "Scoped masked Finance export request/status/download/revoke runtime exists", "work": "Canonical route and reason/step-up/private-link proof" },
+    { "key": "audit", "path": "/audit", "class": "B", "disposition": "implemented", "evidence": "Branch-scoped masked Finance audit route and read-only UI exist", "work": "Canonical route and append-only/forbidden Audit-account controls proof" },
+    { "key": "notifications", "path": "/notifications", "class": "E", "disposition": "disabled_by_gate", "evidence": "Only transient browser toasts and a masked mail seam exist; there is no Phase 21N notification persistence/read/preference runtime", "gate": "phase_21n_blocked_by_external_gate_w", "owner": "Phase 21N after 20D-W / External Gate W" },
+    { "key": "settings", "path": "/settings", "class": "C", "disposition": "implemented", "evidence": "Own-scope Magic Link identity, MFA, recovery-code, session revocation and persisted theme APIs/components exist", "work": "Finance-specific wrapper and explicit absence of business-rule/notification-preference controls" }
+  ]
+}
