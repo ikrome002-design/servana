@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { writeEvidenceFile, writeEvidenceScreenshot } from './support/evidenceScreenshot';
 import { assertNoHorizontalScroll } from './support/roleBootstrap';
 import { watchBrowserHealth } from './support/ui09Merchant';
 import {
@@ -29,7 +30,7 @@ async function heading(page: Page, expected: string, level = 1): Promise<void> {
 }
 
 async function shoot(page: Page, name: string): Promise<void> {
-  await page.screenshot({ path: join(SHOTS, `${name}.png`), animations: 'disabled' });
+  await writeEvidenceScreenshot(page, join(SHOTS, `${name}.png`), { animations: 'disabled' });
 }
 
 test.describe('all fifteen implemented Branch pages', () => {
@@ -229,7 +230,7 @@ test('writes the UI-10 screenshot evidence index', async () => {
       sha256: createHash('sha256').update(bytes).digest('hex'),
     };
   });
-  writeFileSync(resolve(SHOTS, '..', 'screenshot-index.json'), `${JSON.stringify({
+  await writeEvidenceFile(resolve(SHOTS, '..', 'screenshot-index.json'), `${JSON.stringify({
     schema: 'servana.ui10.screenshot-index.v1', phase: 'UI-10', account: 'merchant_branch',
     host: 'branch.servana.ke', data_provenance: 'synthetic; no real person, credential, token or provider payload',
     status: 'UI-10 implementation evidence; not a UI-16 release-approved visual baseline', captures,

@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `front-office.queue` at `/front-office/queue` (routes/frontOffice.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/queue`; owner phase **UI-13** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `front-office.queue` at `/queue` (routes/frontOffice.ts), delivery **dedicated**.
 
 ## Identity
 

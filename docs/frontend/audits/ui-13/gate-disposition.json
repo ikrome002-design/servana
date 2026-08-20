@@ -1,0 +1,41 @@
+{
+  "schema": "servana.ui13.gate-disposition.v1",
+  "phase": "UI-13",
+  "lifecycle": "local_complete",
+  "external_gate_w_closed": true,
+  "phase_20d_w_closed": true,
+  "phase_21n_closed": true,
+  "entries": [
+    {
+      "screen_key": "subscription-payment",
+      "route_path": "/subscription/payment",
+      "owner": "Phase 20D-W after External Gate W",
+      "entry_condition": "Gate W sandbox evidence is accepted and 20D-W ships safe merchant Wallet payment and recovery contracts",
+      "reason": "No Wallet provider, attempt, allocation or recovery runtime exists",
+      "route_exists": false,
+      "component_exists": false,
+      "network_runtime_exists": false,
+      "navigation": "visible and inert"
+    },
+    {
+      "screen_key": "notifications",
+      "route_path": "/notifications",
+      "owner": "Phase 21N after Phase 20D-W / External Gate W",
+      "entry_condition": "Phase 21N ships scoped notification persistence, reads, mark-read and preferences",
+      "reason": "Transient toasts and mail delivery are not an in-app notification centre",
+      "route_exists": false,
+      "component_exists": false,
+      "network_runtime_exists": false,
+      "navigation": "visible and inert"
+    }
+  ],
+  "forbidden_fabrication": [
+    "Wallet status",
+    "provider reference",
+    "subscription allocation",
+    "billing recovery success",
+    "notification record",
+    "notification unread count",
+    "notification preference"
+  ]
+}

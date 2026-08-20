@@ -26,7 +26,7 @@ function result(overrides: Partial<SearchResult> = {}): SearchResult {
     status: 'active',
     date: '2026-07-25T10:00:00+00:00',
     amount: null,
-    route: { name: 'front-office.clients.detail', id: '01HZZCLIENT0000000000000001' },
+    route: { name: 'front-office.client-detail', id: '01HZZCLIENT0000000000000001' },
     branch: { ulid: '01HZZBRANCH0000000000000001', name: 'Westlands Branch' },
     ...overrides,
   };

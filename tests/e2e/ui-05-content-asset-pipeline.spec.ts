@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { writeEvidenceFile } from './support/evidenceScreenshot';
 
 /**
  * Phase UI-05 — focused browser proof (UI/UX plan §8.8, §17; ADR-025).
@@ -438,11 +439,11 @@ test.describe('UI-05 — curated assets over HTTP', () => {
   });
 });
 
-test.afterAll(() => {
+test.afterAll(async () => {
   mkdirSync(EVIDENCE, { recursive: true });
   const failed = observations.filter((observation) => !observation.ok);
 
-  writeFileSync(
+  await writeEvidenceFile(
     resolve(EVIDENCE, 'browser-proof.json'),
     `${JSON.stringify({
       generated_by: 'tests/e2e/ui-05-content-asset-pipeline.spec.ts',
@@ -452,6 +453,5 @@ test.afterAll(() => {
       failures: failed.length,
       observations,
     }, null, 2)}\n`,
-    'utf8',
   );
 });

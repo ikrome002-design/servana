@@ -65,7 +65,7 @@ async function submit(): Promise<void> {
       assigned_personnel: assignedPersonnel.value === '' ? undefined : assignedPersonnel.value,
     });
     notifications.addToast({ type: 'success', message: 'Appointment booked.' });
-    await router.push({ name: 'front-office.appointments.detail', params: { id: created.id } });
+    await router.push({ name: 'front-office.appointment-detail', params: { appointmentUlid: created.id } });
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.apiError) {
       formError.value = err.apiError.message;

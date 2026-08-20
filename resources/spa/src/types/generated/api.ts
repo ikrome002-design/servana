@@ -1757,6 +1757,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/front-office/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["front-office.activity.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/front-office/payment-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["front-office.payment-status.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/front-office/workspace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["front-office.workspace.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/hr/audit-activity": {
         parameters: {
             query?: never;
@@ -5890,6 +5938,38 @@ export interface components {
                 billing_mode: string | null;
             }[];
         };
+        /** FrontOfficeActivityResource */
+        FrontOfficeActivityResource: {
+            id: string;
+            /** @enum {string} */
+            domain: "clients" | "appointments" | "queue" | "sessions" | "invoices" | "billing";
+            action: string;
+            /** @enum {string} */
+            label: "Client record created" | "Client record updated" | "Client SMS consent recorded" | "Client SMS consent withdrawn" | "Appointment created" | "Appointment assigned" | "Appointment transferred" | "Appointment rescheduled" | "Client checked in" | "Appointment cancelled" | "Appointment marked no-show" | "Appointment moved to queue" | "Walk-in arrival created" | "Queue entry created" | "Queue entry assigned" | "Client called from queue" | "Service started from queue" | "Queue service completed" | "Queue entry transferred" | "Queue entry cancelled" | "Queue entry marked no-show" | "Service session started" | "Service session completed" | "Service session cancelled" | "Invoice draft created" | "Invoice draft updated" | "Invoice finalized" | "Payment recorded for Finance validation" | "Payment held for Finance review" | "Finance validated a payment" | "Finance rejected a payment" | "Finance requested payment correction" | "Payment resubmitted to Finance" | "Receipt issued automatically" | "Branch work updated";
+            occurred_at: string;
+        };
+        /** FrontOfficePaymentStatusResource */
+        FrontOfficePaymentStatusResource: {
+            id: string;
+            status: string;
+            total: {
+                amount: number;
+                currency: string;
+                formatted: string;
+            };
+            recorded_at: string;
+            submitted_for_validation_at: string;
+            invoice: {
+                id: string;
+                number: string | null;
+                status: string;
+            };
+            receipt: {
+                ready: string;
+                id: string | null;
+                number: string | null;
+            };
+        };
         /**
          * InvitePlatformAdministratorRequest
          * @description Validate a platform-access invitation (COR-UI08-001 §11.6; Phase UI-08).
@@ -6236,6 +6316,13 @@ export interface components {
                 reference_masked: string | null;
             }[];
         };
+        /**
+         * PaymentRecordingGroupStatus
+         * @description Payment recording group lifecycle states (Plan §13.15, §25, §41; Phase 18A). Mirrors the payment_recording_groups.status DB CHECK. Status is never assigned directly; every change goes through a named domain action via {@see PaymentRecordingGroupStateMachine}. Phase 18A reaches only the recording-owned states ({@see Recorded}, {@see PendingValidation}); {@see Validated}/{@see Rejected}/ {@see CorrectionRequired}/{@see Reversed} are defined + unit-tested here but are Phase-18B-driven (no Phase 18A route reaches them).
+         *
+         * @enum {string}
+         */
+        PaymentRecordingGroupStatus: "draft" | "recorded" | "pending_validation" | "validated" | "rejected" | "correction_required" | "reversed";
         /** PaymentReferenceCheckResource */
         PaymentReferenceCheckResource: {
             id: string;
@@ -15133,6 +15220,295 @@ export interface operations {
                                     available: boolean;
                                     /** @constant */
                                     reason: "Phase 21N reporting and notification runtime is blocked until External Gate W and Phase 20D-W complete.";
+                                };
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "front-office.activity.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "created_at" | "-created_at";
+                domain?: "clients" | "appointments" | "queue" | "sessions" | "invoices" | "billing";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `FrontOfficeActivityResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["FrontOfficeActivityResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "front-office.payment-status.index": {
+        parameters: {
+            query?: {
+                per_page?: number;
+                sort?: "recorded_at" | "-recorded_at" | "created_at" | "-created_at";
+                status?: components["schemas"]["PaymentRecordingGroupStatus"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `FrontOfficePaymentStatusResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["FrontOfficePaymentStatusResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    "front-office.workspace.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            overview: {
+                                observed_at: string;
+                                business_date: string;
+                                branch: {
+                                    id: string;
+                                    name: string;
+                                    code: string;
+                                    town: string | null;
+                                };
+                                appointments: {
+                                    today: string;
+                                    by_status: {
+                                        [key: string]: number;
+                                    };
+                                    arrivals: string;
+                                };
+                                queue: {
+                                    active: string;
+                                    waiting: string;
+                                    in_service: number;
+                                    by_status: {
+                                        [key: string]: number;
+                                    };
+                                    longest_estimated_wait_minutes: number;
+                                };
+                                sessions: {
+                                    today: string;
+                                    in_progress: number;
+                                    completed: number;
+                                    by_status: {
+                                        [key: string]: number;
+                                    };
+                                };
+                                invoices: {
+                                    drafts: number;
+                                    awaiting_payment: string;
+                                    by_status: {
+                                        [key: string]: number;
+                                    };
+                                };
+                                payments: {
+                                    pending_validation: string;
+                                    by_status: {
+                                        [key: string]: number;
+                                    };
+                                    receipts_ready_today: number;
+                                };
+                                tasks: [
+                                    {
+                                        /** @constant */
+                                        key: "arrivals";
+                                        /** @constant */
+                                        label: "Checked-in arrivals";
+                                        count: number;
+                                        /** @constant */
+                                        route_name: "front-office.appointments";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "waiting";
+                                        /** @constant */
+                                        label: "Clients waiting in queue";
+                                        count: string;
+                                        /** @constant */
+                                        route_name: "front-office.queue";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "invoice-drafts";
+                                        /** @constant */
+                                        label: "Invoice drafts to finish";
+                                        count: number;
+                                        /** @constant */
+                                        route_name: "front-office.invoices";
+                                    },
+                                    {
+                                        /** @constant */
+                                        key: "payment-follow-up";
+                                        /** @constant */
+                                        label: "Recorded payments awaiting Finance";
+                                        count: string;
+                                        /** @constant */
+                                        route_name: "front-office.payments-status";
+                                    }
+                                ];
+                                get_started: {
+                                    client_created: boolean;
+                                    appointment_created: boolean;
+                                    queue_used: boolean;
+                                    session_completed: boolean;
+                                    invoice_created: boolean;
+                                    payment_recorded: string;
+                                    receipt_available: boolean;
+                                };
+                                subscription: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "External Gate W is closed. Phase 20D-W has no Wallet payment or billing-recovery runtime.";
+                                };
+                                notifications: {
+                                    available: boolean;
+                                    /** @constant */
+                                    reason: "Phase 21N has no in-app notification persistence, read or preference runtime.";
                                 };
                             };
                         };

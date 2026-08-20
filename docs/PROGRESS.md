@@ -123,14 +123,60 @@ while the repository records said the work was complete.
 | UI-09 | Merchant Administrator experience (23 pages) | ✅ `verified_complete` | PR [#59](https://github.com/ikrome002-design/servana/pull/59) merged — squash `84b7f803…`, final reviewed head `59d10333…`, equal source/merge tree `3077b246…`, merged `2026-08-12T17:06:03Z`. Final exact-head CI `31618625302` five jobs SUCCESS; governance comment `5269937398`; review decision blank / 0 reviews (**not** independent approval); source branches deleted. **15 implemented / 8 `disabled_by_gate` / 0 planned / 0 removed = 23**; all fifteen UI-09 closures promoted. | [ui-09.md](proof/ui-09.md) | Reconciled live on the UI-10 branch |
 | UI-10 | Branch experience (18 pages) | ✅ `verified_complete` | PR [#60](https://github.com/ikrome002-design/servana/pull/60) merged — squash `d7988dca…`, final head `e5f2a6fb…`, equal source/merge tree `0a75dedd…`, merged `2026-08-13T05:04:49Z`. Replacement exact-head run `31667335687` had Backend/Frontend/Docker/Security/E2E all successful; initial failed run `31665290449` is preserved. Governance comment `5276187980`; blank decision / 0 reviews (**not** independent approval); source branch deleted local + remote. **15 implemented / 3 disabled_by_gate / 0 planned / 0 removed = 18**; all eleven closures promoted. | [ui-10.md](proof/ui-10.md) | Reconciled live exactly once on the UI-11 branch |
 | UI-11 | Human Resource experience (19 pages) | ✅ `verified_complete` | PR [#61](https://github.com/ikrome002-design/servana/pull/61) merged — normal squash `dc74e28a…`, final reviewed head `38bb9014…`, equal reviewed/merge tree `ce181099…`, merged `2026-08-13T18:30:14Z`. Initial run `31727621418` preserved its UI-06 current-projection failure; replacement exact-head run `31728277786` passed Backend/Frontend/Docker/Security/E2E. Governance comment `5284811253`; blank/NONE decision, 0 reviews, 0 approvals (**not** independent approval); source branches absent. **15 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 19**; all eleven closures promoted. | [ui-11.md](proof/ui-11.md) | Reconciled live exactly once on the UI-12 branch |
-| UI-12 | Finance experience (24 pages) | 🟡 `local_complete` pending PR lifecycle | `phase-ui-12-finance-experience` from verified UI-11 squash `dc74e28a…`. **20 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 24**; OpenAPI 296 paths/347 operations; permissions unchanged 169/134/35; focused Finance 59/59 and final whole product 1,461/1,461; PHP/Nginx images plus `finance.servana.ke` no-volume proof 46/46. Seventeen closures are local_complete. This record ships in the single local-completion commit; push/PR fields remain pending until those events exist. | [ui-12.md](proof/ui-12.md) | Gate W/20D-W/21R-B/21N closed; no UI-13 or Phase 25 work |
-| UI-13 | Front Office experience (19 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-12 | Finance experience (24 pages) | ✅ `verified_complete` | PR [#62](https://github.com/ikrome002-design/servana/pull/62) merged — normal squash `6796d82b…`, final reviewed head `df541979…`, equal reviewed/merge tree `7609bfa1…`, merged `2026-08-14T03:17:40Z`. Exact-head CI `31764745586` passed Backend/Frontend/Docker/Security/E2E; governance comment `5288994536`; blank decision and 0 reviews/approvals (**not** independent approval); source branches absent. **20 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 24**; all seventeen closures promoted. | [ui-12.md](proof/ui-12.md) | Reconciled live exactly once on the UI-13 branch |
+| UI-13 | Front Office experience (19 pages) | 🟡 `local_complete` | `phase-ui-13-front-office-experience` from verified UI-12 squash `6796d82b…`; **17 implemented / 2 disabled_by_gate / 0 planned / 0 removed = 19**, zero permission delta, 59/59 focused and 1,526/1,526 whole-product browser proof, 51/51 no-volume production-host proof, 24 closures local complete. Pre-merge record intentionally claims no future PR/CI/merge fact. | [ui-13.md](proof/ui-13.md) | Awaiting non-draft PR and exact-head lifecycle |
 | UI-14 | Personnel experience (20 pages) | ⬜ Not started | — | — | UI-07 merged |
 | UI-15 | Audit experience (15 pages) | ⬜ Not started | — | — | UI-07 merged |
 | UI-16 | Responsive, accessibility, theme, visual regression | ⬜ Not started | — | — | UI-08…UI-15 merged |
 | UI-17 | Performance, security, production deployment, closeout | ⬜ Not started | — | — | UI-16 merged |
 
-### Phase UI-12 — Finance experience — local complete pending PR lifecycle
+### Phase UI-13 — Front Office experience — local complete
+
+Branch `phase-ui-13-front-office-experience`, base `6796d82b2db8866529352b47300d63bc6a29941d`.
+UI-12 PR #62 was reconciled live exactly once before implementation: final head `df541979…`,
+exact-head five-job CI `31764745586`, governance comment `5288994536`, zero reviews/approvals,
+blank decision, normal squash `6796d82b…`, equal reviewed/merge tree `7609bfa1…`, and source
+branches absent.
+
+- Readiness **A1/B13/C1/D2/E2/F0** accounts for all 19 pages: **17 implemented / 2
+  disabled_by_gate / 0 planned / 0 removed**. Six supplied WebP references were visually inspected;
+  their hierarchy, asymmetric work surfaces, progressive task framing and restrained depth were
+  adapted through Servana tokens, never copied with foreign branding or unsupported provider state.
+- Canonical `office.servana.ke` routing now supplies Dashboard, Get Started, Operational Search,
+  Clients/Create/Detail, Appointments, Walk-Ins, Queue/Transfer, Service Sessions, Invoices/Create,
+  invoice-scoped Record Payment, Payment and Receipt Status, Daily Activity and Account. Five
+  supporting detail/create routes retain live owning workflows. Subscription Payment/Recovery and
+  Notifications stay visible and inert behind External Gate W/20D-W and Phase 21N.
+- Three read-only branch-scoped presentation GETs provide the workspace, safe same-day activity and
+  maker-safe payment/receipt status. OpenAPI advances **296 paths / 347 operations → 299 / 350**.
+  No migration, permission, financial calculation, state machine or mutation authority changed.
+- `SvOperationalHero` and refined role pages provide the Front Office command-centre hierarchy,
+  workflow strips, semantic statuses, light/dark surfaces and responsive transformation. Every live
+  page scores **27–30/30** with all mandatory visual criteria at 2.
+- Focused PostgreSQL proof is currently **39 tests / 133 assertions** for the new API/search/
+  traceability seams plus **86 / 367** across client duplicate/isolation, appointment and queue
+  transfer, payment maker/checker and receipt issuance/download. Focused frontend is **61/61**;
+  UI-13 Playwright is **59/59** with 17 light + 17 dark pages, axe serious/critical 0, seven widths,
+  200%-equivalent, fixed-footer reserve, reduced motion, keyboard focus and 44px controls.
+- Full Vitest initially exposed stale runtime-inventory routes and later two cold dynamic-import waits;
+  exact root causes and precise fixes are recorded as UI13-014/UI13-015; the final rerun passes
+  **1,402/1,402 across 145 files**. The authoritative PostgreSQL run completed **2,984 passed / 14
+  skipped / 4 deterministic current-consumer failures / 48,788 assertions**; the runtime was green,
+  UI13-017 precisely corrected those projections, and the complete invalidated set passes **54 tests /
+  6,746 assertions** under the explicit no-rerun invalidation rule.
+- Final whole-product Playwright passes **1,526/1,526** with no failure, flake or skip. Frozen
+  predecessor aggregates are exact after restoration; only canonical current projections were
+  regenerated. Final PHP `bb9c9653…` and Nginx `46a8642…` images pass syntax and **51/51** no-volume
+  `office.servana.ke` checks; named proof resources remaining: zero. Composer/npm audits, gitleaks,
+  Git integrity and deterministic checks are green. All 24 defects are `local_complete`; UI13-023
+  records the first standalone Nginx syntax command's missing-upstream orchestration error and the
+  unchanged image's successful production-network rerun. UI13-024 records and closes the first
+  staging command's stale zero-byte Git index lock without altering index content.
+- The single local-completion commit is prepared. PR, exact-head five-job CI, governance, normal
+  squash, equal-tree verification and source-branch cleanup are post-commit facts and remain
+  intentionally unclaimed until observed live. UI-14 has not started.
+
+### Phase UI-12 — Finance experience — verified complete
 
 Branch `phase-ui-12-finance-experience`, base `dc74e28a8288fc24045ceadc9e4d7de474a7ad2f`.
 PR #61 was reconciled exactly once: final head `38bb9014…`, exact-head CI `31728277786`, governance
@@ -179,7 +225,7 @@ normal squash `dc74e28a…`, equal tree `ce181099…`, and both predecessor bran
 - Composer audit: zero advisories. npm audit: zero vulnerabilities. Gitleaks pre-commit and full
   77-commit scans: zero leaks; UI12-016 records the directory-mode match on the already-registered,
   reproducible design-token SHA-256 false positive. `git fsck --full` found dangling objects only,
-  no corruption. Defects **UI12-001…UI12-017** are `local_complete`; none are open.
+  no corruption. Defects **UI12-001…UI12-017** are `verified_complete`; none are open.
 - Skipped/remaining ownership: External Gate W and 20D-W remain closed; 21R-B/21N remain blocked;
   `REM-EXP-001` remains Phase 21N retention-convergence work; `REM-PERM-002` requires a product-owner
   permission decision before Phase 25 exit; `UI07-ENV-001` remains separately authorized

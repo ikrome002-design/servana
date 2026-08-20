@@ -126,7 +126,7 @@ final class ReceiptSearchDefinition extends AbstractSearchDocumentDefinition
             status: null,
             date: $model->created_at?->toIso8601String(),
             amount: Money::ofMinor($model->amount_minor, Currency::from($model->currency)),
-            routeName: 'front-office.receipts.detail',
+            routeName: 'front-office.receipt-detail',
             routeParamId: $model->ulid,
             branchUlid: $model->branch?->ulid,
             branchName: $model->branch?->name,

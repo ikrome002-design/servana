@@ -3,16 +3,24 @@ import { ROLES, stubBootstrap } from './support/roleBootstrap';
 import { stubMerchantApi } from './support/ui09Merchant';
 
 /*
- | Phase 11 role-entry surfaces (Plan §27.2). Each role lands on its own live
- | landing page with its FAQ + legal footer, and a resumable get-started page.
- | /me is stubbed; the frontend is UX only.
+ | Phase 11 role-entry surfaces (Plan §27.2), reconciled with UI-13's exact Front Office route
+ | register. Seven accounts retain their authenticated landing; Front Office enters its canonical
+ | operational dashboard. /me is stubbed; the frontend is UX only.
  */
 
 test.describe('role landing pages', () => {
   for (const role of ROLES) {
-    test(`${role.identity} lands on its own live landing page`, async ({ page }) => {
+    test(`${role.identity} enters its own live account surface`, async ({ page }) => {
       await stubBootstrap(page, role);
       await page.goto(role.path);
+
+      if (role.identity === 'merchant_front_office') {
+        await expect(page).toHaveURL(/\/dashboard$/);
+        await expect(page.getByTestId('front-office-dashboard')).toBeVisible();
+        await expect(page.getByText('Today’s service desk')).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Get Started', exact: true })).toBeVisible();
+        return;
+      }
 
       // Role-true entry surface: role label, FAQ, and legal footer.
       await expect(page.getByText(role.label, { exact: false }).first()).toBeVisible();

@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useInvoiceStore } from '@/stores/invoiceStore';
 import { useServiceSessionStore } from '@/stores/serviceSessionStore';
@@ -54,7 +55,7 @@ async function createDraft(): Promise<void> {
   actionError.value = null;
   try {
     const invoice = await invoiceStore.createDraft(selectedClientId.value, [...selected.value]);
-    void router.push({ name: 'front-office.invoices.detail', params: { id: invoice.id } });
+    void router.push({ name: 'front-office.invoice-detail', params: { invoiceUlid: invoice.id } });
   } catch {
     actionError.value = 'Unable to create the invoice. A selected service may already be invoiced.';
   } finally {
@@ -69,61 +70,70 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      New invoice
-    </h1>
-    <p class="mt-1 text-sm text-text-muted">
-      Select one or more completed services for the same client.
-    </p>
-
-    <SvStateBoundary
-      class="mt-6"
-      :state="boundaryState"
-      empty-message="There are no completed services to invoice."
-      error-message="We couldn’t load completed services."
-      @retry="() => sessionStore.fetchSessions()"
+  <section class="mx-auto max-w-6xl">
+    <SvOperationalHero
+      eyebrow="Completed work to billing"
+      title="New invoice"
+      description="Select completed services for one client. The server locks the sources and derives every price, fee and total—nothing authoritative is calculated in this browser."
     >
-      <ul
-        class="flex flex-col gap-3"
-        aria-label="Completed services"
-      >
-        <li
-          v-for="session in completed"
-          :key="session.id"
+      <template #actions>
+        <RouterLink
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white"
+          :to="{ name: 'front-office.invoices' }"
         >
-          <SvCard
-            as="label"
-            padding="md"
-            :class="[
-              'block cursor-pointer',
-              !isSelectable(session) ? 'opacity-50' : '',
-              selected.has(session.id) ? 'ring-2 ring-primary' : '',
-            ]"
+          Back to invoices
+        </RouterLink>
+      </template>
+    </SvOperationalHero>
+
+    <div class="mt-5">
+      <SvStateBoundary
+        :state="boundaryState"
+        empty-message="There are no completed services to invoice."
+        error-message="We couldn’t load completed services."
+        @retry="() => sessionStore.fetchSessions()"
+      >
+        <ul
+          class="flex flex-col gap-3"
+          aria-label="Completed services"
+        >
+          <li
+            v-for="session in completed"
+            :key="session.id"
           >
-            <div class="flex items-start gap-3">
-              <input
-                type="checkbox"
-                class="mt-1 h-5 w-5"
-                :checked="selected.has(session.id)"
-                :disabled="!isSelectable(session)"
-                :aria-label="`Select ${session.service?.name ?? 'service'} for ${session.client?.full_name ?? 'client'}`"
-                @change="toggle(session)"
-              >
-              <div class="flex-1">
-                <p class="font-display text-base font-semibold text-heading">
-                  {{ session.client?.full_name ?? 'Client' }}
-                </p>
-                <p class="mt-0.5 text-sm text-text-muted">
-                  {{ session.service?.name }}
-                  <span v-if="session.personnel"> · {{ session.personnel.display_name }}</span>
-                </p>
+            <SvCard
+              as="label"
+              padding="md"
+              :class="[
+                'block cursor-pointer',
+                !isSelectable(session) ? 'opacity-50' : '',
+                selected.has(session.id) ? 'ring-2 ring-primary' : '',
+              ]"
+            >
+              <div class="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  class="mt-1 h-5 w-5"
+                  :checked="selected.has(session.id)"
+                  :disabled="!isSelectable(session)"
+                  :aria-label="`Select ${session.service?.name ?? 'service'} for ${session.client?.full_name ?? 'client'}`"
+                  @change="toggle(session)"
+                >
+                <div class="flex-1">
+                  <p class="font-display text-base font-semibold text-heading">
+                    {{ session.client?.full_name ?? 'Client' }}
+                  </p>
+                  <p class="mt-0.5 text-sm text-text-muted">
+                    {{ session.service?.name }}
+                    <span v-if="session.personnel"> · {{ session.personnel.display_name }}</span>
+                  </p>
+                </div>
               </div>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
-    </SvStateBoundary>
+            </SvCard>
+          </li>
+        </ul>
+      </SvStateBoundary>
+    </div>
 
     <p
       v-if="actionError"
@@ -133,7 +143,7 @@ onMounted(() => {
       {{ actionError }}
     </p>
 
-    <div class="mt-6 flex items-center justify-between gap-3">
+    <SvCard class="mt-5 flex items-center justify-between gap-3 border-t-4 border-t-sv-brand">
       <p
         class="text-sm text-text-muted"
         data-testid="selected-count"
@@ -148,6 +158,6 @@ onMounted(() => {
       >
         Create draft
       </SvButton>
-    </div>
+    </SvCard>
   </section>
 </template>

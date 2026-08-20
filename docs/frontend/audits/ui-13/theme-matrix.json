@@ -1,0 +1,21 @@
+{
+  "schema": "servana.ui13.theme-matrix.v1",
+  "phase": "UI-13",
+  "lifecycle": "local_complete",
+  "account": "merchant_front_office",
+  "host": "office.servana.ke",
+  "fresh_browser_default": "light",
+  "explicit_dark_persists_after_reload": true,
+  "implemented_pages": 17,
+  "light_pages_reviewed": 17,
+  "dark_pages_reviewed": 17,
+  "dark_axe_serious": 0,
+  "dark_axe_critical": 0,
+  "treatment": {
+    "light": "warm white operational canvas, deep-brown gradient heroes, crisp white raised cards, teal/orange/blue/green state accents",
+    "dark": "deep navy canvas, elevated navy surfaces, preserved brown brand heroes, luminous semantic borders and high-contrast text",
+    "mechanically_inverted": false
+  },
+  "tokens": ["bg-bg", "bg-surface", "bg-surface-alt", "text-text", "text-heading", "text-text-muted", "border-border", "primary", "brand-deep"],
+  "screenshots": { "light_prefix": "screenshots/desktop-light-", "dark_prefix": "screenshots/desktop-dark-", "per_theme": 17 }
+}

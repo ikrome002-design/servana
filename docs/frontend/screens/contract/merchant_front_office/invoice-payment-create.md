@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `front-office.payments.record` at `/front-office/payments/record/:id` (routes/frontOffice.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/invoices/:invoiceUlid/payments/create`; owner phase **UI-13** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `front-office.invoice-payment-create` at `/invoices/:invoiceUlid/payments/create` (routes/frontOffice.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-13**
 - **Backend owner phase:** **Phase 18A**
 - **Implementation status:** `implemented`
-- **Runtime route:** `front-office.payments.record`
+- **Runtime route:** `front-office.invoice-payment-create`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.payments.record` (recorded in `docs/frontend/screens/front-office/front-office-payment-record.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.invoice-payment-create` (recorded in `docs/frontend/screens/front-office/front-office-payment-record.md`).
 - **Data fields:** Front Office recording form (maker): shows the invoice total, masked client, and amount available to record; builds one or more concrete-method components (cash/mpesa_offline/bank_transfer/card_terminal/voucher/other) with method-aware evidence fields and a running total; a single-currency, positive-amount, no-overpayment guard; an explicit confirmation; an idempotency key; a pending-validation success state; and a duplicate-suspected warning. No validation, receipt, or paid-status control. The server derives all authoritative money/status.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

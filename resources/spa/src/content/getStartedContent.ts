@@ -88,13 +88,13 @@ const finance: GetStartedItem[] = [
 ];
 
 const frontOffice: GetStartedItem[] = [
-  { id: 'register-a-client', label: 'Register a client', routeName: 'front-office.clients.create', kind: 'action' },
-  { id: 'book-an-appointment', label: 'Book an appointment', routeName: 'front-office.appointments.create', kind: 'action' },
-  { id: 'start-a-walk-in', label: 'Start a walk-in', routeName: 'front-office.walk-in', kind: 'action' },
-  { id: 'assign-personnel', label: 'Assign personnel', phase: 'Phase 16B', kind: 'action' },
-  { id: 'create-an-invoice', label: 'Create an invoice', routeName: 'front-office.invoices.create', kind: 'action' },
-  { id: 'record-a-payment', label: 'Record a payment', routeName: 'front-office.payments', kind: 'action' },
-  { id: 'confirm-receipt-issuance', label: 'Confirm receipt issuance', phase: 'Phase 18B', kind: 'action' },
+  { id: 'register-a-client', label: 'Register a client', routeName: 'front-office.clients-create', kind: 'action', completion: 'server' },
+  { id: 'book-an-appointment', label: 'Book an appointment', routeName: 'front-office.appointment-create', kind: 'action', completion: 'server' },
+  { id: 'start-a-walk-in', label: 'Start a walk-in', routeName: 'front-office.walk-ins', kind: 'action', completion: 'server' },
+  { id: 'assign-personnel', label: 'Assign eligible personnel and move work through service', routeName: 'front-office.queue', kind: 'action', completion: 'server' },
+  { id: 'create-an-invoice', label: 'Create an invoice from completed service', routeName: 'front-office.invoices-create', kind: 'action', completion: 'server' },
+  { id: 'record-a-payment', label: 'Record client payment evidence for Finance', routeName: 'front-office.invoices', kind: 'action', completion: 'server' },
+  { id: 'confirm-receipt-issuance', label: 'Confirm the original receipt is ready after Finance validation', routeName: 'front-office.payments-status', kind: 'action', completion: 'server' },
   ACKNOWLEDGE,
 ];
 

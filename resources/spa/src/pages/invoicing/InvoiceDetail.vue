@@ -31,7 +31,7 @@ const reason = ref('');
 const confirmFinalize = ref(false);
 const confirmExecute = ref(false);
 
-const id = computed(() => String(route.params.id));
+const id = computed(() => String(route.params.invoiceUlid ?? route.params.id));
 const readOnly = computed(() => (invoice.value ? isInvoiceReadOnly(invoice.value.status) : false));
 
 const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {

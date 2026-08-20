@@ -446,6 +446,7 @@ it('names the exact gate on every gate-blocked page and gives it no destination'
         'merchant_human_resource.staff-detail-access' => 'staff_access_assignment_contract',
         'merchant_human_resource.reports' => 'phase_21n_blocked_by_external_gate_w',
         'merchant_human_resource.notifications' => 'phase_21n_blocked_by_external_gate_w',
+        'merchant_front_office.notifications' => 'phase_21n_blocked_by_external_gate_w',
     ];
 
     foreach ($gated as $page) {

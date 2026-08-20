@@ -1,17 +1,17 @@
-# Screen specification — Receipts
+# Screen specification — Payment and receipt status
 
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 18B**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
-- **Screen key:** `front-office-receipts`
-- **Route name and URL:** `front-office.receipts`
+- **Screen key:** `front-office-payments-status`
+- **Route name and URL:** `front-office.payments-status`
 - **Layout:** `FrontOfficeLayout`
 - **Allowed roles:** `merchant_front_office`
-- **Required permissions:** `receipt.view` (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Required permissions:** — (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Front Office receipt list (branch-scoped, view only): receipt number, invoice, server-formatted KES amount, readiness. Front Office may VIEW and DOWNLOAD receipts but NEVER reissue, validate, refund, approve, or issue — those controls are absent for this role (backend-enforced).
+- **Fields and displayed data:** Maker-safe status view of recorded evidence, Finance decision state and automatic original-receipt readiness; no validation or manual issue control.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

@@ -480,135 +480,149 @@
       "declared_in": "resources/spa/src/router/routes/finance.ts"
     },
     {
+      "name": "front-office.account",
+      "path": "/account",
+      "absolute_path": "/account",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.activity",
+      "path": "/activity",
+      "absolute_path": "/activity",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.appointment-create",
+      "path": "/appointments/create",
+      "absolute_path": "/appointments/create",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.appointment-detail",
+      "path": "/appointments/:appointmentUlid",
+      "absolute_path": "/appointments/:appointmentUlid",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
       "name": "front-office.appointments",
-      "path": "appointments",
-      "absolute_path": "/front-office/appointments",
+      "path": "/appointments",
+      "absolute_path": "/appointments",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.appointments.create",
-      "path": "appointments/create",
-      "absolute_path": "/front-office/appointments/create",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
-    },
-    {
-      "name": "front-office.appointments.detail",
-      "path": "appointments/:id",
-      "absolute_path": "/front-office/appointments/:id",
+      "name": "front-office.client-detail",
+      "path": "/clients/:clientUlid",
+      "absolute_path": "/clients/:clientUlid",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
       "name": "front-office.clients",
-      "path": "clients",
-      "absolute_path": "/front-office/clients",
+      "path": "/clients",
+      "absolute_path": "/clients",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.clients.create",
-      "path": "clients/create",
-      "absolute_path": "/front-office/clients/create",
+      "name": "front-office.clients-create",
+      "path": "/clients/create",
+      "absolute_path": "/clients/create",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.clients.detail",
-      "path": "clients/:id",
-      "absolute_path": "/front-office/clients/:id",
+      "name": "front-office.dashboard",
+      "path": "/dashboard",
+      "absolute_path": "/dashboard",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
       "name": "front-office.get-started",
-      "path": "get-started",
-      "absolute_path": "/front-office/get-started",
+      "path": "/get-started",
+      "absolute_path": "/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.invoice-detail",
+      "path": "/invoices/:invoiceUlid",
+      "absolute_path": "/invoices/:invoiceUlid",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
+    },
+    {
+      "name": "front-office.invoice-payment-create",
+      "path": "/invoices/:invoiceUlid/payments/create",
+      "absolute_path": "/invoices/:invoiceUlid/payments/create",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
       "name": "front-office.invoices",
-      "path": "invoices",
-      "absolute_path": "/front-office/invoices",
+      "path": "/invoices",
+      "absolute_path": "/invoices",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.invoices.create",
-      "path": "invoices/create",
-      "absolute_path": "/front-office/invoices/create",
+      "name": "front-office.invoices-create",
+      "path": "/invoices/create",
+      "absolute_path": "/invoices/create",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.invoices.detail",
-      "path": "invoices/:id",
-      "absolute_path": "/front-office/invoices/:id",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
-    },
-    {
-      "name": "front-office.landing",
-      "path": "",
-      "absolute_path": "/front-office",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
-    },
-    {
-      "name": "front-office.payments",
-      "path": "payments",
-      "absolute_path": "/front-office/payments",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
-    },
-    {
-      "name": "front-office.payments.record",
-      "path": "payments/record/:id",
-      "absolute_path": "/front-office/payments/record/:id",
+      "name": "front-office.payments-status",
+      "path": "/payments/status",
+      "absolute_path": "/payments/status",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
       "name": "front-office.queue",
-      "path": "queue",
-      "absolute_path": "/front-office/queue",
+      "path": "/queue",
+      "absolute_path": "/queue",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.queue.detail",
-      "path": "queue/:id",
-      "absolute_path": "/front-office/queue/:id",
+      "name": "front-office.queue-entry",
+      "path": "/queue/:queueUlid",
+      "absolute_path": "/queue/:queueUlid",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.receipts",
-      "path": "receipts",
-      "absolute_path": "/front-office/receipts",
+      "name": "front-office.queue-transfer",
+      "path": "/queue/:queueUlid/transfer",
+      "absolute_path": "/queue/:queueUlid/transfer",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.receipts.detail",
-      "path": "receipts/:id",
-      "absolute_path": "/front-office/receipts/:id",
+      "name": "front-office.receipt-detail",
+      "path": "/receipts/:receiptUlid",
+      "absolute_path": "/receipts/:receiptUlid",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
       "name": "front-office.sessions",
-      "path": "sessions",
-      "absolute_path": "/front-office/sessions",
+      "path": "/sessions",
+      "absolute_path": "/sessions",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },
     {
-      "name": "front-office.walk-in",
-      "path": "walk-in",
-      "absolute_path": "/front-office/walk-in",
+      "name": "front-office.walk-ins",
+      "path": "/walk-ins",
+      "absolute_path": "/walk-ins",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/frontOffice.ts"
     },

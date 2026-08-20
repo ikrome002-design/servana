@@ -1,0 +1,35 @@
+{
+  "schema": "servana.ui13.responsive-matrix.v1",
+  "phase": "UI-13",
+  "lifecycle": "local_complete",
+  "account": "merchant_front_office",
+  "host": "office.servana.ke",
+  "method": "Playwright Chromium with deterministic synthetic Front Office fixtures",
+  "widths": [
+    { "px": 360, "band": "mobile", "pages": 17, "horizontal_overflow": 0, "result": "passed" },
+    { "px": 767, "band": "mobile boundary", "pages": 17, "horizontal_overflow": 0, "result": "passed" },
+    { "px": 768, "band": "tablet boundary", "pages": 17, "horizontal_overflow": 0, "result": "passed" },
+    { "px": 1024, "band": "tablet", "pages": 17, "horizontal_overflow": 0, "result": "passed" },
+    { "px": 1025, "band": "desktop boundary", "pages": 17, "horizontal_overflow": 0, "result": "passed" },
+    { "px": 1280, "band": "desktop", "pages": 17, "horizontal_overflow": 0, "result": "passed" },
+    { "px": 1440, "band": "wide desktop", "pages": 17, "horizontal_overflow": 0, "result": "passed" }
+  ],
+  "representative_mobile": ["dashboard", "clients-create", "walk-ins", "queue", "invoice-payment-create"],
+  "transformations": {
+    "mobile": "drawer navigation, single-column heroes/cards/forms, wrapped actions and full-width controls",
+    "tablet": "collapsible rail with two-column compositions only where content remains readable",
+    "desktop": "persistent grouped sidebar and asymmetric command-centre compositions"
+  },
+  "zoom_200_percent_equivalent": true,
+  "fixed_footer_reserve_at_least_footer_height": true,
+  "footer_obstruction": false,
+  "javascript_device_detection": false,
+  "screenshots": [
+    "screenshots/mobile-dashboard.png", "screenshots/mobile-clients-create.png", "screenshots/mobile-walk-ins.png",
+    "screenshots/mobile-queue.png", "screenshots/mobile-invoice-payment-create.png",
+    "screenshots/responsive-dashboard-360.png", "screenshots/responsive-dashboard-767.png",
+    "screenshots/responsive-dashboard-768.png", "screenshots/responsive-dashboard-1024.png",
+    "screenshots/responsive-dashboard-1025.png", "screenshots/responsive-dashboard-1280.png",
+    "screenshots/responsive-dashboard-1440.png", "screenshots/dashboard-dark-200-percent-equivalent.png"
+  ]
+}

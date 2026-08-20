@@ -1,0 +1,19 @@
+{
+  "schema": "servana.ui13.accessibility-matrix.v1",
+  "phase": "UI-13",
+  "lifecycle": "local_complete",
+  "account": "merchant_front_office",
+  "host": "office.servana.ke",
+  "axe": {
+    "ruleset": "@axe-core/playwright default",
+    "light_pages": ["dashboard", "get-started", "search", "clients", "clients-create", "client-detail", "appointments", "walk-ins", "queue", "queue-transfer", "sessions", "invoices", "invoices-create", "invoice-payment-create", "payments-status", "activity", "account"],
+    "dark_pages": ["dashboard", "get-started", "search", "clients", "clients-create", "client-detail", "appointments", "walk-ins", "queue", "queue-transfer", "sessions", "invoices", "invoices-create", "invoice-payment-create", "payments-status", "activity", "account"],
+    "serious": 0,
+    "critical": 0
+  },
+  "keyboard": { "mobile_drawer_focus_trap": "passed", "escape_closes": "passed", "trigger_focus_restored": "passed" },
+  "targets": { "minimum_css_pixels": 44, "pages_checked": 17, "undersized_controls": 0 },
+  "motion": { "prefers_reduced_motion": "passed", "dashboard_transition_seconds": 0 },
+  "semantics": { "single_main": true, "branch_context_exposed": true, "gated_items_aria_disabled": true, "status_not_color_only": true },
+  "scope_note": "UI-13 proves its own 17 pages; cross-account release-wide accessibility remains owned by UI-16."
+}

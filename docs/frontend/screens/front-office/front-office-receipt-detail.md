@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 18B**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `front-office-receipt-detail`
-- **Route name and URL:** `front-office.receipts.detail`
+- **Route name and URL:** `front-office.receipt-detail`
 - **Layout:** `FrontOfficeLayout`
 - **Allowed roles:** `merchant_front_office`
 - **Required permissions:** `receipt.view` (frontend visibility only; backend EnsurePermission + policy is authoritative)

@@ -4019,12 +4019,13 @@ pages:
     route_path: "/dashboard"
     screen_key_path: "contract/merchant_front_office/dashboard.md"
     owner_phase: UI-13
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-13"
+    implementation_status: implemented
+    runtime_route_name: "front-office.dashboard"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "front_office.search"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -4166,7 +4167,7 @@ pages:
     owner_phase: UI-13
     backend_owner_phase: "Phase 15A"
     implementation_status: implemented
-    runtime_route_name: "front-office.clients.create"
+    runtime_route_name: "front-office.clients-create"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -4203,7 +4204,7 @@ pages:
     owner_phase: UI-13
     backend_owner_phase: "Phase 15A"
     implementation_status: implemented
-    runtime_route_name: "front-office.clients.detail"
+    runtime_route_name: "front-office.client-detail"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -4277,7 +4278,7 @@ pages:
     owner_phase: UI-13
     backend_owner_phase: "Phase 16B"
     implementation_status: implemented
-    runtime_route_name: "front-office.walk-in"
+    runtime_route_name: "front-office.walk-ins"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -4349,12 +4350,13 @@ pages:
     route_path: "/queue/:queueUlid/transfer"
     screen_key_path: "contract/merchant_front_office/queue-transfer.md"
     owner_phase: UI-13
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 16B"
+    implementation_status: implemented
+    runtime_route_name: "front-office.queue-transfer"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "queue.transfer"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -4461,7 +4463,7 @@ pages:
     owner_phase: UI-13
     backend_owner_phase: "Phase 17"
     implementation_status: implemented
-    runtime_route_name: "front-office.invoices.create"
+    runtime_route_name: "front-office.invoices-create"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -4498,7 +4500,7 @@ pages:
     owner_phase: UI-13
     backend_owner_phase: "Phase 18A"
     implementation_status: implemented
-    runtime_route_name: "front-office.payments.record"
+    runtime_route_name: "front-office.invoice-payment-create"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -4535,7 +4537,7 @@ pages:
     owner_phase: UI-13
     backend_owner_phase: "Phase 18B"
     implementation_status: implemented
-    runtime_route_name: "front-office.receipts"
+    runtime_route_name: "front-office.payments-status"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -4562,7 +4564,7 @@ pages:
     screen_key: "activity"
     label: "Daily Activity"
     description: "Provide a chronological branch work log for the current day."
-    navigation_group: "Operations"
+    navigation_group: "Quick Access"
     parent_key: null
     order: 16
     icon: "activity"
@@ -4570,12 +4572,13 @@ pages:
     route_path: "/activity"
     screen_key_path: "contract/merchant_front_office/activity.md"
     owner_phase: UI-13
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-13"
+    implementation_status: implemented
+    runtime_route_name: "front-office.activity"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "front_office.search"
     scope: branch
     requires_mfa: false
     requires_step_up: false
@@ -4642,7 +4645,7 @@ pages:
     route_path: "/notifications"
     screen_key_path: "contract/merchant_front_office/notifications.md"
     owner_phase: UI-13
-    backend_owner_phase: null
+    backend_owner_phase: "Phase 21N after Phase 20D-W / Gate W"
     implementation_status: disabled_by_gate
     runtime_route_name: null
     route_delivery: null
@@ -4653,7 +4656,7 @@ pages:
     requires_step_up: false
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
-    gate: "external_gate_w"
+    gate: "phase_21n_blocked_by_external_gate_w"
     navigation_visibility: primary
     non_navigation_reason: null
     forbidden_for:
@@ -4678,10 +4681,10 @@ pages:
     route_path: "/account"
     screen_key_path: "contract/merchant_front_office/account.md"
     owner_phase: UI-13
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 11"
+    implementation_status: implemented
+    runtime_route_name: "front-office.account"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all: []
     scope: branch

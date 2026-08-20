@@ -32,7 +32,7 @@ describe('ClientCreate.vue', () => {
     await flushPromises();
 
     expect(post).toHaveBeenCalledWith('/clients', expect.objectContaining({ full_name: 'Amina', phone: '0712345678' }));
-    expect(push).toHaveBeenCalledWith({ name: 'front-office.clients.detail', params: { id: 'cl9' } });
+    expect(push).toHaveBeenCalledWith({ name: 'front-office.client-detail', params: { clientUlid: 'cl9' } });
   });
 
   it('surfaces a same-branch duplicate as a link to the existing client', async () => {

@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { writeEvidenceFile, writeEvidenceScreenshot } from './support/evidenceScreenshot';
 
 /**
  * Phase UI-06 — focused browser proof of the eight public landing pages.
@@ -217,7 +218,7 @@ async function capture(page: Page, meta: Record<string, unknown>): Promise<void>
   mkdirSync(SHOTS, { recursive: true });
   const name = `${String(meta['account'])}--${String(meta['surface'])}--${String(meta['viewport'])}--${String(meta['theme_rendered'])}--${COMMIT7}.png`;
   const path = resolve(SHOTS, name);
-  const buffer = await page.screenshot({ path, fullPage: false });
+  const buffer = await writeEvidenceScreenshot(page, path, { fullPage: false });
 
   screenshots.push({
     ...meta,
@@ -872,10 +873,10 @@ test('records preliminary performance observations for each account', async ({ p
 // Evidence
 // ==============================================================================================
 
-test.afterAll(() => {
+test.afterAll(async () => {
   mkdirSync(EVIDENCE, { recursive: true });
-  const write = (name: string, payload: unknown): void => {
-    writeFileSync(resolve(EVIDENCE, name), `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+  const write = async (name: string, payload: unknown): Promise<void> => {
+    await writeEvidenceFile(resolve(EVIDENCE, name), `${JSON.stringify(payload, null, 2)}\n`);
   };
 
   const provenance = {
@@ -886,38 +887,38 @@ test.afterAll(() => {
     source_commit: COMMIT7,
   };
 
-  write('responsive-matrix.json', {
+  await write('responsive-matrix.json', {
     ...provenance,
     widths: WIDTHS,
     rule: 'mobile ≤767, tablet 768–1024, desktop ≥1025 — CSS media queries only, no JavaScript device detection',
     rows: responsiveRows,
   });
-  write('theme-matrix.json', {
+  await write('theme-matrix.json', {
     ...provenance,
     rule: 'ADR-021 — light is the default and prefers-color-scheme never selects the theme; dark is explicit and persistent per browser for an anonymous visitor',
     rows: themeRows,
   });
-  write('accessibility-matrix.json', {
+  await write('accessibility-matrix.json', {
     ...provenance,
     tool: 'axe-core via @axe-core/playwright',
     tags: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'],
     gate: '0 serious, 0 critical',
     rows: accessibilityRows,
   });
-  write('network-asset-matrix.json', { ...provenance, rows: networkRows });
-  write('performance-observations.json', {
+  await write('network-asset-matrix.json', { ...provenance, rows: networkRows });
+  await write('performance-observations.json', {
     ...provenance,
     targets: { lcp_ms: 2500, cls: 0.1, inp_ms: 200 },
     status: 'PRELIMINARY — recorded, not claimed. UI-17 owns the agreed p75 budget and the CDN proof.',
     rows: performanceRows,
   });
-  write('screenshot-index.json', {
+  await write('screenshot-index.json', {
     ...provenance,
     policy: 'Focused implementation evidence, NOT release-approved visual baselines. UI-16 owns reviewed baselines.',
     count: screenshots.length,
     screenshots,
   });
-  write('browser-proof.json', {
+  await write('browser-proof.json', {
     ...provenance,
     total_observations: observations.length,
     failed_observations: observations.filter((observation) => !observation.ok).length,

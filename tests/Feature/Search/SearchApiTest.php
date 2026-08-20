@@ -58,7 +58,7 @@ it('shapes every result with the published keys and nothing else', function (): 
         ->and($row['type'])->toBe('client')
         ->and($row['type_label'])->toBe('Client')
         ->and($row['title'])->toBe('Amina Wanjiku')
-        ->and($row['route']['name'])->toBe('front-office.clients.detail')
+        ->and($row['route']['name'])->toBe('front-office.client-detail')
         ->and($row['route']['id'])->toBe($scn['clientA']->ulid)
         ->and($row['branch']['ulid'])->toBe($scn['branchA']->ulid);
 });

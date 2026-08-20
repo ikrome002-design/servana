@@ -4,8 +4,10 @@ import { computed, onMounted, ref } from 'vue';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
+import SvStatusBadge, { type SvStatusTone } from '@/components/ui/SvStatusBadge.vue';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useQueueStore } from '@/stores/queueStore';
 import type { QueueEntry } from '@/types/models';
@@ -27,6 +29,13 @@ const statusOptions = [
   { value: 'called', label: 'Called' },
   { value: 'in_service', label: 'In service' },
 ];
+
+function queueTone(status: string): SvStatusTone {
+  if (status === 'waiting') return 'warning';
+  if (status === 'in_service' || status === 'completed') return 'success';
+  if (status === 'cancelled' || status === 'no_show') return 'error';
+  return 'info';
+}
 
 const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
   if (queue.loading) return 'loading';
@@ -74,25 +83,33 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Queue
-      </h1>
-      <PermissionGate permission="queue.create">
-        <RouterLink :to="{ name: 'front-office.walk-in' }">
-          <SvButton
-            variant="primary"
+  <section class="mx-auto max-w-6xl">
+    <SvOperationalHero
+      eyebrow="Live service flow"
+      title="Queue"
+      description="Keep waiting, assigned, called and in-service states visually distinct. Every assignment and transfer is rechecked against branch scope and service eligibility by the server."
+    >
+      <template #actions>
+        <PermissionGate permission="queue.create">
+          <RouterLink
+            class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control bg-primary px-4 py-2 text-sm font-bold text-brand-deep"
+            :to="{ name: 'front-office.walk-ins' }"
             data-testid="start-walk-in"
           >
             Start a walk-in
-          </SvButton>
-        </RouterLink>
-      </PermissionGate>
-    </div>
+          </RouterLink>
+        </PermissionGate>
+      </template>
+      <div class="flex flex-wrap gap-3 text-sm text-white/80">
+        <span class="rounded-full bg-white/10 px-3 py-1.5">{{ queue.entries.length }} visible entries</span>
+        <span class="rounded-full bg-white/10 px-3 py-1.5">Assigned branch only</span>
+      </div>
+    </SvOperationalHero>
 
-    <form
-      class="mt-4 flex flex-wrap items-end gap-3"
+    <SvCard
+      as="form"
+      class="mt-5 flex flex-wrap items-end gap-3"
+      padding="md"
       novalidate
       @submit.prevent="queue.fetchQueue()"
     >
@@ -111,131 +128,141 @@ onMounted(() => {
       >
         Apply
       </SvButton>
-    </form>
+    </SvCard>
 
-    <SvStateBoundary
-      class="mt-6"
-      :state="boundaryState"
-      empty-message="The queue is empty. Start a walk-in to add someone."
-      error-message="We couldn’t load the queue."
-      @retry="() => queue.fetchQueue()"
-    >
-      <ul
-        class="flex flex-col gap-3"
-        aria-label="Queue entries"
+    <div class="mt-5">
+      <SvStateBoundary
+        :state="boundaryState"
+        empty-message="The queue is empty. Start a walk-in to add someone."
+        error-message="We couldn’t load the queue."
+        @retry="() => queue.fetchQueue()"
       >
-        <li
-          v-for="entry in queue.entries"
-          :key="entry.id"
+        <ul
+          class="flex flex-col gap-3"
+          aria-label="Queue entries"
         >
-          <SvCard
-            as="article"
-            padding="md"
+          <li
+            v-for="entry in queue.entries"
+            :key="entry.id"
           >
-            <div class="flex flex-wrap items-start justify-between gap-2">
-              <div>
-                <h2 class="font-display text-base font-semibold text-heading">
-                  <span class="text-text-muted">#{{ entry.position }}</span>
-                  {{ entry.client?.full_name ?? 'Client' }}
-                </h2>
-                <p class="mt-0.5 text-sm text-text-muted">
-                  {{ entry.service?.name }}
-                  · {{ assignmentModeLabel(entry.assignment_mode) }}
-                  <span v-if="entry.assigned_personnel"> · {{ entry.assigned_personnel.display_name }}</span>
-                </p>
-                <p class="mt-0.5 text-xs text-text-muted">
-                  {{ waitEstimateLabel(entry.estimated_wait.effective_minutes) }}
-                  <span
-                    v-if="entry.estimated_wait.override_minutes !== null"
-                    class="font-semibold"
-                  >· overridden</span>
-                  <span v-if="entry.preferred_personnel"> · prefers {{ entry.preferred_personnel.display_name }}</span>
-                </p>
+            <SvCard
+              as="article"
+              padding="md"
+            >
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <h2 class="font-display text-base font-semibold text-heading">
+                    <span class="text-text-muted">#{{ entry.position }}</span>
+                    {{ entry.client?.full_name ?? 'Client' }}
+                  </h2>
+                  <p class="mt-0.5 text-sm text-text-muted">
+                    {{ entry.service?.name }}
+                    · {{ assignmentModeLabel(entry.assignment_mode) }}
+                    <span v-if="entry.assigned_personnel"> · {{ entry.assigned_personnel.display_name }}</span>
+                  </p>
+                  <p class="mt-0.5 text-xs text-text-muted">
+                    {{ waitEstimateLabel(entry.estimated_wait.effective_minutes) }}
+                    <span
+                      v-if="entry.estimated_wait.override_minutes !== null"
+                      class="font-semibold"
+                    >· overridden</span>
+                    <span v-if="entry.preferred_personnel"> · prefers {{ entry.preferred_personnel.display_name }}</span>
+                  </p>
+                </div>
+                <SvStatusBadge
+                  :label="queueStatusLabel(entry.status)"
+                  :tone="queueTone(entry.status)"
+                  sr-prefix="Queue status:"
+                  data-testid="queue-status-badge"
+                />
               </div>
-              <span
-                class="rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-text"
-                data-testid="queue-status-badge"
-              >{{ queueStatusLabel(entry.status) }}</span>
-            </div>
 
-            <div class="mt-3 flex flex-wrap gap-2">
-              <SvButton
-                v-if="entry.status === 'waiting' && entry.can?.assign"
-                variant="primary"
-                :loading="working === entry.id"
-                :data-testid="`assign-${entry.id}`"
-                @click="assignNext(entry)"
-              >
-                Assign next available
-              </SvButton>
-              <SvButton
-                v-if="entry.can?.call"
-                variant="primary"
-                :loading="working === entry.id"
-                @click="callEntry(entry)"
-              >
-                Call
-              </SvButton>
-              <SvButton
-                v-if="entry.can?.start"
-                variant="primary"
-                :loading="working === entry.id"
-                @click="startEntry(entry)"
-              >
-                Start
-              </SvButton>
-              <SvButton
-                v-if="entry.can?.complete"
-                variant="primary"
-                :loading="working === entry.id"
-                @click="completeEntry(entry)"
-              >
-                Complete
-              </SvButton>
-              <RouterLink
-                :to="{ name: 'front-office.queue.detail', params: { id: entry.id } }"
-                class="inline-flex min-h-[44px] items-center text-sm font-semibold text-heading underline"
-              >
-                Manage
-              </RouterLink>
-              <SvButton
-                v-if="entry.can?.no_show"
-                variant="secondary"
-                :loading="working === entry.id"
-                @click="noShowEntry(entry)"
-              >
-                No-show
-              </SvButton>
-              <template v-if="entry.status === 'waiting' && entry.can?.assign">
+              <div class="mt-3 flex flex-wrap gap-2">
                 <SvButton
-                  variant="secondary"
-                  :disabled="waitingIds[0] === entry.id"
-                  :aria-label="`Move ${entry.client?.full_name ?? 'entry'} up`"
-                  :data-testid="`move-up-${entry.id}`"
-                  @click="move(entry.id, -1)"
+                  v-if="entry.status === 'waiting' && entry.can?.assign"
+                  variant="primary"
+                  :loading="working === entry.id"
+                  :data-testid="`assign-${entry.id}`"
+                  @click="assignNext(entry)"
                 >
-                  <SvIconArrowUp
-                    aria-hidden="true"
-                    class="h-5 w-5"
-                  />
+                  Assign next available
                 </SvButton>
                 <SvButton
-                  variant="secondary"
-                  :disabled="waitingIds[waitingIds.length - 1] === entry.id"
-                  :aria-label="`Move ${entry.client?.full_name ?? 'entry'} down`"
-                  :data-testid="`move-down-${entry.id}`"
-                  @click="move(entry.id, 1)"
+                  v-if="entry.can?.call"
+                  variant="primary"
+                  :loading="working === entry.id"
+                  @click="callEntry(entry)"
                 >
-                  <SvIconArrowDown
-                    aria-hidden="true"
-                    class="h-5 w-5"
-                  />
+                  Call
                 </SvButton>
-              </template>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
-    </SvStateBoundary>
+                <SvButton
+                  v-if="entry.can?.start"
+                  variant="primary"
+                  :loading="working === entry.id"
+                  @click="startEntry(entry)"
+                >
+                  Start
+                </SvButton>
+                <SvButton
+                  v-if="entry.can?.complete"
+                  variant="primary"
+                  :loading="working === entry.id"
+                  @click="completeEntry(entry)"
+                >
+                  Complete
+                </SvButton>
+                <RouterLink
+                  :to="{ name: 'front-office.queue-entry', params: { queueUlid: entry.id } }"
+                  class="inline-flex min-h-[44px] items-center text-sm font-semibold text-heading underline"
+                >
+                  Manage
+                </RouterLink>
+                <RouterLink
+                  v-if="entry.can?.transfer"
+                  :to="{ name: 'front-office.queue-transfer', params: { queueUlid: entry.id } }"
+                  class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-sv-border px-3 text-sm font-semibold text-heading"
+                >
+                  Transfer
+                </RouterLink>
+                <SvButton
+                  v-if="entry.can?.no_show"
+                  variant="secondary"
+                  :loading="working === entry.id"
+                  @click="noShowEntry(entry)"
+                >
+                  No-show
+                </SvButton>
+                <template v-if="entry.status === 'waiting' && entry.can?.assign">
+                  <SvButton
+                    variant="secondary"
+                    :disabled="waitingIds[0] === entry.id"
+                    :aria-label="`Move ${entry.client?.full_name ?? 'entry'} up`"
+                    :data-testid="`move-up-${entry.id}`"
+                    @click="move(entry.id, -1)"
+                  >
+                    <SvIconArrowUp
+                      aria-hidden="true"
+                      class="h-5 w-5"
+                    />
+                  </SvButton>
+                  <SvButton
+                    variant="secondary"
+                    :disabled="waitingIds[waitingIds.length - 1] === entry.id"
+                    :aria-label="`Move ${entry.client?.full_name ?? 'entry'} down`"
+                    :data-testid="`move-down-${entry.id}`"
+                    @click="move(entry.id, 1)"
+                  >
+                    <SvIconArrowDown
+                      aria-hidden="true"
+                      class="h-5 w-5"
+                    />
+                  </SvButton>
+                </template>
+              </div>
+            </SvCard>
+          </li>
+        </ul>
+      </SvStateBoundary>
+    </div>
   </section>
 </template>

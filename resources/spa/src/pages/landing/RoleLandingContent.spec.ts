@@ -14,8 +14,9 @@ function makeRouter(): Router {
   return createRouter({
     history: createMemoryHistory(),
     routes: [
-      { path: '/front-office', name: 'front-office.landing', component: stub },
-      { path: '/front-office/get-started', name: 'front-office.get-started', component: stub },
+      { path: '/dashboard', name: 'front-office.dashboard', component: stub },
+      { path: '/get-started', name: 'front-office.get-started', component: stub },
+      { path: '/account', name: 'front-office.account', component: stub },
       { path: '/legal/:doc(data-policy|privacy-policy|terms-of-service)', name: 'public.legal', component: stub },
       { path: '/legal/:role/:doc', name: 'legal.document', component: stub },
       // Phase 22 global search is in every merchant-role navigation, so the test router must

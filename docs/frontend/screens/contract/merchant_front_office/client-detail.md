@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `front-office.clients.detail` at `/front-office/clients/:id` (routes/frontOffice.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/clients/:clientUlid`; owner phase **UI-13** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `front-office.client-detail` at `/clients/:clientUlid` (routes/frontOffice.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-13**
 - **Backend owner phase:** **Phase 15A**
 - **Implementation status:** `implemented`
-- **Runtime route:** `front-office.clients.detail`
+- **Runtime route:** `front-office.client-detail`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.clients.detail` (recorded in `docs/frontend/screens/front-office/front-office-client-detail.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.client-detail` (recorded in `docs/frontend/screens/front-office/front-office-client-detail.md`).
 - **Data fields:** Masked client detail with edit (name/phone/email/notes) and SMS-consent opt-in/out capture (no SMS sent in this phase).
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

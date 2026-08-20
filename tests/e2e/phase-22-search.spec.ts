@@ -74,7 +74,7 @@ const clientResult = {
   status: 'active',
   date: '2026-07-25T10:00:00+00:00',
   amount: null,
-  route: { name: 'front-office.clients.detail', id: CLIENT_ID },
+  route: { name: 'front-office.client-detail', id: CLIENT_ID },
   branch: { ulid: 'b1', name: 'Westlands Branch' },
 };
 
@@ -88,7 +88,7 @@ const invoiceResult = {
   status: 'issued',
   date: '2026-07-24T08:00:00+00:00',
   amount: { amount: 500000, currency: 'KES', formatted: 'KES 5,000.00' },
-  route: { name: 'front-office.invoices.detail', id: INVOICE_ID },
+  route: { name: 'front-office.invoice-detail', id: INVOICE_ID },
   branch: { ulid: 'b1', name: 'Westlands Branch' },
 };
 
@@ -143,7 +143,7 @@ test('navigates to the result target route', async ({ page }) => {
 
   await page.getByTestId('search-result-client').first().click();
 
-  await expect(page).toHaveURL(new RegExp(`/front-office/clients/${CLIENT_ID}$`));
+  await expect(page).toHaveURL(new RegExp(`/clients/${CLIENT_ID}$`));
 });
 
 test('shows a safe empty state that does not distinguish "no match" from "no access"', async ({ page }) => {
@@ -187,7 +187,7 @@ test('shows the empty state to a role with no searchable authority, never a 403 
   // The server answers 200 + empty for a caller with no searchable type (decision D-22-01), so the
   // frontend must render the ordinary empty state rather than an access-denied surface.
   await stubSearch(page, []);
-  await gotoSearch(page, { role: 'merchant_audit', permissions: ['receipt.view'] });
+  await gotoSearch(page, { role: 'audit', permissions: ['receipt.view'] });
   await runSearch(page);
 
   await expect(page.getByTestId('search-empty')).toBeVisible();

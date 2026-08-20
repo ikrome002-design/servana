@@ -15154,6 +15154,851 @@
                 ]
             }
         },
+        "/api/v1/front-office/activity": {
+            "get": {
+                "operationId": "front-office.activity.index",
+                "tags": [
+                    "FrontOfficeWorkspace"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "domain",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "clients",
+                                "appointments",
+                                "queue",
+                                "sessions",
+                                "invoices",
+                                "billing"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `FrontOfficeActivityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FrontOfficeActivityResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/front-office/payment-status": {
+            "get": {
+                "operationId": "front-office.payment-status.index",
+                "tags": [
+                    "FrontOfficeWorkspace"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "recorded_at",
+                                "-recorded_at",
+                                "created_at",
+                                "-created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/PaymentRecordingGroupStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `FrontOfficePaymentStatusResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FrontOfficePaymentStatusResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/front-office/workspace": {
+            "get": {
+                "operationId": "front-office.workspace.show",
+                "tags": [
+                    "FrontOfficeWorkspace"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "overview": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "observed_at": {
+                                                            "type": "string"
+                                                        },
+                                                        "business_date": {
+                                                            "type": "string"
+                                                        },
+                                                        "branch": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "code": {
+                                                                    "type": "string"
+                                                                },
+                                                                "town": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "code",
+                                                                "town"
+                                                            ]
+                                                        },
+                                                        "appointments": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "today": {
+                                                                    "type": "string"
+                                                                },
+                                                                "by_status": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "arrivals": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "today",
+                                                                "by_status",
+                                                                "arrivals"
+                                                            ]
+                                                        },
+                                                        "queue": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "active": {
+                                                                    "type": "string"
+                                                                },
+                                                                "waiting": {
+                                                                    "type": "string"
+                                                                },
+                                                                "in_service": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "by_status": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "longest_estimated_wait_minutes": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "active",
+                                                                "waiting",
+                                                                "in_service",
+                                                                "by_status",
+                                                                "longest_estimated_wait_minutes"
+                                                            ]
+                                                        },
+                                                        "sessions": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "today": {
+                                                                    "type": "string"
+                                                                },
+                                                                "in_progress": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "completed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "by_status": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "today",
+                                                                "in_progress",
+                                                                "completed",
+                                                                "by_status"
+                                                            ]
+                                                        },
+                                                        "invoices": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "drafts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "awaiting_payment": {
+                                                                    "type": "string"
+                                                                },
+                                                                "by_status": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "drafts",
+                                                                "awaiting_payment",
+                                                                "by_status"
+                                                            ]
+                                                        },
+                                                        "payments": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "pending_validation": {
+                                                                    "type": "string"
+                                                                },
+                                                                "by_status": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "receipts_ready_today": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "pending_validation",
+                                                                "by_status",
+                                                                "receipts_ready_today"
+                                                            ]
+                                                        },
+                                                        "tasks": {
+                                                            "type": "array",
+                                                            "prefixItems": [
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "arrivals"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Checked-in arrivals"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "front-office.appointments"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "route_name"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "waiting"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Clients waiting in queue"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "front-office.queue"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "route_name"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "invoice-drafts"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Invoice drafts to finish"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "front-office.invoices"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "route_name"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string",
+                                                                            "const": "payment-follow-up"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string",
+                                                                            "const": "Recorded payments awaiting Finance"
+                                                                        },
+                                                                        "count": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "route_name": {
+                                                                            "type": "string",
+                                                                            "const": "front-office.payments-status"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "label",
+                                                                        "count",
+                                                                        "route_name"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "minItems": 4,
+                                                            "maxItems": 4,
+                                                            "additionalItems": false
+                                                        },
+                                                        "get_started": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "client_created": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "appointment_created": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "queue_used": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "session_completed": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "invoice_created": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "payment_recorded": {
+                                                                    "type": "string"
+                                                                },
+                                                                "receipt_available": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "client_created",
+                                                                "appointment_created",
+                                                                "queue_used",
+                                                                "session_completed",
+                                                                "invoice_created",
+                                                                "payment_recorded",
+                                                                "receipt_available"
+                                                            ]
+                                                        },
+                                                        "subscription": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "available": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "reason": {
+                                                                    "type": "string",
+                                                                    "const": "External Gate W is closed. Phase 20D-W has no Wallet payment or billing-recovery runtime."
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "available",
+                                                                "reason"
+                                                            ]
+                                                        },
+                                                        "notifications": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "available": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "reason": {
+                                                                    "type": "string",
+                                                                    "const": "Phase 21N has no in-app notification persistence, read or preference runtime."
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "available",
+                                                                "reason"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "observed_at",
+                                                        "business_date",
+                                                        "branch",
+                                                        "appointments",
+                                                        "queue",
+                                                        "sessions",
+                                                        "invoices",
+                                                        "payments",
+                                                        "tasks",
+                                                        "get_started",
+                                                        "subscription",
+                                                        "notifications"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "overview"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/hr/audit-activity": {
             "get": {
                 "operationId": "hr.audit-activity.index",
@@ -44056,6 +44901,172 @@
                 ],
                 "title": "FreePeriodOfferResource"
             },
+            "FrontOfficeActivityResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "enum": [
+                            "clients",
+                            "appointments",
+                            "queue",
+                            "sessions",
+                            "invoices",
+                            "billing"
+                        ]
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string",
+                        "enum": [
+                            "Client record created",
+                            "Client record updated",
+                            "Client SMS consent recorded",
+                            "Client SMS consent withdrawn",
+                            "Appointment created",
+                            "Appointment assigned",
+                            "Appointment transferred",
+                            "Appointment rescheduled",
+                            "Client checked in",
+                            "Appointment cancelled",
+                            "Appointment marked no-show",
+                            "Appointment moved to queue",
+                            "Walk-in arrival created",
+                            "Queue entry created",
+                            "Queue entry assigned",
+                            "Client called from queue",
+                            "Service started from queue",
+                            "Queue service completed",
+                            "Queue entry transferred",
+                            "Queue entry cancelled",
+                            "Queue entry marked no-show",
+                            "Service session started",
+                            "Service session completed",
+                            "Service session cancelled",
+                            "Invoice draft created",
+                            "Invoice draft updated",
+                            "Invoice finalized",
+                            "Payment recorded for Finance validation",
+                            "Payment held for Finance review",
+                            "Finance validated a payment",
+                            "Finance rejected a payment",
+                            "Finance requested payment correction",
+                            "Payment resubmitted to Finance",
+                            "Receipt issued automatically",
+                            "Branch work updated"
+                        ]
+                    },
+                    "occurred_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "domain",
+                    "action",
+                    "label",
+                    "occurred_at"
+                ],
+                "title": "FrontOfficeActivityResource"
+            },
+            "FrontOfficePaymentStatusResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "object",
+                        "properties": {
+                            "amount": {
+                                "type": "integer"
+                            },
+                            "currency": {
+                                "type": "string"
+                            },
+                            "formatted": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "amount",
+                            "currency",
+                            "formatted"
+                        ]
+                    },
+                    "recorded_at": {
+                        "type": "string"
+                    },
+                    "submitted_for_validation_at": {
+                        "type": "string"
+                    },
+                    "invoice": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "number": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "status": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "number",
+                            "status"
+                        ]
+                    },
+                    "receipt": {
+                        "type": "object",
+                        "properties": {
+                            "ready": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "number": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "ready",
+                            "id",
+                            "number"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "total",
+                    "recorded_at",
+                    "submitted_for_validation_at",
+                    "invoice",
+                    "receipt"
+                ],
+                "title": "FrontOfficePaymentStatusResource"
+            },
             "InvitePlatformAdministratorRequest": {
                 "type": "object",
                 "description": "Validate a platform-access invitation (COR-UI08-001 §11.6; Phase UI-08).\n\nThe address is normalized to lowercase before validation so a duplicate differing only in case\ncannot slip past the partial unique index. NO ROLE FIELD IS ACCEPTED: `super_admin` is the only\nlaunch platform role, so accepting a role from the request would create a choice the system does\nnot actually offer.",
@@ -45239,6 +46250,20 @@
                     "created_at"
                 ],
                 "title": "PaymentRecordingGroupResource"
+            },
+            "PaymentRecordingGroupStatus": {
+                "type": "string",
+                "description": "Payment recording group lifecycle states (Plan §13.15, §25, §41; Phase 18A). Mirrors the payment_recording_groups.status DB CHECK. Status is never assigned directly; every change goes through a named domain action via {@see PaymentRecordingGroupStateMachine}. Phase 18A reaches only the recording-owned states ({@see Recorded}, {@see PendingValidation}); {@see Validated}/{@see Rejected}/ {@see CorrectionRequired}/{@see Reversed} are defined + unit-tested here but are Phase-18B-driven (no Phase 18A route reaches them).\n",
+                "enum": [
+                    "draft",
+                    "recorded",
+                    "pending_validation",
+                    "validated",
+                    "rejected",
+                    "correction_required",
+                    "reversed"
+                ],
+                "title": "PaymentRecordingGroupStatus"
             },
             "PaymentReferenceCheckResource": {
                 "type": "object",

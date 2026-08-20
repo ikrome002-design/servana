@@ -115,6 +115,32 @@ export async function stubAccountContextForRole(
 export async function stubBootstrap(page: Page, cfg: RoleConfig): Promise<void> {
   await stubAccountContextFor(page, cfg.identity, cfg.label);
   await page.route('**/sanctum/csrf-cookie', (route) => route.fulfill({ status: 204, body: '' }));
+  if (cfg.identity === 'merchant_front_office') {
+    await page.route('**/api/v1/front-office/workspace', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          data: {
+            overview: {
+              observed_at: '2026-08-20T07:15:00Z',
+              business_date: '2026-08-20',
+              branch: { id: 'b1', name: 'Glow Studio', code: 'WEST', town: 'Nairobi' },
+              appointments: { today: 0, by_status: {}, arrivals: 0 },
+              queue: { active: 0, waiting: 0, in_service: 0, by_status: {}, longest_estimated_wait_minutes: 0 },
+              sessions: { today: 0, in_progress: 0, completed: 0, by_status: {} },
+              invoices: { drafts: 0, awaiting_payment: 0, by_status: {} },
+              payments: { pending_validation: 0, by_status: {}, receipts_ready_today: 0 },
+              tasks: [],
+              get_started: {},
+              subscription: { available: false, reason: 'External Gate W is closed.' },
+              notifications: { available: false, reason: 'External Gate W is closed.' },
+            },
+          },
+        }),
+      }),
+    );
+  }
   await page.route('**/api/v1/me', (route) =>
     route.fulfill({
       status: 200,
@@ -134,7 +160,7 @@ export async function stubBootstrap(page: Page, cfg: RoleConfig): Promise<void> 
             : { id: 'm1', name: 'Glow Studio', slug: 'glow', status: 'active', service_fee_tier: null, setup_completed_at: '2026-01-01T00:00:00Z' },
           membership: cfg.role ? { id: 'mm1', role: cfg.role, status: 'active' } : null,
           memberships: cfg.role ? [{ id: 'mm1', role: cfg.role, status: 'active' }] : [],
-          permissions: [],
+          permissions: cfg.identity === 'merchant_front_office' ? ['front_office.search'] : [],
           // UI-03 added `account_keys` to /me, derived server-side by AccountContextResolver, and
           // `requiresAccount` asks `holdsAccount()` for it. Without it the guard denies every
           // account surface it is attached to.

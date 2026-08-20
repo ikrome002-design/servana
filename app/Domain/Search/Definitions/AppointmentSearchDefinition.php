@@ -117,7 +117,7 @@ final class AppointmentSearchDefinition extends AbstractSearchDocumentDefinition
             status: $model->status->value,
             date: $model->starts_at->toIso8601String(),
             amount: null,
-            routeName: 'front-office.appointments.detail',
+            routeName: 'front-office.appointment-detail',
             routeParamId: $model->ulid,
             branchUlid: $model->branch?->ulid,
             branchName: $model->branch?->name,

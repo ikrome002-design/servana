@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "ba280b13fa2556f191ce195e5ff9ae9b477f3dc29358314ce264cbbc4e61de8f",
+  "canonical_authority_sha256": "25365cfa749fe9e162d47e20280a473949ad2283f41e32df0fc645b340850240",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "425ca93531efaa2ff609b13bbadfcba00a518ed732d441f9f8d2ba3820a660c0",
+  "screen_inventory_sha256": "13a0bd3e23603ebef3945db82f831eb4a2e4d28e2e8fe0e8742193988955df20",
   "purpose": "Every permission referenced by the contract exists in the canonical matrix. UI-07 creates, activates, retires and re-grants NO permission key.",
   "permission_matrix_keys": 169,
   "contract_permission_references": [
@@ -38,6 +38,7 @@
     "finance.audit.view",
     "finance_dispute.manage",
     "finance_export.create",
+    "front_office.search",
     "invoice.create",
     "invoice.view",
     "merchant.compensation_summary.view",
@@ -69,6 +70,7 @@
     "platform.registration_monitor.view",
     "platform.settings.view",
     "queue.create",
+    "queue.transfer",
     "queue.view",
     "receipt.view",
     "refund.create",
@@ -272,11 +274,6 @@
       "owner_phase": "UI-12"
     },
     {
-      "key": "merchant_front_office.dashboard",
-      "implementation_status": "planned",
-      "owner_phase": "UI-13"
-    },
-    {
       "key": "merchant_front_office.get-started",
       "implementation_status": "implemented",
       "owner_phase": "UI-13"
@@ -284,16 +281,6 @@
     {
       "key": "merchant_front_office.search",
       "implementation_status": "implemented",
-      "owner_phase": "UI-13"
-    },
-    {
-      "key": "merchant_front_office.queue-transfer",
-      "implementation_status": "planned",
-      "owner_phase": "UI-13"
-    },
-    {
-      "key": "merchant_front_office.activity",
-      "implementation_status": "planned",
       "owner_phase": "UI-13"
     },
     {
@@ -308,7 +295,7 @@
     },
     {
       "key": "merchant_front_office.account",
-      "implementation_status": "planned",
+      "implementation_status": "implemented",
       "owner_phase": "UI-13"
     },
     {

@@ -1,0 +1,484 @@
+{
+    "schema": "servana.ui13.defect-closure.v1",
+    "phase": "UI-13",
+    "lifecycle": "local_complete",
+    "counts": {
+        "total": 24,
+        "open": 0,
+        "local_complete": 24,
+        "verified_complete": 0
+    },
+    "closures": [
+        {
+            "id": "UI13-001",
+            "observed_problem": "The Front Office runtime used /front-office/* aliases, singular /walk-in and a receipts-only destination instead of the 19-page canonical map.",
+            "evidence": "Pre-change router inventory versus the generated navigation contract.",
+            "affected_files": [
+                "resources/spa/src/router/routes/frontOffice.ts",
+                "resources/spa/src/router/routeDefinitions.ts"
+            ],
+            "root_cause": "The role router predated the binding UI account contract.",
+            "why_root_cause": "Every mismatch originated in one legacy route tree; screens and APIs were already present for most destinations.",
+            "correct_fix": "Install 17 host-relative canonical routes, retain narrow compatibility redirects and leave two gates unrouted.",
+            "tests": [
+                "router.spec.ts",
+                "ui-13-front-office-experience.spec.ts"
+            ],
+            "proof": "17 canonical deep links pass; gated direct links fail closed.",
+            "remaining_risk": "Canonical no-volume host routing passed 51/51 production-image checks; only post-merge lifecycle verification remains.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-002",
+            "observed_problem": "No truthful Dashboard could be composed without querying first pages from several paginated collections.",
+            "evidence": "Endpoint and page inventory showed no branch-today aggregate.",
+            "affected_files": [
+                "app/Domain/FrontOffice/Services/FrontOfficeWorkspaceReadModel.php",
+                "app/Http/Controllers/Api/V1/FrontOffice/FrontOfficeWorkspaceController.php",
+                "routes/api.php"
+            ],
+            "root_cause": "Shipped domain APIs own individual collections, not a Front Office presentation projection.",
+            "why_root_cause": "Client aggregation would produce incomplete counts and duplicate business-day rules.",
+            "correct_fix": "Add a read-only, branch-scoped server projection over shipped facts with Nairobi business-day boundaries.",
+            "tests": [
+                "FrontOfficeExperienceApiTest.php",
+                "frontOfficeWorkspaceStore.spec.ts",
+                "ui-13-front-office-experience.spec.ts"
+            ],
+            "proof": "Workspace count/state assertions and Dashboard browser request pass.",
+            "remaining_risk": "Query cost is bounded to one branch but remains observable in production.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-003",
+            "observed_problem": "The legacy receipts path could not show recorded payments awaiting Finance without exposing the Finance checker view.",
+            "evidence": "Payment-group resource/permission inventory and maker/checker authority rule.",
+            "affected_files": [
+                "app/Http/Resources/FrontOfficePaymentStatusResource.php",
+                "app/Domain/FrontOffice/Services/FrontOfficeWorkspaceReadModel.php",
+                "resources/spa/src/pages/front-office/PaymentReceiptStatus.vue"
+            ],
+            "root_cause": "Available views were either receipt-only or Finance-owned full payment groups.",
+            "why_root_cause": "Front Office needs its submitted evidence outcome, not checker mutation fields or raw references.",
+            "correct_fix": "Add a paginated maker-safe status projection exposing decision state and automatic original-receipt readiness only.",
+            "tests": [
+                "FrontOfficeExperienceApiTest.php",
+                "frontOfficeWorkspaceStore.spec.ts",
+                "ui-13-front-office-experience.spec.ts"
+            ],
+            "proof": "Focused test rejects checker terms/controls and proves pending-validation semantics.",
+            "remaining_risk": "No manual issue control exists by design.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-004",
+            "observed_problem": "Daily Activity had no Front Office-safe route and raw Audit-account payloads were overbroad.",
+            "evidence": "Canonical page required a day log; runtime exposed only append-only audit domain facts.",
+            "affected_files": [
+                "app/Http/Resources/FrontOfficeActivityResource.php",
+                "app/Domain/FrontOffice/Services/FrontOfficeWorkspaceReadModel.php",
+                "resources/spa/src/pages/front-office/DailyActivity.vue"
+            ],
+            "root_cause": "No presentation boundary mapped append-only events to safe operational labels.",
+            "why_root_cause": "Reusing Audit UI/API would cross role authority and expose internal payloads.",
+            "correct_fix": "Project current-day, same-branch actions to a narrow paginated timeline.",
+            "tests": [
+                "FrontOfficeExperienceApiTest.php",
+                "ui-13-front-office-experience.spec.ts"
+            ],
+            "proof": "Branch isolation, masking and chronological UI assertions pass.",
+            "remaining_risk": "Unknown future event types intentionally fall back to a safe generic label.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-005",
+            "observed_problem": "Queue transfer mutation existed but had no dedicated canonical accessible screen.",
+            "evidence": "Route/controller/policy inventory versus navigation contract.",
+            "affected_files": [
+                "resources/spa/src/pages/front-office/QueueTransfer.vue",
+                "resources/spa/src/router/routes/frontOffice.ts",
+                "resources/spa/src/pages/front-office/QueueBoard.vue"
+            ],
+            "root_cause": "The prior UI exposed queue management without a persistent transfer context.",
+            "why_root_cause": "Backend transfer policy/state machine already satisfied authority; only the presentation seam was absent.",
+            "correct_fix": "Add a subject-and-assignment page using existing eligibility and transfer endpoints.",
+            "tests": [
+                "QueueTransfer.spec.ts",
+                "ui-13-front-office-experience.spec.ts"
+            ],
+            "proof": "Direct deep link, eligible list, reason and disabled confirmation states pass.",
+            "remaining_risk": "Mutation behavior remains owned by Phase 16B.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-006",
+            "observed_problem": "No Front Office Account and Preferences route existed.",
+            "evidence": "Canonical map versus account router inventory.",
+            "affected_files": [
+                "resources/spa/src/pages/front-office/FrontOfficeAccount.vue",
+                "resources/spa/src/pages/account/AccountAndSecurity.vue",
+                "resources/spa/src/router/routes/frontOffice.ts"
+            ],
+            "root_cause": "The shared own-account runtime had not been composed for the role.",
+            "why_root_cause": "Building business or staff settings would exceed Front Office authority; the own-security runtime already existed.",
+            "correct_fix": "Wrap own Magic Link identity, MFA, sessions, theme and assigned branch context only.",
+            "tests": [
+                "AccountAndSecurity.spec.ts",
+                "ui-13-front-office-experience.spec.ts"
+            ],
+            "proof": "Account resolves and forbidden business/staff controls are absent.",
+            "remaining_risk": "Notification preferences remain gated with Phase 21N.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-007",
+            "observed_problem": "Operational Search rendered outside the role shell and could navigate to legacy Front Office URLs.",
+            "evidence": "Initial focused Playwright failures on page, responsive and axe cascaded from /search.",
+            "affected_files": [
+                "resources/spa/src/router/routes/search.ts",
+                "resources/spa/src/pages/search/GlobalSearch.vue",
+                "resources/spa/src/search/searchDefinitions.ts",
+                "tests/e2e/support/releaseAudit.ts"
+            ],
+            "root_cause": "The cross-account utility route was registered as standalone and its Front Office result definitions retained legacy prefixes.",
+            "why_root_cause": "The same route was the only failed page across all widths and axe cases.",
+            "correct_fix": "Nest /search in RoleShell and update role-aware canonical deep links.",
+            "tests": [
+                "router.spec.ts",
+                "searchDefinitions.spec.ts",
+                "ui-13-front-office-experience.spec.ts"
+            ],
+            "proof": "The exact 11 failed scenarios reran 11/11 green, then the full focused suite passed.",
+            "remaining_risk": "Other accounts retain the shared utility and are covered by router/component regression tests.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-008",
+            "observed_problem": "Front Office navigation placed Utility second instead of last.",
+            "evidence": "Initial focused group-order assertion failed against the binding account map.",
+            "affected_files": [
+                "resources/spa/src/components/navigation/HeaderGroupNavigation.vue"
+            ],
+            "root_cause": "Generic group sorting did not encode the role's binding placement order.",
+            "why_root_cause": "All links existed; only group ordering was wrong.",
+            "correct_fix": "Add the explicit Front Office group order without changing other account navigation.",
+            "tests": [
+                "HeaderGroupNavigation.spec.ts",
+                "ui-13-front-office-experience.spec.ts"
+            ],
+            "proof": "Eight group headings match the canonical order.",
+            "remaining_risk": "Generated navigation remains checked for drift.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-009",
+            "observed_problem": "Several UI-13 layouts used sm:/xl: utilities that do not exist in the pinned Tailwind breakpoints.",
+            "evidence": "Token/config inspection showed only md=768 and lg=1025 while source searches found inactive aliases.",
+            "affected_files": [
+                "resources/spa/src/pages/front-office",
+                "resources/spa/src/pages/invoicing",
+                "resources/spa/src/pages/payments/RecordPayment.vue",
+                "resources/spa/src/pages/search/GlobalSearch.vue"
+            ],
+            "root_cause": "Inherited conventional Tailwind aliases conflicted with the product's three-band responsive contract.",
+            "why_root_cause": "Generated CSS could not activate those transformations at any width.",
+            "correct_fix": "Replace UI-13-owned sm/xl rules with md/lg contract boundaries.",
+            "tests": ["ui-13-front-office-experience.spec.ts"],
+            "proof": "All 17 pages have zero horizontal overflow at seven required widths.",
+            "remaining_risk": "Other phases own non-UI-13 inactive aliases outside touched surfaces.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-010",
+            "observed_problem": "Inherited lists and forms remained visually flat and below the six supplied benchmarks after functional activation.",
+            "evidence": "First screenshot review of Clients, Walk-Ins, Queue and Invoices showed generic headings, cards and action hierarchy.",
+            "affected_files": [
+                "resources/spa/src/pages/front-office",
+                "resources/spa/src/pages/invoicing",
+                "resources/spa/src/pages/payments/RecordPayment.vue",
+                "resources/spa/src/pages/get-started/RoleGetStarted.vue",
+                "resources/spa/src/pages/account/AccountAndSecurity.vue"
+            ],
+            "root_cause": "UI-13 initially reused domain components without a role-level visual composition layer.",
+            "why_root_cause": "Functionality and tests passed while the mandatory visual rubric did not.",
+            "correct_fix": "Introduce SvOperationalHero and refine task panels, semantic status, action hierarchy, workflow strips and light/dark surfaces.",
+            "tests": [
+                "targeted Vitest component suite",
+                "ui-13-front-office-experience.spec.ts"
+            ],
+            "proof": "All 17 pages score 27–30/30 with required criteria at 2 and hashed light/dark evidence.",
+            "remaining_risk": "Cross-account release-wide visual comparison remains UI-16.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-011",
+            "observed_problem": "The first payment-status resource exposed checker-named validated_at/rejected_at fields.",
+            "evidence": "Focused API security test failed on the forbidden validation/checker vocabulary.",
+            "affected_files": [
+                "app/Http/Resources/FrontOfficePaymentStatusResource.php",
+                "resources/spa/src/stores/frontOfficeWorkspaceStore.ts"
+            ],
+            "root_cause": "Timeline convenience fields mirrored Finance lifecycle terminology across the maker boundary.",
+            "why_root_cause": "The fields were unnecessary for Front Office to know decision state and receipt readiness.",
+            "correct_fix": "Remove checker timeline fields and retain only maker-safe decision state, recorded time and receipt availability.",
+            "tests": [
+                "FrontOfficeExperienceApiTest.php",
+                "frontOfficeWorkspaceStore.spec.ts"
+            ],
+            "proof": "PostgreSQL focused suite passes 3 tests/36 assertions and forbidden terms are absent.",
+            "remaining_risk": "Decision state remains read-only and server-owned.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-012",
+            "observed_problem": "Visual screenshot settling and the all-page dark axe pass initially produced misleading scroll clips and a 30-second timeout.",
+            "evidence": "Human screenshot review plus failed dark harness run: 1 timed out, no axe violation emitted.",
+            "affected_files": [
+                "tests/e2e/ui-13-front-office-experience.spec.ts"
+            ],
+            "root_cause": "The harness captured before fonts/images/scroll fully settled and 17 sequential axe analyses exceeded the default timeout.",
+            "why_root_cause": "Product assertions remained green; rerunning with settled capture and test-specific capacity completed all pages.",
+            "correct_fix": "Await assets/fonts, normalize scroll on animation frames, and set a 120-second timeout only for the 17-page dark pass.",
+            "tests": ["ui-13-front-office-experience.spec.ts"],
+            "proof": "All 17 dark pages pass axe 0 serious/0 critical and produce stable hashed captures.",
+            "remaining_risk": "CI performance is covered by the explicit bounded timeout.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-013",
+            "observed_problem": "The focused landing-content suite failed when the new Account card rendered.",
+            "evidence": "RoleLandingContent.spec reported no match for named route front-office.account.",
+            "affected_files": [
+                "resources/spa/src/pages/landing/RoleLandingContent.spec.ts"
+            ],
+            "root_cause": "The isolated test router fixture registered Dashboard/Get Started/Search but not the newly live canonical Account route.",
+            "why_root_cause": "The production router and focused browser route were already green; only RouterLink resolution inside the fixture failed.",
+            "correct_fix": "Register /account as front-office.account in the fixture.",
+            "tests": ["RoleLandingContent.spec.ts"],
+            "proof": "Focused frontend suite reran 61/61 green.",
+            "remaining_risk": "The inventory bidirectional guard separately covers production routes.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-014",
+            "observed_problem": "Full Vitest failed two bidirectional runtime-inventory assertions after canonical routing activation.",
+            "evidence": "screenInventory.spec rejected stale front-office.landing and missing front-office.clients-create, then enumerated the role tree drift.",
+            "affected_files": [
+                "docs/frontend/screens/inventory.json",
+                "docs/frontend/screens/inventory.yaml",
+                "docs/frontend/screens/front-office"
+            ],
+            "root_cause": "The older runtime register was separate from the UI-07 canonical page contract and had not been reconciled to UI-13 route names/supporting destinations.",
+            "why_root_cause": "The canonical navigation generator was green while the independent runtime-register guard failed in both directions.",
+            "correct_fix": "Update the authoritative inventory JSON to the 21 actual Front Office production routes, regenerate all owned specs, and refresh the YAML file snapshot.",
+            "tests": [
+                "screenInventory.spec.ts",
+                "frontOfficeCanonicalRoutes.spec.ts"
+            ],
+            "proof": "The 14-test bidirectional inventory contract passes and the production build resolves all lazy routes.",
+            "remaining_risk": "Generated current projections remain guarded in final deterministic checks.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-015",
+            "observed_problem": "A full Vitest rerun timed out two of 79 public legal-page cases while their dynamic document chunks were cold under full-suite contention.",
+            "evidence": "Finance data-policy/privacy-policy failed the default 1-second wait; both exact cases passed 2/2 in 442ms in isolation.",
+            "affected_files": [
+                "resources/spa/src/pages/public/PublicPages.spec.ts"
+            ],
+            "root_cause": "The observable-outcome wait retained Vitest's 1-second default, below the cold-import latency seen with 145 files running concurrently.",
+            "why_root_cause": "No content assertion failed and the exact rerun was green without source changes.",
+            "correct_fix": "Give the existing outcome-based wait a bounded 5-second capacity without weakening its selector or assertions.",
+            "tests": ["PublicPages.spec.ts", "full Vitest"],
+            "proof": "Final full Vitest passes 145 files and 1,402/1,402 tests.",
+            "remaining_risk": "A genuine load failure still times out and fails within five seconds.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-016",
+            "observed_problem": "Traceability initially rejected provisional UI-13 statuses and one Phase 18A route claim.",
+            "evidence": "Phase23TraceabilityTest reported five non-vocabulary in_progress tokens, stale front-office.payments and then a hostname-shaped candidate in a frontend-route cell.",
+            "affected_files": ["docs/traceability/servana-requirements.csv"],
+            "root_cause": "Phase lifecycle vocabulary and row-status vocabulary are intentionally different, while the old payment route and dotted host prose were parsed as current frontend route claims.",
+            "why_root_cause": "All failures were deterministic schema/route-reference diagnostics from the traceability guard.",
+            "correct_fix": "Keep the phase in_progress in PROGRESS/proof, use implemented for pre-local-completion requirement rows, name canonical invoice-payment routes, and keep host prose out of the route field.",
+            "tests": ["Phase23TraceabilityTest.php"],
+            "proof": "Traceability passes 15 tests/20 assertions with UI-13 excluded from verified phases.",
+            "remaining_risk": "No remaining local lifecycle risk; merge verification is intentionally owned by the next-phase reconciliation model.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-017",
+            "observed_problem": "The authoritative full PostgreSQL run finished runtime coverage but failed four deterministic documentation/current-consumer assertions.",
+            "evidence": "2,984 passed / 14 skipped / 4 failed / 48,788 assertions; failures were confined to UI-01 retired-identity, UI-07 notification-gate and related route projections.",
+            "affected_files": [
+                "tests/Feature/Docs/Ui01AuditContractTest.php",
+                "tests/Feature/Docs/Ui07NavigationContractTest.php",
+                "docs/frontend/audits/ui-06/public-route-matrix.json",
+                "docs/frontend/audits/ui-07"
+            ],
+            "root_cause": "UI-13 canonical activation changed current routes and gate ownership while predecessor consumer registries retained the UI-12 projection.",
+            "why_root_cause": "All application/runtime tests passed; the four failures reproduced only in deterministic generated/consumer checks and named the stale identities directly.",
+            "correct_fix": "Register the five intentionally retired Front Office identities, retain the now-live dashboard identity, align Notifications to its inert gate, and regenerate only current projections.",
+            "tests": [
+                "Ui01AuditContractTest.php",
+                "Ui07NavigationContractTest.php",
+                "navigation generator/check"
+            ],
+            "proof": "The complete invalidated consumer set passes 54 tests / 6,746 assertions; runtime source was unchanged, so the phase invalidation rule does not require another full backend run.",
+            "remaining_risk": "None within UI-13; current projections remain deterministic CI gates.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-018",
+            "observed_problem": "Whole-product browser consumers failed legacy Front Office deep links and exact text checks after canonical activation.",
+            "evidence": "Pre-authoritative broad runs identified missing supported /front-office/* shapes and statuses whose accessible text included contextual copy.",
+            "affected_files": [
+                "resources/spa/src/router/routes/frontOffice.ts",
+                "tests/e2e/ui-13-front-office-experience.spec.ts",
+                "tests/e2e/phase-22-search.spec.ts"
+            ],
+            "root_cause": "The new route tree retained only a subset of established bookmarks, while status assertions treated accessible names as visible-token equality.",
+            "why_root_cause": "The failures resolved when the exact legacy shapes were routed to canonical pages and semantic assertions accepted their contextual accessible labels.",
+            "correct_fix": "Add 19 narrow same-account compatibility redirects and use containment for accessible status labels without weakening state assertions.",
+            "tests": [
+                "affected Playwright route/status cases",
+                "whole-product Playwright"
+            ],
+            "proof": "All affected cases and final 1,526/1,526 whole-product run pass.",
+            "remaining_risk": "Compatibility paths are enumerated and cannot cross account hosts.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-019",
+            "observed_problem": "Phase 22 Search browser coverage used an invalid Front Office role fixture after account-contract activation.",
+            "evidence": "The Search scenario was denied before exercising its intended scoped-result behavior.",
+            "affected_files": [
+                "tests/e2e/phase-22-search.spec.ts",
+                "tests/e2e/support/roleBootstrap.ts"
+            ],
+            "root_cause": "The fixture used a legacy audit-role assumption and omitted the active front_office.search permission.",
+            "why_root_cause": "Production authorization was correct; the same scenario passed once bootstrapped as the canonical account with its existing permission.",
+            "correct_fix": "Use the canonical Front Office role/account bootstrap and existing search permission, without permission-matrix change.",
+            "tests": ["phase-22-search.spec.ts", "whole-product Playwright"],
+            "proof": "Search coverage and final 1,526/1,526 run pass.",
+            "remaining_risk": "Zero permission delta is preserved.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-020",
+            "observed_problem": "Release-audit coverage retained legacy Front Office route keys, an incomplete permission fixture and a flat-color-only backdrop assertion.",
+            "evidence": "Broad browser runs failed canonical navigation, permission and computed-gradient checks before the authoritative run.",
+            "affected_files": [
+                "tests/e2e/support/releaseAudit.ts",
+                "tests/e2e/phase-23-release-audit.spec.ts",
+                "tests/e2e/support/roleBootstrap.ts"
+            ],
+            "root_cause": "The cross-phase audit harness had not consumed UI-13 canonical identities and did not recognize intentional CSS gradients as visible backdrops.",
+            "why_root_cause": "Runtime pages and component gates were correct; failures were confined to stale audit keys/fixtures and CSS interpretation.",
+            "correct_fix": "Map canonical keys, provide the existing role permission baseline, and accept a visible computed gradient while retaining contrast checks.",
+            "tests": [
+                "phase-23-release-audit.spec.ts",
+                "whole-product Playwright"
+            ],
+            "proof": "Release audit passed through all account surfaces in the final 1,526-test run.",
+            "remaining_risk": "The assertion still rejects absent or transparent backdrops.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-021",
+            "observed_problem": "The role-entry suite assumed every authenticated account retained its public landing destination.",
+            "evidence": "Front Office /front-office compatibility now intentionally resolves to its operational Dashboard.",
+            "affected_files": ["tests/e2e/role-entry-surfaces.spec.ts"],
+            "root_cause": "A single eight-account expectation did not model UI-13's authenticated operational-entry change.",
+            "why_root_cause": "The other seven accounts remained correct and only Front Office diverged under the newly binding canonical contract.",
+            "correct_fix": "Retain the seven landing assertions and assert Front Office compatibility convergence to /dashboard separately.",
+            "tests": [
+                "role-entry-surfaces.spec.ts",
+                "whole-product Playwright"
+            ],
+            "proof": "All role-entry cases pass in the final 1,526/1,526 run.",
+            "remaining_risk": "No other account behavior changed.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-022",
+            "observed_problem": "Long Windows browser runs intermittently failed while opening predecessor PNG and JSON evidence paths.",
+            "evidence": "UNKNOWN open failures occurred first in UI-04 screenshots and later in UI-06 FAQ screenshots/responsive-matrix finalization; product assertions were not implicated.",
+            "affected_files": [
+                "tests/e2e/support/evidenceScreenshot.ts",
+                "tests/e2e/ui-01*.spec.ts",
+                "tests/e2e/ui-04*.spec.ts",
+                "tests/e2e/ui-05*.spec.ts",
+                "tests/e2e/ui-06*.spec.ts",
+                "tests/e2e/ui-07*.spec.ts",
+                "tests/e2e/ui-08*.spec.ts",
+                "tests/e2e/ui-09*.spec.ts",
+                "tests/e2e/ui-10*.spec.ts",
+                "tests/e2e/ui-11*.spec.ts",
+                "tests/e2e/ui-12*.spec.ts",
+                "tests/e2e/ui-13*.spec.ts"
+            ],
+            "root_cause": "Evidence producers wrote browser buffers directly to paths that can be transiently held by Windows during a multi-hour run.",
+            "why_root_cause": "The exact product scenarios passed, failures moved among evidence files, and bounded retry stress completed 27/27 before the full run passed.",
+            "correct_fix": "Capture screenshots in browser memory and centralize all evidence writes behind a five-attempt bounded retry limited to open-contention error codes.",
+            "tests": [
+                "UI-04/UI-06 evidence stress --repeat-each=3",
+                "whole-product Playwright"
+            ],
+            "proof": "Stress proof passes 27/27; authoritative whole-product Playwright passes 1,526/1,526 with no retry, flake or skip.",
+            "remaining_risk": "Non-contention errors still fail immediately; retry is bounded to 1.5 seconds total backoff.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-023",
+            "observed_problem": "The first Nginx syntax command failed because the production upstream name could not resolve.",
+            "evidence": "Standalone docker run reported host not found in upstream app at default.conf:51.",
+            "affected_files": ["docker/nginx/default.conf", "docs/frontend/audits/ui-13/production-host-proof.json"],
+            "root_cause": "The syntax container was started before the isolated proof network and its app network alias existed.",
+            "why_root_cause": "The config intentionally targets app:9000; the exact same immutable Nginx image passed syntax once attached to the production-like network with that upstream resolvable.",
+            "correct_fix": "Make no source change; create the isolated no-volume topology in dependency order and run nginx -t on its production network.",
+            "tests": ["docker run --rm --network ui13-proof-net servana-ui13-nginx:audit nginx -t", "51-check canonical host proof"],
+            "proof": "Nginx syntax is ok/test successful; host proof passes 51/51; both containers and the network were removed.",
+            "remaining_risk": "Orchestration must continue to provide the configured app network alias, as docker-compose.prod.yml already does.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        },
+        {
+            "id": "UI13-024",
+            "observed_problem": "The first staging command was blocked by an existing Git index lock.",
+            "evidence": "git add reported .git/index.lock already exists; no path was staged.",
+            "affected_files": [".git/index.lock"],
+            "root_cause": "A zero-byte lock created four hours earlier remained after its owning Git process had exited.",
+            "why_root_cause": "Process inspection found no git.exe or gh.exe owner, the lock timestamps predated the staging attempt, and read-only git status remained healthy.",
+            "correct_fix": "Validate the exact absolute lock path, zero-byte state and absence of Git owners, then remove only that stale lock before restaging.",
+            "tests": ["Get-CimInstance Win32_Process Git-owner check", "git status --porcelain", "git diff --cached --check after restaging"],
+            "proof": "The exact stale lock is absent; repository reads remain healthy and staging is retried from an unchanged worktree.",
+            "remaining_risk": "None observed; no index content was written by the failed command.",
+            "resolution_status": "fixed",
+            "lifecycle": "local_complete"
+        }
+    ]
+}

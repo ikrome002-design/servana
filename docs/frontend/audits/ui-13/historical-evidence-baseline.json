@@ -1,0 +1,50 @@
+{
+  "schema": "servana.ui13.historical-evidence-baseline.v1",
+  "phase": "UI-13",
+  "captured_before_final_full_playwright": true,
+  "verified_base_commit": "6796d82b2db8866529352b47300d63bc6a29941d",
+  "algorithm": "SHA-256 over sorted UTF-8 repository-relative path, NUL, file SHA-256 lines joined by LF",
+  "frozen_predecessor_proof": [
+    { "path": "docs/frontend/audits/ui-01", "files": 8, "aggregate_sha256": "8b576dc762da0fce9f8e6bc6307092e0668e4f6da9615ee89521526e7626f09a" },
+    { "path": "docs/frontend/audits/ui-04", "files": 15, "aggregate_sha256": "46a47780af6b0f855ed738d076d16a772b10c7c4f2c6e945dac9473238aba553" },
+    { "path": "docs/frontend/audits/ui-05", "files": 10, "aggregate_sha256": "c40443d0f0c7f413beea174d6e7c527ccb2dac3592e1d33ca3f9851b7ca20e04" },
+    { "path": "docs/frontend/audits/ui-08", "files": 50, "aggregate_sha256": "d7b55df4ce90d6dc12325bad6958e02b291b89f34527a1a21c40725d5794a9fc" },
+    { "path": "docs/frontend/audits/ui-09", "files": 45, "aggregate_sha256": "401f60c2e10974983fbd1ee6fa50771521c004b0879c7642400489cb1e71f5f4" },
+    { "path": "docs/frontend/audits/ui-10", "files": 36, "aggregate_sha256": "0204a6021b0e0dda916336211ceab727642c469547e116f58de611063d74a1f2" },
+    { "path": "docs/frontend/audits/ui-11", "files": 36, "aggregate_sha256": "db806089f301e0d09a7ad40855139de908be7cc24aca17fd3880f884cda312c1" },
+    { "path": "docs/frontend/audits/ui-12", "files": 43, "aggregate_sha256": "9617558abf24c449ffa5d3fa4d58cd5823fdd46dd034bfb83a9a4b83f933eda9" },
+    { "path": "docs/proof/ui-01", "files": 143, "aggregate_sha256": "0ecdc3f50bc1c27b9d18cd08de394360bbad80a18a25aede16fd6d434800b2e5" },
+    { "path": "docs/proof/ui-06", "files": 33, "aggregate_sha256": "ed84e91853ca90e3aa7884c6f4283d99f1cc786866498c2497068699bdfd9422" }
+  ],
+  "mixed_historical_and_current_projection": {
+    "path": "docs/frontend/audits/ui-06",
+    "files_including_current_projection": 51,
+    "aggregate_sha256": "b4b5c8ab57a990ac5ae19869f5102949f05e7fc31bd994324ea5902724ad4b65",
+    "current_projection_exclusion": "docs/frontend/audits/ui-06/public-route-matrix.json",
+    "policy": "Restore browser-written predecessor bytes only; regenerate public-route-matrix.json from finalized routing authority."
+  },
+  "current_generated_projection": {
+    "path": "docs/frontend/audits/ui-07",
+    "policy": "Retain the finalized 160-page navigation and runtime-screen projections generated for UI-13; never restore predecessor bytes."
+  },
+  "declared_browser_write_scopes": [
+    "docs/frontend/audits/ui-04",
+    "docs/frontend/audits/ui-05",
+    "docs/frontend/audits/ui-06",
+    "docs/frontend/audits/ui-07",
+    "docs/frontend/audits/ui-08",
+    "docs/frontend/audits/ui-09",
+    "docs/frontend/audits/ui-10",
+    "docs/frontend/audits/ui-11",
+    "docs/frontend/audits/ui-12",
+    "docs/frontend/audits/ui-13",
+    "docs/proof/ui-01",
+    "docs/proof/ui-06"
+  ],
+  "declared_untracked_patterns": [
+    "docs/frontend/audits/ui-*/screenshots/*.png",
+    "docs/proof/ui-01/screenshots/*.png",
+    "docs/proof/ui-06/*.png"
+  ],
+  "restoration_policy": "Compare exact paths and aggregates after the whole-product run; restore only individually proven browser-written frozen predecessor files, remove only declared run additions, retain UI-13 evidence and generated current projections, and never use broad clean/reset/restore."
+}

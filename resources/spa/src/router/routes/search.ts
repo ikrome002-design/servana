@@ -4,10 +4,9 @@ import { requiresActiveMerchant, requiresAuth } from '@/router/guards';
 /**
  * Global search (Plan §68; Phase 22).
  *
- * A top-level authenticated route rather than a per-role screen: search is cross-role by nature, and
- * neither a layout search slot nor a planned search screen existed at Phase 22 entry, so this is the
- * smallest addition that matches the current architecture (there is deliberately no duplicate screen
- * per role).
+ * Search is cross-role by nature, so it remains one route and one screen. It now renders through the
+ * shared role shell: UI-13 proved that a top-level standalone page discarded the active account,
+ * assigned-branch context and primary navigation even when entered from Front Office Quick Access.
  *
  * The guards are UX only, as everywhere in this SPA — the API is the security boundary. There is no
  * permission guard because there is no search permission key: `GET /api/v1/search` grants access to
@@ -17,9 +16,15 @@ import { requiresActiveMerchant, requiresAuth } from '@/router/guards';
  */
 export const searchRoutes: RouteRecordRaw[] = [
   {
-    path: '/search',
-    name: 'search',
-    component: () => import('@/pages/search/GlobalSearch.vue'),
+    path: '/',
+    component: () => import('@/components/layout/RoleShell.vue'),
     beforeEnter: [requiresAuth, requiresActiveMerchant],
+    children: [
+      {
+        path: '/search',
+        name: 'search',
+        component: () => import('@/pages/search/GlobalSearch.vue'),
+      },
+    ],
   },
 ];

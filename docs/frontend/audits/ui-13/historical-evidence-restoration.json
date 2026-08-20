@@ -1,0 +1,35 @@
+{
+  "schema": "servana.ui13.historical-evidence-restoration.v1",
+  "phase": "UI-13",
+  "lifecycle": "local_complete",
+  "baseline": "historical-evidence-baseline.json",
+  "whole_product_run_complete": true,
+  "frozen_predecessor_aggregates_match": true,
+  "restored_exact_files": [
+    "docs/frontend/audits/ui-01 (8-file aggregate exact)",
+    "docs/frontend/audits/ui-04 (15-file aggregate exact)",
+    "docs/frontend/audits/ui-05 (10-file aggregate exact)",
+    "docs/frontend/audits/ui-08 (50-file aggregate exact)",
+    "docs/frontend/audits/ui-09 (45-file aggregate exact)",
+    "docs/frontend/audits/ui-10 (36-file aggregate exact)",
+    "docs/frontend/audits/ui-11 (36-file aggregate exact)",
+    "docs/frontend/audits/ui-12 (43-file aggregate exact)",
+    "docs/proof/ui-01 (143-file aggregate exact)",
+    "docs/proof/ui-06 (33-file aggregate exact)",
+    "docs/frontend/audits/ui-06 frozen files (exact except the declared current public-route projection)"
+  ],
+  "removed_declared_run_additions": [
+    {
+      "scope": "docs/proof/ui-01/screenshots",
+      "pattern": "*--6796d82.png",
+      "reason": "whole-product run additions absent from the verified predecessor backup; removed only from the declared evidence scope"
+    }
+  ],
+  "current_projections_regenerated": [
+    "docs/frontend/audits/ui-06/public-route-matrix.json via node scripts/generate-ui06-artifacts.mjs",
+    "docs/frontend/audits/ui-07 navigation/runtime projections via npm run nav:generate; npm run nav:check confirms 160 pages across eight accounts"
+  ],
+  "ui13_evidence_retained": true,
+  "broad_clean_reset_restore_used": false,
+  "status": "authoritative 1,526-test run complete; frozen predecessor aggregates exact and only declared current projections differ"
+}

@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "ba280b13fa2556f191ce195e5ff9ae9b477f3dc29358314ce264cbbc4e61de8f",
+  "canonical_authority_sha256": "25365cfa749fe9e162d47e20280a473949ad2283f41e32df0fc645b340850240",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "425ca93531efaa2ff609b13bbadfcba00a518ed732d441f9f8d2ba3820a660c0",
+  "screen_inventory_sha256": "13a0bd3e23603ebef3945db82f831eb4a2e4d28e2e8fe0e8742193988955df20",
   "purpose": "Every account route group and page component is lazily loaded. No eager barrel imports 160 pages.",
   "rule": "UI/UX plan §6.5 — do not import 160 pages into the initial bundle.",
   "route_groups": [
@@ -522,8 +522,8 @@
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.landing",
-      "route_path": "/front-office",
+      "route_name": "front-office.dashboard",
+      "route_path": "/dashboard",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
@@ -531,7 +531,7 @@
     },
     {
       "route_name": "front-office.get-started",
-      "route_path": "/front-office/get-started",
+      "route_path": "/get-started",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
@@ -539,23 +539,23 @@
     },
     {
       "route_name": "front-office.clients",
-      "route_path": "/front-office/clients",
+      "route_path": "/clients",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.clients.create",
-      "route_path": "/front-office/clients/create",
+      "route_name": "front-office.clients-create",
+      "route_path": "/clients/create",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.clients.detail",
-      "route_path": "/front-office/clients/:id",
+      "route_name": "front-office.client-detail",
+      "route_path": "/clients/:clientUlid",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
@@ -563,23 +563,15 @@
     },
     {
       "route_name": "front-office.appointments",
-      "route_path": "/front-office/appointments",
+      "route_path": "/appointments",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.appointments.create",
-      "route_path": "/front-office/appointments/create",
-      "declared_in": "routes/frontOffice.ts",
-      "account_key": "merchant_front_office",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
-      "route_name": "front-office.appointments.detail",
-      "route_path": "/front-office/appointments/:id",
+      "route_name": "front-office.walk-ins",
+      "route_path": "/walk-ins",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
@@ -587,23 +579,15 @@
     },
     {
       "route_name": "front-office.queue",
-      "route_path": "/front-office/queue",
+      "route_path": "/queue",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.walk-in",
-      "route_path": "/front-office/walk-in",
-      "declared_in": "routes/frontOffice.ts",
-      "account_key": "merchant_front_office",
-      "lazy": true,
-      "in_initial_bundle": false
-    },
-    {
-      "route_name": "front-office.queue.detail",
-      "route_path": "/front-office/queue/:id",
+      "route_name": "front-office.queue-transfer",
+      "route_path": "/queue/:queueUlid/transfer",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
@@ -611,7 +595,7 @@
     },
     {
       "route_name": "front-office.sessions",
-      "route_path": "/front-office/sessions",
+      "route_path": "/sessions",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
@@ -619,55 +603,87 @@
     },
     {
       "route_name": "front-office.invoices",
-      "route_path": "/front-office/invoices",
+      "route_path": "/invoices",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.invoices.create",
-      "route_path": "/front-office/invoices/create",
+      "route_name": "front-office.invoices-create",
+      "route_path": "/invoices/create",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.invoices.detail",
-      "route_path": "/front-office/invoices/:id",
+      "route_name": "front-office.invoice-payment-create",
+      "route_path": "/invoices/:invoiceUlid/payments/create",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.payments",
-      "route_path": "/front-office/payments",
+      "route_name": "front-office.payments-status",
+      "route_path": "/payments/status",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.payments.record",
-      "route_path": "/front-office/payments/record/:id",
+      "route_name": "front-office.activity",
+      "route_path": "/activity",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.receipts",
-      "route_path": "/front-office/receipts",
+      "route_name": "front-office.account",
+      "route_path": "/account",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "front-office.receipts.detail",
-      "route_path": "/front-office/receipts/:id",
+      "route_name": "front-office.appointment-create",
+      "route_path": "/appointments/create",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.appointment-detail",
+      "route_path": "/appointments/:appointmentUlid",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.queue-entry",
+      "route_path": "/queue/:queueUlid",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.invoice-detail",
+      "route_path": "/invoices/:invoiceUlid",
+      "declared_in": "routes/frontOffice.ts",
+      "account_key": "merchant_front_office",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "front-office.receipt-detail",
+      "route_path": "/receipts/:receiptUlid",
       "declared_in": "routes/frontOffice.ts",
       "account_key": "merchant_front_office",
       "lazy": true,

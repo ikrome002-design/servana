@@ -73,7 +73,15 @@ if (existsSync(join(audit, 'production-host-proof.json'))) {
 }
 if (existsSync(join(audit, 'defect-closure.json'))) {
   const closure = json('defect-closure.json');
-  if (closure.closures.some((item) => item.lifecycle !== 'local_complete') || closure.local_complete !== closure.closures.length || closure.verified_complete !== 0 || closure.open !== 0) problems.push('all UI-12 closures must be local_complete with none open before the PR lifecycle');
+  const locallyClosed = closure.closures.every((item) => item.lifecycle === 'local_complete')
+    && closure.local_complete === closure.closures.length
+    && closure.verified_complete === 0;
+  const mergeVerified = closure.closures.every((item) => item.lifecycle === 'verified_complete')
+    && closure.verified_complete === closure.closures.length
+    && closure.local_complete === 0;
+  if ((!locallyClosed && !mergeVerified) || closure.open !== 0) {
+    problems.push('all UI-12 closures must be homogeneously local_complete or verified_complete with none open');
+  }
 }
 if (existsSync(join(audit, 'screenshot-index.json'))) {
   const screenshots = json('screenshot-index.json');

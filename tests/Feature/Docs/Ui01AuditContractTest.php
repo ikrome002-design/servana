@@ -282,7 +282,7 @@ it('classifies every implementation claim exactly once from the permitted vocabu
      | forces the entry out rather than letting it rot.
      */
     $registeredRemovals = [
-        // Phase UI-07, defect UI07-ROUTE-001. Each of these four routes rendered
+        // Phase UI-07, defect UI07-ROUTE-001. Each of these routes rendered
         // `DashboardStub.vue` — a six-line component reading "Phase 4 stub — implementation in
         // later phases" — so four contract pages were exposed as live routes that implemented
         // nothing, which UI/UX plan §7.2 and §13.5 forbid. The routes and the dead components
@@ -295,7 +295,8 @@ it('classifies every implementation claim exactly once from the permitted vocabu
         // inventory legitimately and the resurrection guard below is what forced this entry out.
         // That is the register working exactly as designed: a removal is temporary custody, and
         // the entry expires when the owner phase delivers.
-        'front-office-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-13; docs/frontend/audits/ui-07/defect-closure.json',
+        // `front-office-dashboard` is absent for the same reason: UI-13 has now delivered the
+        // real branch-today workspace at `/dashboard`, so its temporary UI-07 removal expired.
         'personnel-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-14; docs/frontend/audits/ui-07/defect-closure.json',
         'audit-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-15; docs/frontend/audits/ui-07/defect-closure.json',
 
@@ -323,6 +324,17 @@ it('classifies every implementation claim exactly once from the permitted vocabu
         // register contains no platform-fee destination. The old Finance implementation
         // identity therefore has no truthful successor or alias inside this account.
         'finance-platform-fees' => 'UI-12 — removed by canonical Finance authority; docs/frontend/audits/ui-12/route-activation-matrix.json',
+
+        // Phase UI-13 reconciles the predecessor Front Office implementation identities to
+        // Appendix A's exact account contract. Each retired identity is either superseded by a
+        // canonical runtime row (`clients-create`, `invoice-payment-create`, `payments-status`)
+        // or was a non-contract landing/receipts alias. The UI-01 claims remain append-only; this
+        // register records the deliberate replacement instead of rewriting historical evidence.
+        'front-office-client-create' => 'UI-13 — renamed to front-office-clients-create; docs/frontend/audits/ui-13/route-activation.json',
+        'front-office-landing' => 'UI-13 — retired non-contract landing identity in favour of front-office-dashboard; docs/frontend/audits/ui-13/route-activation.json',
+        'front-office-payment-record' => 'UI-13 — replaced by front-office-invoice-payment-create; docs/frontend/audits/ui-13/route-activation.json',
+        'front-office-payment-recording' => 'UI-13 — replaced by front-office-invoice-payment-create; docs/frontend/audits/ui-13/route-activation.json',
+        'front-office-receipts' => 'UI-13 — replaced by front-office-payments-status; docs/frontend/audits/ui-13/route-activation.json',
     ];
 
     $inventoryKeys = array_column($inventory['screens'], 'key');

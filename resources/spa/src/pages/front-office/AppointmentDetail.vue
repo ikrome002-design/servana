@@ -33,7 +33,7 @@ const reason = ref('');
 const newStart = ref('');
 const working = ref(false);
 
-const id = computed(() => String(route.params.id));
+const id = computed(() => String(route.params.appointmentUlid));
 const can = computed(() => appointment.value?.can);
 const boundaryState = computed<'loading' | 'error' | 'success'>(() => {
   if (loading.value) return 'loading';
@@ -146,7 +146,7 @@ onMounted(load);
           >{{ appointmentStatusLabel(appointment.status) }}</span>
         </div>
 
-        <dl class="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+        <dl class="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
           <div>
             <dt class="text-text-muted">
               Service

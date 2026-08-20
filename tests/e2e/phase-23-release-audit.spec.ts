@@ -150,6 +150,24 @@ async function assertReadableText(page: import('@playwright/test').Page, label: 
       const parts = m[1]!.split(',').map((p) => parseFloat(p.trim()));
       return [parts[0] ?? 0, parts[1] ?? 0, parts[2] ?? 0, parts[3] ?? 1];
     };
+    const gradientSurface = (value: string): [number, number, number, number] | null => {
+      if (value === 'none') return null;
+
+      const colours: [number, number, number, number][] = [];
+      for (const match of value.matchAll(/rgba?\(([^)]+)\)/g)) {
+        colours.push(parse(match[0]));
+      }
+      for (const match of value.matchAll(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\)/g)) {
+        colours.push([
+          Number(match[1]) * 255,
+          Number(match[2]) * 255,
+          Number(match[3]) * 255,
+          match[4] === undefined ? 1 : Number(match[4]),
+        ]);
+      }
+
+      return colours.find((colour) => colour[3] >= 1) ?? colours.find((colour) => colour[3] > 0) ?? null;
+    };
     /**
      * The EFFECTIVE background behind an element: every translucent layer composited over its
      * ancestors. Taking the first non-transparent background instead would misread a legitimate
@@ -159,7 +177,13 @@ async function assertReadableText(page: import('@playwright/test').Page, label: 
       const layers: [number, number, number, number][] = [];
       let node: HTMLElement | null = el;
       while (node) {
-        const bg = parse(getComputedStyle(node).backgroundColor);
+        const style = getComputedStyle(node);
+        const gradient = gradientSurface(style.backgroundImage);
+        if (gradient) {
+          layers.push(gradient);
+          if (gradient[3] >= 1) break;
+        }
+        const bg = parse(style.backgroundColor);
         if (bg[3] > 0) {
           layers.push(bg);
           if (bg[3] >= 1) break;

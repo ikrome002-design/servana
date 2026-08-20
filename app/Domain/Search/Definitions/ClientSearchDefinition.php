@@ -111,7 +111,7 @@ final class ClientSearchDefinition extends AbstractSearchDocumentDefinition
             status: $model->status->value,
             date: $model->created_at?->toIso8601String(),
             amount: null,
-            routeName: 'front-office.clients.detail',
+            routeName: 'front-office.client-detail',
             routeParamId: $model->ulid,
             branchUlid: $model->branch?->ulid,
             branchName: $model->branch?->name,

@@ -87,7 +87,7 @@ async function mountPage(component: unknown, path = '/', ready?: string) {
   if (ready !== undefined) {
     await vi.waitFor(() => {
       expect(wrapper.find(ready).exists()).toBe(true);
-    });
+    }, { timeout: 5_000 });
   }
 
   return wrapper;

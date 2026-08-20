@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `front-office.invoices.create` at `/front-office/invoices/create` (routes/frontOffice.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/invoices/create`; owner phase **UI-13** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `front-office.invoices-create` at `/invoices/create` (routes/frontOffice.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-13**
 - **Backend owner phase:** **Phase 17**
 - **Implementation status:** `implemented`
-- **Runtime route:** `front-office.invoices.create`
+- **Runtime route:** `front-office.invoices-create`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.invoices.create` (recorded in `docs/frontend/screens/front-office/front-office-invoice-create.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.invoices-create` (recorded in `docs/frontend/screens/front-office/front-office-invoice-create.md`).
 - **Data fields:** Front Office draft builder: select one or more COMPLETED service sessions that share a client (cross-client sources are disabled), then create a draft. The backend derives every price, preferred-personnel fee, currency, and total under lock — the browser never supplies authoritative money. No invoice number is allocated until finalization.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

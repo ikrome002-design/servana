@@ -214,11 +214,11 @@ screens:
     status: implemented
     phase: Phase 11
     spec: finance/finance-get-started.md
-  - key: front-office-landing
+  - key: front-office-dashboard
     domain: front-office
-    route: front-office.landing
+    route: front-office.dashboard
     status: implemented
-    phase: Phase 11
+    phase: Phase UI-13
     spec: front-office/front-office-landing.md
   - key: front-office-get-started
     domain: front-office
@@ -672,15 +672,15 @@ screens:
     status: implemented
     phase: Phase 15A
     spec: front-office/front-office-clients.md
-  - key: front-office-client-create
+  - key: front-office-clients-create
     domain: front-office
-    route: front-office.clients.create
+    route: front-office.clients-create
     status: implemented
     phase: Phase 15A
     spec: front-office/front-office-client-create.md
   - key: front-office-client-detail
     domain: front-office
-    route: front-office.clients.detail
+    route: front-office.client-detail
     status: implemented
     phase: Phase 15A
     spec: front-office/front-office-client-detail.md
@@ -692,13 +692,13 @@ screens:
     spec: front-office/front-office-appointments.md
   - key: front-office-appointment-create
     domain: front-office
-    route: front-office.appointments.create
+    route: front-office.appointment-create
     status: implemented
     phase: Phase 16A
     spec: front-office/front-office-appointment-create.md
   - key: front-office-appointment-detail
     domain: front-office
-    route: front-office.appointments.detail
+    route: front-office.appointment-detail
     status: implemented
     phase: Phase 16A
     spec: front-office/front-office-appointment-detail.md
@@ -710,16 +710,22 @@ screens:
     spec: front-office/front-office-queue.md
   - key: front-office-walk-in
     domain: front-office
-    route: front-office.walk-in
+    route: front-office.walk-ins
     status: implemented
     phase: Phase 16B
     spec: front-office/front-office-walk-in.md
   - key: front-office-queue-detail
     domain: front-office
-    route: front-office.queue.detail
+    route: front-office.queue-entry
     status: implemented
     phase: Phase 16B
     spec: front-office/front-office-queue-detail.md
+  - key: front-office-queue-transfer
+    domain: front-office
+    route: front-office.queue-transfer
+    status: implemented
+    phase: Phase UI-13
+    spec: front-office/front-office-queue-transfer.md
   - key: front-office-service-sessions
     domain: front-office
     route: front-office.sessions
@@ -734,40 +740,46 @@ screens:
     spec: front-office/front-office-invoices.md
   - key: front-office-invoice-create
     domain: front-office
-    route: front-office.invoices.create
+    route: front-office.invoices-create
     status: implemented
     phase: Phase 17
     spec: front-office/front-office-invoice-create.md
   - key: front-office-invoice-detail
     domain: front-office
-    route: front-office.invoices.detail
+    route: front-office.invoice-detail
     status: implemented
     phase: Phase 17
     spec: front-office/front-office-invoice-detail.md
-  - key: front-office-payment-recording
+  - key: front-office-activity
     domain: front-office
-    route: front-office.payments
+    route: front-office.activity
     status: implemented
-    phase: Phase 18A
+    phase: Phase UI-13
     spec: front-office/front-office-payment-recording.md
-  - key: front-office-payment-record
+  - key: front-office-invoice-payment-create
     domain: front-office
-    route: front-office.payments.record
+    route: front-office.invoice-payment-create
     status: implemented
     phase: Phase 18A
     spec: front-office/front-office-payment-record.md
-  - key: front-office-receipts
+  - key: front-office-payments-status
     domain: front-office
-    route: front-office.receipts
+    route: front-office.payments-status
     status: implemented
     phase: Phase 18B
     spec: front-office/front-office-receipts.md
   - key: front-office-receipt-detail
     domain: front-office
-    route: front-office.receipts.detail
+    route: front-office.receipt-detail
     status: implemented
     phase: Phase 18B
     spec: front-office/front-office-receipt-detail.md
+  - key: front-office-account
+    domain: front-office
+    route: front-office.account
+    status: implemented
+    phase: Phase UI-13
+    spec: front-office/front-office-account.md
   - key: finance-payment-records
     domain: finance
     route: finance.payments
