@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import { useSearchStore } from '@/stores/searchStore';
 import type { SearchResult } from '@/stores/searchScope';
@@ -60,9 +61,17 @@ function clear(): void {
 
 /** A result links to its target route only when the server supplied one. */
 function target(result: SearchResult): { name: string; params?: Record<string, string> } {
-  return result.route.id === null
-    ? { name: result.route.name }
-    : { name: result.route.name, params: { id: result.route.id } };
+  if (result.route.id === null) return { name: result.route.name };
+
+  const parameter = {
+    'front-office.client-detail': 'clientUlid',
+    'front-office.appointment-detail': 'appointmentUlid',
+    'front-office.queue-entry': 'queueUlid',
+    'front-office.invoice-detail': 'invoiceUlid',
+    'front-office.receipt-detail': 'receiptUlid',
+  }[result.route.name] ?? 'id';
+
+  return { name: result.route.name, params: { [parameter]: result.route.id } };
 }
 
 onBeforeUnmount(() => {
@@ -71,28 +80,26 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="mx-auto max-w-3xl p-4 md:p-6">
-    <RouterLink
-      class="text-sm text-brand underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-      :to="{ name: 'home' }"
-    >
-      Back
-    </RouterLink>
+  <section
+    class="mx-auto max-w-5xl"
+    data-testid="operational-search"
+  >
+    <SvOperationalHero
+      eyebrow="Branch command search"
+      title="Operational search"
+      description="Find only the client, appointment, queue, invoice and receipt records your current account may access. Contact details stay masked and results remain branch-scoped."
+    />
 
-    <h1 class="mt-3 font-display text-2xl font-bold text-heading">
-      Search
-    </h1>
-    <p class="mt-1 text-sm text-body">
-      Search across the records you already have access to. Results are limited to your branch.
-    </p>
-
-    <form
-      class="mt-4 flex items-end gap-2"
-      novalidate
-      role="search"
-      @submit.prevent="submit"
+    <SvCard
+      class="mt-5"
+      padding="lg"
     >
-      <div class="grow">
+      <form
+        class="grid items-end gap-3 md:grid-cols-[1fr_auto_auto]"
+        novalidate
+        role="search"
+        @submit.prevent="submit"
+      >
         <SvTextInput
           id="search-q"
           v-model="term"
@@ -101,126 +108,126 @@ onBeforeUnmount(() => {
           type="search"
           @input="onInput"
         />
+        <SvButton
+          data-testid="search-submit"
+          type="submit"
+          variant="primary"
+        >
+          Search
+        </SvButton>
+        <SvButton
+          data-testid="search-clear"
+          type="button"
+          variant="secondary"
+          @click="clear"
+        >
+          Clear
+        </SvButton>
+      </form>
+
+      <!-- One live region for every outcome, so a screen reader is told what happened. -->
+      <div
+        aria-live="polite"
+        class="mt-6 rounded-control border border-sv-border bg-sv-surface-subtle p-4"
+        data-testid="search-status"
+        role="status"
+      >
+        <p
+          v-if="state === 'loading'"
+          class="text-sm text-body"
+        >
+          Searching…
+        </p>
+        <p
+          v-else-if="state === 'rate_limited'"
+          class="text-sm text-warning-strong"
+          data-testid="search-rate-limited"
+        >
+          Too many searches in a short time. Wait a moment and try again.
+        </p>
+        <p
+          v-else-if="state === 'forbidden'"
+          class="text-sm text-warning-strong"
+          data-testid="search-forbidden"
+        >
+          Your access changed while you were searching. Reload the page and try again.
+        </p>
+        <p
+          v-else-if="state === 'error'"
+          class="text-sm text-danger-strong"
+          data-testid="search-error"
+        >
+          Search is unavailable right now. Try again shortly.
+        </p>
+        <p
+          v-else-if="state === 'empty'"
+          class="text-sm text-body"
+          data-testid="search-empty"
+        >
+          Nothing matched, or you do not have access to records matching that search.
+        </p>
+        <p
+          v-else-if="state === 'idle'"
+          class="text-sm text-body"
+          data-testid="search-idle"
+        >
+          Type at least two characters to search.
+        </p>
+        <p
+          v-else
+          class="text-sm text-body"
+        >
+          {{ search.results.length }} result{{ search.results.length === 1 ? '' : 's' }}.
+        </p>
       </div>
-      <SvButton
-        data-testid="search-submit"
-        type="submit"
-        variant="primary"
-      >
-        Search
-      </SvButton>
-      <SvButton
-        data-testid="search-clear"
-        type="button"
-        variant="secondary"
-        @click="clear"
-      >
-        Clear
-      </SvButton>
-    </form>
 
-    <!-- One live region for every outcome, so a screen reader is told what happened. -->
-    <div
-      aria-live="polite"
-      class="mt-6"
-      data-testid="search-status"
-      role="status"
-    >
-      <p
-        v-if="state === 'loading'"
-        class="text-sm text-body"
+      <div
+        v-if="state === 'results'"
+        class="mt-4 space-y-6"
+        data-testid="search-results"
       >
-        Searching…
-      </p>
-      <p
-        v-else-if="state === 'rate_limited'"
-        class="text-sm text-warning-strong"
-        data-testid="search-rate-limited"
-      >
-        Too many searches in a short time. Wait a moment and try again.
-      </p>
-      <p
-        v-else-if="state === 'forbidden'"
-        class="text-sm text-warning-strong"
-        data-testid="search-forbidden"
-      >
-        Your access changed while you were searching. Reload the page and try again.
-      </p>
-      <p
-        v-else-if="state === 'error'"
-        class="text-sm text-danger-strong"
-        data-testid="search-error"
-      >
-        Search is unavailable right now. Try again shortly.
-      </p>
-      <p
-        v-else-if="state === 'empty'"
-        class="text-sm text-body"
-        data-testid="search-empty"
-      >
-        Nothing matched, or you do not have access to records matching that search.
-      </p>
-      <p
-        v-else-if="state === 'idle'"
-        class="text-sm text-body"
-        data-testid="search-idle"
-      >
-        Type at least two characters to search.
-      </p>
-      <p
-        v-else
-        class="text-sm text-body"
-      >
-        {{ search.results.length }} result{{ search.results.length === 1 ? '' : 's' }}.
-      </p>
-    </div>
-
-    <div
-      v-if="state === 'results'"
-      class="mt-4 space-y-6"
-      data-testid="search-results"
-    >
-      <section
-        v-for="group in search.groupedResults"
-        :key="group.type"
-      >
-        <h2 class="text-xs font-semibold uppercase tracking-wide text-muted">
-          {{ group.label }}
-        </h2>
-        <ul class="mt-2 space-y-2">
-          <li
-            v-for="result in group.items"
-            :key="result.ulid"
-          >
-            <RouterLink
-              class="block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-              :data-testid="`search-result-${result.type}`"
-              :to="target(result)"
+        <section
+          v-for="group in search.groupedResults"
+          :key="group.type"
+        >
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-muted">
+            {{ group.label }}
+          </h2>
+          <ul class="mt-2 space-y-2">
+            <li
+              v-for="result in group.items"
+              :key="result.ulid"
             >
-              <SvCard class="min-h-[44px] p-3 hover:border-brand">
-                <div class="flex flex-wrap items-baseline justify-between gap-2">
-                  <span class="font-medium text-heading">{{ result.title }}</span>
-                  <span
-                    v-if="result.amount"
-                    class="text-sm font-medium text-heading"
-                  >{{ result.amount.formatted }}</span>
-                </div>
-                <p
-                  v-if="result.subtitle"
-                  class="mt-0.5 text-sm text-body"
-                >
-                  {{ result.subtitle }}
-                </p>
-                <p class="mt-1 flex flex-wrap gap-x-3 text-xs text-muted">
-                  <span v-if="result.status">{{ result.status }}</span>
-                  <span v-if="result.branch?.name">{{ result.branch.name }}</span>
-                  <span v-if="result.date">{{ result.date.slice(0, 10) }}</span>
-                </p>
-              </SvCard>
-            </RouterLink>
-          </li>
-        </ul>
-      </section>
-    </div>
+              <RouterLink
+                class="block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                :data-testid="`search-result-${result.type}`"
+                :to="target(result)"
+              >
+                <SvCard class="min-h-[44px] p-3 hover:border-brand">
+                  <div class="flex flex-wrap items-baseline justify-between gap-2">
+                    <span class="font-medium text-heading">{{ result.title }}</span>
+                    <span
+                      v-if="result.amount"
+                      class="text-sm font-medium text-heading"
+                    >{{ result.amount.formatted }}</span>
+                  </div>
+                  <p
+                    v-if="result.subtitle"
+                    class="mt-0.5 text-sm text-body"
+                  >
+                    {{ result.subtitle }}
+                  </p>
+                  <p class="mt-1 flex flex-wrap gap-x-3 text-xs text-muted">
+                    <span v-if="result.status">{{ result.status }}</span>
+                    <span v-if="result.branch?.name">{{ result.branch.name }}</span>
+                    <span v-if="result.date">{{ result.date.slice(0, 10) }}</span>
+                  </p>
+                </SvCard>
+              </RouterLink>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </SvCard>
   </section>
 </template>

@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { writeEvidenceFile, writeEvidenceScreenshot } from './support/evidenceScreenshot';
 import { assertNoHorizontalScroll } from './support/roleBootstrap';
 import {
   FOREIGN_BRANCH_ID,
@@ -30,7 +31,7 @@ mkdirSync(SHOTS, { recursive: true });
 const notFound = (page: Page) => page.getByTestId('public-not-found');
 
 async function shoot(page: Page, name: string): Promise<void> {
-  await page.screenshot({ path: join(SHOTS, `${name}.png`), fullPage: true, animations: 'disabled' });
+  await writeEvidenceScreenshot(page, join(SHOTS, `${name}.png`), { fullPage: true, animations: 'disabled' });
 }
 
 async function openMerchant(page: Page, path: string, options: Parameters<typeof stubMerchant>[1] = {}) {
@@ -383,5 +384,5 @@ test('writes the UI-09 screenshot evidence index', async () => {
     },
   };
 
-  writeFileSync(resolve(SHOTS, '..', 'screenshot-index.json'), `${JSON.stringify(index, null, 2)}\n`);
+  await writeEvidenceFile(resolve(SHOTS, '..', 'screenshot-index.json'), `${JSON.stringify(index, null, 2)}\n`);
 });

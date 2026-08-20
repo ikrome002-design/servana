@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `front-office.receipts` at `/front-office/receipts` (routes/frontOffice.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/payments/status`; owner phase **UI-13** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `front-office.payments-status` at `/payments/status` (routes/frontOffice.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-13**
 - **Backend owner phase:** **Phase 18B**
 - **Implementation status:** `implemented`
-- **Runtime route:** `front-office.receipts`
+- **Runtime route:** `front-office.payments-status`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.receipts` (recorded in `docs/frontend/screens/front-office/front-office-receipts.md`).
-- **Data fields:** Front Office receipt list (branch-scoped, view only): receipt number, invoice, server-formatted KES amount, readiness. Front Office may VIEW and DOWNLOAD receipts but NEVER reissue, validate, refund, approve, or issue — those controls are absent for this role (backend-enforced).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.payments-status` (recorded in `docs/frontend/screens/front-office/front-office-receipts.md`).
+- **Data fields:** Maker-safe status view of recorded evidence, Finance decision state and automatic original-receipt readiness; no validation or manual issue control.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

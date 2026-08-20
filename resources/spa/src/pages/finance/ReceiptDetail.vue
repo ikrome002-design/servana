@@ -25,6 +25,7 @@ const busy = ref(false);
 const reissuing = ref(false);
 const reason = ref('');
 const actionError = ref<string | null>(null);
+const receiptId = computed(() => String(route.params.receiptUlid ?? route.params.id));
 
 const canReissue = computed(() => permissions.can('receipt.reissue'));
 const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
@@ -37,7 +38,7 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
 async function download(): Promise<void> {
   actionError.value = null;
   try {
-    const url = await store.downloadLink(String(route.params.id));
+    const url = await store.downloadLink(receiptId.value);
     window.open(url, '_blank', 'noopener');
   } catch {
     actionError.value = 'The receipt is not ready to download yet.';
@@ -49,7 +50,7 @@ async function confirmReissue(): Promise<void> {
   busy.value = true;
   actionError.value = null;
   try {
-    await store.reissue(String(route.params.id), reason.value.trim());
+    await store.reissue(receiptId.value, reason.value.trim());
     reissuing.value = false;
     reason.value = '';
   } catch (e: unknown) {
@@ -61,7 +62,7 @@ async function confirmReissue(): Promise<void> {
 }
 
 onMounted(() => {
-  void store.fetchReceipt(String(route.params.id));
+  void store.fetchReceipt(receiptId.value);
 });
 </script>
 

@@ -1,6 +1,7 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
+import { writeEvidenceFile } from './support/evidenceScreenshot';
 
 /**
  * Phase UI-07 — focused browser proof of the authenticated navigation and screen contract.
@@ -466,7 +467,7 @@ test.describe('UI-07 — navigation registry and screen contracts', () => {
 
   test.afterAll(async () => {
     mkdirSync(EVIDENCE, { recursive: true });
-    writeFileSync(
+    await writeEvidenceFile(
       resolve(EVIDENCE, 'browser-proof.json'),
       `${JSON.stringify(
         {
@@ -483,7 +484,6 @@ test.describe('UI-07 — navigation registry and screen contracts', () => {
         null,
         2,
       )}\n`,
-      'utf8',
     );
   });
 });

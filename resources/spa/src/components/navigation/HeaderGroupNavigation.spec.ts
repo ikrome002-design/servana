@@ -105,6 +105,31 @@ describe('HeaderGroupNavigation.vue — Increment 9A', () => {
     ]);
   });
 
+  it('renders Front Office groups in the UI-13 operational order with Utility last', async () => {
+    const groups = [
+      'Home',
+      'Quick Access',
+      'Clients',
+      'Appointments & Walk-Ins',
+      'Queue & Service',
+      'Billing Client',
+      'Billing Banner',
+      'Utility',
+    ];
+    const wrapper = await mountNav(
+      'stacked',
+      groups.map((group, index) => node({
+        key: `front-office.${index}`,
+        group,
+        disabled: true,
+        disabledReason: 'Test-only inert item',
+        order: index + 1,
+      })),
+    );
+
+    expect(wrapper.findAll('section > p').map((label) => label.text())).toEqual(groups);
+  });
+
   it('places each entry in its own group', async () => {
     const wrapper = await mountNav();
     await wrapper.find('[data-testid="nav-group-trigger-nav-group-billing-commercial"]').trigger('click');

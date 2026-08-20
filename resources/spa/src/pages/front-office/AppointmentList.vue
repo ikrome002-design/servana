@@ -3,9 +3,11 @@ import { computed, onMounted } from 'vue';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
+import SvStatusBadge, { type SvStatusTone } from '@/components/ui/SvStatusBadge.vue';
 import { useAppointmentStore } from '@/stores/appointmentStore';
 import { appointmentStatusLabel } from '@/utils/appointment';
 
@@ -24,6 +26,13 @@ const statusOptions = [
   { value: 'no_show', label: 'No-show' },
 ];
 
+function appointmentTone(status: string): SvStatusTone {
+  if (status === 'checked_in' || status === 'queued') return 'success';
+  if (status === 'cancelled' || status === 'cancelled_with_reason') return 'error';
+  if (status === 'no_show') return 'warning';
+  return status === 'confirmed' ? 'info' : 'neutral';
+}
+
 const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
   if (appointments.loading) return 'loading';
   if (appointments.error) return 'error';
@@ -41,25 +50,29 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Appointments
-      </h1>
-      <PermissionGate permission="appointment.create">
-        <RouterLink :to="{ name: 'front-office.appointments.create' }">
-          <SvButton
-            variant="primary"
+  <section class="mx-auto max-w-6xl">
+    <SvOperationalHero
+      eyebrow="Scheduled arrivals"
+      title="Appointments"
+      description="See who is due, keep arrival states distinct and move only eligible work into the assigned branch queue."
+    >
+      <template #actions>
+        <PermissionGate permission="appointment.create">
+          <RouterLink
+            class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control bg-primary px-4 py-2 text-sm font-bold text-brand-deep"
+            :to="{ name: 'front-office.appointment-create' }"
             data-testid="add-appointment"
           >
             Book appointment
-          </SvButton>
-        </RouterLink>
-      </PermissionGate>
-    </div>
+          </RouterLink>
+        </PermissionGate>
+      </template>
+    </SvOperationalHero>
 
-    <form
-      class="mt-4 flex flex-wrap items-end gap-3"
+    <SvCard
+      as="form"
+      class="mt-5 flex flex-wrap items-end gap-3"
+      padding="md"
       novalidate
       @submit.prevent="appointments.fetchAppointments()"
     >
@@ -86,55 +99,58 @@ onMounted(() => {
       >
         Apply
       </SvButton>
-    </form>
+    </SvCard>
 
-    <SvStateBoundary
-      class="mt-6"
-      :state="boundaryState"
-      empty-message="No appointments for this view. Book one to get started."
-      error-message="We couldn’t load appointments."
-      @retry="() => appointments.fetchAppointments()"
-    >
-      <ul
-        class="flex flex-col gap-3"
-        aria-label="Appointments"
+    <div class="mt-5">
+      <SvStateBoundary
+        :state="boundaryState"
+        empty-message="No appointments for this view. Book one to get started."
+        error-message="We couldn’t load appointments."
+        @retry="() => appointments.fetchAppointments()"
       >
-        <li
-          v-for="appointment in appointments.appointments"
-          :key="appointment.id"
+        <ul
+          class="flex flex-col gap-3"
+          aria-label="Appointments"
         >
-          <SvCard
-            as="article"
-            padding="md"
+          <li
+            v-for="appointment in appointments.appointments"
+            :key="appointment.id"
           >
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 class="font-display text-base font-semibold text-heading">
-                  {{ appointment.client?.full_name ?? 'Client' }}
-                </h2>
-                <p class="mt-0.5 text-sm text-text-muted">
-                  {{ time(appointment.starts_at) }}–{{ time(appointment.ends_at) }}
-                  · {{ appointment.service?.name }}
-                  <span v-if="appointment.assigned_personnel">
-                    · {{ appointment.assigned_personnel.display_name }}</span>
-                </p>
+            <SvCard
+              as="article"
+              padding="md"
+            >
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h2 class="font-display text-base font-semibold text-heading">
+                    {{ appointment.client?.full_name ?? 'Client' }}
+                  </h2>
+                  <p class="mt-0.5 text-sm text-text-muted">
+                    {{ time(appointment.starts_at) }}–{{ time(appointment.ends_at) }}
+                    · {{ appointment.service?.name }}
+                    <span v-if="appointment.assigned_personnel">
+                      · {{ appointment.assigned_personnel.display_name }}</span>
+                  </p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <SvStatusBadge
+                    :label="appointmentStatusLabel(appointment.status)"
+                    :tone="appointmentTone(appointment.status)"
+                    sr-prefix="Appointment status:"
+                    data-testid="status-badge"
+                  />
+                  <RouterLink
+                    :to="{ name: 'front-office.appointment-detail', params: { appointmentUlid: appointment.id } }"
+                    class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control px-3 text-sm font-semibold text-heading underline"
+                  >
+                    View
+                  </RouterLink>
+                </div>
               </div>
-              <div class="flex items-center gap-3">
-                <span
-                  class="rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-text"
-                  data-testid="status-badge"
-                >{{ appointmentStatusLabel(appointment.status) }}</span>
-                <RouterLink
-                  :to="{ name: 'front-office.appointments.detail', params: { id: appointment.id } }"
-                  class="text-sm font-semibold text-heading underline"
-                >
-                  View
-                </RouterLink>
-              </div>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
-    </SvStateBoundary>
+            </SvCard>
+          </li>
+        </ul>
+      </SvStateBoundary>
+    </div>
   </section>
 </template>

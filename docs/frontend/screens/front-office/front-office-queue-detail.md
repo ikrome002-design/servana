@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 16B**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `front-office-queue-detail`
-- **Route name and URL:** `front-office.queue.detail`
+- **Route name and URL:** `front-office.queue-entry`
 - **Layout:** `FrontOfficeLayout`
 - **Allowed roles:** `merchant_front_office`
 - **Required permissions:** `queue.view`, `queue.assign`, `queue.transfer` (frontend visibility only; backend EnsurePermission + policy is authoritative)

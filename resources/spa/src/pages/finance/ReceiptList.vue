@@ -15,7 +15,7 @@ const store = useReceiptStore();
 const route = useRoute();
 const router = useRouter();
 
-const isFinance = computed(() => route.path.startsWith('/finance'));
+const isFinance = computed(() => route.meta.roleIdentity === 'merchant_finance');
 
 const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
   if (store.loading) return 'loading';
@@ -24,8 +24,10 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
   return 'success';
 });
 
-function detailRoute(id: string): { name: string; params: { id: string } } {
-  return { name: isFinance.value ? 'finance.receipts.detail' : 'front-office.receipts.detail', params: { id } };
+function detailRoute(id: string): { name: string; params: Record<string, string> } {
+  return isFinance.value
+    ? { name: 'finance.receipts.detail', params: { id } }
+    : { name: 'front-office.receipt-detail', params: { receiptUlid: id } };
 }
 
 onMounted(() => {

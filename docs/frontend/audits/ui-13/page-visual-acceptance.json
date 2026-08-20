@@ -1,0 +1,128 @@
+{
+  "schema": "servana.ui13.page-visual-acceptance.v1",
+  "phase": "UI-13",
+  "lifecycle": "local_complete",
+  "account": "merchant_front_office",
+  "host": "office.servana.ke",
+  "rubric": {
+    "scale": { "0": "materially below target", "1": "acceptable but ordinary", "2": "intentional and benchmark-aligned" },
+    "criteria": [
+      "composition", "spacing", "typography", "surfaces", "actions", "states", "light_theme",
+      "dark_theme", "responsive", "interaction", "boundaries", "brand", "accessibility", "role_fit",
+      "baseline_improvement"
+    ],
+    "minimum_total": 24,
+    "required_twos": ["composition", "surfaces", "light_theme", "dark_theme", "brand", "role_fit", "baseline_improvement"]
+  },
+  "evidence_basis": {
+    "light": "one settled 1440x900 screenshot for every implemented page",
+    "dark": "one settled 1440x900 screenshot plus axe analysis for every implemented page",
+    "responsive": "all 17 pages exercised at 360, 767, 768, 1024, 1025, 1280 and 1440 pixels",
+    "references": ["CRM Dashboard.webp", "Appointment Scheduler.webp", "POS System.webp", "Trello clone.webp", "My Account Page.webp", "Inbox.webp"]
+  },
+  "entries": [
+    {
+      "screen_key": "dashboard", "route": "/dashboard", "total": 30,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 2, "boundaries": 2, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "A branch command centre combines a timed welcome, four-stage service flow, attention queue, invoice and receipt handoffs, and truthful Gate-W callout without checker controls.",
+      "evidence": ["screenshots/desktop-light-dashboard.png", "screenshots/desktop-dark-dashboard.png", "screenshots/mobile-dashboard.png"]
+    },
+    {
+      "screen_key": "get-started", "route": "/get-started", "total": 29,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 2, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "The checklist now tells the real client-to-receipt story, uses server-owned progress, and makes every next step visible in a branded journey rather than generic setup copy.",
+      "evidence": ["screenshots/desktop-light-get-started.png", "screenshots/desktop-dark-get-started.png"]
+    },
+    {
+      "screen_key": "search", "route": "/search", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "Search is inside the Front Office shell, explains its masked branch scope, and gives the empty prompt and primary/clear actions a deliberate command-search composition.",
+      "evidence": ["screenshots/desktop-light-operational-search.png", "screenshots/desktop-dark-operational-search.png"]
+    },
+    {
+      "screen_key": "clients", "route": "/clients", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 1, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 2, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "A masked welcome-desk directory replaces the flat inherited list with a clear add-client action, search panel and teal-keyed client cards.",
+      "evidence": ["screenshots/desktop-light-clients.png", "screenshots/desktop-dark-clients.png"]
+    },
+    {
+      "screen_key": "clients-create", "route": "/clients/create", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 1, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 2, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "The form is a focused welcome workflow with duplicate-safety guidance, masked-after-save context, a compact premium panel and unambiguous return path.",
+      "evidence": ["screenshots/desktop-light-clients-create.png", "screenshots/desktop-dark-clients-create.png", "screenshots/mobile-clients-create.png"]
+    },
+    {
+      "screen_key": "client-detail", "route": "/clients/:clientUlid", "total": 27,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 1, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "The branch record elevates masked identity and consent state while keeping editing secondary and never exposing another branch's contact record.",
+      "evidence": ["screenshots/desktop-light-client-detail.png", "screenshots/desktop-dark-client-detail.png"]
+    },
+    {
+      "screen_key": "appointments", "route": "/appointments", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "Scheduled arrivals gain a strong booking action, deliberate filter surface and visibly differentiated appointment state without changing state-machine ownership.",
+      "evidence": ["screenshots/desktop-light-appointments.png", "screenshots/desktop-dark-appointments.png"]
+    },
+    {
+      "screen_key": "walk-ins", "route": "/walk-ins", "total": 29,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 2, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "A three-step identify-service-queue frame turns the inherited form into a fast arrival workflow while preserving the atomic server mutation.",
+      "evidence": ["screenshots/desktop-light-walk-ins.png", "screenshots/desktop-dark-walk-ins.png", "screenshots/mobile-walk-ins.png"]
+    },
+    {
+      "screen_key": "queue", "route": "/queue", "total": 29,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 2, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "The live board makes status, estimate, assignment, ordering and transfer actions legible at a glance and keeps every transition server-authoritative.",
+      "evidence": ["screenshots/desktop-light-queue.png", "screenshots/desktop-dark-queue.png", "screenshots/mobile-queue.png"]
+    },
+    {
+      "screen_key": "queue-transfer", "route": "/queue/:queueUlid/transfer", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 1, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 2, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "A dedicated split composition keeps the transfer subject visible beside the server-filtered reassignment form, with reason and disabled confirmation states explicit.",
+      "evidence": ["screenshots/desktop-light-queue-transfer.png", "screenshots/desktop-dark-queue-transfer.png"]
+    },
+    {
+      "screen_key": "sessions", "route": "/sessions", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 1, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 2, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "The service-truth register foregrounds active/completed state and explicitly separates commission preview from earned or payable compensation.",
+      "evidence": ["screenshots/desktop-light-sessions.png", "screenshots/desktop-dark-sessions.png"]
+    },
+    {
+      "screen_key": "invoices", "route": "/invoices", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "The billing-handoff register makes amount and invoice state primary while stating the maker boundary and omitting Finance validation and receipt issuance controls.",
+      "evidence": ["screenshots/desktop-light-invoices.png", "screenshots/desktop-dark-invoices.png"]
+    },
+    {
+      "screen_key": "invoices-create", "route": "/invoices/create", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 1, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 2, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "Completed-work selection is framed as a server-priced billing handoff with clear disabled draft creation and no browser-owned calculation.",
+      "evidence": ["screenshots/desktop-light-invoices-create.png", "screenshots/desktop-dark-invoices-create.png"]
+    },
+    {
+      "screen_key": "invoice-payment-create", "route": "/invoices/:invoiceUlid/payments/create", "total": 29,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 2, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "The four-step maker workflow anchors invoice, masked client, total and recordable balance while explicitly handing validation and receipt issuance to Finance.",
+      "evidence": ["screenshots/desktop-light-invoice-payment-create.png", "screenshots/desktop-dark-invoice-payment-create.png", "screenshots/mobile-invoice-payment-create.png"]
+    },
+    {
+      "screen_key": "payments-status", "route": "/payments/status", "total": 29,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 2, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "Recorded evidence, Finance decision and original-receipt readiness are separated into a safe status strip that never presents a checker or manual-issue action.",
+      "evidence": ["screenshots/desktop-light-payments-status.png", "screenshots/desktop-dark-payments-status.png"]
+    },
+    {
+      "screen_key": "activity", "route": "/activity", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 1, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 2, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "A narrow same-day operational timeline replaces audit-log exposure with readable action labels, branch context and safe actor/time metadata.",
+      "evidence": ["screenshots/desktop-light-activity.png", "screenshots/desktop-dark-activity.png"]
+    },
+    {
+      "screen_key": "account", "route": "/account", "total": 28,
+      "scores": { "composition": 2, "spacing": 2, "typography": 2, "surfaces": 2, "actions": 2, "states": 2, "light_theme": 2, "dark_theme": 2, "responsive": 2, "interaction": 1, "boundaries": 1, "brand": 2, "accessibility": 2, "role_fit": 2, "baseline_improvement": 2 },
+      "note": "Identity, Magic Link security, own MFA, own sessions and display preference are composed as a Front Office account page with business and staff-access settings explicitly absent.",
+      "evidence": ["screenshots/desktop-light-account.png", "screenshots/desktop-dark-account.png"]
+    }
+  ],
+  "summary": { "implemented_pages": 17, "passing": 17, "failing": 0, "minimum_score": 27, "maximum_score": 30, "zero_scores": 0 }
+}

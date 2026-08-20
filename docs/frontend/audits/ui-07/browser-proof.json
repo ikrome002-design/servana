@@ -110,10 +110,10 @@
       "account": "merchant_front_office",
       "shell_path": "/front-office",
       "navigation_placement": "sidebar",
-      "expected_entries": 12,
-      "rendered_entries": 12,
+      "expected_entries": 15,
+      "rendered_entries": 15,
       "planned_entries_rendered": 0,
-      "links_with_destination": 10,
+      "links_with_destination": 13,
       "console_errors": 0,
       "page_errors": 0,
       "failed_requests": 0

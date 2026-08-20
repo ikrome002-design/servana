@@ -152,7 +152,7 @@ test.describe('Front Office queue', () => {
     await expect(page.getByRole('heading', { name: 'Queue' })).toBeVisible();
     await expect(page.getByText('Amina Yusuf')).toBeVisible();
     await expect(page.getByText('Estimate', { exact: false }).first()).toBeVisible();
-    await expect(page.getByTestId('queue-status-badge').first()).toHaveText('Assigned');
+    await expect(page.getByTestId('queue-status-badge').first()).toContainText('Assigned');
 
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
     expect(results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);

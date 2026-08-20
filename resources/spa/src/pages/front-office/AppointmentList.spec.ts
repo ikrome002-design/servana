@@ -42,7 +42,7 @@ describe('AppointmentList.vue', () => {
 
     expect(wrapper.text()).toContain('Amina Yusuf');
     expect(wrapper.text()).toContain('Haircut');
-    expect(wrapper.find('[data-testid="status-badge"]').text()).toBe('Confirmed');
+    expect(wrapper.find('[data-testid="status-badge"]').text()).toContain('Confirmed');
   });
 
   it('applies the date filter', async () => {

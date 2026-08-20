@@ -120,7 +120,7 @@ final class InvoiceSearchDefinition extends AbstractSearchDocumentDefinition
             status: $model->status->value,
             date: $model->created_at?->toIso8601String(),
             amount: Money::ofMinor($model->total_minor, Currency::from($model->currency)),
-            routeName: 'front-office.invoices.detail',
+            routeName: 'front-office.invoice-detail',
             routeParamId: $model->ulid,
             branchUlid: $model->branch?->ulid,
             branchName: $model->branch?->name,

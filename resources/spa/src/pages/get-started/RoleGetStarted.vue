@@ -2,12 +2,14 @@
 import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import GetStartedChecklist from '@/components/onboarding/GetStartedChecklist.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
 import { useGetStartedStore } from '@/stores/getStartedStore';
 import { useHrWorkspaceStore } from '@/stores/hrWorkspaceStore';
 import { useMerchantDashboardStore } from '@/stores/merchantDashboardStore';
+import { useFrontOfficeWorkspaceStore } from '@/stores/frontOfficeWorkspaceStore';
 import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
 
 /**
@@ -22,6 +24,7 @@ const store = useGetStartedStore();
 const merchantDashboard = useMerchantDashboardStore();
 const branchExperience = useBranchExperienceStore();
 const hrWorkspace = useHrWorkspaceStore();
+const frontOfficeWorkspace = useFrontOfficeWorkspaceStore();
 
 const identity = computed<RoleIdentity | null>(() => {
   const meta = route.meta.roleIdentity;
@@ -52,6 +55,18 @@ const observedCompletedIds = computed<string[]>(() => {
     if (readiness.missing_compensation_reviewed) ids.push('review-missing-compensation');
     return ids;
   }
+  if (identity.value === 'merchant_front_office') {
+    const readiness = frontOfficeWorkspace.overview?.get_started;
+    if (!readiness) return [];
+    const ids: string[] = [];
+    if (readiness.client_created) ids.push('register-a-client');
+    if (readiness.appointment_created) ids.push('book-an-appointment');
+    if (readiness.queue_used) ids.push('start-a-walk-in', 'assign-personnel');
+    if (readiness.invoice_created) ids.push('create-an-invoice');
+    if (readiness.payment_recorded) ids.push('record-a-payment');
+    if (readiness.receipt_available) ids.push('confirm-receipt-issuance');
+    return ids;
+  }
   if (identity.value !== 'merchant_administrator') return [];
   const readiness = merchantDashboard.overview?.get_started;
   if (!readiness) return [];
@@ -72,6 +87,7 @@ onMounted(() => {
   if (identity.value === 'merchant_administrator') void merchantDashboard.fetchOverview();
   if (identity.value === 'merchant_branch') void branchExperience.fetchOverview();
   if (identity.value === 'merchant_human_resource') void hrWorkspace.fetchOverview();
+  if (identity.value === 'merchant_front_office') void frontOfficeWorkspace.fetchOverview();
 });
 
 const dismissed = computed(() =>
@@ -89,8 +105,15 @@ function reopen(): void {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl">
+  <div :class="identity === 'merchant_front_office' ? 'mx-auto max-w-5xl' : 'mx-auto max-w-3xl'">
     <template v-if="identity && userId">
+      <SvOperationalHero
+        v-if="identity === 'merchant_front_office'"
+        class="mb-5"
+        eyebrow="Guided branch journey"
+        title="From welcome to verified receipt"
+        description="Follow the real service-desk sequence. Server-owned completion moves from client registration through service and invoice creation to a recorded payment that Finance must validate before the original receipt appears."
+      />
       <div
         v-if="dismissed"
         class="rounded-card border border-border bg-surface p-6 text-center"

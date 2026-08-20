@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "ba280b13fa2556f191ce195e5ff9ae9b477f3dc29358314ce264cbbc4e61de8f",
+  "canonical_authority_sha256": "25365cfa749fe9e162d47e20280a473949ad2283f41e32df0fc645b340850240",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "425ca93531efaa2ff609b13bbadfcba00a518ed732d441f9f8d2ba3820a660c0",
+  "screen_inventory_sha256": "13a0bd3e23603ebef3945db82f831eb4a2e4d28e2e8fe0e8742193988955df20",
   "purpose": "One UI owner phase per contract page, and the backend phase that actually delivered the runtime screen. Backend ownership is read from the screen inventory and is NEVER inferred from UI phase numbering.",
   "ui_owner_by_account": {
     "super_administrator": "UI-08",
@@ -31,12 +31,12 @@
     "UI-15": 15
   },
   "backend_owner_totals": {
-    "not-yet-delivered": 39,
-    "Phase 11": 8,
+    "not-yet-delivered": 34,
+    "Phase 11": 9,
     "Phase 15A": 5,
     "Phase 15B": 2,
     "Phase 16A": 3,
-    "Phase 16B": 4,
+    "Phase 16B": 5,
     "Phase 16C": 2,
     "Phase 17": 3,
     "Phase 18A": 3,
@@ -51,7 +51,7 @@
     "Phase 20G": 1,
     "Phase 20H": 6,
     "Phase 21N": 4,
-    "Phase 21N after Phase 20D-W / Gate W": 2,
+    "Phase 21N after Phase 20D-W / Gate W": 3,
     "Phase 21R-B": 1,
     "Phase 21S": 1,
     "Phase 22": 1,
@@ -66,7 +66,8 @@
     "Phase UI-09": 1,
     "Phase UI-10 (COR-UI10-001)": 4,
     "Phase UI-11 (COR-UI11-001)": 2,
-    "Phase UI-12": 5
+    "Phase UI-12": 5,
+    "Phase UI-13": 2
   },
   "rows": [
     {
@@ -1028,9 +1029,9 @@
       "account_type": "merchant_front_office",
       "screen_key": "dashboard",
       "ui_owner_phase": "UI-13",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase UI-13",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_front_office.get-started",
@@ -1109,9 +1110,9 @@
       "account_type": "merchant_front_office",
       "screen_key": "queue-transfer",
       "ui_owner_phase": "UI-13",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase 16B",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_front_office.sessions",
@@ -1163,9 +1164,9 @@
       "account_type": "merchant_front_office",
       "screen_key": "activity",
       "ui_owner_phase": "UI-13",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase UI-13",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_front_office.subscription-payment",
@@ -1181,18 +1182,18 @@
       "account_type": "merchant_front_office",
       "screen_key": "notifications",
       "ui_owner_phase": "UI-13",
-      "backend_owner_phase": null,
+      "backend_owner_phase": "Phase 21N after Phase 20D-W / Gate W",
       "implementation_status": "disabled_by_gate",
-      "remaining_dependency": "Blocked by external_gate_w."
+      "remaining_dependency": "Blocked by phase_21n_blocked_by_external_gate_w."
     },
     {
       "key": "merchant_front_office.account",
       "account_type": "merchant_front_office",
       "screen_key": "account",
       "ui_owner_phase": "UI-13",
-      "backend_owner_phase": null,
-      "implementation_status": "planned",
-      "remaining_dependency": "Component, read model, authorization, tests and browser proof."
+      "backend_owner_phase": "Phase 11",
+      "implementation_status": "implemented",
+      "remaining_dependency": "Reconcile the runtime path to the host-relative contract path (UI01-ROUTE-003)."
     },
     {
       "key": "merchant_personnel.dashboard",

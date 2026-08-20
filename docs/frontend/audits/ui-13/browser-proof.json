@@ -1,0 +1,73 @@
+{
+  "schema": "servana.ui13.browser-proof.v1",
+  "phase": "UI-13",
+  "lifecycle": "local_complete",
+  "account": "merchant_front_office",
+  "host": "office.servana.ke",
+  "focused_playwright": {
+    "command": "npx playwright test tests/e2e/ui-13-front-office-experience.spec.ts --project=chromium",
+    "collected": 59,
+    "passed": 59,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "duration": "3.4m",
+    "coverage": ["17 canonical pages", "2 inert gates", "wrong account", "forbidden authority", "maker/checker", "3 parameterized deep links", "error and empty boundaries", "7 widths", "representative mobile", "fresh light and persistent dark", "17 dark axe passes", "200% equivalent", "fixed-footer reserve", "reduced motion", "drawer focus", "44px targets", "17 light axe passes", "deterministic screenshots"]
+  },
+  "failed_runs": [
+    {
+      "stage": "first focused implementation run",
+      "result": "47 passed / 11 failed / 58 collected",
+      "classification": "product defects",
+      "root_causes": ["/search escaped RoleShell", "Utility navigation group ordered second", "error-recovery assertion expected Retry while the accessible action was Try again"],
+      "resolution": "fixed source/order and aligned the assertion with the actual accessible name; exact 11 scenarios reran 11/11 green"
+    },
+    {
+      "stage": "all-page dark evidence expansion",
+      "result": "1 timeout / 1 passed / 2 collected",
+      "classification": "test harness capacity",
+      "root_causes": ["17 sequential axe analyses exceeded the default 30-second test timeout"],
+      "resolution": "bounded only that test at 120 seconds; rerun passed in 40.0 seconds with 0 serious/critical violations"
+    },
+    {
+      "stage": "whole-product route compatibility and semantic status pass",
+      "result": "legacy deep-link and exact-status assertions failed before the authoritative run",
+      "classification": "current consumer drift",
+      "root_causes": ["canonical UI-13 activation removed several supported /front-office/* deep-link shapes", "status badges include accessible context in addition to their visible state"],
+      "resolution": "retained 19 narrow same-account compatibility redirects and asserted accessible status containment; affected cases passed"
+    },
+    {
+      "stage": "whole-product Search and release-audit pass",
+      "result": "stale role fixture, canonical key, permission and computed-gradient assertions failed before the authoritative run",
+      "classification": "test consumer and fixture drift",
+      "root_causes": ["Phase 22 fixture used a non-contract Front Office role", "release audit retained legacy Front Office route keys and incomplete role permissions", "backdrop check recognized flat colors but not computed gradients"],
+      "resolution": "aligned fixtures and assertions to canonical account/permission/theme contracts; affected suites passed"
+    },
+    {
+      "stage": "whole-product role-entry pass",
+      "result": "Front Office inherited the old landing convergence expectation",
+      "classification": "test consumer drift",
+      "root_causes": ["role-entry test treated all eight accounts as retaining landing after authentication"],
+      "resolution": "preserved seven landing expectations and asserted Front Office /front-office compatibility convergence to /dashboard"
+    },
+    {
+      "stage": "whole-product predecessor evidence writes",
+      "result": "transient Windows UNKNOWN open failures affected UI-04/UI-06 PNG and JSON evidence paths",
+      "classification": "test harness filesystem contention",
+      "root_causes": ["long browser runs encountered transient Windows file-open contention while Playwright evidence was written directly to disk"],
+      "resolution": "centralized evidence screenshots and JSON writes behind a bounded five-attempt retry for open-contention error codes; stress proof passed 27/27 and the authoritative whole-product run passed 1,526/1,526"
+    }
+  ],
+  "whole_product_playwright": {
+    "command": "npm run e2e",
+    "collected": 1526,
+    "passed": 1526,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "duration": "52.6m",
+    "status": "passed on the final runtime and evidence-writer source"
+  }
+}

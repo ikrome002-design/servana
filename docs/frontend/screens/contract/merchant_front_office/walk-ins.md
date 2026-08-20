@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `front-office.walk-in` at `/front-office/walk-in` (routes/frontOffice.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/walk-ins`; owner phase **UI-13** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `front-office.walk-ins` at `/walk-ins` (routes/frontOffice.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-13**
 - **Backend owner phase:** **Phase 16B**
 - **Implementation status:** `implemented`
-- **Runtime route:** `front-office.walk-in`
+- **Runtime route:** `front-office.walk-ins`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.walk-in` (recorded in `docs/frontend/screens/front-office/front-office-walk-in.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.walk-ins` (recorded in `docs/frontend/screens/front-office/front-office-walk-in.md`).
 - **Data fields:** Accessible walk-in wizard: find an existing branch client or create one through the existing client workflow, select an active service, choose the assignment mode, select personnel where required, and confirm. Creates the walk-in and queue entry atomically; the wait estimate is server-calculated and labelled. No preferred-personnel fee is shown or charged.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

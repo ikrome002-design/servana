@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useForm } from '@/composables/useForm';
@@ -36,7 +37,7 @@ const submit = form.handleSubmit(async (values) => {
       notes: values.notes === '' ? undefined : values.notes,
     });
     notifications.addToast({ type: 'success', message: 'Client created.' });
-    await router.push({ name: 'front-office.clients.detail', params: { id: created.id } });
+    await router.push({ name: 'front-office.client-detail', params: { clientUlid: created.id } });
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.apiError) {
       if (err.apiError.code === 'duplicate_client') {
@@ -57,20 +58,31 @@ const submit = form.handleSubmit(async (values) => {
 </script>
 
 <template>
-  <section class="mx-auto w-full max-w-lg p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Add a client
-    </h1>
+  <section class="mx-auto w-full max-w-5xl">
+    <SvOperationalHero
+      eyebrow="Welcome a new client"
+      title="Add a client"
+      description="Capture only the details needed for branch service. The server normalizes the phone and prevents a second client record for the same branch."
+    >
+      <template #actions>
+        <RouterLink
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white"
+          :to="{ name: 'front-office.clients' }"
+        >
+          Back to clients
+        </RouterLink>
+      </template>
+    </SvOperationalHero>
 
     <div
       v-if="duplicateId"
       role="alert"
-      class="mt-4 rounded-control border border-warning/40 bg-warning/10 p-3 text-sm text-text"
+      class="mt-5 rounded-control border border-sv-warning-border bg-sv-warning-bg p-4 text-sm text-sv-warning-fg shadow-card"
       data-testid="duplicate-warning"
     >
       A client with this phone number already exists in this branch.
       <RouterLink
-        :to="{ name: 'front-office.clients.detail', params: { id: duplicateId } }"
+        :to="{ name: 'front-office.client-detail', params: { clientUlid: duplicateId } }"
         class="font-semibold text-heading underline"
       >
         Open the existing client
@@ -80,7 +92,7 @@ const submit = form.handleSubmit(async (values) => {
     <SvCard
       as="div"
       padding="lg"
-      class="mt-6"
+      class="mx-auto mt-5 max-w-2xl border-t-4 border-t-sv-brand"
     >
       <form
         class="flex flex-col gap-4"

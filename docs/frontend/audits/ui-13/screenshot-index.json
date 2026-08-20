@@ -1,0 +1,414 @@
+{
+  "schema": "servana.ui13.screenshot-index.v1",
+  "phase": "UI-13",
+  "account": "merchant_front_office",
+  "host": "office.servana.ke",
+  "data_provenance": "synthetic; no real person, credential, token or provider payload",
+  "status": "UI-13 implementation evidence; not a UI-16 release-approved visual baseline",
+  "captures": [
+    {
+      "file": "screenshots/dashboard-dark-200-percent-equivalent.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "dark",
+      "bytes": 278903,
+      "sha256": "9e701fe63f1fce2dce82426140aa5e84bde12323b91867147eaf999643ca2c02"
+    },
+    {
+      "file": "screenshots/desktop-dark-account.png",
+      "screen_key": "account",
+      "route": "/account",
+      "theme": "dark",
+      "bytes": 246471,
+      "sha256": "b3ab7737fc577c087e3069000dad070d4e64d63559728e3f6a62f363935a6425"
+    },
+    {
+      "file": "screenshots/desktop-dark-activity.png",
+      "screen_key": "activity",
+      "route": "/activity",
+      "theme": "dark",
+      "bytes": 223522,
+      "sha256": "d078692463c9093bf4a5461649fdff81f9262c139affb3914b6c6bd6c226eb9d"
+    },
+    {
+      "file": "screenshots/desktop-dark-appointments.png",
+      "screen_key": "appointments",
+      "route": "/appointments",
+      "theme": "dark",
+      "bytes": 229770,
+      "sha256": "8717a729ff6ef1df96b4df6ba0b681f9efc5f4c7f5377618d6aa5cb8377ab614"
+    },
+    {
+      "file": "screenshots/desktop-dark-client-detail.png",
+      "screen_key": "client-detail",
+      "route": "/clients/01HZZCLIENT000000000000000",
+      "theme": "dark",
+      "bytes": 260535,
+      "sha256": "21cddca0e3248df5b3b9a95ef9a016d284c44e42a769764463cf721722b95e6a"
+    },
+    {
+      "file": "screenshots/desktop-dark-clients-create.png",
+      "screen_key": "clients-create",
+      "route": "/clients/create",
+      "theme": "dark",
+      "bytes": 223737,
+      "sha256": "b00209f0155848ec12031b3bd0cdd7647fa1525029f22a169377d983034bfb02"
+    },
+    {
+      "file": "screenshots/desktop-dark-clients.png",
+      "screen_key": "clients",
+      "route": "/clients",
+      "theme": "dark",
+      "bytes": 229388,
+      "sha256": "4fd1e321ba8e4bff687430a9be1263bd5b317198023719bc31d3feb0a36866b1"
+    },
+    {
+      "file": "screenshots/desktop-dark-dashboard.png",
+      "screen_key": "dashboard",
+      "route": "/dashboard",
+      "theme": "dark",
+      "bytes": 374285,
+      "sha256": "5ee22d7ef01b08fd7b7ac789cbae53229c0a2cbf60141875cedde0e628b94e3c"
+    },
+    {
+      "file": "screenshots/desktop-dark-get-started.png",
+      "screen_key": "get-started",
+      "route": "/get-started",
+      "theme": "dark",
+      "bytes": 268187,
+      "sha256": "8a2b6bb9ba18954e9fc8883fd6ce651f70264935f88401878be2b8a633f9de3e"
+    },
+    {
+      "file": "screenshots/desktop-dark-invoice-payment-create.png",
+      "screen_key": "invoice-payment-create",
+      "route": "/invoices/01HZZINVOICE00000000000000/payments/create",
+      "theme": "dark",
+      "bytes": 327722,
+      "sha256": "697c68fc3b5527bd1aac4a62679c4fee4dbf4165ba9a00c9b79d381d3fc95afe"
+    },
+    {
+      "file": "screenshots/desktop-dark-invoices-create.png",
+      "screen_key": "invoices-create",
+      "route": "/invoices/create",
+      "theme": "dark",
+      "bytes": 231648,
+      "sha256": "c1205f6e78f5f93c4bdd0473e7fbdbbc9962d38ef3b61b8fb94049159880de68"
+    },
+    {
+      "file": "screenshots/desktop-dark-invoices.png",
+      "screen_key": "invoices",
+      "route": "/invoices",
+      "theme": "dark",
+      "bytes": 229131,
+      "sha256": "f5ac80353f02138c86c66df7f2e8846cf12863291fe6f517dfdb87aca49dfa7e"
+    },
+    {
+      "file": "screenshots/desktop-dark-operational-search.png",
+      "screen_key": "operational-search",
+      "route": "/search",
+      "theme": "dark",
+      "bytes": 226268,
+      "sha256": "48da96e77a4b0a20af77c7f70911027958fb4a7d1b5136a36bbafd22d58d4227"
+    },
+    {
+      "file": "screenshots/desktop-dark-payments-status.png",
+      "screen_key": "payments-status",
+      "route": "/payments/status",
+      "theme": "dark",
+      "bytes": 245288,
+      "sha256": "7cd3685d99521ac91b686d0cd8392e435895ac35d5bf00fb91015839d7c0f979"
+    },
+    {
+      "file": "screenshots/desktop-dark-queue-transfer.png",
+      "screen_key": "queue-transfer",
+      "route": "/queue/01HZZQUEUE0000000000000000/transfer",
+      "theme": "dark",
+      "bytes": 246234,
+      "sha256": "a9dc8857b5e9f49b7001975c747c370af164003fab6eee7484462cb26354655a"
+    },
+    {
+      "file": "screenshots/desktop-dark-queue.png",
+      "screen_key": "queue",
+      "route": "/queue",
+      "theme": "dark",
+      "bytes": 277175,
+      "sha256": "167fc89967bad263e44c9977ba81be0fb6c455d9de934b2447578af4b4f2fd04"
+    },
+    {
+      "file": "screenshots/desktop-dark-sessions.png",
+      "screen_key": "sessions",
+      "route": "/sessions",
+      "theme": "dark",
+      "bytes": 248451,
+      "sha256": "636aac6cdb249100ba38a81febd086b57ed722a4bef76666785cea799ea31d01"
+    },
+    {
+      "file": "screenshots/desktop-dark-walk-ins.png",
+      "screen_key": "walk-ins",
+      "route": "/walk-ins",
+      "theme": "dark",
+      "bytes": 289099,
+      "sha256": "9748df15bd9195f3324e555c88f949c71f3937c8b85b8556c09c55d02d69c998"
+    },
+    {
+      "file": "screenshots/desktop-light-account.png",
+      "screen_key": "account",
+      "route": "/account",
+      "theme": "light",
+      "bytes": 245623,
+      "sha256": "88ad86d25851080e9d0a2e57259d4440b59a3ba121db471a37539898e8ca72f3"
+    },
+    {
+      "file": "screenshots/desktop-light-activity.png",
+      "screen_key": "activity",
+      "route": "/activity",
+      "theme": "light",
+      "bytes": 220468,
+      "sha256": "71404961b175fd14a5071f5a10bb6913292fab3a330d33c5dbb208e08f9bd7a0"
+    },
+    {
+      "file": "screenshots/desktop-light-appointments.png",
+      "screen_key": "appointments",
+      "route": "/appointments",
+      "theme": "light",
+      "bytes": 229400,
+      "sha256": "b7fc2d25a224d99ab2c531e2f5c5ff1d3775d7cd21ce7675d366dcf40983bb85"
+    },
+    {
+      "file": "screenshots/desktop-light-client-detail.png",
+      "screen_key": "client-detail",
+      "route": "/clients/01HZZCLIENT000000000000000",
+      "theme": "light",
+      "bytes": 257772,
+      "sha256": "d5b1169f5bbfbec860b44048048d537715b7fe2ee704ee0c1f9355b2d62cf671"
+    },
+    {
+      "file": "screenshots/desktop-light-clients-create.png",
+      "screen_key": "clients-create",
+      "route": "/clients/create",
+      "theme": "light",
+      "bytes": 220966,
+      "sha256": "97fabb6d129cf220b0f32f58780c42d0182dbd021e8f48995d2af09f556b2047"
+    },
+    {
+      "file": "screenshots/desktop-light-clients.png",
+      "screen_key": "clients",
+      "route": "/clients",
+      "theme": "light",
+      "bytes": 229463,
+      "sha256": "428646aacc6e827793ee05d1621b3b627e64ff12c797f3e38287185737c4fd5a"
+    },
+    {
+      "file": "screenshots/desktop-light-dashboard.png",
+      "screen_key": "dashboard",
+      "route": "/dashboard",
+      "theme": "light",
+      "bytes": 371627,
+      "sha256": "9b3e84fc70ebc721792c7a8d9883401c0efb35d0ed80b40715924e2912d65ebf"
+    },
+    {
+      "file": "screenshots/desktop-light-get-started.png",
+      "screen_key": "get-started",
+      "route": "/get-started",
+      "theme": "light",
+      "bytes": 263618,
+      "sha256": "033ed6fcccade80ea523606b11a355357ca1e26261ba3ea1806f084e70a224fc"
+    },
+    {
+      "file": "screenshots/desktop-light-invoice-payment-create.png",
+      "screen_key": "invoice-payment-create",
+      "route": "/invoices/01HZZINVOICE00000000000000/payments/create",
+      "theme": "light",
+      "bytes": 325171,
+      "sha256": "c98c22f950707c91d3a2b65057773abc93c63767b09bf70c6ebd701a9abb5491"
+    },
+    {
+      "file": "screenshots/desktop-light-invoices-create.png",
+      "screen_key": "invoices-create",
+      "route": "/invoices/create",
+      "theme": "light",
+      "bytes": 231100,
+      "sha256": "a5f66be20bc325d0726fa64bf6bf5fea2a8c9d509c1fc75923be3ea243d8f387"
+    },
+    {
+      "file": "screenshots/desktop-light-invoices.png",
+      "screen_key": "invoices",
+      "route": "/invoices",
+      "theme": "light",
+      "bytes": 228344,
+      "sha256": "8695e75ced32e51850b9930c11033a19f507652ffe9afb64322aef52d3e97a42"
+    },
+    {
+      "file": "screenshots/desktop-light-operational-search.png",
+      "screen_key": "operational-search",
+      "route": "/search",
+      "theme": "light",
+      "bytes": 223267,
+      "sha256": "79eade0877c8e22b5330e313deeff319dd5fec57912dbd9df1018fb38663631d"
+    },
+    {
+      "file": "screenshots/desktop-light-payments-status.png",
+      "screen_key": "payments-status",
+      "route": "/payments/status",
+      "theme": "light",
+      "bytes": 244498,
+      "sha256": "5aa3d4dc2731859542e49a7a58ac41d615f7b30da60de4ea6af24c69d7b62498"
+    },
+    {
+      "file": "screenshots/desktop-light-queue-transfer.png",
+      "screen_key": "queue-transfer",
+      "route": "/queue/01HZZQUEUE0000000000000000/transfer",
+      "theme": "light",
+      "bytes": 243931,
+      "sha256": "87cb799178446d3ab712f8113b3583762ee13d4a07e9c69bc1065e84e404b1c3"
+    },
+    {
+      "file": "screenshots/desktop-light-queue.png",
+      "screen_key": "queue",
+      "route": "/queue",
+      "theme": "light",
+      "bytes": 274973,
+      "sha256": "a5983609b706ffca514f9c0926d7ebaf1238d10703e50fb6f60ff18f6bba52c1"
+    },
+    {
+      "file": "screenshots/desktop-light-sessions.png",
+      "screen_key": "sessions",
+      "route": "/sessions",
+      "theme": "light",
+      "bytes": 247924,
+      "sha256": "c75602b51351c5096b575e66d2c67c85d120b74ff98d913830480d3ea0240056"
+    },
+    {
+      "file": "screenshots/desktop-light-walk-ins.png",
+      "screen_key": "walk-ins",
+      "route": "/walk-ins",
+      "theme": "light",
+      "bytes": 286533,
+      "sha256": "a6907df76ac7b982552e3cff1e4f410345f6b2d466c52472151d497a8b474576"
+    },
+    {
+      "file": "screenshots/gated-notifications.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 41295,
+      "sha256": "fdaaf8e789335e2ed9ca038a11205adf0cb7e31e47e5db33865787847996ee6a"
+    },
+    {
+      "file": "screenshots/gated-subscription-payment.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 41295,
+      "sha256": "fdaaf8e789335e2ed9ca038a11205adf0cb7e31e47e5db33865787847996ee6a"
+    },
+    {
+      "file": "screenshots/mobile-clients-create.png",
+      "screen_key": "clients-create",
+      "route": "/clients/create",
+      "theme": "light",
+      "bytes": 106826,
+      "sha256": "d66db3c1e62d2f2525d42cb4598452c5ddb39c76a4677dc4a4c80034b402f53f"
+    },
+    {
+      "file": "screenshots/mobile-dashboard.png",
+      "screen_key": "dashboard",
+      "route": "/dashboard",
+      "theme": "light",
+      "bytes": 241765,
+      "sha256": "a126b1c370dfbed2a6f29ef3571da214d45b2f57880b5ddc04d0d49836861aee"
+    },
+    {
+      "file": "screenshots/mobile-invoice-payment-create.png",
+      "screen_key": "invoice-payment-create",
+      "route": "/invoices/01HZZINVOICE00000000000000/payments/create",
+      "theme": "light",
+      "bytes": 184647,
+      "sha256": "218fb7382de3cc346b89d0c59c9d23c53f674242d6f023762201480a6ed3dc60"
+    },
+    {
+      "file": "screenshots/mobile-navigation.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 48052,
+      "sha256": "6ae13d327165e1d524b417046b202ebdaed6270a5d802846a17ac013477046bc"
+    },
+    {
+      "file": "screenshots/mobile-queue.png",
+      "screen_key": "queue",
+      "route": "/queue",
+      "theme": "light",
+      "bytes": 134326,
+      "sha256": "67752a8f93a774ad3582600348dc1a2e34e6210ff03d781c64569635936d115e"
+    },
+    {
+      "file": "screenshots/mobile-walk-ins.png",
+      "screen_key": "walk-ins",
+      "route": "/walk-ins",
+      "theme": "light",
+      "bytes": 159824,
+      "sha256": "377b20120f37d04bdc58a4fae15b7828f74e7a2d42f77d823ed8a58c9b778298"
+    },
+    {
+      "file": "screenshots/responsive-dashboard-1024.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 306438,
+      "sha256": "2b77658e3375cbf22399b666d0834e034be1d79edf9048085b656654f3f27562"
+    },
+    {
+      "file": "screenshots/responsive-dashboard-1025.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 320984,
+      "sha256": "36d88eb75601352bc030c1b80ab6b1f1787a23eee1bfbaf053c70d53bc1e9211"
+    },
+    {
+      "file": "screenshots/responsive-dashboard-1280.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 342513,
+      "sha256": "f736eccdc0e3fa9501a4140d8bbaad088a790c65ad637e41e7f5e4441856ff46"
+    },
+    {
+      "file": "screenshots/responsive-dashboard-1440.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 371627,
+      "sha256": "9b3e84fc70ebc721792c7a8d9883401c0efb35d0ed80b40715924e2912d65ebf"
+    },
+    {
+      "file": "screenshots/responsive-dashboard-360.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 175095,
+      "sha256": "972b74317072597c72db1efa9464c0b2e2ef05bb7cab560ca97962cd132963c6"
+    },
+    {
+      "file": "screenshots/responsive-dashboard-767.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 277164,
+      "sha256": "a72b28a83cc980d91ed331d8c5b7d72c87181558c7c85c90842f2a1ca34b8ae3"
+    },
+    {
+      "file": "screenshots/responsive-dashboard-768.png",
+      "screen_key": null,
+      "route": null,
+      "theme": "light",
+      "bytes": 256298,
+      "sha256": "b14faac0bdef36fa734f74f25f3dafb6edc435bc1c6bf24f47719dda0b01e24c"
+    }
+  ],
+  "totals": {
+    "captures": 50,
+    "implemented_page_captures": 17
+  }
+}

@@ -110,7 +110,7 @@ test.describe('Personnel My sessions (own scope)', () => {
 
     await expect(page.getByRole('heading', { name: 'My sessions', exact: true })).toBeVisible();
     await expect(page.getByText('Amina Yusuf')).toBeVisible();
-    await expect(page.getByTestId('session-status-badge')).toHaveText('In progress');
+    await expect(page.getByTestId('session-status-badge')).toContainText('In progress');
     // No commission preview, no mutation controls.
     await expect(page.getByText('Preview')).toHaveCount(0);
     await expect(page.getByRole('main').getByRole('button')).toHaveCount(0);

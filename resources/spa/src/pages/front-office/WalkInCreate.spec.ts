@@ -53,6 +53,6 @@ describe('WalkInCreate.vue', () => {
       client: null,
       new_client: { full_name: 'Walkin Wanjiku', phone: '0712345678' },
     }));
-    expect(push).toHaveBeenCalledWith({ name: 'front-office.queue.detail', params: { id: 'qe9' } });
+    expect(push).toHaveBeenCalledWith({ name: 'front-office.queue-entry', params: { queueUlid: 'qe9' } });
   });
 });

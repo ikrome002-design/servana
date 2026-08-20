@@ -6,7 +6,72 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
-### Phase UI-12 — Finance experience (`phase-ui-12-finance-experience`) — local complete pending PR lifecycle
+### Phase UI-13 — Front Office experience (`phase-ui-13-front-office-experience`) — local complete
+
+Started from verified UI-12 squash `6796d82b2db8866529352b47300d63bc6a29941d`.
+The authority and readiness pass freezes the exact 19-page contract at **17 implemented /
+2 disabled_by_gate / 0 planned / 0 removed**, with zero permission-matrix change. All six
+product-owner design-reference images were inspected; their hierarchy, asymmetric composition,
+grouped work surfaces and restrained depth guide composition while Servana tokens remain the
+color authority.
+
+#### Added — assigned-branch service-desk command centre
+
+- Seventeen canonical host-relative pages and five supporting deep links replace the legacy
+  `/front-office/*` tree. Operational Search now stays inside the role shell; navigation follows the
+  exact eight-group account order at desktop, tablet and mobile.
+- Three narrow read-only GETs provide a server-owned branch-today workspace, a safe same-day
+  activity timeline and maker-safe payment/receipt lifecycle status. OpenAPI moves **296/347 →
+  299 paths / 350 operations** without a migration, permission, financial calculation or mutation.
+- A branded operational hero, workflow strips, status surfaces and refined clients, appointments,
+  walk-ins, queue, sessions, invoices, payment and account pages replace the generic inherited
+  presentation. All 17 live pages pass the mandatory visual rubric at **27–30/30** with settled,
+  hashed light and dark captures.
+
+#### Preserved — Front Office maker authority
+
+Front Office remains assigned-branch operational maker only. Client duplicate protection, tenant/
+branch scoped ULID binding, appointment and queue state machines, personnel eligibility, server-
+derived invoice money, Idempotency-Key payment recording, Finance-only validation, maker/checker
+separation and validation-before-original-receipt remain backend enforced. The permission catalogue
+is unchanged. Finance validation/rejection/duplicate override/manual receipt issuance, HR/Branch/
+Audit administration and Personnel contact export controls are absent.
+
+Subscription Payment and Recovery has no route/component/network runtime while External Gate W and
+20D-W are closed. Notifications remains equally inert behind Phase 21N. No provider, Wallet,
+success, unread-count or preference state is fabricated.
+
+#### Local-completion verification
+
+Focused PostgreSQL suites pass **125 tests / 500 assertions** across UI-13, search, traceability and
+the owning client/scheduling/payment/receipt workflows. Focused Vitest passes **61/61**; typecheck,
+ESLint (0 errors; existing warnings only), deterministic generators/contracts and production build
+pass. Focused UI-13 Playwright passes **59/59**, including 17 light and 17 dark pages, seven widths,
+axe 0 serious/critical, 44px targets, 200%-equivalent footer reserve, keyboard and reduced motion.
+Final Vitest passes **1,402/1,402 across 145 files** after precisely reconciling the authoritative
+runtime screen inventory and bounding cold dynamic-import waits. The authoritative PostgreSQL run
+completed **2,984 passed / 14 skipped / 4 deterministic current-consumer failures / 48,788
+assertions**; all runtime coverage passed, UI13-017 corrected the four route/gate projections, and
+the full invalidated consumer set passes **54/54 with 6,746 assertions** without invalidating the
+runtime suite.
+
+The final whole-product Playwright run passes **1,526/1,526 in 52.6m** with no failure, flake or skip.
+UI13-018…022 preserve the broad-run compatibility/fixture/audit/role-entry/evidence-writer RCAs;
+bounded Windows evidence-write retry passed a 27/27 stress before the authoritative run. All 419
+frozen predecessor files across ten aggregate groups match exactly; UI-06/UI-07 current projections
+were regenerated and UI-13 evidence retained.
+
+Final production PHP `bb9c9653…` (**926,592,572 bytes**) and Nginx `46a8642…`
+(**317,705,869 bytes**) pass Nginx syntax and **51/51** isolated no-volume
+`office.servana.ke` checks. Both named containers and the network were removed. Composer/npm audits
+report zero vulnerabilities, gitleaks reports no leaks across 78 commits, Git integrity is clean,
+and all 24 UI-13 closures are `local_complete`. UI13-023 records the initial standalone Nginx
+syntax command's missing-upstream orchestration error and the unchanged image's successful
+production-network rerun; UI13-024 records the safely removed, stale zero-byte Git index lock that
+blocked the first staging command without staging any file. The pre-merge record intentionally claims no PR,
+CI, governance or merge fact; the next UI phase owns reconciliation to `verified_complete`.
+
+### Phase UI-12 — Finance experience (`phase-ui-12-finance-experience`) — verified complete
 
 Started from verified UI-11 squash `dc74e28a8288fc24045ceadc9e4d7de474a7ad2f`. Startup
 reconciliation proved clean synchronized `main`, PR #61's final five-job exact-head run, truthful
@@ -75,7 +140,10 @@ the 10 were restored individually from the verified base and the 112 removed ind
 UI-06/UI-07 projections were regenerated. Production PHP `ffa9d301…` and Nginx `2ea187e8…` pass
 Nginx syntax and **46/46** isolated no-volume `finance.servana.ke` checks. Composer/npm audits,
 commit/pre-commit gitleaks and Git object integrity are clean. Seventeen UI-12 closures are
-`local_complete`. This entry claims no future PR CI, governance, review or merge.
+`verified_complete`. PR #62 merged by normal squash `6796d82b…`; final reviewed head
+`df541979…` passed exact-head five-job CI run `31764745586`, governance comment
+`5288994536` records zero reviews/approvals, reviewed and merge trees are equal, and source
+branches are absent. The preserved initial-failure history remains unchanged.
 
 ### Phase UI-11 — Human Resource experience (`phase-ui-11-human-resource-experience`) — verified complete
 

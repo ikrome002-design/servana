@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { writeEvidenceFile, writeEvidenceScreenshot } from './support/evidenceScreenshot';
 import { IDS, prepare, type AuditScreen } from './support/releaseAudit';
 import { assertNoHorizontalScroll } from './support/roleBootstrap';
 
@@ -78,7 +79,7 @@ test.describe('all fifteen implemented Human Resource pages', () => {
       expect(health.requests.some((url) => url.includes(entry.api)), `${entry.screen} never requested ${entry.api}`).toBe(true);
       expect(health.errors, `${entry.screen} browser errors`).toEqual([]);
       expect(health.failed, `${entry.screen} failed requests`).toEqual([]);
-      await page.screenshot({ path: join(SHOTS, `desktop-light-${entry.screen}.png`), animations: 'disabled' });
+      await writeEvidenceScreenshot(page, join(SHOTS, `desktop-light-${entry.screen}.png`), { animations: 'disabled' });
     });
   }
 });
@@ -153,7 +154,7 @@ test.describe('responsive, theme and accessibility', () => {
         await openHr(page, entry);
         await assertNoHorizontalScroll(page);
       }
-      await page.screenshot({ path: join(SHOTS, `responsive-${width}.png`), animations: 'disabled' });
+      await writeEvidenceScreenshot(page, join(SHOTS, `responsive-${width}.png`), { animations: 'disabled' });
     });
   }
 
@@ -171,7 +172,7 @@ test.describe('responsive, theme and accessibility', () => {
       page.locator('.sv-footer-reserve').evaluate((root) => Number.parseFloat(getComputedStyle(root).paddingBottom)),
     ]);
     expect(footer && reserve >= footer.height).toBe(true);
-    await page.screenshot({ path: join(SHOTS, 'dashboard-dark-200-percent-equivalent.png'), animations: 'disabled' });
+    await writeEvidenceScreenshot(page, join(SHOTS, 'dashboard-dark-200-percent-equivalent.png'), { animations: 'disabled' });
   });
 
   for (const entry of PAGES) {
@@ -199,7 +200,7 @@ test('writes the UI-11 screenshot evidence index', async () => {
       sha256: createHash('sha256').update(bytes).digest('hex'),
     };
   });
-  writeFileSync(resolve(SHOTS, '..', 'screenshot-index.json'), `${JSON.stringify({
+  await writeEvidenceFile(resolve(SHOTS, '..', 'screenshot-index.json'), `${JSON.stringify({
     schema: 'servana.ui11.screenshot-index.v1', phase: 'UI-11', account: 'merchant_human_resource',
     host: 'hr.servana.ke', data_provenance: 'synthetic; no real person, credential, token or provider payload',
     status: 'UI-11 implementation evidence; not a UI-16 release-approved visual baseline', captures,

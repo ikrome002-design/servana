@@ -355,25 +355,27 @@ export const SCREENS: AuditScreen[] = [
   { key: 'finance-settings', route: 'finance.settings', path: '/settings', role: 'merchant_finance', state: 'static' },
 
   // --- Front Office ----------------------------------------------------------
-  { key: 'front-office-landing', route: 'front-office.landing', path: '/front-office', role: 'merchant_front_office', state: 'static' },
-  { key: 'front-office-get-started', route: 'front-office.get-started', path: '/front-office/get-started', role: 'merchant_front_office', state: 'static' },
-  { key: 'front-office-clients', route: 'front-office.clients', path: '/front-office/clients', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-client-create', route: 'front-office.clients.create', path: '/front-office/clients/create', role: 'merchant_front_office', state: 'static' },
-  { key: 'front-office-client-detail', route: 'front-office.clients.detail', path: `/front-office/clients/${IDS.client}`, role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-appointments', route: 'front-office.appointments', path: '/front-office/appointments', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-appointment-create', route: 'front-office.appointments.create', path: '/front-office/appointments/create', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-appointment-detail', route: 'front-office.appointments.detail', path: `/front-office/appointments/${IDS.appointment}`, role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-queue', route: 'front-office.queue', path: '/front-office/queue', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-walk-in', route: 'front-office.walk-in', path: '/front-office/walk-in', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-queue-detail', route: 'front-office.queue.detail', path: `/front-office/queue/${IDS.queueEntry}`, role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-service-sessions', route: 'front-office.sessions', path: '/front-office/sessions', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-invoices', route: 'front-office.invoices', path: '/front-office/invoices', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-invoice-create', route: 'front-office.invoices.create', path: '/front-office/invoices/create', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-invoice-detail', route: 'front-office.invoices.detail', path: `/front-office/invoices/${IDS.invoice}`, role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-payment-recording', route: 'front-office.payments', path: '/front-office/payments', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-payment-record', route: 'front-office.payments.record', path: `/front-office/payments/record/${IDS.invoice}`, role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-receipts', route: 'front-office.receipts', path: '/front-office/receipts', role: 'merchant_front_office', state: 'populated' },
-  { key: 'front-office-receipt-detail', route: 'front-office.receipts.detail', path: `/front-office/receipts/${IDS.receipt}`, role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-dashboard', route: 'front-office.dashboard', path: '/dashboard', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-get-started', route: 'front-office.get-started', path: '/get-started', role: 'merchant_front_office', state: 'static' },
+  { key: 'front-office-clients', route: 'front-office.clients', path: '/clients', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-clients-create', route: 'front-office.clients-create', path: '/clients/create', role: 'merchant_front_office', state: 'static' },
+  { key: 'front-office-client-detail', route: 'front-office.client-detail', path: `/clients/${IDS.client}`, role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-appointments', route: 'front-office.appointments', path: '/appointments', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-appointment-create', route: 'front-office.appointment-create', path: '/appointments/create', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-appointment-detail', route: 'front-office.appointment-detail', path: `/appointments/${IDS.appointment}`, role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-walk-in', route: 'front-office.walk-ins', path: '/walk-ins', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-queue', route: 'front-office.queue', path: '/queue', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-queue-transfer', route: 'front-office.queue-transfer', path: `/queue/${IDS.queueEntry}/transfer`, role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-queue-detail', route: 'front-office.queue-entry', path: `/queue/${IDS.queueEntry}`, role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-service-sessions', route: 'front-office.sessions', path: '/sessions', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-invoices', route: 'front-office.invoices', path: '/invoices', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-invoice-create', route: 'front-office.invoices-create', path: '/invoices/create', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-invoice-detail', route: 'front-office.invoice-detail', path: `/invoices/${IDS.invoice}`, role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-invoice-payment-create', route: 'front-office.invoice-payment-create', path: `/invoices/${IDS.invoice}/payments/create`, role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-payments-status', route: 'front-office.payments-status', path: '/payments/status', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-activity', route: 'front-office.activity', path: '/activity', role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-receipt-detail', route: 'front-office.receipt-detail', path: `/receipts/${IDS.receipt}`, role: 'merchant_front_office', state: 'populated' },
+  { key: 'front-office-account', route: 'front-office.account', path: '/account', role: 'merchant_front_office', state: 'static' },
 
   // --- Personnel -------------------------------------------------------------
   { key: 'personnel-landing', route: 'personnel.landing', path: '/personnel', role: 'merchant_personnel', state: 'static' },
@@ -445,7 +447,7 @@ const ROLE_BASELINE_PERMISSIONS: Record<RoleIdentity, string[]> = {
   merchant_branch: ['branch.profile.view', 'branch.dashboard.view'],
   merchant_human_resource: ['staff.view'],
   merchant_finance: ['invoice.view', 'receipt.view', 'customer_payment.view', 'cash_up.view'],
-  merchant_front_office: ['client.view', 'appointment.view', 'queue.view', 'invoice.view', 'receipt.view', 'service_session.view'],
+  merchant_front_office: ['client.view', 'appointment.view', 'queue.view', 'invoice.view', 'receipt.view', 'service_session.view', 'customer_payment.record', 'front_office.search'],
   merchant_personnel: [],
   merchant_audit: ['audit.branch_events.view'],
 };
@@ -581,6 +583,76 @@ const CLIENT = {
   can: { view: true, update: true },
 };
 
+const FRONT_OFFICE_SERVICE = {
+  id: id('SERVICE'),
+  name: 'Signature cut and finish',
+  description: 'Consultation, cut and finish',
+  duration_minutes: 45,
+  status: 'active',
+};
+
+const FRONT_OFFICE_APPOINTMENT = {
+  id: IDS.appointment,
+  status: 'confirmed',
+  starts_at: '2026-07-15T10:00:00+00:00',
+  ends_at: '2026-07-15T10:45:00+00:00',
+  checked_in_at: null,
+  cancelled_at: null,
+  no_show_at: null,
+  cancellation_reason: null,
+  service: FRONT_OFFICE_SERVICE,
+  client: { id: IDS.client, full_name: 'Amina Wanjiku', phone_masked: '+2547•••••678', phone_last_four: '5678' },
+  assigned_personnel: { id: IDS.staff, display_name: 'Joy Wanjiku' },
+  can: { view: true, assign: true, transfer: false, reschedule: true, check_in: true, cancel: true, no_show: false },
+};
+
+const FRONT_OFFICE_SESSION = {
+  id: IDS.session,
+  status: 'completed',
+  started_at: '2026-07-15T08:00:00+00:00',
+  completed_at: '2026-07-15T08:45:00+00:00',
+  cancelled_at: null,
+  cancellation_reason: null,
+  notes: 'Client confirmed the final style.',
+  preferred_personnel_honored: true,
+  service: FRONT_OFFICE_SERVICE,
+  client: { id: IDS.client, full_name: 'Amina Wanjiku', phone_masked: '+2547•••••678' },
+  personnel: { id: IDS.staff, display_name: 'Joy Wanjiku' },
+  commission_preview: { preview_status: 'not_configured', reason: 'compensation_not_configured', earned: false, payable: false, amount_minor: null, currency: null },
+  can: { view: true, complete: false, cancel: false, update_notes: true },
+};
+
+const FRONT_OFFICE_INVOICE = {
+  id: IDS.invoice,
+  invoice_number: 'WST-INV-000241',
+  status: 'issued',
+  is_draft: false,
+  currency: 'KES',
+  client: { id: IDS.client, full_name: 'Amina Wanjiku', phone_masked: '+2547•••••678', phone_last_four: '5678' },
+  subtotal: { amount: 500000, currency: 'KES', formatted: 'KES 5,000.00' },
+  discount: { amount: 0, currency: 'KES', formatted: 'KES 0.00' },
+  tax: { amount: 0, currency: 'KES', formatted: 'KES 0.00' },
+  preferred_personnel_fee: { amount: 0, currency: 'KES', formatted: 'KES 0.00' },
+  total: { amount: 500000, currency: 'KES', formatted: 'KES 5,000.00' },
+  validated_paid: { amount: 0, currency: 'KES', formatted: 'KES 0.00' },
+  balance: { amount: 500000, currency: 'KES', formatted: 'KES 5,000.00' },
+  finalized_at: '2026-07-15T08:50:00+00:00',
+  voided_at: null,
+  void_reason: null,
+  adjusted_at: null,
+  adjustment_reason: null,
+  created_at: '2026-07-15T08:46:00+00:00',
+  items: [{
+    id: id('INVITEM'), service: FRONT_OFFICE_SERVICE, personnel: { id: IDS.staff, display_name: 'Joy Wanjiku' },
+    description: 'Signature cut and finish', quantity: 1,
+    unit_price: { amount: 500000, currency: 'KES', formatted: 'KES 5,000.00' },
+    line_total: { amount: 500000, currency: 'KES', formatted: 'KES 5,000.00' },
+    preferred_personnel_fee: { amount: 0, currency: 'KES', formatted: 'KES 0.00' },
+    eligible_for_commission: true, currency: 'KES',
+  }],
+  can: { view: true, finalize: false, void: false, adjust: false },
+};
+
 const QUEUE_ENTRY = {
   id: IDS.queueEntry,
   status: 'waiting',
@@ -696,6 +768,55 @@ const FINANCE_OVERVIEW = {
   reports: { available: false, reason: 'Phase 21N is blocked until External Gate W and Phase 20D-W complete.' },
   notifications: { available: false, reason: 'Phase 21N is blocked until External Gate W and Phase 20D-W complete.' },
 };
+const FRONT_OFFICE_OVERVIEW = {
+  observed_at: AUDIT_INSTANT_UTC,
+  business_date: AUDIT_BUSINESS_DATE,
+  branch: { id: IDS.branch, name: 'Westlands Branch', code: 'WST', town: 'Nairobi' },
+  appointments: { today: 7, by_status: { scheduled: 3, checked_in: 2, queued: 2 }, arrivals: 4 },
+  queue: {
+    active: 5,
+    waiting: 3,
+    in_service: 2,
+    by_status: { waiting: 2, assigned: 1, in_service: 2 },
+    longest_estimated_wait_minutes: 25,
+  },
+  sessions: { today: 6, in_progress: 2, completed: 4, by_status: { in_progress: 2, completed: 4 } },
+  invoices: { drafts: 2, awaiting_payment: 3, by_status: { draft: 2, issued: 2, partially_paid: 1 } },
+  payments: { pending_validation: 2, by_status: { pending_validation: 2, validated: 3 }, receipts_ready_today: 3 },
+  tasks: [
+    { key: 'arrivals', label: 'Checked-in arrivals', count: 2, route_name: 'front-office.appointments' },
+    { key: 'waiting', label: 'Clients waiting in queue', count: 3, route_name: 'front-office.queue' },
+    { key: 'invoice-drafts', label: 'Invoice drafts to finish', count: 2, route_name: 'front-office.invoices' },
+    { key: 'payment-follow-up', label: 'Recorded payments awaiting Finance', count: 2, route_name: 'front-office.payments-status' },
+  ],
+  get_started: {
+    client_created: true,
+    appointment_created: true,
+    queue_used: true,
+    session_completed: true,
+    invoice_created: true,
+    payment_recorded: true,
+    receipt_available: true,
+  },
+  subscription: { available: false, reason: 'External Gate W is closed. Phase 20D-W has no Wallet payment or billing-recovery runtime.' },
+  notifications: { available: false, reason: 'Phase 21N has no in-app notification persistence, read or preference runtime.' },
+};
+const FRONT_OFFICE_ACTIVITY = {
+  id: IDS.auditEvent,
+  domain: 'billing',
+  action: 'customer_payment.recorded',
+  label: 'Payment recorded for Finance validation',
+  occurred_at: '2026-07-15T08:45:00+00:00',
+};
+const FRONT_OFFICE_PAYMENT_STATUS = {
+  id: IDS.paymentGroup,
+  status: 'pending_validation',
+  total: FINANCE_MONEY,
+  recorded_at: '2026-07-15T07:45:00+00:00',
+  submitted_for_validation_at: '2026-07-15T07:46:00+00:00',
+  invoice: { id: IDS.invoice, number: 'INV-000241', status: 'issued' },
+  receipt: { ready: false, id: null, number: null },
+};
 const FINANCE_DUPLICATE = {
   id: id('DUPCHECK'), method: 'mpesa_offline', result: 'duplicate_suspected', match_type: 'exact_normalized_reference', risk: 'high', reference_masked: '••••••1ABC', amount: FINANCE_MONEY, checked_at: '2026-07-15T07:47:00+00:00',
   current: { group_id: IDS.paymentGroup, group_status: 'recorded', invoice_id: IDS.invoice, invoice_number: 'INV-000241', recorded_by: 'Njeri Front Office', recorded_at: '2026-07-15T07:45:00+00:00' },
@@ -710,6 +831,19 @@ const FINANCE_PARTIAL_SPLIT = {
 };
 
 const SHARED_FIXTURES: Fixture[] = [
+  // --- UI-13 Front Office experience ----------------------------------------
+  { match: /^\/front-office\/workspace$/, body: { data: { overview: FRONT_OFFICE_OVERVIEW } } },
+  { match: /^\/front-office\/activity$/, body: { data: [FRONT_OFFICE_ACTIVITY], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
+  { match: /^\/front-office\/payment-status$/, body: { data: [FRONT_OFFICE_PAYMENT_STATUS], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
+  { match: /^\/services\/[^/]+\/eligibility$/, body: { data: [{ id: id('ELIGIBILITY'), staff_profile_id: IDS.staff, staff_name: 'Amina Wanjiku', active: true }] } },
+  { match: /^\/appointments\/[^/]+$/, body: { data: FRONT_OFFICE_APPOINTMENT } },
+  { match: /^\/appointments$/, body: { data: [FRONT_OFFICE_APPOINTMENT], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/service-sessions$/, body: { data: [FRONT_OFFICE_SESSION], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/invoices\/[^/]+$/, body: { data: FRONT_OFFICE_INVOICE } },
+  { match: /^\/invoices$/, body: { data: [FRONT_OFFICE_INVOICE], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/services$/, body: { data: [FRONT_OFFICE_SERVICE], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/auth\/sessions$/, body: { data: [], meta: { ...EMPTY_LIST.meta } } },
+
   // --- UI-12 Finance experience ---------------------------------------------
   { match: /^\/finance\/workspace$/, body: { data: { overview: FINANCE_OVERVIEW } } },
   { match: /^\/finance\/duplicate-references$/, body: { data: [FINANCE_DUPLICATE], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
@@ -1066,7 +1200,7 @@ export function isShellScreen(screen: AuditScreen): boolean {
     // `auth-access-denied` renders with `layout: none` (see docs/frontend/screens/inventory.json),
     // exactly like `unsupported-role`: a deliberate role-safe dead end with no account chrome, so
     // there is no shell navigation to assert. Phase UI-03 added the screen without listing it here.
-    'global-search', 'unsupported-role', 'auth-access-denied',
+    'unsupported-role', 'auth-access-denied',
   ]);
   return !STANDALONE.has(screen.key);
 }

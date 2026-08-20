@@ -54,7 +54,7 @@ describe('QueueBoard.vue', () => {
     expect(wrapper.text()).toContain('Amina Yusuf');
     expect(wrapper.text()).toContain('Haircut');
     expect(wrapper.text()).toContain('Estimate');
-    expect(wrapper.find('[data-testid="queue-status-badge"]').text()).toBe('Assigned');
+    expect(wrapper.find('[data-testid="queue-status-badge"]').text()).toContain('Assigned');
   });
 
   it('gates the start-walk-in action on queue.create', async () => {

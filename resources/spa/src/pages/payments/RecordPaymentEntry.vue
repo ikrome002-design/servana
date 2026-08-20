@@ -26,7 +26,7 @@ const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => 
 });
 
 function goRecord(id: string): void {
-  void router.push({ name: 'front-office.payments.record', params: { id } });
+  void router.push({ name: 'front-office.invoice-payment-create', params: { invoiceUlid: id } });
 }
 
 onMounted(async () => {

@@ -3,16 +3,16 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "ba280b13fa2556f191ce195e5ff9ae9b477f3dc29358314ce264cbbc4e61de8f",
+  "canonical_authority_sha256": "25365cfa749fe9e162d47e20280a473949ad2283f41e32df0fc645b340850240",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "425ca93531efaa2ff609b13bbadfcba00a518ed732d441f9f8d2ba3820a660c0",
+  "screen_inventory_sha256": "13a0bd3e23603ebef3945db82f831eb4a2e4d28e2e8fe0e8742193988955df20",
   "purpose": "The contract register (what is REQUIRED) against the runtime screen register (what is BUILT). The two are reconciled, never summed.",
   "contract_pages": 160,
-  "inventory_rows": 164,
-  "inventory_authenticated_rows": 147,
+  "inventory_rows": 166,
+  "inventory_authenticated_rows": 149,
   "inventory_excluded_rows": 17,
   "excluded_classification": {
     "predicate": "inventory row domain in ['public','legal','auth','access-state','onboarding','search']",
@@ -26,7 +26,7 @@
       "search"
     ]
   },
-  "implemented_contract_pages_with_inventory_row": 108,
+  "implemented_contract_pages_with_inventory_row": 112,
   "implemented_contract_pages_without_inventory_row": [],
   "authenticated_inventory_rows_not_referenced_by_contract": [
     {
@@ -98,12 +98,6 @@
     {
       "key": "finance-landing",
       "route": "finance.landing",
-      "status": "implemented",
-      "phase": "Phase 11"
-    },
-    {
-      "key": "front-office-landing",
-      "route": "front-office.landing",
       "status": "implemented",
       "phase": "Phase 11"
     },
@@ -205,37 +199,31 @@
     },
     {
       "key": "front-office-appointment-create",
-      "route": "front-office.appointments.create",
+      "route": "front-office.appointment-create",
       "status": "implemented",
       "phase": "Phase 16A"
     },
     {
       "key": "front-office-appointment-detail",
-      "route": "front-office.appointments.detail",
+      "route": "front-office.appointment-detail",
       "status": "implemented",
       "phase": "Phase 16A"
     },
     {
       "key": "front-office-queue-detail",
-      "route": "front-office.queue.detail",
+      "route": "front-office.queue-entry",
       "status": "implemented",
       "phase": "Phase 16B"
     },
     {
       "key": "front-office-invoice-detail",
-      "route": "front-office.invoices.detail",
+      "route": "front-office.invoice-detail",
       "status": "implemented",
       "phase": "Phase 17"
     },
     {
-      "key": "front-office-payment-recording",
-      "route": "front-office.payments",
-      "status": "implemented",
-      "phase": "Phase 18A"
-    },
-    {
       "key": "front-office-receipt-detail",
-      "route": "front-office.receipts.detail",
+      "route": "front-office.receipt-detail",
       "status": "implemented",
       "phase": "Phase 18B"
     },
@@ -278,7 +266,7 @@
   ],
   "inventory_status_totals": {
     "disabled_by_gate": 6,
-    "implemented": 152,
+    "implemented": 154,
     "removed_by_authority": 6
   }
 }

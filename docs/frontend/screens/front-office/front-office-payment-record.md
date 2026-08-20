@@ -2,8 +2,8 @@
 
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 18A**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
-- **Screen key:** `front-office-payment-record`
-- **Route name and URL:** `front-office.payments.record`
+- **Screen key:** `front-office-invoice-payment-create`
+- **Route name and URL:** `front-office.invoice-payment-create`
 - **Layout:** `FrontOfficeLayout`
 - **Allowed roles:** `merchant_front_office`
 - **Required permissions:** `customer_payment.record` (frontend visibility only; backend EnsurePermission + policy is authoritative)

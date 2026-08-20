@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { writeEvidenceFile, writeEvidenceScreenshot } from './support/evidenceScreenshot';
 
 /**
  * Phase UI-04 — focused browser proof (ADR-021, ADR-024, ADR-025).
@@ -73,7 +74,7 @@ async function capture(
 ): Promise<void> {
   mkdirSync(SHOTS, { recursive: true });
   const file = resolve(SHOTS, name);
-  await page.screenshot({ path: file, fullPage: false });
+  await writeEvidenceScreenshot(page, file, { fullPage: false });
 
   rows.push({
     ...meta,
@@ -410,9 +411,9 @@ test.describe('UI-04 web app manifest (UI01-ASSET-003)', () => {
   });
 });
 
-test.afterAll(() => {
+test.afterAll(async () => {
   mkdirSync(EVIDENCE, { recursive: true });
-  writeFileSync(
+  await writeEvidenceFile(
     resolve(EVIDENCE, 'screenshot-index.json'),
     `${JSON.stringify(
       {
@@ -427,6 +428,5 @@ test.afterAll(() => {
       null,
       2,
     )}\n`,
-    'utf8',
   );
 });

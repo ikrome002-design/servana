@@ -114,7 +114,7 @@ final class QueueEntrySearchDefinition extends AbstractSearchDocumentDefinition
             status: $model->status->value,
             date: $model->queued_at->toIso8601String(),
             amount: null,
-            routeName: 'front-office.queue.detail',
+            routeName: 'front-office.queue-entry',
             routeParamId: $model->ulid,
             branchUlid: $model->branch?->ulid,
             branchName: $model->branch?->name,

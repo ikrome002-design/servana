@@ -117,7 +117,7 @@ export const ROLE_ENTRY: Record<RoleIdentity, RoleEntry> = {
     label: 'Front Office',
     layout: 'FrontOfficeLayout',
     navPlacement: 'sidebar',
-    landingRouteName: 'front-office.landing',
+    landingRouteName: 'front-office.dashboard',
     getStartedRouteName: 'front-office.get-started',
   },
   merchant_personnel: {

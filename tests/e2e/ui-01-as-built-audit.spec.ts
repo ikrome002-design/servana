@@ -1,7 +1,8 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test, type BrowserContext, type Page } from '@playwright/test';
+import { writeEvidenceFile, writeEvidenceScreenshot } from './support/evidenceScreenshot';
 import {
   AUDIT_INSTANT_UTC,
   SCREENS,
@@ -140,7 +141,7 @@ async function shot(
     .catch(() => null);
   try {
     mkdirSync(SHOT_DIR, { recursive: true });
-    await page.screenshot({ path: target, fullPage: meta.fullPage ?? false });
+    await writeEvidenceScreenshot(page, target, { fullPage: meta.fullPage ?? false });
     screenshots.push({
       ...meta,
       device_scale_factor: 1,
@@ -742,5 +743,5 @@ test.afterAll(async () => {
     unhandled_rejections: [...new Set(unhandledRejections)].sort(),
   };
 
-  writeFileSync(resolve(EVIDENCE_DIR, 'browser-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, 'utf8');
+  await writeEvidenceFile(resolve(EVIDENCE_DIR, 'browser-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`);
 });

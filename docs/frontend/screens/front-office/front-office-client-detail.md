@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 15A**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `front-office-client-detail`
-- **Route name and URL:** `front-office.clients.detail`
+- **Route name and URL:** `front-office.client-detail`
 - **Layout:** `FrontOfficeLayout`
 - **Allowed roles:** `merchant_front_office`
 - **Required permissions:** `client.view`, `client.update` (frontend visibility only; backend EnsurePermission + policy is authoritative)

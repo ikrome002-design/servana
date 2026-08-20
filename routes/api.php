@@ -44,6 +44,7 @@ use App\Http\Controllers\Api\V1\Files\FileController;
 use App\Http\Controllers\Api\V1\Finance\FinanceWorkspaceController;
 use App\Http\Controllers\Api\V1\FinanceDisputes\FinanceDisputeController;
 use App\Http\Controllers\Api\V1\FinanceExports\FinanceExportController;
+use App\Http\Controllers\Api\V1\FrontOffice\FrontOfficeWorkspaceController;
 use App\Http\Controllers\Api\V1\Hr\HrServiceOptionController;
 use App\Http\Controllers\Api\V1\Hr\HrWorkspaceController;
 use App\Http\Controllers\Api\V1\Hr\PermissionOverrideController;
@@ -884,6 +885,18 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
                 ->middleware([EnsureBranchScope::class, EnsurePermission::class.':client.update'])
                 ->defaults(RouteClassification::KEY, RouteClass::BranchMutation->value)
                 ->name('clients.sms-consent.update');
+
+            // UI-13 — bounded Front Office presentation reads over existing branch facts.
+            // They grant no Finance checker, provider, receipt-issue or staff-access authority.
+            Route::get('front-office/workspace', [FrontOfficeWorkspaceController::class, 'show'])
+                ->middleware(EnsurePermission::class.':front_office.search')
+                ->name('front-office.workspace.show');
+            Route::get('front-office/activity', [FrontOfficeWorkspaceController::class, 'activity'])
+                ->middleware(EnsurePermission::class.':front_office.search')
+                ->name('front-office.activity.index');
+            Route::get('front-office/payment-status', [FrontOfficeWorkspaceController::class, 'paymentStatus'])
+                ->middleware(EnsurePermission::class.':customer_payment.record')
+                ->name('front-office.payment-status.index');
 
             // Appointments (Scope §, Plan §36; Phase 16A). Front Office owns all
             // mutations (`appointment.*`, branch_mutation); Branch Manager has

@@ -4,6 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import { apiClient } from '@/services/apiClient';
@@ -83,7 +84,7 @@ async function submit(): Promise<void> {
       preferred_personnel: assignmentMode.value === 'preferred_personnel' ? personnelId.value : null,
     });
     notifications.addToast({ type: 'success', message: 'Walk-in added to the queue.' });
-    await router.push({ name: 'front-office.queue.detail', params: { id: entry.id } });
+    await router.push({ name: 'front-office.queue-entry', params: { queueUlid: entry.id } });
   } catch (err: unknown) {
     const m = axios.isAxiosError(err) && err.apiError ? err.apiError.message : 'Something went wrong.';
     notifications.addToast({ type: 'error', message: m });
@@ -104,25 +105,40 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="mx-auto w-full max-w-xl p-4 md:p-6">
-    <RouterLink
-      :to="{ name: 'front-office.queue' }"
-      class="text-sm font-semibold text-heading underline"
+  <section class="mx-auto w-full max-w-5xl">
+    <SvOperationalHero
+      eyebrow="Fast arrival capture"
+      title="Start a walk-in"
+      description="Welcome the client, choose a configured service and let the server create the client and queue entry atomically."
     >
-      <SvIconBack
-        aria-hidden="true"
-        class="mr-1 inline-block h-4 w-4 align-text-bottom"
-      />Back to the queue
-    </RouterLink>
-
-    <h1 class="mt-3 font-display text-2xl font-bold text-heading">
-      Start a walk-in
-    </h1>
+      <template #actions>
+        <RouterLink
+          :to="{ name: 'front-office.queue' }"
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white"
+        >
+          <SvIconBack
+            aria-hidden="true"
+            class="mr-1 h-4 w-4"
+          />Back to queue
+        </RouterLink>
+      </template>
+      <ol class="grid gap-2 md:grid-cols-3">
+        <li class="rounded-control border border-white/10 bg-white/10 p-3 text-sm">
+          <strong class="block">1 · Identify</strong><span class="text-white/70">Find or create the client</span>
+        </li>
+        <li class="rounded-control border border-white/10 bg-white/10 p-3 text-sm">
+          <strong class="block">2 · Service</strong><span class="text-white/70">Choose configured work</span>
+        </li>
+        <li class="rounded-control border border-white/10 bg-white/10 p-3 text-sm">
+          <strong class="block">3 · Queue</strong><span class="text-white/70">Confirm assignment mode</span>
+        </li>
+      </ol>
+    </SvOperationalHero>
 
     <SvCard
       as="div"
       padding="lg"
-      class="mt-4"
+      class="mx-auto mt-5 max-w-2xl border-t-4 border-t-sv-brand-secondary"
     >
       <form
         class="flex flex-col gap-5"

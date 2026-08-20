@@ -3,8 +3,10 @@ import { computed, onMounted, ref } from 'vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
 import SvDialog from '@/components/ui/SvDialog.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
+import SvStatusBadge, { type SvStatusTone } from '@/components/ui/SvStatusBadge.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
 import { useServiceSessionStore } from '@/stores/serviceSessionStore';
 import type { ServiceSession } from '@/types/models';
@@ -42,6 +44,13 @@ const statusOptions = [
   { value: 'completed', label: 'Completed' },
   { value: 'cancelled', label: 'Cancelled' },
 ];
+
+function sessionTone(status: string): SvStatusTone {
+  if (status === 'completed') return 'success';
+  if (status === 'cancelled') return 'error';
+  if (status === 'in_progress') return 'info';
+  return 'warning';
+}
 
 function openCancel(session: ServiceSession): void {
   cancelTarget.value = session;
@@ -91,103 +100,119 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-display text-2xl font-bold text-heading">
-        Service sessions
-      </h1>
+  <section class="mx-auto max-w-6xl">
+    <SvOperationalHero
+      eyebrow="Delivered service truth"
+      title="Service sessions"
+      description="Follow active work through completion before billing. Completion previews remain estimates; compensation becomes authoritative only in its owning workflow."
+    />
+    <SvCard
+      class="mt-5 flex flex-wrap items-end justify-between gap-3"
+      padding="md"
+    >
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+          Session view
+        </p>
+        <p class="mt-1 text-sm text-heading">
+          Filter the assigned branch without changing service state.
+        </p>
+      </div>
       <SvSelect
         id="session-status-filter"
         v-model="store.filterStatus"
         label="Filter"
         :options="statusOptions"
-        class="w-full sm:w-64"
+        class="w-full md:w-64"
         @update:model-value="() => store.fetchSessions()"
       />
-    </div>
+    </SvCard>
 
-    <SvStateBoundary
-      class="mt-6"
-      :state="boundaryState"
-      empty-message="No service sessions match this filter."
-      error-message="We couldn’t load service sessions."
-      @retry="() => store.fetchSessions()"
-    >
-      <ul
-        class="flex flex-col gap-3"
-        aria-label="Service sessions"
+    <div class="mt-5">
+      <SvStateBoundary
+        :state="boundaryState"
+        empty-message="No service sessions match this filter."
+        error-message="We couldn’t load service sessions."
+        @retry="() => store.fetchSessions()"
       >
-        <li
-          v-for="session in store.sessions"
-          :key="session.id"
+        <ul
+          class="flex flex-col gap-3"
+          aria-label="Service sessions"
         >
-          <SvCard
-            as="article"
-            padding="md"
+          <li
+            v-for="session in store.sessions"
+            :key="session.id"
           >
-            <div class="flex flex-wrap items-start justify-between gap-2">
-              <div>
-                <h2 class="font-display text-base font-semibold text-heading">
-                  {{ session.client?.full_name ?? 'Client' }}
-                </h2>
-                <p class="mt-0.5 text-sm text-text-muted">
-                  {{ session.service?.name }}
-                  <span v-if="session.personnel"> · {{ session.personnel.display_name }}</span>
+            <SvCard
+              as="article"
+              padding="md"
+            >
+              <div class="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <h2 class="font-display text-base font-semibold text-heading">
+                    {{ session.client?.full_name ?? 'Client' }}
+                  </h2>
+                  <p class="mt-0.5 text-sm text-text-muted">
+                    {{ session.service?.name }}
+                    <span v-if="session.personnel"> · {{ session.personnel.display_name }}</span>
+                  </p>
+                  <p
+                    v-if="session.preferred_personnel_honored === false"
+                    class="mt-0.5 text-xs text-text-muted"
+                  >
+                    Preferred-personnel request overridden
+                  </p>
+                </div>
+                <SvStatusBadge
+                  :label="serviceSessionStatusLabel(session.status)"
+                  :tone="sessionTone(session.status)"
+                  sr-prefix="Session status:"
+                  data-testid="session-status-badge"
+                />
+              </div>
+
+              <!-- Completion preview — explicitly NOT earned or payable (Phase 16C). -->
+              <div
+                v-if="session.status === 'completed' && session.commission_preview"
+                class="mt-3 rounded-control border border-border bg-surface-alt px-3 py-2"
+                data-testid="commission-preview"
+              >
+                <p class="text-xs font-semibold text-text">
+                  {{ COMMISSION_PREVIEW_LABEL }}
                 </p>
-                <p
-                  v-if="session.preferred_personnel_honored === false"
-                  class="mt-0.5 text-xs text-text-muted"
-                >
-                  Preferred-personnel request overridden
+                <p class="mt-0.5 text-xs text-text-muted">
+                  {{ commissionPreviewSummary(session.commission_preview) }}
                 </p>
               </div>
-              <span
-                class="rounded-full bg-surface-alt px-2.5 py-1 text-xs font-semibold text-text"
-                data-testid="session-status-badge"
-              >{{ serviceSessionStatusLabel(session.status) }}</span>
-            </div>
 
-            <!-- Completion preview — explicitly NOT earned or payable (Phase 16C). -->
-            <div
-              v-if="session.status === 'completed' && session.commission_preview"
-              class="mt-3 rounded-control border border-border bg-surface-alt px-3 py-2"
-              data-testid="commission-preview"
-            >
-              <p class="text-xs font-semibold text-text">
-                {{ COMMISSION_PREVIEW_LABEL }}
-              </p>
-              <p class="mt-0.5 text-xs text-text-muted">
-                {{ commissionPreviewSummary(session.commission_preview) }}
-              </p>
-            </div>
-
-            <div
-              v-if="session.notes"
-              class="mt-3 text-sm text-text-muted"
-            >
-              {{ session.notes }}
-            </div>
-
-            <div class="mt-3 flex flex-wrap gap-2">
-              <SvButton
-                v-if="session.can?.update_notes"
-                variant="secondary"
-                @click="openNotes(session)"
+              <div
+                v-if="session.notes"
+                class="mt-3 text-sm text-text-muted"
               >
-                Notes
-              </SvButton>
-              <SvButton
-                v-if="session.can?.cancel"
-                variant="destructive"
-                @click="openCancel(session)"
-              >
-                Cancel
-              </SvButton>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
-    </SvStateBoundary>
+                {{ session.notes }}
+              </div>
+
+              <div class="mt-3 flex flex-wrap gap-2">
+                <SvButton
+                  v-if="session.can?.update_notes"
+                  variant="secondary"
+                  @click="openNotes(session)"
+                >
+                  Notes
+                </SvButton>
+                <SvButton
+                  v-if="session.can?.cancel"
+                  variant="destructive"
+                  @click="openCancel(session)"
+                >
+                  Cancel
+                </SvButton>
+              </div>
+            </SvCard>
+          </li>
+        </ul>
+      </SvStateBoundary>
+    </div>
 
     <!-- Cancel session -->
     <SvDialog

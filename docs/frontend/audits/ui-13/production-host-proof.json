@@ -1,0 +1,66 @@
+{
+  "schema": "servana.ui13.production-host-proof.v1",
+  "phase": "UI-13",
+  "lifecycle": "local_complete",
+  "source_state": "final stabilized runtime source after authoritative PostgreSQL, Vitest and whole-product Playwright gates; before documentation-only closeout",
+  "images": [
+    {
+      "tag": "servana-ui13-php:audit",
+      "id": "sha256:bb9c96531ce3811094e5002b0f682d2faf857ab313a8fd45ed8708d0185a67bb",
+      "size_bytes": 926592572,
+      "created_utc": "2026-08-20T12:36:55.128411601Z",
+      "dockerfile": "docker/php.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0
+    },
+    {
+      "tag": "servana-ui13-nginx:audit",
+      "id": "sha256:46a8642dae87fc03b88af300f864b51c1317f1e00dfcdb9f0e93922447487a83",
+      "size_bytes": 317705869,
+      "created_utc": "2026-08-20T12:37:42.721227999Z",
+      "dockerfile": "docker/nginx.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0
+    }
+  ],
+  "failed_runs": [
+    {
+      "command": "docker run --rm --name ui13-proof-nginx-syntax servana-ui13-nginx:audit nginx -t",
+      "exit_code": 1,
+      "classification": "proof orchestration ordering",
+      "root_cause": "the standalone syntax container had no production network and therefore could not resolve its intentional app:9000 upstream",
+      "resolution": "no source change; rerun the immutable image on ui13-proof-net after ui13-proof-app registered network alias app"
+    }
+  ],
+  "topology": {
+    "network": "ui13-proof-net",
+    "app": "ui13-proof-app with network alias app, array session/cache, sync queue and ephemeral local SQLite setting",
+    "edge": "ui13-proof-nginx on 127.0.0.1:8113",
+    "project_volume_mounted": false,
+    "production_dns_or_tls_touched": false,
+    "removed_after_proof": true,
+    "remaining_named_containers": 0,
+    "remaining_named_networks": 0
+  },
+  "nginx_syntax": {
+    "exit_code": 0,
+    "result": "syntax is ok; test is successful with the production app upstream resolvable"
+  },
+  "canonical_host": {
+    "command": "node scripts/ui13-production-host-proof.mjs http://127.0.0.1:8113",
+    "host": "office.servana.ke",
+    "implemented_routes_200_with_front_office_context": 17,
+    "gated_routes_ordinary_shell_only": 2,
+    "compatibility_paths_same_account": 19,
+    "wrong_account_collision_checks": 3,
+    "unknown_host_refused": true,
+    "fingerprinted_assets_and_mime": "all seven referenced assets returned 200 with expected MIME",
+    "javascript_source_map_status": 404,
+    "collected": 51,
+    "passed": 51,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "production_route_count": 357,
+  "status": "passed on the final production image pair; all named no-volume proof resources removed"
+}

@@ -1,114 +1,212 @@
-import type { RouteRecordRaw } from 'vue-router';
-import { requiresAccount, requiresActiveMerchant, requiresAuth } from '@/router/guards';
+import type { RouteLocationGeneric, RouteMeta, RouteRecordRaw } from 'vue-router';
+import {
+  requiresAccount,
+  requiresActiveMerchant,
+  requiresAuth,
+  requiresPermission,
+} from '@/router/guards';
 
+const layout = () => import('@/layouts/FrontOfficeLayout.vue');
+const redirect = (name: string) => (from: RouteLocationGeneric) => ({ name, query: from.query, hash: from.hash });
+const meta = (screenKey: string | null): RouteMeta => ({ roleIdentity: 'merchant_front_office', screenKey });
+
+/** Front Office canonical host-relative tree (Phase UI-13; exact Appendix A §10 contract). */
 export const frontOfficeRoutes: RouteRecordRaw[] = [
   {
-    path: '/front-office',
-    component: () => import('@/layouts/FrontOfficeLayout.vue'),
-    // Phase UI-07 — the account guard UI-03 deferred to this phase.
+    path: '/',
+    component: layout,
     beforeEnter: [requiresAuth, requiresActiveMerchant, requiresAccount('merchant_front_office')],
     meta: { accountKey: 'merchant_front_office' },
     children: [
       {
-        path: '',
-        name: 'front-office.landing',
-        component: () => import('@/pages/landing/RoleLanding.vue'),
-        meta: { roleIdentity: 'merchant_front_office' },
+        path: '/dashboard',
+        name: 'front-office.dashboard',
+        beforeEnter: [requiresPermission('front_office.search')],
+        component: () => import('@/pages/front-office/FrontOfficeDashboard.vue'),
+        meta: meta('dashboard'),
       },
       {
-        path: 'get-started',
+        path: '/get-started',
         name: 'front-office.get-started',
         component: () => import('@/pages/get-started/RoleGetStarted.vue'),
-        meta: { roleIdentity: 'merchant_front_office' },
+        meta: meta('get-started'),
       },
-      // Phase UI-07 removed `front-office.dashboard`: it rendered the "Phase 4 stub"
-      // placeholder, exposing contract page §10.4.1 as a live route that implemented nothing
-      // (UI/UX plan §7.2). `merchant_front_office.dashboard` reserves the identity as
-      // `planned`; UI-13 implements it.
       {
-        path: 'clients',
+        path: '/clients',
         name: 'front-office.clients',
+        beforeEnter: [requiresPermission('client.view')],
         component: () => import('@/pages/front-office/ClientList.vue'),
+        meta: meta('clients'),
       },
       {
-        path: 'clients/create',
-        name: 'front-office.clients.create',
+        path: '/clients/create',
+        name: 'front-office.clients-create',
+        beforeEnter: [requiresPermission('client.create')],
         component: () => import('@/pages/front-office/ClientCreate.vue'),
+        meta: meta('clients-create'),
       },
+      {
+        path: '/clients/:clientUlid',
+        name: 'front-office.client-detail',
+        beforeEnter: [requiresPermission('client.view')],
+        component: () => import('@/pages/front-office/ClientDetail.vue'),
+        meta: meta('client-detail'),
+      },
+      {
+        path: '/appointments',
+        name: 'front-office.appointments',
+        beforeEnter: [requiresPermission('appointment.view')],
+        component: () => import('@/pages/front-office/AppointmentList.vue'),
+        meta: meta('appointments'),
+      },
+      {
+        path: '/walk-ins',
+        name: 'front-office.walk-ins',
+        beforeEnter: [requiresPermission('queue.create')],
+        component: () => import('@/pages/front-office/WalkInCreate.vue'),
+        meta: meta('walk-ins'),
+      },
+      {
+        path: '/queue',
+        name: 'front-office.queue',
+        beforeEnter: [requiresPermission('queue.view')],
+        component: () => import('@/pages/front-office/QueueBoard.vue'),
+        meta: meta('queue'),
+      },
+      {
+        path: '/queue/:queueUlid/transfer',
+        name: 'front-office.queue-transfer',
+        beforeEnter: [requiresPermission('queue.transfer')],
+        component: () => import('@/pages/front-office/QueueTransfer.vue'),
+        meta: meta('queue-transfer'),
+      },
+      {
+        path: '/sessions',
+        name: 'front-office.sessions',
+        beforeEnter: [requiresPermission('service_session.view')],
+        component: () => import('@/pages/front-office/ServiceSessionList.vue'),
+        meta: meta('sessions'),
+      },
+      {
+        path: '/invoices',
+        name: 'front-office.invoices',
+        beforeEnter: [requiresPermission('invoice.view')],
+        component: () => import('@/pages/invoicing/InvoiceList.vue'),
+        meta: meta('invoices'),
+      },
+      {
+        path: '/invoices/create',
+        name: 'front-office.invoices-create',
+        beforeEnter: [requiresPermission('invoice.create')],
+        component: () => import('@/pages/invoicing/InvoiceCreate.vue'),
+        meta: meta('invoices-create'),
+      },
+      {
+        path: '/invoices/:invoiceUlid/payments/create',
+        name: 'front-office.invoice-payment-create',
+        beforeEnter: [requiresPermission('customer_payment.record')],
+        component: () => import('@/pages/payments/RecordPayment.vue'),
+        meta: meta('invoice-payment-create'),
+      },
+      {
+        path: '/payments/status',
+        name: 'front-office.payments-status',
+        beforeEnter: [requiresPermission('customer_payment.record')],
+        component: () => import('@/pages/front-office/PaymentReceiptStatus.vue'),
+        meta: meta('payments-status'),
+      },
+      {
+        path: '/activity',
+        name: 'front-office.activity',
+        beforeEnter: [requiresPermission('front_office.search')],
+        component: () => import('@/pages/front-office/DailyActivity.vue'),
+        meta: meta('activity'),
+      },
+      {
+        path: '/account',
+        name: 'front-office.account',
+        component: () => import('@/pages/front-office/FrontOfficeAccount.vue'),
+        meta: meta('account'),
+      },
+      {
+        path: '/appointments/create',
+        name: 'front-office.appointment-create',
+        beforeEnter: [requiresPermission('appointment.create')],
+        component: () => import('@/pages/front-office/AppointmentCreate.vue'),
+        meta: meta(null),
+      },
+      {
+        path: '/appointments/:appointmentUlid',
+        name: 'front-office.appointment-detail',
+        beforeEnter: [requiresPermission('appointment.view')],
+        component: () => import('@/pages/front-office/AppointmentDetail.vue'),
+        meta: meta(null),
+      },
+      {
+        path: '/queue/:queueUlid',
+        name: 'front-office.queue-entry',
+        beforeEnter: [requiresPermission('queue.view')],
+        component: () => import('@/pages/front-office/QueueEntryDetail.vue'),
+        meta: meta(null),
+      },
+      {
+        path: '/invoices/:invoiceUlid',
+        name: 'front-office.invoice-detail',
+        beforeEnter: [requiresPermission('invoice.view')],
+        component: () => import('@/pages/invoicing/InvoiceDetail.vue'),
+        meta: meta(null),
+      },
+      {
+        path: '/receipts/:receiptUlid',
+        name: 'front-office.receipt-detail',
+        beforeEnter: [requiresPermission('receipt.view')],
+        component: () => import('@/pages/finance/ReceiptDetail.vue'),
+        meta: meta(null),
+      },
+    ],
+  },
+  {
+    path: '/front-office',
+    component: layout,
+    beforeEnter: [requiresAuth, requiresActiveMerchant, requiresAccount('merchant_front_office')],
+    meta: { accountKey: 'merchant_front_office' },
+    children: [
+      { path: '', redirect: redirect('front-office.dashboard') },
+      { path: 'get-started', redirect: redirect('front-office.get-started') },
+      { path: 'clients', redirect: redirect('front-office.clients') },
+      { path: 'clients/create', redirect: redirect('front-office.clients-create') },
       {
         path: 'clients/:id',
-        name: 'front-office.clients.detail',
-        component: () => import('@/pages/front-office/ClientDetail.vue'),
+        redirect: (from) => ({ name: 'front-office.client-detail', params: { clientUlid: from.params.id }, query: from.query, hash: from.hash }),
       },
-      {
-        path: 'appointments',
-        name: 'front-office.appointments',
-        component: () => import('@/pages/front-office/AppointmentList.vue'),
-      },
-      {
-        path: 'appointments/create',
-        name: 'front-office.appointments.create',
-        component: () => import('@/pages/front-office/AppointmentCreate.vue'),
-      },
+      { path: 'appointments', redirect: redirect('front-office.appointments') },
+      { path: 'appointments/create', redirect: redirect('front-office.appointment-create') },
       {
         path: 'appointments/:id',
-        name: 'front-office.appointments.detail',
-        component: () => import('@/pages/front-office/AppointmentDetail.vue'),
+        redirect: (from) => ({ name: 'front-office.appointment-detail', params: { appointmentUlid: from.params.id }, query: from.query, hash: from.hash }),
       },
-      {
-        path: 'queue',
-        name: 'front-office.queue',
-        component: () => import('@/pages/front-office/QueueBoard.vue'),
-      },
-      {
-        path: 'walk-in',
-        name: 'front-office.walk-in',
-        component: () => import('@/pages/front-office/WalkInCreate.vue'),
-      },
+      { path: 'walk-in', redirect: redirect('front-office.walk-ins') },
+      { path: 'queue', redirect: redirect('front-office.queue') },
       {
         path: 'queue/:id',
-        name: 'front-office.queue.detail',
-        component: () => import('@/pages/front-office/QueueEntryDetail.vue'),
+        redirect: (from) => ({ name: 'front-office.queue-entry', params: { queueUlid: from.params.id }, query: from.query, hash: from.hash }),
       },
-      {
-        path: 'sessions',
-        name: 'front-office.sessions',
-        component: () => import('@/pages/front-office/ServiceSessionList.vue'),
-      },
-      {
-        path: 'invoices',
-        name: 'front-office.invoices',
-        component: () => import('@/pages/invoicing/InvoiceList.vue'),
-      },
-      {
-        path: 'invoices/create',
-        name: 'front-office.invoices.create',
-        component: () => import('@/pages/invoicing/InvoiceCreate.vue'),
-      },
+      { path: 'sessions', redirect: redirect('front-office.sessions') },
+      { path: 'invoices', redirect: redirect('front-office.invoices') },
+      { path: 'invoices/create', redirect: redirect('front-office.invoices-create') },
       {
         path: 'invoices/:id',
-        name: 'front-office.invoices.detail',
-        component: () => import('@/pages/invoicing/InvoiceDetail.vue'),
+        redirect: (from) => ({ name: 'front-office.invoice-detail', params: { invoiceUlid: from.params.id }, query: from.query, hash: from.hash }),
       },
-      {
-        path: 'payments',
-        name: 'front-office.payments',
-        component: () => import('@/pages/payments/RecordPaymentEntry.vue'),
-      },
+      { path: 'payments', redirect: redirect('front-office.invoices') },
       {
         path: 'payments/record/:id',
-        name: 'front-office.payments.record',
-        component: () => import('@/pages/payments/RecordPayment.vue'),
+        redirect: (from) => ({ name: 'front-office.invoice-payment-create', params: { invoiceUlid: from.params.id }, query: from.query, hash: from.hash }),
       },
-      {
-        path: 'receipts',
-        name: 'front-office.receipts',
-        component: () => import('@/pages/finance/ReceiptList.vue'),
-      },
+      { path: 'receipts', redirect: redirect('front-office.payments-status') },
       {
         path: 'receipts/:id',
-        name: 'front-office.receipts.detail',
-        component: () => import('@/pages/finance/ReceiptDetail.vue'),
+        redirect: (from) => ({ name: 'front-office.receipt-detail', params: { receiptUlid: from.params.id }, query: from.query, hash: from.hash }),
       },
     ],
   },

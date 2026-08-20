@@ -543,6 +543,12 @@ merchant_finance:
     route: finance.settings
     phase: Phase UI-12
 merchant_front_office:
+  - key: merchant_front_office.dashboard
+    label: Dashboard
+    availability: live
+    route: front-office.dashboard
+    permission: front_office.search
+    phase: Phase UI-13
   - key: merchant_front_office.get-started
     label: Get Started
     availability: live
@@ -562,7 +568,7 @@ merchant_front_office:
   - key: merchant_front_office.clients-create
     label: Create Client
     availability: live
-    route: front-office.clients.create
+    route: front-office.clients-create
     permission: client.create
     phase: Phase 15A
   - key: merchant_front_office.appointments
@@ -574,7 +580,7 @@ merchant_front_office:
   - key: merchant_front_office.walk-ins
     label: Walk-Ins
     availability: live
-    route: front-office.walk-in
+    route: front-office.walk-ins
     permission: queue.create
     phase: Phase 16B
   - key: merchant_front_office.queue
@@ -598,9 +604,15 @@ merchant_front_office:
   - key: merchant_front_office.payments-status
     label: Payment and Receipt Status
     availability: live
-    route: front-office.receipts
+    route: front-office.payments-status
     permission: receipt.view
     phase: Phase 18B
+  - key: merchant_front_office.activity
+    label: Daily Activity
+    availability: live
+    route: front-office.activity
+    permission: front_office.search
+    phase: Phase UI-13
   - key: merchant_front_office.subscription-payment
     label: Subscription Payment and Recovery
     availability: gated
@@ -609,8 +621,13 @@ merchant_front_office:
   - key: merchant_front_office.notifications
     label: Notifications
     availability: gated
-    gate: external_gate_w
-    phase: UI-13
+    gate: phase_21n_blocked_by_external_gate_w
+    phase: Phase 21N after Phase 20D-W / Gate W
+  - key: merchant_front_office.account
+    label: Account and Preferences
+    availability: live
+    route: front-office.account
+    phase: Phase 11
 merchant_personnel:
   - key: merchant_personnel.get-started
     label: Get Started

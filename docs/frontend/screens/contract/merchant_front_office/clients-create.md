@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `front-office.clients.create` at `/front-office/clients/create` (routes/frontOffice.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/clients/create`; owner phase **UI-13** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `front-office.clients-create` at `/clients/create` (routes/frontOffice.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-13**
 - **Backend owner phase:** **Phase 15A**
 - **Implementation status:** `implemented`
-- **Runtime route:** `front-office.clients.create`
+- **Runtime route:** `front-office.clients-create`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.clients.create` (recorded in `docs/frontend/screens/front-office/front-office-client-create.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `front-office.clients-create` (recorded in `docs/frontend/screens/front-office/front-office-client-create.md`).
 - **Data fields:** Create a client (name, phone, optional email/notes). A same-branch duplicate phone returns a deterministic conflict linking to the existing record.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

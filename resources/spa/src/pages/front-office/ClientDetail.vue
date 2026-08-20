@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 import PermissionGate from '@/components/auth/PermissionGate.vue';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
 import SvTextArea from '@/components/ui/SvTextArea.vue';
@@ -20,7 +21,7 @@ const route = useRoute();
 const clients = useClientStore();
 const notifications = useNotificationStore();
 
-const clientId = computed(() => String(route.params.id));
+const clientId = computed(() => String(route.params.clientUlid));
 const client = ref<Client | null>(null);
 const loading = ref(true);
 const loadError = ref(false);
@@ -91,7 +92,7 @@ async function setConsent(state: SmsConsentState): Promise<void> {
 </script>
 
 <template>
-  <section class="mx-auto w-full max-w-lg p-4 md:p-6">
+  <section class="mx-auto w-full max-w-5xl">
     <SvStateBoundary
       :state="boundaryState"
       empty-message="Client not found."
@@ -99,19 +100,34 @@ async function setConsent(state: SmsConsentState): Promise<void> {
       @retry="load"
     >
       <div v-if="client">
-        <h1 class="font-display text-2xl font-bold text-heading">
-          {{ client.full_name }}
-        </h1>
-        <p class="mt-1 text-sm text-text-muted">
-          {{ client.phone_masked }}
-          <span v-if="client.has_email"> · {{ client.email_masked }}</span>
-        </p>
+        <SvOperationalHero
+          eyebrow="Client branch record"
+          :title="client.full_name"
+          description="Review masked contact context, consent and service-desk notes without exposing another branch’s client record."
+          :context="client.status"
+        >
+          <template #actions>
+            <RouterLink
+              class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white"
+              :to="{ name: 'front-office.clients' }"
+            >
+              Back to clients
+            </RouterLink>
+          </template>
+          <div class="flex flex-wrap gap-3 text-sm text-white/80">
+            <span class="rounded-full bg-white/10 px-3 py-1.5">{{ client.phone_masked }}</span>
+            <span
+              v-if="client.has_email"
+              class="rounded-full bg-white/10 px-3 py-1.5"
+            >{{ client.email_masked }}</span>
+          </div>
+        </SvOperationalHero>
 
         <!-- SMS consent -->
         <SvCard
           as="div"
           padding="md"
-          class="mt-6"
+          class="mt-5 border-l-4 border-l-sv-brand-secondary"
         >
           <h2 class="font-display text-base font-semibold text-heading">
             SMS consent

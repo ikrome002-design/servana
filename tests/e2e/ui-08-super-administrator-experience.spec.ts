@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { writeEvidenceFile, writeEvidenceScreenshot } from './support/evidenceScreenshot';
 import { assertNoHorizontalScroll } from './support/roleBootstrap';
 import {
   GATED_PAGES,
@@ -65,7 +66,7 @@ async function openGroup(page: Page, group: string): Promise<void> {
 const notFound = (page: Page) => page.getByTestId('public-not-found');
 
 async function shoot(page: Page, name: string): Promise<void> {
-  await page.screenshot({ path: join(SHOTS, `${name}.png`), fullPage: true, animations: 'disabled' });
+  await writeEvidenceScreenshot(page, join(SHOTS, `${name}.png`), { fullPage: true, animations: 'disabled' });
 }
 
 /** Open a Super Administrator page with the API stubbed and health watched. */
@@ -564,7 +565,7 @@ test('writes the screenshot index', async () => {
 
   const byName = new Map(IMPLEMENTED_PAGES.map((p) => [p.screen, p]));
 
-  writeFileSync(
+  await writeEvidenceFile(
     resolve(SHOTS, '..', 'screenshot-index.json'),
     `${JSON.stringify(
       {

@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import SvButton from '@/components/ui/SvButton.vue';
 import SvCard from '@/components/ui/SvCard.vue';
+import SvOperationalHero from '@/components/ui/SvOperationalHero.vue';
 import SvTextInput from '@/components/ui/SvTextInput.vue';
 import SvSelect from '@/components/ui/SvSelect.vue';
 import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
@@ -38,7 +39,7 @@ const router = useRouter();
 const invoiceStore = useInvoiceStore();
 const paymentStore = usePaymentStore();
 
-const invoiceId = computed(() => String(route.params.id));
+const invoiceId = computed(() => String(route.params.invoiceUlid ?? route.params.id));
 const invoice = ref<Invoice | null>(null);
 const loadError = ref(false);
 const submitting = ref(false);
@@ -143,7 +144,7 @@ async function submit(): Promise<void> {
 }
 
 function goToInvoice(): void {
-  void router.push({ name: 'front-office.invoices.detail', params: { id: invoiceId.value } });
+  void router.push({ name: 'front-office.invoice-detail', params: { invoiceUlid: invoiceId.value } });
 }
 
 onMounted(async () => {
@@ -156,221 +157,247 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Record a payment
-    </h1>
-
-    <SvStateBoundary
-      class="mt-6"
-      :state="boundaryState"
-      error-message="We couldn’t load this invoice."
-      empty-message="Invoice not found."
+  <section class="mx-auto max-w-6xl">
+    <SvOperationalHero
+      eyebrow="Maker workflow"
+      title="Record a payment"
+      description="Capture offline payment evidence against this invoice. The result is recorded and awaiting Finance—it is never validation, settlement or receipt issuance."
     >
-      <!-- Success: pending validation, no receipt -->
-      <SvCard
-        v-if="recorded"
-        as="section"
-        padding="md"
-        data-testid="record-success"
-        class="border-l-4 border-l-sv-success-border"
-      >
-        <h2 class="font-display text-lg font-semibold text-heading">
-          Payment recorded — pending validation
-        </h2>
-        <p class="mt-1 text-sm text-text-muted">
-          <SvMoney :formatted="recorded.total?.formatted ?? null" /> recorded against invoice
-          {{ invoice?.invoice_number }}. Finance must validate it before any receipt is issued.
-          This is not a validation and no receipt has been created.
-        </p>
-        <div class="mt-4 flex gap-2">
-          <SvButton
-            variant="secondary"
-            @click="goToInvoice"
-          >
-            Back to invoice
-          </SvButton>
+      <template #actions>
+        <RouterLink
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center rounded-control border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white"
+          :to="{ name: 'front-office.invoices' }"
+        >
+          Back to invoices
+        </RouterLink>
+      </template>
+      <div class="grid gap-2 md:grid-cols-4">
+        <div class="rounded-control bg-white/10 p-3 text-sm">
+          <strong class="block">1 · Evidence</strong><span class="text-white/70">Choose method</span>
         </div>
-      </SvCard>
-
-      <!-- Duplicate-suspected warning -->
-      <SvCard
-        v-else-if="paymentStore.duplicate"
-        as="section"
-        padding="md"
-        role="alert"
-        data-testid="duplicate-warning"
-        class="border-l-4 border-l-sv-warning-border"
-      >
-        <h2 class="font-display text-lg font-semibold text-heading">
-          Duplicate reference needs Finance review
-        </h2>
-        <p class="mt-1 text-sm text-text-muted">
-          The reference ending {{ paymentStore.duplicate.masked_reference ?? '—' }}
-          ({{ paymentStore.duplicate.method }}) matches an existing payment. It has been held and
-          cannot proceed until Finance reviews and overrides it.
-        </p>
-        <div class="mt-4">
-          <SvButton
-            variant="secondary"
-            @click="goToInvoice"
-          >
-            Back to invoice
-          </SvButton>
+        <div class="rounded-control bg-white/10 p-3 text-sm">
+          <strong class="block">2 · Allocation</strong><span class="text-white/70">Respect balance</span>
         </div>
-      </SvCard>
+        <div class="rounded-control bg-white/10 p-3 text-sm">
+          <strong class="block">3 · Record</strong><span class="text-white/70">Idempotent submit</span>
+        </div>
+        <div class="rounded-control bg-white/10 p-3 text-sm">
+          <strong class="block">4 · Finance</strong><span class="text-white/70">Checker decides</span>
+        </div>
+      </div>
+    </SvOperationalHero>
 
-      <template v-else>
-        <!-- Invoice + balance context -->
+    <div class="mt-5">
+      <SvStateBoundary
+        :state="boundaryState"
+        error-message="We couldn’t load this invoice."
+        empty-message="Invoice not found."
+      >
+        <!-- Success: pending validation, no receipt -->
         <SvCard
+          v-if="recorded"
           as="section"
           padding="md"
-          class="mt-2"
+          data-testid="record-success"
+          class="border-l-4 border-l-sv-success-border"
         >
-          <dl class="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-4">
-            <div>
-              <dt class="text-xs text-text-muted">
-                Invoice
-              </dt>
-              <dd class="font-display font-semibold text-heading">
-                {{ invoice?.invoice_number }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs text-text-muted">
-                Client
-              </dt>
-              <dd class="font-semibold text-heading">
-                {{ invoice?.client?.phone_masked ?? '—' }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs text-text-muted">
-                Invoice total
-              </dt>
-              <dd class="font-semibold text-heading">
-                <SvMoney :formatted="invoice?.total?.formatted ?? null" />
-              </dd>
-            </div>
-            <div>
-              <dt class="text-xs text-text-muted">
-                Available to record
-              </dt>
-              <dd
-                class="font-semibold text-heading"
-                data-testid="available-amount"
-              >
-                <SvMoney
-                  :formatted="invoice?.balance?.formatted ?? null"
-                  :minor-units="invoice?.balance?.amount ?? null"
-                />
-              </dd>
-            </div>
-          </dl>
+          <h2 class="font-display text-lg font-semibold text-heading">
+            Payment recorded — pending validation
+          </h2>
+          <p class="mt-1 text-sm text-text-muted">
+            <SvMoney :formatted="recorded.total?.formatted ?? null" /> recorded against invoice
+            {{ invoice?.invoice_number }}. Finance must validate it before any receipt is issued.
+            This is not a validation and no receipt has been created.
+          </p>
+          <div class="mt-4 flex gap-2">
+            <SvButton
+              variant="secondary"
+              @click="goToInvoice"
+            >
+              Back to invoice
+            </SvButton>
+          </div>
         </SvCard>
 
-        <form
-          class="mt-4 flex flex-col gap-4"
-          novalidate
-          @submit.prevent="openConfirm"
+        <!-- Duplicate-suspected warning -->
+        <SvCard
+          v-else-if="paymentStore.duplicate"
+          as="section"
+          padding="md"
+          role="alert"
+          data-testid="duplicate-warning"
+          class="border-l-4 border-l-sv-warning-border"
         >
-          <fieldset
-            v-for="(row, index) in rows"
-            :key="index"
-            class="rounded-lg border border-border p-4"
-          >
-            <legend class="px-1 text-sm font-semibold text-heading">
-              Payment {{ index + 1 }}
-            </legend>
-            <div class="grid gap-3 sm:grid-cols-2">
-              <SvSelect
-                :id="`method-${index}`"
-                v-model="row.method"
-                label="Method"
-                :options="PAYMENT_METHODS"
-              />
-              <SvTextInput
-                :id="`amount-${index}`"
-                v-model="row.amount"
-                label="Amount (KES)"
-                type="number"
-              />
-              <SvTextInput
-                v-if="requiresReference(row.method)"
-                :id="`reference-${index}`"
-                v-model="row.reference"
-                label="Reference / evidence"
-                class="sm:col-span-2"
-              />
-            </div>
-            <div
-              v-if="rows.length > 1"
-              class="mt-3"
+          <h2 class="font-display text-lg font-semibold text-heading">
+            Duplicate reference needs Finance review
+          </h2>
+          <p class="mt-1 text-sm text-text-muted">
+            The reference ending {{ paymentStore.duplicate.masked_reference ?? '—' }}
+            ({{ paymentStore.duplicate.method }}) matches an existing payment. It has been held and
+            cannot proceed until Finance reviews and overrides it.
+          </p>
+          <div class="mt-4">
+            <SvButton
+              variant="secondary"
+              @click="goToInvoice"
             >
+              Back to invoice
+            </SvButton>
+          </div>
+        </SvCard>
+
+        <template v-else>
+          <!-- Invoice + balance context -->
+          <SvCard
+            as="section"
+            padding="md"
+            class="mt-2"
+          >
+            <dl class="grid grid-cols-2 gap-x-4 gap-y-2 md:grid-cols-4">
+              <div>
+                <dt class="text-xs text-text-muted">
+                  Invoice
+                </dt>
+                <dd class="font-display font-semibold text-heading">
+                  {{ invoice?.invoice_number }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs text-text-muted">
+                  Client
+                </dt>
+                <dd class="font-semibold text-heading">
+                  {{ invoice?.client?.phone_masked ?? '—' }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs text-text-muted">
+                  Invoice total
+                </dt>
+                <dd class="font-semibold text-heading">
+                  <SvMoney :formatted="invoice?.total?.formatted ?? null" />
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs text-text-muted">
+                  Available to record
+                </dt>
+                <dd
+                  class="font-semibold text-heading"
+                  data-testid="available-amount"
+                >
+                  <SvMoney
+                    :formatted="invoice?.balance?.formatted ?? null"
+                    :minor-units="invoice?.balance?.amount ?? null"
+                  />
+                </dd>
+              </div>
+            </dl>
+          </SvCard>
+
+          <form
+            class="mt-4 flex flex-col gap-4"
+            novalidate
+            @submit.prevent="openConfirm"
+          >
+            <fieldset
+              v-for="(row, index) in rows"
+              :key="index"
+              class="rounded-lg border border-border p-4"
+            >
+              <legend class="px-1 text-sm font-semibold text-heading">
+                Payment {{ index + 1 }}
+              </legend>
+              <div class="grid gap-3 md:grid-cols-2">
+                <SvSelect
+                  :id="`method-${index}`"
+                  v-model="row.method"
+                  label="Method"
+                  :options="PAYMENT_METHODS"
+                />
+                <SvTextInput
+                  :id="`amount-${index}`"
+                  v-model="row.amount"
+                  label="Amount (KES)"
+                  type="number"
+                />
+                <SvTextInput
+                  v-if="requiresReference(row.method)"
+                  :id="`reference-${index}`"
+                  v-model="row.reference"
+                  label="Reference / evidence"
+                  class="md:col-span-2"
+                />
+              </div>
+              <div
+                v-if="rows.length > 1"
+                class="mt-3"
+              >
+                <SvButton
+                  type="button"
+                  variant="ghost"
+                  :aria-label="`Remove payment ${index + 1}`"
+                  @click="removeComponent(index)"
+                >
+                  Remove
+                </SvButton>
+              </div>
+            </fieldset>
+
+            <div class="flex flex-wrap items-center justify-between gap-3">
               <SvButton
                 type="button"
-                variant="ghost"
-                :aria-label="`Remove payment ${index + 1}`"
-                @click="removeComponent(index)"
+                variant="secondary"
+                data-testid="add-component"
+                @click="addComponent"
               >
-                Remove
+                Add another payment
+              </SvButton>
+              <p
+                class="font-display text-base font-semibold text-heading"
+                data-testid="group-total"
+              >
+                Total: {{ formattedGroupTotal }}
+              </p>
+            </div>
+
+            <p
+              v-if="overAvailable"
+              class="text-sm text-sv-error-fg"
+              role="alert"
+            >
+              The total exceeds the amount available to record on this invoice.
+            </p>
+            <p
+              v-if="balanceUnknown"
+              class="text-sm text-sv-error-fg"
+              role="alert"
+              data-testid="balance-unknown"
+            >
+              We couldn’t read the amount outstanding on this invoice, so a payment can’t be recorded
+              yet. Reload the page and try again.
+            </p>
+            <p
+              v-if="submitError"
+              class="text-sm text-sv-error-fg"
+              role="alert"
+            >
+              {{ submitError }}
+            </p>
+
+            <div>
+              <SvButton
+                type="submit"
+                data-testid="review-payment"
+                :disabled="!canSubmit"
+              >
+                Review and record
               </SvButton>
             </div>
-          </fieldset>
-
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <SvButton
-              type="button"
-              variant="secondary"
-              data-testid="add-component"
-              @click="addComponent"
-            >
-              Add another payment
-            </SvButton>
-            <p
-              class="font-display text-base font-semibold text-heading"
-              data-testid="group-total"
-            >
-              Total: {{ formattedGroupTotal }}
-            </p>
-          </div>
-
-          <p
-            v-if="overAvailable"
-            class="text-sm text-sv-error-fg"
-            role="alert"
-          >
-            The total exceeds the amount available to record on this invoice.
-          </p>
-          <p
-            v-if="balanceUnknown"
-            class="text-sm text-sv-error-fg"
-            role="alert"
-            data-testid="balance-unknown"
-          >
-            We couldn’t read the amount outstanding on this invoice, so a payment can’t be recorded
-            yet. Reload the page and try again.
-          </p>
-          <p
-            v-if="submitError"
-            class="text-sm text-sv-error-fg"
-            role="alert"
-          >
-            {{ submitError }}
-          </p>
-
-          <div>
-            <SvButton
-              type="submit"
-              data-testid="review-payment"
-              :disabled="!canSubmit"
-            >
-              Review and record
-            </SvButton>
-          </div>
-        </form>
-      </template>
-    </SvStateBoundary>
+          </form>
+        </template>
+      </SvStateBoundary>
+    </div>
 
     <!-- Confirmation modal -->
     <SvDialog

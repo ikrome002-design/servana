@@ -127,7 +127,7 @@ test.describe('Front Office appointments', () => {
     // the same bounded startup tolerance already afforded to the preview build.
     await expect(page.getByRole('heading', { name: 'Appointments' })).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText('Amina Yusuf')).toBeVisible();
-    await expect(page.getByTestId('status-badge').first()).toHaveText('Confirmed');
+    await expect(page.getByTestId('status-badge').first()).toContainText('Confirmed');
 
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
     expect(results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);

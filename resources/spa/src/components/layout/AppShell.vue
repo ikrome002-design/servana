@@ -10,6 +10,7 @@ import { flattenNavigation, navigationTree } from '@/navigation/navigationFilter
 import { useAuthStore } from '@/stores/authStore';
 import { useBranchExperienceStore } from '@/stores/branchExperienceStore';
 import { useFinanceWorkspaceStore } from '@/stores/financeWorkspaceStore';
+import { useFrontOfficeWorkspaceStore } from '@/stores/frontOfficeWorkspaceStore';
 import { useHrWorkspaceStore } from '@/stores/hrWorkspaceStore';
 import { useMerchantStore } from '@/stores/merchantStore';
 import { ROLE_ENTRY, type RoleIdentity } from '@/types/roles';
@@ -48,6 +49,7 @@ const auth = useAuthStore();
 const merchant = useMerchantStore();
 const branchExperience = useBranchExperienceStore();
 const financeWorkspace = useFinanceWorkspaceStore();
+const frontOfficeWorkspace = useFrontOfficeWorkspaceStore();
 const hrWorkspace = useHrWorkspaceStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
@@ -56,6 +58,7 @@ const contextLabel = computed(() => {
   if (props.identity === 'merchant_branch') return branchExperience.overview?.branch.name ?? merchant.name;
   if (props.identity === 'merchant_human_resource') return hrWorkspace.overview?.branch.name ?? merchant.name;
   if (props.identity === 'merchant_finance') return financeWorkspace.overview?.branch_context.label ?? merchant.name;
+  if (props.identity === 'merchant_front_office') return frontOfficeWorkspace.overview?.branch.name ?? merchant.name;
   return merchant.name;
 });
 
@@ -68,6 +71,9 @@ onMounted(() => {
   }
   if (props.identity === 'merchant_finance' && financeWorkspace.overview === null) {
     void financeWorkspace.fetchOverview();
+  }
+  if (props.identity === 'merchant_front_office' && frontOfficeWorkspace.overview === null) {
+    void frontOfficeWorkspace.fetchOverview();
   }
 });
 
@@ -214,7 +220,7 @@ const isHeaderNav = computed(() => placement.value === 'header');
           <span
             v-if="!isHeaderNav && contextLabel"
             class="mr-2 hidden text-sm text-text-muted sm:inline"
-            :data-testid="identity === 'merchant_branch' || identity === 'merchant_human_resource' || identity === 'merchant_finance' ? 'branch-context' : 'merchant-context'"
+            :data-testid="identity === 'merchant_branch' || identity === 'merchant_human_resource' || identity === 'merchant_finance' || identity === 'merchant_front_office' ? 'branch-context' : 'merchant-context'"
           >{{ contextLabel }}</span>
 
           <SvNotificationsControl />

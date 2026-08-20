@@ -73,7 +73,7 @@ test.describe('Front Office invoicing', () => {
 
     await expect(page.getByRole('heading', { name: 'Invoices', exact: true })).toBeVisible();
     await expect(page.getByTestId('new-invoice')).toBeVisible();
-    await expect(page.getByTestId('invoice-status-badge')).toHaveText('Draft');
+    await expect(page.getByTestId('invoice-status-badge')).toContainText('Draft');
   });
 
   test('shows the number only after finalization and marks the issued invoice read-only', async ({ page }) => {

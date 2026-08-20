@@ -3,16 +3,16 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "ba280b13fa2556f191ce195e5ff9ae9b477f3dc29358314ce264cbbc4e61de8f",
+  "canonical_authority_sha256": "25365cfa749fe9e162d47e20280a473949ad2283f41e32df0fc645b340850240",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "425ca93531efaa2ff609b13bbadfcba00a518ed732d441f9f8d2ba3820a660c0",
+  "screen_inventory_sha256": "13a0bd3e23603ebef3945db82f831eb4a2e4d28e2e8fe0e8742193988955df20",
   "purpose": "The canonical contract against the ACTUAL Vue Router records, loaded through the real modules rather than parsed from source text.",
   "loading_method": "Vite SSR transform of resources/spa/src/router/routes/*.ts — never a regular expression over source.",
-  "runtime_named_routes": 145,
-  "runtime_routes_with_lazy_component": 145,
+  "runtime_named_routes": 147,
+  "runtime_routes_with_lazy_component": 147,
   "runtime_routes_without_lazy_component": [],
   "duplicate_runtime_route_names": [],
   "duplicate_runtime_paths": [],
@@ -33,6 +33,7 @@
         "merchant_administrator",
         "merchant_branch",
         "merchant_finance",
+        "merchant_front_office",
         "merchant_human_resource",
         "super_administrator"
       ]
@@ -43,6 +44,7 @@
         "merchant_administrator",
         "merchant_branch",
         "merchant_finance",
+        "merchant_front_office",
         "merchant_human_resource",
         "super_administrator"
       ]
@@ -67,8 +69,16 @@
       "accounts": [
         "merchant_administrator",
         "merchant_branch",
+        "merchant_front_office",
         "merchant_human_resource",
         "super_administrator"
+      ]
+    },
+    {
+      "path": "/invoices",
+      "accounts": [
+        "merchant_finance",
+        "merchant_front_office"
       ]
     },
     {
@@ -87,14 +97,14 @@
     }
   ],
   "contract_route_names_colliding_with_runtime": [],
-  "implemented_pages": 108,
+  "implemented_pages": 112,
   "planned_pages_with_runtime_route": [],
   "removed_pages_with_runtime_route": [],
   "consolidated_runtime_routes": [],
   "path_shape_conformance": {
     "note": "The contract path is host-relative; the current router prefixes it with the account path segment (UI01-ROUTE-003). Each owning UI phase reconciles shape when it implements its account.",
-    "conformant": 85,
-    "prefixed": 23
+    "conformant": 101,
+    "prefixed": 11
   },
   "rows": [
     {
@@ -1267,12 +1277,12 @@
       "key": "merchant_front_office.dashboard",
       "contract_route_name": "front-office.dashboard",
       "contract_route_path": "/dashboard",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "front-office.dashboard",
+      "runtime_route_path": "/dashboard",
+      "runtime_declared_in": "routes/frontOffice.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_front_office.get-started",
@@ -1280,7 +1290,7 @@
       "contract_route_path": "/get-started",
       "implementation_status": "implemented",
       "runtime_route_name": "front-office.get-started",
-      "runtime_route_path": "/front-office/get-started",
+      "runtime_route_path": "/get-started",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1302,7 +1312,7 @@
       "contract_route_path": "/clients",
       "implementation_status": "implemented",
       "runtime_route_name": "front-office.clients",
-      "runtime_route_path": "/front-office/clients",
+      "runtime_route_path": "/clients",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1312,8 +1322,8 @@
       "contract_route_name": "front-office.clients-create",
       "contract_route_path": "/clients/create",
       "implementation_status": "implemented",
-      "runtime_route_name": "front-office.clients.create",
-      "runtime_route_path": "/front-office/clients/create",
+      "runtime_route_name": "front-office.clients-create",
+      "runtime_route_path": "/clients/create",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1323,8 +1333,8 @@
       "contract_route_name": "front-office.client-detail",
       "contract_route_path": "/clients/:clientUlid",
       "implementation_status": "implemented",
-      "runtime_route_name": "front-office.clients.detail",
-      "runtime_route_path": "/front-office/clients/:id",
+      "runtime_route_name": "front-office.client-detail",
+      "runtime_route_path": "/clients/:clientUlid",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1335,7 +1345,7 @@
       "contract_route_path": "/appointments",
       "implementation_status": "implemented",
       "runtime_route_name": "front-office.appointments",
-      "runtime_route_path": "/front-office/appointments",
+      "runtime_route_path": "/appointments",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1345,8 +1355,8 @@
       "contract_route_name": "front-office.walk-ins",
       "contract_route_path": "/walk-ins",
       "implementation_status": "implemented",
-      "runtime_route_name": "front-office.walk-in",
-      "runtime_route_path": "/front-office/walk-in",
+      "runtime_route_name": "front-office.walk-ins",
+      "runtime_route_path": "/walk-ins",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1357,7 +1367,7 @@
       "contract_route_path": "/queue",
       "implementation_status": "implemented",
       "runtime_route_name": "front-office.queue",
-      "runtime_route_path": "/front-office/queue",
+      "runtime_route_path": "/queue",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1366,12 +1376,12 @@
       "key": "merchant_front_office.queue-transfer",
       "contract_route_name": "front-office.queue-transfer",
       "contract_route_path": "/queue/:queueUlid/transfer",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "front-office.queue-transfer",
+      "runtime_route_path": "/queue/:queueUlid/transfer",
+      "runtime_declared_in": "routes/frontOffice.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_front_office.sessions",
@@ -1379,7 +1389,7 @@
       "contract_route_path": "/sessions",
       "implementation_status": "implemented",
       "runtime_route_name": "front-office.sessions",
-      "runtime_route_path": "/front-office/sessions",
+      "runtime_route_path": "/sessions",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1390,7 +1400,7 @@
       "contract_route_path": "/invoices",
       "implementation_status": "implemented",
       "runtime_route_name": "front-office.invoices",
-      "runtime_route_path": "/front-office/invoices",
+      "runtime_route_path": "/invoices",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1400,8 +1410,8 @@
       "contract_route_name": "front-office.invoices-create",
       "contract_route_path": "/invoices/create",
       "implementation_status": "implemented",
-      "runtime_route_name": "front-office.invoices.create",
-      "runtime_route_path": "/front-office/invoices/create",
+      "runtime_route_name": "front-office.invoices-create",
+      "runtime_route_path": "/invoices/create",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1411,8 +1421,8 @@
       "contract_route_name": "front-office.invoice-payment-create",
       "contract_route_path": "/invoices/:invoiceUlid/payments/create",
       "implementation_status": "implemented",
-      "runtime_route_name": "front-office.payments.record",
-      "runtime_route_path": "/front-office/payments/record/:id",
+      "runtime_route_name": "front-office.invoice-payment-create",
+      "runtime_route_path": "/invoices/:invoiceUlid/payments/create",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1422,8 +1432,8 @@
       "contract_route_name": "front-office.payments-status",
       "contract_route_path": "/payments/status",
       "implementation_status": "implemented",
-      "runtime_route_name": "front-office.receipts",
-      "runtime_route_path": "/front-office/receipts",
+      "runtime_route_name": "front-office.payments-status",
+      "runtime_route_path": "/payments/status",
       "runtime_declared_in": "routes/frontOffice.ts",
       "lazy_component": true,
       "route_delivery": "dedicated"
@@ -1432,12 +1442,12 @@
       "key": "merchant_front_office.activity",
       "contract_route_name": "front-office.activity",
       "contract_route_path": "/activity",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "front-office.activity",
+      "runtime_route_path": "/activity",
+      "runtime_declared_in": "routes/frontOffice.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_front_office.subscription-payment",
@@ -1465,12 +1475,12 @@
       "key": "merchant_front_office.account",
       "contract_route_name": "front-office.account",
       "contract_route_path": "/account",
-      "implementation_status": "planned",
-      "runtime_route_name": null,
-      "runtime_route_path": null,
-      "runtime_declared_in": null,
-      "lazy_component": null,
-      "route_delivery": null
+      "implementation_status": "implemented",
+      "runtime_route_name": "front-office.account",
+      "runtime_route_path": "/account",
+      "runtime_declared_in": "routes/frontOffice.ts",
+      "lazy_component": true,
+      "route_delivery": "dedicated"
     },
     {
       "key": "merchant_personnel.dashboard",
