@@ -134,6 +134,7 @@ export default {
         cream: 'var(--color-cream)',
       },
       borderRadius: {
+        pill: sv('radius-pill'),
         control: sv('radius-control'),
         card: sv('radius-card'),
         overlay: sv('radius-overlay'),
