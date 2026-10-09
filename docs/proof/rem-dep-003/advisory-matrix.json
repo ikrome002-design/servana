@@ -1,0 +1,763 @@
+{
+  "baseline": "14cfadcb512d867d2aebefe0fa628fdee3563e02",
+  "npmVersion": "10.8.2",
+  "nodeVersion": "20.20.2",
+  "before": {
+    "info": 0,
+    "low": 0,
+    "moderate": 4,
+    "high": 13,
+    "critical": 0,
+    "total": 17
+  },
+  "advisories": [
+    {
+      "package": "@vitest/mocker",
+      "id": "GHSA-82fw-gwwq-j7x9",
+      "severity": "moderate",
+      "vulnerableRange": ">=2.1.0 <4.1.11",
+      "lockedVersions": [
+        "4.1.10"
+      ],
+      "dependencyPaths": [
+        "node_modules/@vitest/mocker"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-82fw-gwwq-j7x9",
+      "afterVersions": [
+        "4.1.11"
+      ],
+      "directParents": [
+        {
+          "parent": "node_modules/vitest",
+          "constraint": "4.1.10"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": [
+        "4.1.11"
+      ]
+    },
+    {
+      "package": "@vue/server-renderer",
+      "id": "GHSA-g2v6-rqmx-r4w6",
+      "severity": "high",
+      "vulnerableRange": "<3.5.42",
+      "lockedVersions": [
+        "3.5.40"
+      ],
+      "dependencyPaths": [
+        "node_modules/@vue/server-renderer"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-g2v6-rqmx-r4w6",
+      "afterVersions": [
+        "3.5.43"
+      ],
+      "directParents": [
+        {
+          "parent": "node_modules/vue",
+          "constraint": "3.5.40"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Installed by Vue. Servana uses createApp client rendering, with no deployed Node SSR service; not an exploitability exemption.",
+      "availableSecureResolution": [
+        "3.5.43"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-vh66-26gq-q6x8",
+      "severity": "moderate",
+      "vulnerableRange": ">=1.7.0 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-vh66-26gq-q6x8",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-9fr6-4gfg-395g",
+      "severity": "moderate",
+      "vulnerableRange": ">=1.0.0 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-9fr6-4gfg-395g",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-c29m-xwm3-cm6r",
+      "severity": "high",
+      "vulnerableRange": ">=1.16.1 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-c29m-xwm3-cm6r",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-mghh-pgcx-3jjj",
+      "severity": "high",
+      "vulnerableRange": ">=1.15.0 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-mghh-pgcx-3jjj",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-x97p-jq2g-jp4f",
+      "severity": "high",
+      "vulnerableRange": ">=1.15.1 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-x97p-jq2g-jp4f",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-3pq3-5fj3-cg6v",
+      "severity": "high",
+      "vulnerableRange": ">=1.13.0 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-3pq3-5fj3-cg6v",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-542g-h47m-68v8",
+      "severity": "high",
+      "vulnerableRange": ">=1.13.0 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-542g-h47m-68v8",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-j8rh-479h-cp32",
+      "severity": "moderate",
+      "vulnerableRange": ">=1.0.0 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-j8rh-479h-cp32",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-4hqw-qxg8-jxx2",
+      "severity": "moderate",
+      "vulnerableRange": ">=1.12.0 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-4hqw-qxg8-jxx2",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-m8m8-qj5v-23w3",
+      "severity": "high",
+      "vulnerableRange": ">=1.15.2 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-m8m8-qj5v-23w3",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-44g4-m2mj-wpvx",
+      "severity": "moderate",
+      "vulnerableRange": ">=1.15.0 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-44g4-m2mj-wpvx",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "axios",
+      "id": "GHSA-r4gj-5m52-g5wh",
+      "severity": "high",
+      "vulnerableRange": ">=1.17.0 <1.20.0",
+      "lockedVersions": [
+        "1.18.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/axios"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-r4gj-5m52-g5wh",
+      "afterVersions": [
+        "1.20.0"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^1.18.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Axios is imported by the deployed browser API client. Individual Node-adapter advisory exploitability is not claimed; all findings are remediated.",
+      "availableSecureResolution": [
+        "1.20.0"
+      ]
+    },
+    {
+      "package": "brace-expansion",
+      "id": "GHSA-q2hr-2g5m-vwhr",
+      "severity": "moderate",
+      "vulnerableRange": ">=4.0.0 <5.0.12",
+      "lockedVersions": [
+        "5.0.9"
+      ],
+      "dependencyPaths": [
+        "node_modules/brace-expansion"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+      "afterVersions": [
+        "5.0.12"
+      ],
+      "directParents": [
+        {
+          "parent": "node_modules/minimatch",
+          "constraint": "^5.0.5"
+        }
+      ],
+      "remedy": "Compatible 5.0.12 transitive override for the sole installed consumer, minimatch; a root selector avoids nested override collisions.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": [
+        "5.0.12"
+      ]
+    },
+    {
+      "package": "brace-expansion",
+      "id": "GHSA-qhr7-859c-m2p7",
+      "severity": "high",
+      "vulnerableRange": ">=4.0.0 <5.0.11",
+      "lockedVersions": [
+        "5.0.9"
+      ],
+      "dependencyPaths": [
+        "node_modules/brace-expansion"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+      "afterVersions": [
+        "5.0.12"
+      ],
+      "directParents": [
+        {
+          "parent": "node_modules/minimatch",
+          "constraint": "^5.0.5"
+        }
+      ],
+      "remedy": "Compatible 5.0.12 transitive override for the sole installed consumer, minimatch; a root selector avoids nested override collisions.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": [
+        "5.0.12"
+      ]
+    },
+    {
+      "package": "brace-expansion",
+      "id": "GHSA-6j4f-fj2g-mc7p",
+      "severity": "high",
+      "vulnerableRange": ">=4.0.0 <5.0.10",
+      "lockedVersions": [
+        "5.0.9"
+      ],
+      "dependencyPaths": [
+        "node_modules/brace-expansion"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+      "afterVersions": [
+        "5.0.12"
+      ],
+      "directParents": [
+        {
+          "parent": "node_modules/minimatch",
+          "constraint": "^5.0.5"
+        }
+      ],
+      "remedy": "Compatible 5.0.12 transitive override for the sole installed consumer, minimatch; a root selector avoids nested override collisions.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": [
+        "5.0.12"
+      ]
+    },
+    {
+      "package": "braces",
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "severity": "high",
+      "vulnerableRange": "<=3.0.3",
+      "lockedVersions": [
+        "3.0.3"
+      ],
+      "dependencyPaths": [
+        "node_modules/braces"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+      "afterVersions": [],
+      "directParents": [
+        {
+          "parent": "node_modules/chokidar",
+          "constraint": "~3.0.2"
+        },
+        {
+          "parent": "node_modules/micromatch",
+          "constraint": "^3.0.3"
+        }
+      ],
+      "remedy": "Remove the unpatched Tailwind 3 dependency chain through the conditionally authorized supported Tailwind 4 integration.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": "No supported patched braces resolution is available; implicated Tailwind 3 chain removed."
+    },
+    {
+      "package": "js-yaml",
+      "id": "GHSA-2883-xcg3-v3hh",
+      "severity": "high",
+      "vulnerableRange": ">=4.0.0 <4.3.2",
+      "lockedVersions": [
+        "4.3.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/js-yaml"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh",
+      "afterVersions": [
+        "4.3.2"
+      ],
+      "directParents": [
+        {
+          "parent": "node_modules/@redocly/openapi-core",
+          "constraint": "4.2.0"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": [
+        "4.3.2"
+      ]
+    },
+    {
+      "package": "postcss-selector-parser",
+      "id": "GHSA-rj75-hqrm-r3gf",
+      "severity": "moderate",
+      "vulnerableRange": "<7.1.6",
+      "lockedVersions": [
+        "6.1.4",
+        "7.1.4"
+      ],
+      "dependencyPaths": [
+        "node_modules/postcss-nested/node_modules/postcss-selector-parser",
+        "node_modules/postcss-selector-parser",
+        "node_modules/tailwindcss/node_modules/postcss-selector-parser"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-rj75-hqrm-r3gf",
+      "afterVersions": [
+        "7.1.6"
+      ],
+      "directParents": [
+        {
+          "parent": "node_modules/eslint-plugin-vue",
+          "constraint": "^7.1.4"
+        },
+        {
+          "parent": "node_modules/postcss-nested",
+          "constraint": "^6.1.1"
+        },
+        {
+          "parent": "node_modules/tailwindcss",
+          "constraint": "^6.1.2"
+        }
+      ],
+      "remedy": "Remove the vulnerable Tailwind 3 parser path and retain the compatible patched 7.1.6 resolution for the surviving consumer.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": [
+        "7.1.6"
+      ]
+    },
+    {
+      "package": "sharp",
+      "id": "GHSA-rgj7-g3m4-5g8c",
+      "severity": "high",
+      "vulnerableRange": "<0.35.4",
+      "lockedVersions": [
+        "0.35.3"
+      ],
+      "dependencyPaths": [
+        "node_modules/sharp"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-rgj7-g3m4-5g8c",
+      "afterVersions": [
+        "0.35.5"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "0.35.3"
+        }
+      ],
+      "remedy": "Update the exact direct pin to the patched 0.35.5; verify original images and current derivatives unchanged.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": [
+        "0.35.5"
+      ]
+    },
+    {
+      "package": "sharp",
+      "id": "GHSA-wq5f-xc86-pv6w",
+      "severity": "high",
+      "vulnerableRange": "<0.35.5",
+      "lockedVersions": [
+        "0.35.3"
+      ],
+      "dependencyPaths": [
+        "node_modules/sharp"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-wq5f-xc86-pv6w",
+      "afterVersions": [
+        "0.35.5"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "0.35.3"
+        }
+      ],
+      "remedy": "Update the exact direct pin to the patched 0.35.5; verify original images and current derivatives unchanged.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": [
+        "0.35.5"
+      ]
+    },
+    {
+      "package": "source-map-js",
+      "id": "GHSA-68fv-2mgg-jv7q",
+      "severity": "high",
+      "vulnerableRange": ">=1.0.0 <1.2.2",
+      "lockedVersions": [
+        "1.2.1"
+      ],
+      "dependencyPaths": [
+        "node_modules/source-map-js"
+      ],
+      "devOnly": false,
+      "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+      "afterVersions": [
+        "1.2.2"
+      ],
+      "directParents": [
+        {
+          "parent": "node_modules/@vue/compiler-core",
+          "constraint": "^1.2.1"
+        },
+        {
+          "parent": "node_modules/@vue/compiler-sfc",
+          "constraint": "^1.2.1"
+        },
+        {
+          "parent": "node_modules/postcss",
+          "constraint": "^1.2.1"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Vue/compiler dependency in the installed non-dev graph; production browser bundle reachability is not inferred from lockfile classification. All findings are remediated.",
+      "availableSecureResolution": [
+        "1.2.2"
+      ]
+    },
+    {
+      "package": "vitest",
+      "id": "GHSA-82fw-gwwq-j7x9",
+      "severity": "moderate",
+      "vulnerableRange": ">=2.1.0 <4.1.11",
+      "lockedVersions": [
+        "4.1.10"
+      ],
+      "dependencyPaths": [
+        "node_modules/vitest"
+      ],
+      "devOnly": true,
+      "url": "https://github.com/advisories/GHSA-82fw-gwwq-j7x9",
+      "afterVersions": [
+        "4.1.11"
+      ],
+      "directParents": [
+        {
+          "parent": "(application)",
+          "constraint": "^4.1.8"
+        }
+      ],
+      "remedy": "Use the compatible patched resolution in the existing declared range.",
+      "postFixProof": "npm ci exit 0; npm audit --audit-level=high --json exit 0, zero findings (npm-after.json). Compatibility gates are separate.",
+      "reachability": "Build/test tooling only; excluded from deployed SPA/PHP runtime. Still included in the mandatory unomitted audit.",
+      "availableSecureResolution": [
+        "4.1.11"
+      ]
+    }
+  ],
+  "after": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "uniqueAdvisoryIds": [
+    "GHSA-82fw-gwwq-j7x9",
+    "GHSA-g2v6-rqmx-r4w6",
+    "GHSA-vh66-26gq-q6x8",
+    "GHSA-9fr6-4gfg-395g",
+    "GHSA-c29m-xwm3-cm6r",
+    "GHSA-mghh-pgcx-3jjj",
+    "GHSA-x97p-jq2g-jp4f",
+    "GHSA-3pq3-5fj3-cg6v",
+    "GHSA-542g-h47m-68v8",
+    "GHSA-j8rh-479h-cp32",
+    "GHSA-4hqw-qxg8-jxx2",
+    "GHSA-m8m8-qj5v-23w3",
+    "GHSA-44g4-m2mj-wpvx",
+    "GHSA-r4gj-5m52-g5wh",
+    "GHSA-q2hr-2g5m-vwhr",
+    "GHSA-qhr7-859c-m2p7",
+    "GHSA-6j4f-fj2g-mc7p",
+    "GHSA-vfj7-8cjw-p6xm",
+    "GHSA-2883-xcg3-v3hh",
+    "GHSA-rj75-hqrm-r3gf",
+    "GHSA-rgj7-g3m4-5g8c",
+    "GHSA-wq5f-xc86-pv6w",
+    "GHSA-68fv-2mgg-jv7q"
+  ]
+}

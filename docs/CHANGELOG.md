@@ -6,6 +6,35 @@ roadmap (Plan §§79–80), which supersedes the old §27 roadmap.
 
 ## [Unreleased]
 
+### REM-DEP-003 — dependency security remediation (local complete; PR/CI/merge pending)
+
+Fresh audits independently reproduce 13 high / 4 moderate npm entries and five
+Composer advisories, then pass with zero findings after compatible security
+updates. Laravel 12.69.3, CommonMark 2.10.3 and Flysystem 3.36.0 retain PHP 8.3
+compatibility; sharp's exact pin becomes 0.35.5. Vue, Axios, Vitest and affected
+transitives use patched versions within existing major constraints.
+
+The product-owner's conditional Tailwind 4 exception is required by the latest
+Tailwind 3.4.19 chain's unpatched braces 3.0.3. The migration uses the supported
+PostCSS plugin, the existing token configuration and class-based dark preference.
+Self-hosted font imports move to Vite's module pipeline after the first build
+exposed unresolved package-relative font URLs. `rounded-pill` consumes the
+existing radius token. Focus-variant compatibility preserves the previous transparent
+outline despite v4's native utility change. Image determinism produces zero new
+artifacts; all approved originals/derivatives remain unchanged. Local checks pass:
+1,402 Vitest tests, 413 focused PHP passes (four unchanged historical placeholders),
+17 cross-account browser cases, 25 shared-control cases and 224 real image requests.
+Separate exact-head PR CI/normal merge remain pending; no application authority,
+permission, financial or legal changes.
+The original 242-path UI-14 handoff remains uncommitted in its separate worktree.
+Evidence: [rem-dep-003.md](proof/rem-dep-003.md).
+
+First PR CI retained: four jobs passed; 14 E2E cases failed. Three legacy success
+badges now consume the existing AA semantic token pair, and the readability test
+decodes CSS Color 4 instead of silently treating it as black. Thirty focused
+browser checks pass with transparent/matching-text negative controls; replacement
+exact-head five-job CI remains mandatory.
+
 ### Phase UI-13 — Front Office experience (`phase-ui-13-front-office-experience`) — local complete
 
 Started from verified UI-12 squash `6796d82b2db8866529352b47300d63bc6a29941d`.

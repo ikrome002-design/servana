@@ -150,7 +150,7 @@ function preferredFeeCopy(plan: CompensationPlan): string {
 // pair stays brand-dark-on-cream (AA) in both themes. The tinted-surface badges cannot: a /15 tint
 // over the dark surface IS dark, so they take the adaptive text token.
 const statusClass: Record<string, string> = {
-  active: 'bg-success/15 text-success',
+  active: 'bg-sv-success-bg text-sv-success-fg',
   scheduled: 'bg-primary/15 text-text',
   pending_approval: 'bg-warning/15 text-text',
   draft: 'bg-cream text-brand-deep',

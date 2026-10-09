@@ -1,0 +1,125 @@
+{
+  "schema": "servana.rem-dep-003.failed-ci.v1",
+  "run": 37832129849,
+  "url": "https://github.com/ikrome002-design/servana/actions/runs/37832129849",
+  "head": "35ba851cb60c233cf0fcf9767f98a5bcbad0e237",
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "name": "Security — gitleaks",
+      "id": 113499862998,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ikrome002-design/servana/actions/runs/37832129849/job/113499862998",
+      "startedAt": "2026-10-08T19:27:51Z",
+      "completedAt": "2026-10-08T19:28:02Z"
+    },
+    {
+      "name": "E2E — Playwright",
+      "id": 113499863311,
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/ikrome002-design/servana/actions/runs/37832129849/job/113499863311",
+      "startedAt": "2026-10-08T19:27:51Z",
+      "completedAt": "2026-10-08T20:03:37Z"
+    },
+    {
+      "name": "Backend — Pint, Larastan, Pest",
+      "id": 113499863421,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ikrome002-design/servana/actions/runs/37832129849/job/113499863421",
+      "startedAt": "2026-10-08T19:27:52Z",
+      "completedAt": "2026-10-08T19:34:17Z"
+    },
+    {
+      "name": "Frontend — ESLint, vue-tsc, Vitest, build",
+      "id": 113499863534,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ikrome002-design/servana/actions/runs/37832129849/job/113499863534",
+      "startedAt": "2026-10-08T19:27:51Z",
+      "completedAt": "2026-10-08T19:31:11Z"
+    },
+    {
+      "name": "Docker — build images",
+      "id": 113499863570,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ikrome002-design/servana/actions/runs/37832129849/job/113499863570",
+      "startedAt": "2026-10-08T19:27:51Z",
+      "completedAt": "2026-10-08T19:33:48Z"
+    }
+  ],
+  "e2e": {
+    "passed": 1529,
+    "failed": 14,
+    "flaky": 0,
+    "skipped": 0,
+    "duration": "34.6m",
+    "failures": [
+      "tests/e2e/catalogue-clients.spec.ts:47:3 › Branch Manager service catalogue › lists services and gates the add action on service.create",
+      "tests/e2e/phase-20f.spec.ts:512:5 › Responsive, zoom, keyboard and accessibility › passes axe with zero serious/critical violations (light)",
+      "tests/e2e/phase-20f.spec.ts:512:5 › Responsive, zoom, keyboard and accessibility › passes axe with zero serious/critical violations (dark)",
+      "tests/e2e/phase-23-release-audit.spec.ts:118:3 › theme: hr-dashboard ──────────────",
+      "tests/e2e/phase-23-release-audit.spec.ts:118:3 › theme: finance-dashboard ─────────",
+      "tests/e2e/phase-23-release-audit.spec.ts:118:3 › theme: front-office-dashboard ────",
+      "tests/e2e/phase-23-release-audit.spec.ts:118:3 › theme: front-office-client-detail",
+      "tests/e2e/phase-23-release-audit.spec.ts:118:3 › theme: front-office-walk-in ──────",
+      "tests/e2e/phase-23-release-audit.spec.ts:118:3 › theme: front-office-queue ────────",
+      "tests/e2e/phase-23-release-audit.spec.ts:118:3 › theme: front-office-invoice-payment-create",
+      "tests/e2e/phase-23-release-audit.spec.ts:118:3 › theme: front-office-account ──────",
+      "tests/e2e/phase-23-release-audit.spec.ts:246:3 › axe: merchant-branches ───────────",
+      "tests/e2e/phase-23-release-audit.spec.ts:246:3 › axe: service-catalogue ───────────",
+      "tests/e2e/ui-09-merchant-administrator-experience.spec.ts:328:5 › Responsive, theme and accessibility › branches has no serious or critical axe violation in light mode"
+    ],
+    "logSha256": "afc5c151dcefa6199a4ff99e791dd15ec7f390a61c335d7da3758b0f74756447"
+  },
+  "backend": {
+    "passed": 3554,
+    "skipped": 5,
+    "assertions": 51865,
+    "clamAvIntegrationPassed": 3,
+    "composerAdvisories": 0
+  },
+  "frontend": {
+    "files": 145,
+    "passed": 1402,
+    "npmVulnerabilities": 0
+  },
+  "artifact": {
+    "id": 11575458662,
+    "reportedDigest": "sha256:2ea96b95b2980d844833becc5806e63fef0a48b9bf78934f8f6ae7ba82a805a5",
+    "retainedExternalDirectory": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ci-failed-playwright-artifacts"
+  },
+  "historicalCompiledBaseline": {
+    "root": "C:/Users/nderu/Documents/Development/Product/Servana",
+    "manifestSha256": "66c188fa9f1c111b68bcbcca638c2107248c75bac3e718d6caafddd2ce03a43f",
+    "success15UtilityEmitted": false,
+    "disposition": "Read-only pre-remediation bundle, not fresh acceptance"
+  },
+  "corrections": {
+    "badgeViews": [
+      "resources/spa/src/pages/branch/BranchList.vue",
+      "resources/spa/src/pages/branch/ServiceCatalogue.vue",
+      "resources/spa/src/pages/hr/Compensation.vue"
+    ],
+    "badgePair": "bg-sv-success-bg text-sv-success-fg",
+    "test": "tests/e2e/phase-23-release-audit.spec.ts",
+    "decoder": "Browser canvas converts valid CSS Color 4 into sRGB with alpha; invalid colors fail; alpha composited before equality check"
+  },
+  "localCorrectionBrowser": {
+    "passed": 30,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "duration": "1.4m",
+    "negativeControls": [
+      "transparent text",
+      "foreground equals effective background"
+    ]
+  },
+  "replacementExactHeadCiRequired": true,
+  "originalUi14ManifestUnmodified": true
+}

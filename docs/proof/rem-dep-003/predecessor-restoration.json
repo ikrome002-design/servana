@@ -1,0 +1,16 @@
+{
+  "baselineFiles": 15,
+  "restoredPaths": [
+    "docs/frontend/audits/ui-04/screenshot-index.json",
+    "docs/frontend/audits/ui-04/screenshots/01-design-system-light-desktop.png",
+    "docs/frontend/audits/ui-04/screenshots/02-design-system-dark-desktop.png",
+    "docs/frontend/audits/ui-04/screenshots/03-design-system-mobile-360.png",
+    "docs/frontend/audits/ui-04/screenshots/04-design-system-tablet-768.png",
+    "docs/frontend/audits/ui-04/screenshots/05-form-states.png",
+    "docs/frontend/audits/ui-04/screenshots/06-dialog-and-drawer.png",
+    "docs/frontend/audits/ui-04/screenshots/14-clean-browser-light-under-dark-os.png",
+    "docs/frontend/audits/ui-04/screenshots/16-loading-empty-error-permission-states.png"
+  ],
+  "scope": "REM UI04 test-written historical outputs only; original UI14 untouched",
+  "verifiedAllOriginalHashes": true
+}

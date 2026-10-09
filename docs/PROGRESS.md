@@ -28,6 +28,31 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 
 ## Active v4 roadmap
 
+### REM-DEP-003 — prerequisite dependency security remediation
+
+Owner: Codex under the product-owner continuation mandate of 2026-10-08. Status:
+`local_complete`, pending separate five-job exact-head PR CI/normal merge.
+Fresh npm audit moves from 13 high / 4 moderate to zero at every severity;
+Composer moves from five advisories (2 high / 1 medium / 2 low) to zero.
+Laravel stays on 12 (12.69.3), CommonMark becomes 2.10.3, Flysystem 3.36.0,
+sharp 0.35.5. The conditional Tailwind 4 exception is exercised because the latest
+Tailwind 3 chain still reaches unpatched braces 3.0.3; the supported v4 integration
+preserves the existing token authority. Sharp writes zero generated artifacts;
+32 selected images / 192 derivatives retain their hashes. Local acceptance:
+1,402 Vitest tests / 145 files; 413 focused PHP passes and four existing explicit
+future-resource placeholders; 17 cross-account browser checks plus 25 shared-control
+checks; 96 hashed shell captures and 224 real asset requests. Both audits, lint,
+typecheck, production build, Pint, level-8 analysis and secret scans pass.
+No application permission or financial rule changes. UI-14 remains
+uncommitted and preserved in the separate original worktree.
+See [rem-dep-003.md](proof/rem-dep-003.md) and its exact advisory matrix.
+
+PR #64's first exact-head run `37832129849` passed Security/Backend/Frontend/Docker
+and failed E2E (1,529 passed / 14 failed). Narrow corrections use the existing
+semantic success badge pair in three legacy views and repair the test color
+decoder for CSS Color 4; 30 focused cases pass, including invisible-text negative
+controls. A replacement five-job exact-head run is required before normal merge.
+
 ### Pre-feature remediation (Plan §79) — gate §5.4 **CLOSED and effective** (gate-closure PR #20 merged `7ac20a5`)
 | Phase | Title | Status | Register item |
 |---|---|---|---|

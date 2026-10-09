@@ -144,26 +144,31 @@ for (const screen of SCREENS) {
  */
 async function assertReadableText(page: import('@playwright/test').Page, label: string): Promise<void> {
   const offenders = await page.evaluate(() => {
+    // Tailwind 4 can emit CSS Color 4 values. Let the browser decode every valid
+    // colour into sRGB; an rgb-only parser incorrectly treated oklab as black.
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    if (!context) throw new Error('Cannot decode computed colours');
+    const decoded = new Map<string, [number, number, number, number]>();
     const parse = (value: string): [number, number, number, number] => {
-      const m = value.match(/rgba?\(([^)]+)\)/);
-      if (!m) return [0, 0, 0, 1];
-      const parts = m[1]!.split(',').map((p) => parseFloat(p.trim()));
-      return [parts[0] ?? 0, parts[1] ?? 0, parts[2] ?? 0, parts[3] ?? 1];
+      const cached = decoded.get(value);
+      if (cached) return cached;
+      if (!CSS.supports('color', value)) throw new Error(`Invalid computed colour: ${value}`);
+      context.clearRect(0, 0, 1, 1);
+      context.fillStyle = value;
+      context.fillRect(0, 0, 1, 1);
+      const pixel = context.getImageData(0, 0, 1, 1).data;
+      const colour: [number, number, number, number] = [pixel[0]!, pixel[1]!, pixel[2]!, pixel[3]! / 255];
+      decoded.set(value, colour);
+      return colour;
     };
     const gradientSurface = (value: string): [number, number, number, number] | null => {
       if (value === 'none') return null;
 
       const colours: [number, number, number, number][] = [];
-      for (const match of value.matchAll(/rgba?\(([^)]+)\)/g)) {
+      for (const match of value.matchAll(/\b(?:rgba?|color|oklab|oklch|lab|lch|hsla?)\([^)]*\)/g)) {
         colours.push(parse(match[0]));
-      }
-      for (const match of value.matchAll(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\)/g)) {
-        colours.push([
-          Number(match[1]) * 255,
-          Number(match[2]) * 255,
-          Number(match[3]) * 255,
-          match[4] === undefined ? 1 : Number(match[4]),
-        ]);
       }
 
       return colours.find((colour) => colour[3] >= 1) ?? colours.find((colour) => colour[3] > 0) ?? null;
@@ -219,8 +224,9 @@ async function assertReadableText(page: import('@playwright/test').Page, label: 
         continue;
       }
       const bg = backdrop(el);
+      const effectiveFg = fg.slice(0, 3).map((channel, i) => channel * fg[3] + bg[i]! * (1 - fg[3]));
       // Composited text and background within 8/255 per channel is indistinguishable.
-      if (Math.abs(fg[0] - bg[0]) < 8 && Math.abs(fg[1] - bg[1]) < 8 && Math.abs(fg[2] - bg[2]) < 8) {
+      if (effectiveFg.every((channel, i) => Math.abs(channel - bg[i]!) < 8)) {
         out.push(
           `text matches its background: "${text.slice(0, 40)}" (${style.color} on rgb(${bg.join(', ')}))`,
         );
@@ -232,6 +238,15 @@ async function assertReadableText(page: import('@playwright/test').Page, label: 
 
   expect(offenders, `${label}: unreadable text:\n${offenders.join('\n')}`).toEqual([]);
 }
+
+test('readable text guard decodes CSS Color 4 and rejects invisible text', async ({ page }) => {
+  await page.setContent('<body style="background: rgb(20, 40, 20)"><p style="color: oklab(1 0 0 / 0.75)">Visible text</p></body>');
+  await assertReadableText(page, 'CSS Color 4 visible text');
+  await page.locator('p').evaluate((el) => { el.style.color = 'color(srgb 0 0 0 / 0)'; });
+  await expect(assertReadableText(page, 'transparent negative control')).rejects.toThrow(/transparent text/);
+  await page.locator('p').evaluate((el) => { el.style.color = 'color(srgb 0.078431373 0.156862745 0.078431373)'; });
+  await expect(assertReadableText(page, 'matching background negative control')).rejects.toThrow(/text matches its background/);
+});
 
 // --- Increment 8 — accessibility ------------------------------------------------
 

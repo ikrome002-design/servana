@@ -93,7 +93,7 @@ const activeBranches = computed(() => branches.branches.filter((branch) => branc
             <span
               class="rounded-full px-2 py-0.5 text-xs font-medium"
               :class="branch.status === 'active'
-                ? 'bg-success/15 text-success'
+                ? 'bg-sv-success-bg text-sv-success-fg'
                 : 'bg-surface-alt text-text-muted'"
               data-testid="branch-status"
             >{{ branch.status }}</span>
