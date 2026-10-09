@@ -171,7 +171,7 @@ async function confirmArchive(): Promise<void> {
               </h2>
               <span
                 class="rounded-full px-2 py-0.5 text-xs font-medium"
-                :class="service.status === 'active' ? 'bg-success/15 text-success' : 'bg-surface-alt text-text-muted'"
+                :class="service.status === 'active' ? 'bg-sv-success-bg text-sv-success-fg' : 'bg-surface-alt text-text-muted'"
                 data-testid="service-status"
               >{{ service.status }}</span>
             </div>

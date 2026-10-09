@@ -47,6 +47,12 @@ No application permission or financial rule changes. UI-14 remains
 uncommitted and preserved in the separate original worktree.
 See [rem-dep-003.md](proof/rem-dep-003.md) and its exact advisory matrix.
 
+PR #64's first exact-head run `37832129849` passed Security/Backend/Frontend/Docker
+and failed E2E (1,529 passed / 14 failed). Narrow corrections use the existing
+semantic success badge pair in three legacy views and repair the test color
+decoder for CSS Color 4; 30 focused cases pass, including invisible-text negative
+controls. A replacement five-job exact-head run is required before normal merge.
+
 ### Pre-feature remediation (Plan §79) — gate §5.4 **CLOSED and effective** (gate-closure PR #20 merged `7ac20a5`)
 | Phase | Title | Status | Register item |
 |---|---|---|---|

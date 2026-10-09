@@ -29,6 +29,12 @@ permission, financial or legal changes.
 The original 242-path UI-14 handoff remains uncommitted in its separate worktree.
 Evidence: [rem-dep-003.md](proof/rem-dep-003.md).
 
+First PR CI retained: four jobs passed; 14 E2E cases failed. Three legacy success
+badges now consume the existing AA semantic token pair, and the readability test
+decodes CSS Color 4 instead of silently treating it as black. Thirty focused
+browser checks pass with transparent/matching-text negative controls; replacement
+exact-head five-job CI remains mandatory.
+
 ### Phase UI-13 — Front Office experience (`phase-ui-13-front-office-experience`) — local complete
 
 Started from verified UI-12 squash `6796d82b2db8866529352b47300d63bc6a29941d`.

@@ -188,5 +188,51 @@ failures, never counted as green.
 
 ## Release and deferred ownership
 
+### First exact-head CI failure and narrow correction
+
+PR [#64](https://github.com/ikrome002-design/servana/pull/64), head
+`35ba851cb60c233cf0fcf9767f98a5bcbad0e237`, ran all five jobs in
+[37832129849](https://github.com/ikrome002-design/servana/actions/runs/37832129849).
+Security, Backend, Frontend and Docker succeeded; E2E failed with **1,529 passed /
+14 failed**, in 34.6 minutes. This run is retained as a failure, not acceptance.
+The successful backend reports 3,554 PostgreSQL passes / five existing skips /
+51,865 assertions, plus 3 genuine ClamAV integration passes. Frontend reports
+1,402 passes / 145 files, and both dependency audits report zero advisories.
+
+**Observed problem:** three legacy success badges fail AA; eight theme checks
+incorrectly report readable translucent white text as black.
+**Evidence:** axe measures `#2e7d32` on the newly generated `/15` background
+`#e0ebe0` at 4.18:1, below 4.5:1. The text checker reports actual computed
+`oklab(... / 0.75)` as black because its parser only recognizes `rgb()/rgba()`.
+**Affected files:** `BranchList.vue`, `ServiceCatalogue.vue`, `Compensation.vue`,
+and `tests/e2e/phase-23-release-audit.spec.ts`.
+**Root cause / why:** Tailwind 4 generates the legacy 15-percent tint, exposing
+the unsafe border-token-as-text combination. CSS Color 4 output is valid browser
+color data, but the old checker substitutes black for every unrecognized value.
+**Correct fix / files changed:** the three active badges use the existing
+`sv-success-bg` / `sv-success-fg` semantic pair. The checker asks the browser's
+canvas color decoder for sRGB channels, includes alpha composition, recognizes
+Color 4 gradient stops, and fails explicitly on an invalid color. No palette,
+business rule, assertion threshold, axe rule, retry or timeout is weakened.
+**Tests added/updated:** the existing unreadable-text guard gains a positive
+Color 4 case and negative controls for transparent text and text matching its
+background; the original failing cases and adjacent Front Office theme cases
+are rerun unchanged.
+**Test command:** `npx playwright test tests/e2e/catalogue-clients.spec.ts
+tests/e2e/phase-20f.spec.ts tests/e2e/phase-23-release-audit.spec.ts
+tests/e2e/ui-09-merchant-administrator-experience.spec.ts --grep
+'lists services and gates|passes axe with zero|theme: (hr-dashboard|finance-dashboard|front-office-)|axe: (merchant-branches|service-catalogue)|branches has no serious|readable text guard'
+--reporter=list`.
+**Test result / proof of resolution:** **30 passed**, zero failed/flaky/skipped,
+1.4 minutes; production build and focused ESLint both exit 0.
+The full Vitest rerun passes **1,402 tests / 145 files**, no skipped cases or
+worker errors, 421.55 seconds, using `--pool=threads --maxWorkers=1`. Fresh npm
+and Composer locked audits again exit 0 with zero findings; both the correction
+diff and new CI record pass secret scans. The read-only pre-upgrade bundle has no
+`bg-success/15` rule, independently confirming the newly generated tint.
+**Remaining risk:** replacement CI must pass all five jobs on the correction's
+exact final head before governance or merge. The original UI-14 handoff remains
+unmodified. Failed-run details are in `ci-run-37832129849.json`.
+
 REM-DEP-003 PR, exact-head CI, governance, merge and UI-14 integration are pending.
 UI-15/16/17 and Phase 25 have not started. External Gate W remains closed.
