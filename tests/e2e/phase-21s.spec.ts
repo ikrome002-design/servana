@@ -82,7 +82,7 @@ const previewBody = {
   unit_cost_minor: 100,
   max_recipients: 200,
   max_message_characters: 480,
-  billing_notice: 'Sending this campaign adds an SMS charge to your Servana billing.',
+  billing_notice: 'SMS charges for this message will be billed to your branch together with the Servana subscription invoice. Continue?',
 };
 
 const campaignBody = {
@@ -264,10 +264,17 @@ test.describe('Personnel client SMS', () => {
   });
 
   test('hides the whole surface from a member without the read permission', async ({ page }) => {
+    // UI-14: the canonical /messages/compose route is permission-guarded, so a member without the
+    // SMS permissions never mounts the composer (the guard sends them home) and no served-client
+    // read is ever issued — a stronger form of the original in-page forbidden panel.
+    const servedClientReads: string[] = [];
+    page.on('request', (request) => { if (/\/personnel\/me\/served-clients/.test(request.url())) servedClientReads.push(request.url()); });
     await gotoSms(page, { permissions: [] });
 
-    await expect(page.getByTestId('sms-forbidden')).toBeVisible();
+    await expect(page).not.toHaveURL(/\/messages\/compose/);
     await expect(page.getByTestId('sms-client-list')).toHaveCount(0);
+    await expect(page.getByTestId('sms-body')).toHaveCount(0);
+    expect(servedClientReads).toEqual([]);
   });
 });
 

@@ -35,7 +35,7 @@ describe('MyServiceSessions.vue', () => {
     expect(get).toHaveBeenCalledWith('/personnel/me/sessions', { params: { sort: '-created_at' } });
     expect(wrapper.text()).toContain('Amina Yusuf');
     expect(wrapper.text()).toContain('Haircut');
-    expect(wrapper.find('[data-testid="session-status-badge"]').text()).toBe('In progress');
+    expect(wrapper.find('[data-testid="session-status-badge"]').text()).toContain('In progress');
     // Read-only own scope: no buttons, no commission preview wording.
     expect(wrapper.findAll('button').length).toBe(0);
     expect(wrapper.text()).not.toContain('Preview');

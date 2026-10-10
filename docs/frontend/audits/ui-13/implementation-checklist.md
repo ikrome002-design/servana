@@ -30,6 +30,10 @@
 - [x] Production images and no-volume `office.servana.ke` host proof pass.
 - [x] PROGRESS, CHANGELOG, traceability, proof, defect ledger and screenshot index are final.
 - [x] One commit `ui-13: implement front office experience` is the prepared local-completion commit.
-- [ ] Non-draft PR, exact-head five-job CI, truthful governance, normal squash, equal-tree proof and
-  local/remote branch cleanup complete.
+- [x] Non-draft PR, exact-head five-job CI, truthful governance, normal squash, equal-tree proof and
+  local/remote branch cleanup complete: PR #63, head `126756b3…`, run `32371896795`, governance
+  comment `5356633232`, merge `14cfadcb…`, equal tree `9d91b415…`, 0 reviews/approvals.
 - [x] Stop without starting UI-14.
+
+Lifecycle: `verified_complete`, reconciled live exactly once on the UI-14 branch. The final checklist
+item records the UI-13 session boundary; UI-14 began later from the verified merge.

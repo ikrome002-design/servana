@@ -223,6 +223,18 @@ describe('navigationTree filtering', () => {
     ).toHaveLength(1);
   });
 
+  it('contextually hides compensation-model-inapplicable Personnel pages without opening a gate', () => {
+    const visible = flattenNavigation(navigationTree('merchant_personnel', {
+      permissions: everything,
+      hiddenKeys: ['merchant_personnel.earnings-commission'],
+    }));
+
+    expect(visible.some((node) => node.key === 'merchant_personnel.earnings-commission')).toBe(false);
+    expect(visible.some((node) => node.key === 'merchant_personnel.earnings-salary')).toBe(true);
+    expect(visible.some((node) => node.key === 'merchant_personnel.notifications')).toBe(true);
+    expect(visible.find((node) => node.key === 'merchant_personnel.notifications')?.disabled).toBe(true);
+  });
+
   it('hides an entry that forbids the requesting account', () => {
     const entries = fixture({ forbiddenFor: ['merchant_finance'] });
     expect(navigationTree('merchant_finance', allPermissions, entries)).toEqual([]);

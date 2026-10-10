@@ -31,7 +31,7 @@ is the Phase V verification outcome (see `docs/verification/as-built-discrepanci
 ### REM-DEP-003 — prerequisite dependency security remediation
 
 Owner: Codex under the product-owner continuation mandate of 2026-10-08. Status:
-`local_complete`, pending separate five-job exact-head PR CI/normal merge.
+`verified_complete`: PR #64 merged normally at `43b623c0e484c0ead76cca8c9d02ad41694c700e`; final head `cddb878227932cf71f5210726c7223a2c2d1f08b`, CI `37863919256` five jobs success, reviewed/merge tree equality. The following local and first-run notes retain their historical context.
 Fresh npm audit moves from 13 high / 4 moderate to zero at every severity;
 Composer moves from five advisories (2 high / 1 medium / 2 low) to zero.
 Laravel stays on 12 (12.69.3), CommonMark becomes 2.10.3, Flysystem 3.36.0,
@@ -149,13 +149,65 @@ while the repository records said the work was complete.
 | UI-10 | Branch experience (18 pages) | ✅ `verified_complete` | PR [#60](https://github.com/ikrome002-design/servana/pull/60) merged — squash `d7988dca…`, final head `e5f2a6fb…`, equal source/merge tree `0a75dedd…`, merged `2026-08-13T05:04:49Z`. Replacement exact-head run `31667335687` had Backend/Frontend/Docker/Security/E2E all successful; initial failed run `31665290449` is preserved. Governance comment `5276187980`; blank decision / 0 reviews (**not** independent approval); source branch deleted local + remote. **15 implemented / 3 disabled_by_gate / 0 planned / 0 removed = 18**; all eleven closures promoted. | [ui-10.md](proof/ui-10.md) | Reconciled live exactly once on the UI-11 branch |
 | UI-11 | Human Resource experience (19 pages) | ✅ `verified_complete` | PR [#61](https://github.com/ikrome002-design/servana/pull/61) merged — normal squash `dc74e28a…`, final reviewed head `38bb9014…`, equal reviewed/merge tree `ce181099…`, merged `2026-08-13T18:30:14Z`. Initial run `31727621418` preserved its UI-06 current-projection failure; replacement exact-head run `31728277786` passed Backend/Frontend/Docker/Security/E2E. Governance comment `5284811253`; blank/NONE decision, 0 reviews, 0 approvals (**not** independent approval); source branches absent. **15 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 19**; all eleven closures promoted. | [ui-11.md](proof/ui-11.md) | Reconciled live exactly once on the UI-12 branch |
 | UI-12 | Finance experience (24 pages) | ✅ `verified_complete` | PR [#62](https://github.com/ikrome002-design/servana/pull/62) merged — normal squash `6796d82b…`, final reviewed head `df541979…`, equal reviewed/merge tree `7609bfa1…`, merged `2026-08-14T03:17:40Z`. Exact-head CI `31764745586` passed Backend/Frontend/Docker/Security/E2E; governance comment `5288994536`; blank decision and 0 reviews/approvals (**not** independent approval); source branches absent. **20 implemented / 4 disabled_by_gate / 0 planned / 0 removed = 24**; all seventeen closures promoted. | [ui-12.md](proof/ui-12.md) | Reconciled live exactly once on the UI-13 branch |
-| UI-13 | Front Office experience (19 pages) | 🟡 `local_complete` | `phase-ui-13-front-office-experience` from verified UI-12 squash `6796d82b…`; **17 implemented / 2 disabled_by_gate / 0 planned / 0 removed = 19**, zero permission delta, 59/59 focused and 1,526/1,526 whole-product browser proof, 51/51 no-volume production-host proof, 24 closures local complete. Pre-merge record intentionally claims no future PR/CI/merge fact. | [ui-13.md](proof/ui-13.md) | Awaiting non-draft PR and exact-head lifecycle |
-| UI-14 | Personnel experience (20 pages) | ⬜ Not started | — | — | UI-07 merged |
+| UI-13 | Front Office experience (19 pages) | ✅ `verified_complete` | PR [#63](https://github.com/ikrome002-design/servana/pull/63) merged — normal squash `14cfadcb…`, final reviewed head `126756b3…`, equal reviewed/merge tree `9d91b415…`, merged `2026-08-20T13:36:11Z`. Exact-head CI `32371896795` passed Backend/Frontend/Docker/Security/E2E; governance comment `5356633232`; blank/NONE decision and 0 reviews/approvals (**not** independent approval); source branches absent. **17 implemented / 2 disabled_by_gate / 0 planned / 0 removed = 19**; all 24 closures promoted. | [ui-13.md](proof/ui-13.md) | Reconciled live exactly once on the UI-14 branch |
+| UI-14 | Personnel experience (20 pages) | 🔴 Release blocked: test runtime | Original implementation preserved; REM-DEP-003 merged and audits zero; authoritative full PostgreSQL/fresh production proof pending after Docker timeouts | [ui-14.md](proof/ui-14.md) | 19 implemented / 1 gated / 0 planned; UI15 not started |
 | UI-15 | Audit experience (15 pages) | ⬜ Not started | — | — | UI-07 merged |
 | UI-16 | Responsive, accessibility, theme, visual regression | ⬜ Not started | — | — | UI-08…UI-15 merged |
 | UI-17 | Performance, security, production deployment, closeout | ⬜ Not started | — | — | UI-16 merged |
 
-### Phase UI-13 — Front Office experience — local complete
+### Phase UI-14 — Personnel experience — local_complete; final release checks and GitHub lifecycle pending
+
+Current Codex release checkpoint (2026-10-10): REM-DEP-003 PR #64 is verified merged as `43b623c0e484c0ead76cca8c9d02ad41694c700e`, exact-head CI `37863919256` all five jobs success. The complete PostgreSQL result is **3,578 passed / five exact authorized skips / zero failed / 52,419 assertions**; six collector negative controls reject. Accepted Vitest 1,426, Personnel browser 73, Tailwind compatibility 17 and whole-product Playwright 1,653 remain attributable to the frozen source; 69 captures and 535 predecessor hashes are preserved. The identical Tailwind key removal has ordered-config and **652-file byte parity**, including the actual new Nginx image. Current PHP and Nginx production builds pass; PostgreSQL 16.14 connects, all 132 migrations pass, `nginx -t` passes and **43/43 staff.servana.ke checks** pass. Exact owned proof resources were removed; development services and volumes were untouched. Final documentation/security/contract/scope checks precede the first implementation commit. UI14 PR CI/governance/merge are still pending; UI15/UI16/UI17/Phase25 and Gate-W-dependent phases were not started.
+
+Final recovery gates (2026-10-11 Africa/Nairobi): fresh npm audit zero at every severity; current production locked Composer audit zero advisories/abandoned and strict validation exit 0; current nav/UI14/UI06/OpenAPI/token/content/asset/source-inventory checks pass; gitleaks tracked/diff/untracked scans zero findings; complete 373-path authorized scope passes; git diff --check and git fsck --full exit 0. Changed-document PostgreSQL consumers: **111 passed / 8,756 assertions / zero failures, errors or skips**; complete JUnit hash `1a62eab44519e456964ecf115792ef7be33b8f3cd5cb31b2b2e1e38bb0ad1503`. Exact owned test resources returned to stopped. Local mandatory gates are green; implementation commit, clean REM ancestry integration and the full UI14 GitHub lifecycle remain to be executed. No independent approval or future phase is claimed.
+
+The following tables retain the historical pre-remediation handoff; current acceptance is the checkpoint above.
+
+#### Historical pre-remediation handoff
+
+Branch `phase-ui-14-personnel-experience`, base `14cfadcb512d867d2aebefe0fa628fdee3563e02` (UI-13
+PR #63, live-verified 2026-10-08: equal reviewed/merge tree `9d91b415…`, CI `32371896795` five jobs
+success, governance `5356633232`, 0 reviews / 0 approvals). Started 2026-08-20; completed by a
+continuation session on 2026-10-08. **UI-14 local implementation and verification complete except
+the dependency-audit gate — uncommitted and unpushed by instruction; release delegated to Codex
+Prompt 2 once UI14-DEP-001/002 clear.** No UI-14 PR, CI run, governance comment or merge exists.
+
+| Work item | evidence/result | lifecycle state | remaining work | responsible phase/owner | entry condition |
+|---|---|---|---|---|---|
+| 20-page contract | 19 implemented / 1 disabled_by_gate / 0 planned / 0 removed; global 160; `nav:check` green | local_complete | none | UI-14 | — |
+| Personnel pages + shell | 19 canonical routes on `staff.servana.ke`; `/personnel/*` redirects; visual rubric 27–30/30 on all 19 | local_complete | commit/PR/CI/merge | Codex Prompt 2 | dependency blocker cleared |
+| Own-scope read seams | 7 GETs; OpenAPI 299/350 → 306/357; permissions 169/134/35 unchanged; no migration | local_complete | none | UI-14 | — |
+| Own scope / contact / SMS / earnings | matrices 16 domains · 12/12 · 16/16 · 10/10; `Ui14PersonnelExperienceApiTest` 24/118 | local_complete | none | UI-14 | — |
+| Backend gate | full PostgreSQL 3,009 passed / 14 skipped / 3 projection failures → fixed; invalidated set 137/8,429; Pint, Larastan L8 clean | local_complete | none | UI-14 | — |
+| Frontend gate | vue-tsc, ESLint 0 errors, Vitest 1,426/1,426, build | local_complete | none | UI-14 | — |
+| Browser gate | focused UI-14 72/72; whole-product 1,634/1,634 (58.0 min, 0 flaky/skipped); predecessor evidence restored exactly (12 scopes) | local_complete | none | UI-14 | — |
+| Production images + host | PHP `4dc7b5a9…` + Nginx `cb4e4744…` built; in-network `nginx -t` ok; `staff.servana.ke` host proof 43/43; proof resources removed | local_complete | none | UI-14 | — |
+| `npm audit --audit-level=high` | 13 high / 4 moderate (published after UI-13 CI); 6 high need Tailwind 3→4 + sharp exact-pin bump | **blocked** (UI14-DEP-001) | remediation branch | proposed REM-DEP-003 (product owner) | Tailwind 4 / sharp decision approved |
+| `composer audit` | laravel/framework <12.69, league/commonmark, league/flysystem advisories | **blocked** (UI14-DEP-002) | remediation branch | proposed REM-DEP-003 | same as above |
+| Notifications + preferences | inert gated nav; no route/runtime | deferred | runtime | Phase 21N | Gate W open → 20D-W verified → 21N authorized |
+| Personnel self-status availability | absent by authority (HR owns `personnel.availability.manage`) | deferred | contract | future authorized backend phase | Plan + permission-matrix change |
+| Terms acknowledgement (server) / query reply-reopen | device-only review marker; read-only thread | deferred | contracts | product owner / future compensation phase | Plan/Scope define them |
+| Legacy unrouted `Earnings.vue` (UI14-RES-001) | retained for the UI-01 render regression | deferred | removal | UI-17 | regression retargeted |
+| UI-08…UI-12 visual remediation; primitive registry; `sm:`/`xl:` sweep (45 files) | handed off in `visual-language-continuity.md` | deferred | convergence | UI-16 | UI-15 merged |
+| Audit account | — | not started | all | UI-15 | UI-14 merged |
+| Perf/security/deploy closeout · backend deployment | — | not started | all | UI-17 · Phase 25 | UI-16 merged · own authorization |
+| 20D-W · 21R-B · 21N | blocked | blocked_external_gate | — | Gate W owners | External Gate W opens |
+| REM-EXP-001 · REM-PERM-002 · UI07-ENV-001 · REM-SMS-002 | unchanged | open | as owned | 21N · dedicated pre-25 remediation · authorized owner pre-25 · pre-25 external SMS verification | as recorded |
+
+Defects: 26 recorded, 24 `local_complete`, 2 `blocked` (UI14-DEP-001/002), 0 open —
+`docs/frontend/audits/ui-14/defect-closure.json`. Handoff:
+`docs/frontend/audits/ui-14/claude-to-codex-handoff.{md,json}`.
+
+### Phase UI-13 — Front Office experience — verified complete
+
+UI-13 was reconciled live exactly once on the UI-14 branch. PR #63 is merged with final reviewed
+head `126756b3a91caa68c09412ff80889dfa9b9477b2`, normal squash merge
+`14cfadcb512d867d2aebefe0fa628fdee3563e02`, and equal reviewed/merge tree
+`9d91b415c7ee12007f840faa4d88b82d5ac12be5`. Exact-head CI run `32371896795` completed all five
+required jobs successfully. Governance comment `5356633232` records the truthful solo-maintainer
+exception: blank/NONE review decision, 0 submitted reviews, 0 approvals, and no independent review.
+The local and remote source branches are absent. Historical local-completion evidence below is
+preserved as authored; its lifecycle has now been promoted to `verified_complete`.
 
 Branch `phase-ui-13-front-office-experience`, base `6796d82b2db8866529352b47300d63bc6a29941d`.
 UI-12 PR #62 was reconciled live exactly once before implementation: final head `df541979…`,
@@ -197,9 +249,9 @@ branches absent.
   records the first standalone Nginx syntax command's missing-upstream orchestration error and the
   unchanged image's successful production-network rerun. UI13-024 records and closes the first
   staging command's stale zero-byte Git index lock without altering index content.
-- The single local-completion commit is prepared. PR, exact-head five-job CI, governance, normal
-  squash, equal-tree verification and source-branch cleanup are post-commit facts and remain
-  intentionally unclaimed until observed live. UI-14 has not started.
+- The historical local-completion record intentionally stopped before PR lifecycle facts. Those
+  facts are now live-verified above; all 24 UI-13 closures are `verified_complete`. UI-14 started
+  only after this reconciliation on its dedicated branch.
 
 ### Phase UI-12 — Finance experience — verified complete
 

@@ -583,19 +583,24 @@
       "summary": "Guided get-started checklist for Front Office."
     },
     {
-      "key": "personnel-landing",
+      "key": "personnel-dashboard",
       "domain": "personnel",
-      "route": "personnel.landing",
+      "route": "personnel.dashboard",
       "layout": "PersonnelLayout",
       "status": "implemented",
-      "phase": "Phase 11",
+      "phase": "Phase UI-14",
       "spec": "personnel/personnel-landing.md",
-      "title": "Personnel landing",
+      "title": "Personnel dashboard",
       "roles": [
         "merchant_personnel"
       ],
-      "permissions": [],
-      "summary": "Live Personnel own-scope role home."
+      "permissions": [
+        "personnel.my_appointments.view",
+        "personnel.my_queue.view",
+        "personnel.my_sessions.view",
+        "personnel.my_earnings.view"
+      ],
+      "summary": "Private mobile-first command centre for the authenticated staff profile's own queue, appointments, sessions, preferred requests, served clients, HR-managed availability and server-recorded earnings."
     },
     {
       "key": "personnel-get-started",
@@ -2207,7 +2212,7 @@
     {
       "key": "personnel-appointments",
       "domain": "personnel",
-      "route": "personnel.appointments",
+      "route": "personnel.work-appointments",
       "layout": "PersonnelLayout",
       "status": "implemented",
       "phase": "Phase 16A",
@@ -2224,7 +2229,7 @@
     {
       "key": "personnel-queue",
       "domain": "personnel",
-      "route": "personnel.queue",
+      "route": "personnel.work-queue",
       "layout": "PersonnelLayout",
       "status": "implemented",
       "phase": "Phase 16B",
@@ -2241,7 +2246,7 @@
     {
       "key": "personnel-sessions",
       "domain": "personnel",
-      "route": "personnel.sessions",
+      "route": "personnel.work-sessions",
       "layout": "PersonnelLayout",
       "status": "implemented",
       "phase": "Phase 16C",
@@ -2279,7 +2284,7 @@
     {
       "key": "personnel-sms",
       "domain": "personnel",
-      "route": "personnel.sms",
+      "route": "personnel.messages-compose",
       "layout": "PersonnelLayout",
       "status": "implemented",
       "phase": "Phase 21S",
@@ -2293,6 +2298,162 @@
         "personnel.my_sms.send"
       ],
       "summary": "Personnel own-scope bulk SMS to clients this staff member PERSONALLY SERVED (at least one completed service session performed by them, in the acting merchant + branch). The screen shows a paginated, name-searchable served-client list with MASKED contact only (`••• ••• 1234`), recipient selection bounded by the configured max batch, a composer whose character count, segment count, excluded-recipient reason codes and estimated KES cost all come from the server preview (the browser derives none of them), a billing notice, an explicit confirmation dialog, and the resulting campaign statuses with per-recipient outcomes. The acting staff profile is derived from the membership — there is no staff selector and the browser never sends a staff reference, a cost or a recipient count. The served-client READ (`personnel.my_served_clients.view`) survives billing read-only grace; SENDING (`personnel.my_sms.send`) additionally requires the `sms` plan entitlement and is blocked in read-only grace / suspended billing, with both refusals rendered as actionable copy rather than raw codes. NO contact export exists anywhere on this screen — no export, download, print, clipboard-copy or phone-list control, no full phone in state, storage or a URL, and no such control may ever be added (ADR-010; Plan §19.4 non-overridable)."
+    },
+    {
+      "key": "personnel-service-history",
+      "domain": "personnel",
+      "route": "personnel.work-history",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-service-history.md",
+      "title": "Service history",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_sessions.view"],
+      "summary": "Completed and cancelled own service sessions with masked client context, filters, own performance summary and server-frozen commission linkage."
+    },
+    {
+      "key": "personnel-preferred-requests",
+      "domain": "personnel",
+      "route": "personnel.work-preferred-requests",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-preferred-requests.md",
+      "title": "Preferred requests",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_queue.view", "personnel.my_appointments.view"],
+      "summary": "Own queue and appointment requests that preferred the acting staff profile, clearly separating preference from confirmed assignment."
+    },
+    {
+      "key": "personnel-served-clients",
+      "domain": "personnel",
+      "route": "personnel.clients",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-served-clients.md",
+      "title": "Served clients",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_served_clients.view"],
+      "summary": "Audited personally-served-client relationship context with masked contact, service history summary and SMS consent state; no contact export, clipboard or raw contact."
+    },
+    {
+      "key": "personnel-message-history",
+      "domain": "personnel",
+      "route": "personnel.messages",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-message-history.md",
+      "title": "Message history",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_sms.send"],
+      "summary": "Own in-platform SMS campaigns and server-reported outcomes, with no raw contact or export surface."
+    },
+    {
+      "key": "personnel-commission",
+      "domain": "personnel",
+      "route": "personnel.earnings-commission",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-commission.md",
+      "title": "Commission",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_earnings.view"],
+      "summary": "Own server-frozen commission ledger entries; the page states that service completion alone does not earn commission and never calculates authoritative money."
+    },
+    {
+      "key": "personnel-salary",
+      "domain": "personnel",
+      "route": "personnel.earnings-salary",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-salary.md",
+      "title": "Salary",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_earnings.view"],
+      "summary": "Own append-only salary accrual facts, contextually hidden when salary does not apply and explicit on direct navigation."
+    },
+    {
+      "key": "personnel-payouts",
+      "domain": "personnel",
+      "route": "personnel.earnings-payouts",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-payouts.md",
+      "title": "Payouts",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_payouts.view"],
+      "summary": "Own payout items and masked external payment evidence recorded by Finance; Servana records status but does not transfer funds."
+    },
+    {
+      "key": "personnel-compensation-terms",
+      "domain": "personnel",
+      "route": "personnel.earnings-terms",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-compensation-terms.md",
+      "title": "Compensation terms",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_compensation.view"],
+      "summary": "Read-only current compensation plan and safe commission rules; a device-local viewed acknowledgement never approves, activates or edits terms."
+    },
+    {
+      "key": "personnel-earnings-statements",
+      "domain": "personnel",
+      "route": "personnel.earnings-statements",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-earnings-statements.md",
+      "title": "Earnings statements",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_statements.download"],
+      "summary": "Own paid-payout statement generation and short-lived authorized download links without exposing storage paths."
+    },
+    {
+      "key": "personnel-earnings-queries",
+      "domain": "personnel",
+      "route": "personnel.earnings-queries",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-earnings-queries.md",
+      "title": "Earnings queries",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_earnings_query.create"],
+      "summary": "Create and track questions about own compensation facts; Finance answers and any correction is an additive adjustment rather than a ledger edit."
+    },
+    {
+      "key": "personnel-own-availability",
+      "domain": "personnel",
+      "route": "personnel.availability",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-own-availability.md",
+      "title": "Availability status",
+      "roles": ["merchant_personnel"],
+      "permissions": ["personnel.my_appointments.view"],
+      "summary": "Read-only own schedule, derived state and service eligibility; Human Resource retains the sole availability mutation authority from Phase 15B."
+    },
+    {
+      "key": "personnel-account",
+      "domain": "personnel",
+      "route": "personnel.account",
+      "layout": "PersonnelLayout",
+      "status": "implemented",
+      "phase": "Phase UI-14",
+      "spec": "personnel/personnel-account.md",
+      "title": "Account and preferences",
+      "roles": ["merchant_personnel"],
+      "permissions": [],
+      "summary": "Own Magic Link identity, sessions, MFA, accessibility and theme preferences; no staff assignment, availability or compensation mutation."
     },
     {
       "key": "platform-billing-settings",

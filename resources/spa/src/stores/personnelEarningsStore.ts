@@ -12,7 +12,12 @@ import type { components } from '@/types/generated/api';
  * Phase 10F file endpoints via the server-issued short-lived signed link (own-scope by owner). No other
  * staff data, no payout mutation, no Wallet/provider field.
  */
-export type PayoutItem = components['schemas']['PersonnelPayoutItemResource'];
+export type PayoutItem = components['schemas']['PersonnelPayoutItemResource'] & {
+  period_start?: string | null;
+  period_end?: string | null;
+  paid_at?: string | null;
+  external_reference_masked?: string | null;
+};
 export type EarningsStatement = components['schemas']['EarningsStatementResource'];
 
 export interface TabVisibility {
@@ -42,14 +47,31 @@ export interface EarningsOverview {
 }
 
 export interface CompensationTerms {
+  plan_id?: string;
   has_current_plan: boolean;
   conflicting: boolean;
+  status?: string;
   compensation_model?: string;
   salary_amount_minor?: number | null;
   salary_currency?: string | null;
   salary_period?: string | null;
+  salary_payout_day?: number | null;
   suspension_salary_policy?: string;
   effective_from?: string;
+  effective_to?: string | null;
+  commission_rule?: {
+    calculation_type: string;
+    percentage_basis_points: number | null;
+    fixed_amount_minor: number | null;
+    currency: string | null;
+    calculation_basis: string;
+    applies_to: string;
+    service_category: { id: string; name: string } | null;
+    selected_services: Array<{ id: string; name: string }>;
+    applies_to_preferred_personnel_fee: boolean;
+    effective_from: string;
+    effective_to: string | null;
+  } | null;
 }
 
 export interface SignedDownload {
@@ -122,7 +144,14 @@ export const usePersonnelEarningsStore = defineStore('personnelEarnings', () => 
     overviewError.value = null;
     try {
       const { data } = await apiClient.get<{ data: EarningsOverview }>('/personnel/me/earnings');
-      overview.value = data.data;
+      const payload = data?.data as Partial<EarningsOverview> | null | undefined;
+      // A payload without the contract's shape is a failed read, never a silently "empty" model:
+      // applying it would leave tab_visibility undefined for the shell and every earnings page.
+      if (!payload || !Array.isArray(payload.currencies) || typeof payload.tab_visibility !== 'object' || payload.tab_visibility === null) {
+        overviewError.value = 'Unable to load your earnings.';
+        return;
+      }
+      overview.value = payload as EarningsOverview;
     } catch (err) {
       if (!noteForbidden(err)) overviewError.value = 'Unable to load your earnings.';
     } finally {

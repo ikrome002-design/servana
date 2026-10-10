@@ -130,6 +130,22 @@ describe('HeaderGroupNavigation.vue — Increment 9A', () => {
     expect(wrapper.findAll('section > p').map((label) => label.text())).toEqual(groups);
   });
 
+  it('renders Personnel groups in the UI-14 work-to-pay order with Utility last', async () => {
+    const groups = ['Home', 'My Work', 'My Clients', 'My Earnings', 'Utility'];
+    const wrapper = await mountNav(
+      'stacked',
+      groups.map((group, index) => node({
+        key: `personnel.${index}`,
+        group,
+        disabled: true,
+        disabledReason: 'Test-only inert item',
+        order: index + 1,
+      })),
+    );
+
+    expect(wrapper.findAll('section > p').map((label) => label.text())).toEqual(groups);
+  });
+
   it('places each entry in its own group', async () => {
     const wrapper = await mountNav();
     await wrapper.find('[data-testid="nav-group-trigger-nav-group-billing-commercial"]').trigger('click');

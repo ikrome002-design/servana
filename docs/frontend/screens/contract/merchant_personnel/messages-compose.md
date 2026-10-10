@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `personnel.sms` at `/personnel/sms` (routes/personnel.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/messages/compose`; owner phase **UI-14** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `personnel.messages-compose` at `/messages/compose` (routes/personnel.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-14**
 - **Backend owner phase:** **Phase 21S**
 - **Implementation status:** `implemented`
-- **Runtime route:** `personnel.sms`
+- **Runtime route:** `personnel.messages-compose`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `personnel.sms` (recorded in `docs/frontend/screens/personnel/personnel-sms.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `personnel.messages-compose` (recorded in `docs/frontend/screens/personnel/personnel-sms.md`).
 - **Data fields:** Personnel own-scope bulk SMS to clients this staff member PERSONALLY SERVED (at least one completed service session performed by them, in the acting merchant + branch). The screen shows a paginated, name-searchable served-client list with MASKED contact only (`••• ••• 1234`), recipient selection bounded by the configured max batch, a composer whose character count, segment count, excluded-recipient reason codes and estimated KES cost all come from the server preview (the browser derives none of them), a billing notice, an explicit confirmation dialog, and the resulting campaign statuses with per-recipient outcomes. The acting staff profile is derived from the membership — there is no staff selector and the browser never sends a staff reference, a cost or a recipient count. The served-client READ (`personnel.my_served_clients.view`) survives billing read-only grace; SENDING (`personnel.my_sms.send`) additionally requires the `sms` plan entitlement and is blocked in read-only grace / suspended billing, with both refusals rendered as actionable copy rather than raw codes. NO contact export exists anywhere on this screen — no export, download, print, clipboard-copy or phone-list control, no full phone in state, storage or a URL, and no such control may ever be added (ADR-010; Plan §19.4 non-overridable).
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

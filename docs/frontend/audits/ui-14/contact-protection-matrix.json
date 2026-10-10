@@ -1,0 +1,21 @@
+{
+  "schema": "servana.ui14.contact-protection-matrix.v1",
+  "phase": "UI-14",
+  "lifecycle": "local_complete",
+  "authority": "Plan §19.4 / CLAUDE.md guardrail 8 — Merchant Personnel contact export does not exist anywhere: no schema field, no endpoint, no UI.",
+  "checks": [
+    { "claim": "Only personally served clients appear", "evidence": "PersonnelExperienceReadModel served-client query joins completed own service sessions; Ui14PersonnelExperienceApiTest excludes Personnel B's client and the foreign tenant's client", "result": "pass" },
+    { "claim": "Contacts are masked by the server", "evidence": "API returns phone_masked only ('••• ••• 5678'); response body never contains +254712345678, phone_encrypted, phone_index or email (Ui14PersonnelExperienceApiTest)", "result": "pass" },
+    { "claim": "No merchant-wide client list is reachable", "evidence": "Personnel holds no client.view permission; /api/v1/clients is denied by policy (Phase 17 permission matrix); UI-14 adds no permission (169/134/35 unchanged)", "result": "pass" },
+    { "claim": "No other Personnel member's client is reachable", "evidence": "same-branch Personnel B served client absent from /personnel/me/served-clients (Ui14PersonnelExperienceApiTest)", "result": "pass" },
+    { "claim": "No export control is present", "evidence": "Ui14PersonnelPages.spec.ts asserts no export/download/copy/print/csv button or link and no tel:/sms:/mailto: anywhere on Served Clients; e2e 'served-client view is masked and has no export, raw contact, print or clipboard control'", "result": "pass" },
+    { "claim": "No raw export endpoint introduced", "evidence": "OpenAPI 299/350 -> 306/357: the seven added operations are all own-scope GETs (workspace, service-history, preferred-requests, served-clients, commissions, salary, availability); none is export-shaped", "result": "pass" },
+    { "claim": "No copy-all / clipboard action", "evidence": "SvMaskedIdentity has no copy control, link or button (SvUi14Primitives.spec.ts); ClientSms selector renders only checkboxes and masked identities", "result": "pass" },
+    { "claim": "No raw phone state retained in stores", "evidence": "personnelExperienceStore and personnelSmsStore types carry phone_masked only; phase-21s e2e expectNoContactLeak checks DOM, HTML, URL, localStorage and sessionStorage", "result": "pass" },
+    { "claim": "SMS recipient selection never exposes an exportable list", "evidence": "the browser sends client ULIDs only; preselection via ?client= carries the opaque ULID and is honoured only if it is in the caller's served list (Ui14PersonnelPages.spec.ts)", "result": "pass" },
+    { "claim": "Export-shaped requests stay non-enumerating and audited", "evidence": "tests/Feature/Messaging/SmsContactExportProhibitionTest.php (Phase 21S) unchanged and green; served-client view audit context records export=false", "result": "pass" },
+    { "claim": "Search/filter state does not leak excluded clients", "evidence": "search is a server parameter over own scope only; the SMS-eligibility chips filter only rows already returned for the caller", "result": "pass" },
+    { "claim": "Contact-shaped sort/filter rejected", "evidence": "served-clients?sort=phone_last_four -> 422 (Ui14PersonnelExperienceApiTest)", "result": "pass" }
+  ],
+  "summary": { "checks": 12, "passed": 12, "failed": 0 }
+}

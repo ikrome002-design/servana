@@ -216,22 +216,36 @@ test.describe('Personnel earnings', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'My earnings' })).toBeVisible();
   }
 
+  // UI-14 split the consolidated Phase 20H screen into the canonical My Earnings pages
+  // (/earnings, /earnings/statements, /earnings/queries …). These cases keep the Phase 20H
+  // intent — own per-currency totals, both model tabs, no staff selector, a private statement and
+  // an own-scope query — against the canonical pages.
   test('shows own per-currency earnings + both tabs and generates a statement link, with no staff selector', async ({ page }) => {
     await goto(page);
     await expect(page.getByTestId('earnings-currency-card')).toHaveCount(1);
-    await expect(page.getByText('Salary (unpaid / paid)')).toBeVisible();
-    await expect(page.getByText('Commission (unpaid / paid)')).toBeVisible();
-    await page.getByTestId('statement-01HITEM0000000000000000000').click();
-    await expect(page.getByTestId('statement-link-01HITEM0000000000000000000')).toBeVisible();
+    const earningsNav = page.getByRole('navigation', { name: 'My earnings pages' });
+    await expect(earningsNav.getByRole('link', { name: 'Salary' })).toBeVisible();
+    await expect(earningsNav.getByRole('link', { name: 'Commission' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'Salary' })).toBeVisible();
+    await expect(page.getByRole('rowheader', { name: 'Commission' })).toBeVisible();
+    await expect(page.locator('select[name*="staff"], input[name*="staff"]')).toHaveCount(0);
+
+    await earningsNav.getByRole('link', { name: 'Statements' }).click();
+    const statement = page.waitForRequest(/\/personnel\/me\/payout-items\/01HITEM0000000000000000000\/statement$/);
+    const popup = page.waitForEvent('popup');
+    await page.getByRole('button', { name: 'Generate statement' }).click();
+    await statement;
+    await (await popup).close();
+    await expect(page.getByText(/Your private statement is ready in a new tab\./)).toBeVisible();
   });
 
   test('raises an own-scope earnings query', async ({ page }) => {
     await goto(page);
-    await page.getByTestId('open-query').click();
-    await page.locator('#query-subject-ulid').fill('01HLEDGER0000000000000000A');
+    await page.getByRole('navigation', { name: 'My earnings pages' }).getByRole('link', { name: 'Queries' }).click();
+    await page.locator('#query-reference').fill('01HLEDGER0000000000000000A');
     await page.locator('#query-body').fill('My commission looks short this period.');
-    await page.getByTestId('query-submit').click();
-    await expect(page.getByTestId('earnings-status')).toContainText('submitted');
+    await page.getByRole('button', { name: 'Submit to Finance' }).click();
+    await expect(page.getByText('Your query was submitted to Finance.')).toBeVisible();
   });
 });
 

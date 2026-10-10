@@ -10,6 +10,7 @@ import { useGetStartedStore } from '@/stores/getStartedStore';
 import { useHrWorkspaceStore } from '@/stores/hrWorkspaceStore';
 import { useMerchantDashboardStore } from '@/stores/merchantDashboardStore';
 import { useFrontOfficeWorkspaceStore } from '@/stores/frontOfficeWorkspaceStore';
+import { usePersonnelExperienceStore } from '@/stores/personnelExperienceStore';
 import { ROLE_IDENTITIES, type RoleIdentity } from '@/types/roles';
 
 /**
@@ -25,6 +26,7 @@ const merchantDashboard = useMerchantDashboardStore();
 const branchExperience = useBranchExperienceStore();
 const hrWorkspace = useHrWorkspaceStore();
 const frontOfficeWorkspace = useFrontOfficeWorkspaceStore();
+const personnelExperience = usePersonnelExperienceStore();
 
 const identity = computed<RoleIdentity | null>(() => {
   const meta = route.meta.roleIdentity;
@@ -67,6 +69,9 @@ const observedCompletedIds = computed<string[]>(() => {
     if (readiness.receipt_available) ids.push('confirm-receipt-issuance');
     return ids;
   }
+  if (identity.value === 'merchant_personnel') {
+    return (personnelExperience.workspace?.clients.recent_messages ?? 0) > 0 ? ['send-approved-sms'] : [];
+  }
   if (identity.value !== 'merchant_administrator') return [];
   const readiness = merchantDashboard.overview?.get_started;
   if (!readiness) return [];
@@ -88,6 +93,7 @@ onMounted(() => {
   if (identity.value === 'merchant_branch') void branchExperience.fetchOverview();
   if (identity.value === 'merchant_human_resource') void hrWorkspace.fetchOverview();
   if (identity.value === 'merchant_front_office') void frontOfficeWorkspace.fetchOverview();
+  if (identity.value === 'merchant_personnel') void personnelExperience.fetchWorkspace();
 });
 
 const dismissed = computed(() =>
@@ -105,7 +111,7 @@ function reopen(): void {
 </script>
 
 <template>
-  <div :class="identity === 'merchant_front_office' ? 'mx-auto max-w-5xl' : 'mx-auto max-w-3xl'">
+  <div :class="identity === 'merchant_front_office' || identity === 'merchant_personnel' ? 'mx-auto max-w-5xl' : 'mx-auto max-w-3xl'">
     <template v-if="identity && userId">
       <SvOperationalHero
         v-if="identity === 'merchant_front_office'"
@@ -114,6 +120,26 @@ function reopen(): void {
         title="From welcome to verified receipt"
         description="Follow the real service-desk sequence. Server-owned completion moves from client registration through service and invoice creation to a recorded payment that Finance must validate before the original receipt appears."
       />
+      <SvOperationalHero
+        v-if="identity === 'merchant_personnel'"
+        class="mb-5"
+        eyebrow="Your private orientation"
+        title="Know your work, pay and privacy boundaries"
+        description="Learn the path from own assignment to completed service, understand when commission is actually earned, and keep served-client follow-up inside Servana."
+        :context="personnelExperience.workspace?.staff.branch?.name"
+      >
+        <div class="grid gap-3 text-sm md:grid-cols-3">
+          <div class="rounded-control border border-white/10 bg-white/10 p-3">
+            <strong class="block">Work states</strong><span class="text-white/70">Queue, appointment and session facts remain separate.</span>
+          </div>
+          <div class="rounded-control border border-white/10 bg-white/10 p-3">
+            <strong class="block">Pay states</strong><span class="text-white/70">Pending, earned, approved, paid and reversed are not interchangeable.</span>
+          </div>
+          <div class="rounded-control border border-white/10 bg-white/10 p-3">
+            <strong class="block">Private follow-up</strong><span class="text-white/70">Masked contacts, consent checks and branch-billed SMS.</span>
+          </div>
+        </div>
+      </SvOperationalHero>
       <div
         v-if="dismissed"
         class="rounded-card border border-border bg-surface p-6 text-center"

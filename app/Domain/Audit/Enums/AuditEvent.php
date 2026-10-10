@@ -120,6 +120,8 @@ enum AuditEvent: string
     case ClientUpdated = 'client.updated';
     case ClientConsentOptedIn = 'client_consent.opted_in';
     case ClientConsentOptedOut = 'client_consent.opted_out';
+    // Phase UI-14 — Personnel opening the own served-client context. Counts/scope only; no contact.
+    case PersonnelServedClientsViewed = 'personnel.served_clients.viewed';
 
     // --- Appointments (Plan §36, §25.2; Phase 16A). Front Office owns appointment
     // operations; one coherent typed event per action. Context carries only safe
@@ -633,6 +635,7 @@ enum AuditEvent: string
             self::ClientUpdated,
             self::ClientConsentOptedIn,
             self::ClientConsentOptedOut,
+            self::PersonnelServedClientsViewed,
             self::AppointmentCreated,
             self::AppointmentAssigned,
             self::AppointmentCheckedIn,

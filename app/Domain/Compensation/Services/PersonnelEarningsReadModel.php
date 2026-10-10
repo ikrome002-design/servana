@@ -173,16 +173,41 @@ final class PersonnelEarningsReadModel
         }
 
         $plan = $active->firstOrFail();
+        $plan->loadMissing(['commissionRule.serviceCategory', 'commissionRule.selectedServices']);
+        $rule = $plan->commissionRule;
 
         return [
             'has_current_plan' => true,
             'conflicting' => false,
+            'plan_id' => $plan->ulid,
             'compensation_model' => $plan->compensation_model->value,
+            'status' => $plan->status->value,
             'salary_amount_minor' => $plan->salary_amount_minor,
             'salary_currency' => $plan->salary_currency,
             'salary_period' => $plan->salary_period?->value,
+            'salary_payout_day' => $plan->salary_payout_day,
             'suspension_salary_policy' => $plan->suspension_salary_policy->value,
             'effective_from' => $plan->effective_from->toDateString(),
+            'effective_to' => $plan->effective_to?->toDateString(),
+            'commission_rule' => $rule === null ? null : [
+                'calculation_type' => $rule->calculation_type->value,
+                'percentage_basis_points' => $rule->percentage_basis_points,
+                'fixed_amount_minor' => $rule->fixed_amount_minor,
+                'currency' => $rule->currency,
+                'calculation_basis' => $rule->calculation_basis->value,
+                'applies_to' => $rule->applies_to->value,
+                'service_category' => $rule->serviceCategory === null ? null : [
+                    'id' => $rule->serviceCategory->ulid,
+                    'name' => $rule->serviceCategory->name,
+                ],
+                'selected_services' => $rule->selectedServices->map(static fn ($service): array => [
+                    'id' => $service->ulid,
+                    'name' => $service->name,
+                ])->values()->all(),
+                'applies_to_preferred_personnel_fee' => $rule->applies_to_preferred_personnel_fee,
+                'effective_from' => $rule->effective_from->toDateString(),
+                'effective_to' => $rule->effective_to?->toDateString(),
+            ],
         ];
     }
 

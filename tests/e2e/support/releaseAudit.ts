@@ -123,6 +123,7 @@ export interface BootstrapOverrides {
   isPlatformStaff?: boolean;
   permissions?: string[];
   branchIds?: string[];
+  hostAccountKey?: RoleIdentity;
   setupRequired?: boolean;
   mfa?: Partial<MfaState>;
 }
@@ -378,13 +379,25 @@ export const SCREENS: AuditScreen[] = [
   { key: 'front-office-account', route: 'front-office.account', path: '/account', role: 'merchant_front_office', state: 'static' },
 
   // --- Personnel -------------------------------------------------------------
-  { key: 'personnel-landing', route: 'personnel.landing', path: '/personnel', role: 'merchant_personnel', state: 'static' },
-  { key: 'personnel-get-started', route: 'personnel.get-started', path: '/personnel/get-started', role: 'merchant_personnel', state: 'static' },
-  { key: 'personnel-appointments', route: 'personnel.appointments', path: '/personnel/appointments', role: 'merchant_personnel', state: 'populated' },
-  { key: 'personnel-queue', route: 'personnel.queue', path: '/personnel/queue', role: 'merchant_personnel', state: 'populated' },
-  { key: 'personnel-sessions', route: 'personnel.sessions', path: '/personnel/sessions', role: 'merchant_personnel', state: 'populated' },
-  { key: 'personnel-my-earnings', route: 'personnel.earnings', path: '/personnel/earnings', role: 'merchant_personnel', state: 'populated' },
-  { key: 'personnel-sms', route: 'personnel.sms', path: '/personnel/sms', role: 'merchant_personnel', state: 'populated' },
+  { key: 'personnel-dashboard', route: 'personnel.dashboard', path: '/dashboard', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-dashboard"]' },
+  { key: 'personnel-get-started', route: 'personnel.get-started', path: '/get-started', role: 'merchant_personnel', state: 'populated' },
+  { key: 'personnel-queue', route: 'personnel.work-queue', path: '/work/queue', role: 'merchant_personnel', state: 'populated' },
+  { key: 'personnel-appointments', route: 'personnel.work-appointments', path: '/work/appointments', role: 'merchant_personnel', state: 'populated' },
+  { key: 'personnel-sessions', route: 'personnel.work-sessions', path: '/work/sessions', role: 'merchant_personnel', state: 'populated' },
+  { key: 'personnel-service-history', route: 'personnel.work-history', path: '/work/history', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-service-history"]' },
+  { key: 'personnel-preferred-requests', route: 'personnel.work-preferred-requests', path: '/work/preferred-requests', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-preferred-requests"]' },
+  { key: 'personnel-served-clients', route: 'personnel.clients', path: '/clients', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-served-clients"]' },
+  { key: 'personnel-sms', route: 'personnel.messages-compose', path: '/messages/compose', role: 'merchant_personnel', state: 'populated' },
+  { key: 'personnel-message-history', route: 'personnel.messages', path: '/messages', role: 'merchant_personnel', state: 'populated' },
+  { key: 'personnel-my-earnings', route: 'personnel.earnings', path: '/earnings', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-earnings-overview"]' },
+  { key: 'personnel-commission', route: 'personnel.earnings-commission', path: '/earnings/commission', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-commission"]' },
+  { key: 'personnel-salary', route: 'personnel.earnings-salary', path: '/earnings/salary', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-salary"]' },
+  { key: 'personnel-payouts', route: 'personnel.earnings-payouts', path: '/earnings/payouts', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-payouts"]' },
+  { key: 'personnel-compensation-terms', route: 'personnel.earnings-terms', path: '/earnings/terms', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-compensation-terms"]' },
+  { key: 'personnel-earnings-statements', route: 'personnel.earnings-statements', path: '/earnings/statements', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-earnings-statements"]' },
+  { key: 'personnel-earnings-queries', route: 'personnel.earnings-queries', path: '/earnings/queries', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-earnings-queries"]' },
+  { key: 'personnel-own-availability', route: 'personnel.availability', path: '/availability', role: 'merchant_personnel', state: 'populated', ready: '[data-testid="personnel-availability"]' },
+  { key: 'personnel-account', route: 'personnel.account', path: '/account', role: 'merchant_personnel', state: 'populated' },
 
   // --- Audit -----------------------------------------------------------------
   { key: 'audit-landing', route: 'audit.landing', path: '/audit', role: 'merchant_audit', state: 'static' },
@@ -448,7 +461,12 @@ const ROLE_BASELINE_PERMISSIONS: Record<RoleIdentity, string[]> = {
   merchant_human_resource: ['staff.view'],
   merchant_finance: ['invoice.view', 'receipt.view', 'customer_payment.view', 'cash_up.view'],
   merchant_front_office: ['client.view', 'appointment.view', 'queue.view', 'invoice.view', 'receipt.view', 'service_session.view', 'customer_payment.record', 'front_office.search'],
-  merchant_personnel: [],
+  merchant_personnel: [
+    'personnel.my_appointments.view', 'personnel.my_queue.view', 'personnel.my_sessions.view',
+    'personnel.my_served_clients.view', 'personnel.my_sms.send', 'personnel.my_earnings.view',
+    'personnel.my_compensation.view', 'personnel.my_payouts.view',
+    'personnel.my_statements.download', 'personnel.my_earnings_query.create',
+  ],
   merchant_audit: ['audit.branch_events.view'],
 };
 
@@ -817,6 +835,119 @@ const FRONT_OFFICE_PAYMENT_STATUS = {
   invoice: { id: IDS.invoice, number: 'INV-000241', status: 'issued' },
   receipt: { ready: false, id: null, number: null },
 };
+
+// UI-14 Personnel fixtures deliberately contain only the acting staff member's records and
+// masked client contact. They are shared by the focused UI-14 proof and the whole-product audit.
+const PERSONNEL_EARNINGS = {
+  tab_visibility: { model: 'salary_plus_commission', has_current_plan: true, conflicting: false, salary_tab: true, commission_tab: true },
+  currencies: [{
+    currency: 'KES', salary_unpaid_minor: 2850000, salary_paid_minor: 2800000,
+    commission_unpaid_minor: 185000, commission_paid_minor: 420000,
+    adjustment_unpaid_minor: 0, adjustment_paid_minor: 25000,
+    unpaid_minor: 3035000, paid_minor: 3245000, net_minor: 6280000,
+  }],
+};
+const PERSONNEL_TERMS = {
+  plan_id: id('COMPPLAN'), has_current_plan: true, conflicting: false, status: 'active',
+  compensation_model: 'salary_plus_commission', salary_amount_minor: 2800000, salary_currency: 'KES',
+  salary_period: 'monthly', salary_payout_day: 28, suspension_salary_policy: 'prorate',
+  effective_from: '2026-07-01', effective_to: null,
+  commission_rule: {
+    calculation_type: 'percentage', percentage_basis_points: 1000, fixed_amount_minor: null,
+    currency: 'KES', calculation_basis: 'service_line_net', applies_to: 'all_services',
+    service_category: null, selected_services: [], applies_to_preferred_personnel_fee: false,
+    effective_from: '2026-07-01', effective_to: null,
+  },
+};
+const PERSONNEL_AVAILABILITY = {
+  staff: { id: IDS.staff, display_name: 'Ada Mwangi', employment_status: 'employed', is_active: true },
+  timezone: 'Africa/Nairobi', current_state: 'Available now',
+  recurring: [
+    { weekday: 1, start_time: '08:00', end_time: '17:00', available: true },
+    { weekday: 2, start_time: '08:00', end_time: '17:00', available: true },
+    { weekday: 3, start_time: '08:00', end_time: '17:00', available: true },
+    { weekday: 4, start_time: '08:00', end_time: '17:00', available: true },
+    { weekday: 5, start_time: '08:00', end_time: '17:00', available: true },
+  ],
+  exceptions: [{ date: '2026-07-18', start_time: '08:00', end_time: '17:00', available: false }],
+  eligible_services: [{ id: id('SERVICE'), name: 'Signature cut and finish' }],
+  can: { update: false },
+};
+const PERSONNEL_WORKSPACE = {
+  observed_at: AUDIT_INSTANT_UTC, business_date: AUDIT_BUSINESS_DATE,
+  staff: { id: IDS.staff, display_name: 'Ada Mwangi', role_title: 'Senior Stylist', branch: { id: IDS.branch, name: 'Westlands Branch', code: 'WST' } },
+  next_assignment: {
+    kind: 'queue', id: IDS.queueEntry, status: 'called', title: 'Signature cut and finish',
+    client_name: 'Njeri Kamau', phone_masked: '+2547•••••678', at: AUDIT_INSTANT_UTC,
+    route_name: 'personnel.work-queue', position: 1, estimated_wait_minutes: 5,
+  },
+  queue: { active: 2, next_position: 1, estimated_wait_minutes: 5 },
+  appointments: { today: 4, upcoming: 3, next_at: '2026-07-15T10:00:00+00:00' },
+  sessions: { active: 1, completed_today: 3 }, preferred_requests: { active: 2 },
+  clients: { served: 18, can_compose_sms: true, recent_messages: 2 }, availability: PERSONNEL_AVAILABILITY,
+  earnings: {
+    ...PERSONNEL_EARNINGS, terms: PERSONNEL_TERMS,
+    latest_payout: { id: id('PAYOUT'), currency: 'KES', gross_amount_minor: 3245000, status: 'paid', period_start: '2026-06-01', period_end: '2026-06-30' },
+    unresolved_queries: 1,
+  },
+};
+const PERSONNEL_APPOINTMENT = {
+  id: IDS.appointment, status: 'confirmed', starts_at: '2026-07-15T10:00:00+00:00', ends_at: '2026-07-15T10:45:00+00:00',
+  service: FRONT_OFFICE_SERVICE, client: { id: IDS.client, full_name: 'Njeri Kamau', phone_masked: '+2547•••••678' },
+};
+const PERSONNEL_QUEUE = {
+  id: IDS.queueEntry, status: 'called', position: 1, queued_at: '2026-07-15T08:20:00+00:00',
+  estimated_wait: { label: 'About 5 minutes', effective_minutes: 5 }, is_preferred_request: true,
+  service: FRONT_OFFICE_SERVICE, client: { id: IDS.client, full_name: 'Njeri Kamau', phone_masked: '+2547•••••678' },
+};
+const PERSONNEL_SESSION = {
+  id: IDS.session, status: 'completed', started_at: '2026-07-15T07:15:00+00:00',
+  completed_at: '2026-07-15T08:00:00+00:00', cancelled_at: null,
+  service: FRONT_OFFICE_SERVICE, client: { id: IDS.client, full_name: 'Njeri Kamau', phone_masked: '+2547•••••678' },
+};
+const PERSONNEL_HISTORY = {
+  ...PERSONNEL_SESSION, duration_minutes: 45, preferred_personnel_honored: true,
+  commission: { id: id('COMMISSION'), status: 'earned', explanation: 'Earned only after Finance validated the client payment.' },
+};
+const PERSONNEL_PREFERRED = {
+  source: 'queue', id: IDS.queueEntry, status: 'called', requested_at: '2026-07-15T08:20:00+00:00',
+  position: 1, assigned_to_you: true, assignment_label: 'Assigned to you', service: FRONT_OFFICE_SERVICE,
+  client: { id: IDS.client, full_name: 'Njeri Kamau', phone_masked: '+2547•••••678' },
+};
+const PERSONNEL_CLIENT = {
+  id: IDS.client, full_name: 'Njeri Kamau', phone_masked: '+2547•••••678', last_served_at: '2026-07-15T08:00:00+00:00',
+  visit_count: 4, services: [{ id: id('SERVICE'), name: 'Signature cut and finish' }], sms_consent: 'opted_in', sms_eligible: true,
+};
+const PERSONNEL_COMMISSION = {
+  id: id('COMMISSION'), entry_type: 'commission', status: 'earned', amount_minor: 185000, currency: 'KES',
+  calculation_basis_minor: 1850000, rate_basis_points: 1000, fixed_rate_minor: null, reversal_reason: null,
+  earned_at: '2026-07-15T08:35:00+00:00', created_at: '2026-07-15T08:35:00+00:00',
+  invoice: { id: IDS.invoice, number: 'WST-INV-000241' }, service: FRONT_OFFICE_SERVICE, session_id: IDS.session,
+  client: { id: IDS.client, full_name: 'Njeri Kamau', phone_masked: '+2547•••••678' },
+};
+const PERSONNEL_SALARY = {
+  id: id('SALARY'), entry_type: 'accrual', status: 'accrued', pay_period_start: '2026-07-01',
+  pay_period_end: '2026-07-31', amount_minor: 2850000, currency: 'KES', created_at: '2026-07-15T08:35:00+00:00',
+};
+const PERSONNEL_PAYOUT = {
+  id: id('PAYOUTITEM'), staff_profile_id: null, staff_display_name: null, payout_run_id: id('PAYOUT'), currency: 'KES',
+  salary_amount_minor: 2800000, commission_amount_minor: 420000, adjustment_amount_minor: 25000,
+  gross_amount_minor: 3245000, status: 'paid', source_counts: { salary: 1, commission: 4, adjustment: 1 },
+  has_statement: false, statement_file_id: null, period_start: '2026-06-01', period_end: '2026-06-30',
+  paid_at: '2026-07-02T08:00:00+00:00', external_reference_masked: '••••••4421', created_at: '2026-07-01T08:00:00+00:00',
+};
+const PERSONNEL_QUERY = {
+  id: id('QUERY'), staff_profile_id: IDS.staff, subject_type: 'commission_ledger', subject_ulid: id('COMMISSION'),
+  query_type: 'commission_disagreement', body: 'Please explain the June commission amount.', status: 'open', assigned_role: 'finance',
+  resolution_note: null, resolved_adjustment_id: null, responded_at: null,
+  created_at: '2026-07-15T09:00:00+00:00', updated_at: '2026-07-15T09:00:00+00:00',
+};
+const PERSONNEL_CAMPAIGN = {
+  id: id('SMSCAMPAIGN'), status: 'queued', status_label: 'Queued', recipient_count: 1,
+  message_character_count: 45, segment_count: 1, estimated_cost: { amount: 150, currency: 'KES', formatted: 'KES 1.50' },
+  final_cost: null, failure_reason_code: null, is_cancellable: true, confirmed_at: '2026-07-15T09:00:00+00:00',
+  completed_at: null, cancelled_at: null, created_at: '2026-07-15T08:58:00+00:00',
+};
 const FINANCE_DUPLICATE = {
   id: id('DUPCHECK'), method: 'mpesa_offline', result: 'duplicate_suspected', match_type: 'exact_normalized_reference', risk: 'high', reference_masked: '••••••1ABC', amount: FINANCE_MONEY, checked_at: '2026-07-15T07:47:00+00:00',
   current: { group_id: IDS.paymentGroup, group_status: 'recorded', invoice_id: IDS.invoice, invoice_number: 'INV-000241', recorded_by: 'Njeri Front Office', recorded_at: '2026-07-15T07:45:00+00:00' },
@@ -831,6 +962,28 @@ const FINANCE_PARTIAL_SPLIT = {
 };
 
 const SHARED_FIXTURES: Fixture[] = [
+  // --- UI-14 Personnel experience ------------------------------------------
+  { match: /^\/personnel\/me\/workspace$/, body: { data: PERSONNEL_WORKSPACE } },
+  { match: /^\/personnel\/me\/appointments$/, body: { data: [PERSONNEL_APPOINTMENT], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/personnel\/me\/queue$/, body: { data: [PERSONNEL_QUEUE], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/personnel\/me\/sessions$/, body: { data: [PERSONNEL_SESSION], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/personnel\/me\/service-history$/, body: { data: [PERSONNEL_HISTORY], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 }, summary: { records: 1, completed: 1, cancelled: 0, clients_served: 1, preferred_requests_honored: 1 } } },
+  { match: /^\/personnel\/me\/preferred-requests$/, body: { data: [PERSONNEL_PREFERRED], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
+  { match: /^\/personnel\/me\/served-clients$/, method: 'GET', body: { data: [PERSONNEL_CLIENT], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
+  { match: /^\/personnel\/me\/served-clients\/sms$/, method: 'GET', body: { data: [{ id: IDS.client, full_name: 'Njeri Kamau', phone_masked: '+2547•••••678' }], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/personnel\/me\/earnings$/, body: { data: PERSONNEL_EARNINGS } },
+  { match: /^\/personnel\/me\/compensation$/, body: { data: PERSONNEL_TERMS } },
+  { match: /^\/personnel\/me\/commissions$/, body: { data: [PERSONNEL_COMMISSION], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
+  { match: /^\/personnel\/me\/salary$/, body: { data: [PERSONNEL_SALARY], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
+  { match: /^\/personnel\/me\/payouts$/, body: { data: [PERSONNEL_PAYOUT], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/personnel\/me\/availability$/, body: { data: PERSONNEL_AVAILABILITY } },
+  { match: /^\/personnel\/me\/earnings-queries$/, method: 'GET', body: { data: [PERSONNEL_QUERY], meta: { ...EMPTY_LIST.meta, per_page: 25, total: 1 } } },
+  { match: /^\/personnel\/me\/earnings-queries$/, method: 'POST', body: { data: PERSONNEL_QUERY }, status: 201 },
+  { match: /^\/personnel\/me\/sms-campaigns\/preview$/, method: 'POST', body: { data: { recipient_count: 1, excluded_count: 0, excluded_reasons: {}, message_character_count: 45, segment_count: 1, requires_unicode: false, characters_remaining_in_segment: 115, estimated_cost: { amount: 150, currency: 'KES', formatted: 'KES 1.50' }, unit_cost_minor: 150, max_recipients: 100, max_message_characters: 480, billing_notice: 'SMS charges for this message will be billed to your branch together with the Servana subscription invoice. Continue?' } } },
+  { match: /^\/personnel\/me\/sms-campaigns\/[^/]+\/confirm$/, method: 'POST', body: { data: PERSONNEL_CAMPAIGN } },
+  { match: /^\/personnel\/me\/sms-campaigns$/, method: 'POST', body: { data: PERSONNEL_CAMPAIGN }, status: 201 },
+  { match: /^\/personnel\/me\/sms-campaigns$/, method: 'GET', body: { data: [PERSONNEL_CAMPAIGN], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+
   // --- UI-13 Front Office experience ----------------------------------------
   { match: /^\/front-office\/workspace$/, body: { data: { overview: FRONT_OFFICE_OVERVIEW } } },
   { match: /^\/front-office\/activity$/, body: { data: [FRONT_OFFICE_ACTIVITY], meta: { ...EMPTY_LIST.meta, per_page: 20, total: 1 } } },
@@ -1017,7 +1170,8 @@ export async function prepare(
    * whose public surface the audit walks.
    */
   {
-    const accountKeyForContext = screen.role === 'public' ? 'merchant_administrator' : screen.role;
+    const accountKeyForContext = screen.bootstrap?.hostAccountKey
+      ?? (screen.role === 'public' ? 'merchant_administrator' : screen.role);
     await page.addInitScript((accountKey) => {
       const inject = (): void => {
         if (document.head === null) return;
@@ -1040,7 +1194,7 @@ export async function prepare(
   }
 
   const fixtures = opts.fixtures ?? baseFixtures();
-  const unauthenticated = screen.role === 'public';
+  const unauthenticated = screen.role === 'public' || screen.bootstrap?.authenticated === false;
   const me = bootstrapBody(screen);
 
   await page.route('**/sanctum/csrf-cookie', (r) => r.fulfill({ status: 204, body: '' }));

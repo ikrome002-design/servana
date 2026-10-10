@@ -98,6 +98,14 @@ const FRONT_OFFICE_GROUP_ORDER: readonly string[] = [
   'Utility',
 ];
 
+const PERSONNEL_GROUP_ORDER: readonly string[] = [
+  'Home',
+  'My Work',
+  'My Clients',
+  'My Earnings',
+  'Utility',
+];
+
 /** Groups always rendered inline, at every width from tablet up. */
 const INLINE_GROUP_COUNT = 5;
 
@@ -124,7 +132,9 @@ const groups = computed<NavGroup[]>(() => {
     ? FINANCE_GROUP_ORDER
     : byName.has('Billing Client')
       ? FRONT_OFFICE_GROUP_ORDER
-      : GROUP_ORDER;
+      : byName.has('My Earnings')
+        ? PERSONNEL_GROUP_ORDER
+        : GROUP_ORDER;
   for (const name of explicitOrder) {
     const items = byName.get(name);
     if (items && items.length > 0) {

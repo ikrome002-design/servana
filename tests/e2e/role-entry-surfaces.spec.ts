@@ -3,9 +3,9 @@ import { ROLES, stubBootstrap } from './support/roleBootstrap';
 import { stubMerchantApi } from './support/ui09Merchant';
 
 /*
- | Phase 11 role-entry surfaces (Plan §27.2), reconciled with UI-13's exact Front Office route
- | register. Seven accounts retain their authenticated landing; Front Office enters its canonical
- | operational dashboard. /me is stubbed; the frontend is UX only.
+ | Phase 11 role-entry surfaces (Plan §27.2), reconciled with UI-13's exact Front Office and UI-14's
+ | exact Personnel route registers. Six accounts retain their authenticated landing; Front Office
+ | and Personnel enter their canonical dashboards. /me is stubbed; the frontend is UX only.
  */
 
 test.describe('role landing pages', () => {
@@ -18,6 +18,16 @@ test.describe('role landing pages', () => {
         await expect(page).toHaveURL(/\/dashboard$/);
         await expect(page.getByTestId('front-office-dashboard')).toBeVisible();
         await expect(page.getByText('Today’s service desk')).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Get Started', exact: true })).toBeVisible();
+        return;
+      }
+
+      // UI-14: the retired `/personnel` landing redirects to the canonical private workday dashboard
+      // on the same host. The workspace API is not stubbed here, so the page's own error boundary
+      // shows — the entry surface (shell, dashboard region, Get Started) is what is asserted.
+      if (role.identity === 'merchant_personnel') {
+        await expect(page).toHaveURL(/\/dashboard$/);
+        await expect(page.getByTestId('personnel-dashboard')).toBeVisible();
         await expect(page.getByRole('link', { name: 'Get Started', exact: true })).toBeVisible();
         return;
       }

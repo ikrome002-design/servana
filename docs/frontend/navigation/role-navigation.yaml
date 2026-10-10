@@ -629,6 +629,12 @@ merchant_front_office:
     route: front-office.account
     phase: Phase 11
 merchant_personnel:
+  - key: merchant_personnel.dashboard
+    label: Dashboard
+    availability: live
+    route: personnel.dashboard
+    permission: personnel.my_appointments.view
+    phase: Phase UI-14
   - key: merchant_personnel.get-started
     label: Get Started
     availability: live
@@ -637,25 +643,49 @@ merchant_personnel:
   - key: merchant_personnel.work-queue
     label: My Queue
     availability: live
-    route: personnel.queue
+    route: personnel.work-queue
     permission: personnel.my_queue.view
     phase: Phase 16B
   - key: merchant_personnel.work-appointments
     label: My Appointments
     availability: live
-    route: personnel.appointments
+    route: personnel.work-appointments
     permission: personnel.my_appointments.view
     phase: Phase 16A
   - key: merchant_personnel.work-sessions
     label: My Sessions
     availability: live
-    route: personnel.sessions
+    route: personnel.work-sessions
     permission: personnel.my_sessions.view
     phase: Phase 16C
+  - key: merchant_personnel.work-history
+    label: Service History
+    availability: live
+    route: personnel.work-history
+    permission: personnel.my_sessions.view
+    phase: Phase UI-14
+  - key: merchant_personnel.work-preferred-requests
+    label: Preferred Requests
+    availability: live
+    route: personnel.work-preferred-requests
+    permission: personnel.my_queue.view
+    phase: Phase UI-14
+  - key: merchant_personnel.clients
+    label: Served Clients
+    availability: live
+    route: personnel.clients
+    permission: personnel.my_served_clients.view
+    phase: Phase UI-14
   - key: merchant_personnel.messages-compose
     label: SMS Composer
     availability: live
-    route: personnel.sms
+    route: personnel.messages-compose
+    permission: personnel.my_sms.send
+    phase: Phase 21S
+  - key: merchant_personnel.messages
+    label: Message History
+    availability: live
+    route: personnel.messages
     permission: personnel.my_sms.send
     phase: Phase 21S
   - key: merchant_personnel.earnings
@@ -664,11 +694,58 @@ merchant_personnel:
     route: personnel.earnings
     permission: personnel.my_earnings.view
     phase: Phase 20H
+  - key: merchant_personnel.earnings-commission
+    label: Commission
+    availability: live
+    route: personnel.earnings-commission
+    permission: personnel.my_earnings.view
+    phase: Phase UI-14
+  - key: merchant_personnel.earnings-salary
+    label: Salary
+    availability: live
+    route: personnel.earnings-salary
+    permission: personnel.my_earnings.view
+    phase: Phase UI-14
+  - key: merchant_personnel.earnings-payouts
+    label: Payouts
+    availability: live
+    route: personnel.earnings-payouts
+    permission: personnel.my_payouts.view
+    phase: Phase 20H
+  - key: merchant_personnel.earnings-terms
+    label: Compensation Terms
+    availability: live
+    route: personnel.earnings-terms
+    permission: personnel.my_compensation.view
+    phase: Phase 20H
+  - key: merchant_personnel.earnings-statements
+    label: Earnings Statements
+    availability: live
+    route: personnel.earnings-statements
+    permission: personnel.my_statements.download
+    phase: Phase 20H
+  - key: merchant_personnel.earnings-queries
+    label: Earnings Queries
+    availability: live
+    route: personnel.earnings-queries
+    permission: personnel.my_earnings_query.create
+    phase: Phase 20H
+  - key: merchant_personnel.availability
+    label: Availability Status
+    availability: live
+    route: personnel.availability
+    permission: personnel.my_appointments.view
+    phase: Phase UI-14 (read projection only; Phase 15B HR owns mutation)
   - key: merchant_personnel.notifications
     label: Notifications
     availability: gated
-    gate: external_gate_w
+    gate: phase_21n_blocked_by_external_gate_w
     phase: UI-14
+  - key: merchant_personnel.account
+    label: Account and Preferences
+    availability: live
+    route: personnel.account
+    phase: Phase UI-03
 merchant_audit:
   - key: merchant_audit.get-started
     label: Get Started

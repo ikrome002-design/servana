@@ -297,7 +297,8 @@ it('classifies every implementation claim exactly once from the permitted vocabu
         // the entry expires when the owner phase delivers.
         // `front-office-dashboard` is absent for the same reason: UI-13 has now delivered the
         // real branch-today workspace at `/dashboard`, so its temporary UI-07 removal expired.
-        'personnel-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-14; docs/frontend/audits/ui-07/defect-closure.json',
+        // `personnel-dashboard` is absent for the same reason: UI-14 delivered the private
+        // own-scope workday dashboard at `/dashboard` on staff.servana.ke.
         'audit-dashboard' => 'UI-07 / UI07-ROUTE-001 — owner UI-15; docs/frontend/audits/ui-07/defect-closure.json',
 
         // Phase UI-08, Increment 7B. Each of these two screens was a CONSOLIDATED surface that
@@ -335,6 +336,11 @@ it('classifies every implementation claim exactly once from the permitted vocabu
         'front-office-payment-record' => 'UI-13 — replaced by front-office-invoice-payment-create; docs/frontend/audits/ui-13/route-activation.json',
         'front-office-payment-recording' => 'UI-13 — replaced by front-office-invoice-payment-create; docs/frontend/audits/ui-13/route-activation.json',
         'front-office-receipts' => 'UI-13 — replaced by front-office-payments-status; docs/frontend/audits/ui-13/route-activation.json',
+
+        // Phase UI-14 applies Appendix A's exact 20-page Personnel contract. The predecessor
+        // `/personnel` landing was a non-contract implementation identity; its live capability is
+        // preserved by personnel-dashboard and `/personnel` now redirects there on the same host.
+        'personnel-landing' => 'UI-14 — retired non-contract landing identity in favour of personnel-dashboard; docs/frontend/audits/ui-14/route-activation.json',
     ];
 
     $inventoryKeys = array_column($inventory['screens'], 'key');

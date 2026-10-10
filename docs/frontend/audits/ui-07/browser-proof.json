@@ -130,10 +130,10 @@
       "account": "merchant_personnel",
       "shell_path": "/personnel",
       "navigation_placement": "sidebar",
-      "expected_entries": 7,
-      "rendered_entries": 7,
+      "expected_entries": 20,
+      "rendered_entries": 20,
       "planned_entries_rendered": 0,
-      "links_with_destination": 6,
+      "links_with_destination": 19,
       "console_errors": 0,
       "page_errors": 0,
       "failed_requests": 0

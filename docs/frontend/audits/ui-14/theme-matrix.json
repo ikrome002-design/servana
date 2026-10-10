@@ -1,0 +1,46 @@
+{
+  "schema": "servana.ui14.theme-matrix.v1",
+  "phase": "UI-14",
+  "lifecycle": "local_complete",
+  "account": "merchant_personnel",
+  "host": "staff.servana.ke",
+  "source": "tests/e2e/ui-14-personnel-experience.spec.ts — focused run 72/72 on the final frozen source (2026-10-08)",
+  "fresh_browser_default": "light",
+  "explicit_dark_persists_after_reload": true,
+  "prefers_color_scheme_selects_theme": false,
+  "implemented_pages": 19,
+  "light_pages_reviewed": 19,
+  "dark_pages_reviewed": 19,
+  "dark_axe_serious": 0,
+  "dark_axe_critical": 0,
+  "treatment": {
+    "light": "warm white canvas, tonal orange/teal/green header washes, raised white cards, toned stat tiles and lead blocks, deep-brown headings",
+    "dark": "navy canvas with elevated navy surfaces; the same washes re-mixed against the dark raised surface so accents stay controlled; status badges keep semantic borders; the operational hero keeps its brown brand gradient",
+    "mechanically_inverted": false
+  },
+  "tokens": [
+    "--sv-color-surface-raised",
+    "--sv-color-surface-subtle",
+    "--sv-color-surface-warm",
+    "--sv-color-brand-primary",
+    "--sv-color-brand-secondary",
+    "--sv-color-growth",
+    "--sv-color-accent",
+    "--sv-color-text-heading",
+    "--sv-color-text-secondary",
+    "--sv-color-text-muted",
+    "--sv-color-status-*"
+  ],
+  "screenshots": {
+    "light_prefix": "screenshots/desktop-light-",
+    "dark_prefix": "screenshots/desktop-dark-",
+    "per_theme": 19
+  },
+  "codex_post_remediation": {
+    "recorded_at": "2026-10-09T03:14:25.676Z",
+    "focused_passed": 73,
+    "whole_product_passed": 1653,
+    "vite_manifest_sha256": "49dd7d0ba73c88c43b581568472af8d97f675f6e3b0ad58f778a7020f65f0f2e",
+    "source": "Final corrected Personnel cases: all 19 pages, seven widths, both themes, axes, motion, focus, touch and footer assertions; 36 additional internal-label/heading geometry permutations. See browser-proof.json and hashed current captures."
+  }
+}

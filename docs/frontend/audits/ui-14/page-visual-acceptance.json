@@ -1,0 +1,1070 @@
+{
+  "schema": "servana.ui14.page-visual-acceptance.v1",
+  "phase": "UI-14",
+  "lifecycle": "local_complete",
+  "method": "Scored by reviewing the final settled browser captures (1440x900 light and dark for every page; 360x780, 768x1024 and 640x450 200%-equivalent for the complex archetypes) against the six inspected references and the UI-13 baseline. Scores were not assigned from code review.",
+  "rubric": {
+    "scale": "0-2 per criterion, 15 criteria, maximum 30",
+    "criteria": [
+      "reference_composition",
+      "visual_hierarchy",
+      "surface_sophistication",
+      "spacing_rhythm",
+      "typography_hierarchy",
+      "brand_color_discipline",
+      "personnel_role_fit",
+      "state_clarity",
+      "interaction_affordance",
+      "mobile_transformation",
+      "tablet_desktop_composition",
+      "light_theme_quality",
+      "dark_theme_quality",
+      "accessibility_without_regression",
+      "servana_distinctiveness"
+    ],
+    "pass_rule": "total >= 27, no criterion 0, and every required criterion = 2",
+    "required_twos": [
+      "reference_composition",
+      "surface_sophistication",
+      "personnel_role_fit",
+      "light_theme_quality",
+      "dark_theme_quality",
+      "servana_distinctiveness"
+    ]
+  },
+  "entries": [
+    {
+      "screen_key": "dashboard",
+      "route_path": "/dashboard",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 2,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 30,
+      "pass": true,
+      "evidence_note": "Dark operational hero with a connected 01–04 workday flow rail, dominant \"Your next service\" surface with masked identity and position/wait/time, HR availability and asked-for-you attention cards, Billings-style earnings snapshot.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: identity mismatch (hero greeted a client-named staff fixture), four identical hero KPI boxes and flat link cards.",
+        "corrective_change": "Fixture aligned to the signed-in user; flow rail; next-service hero; toned snapshot tiles (UI14-VIS-001, UI14-FIX-001)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-dashboard.png",
+        "screenshots/desktop-dark-dashboard.png",
+        "screenshots/mobile-dashboard.png",
+        "screenshots/tablet-dashboard.png",
+        "screenshots/zoom-200-dashboard.png"
+      ]
+    },
+    {
+      "screen_key": "get-started",
+      "route_path": "/get-started",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 1,
+        "mobile_transformation": 1,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 27,
+      "pass": true,
+      "evidence_note": "Personnel orientation hero with work/pay/privacy states and the shared progress checklist with deep links.",
+      "first_review": {
+        "result": "passed",
+        "observation": "Acceptable as inherited; refined only through shared tokens and tone mapping.",
+        "corrective_change": null
+      },
+      "evidence": [
+        "screenshots/desktop-light-get-started.png",
+        "screenshots/desktop-dark-get-started.png"
+      ]
+    },
+    {
+      "screen_key": "work-queue",
+      "route_path": "/work/queue",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 2,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 1,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Tonal header with toned fact tiles; \"Your turn\" surface leads with service, masked client, status, position and wait; Up-next lead records.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: three full-width single-number boxes stacked above one bordered card.",
+        "corrective_change": "Your-turn surface + SvLeadRecord list (UI14-VIS-002)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-work-queue.png",
+        "screenshots/desktop-dark-work-queue.png",
+        "screenshots/mobile-work-queue.png",
+        "screenshots/zoom-200-work-queue.png"
+      ]
+    },
+    {
+      "screen_key": "work-appointments",
+      "route_path": "/work/appointments",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Agenda grouped Today / upcoming days / Earlier in Africa/Nairobi with time-led records and a private-schedule rail.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: count card beside an explanatory card and an undifferentiated list.",
+        "corrective_change": "Day-grouped agenda (UI14-VIS-002)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-work-appointments.png",
+        "screenshots/desktop-dark-work-appointments.png"
+      ]
+    },
+    {
+      "screen_key": "work-sessions",
+      "route_path": "/work/sessions",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 1,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 1,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 27,
+      "pass": true,
+      "evidence_note": "In-progress surface, recent sessions as finish-time records, earnings-boundary callout in the header.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: three equal boxes, one of them prose.",
+        "corrective_change": "Live/recent split with lead records (UI14-VIS-002)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-work-sessions.png",
+        "screenshots/desktop-dark-work-sessions.png"
+      ]
+    },
+    {
+      "screen_key": "work-history",
+      "route_path": "/work/history",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Toned summary tiles, sticky filter rail, history records with duration, requested-you and commission-status badges plus the server explanation.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: five equal number cards and a plain form.",
+        "corrective_change": "Tonal header tiles + filter rail + lead records (UI14-VIS-002)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-work-history.png",
+        "screenshots/desktop-dark-work-history.png"
+      ]
+    },
+    {
+      "screen_key": "work-preferred-requests",
+      "route_path": "/work/preferred-requests",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 1,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 1,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 27,
+      "pass": true,
+      "evidence_note": "Requests led by queue position or time, preference vs assignment label made explicit, segmented source filter.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: a narrow select form and plain cards.",
+        "corrective_change": "Segmented filter + lead records (UI14-VIS-002)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-work-preferred-requests.png",
+        "screenshots/desktop-dark-work-preferred-requests.png"
+      ]
+    },
+    {
+      "screen_key": "clients",
+      "route_path": "/clients",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Teal header with privacy boundary tile, search + eligibility chips, relationship cards with masked identity, visits/last-served blocks and one-tap in-platform message.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: single half-width card under an info banner; search button misaligned.",
+        "corrective_change": "Relationship cards, SvMaskedIdentity, eligibility chips, aligned search (UI14-VIS-003)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-clients.png",
+        "screenshots/desktop-dark-clients.png",
+        "screenshots/mobile-clients.png"
+      ]
+    },
+    {
+      "screen_key": "messages-compose",
+      "route_path": "/messages/compose",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Recipient panel with selected count and masked identities; composer with chips, live typed count, server preview tiles, prominent cost notice, structured confirmation dialog and post-send status handoff.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: two plain forms; no post-send status on the split composer.",
+        "corrective_change": "Composer recomposition + sent-status handoff (UI14-VIS-003, UI14-SMS-001)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-messages-compose.png",
+        "screenshots/desktop-dark-messages-compose.png",
+        "screenshots/mobile-messages-compose.png",
+        "screenshots/tablet-messages-compose.png",
+        "screenshots/zoom-200-messages-compose.png"
+      ]
+    },
+    {
+      "screen_key": "messages",
+      "route_path": "/messages",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 1,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 1,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 27,
+      "pass": true,
+      "evidence_note": "Campaign rows with recipients, time, segments, charge/estimate, status badge and expandable masked recipient outcomes.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: a secondary panel of the legacy composer.",
+        "corrective_change": "Dedicated history rows with outcomes disclosure (UI14-VIS-003)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-messages.png",
+        "screenshots/desktop-dark-messages.png"
+      ]
+    },
+    {
+      "screen_key": "earnings",
+      "route_path": "/earnings",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 2,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 30,
+      "pass": true,
+      "evidence_note": "Personal earnings statement: recorded-to-date figure, Outstanding / Recorded paid tiles, component table, pay lifecycle steps, model/payout/questions rail.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: half-width card in empty space; salary/commission/adjustment totals added in the browser.",
+        "corrective_change": "Statement composition; server figures only (UI14-VIS-004, UI14-FIN-001)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-earnings.png",
+        "screenshots/desktop-dark-earnings.png",
+        "screenshots/mobile-earnings.png",
+        "screenshots/tablet-earnings.png",
+        "screenshots/zoom-200-earnings.png"
+      ]
+    },
+    {
+      "screen_key": "earnings-commission",
+      "route_path": "/earnings/commission",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Ledger rows led by earned date, amount + status on the right, basis/rate/invoice/earned facts, reversal reason, ask-Finance link.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: plain cards with raw ISO dates; a sm: grid that never applied.",
+        "corrective_change": "Lead records + Nairobi dates + md grid (UI14-VIS-004, UI14-CSS-001)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-earnings-commission.png",
+        "screenshots/desktop-dark-earnings-commission.png",
+        "screenshots/mobile-earnings-commission.png",
+        "screenshots/zoom-200-earnings-commission.png"
+      ]
+    },
+    {
+      "screen_key": "earnings-salary",
+      "route_path": "/earnings/salary",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 1,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 1,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 27,
+      "pass": true,
+      "evidence_note": "Period-led salary rows with amount and status, reading guide and terms link.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: two-column cards with raw dates.",
+        "corrective_change": "Lead records + reading rail (UI14-VIS-004)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-earnings-salary.png",
+        "screenshots/desktop-dark-earnings-salary.png",
+        "screenshots/mobile-earnings-salary.png"
+      ]
+    },
+    {
+      "screen_key": "earnings-payouts",
+      "route_path": "/earnings/payouts",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Period-led payout records with gross, component breakdown, masked external reference, recorded-paid date, statement and ask links.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: plain cards.",
+        "corrective_change": "Lead records + explainer (UI14-VIS-004)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-earnings-payouts.png",
+        "screenshots/desktop-dark-earnings-payouts.png"
+      ]
+    },
+    {
+      "screen_key": "earnings-terms",
+      "route_path": "/earnings/terms",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Plain-language summary first, effective/salary tiles, commission rule facts, device-only review marker, HR-ownership rail.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: raw enum strings; summary sentence rendered with stray spaces.",
+        "corrective_change": "Plain-language summary built from server terms (UI14-VIS-004, UI14-COPY-001)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-earnings-terms.png",
+        "screenshots/desktop-dark-earnings-terms.png"
+      ]
+    },
+    {
+      "screen_key": "earnings-statements",
+      "route_path": "/earnings/statements",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 1,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 1,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 27,
+      "pass": true,
+      "evidence_note": "Paid payouts as statement-ready records with generate/download action, expiry message, private-by-design rail and not-yet-paid count.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: raw reference ULID shown.",
+        "corrective_change": "Lead records, expiry in the status message, no raw ULID (UI14-VIS-004)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-earnings-statements.png",
+        "screenshots/desktop-dark-earnings-statements.png"
+      ]
+    },
+    {
+      "screen_key": "earnings-queries",
+      "route_path": "/earnings/queries",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 1,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 1,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 27,
+      "pass": true,
+      "evidence_note": "Sticky raise-a-query form prefilled from record links, query cards with status badge and dated Finance response.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: users had to type a 26-character ULID; raw query and adjustment ULIDs displayed.",
+        "corrective_change": "Prefill from Commission/Salary/Payout links; no raw ULIDs (UI14-VIS-004)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-earnings-queries.png",
+        "screenshots/desktop-dark-earnings-queries.png"
+      ]
+    },
+    {
+      "screen_key": "availability",
+      "route_path": "/availability",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Right-now state surface, HR ownership callout, eligible services, seven-day schedule grid with today highlighted, dated exceptions.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: plain lists.",
+        "corrective_change": "Week grid and state surface (UI14-VIS-005)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-availability.png",
+        "screenshots/desktop-dark-availability.png"
+      ]
+    },
+    {
+      "screen_key": "account",
+      "route_path": "/account",
+      "scores": {
+        "reference_composition": 2,
+        "visual_hierarchy": 2,
+        "surface_sophistication": 2,
+        "spacing_rhythm": 1,
+        "typography_hierarchy": 2,
+        "brand_color_discipline": 2,
+        "personnel_role_fit": 2,
+        "state_clarity": 2,
+        "interaction_affordance": 2,
+        "mobile_transformation": 2,
+        "tablet_desktop_composition": 2,
+        "light_theme_quality": 2,
+        "dark_theme_quality": 2,
+        "accessibility_without_regression": 2,
+        "servana_distinctiveness": 2
+      },
+      "total": 29,
+      "pass": true,
+      "evidence_note": "Profile-style identity header (band, avatar, role and branch) with locked owner-labelled facts above the shared identity/MFA/sessions/theme runtime.",
+      "first_review": {
+        "result": "failed",
+        "observation": "Inherited version: generic shared account header only.",
+        "corrective_change": "Personnel profile header (UI14-VIS-006)."
+      },
+      "evidence": [
+        "screenshots/desktop-light-account.png",
+        "screenshots/desktop-dark-account.png",
+        "screenshots/mobile-account.png",
+        "screenshots/tablet-account.png",
+        "screenshots/zoom-200-account.png"
+      ]
+    }
+  ],
+  "gated_pages": [
+    {
+      "screen_key": "notifications",
+      "route_path": "/notifications",
+      "scored": false,
+      "reason": "disabled_by_gate (Phase 21N / External Gate W); evidence screenshots/gated-notifications.png shows the inert navigation treatment only"
+    }
+  ],
+  "summary": {
+    "implemented_pages": 19,
+    "passing": 19,
+    "failing": 0,
+    "min_total": 27,
+    "max_total": 30,
+    "first_review_failures": 18
+  },
+  "codex_post_remediation_review": {
+    "recordedAt": "2026-10-09T02:19:05.437Z",
+    "method": "Actual image inspection: all 19 desktop light and 19 desktop dark captures; nine mobile including navigation; four tablet and six 200%-equivalent zoom captures. The 38 desktop captures remain byte-identical after the mobile correction and carry the same inspected appearance. Corrected three mobile and two zoom captures inspected again.",
+    "currentCaptureCount": 69,
+    "desktopLightReviewed": 19,
+    "desktopDarkReviewed": 19,
+    "unchangedAfterMobileCorrection": 64,
+    "changedAndReinspected": [
+      "screenshots/mobile-earnings-commission.png",
+      "screenshots/mobile-earnings-salary.png",
+      "screenshots/mobile-work-queue.png",
+      "screenshots/zoom-200-earnings-commission.png",
+      "screenshots/zoom-200-work-queue.png"
+    ],
+    "findings": "Existing palette, type hierarchy, tonal surfaces, status pills, masked contacts, role-fit and server-owned earnings remain visually consistent. Queue labels and commission/salary headings, amounts and references now fit narrow records. No desktop recomposition was needed. Existing conservative 27–30 rubric scores are reaffirmed, not raised to disguise the inherited mobile defect.",
+    "sourceFreeze": "49dd7d0ba73c88c43b581568472af8d97f675f6e3b0ad58f778a7020f65f0f2e",
+    "browser": {
+      "passed": 73,
+      "failed": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "log": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-browser-focused-mobile-layout-correction.log"
+    },
+    "captures": [
+      {
+        "file": "screenshots/desktop-dark-account.png",
+        "sha256": "06f69b2b82d2026144ba70d3cb7a15032e03db66fcdfc4ebd7adbf69c4d08da3",
+        "actualSha256": "06f69b2b82d2026144ba70d3cb7a15032e03db66fcdfc4ebd7adbf69c4d08da3"
+      },
+      {
+        "file": "screenshots/desktop-dark-availability.png",
+        "sha256": "58b52c4c1be31e4889fe14a1e563fa92580b826e37b2c3756006be46e2a75a22",
+        "actualSha256": "58b52c4c1be31e4889fe14a1e563fa92580b826e37b2c3756006be46e2a75a22"
+      },
+      {
+        "file": "screenshots/desktop-dark-clients.png",
+        "sha256": "dbae85307f6059090a4b8d2f7d57a62f6ad13e54022417261f1793b7c5f8c167",
+        "actualSha256": "dbae85307f6059090a4b8d2f7d57a62f6ad13e54022417261f1793b7c5f8c167"
+      },
+      {
+        "file": "screenshots/desktop-dark-dashboard.png",
+        "sha256": "65ba350d47e2dc67140f8d65063ddab628abc206791ccc8b5b1da0340f35359e",
+        "actualSha256": "65ba350d47e2dc67140f8d65063ddab628abc206791ccc8b5b1da0340f35359e"
+      },
+      {
+        "file": "screenshots/desktop-dark-earnings-commission.png",
+        "sha256": "0b5a90f2343ee4107a75d94c0552b253a6b5184933f8238df010a0831a583df1",
+        "actualSha256": "0b5a90f2343ee4107a75d94c0552b253a6b5184933f8238df010a0831a583df1"
+      },
+      {
+        "file": "screenshots/desktop-dark-earnings-payouts.png",
+        "sha256": "158039a0ee6782dbb67d580c99a3c28891534957e0be15ca5f4399f6611b1217",
+        "actualSha256": "158039a0ee6782dbb67d580c99a3c28891534957e0be15ca5f4399f6611b1217"
+      },
+      {
+        "file": "screenshots/desktop-dark-earnings-queries.png",
+        "sha256": "d19e671f49bf121546267f3ce8e15e1f024372330922449c1b167a7801f0ba4d",
+        "actualSha256": "d19e671f49bf121546267f3ce8e15e1f024372330922449c1b167a7801f0ba4d"
+      },
+      {
+        "file": "screenshots/desktop-dark-earnings-salary.png",
+        "sha256": "427c88ed531fe5ffbb677f74b57a58de2b7f1d003ba515a7ff2950e251e27eaf",
+        "actualSha256": "427c88ed531fe5ffbb677f74b57a58de2b7f1d003ba515a7ff2950e251e27eaf"
+      },
+      {
+        "file": "screenshots/desktop-dark-earnings-statements.png",
+        "sha256": "b3a681b2b863cb124ba6af5eda8368b6bb5f338633c445329d08c84f795e8e68",
+        "actualSha256": "b3a681b2b863cb124ba6af5eda8368b6bb5f338633c445329d08c84f795e8e68"
+      },
+      {
+        "file": "screenshots/desktop-dark-earnings-terms.png",
+        "sha256": "10afba4eb7055d915eb5be5b0d34f954e047e1a81eaed3addb5ec1006c42106e",
+        "actualSha256": "10afba4eb7055d915eb5be5b0d34f954e047e1a81eaed3addb5ec1006c42106e"
+      },
+      {
+        "file": "screenshots/desktop-dark-earnings.png",
+        "sha256": "73d05f8ec8816e74a7c68d126856c580f6c98f2c193156cb23a29efdb5725754",
+        "actualSha256": "73d05f8ec8816e74a7c68d126856c580f6c98f2c193156cb23a29efdb5725754"
+      },
+      {
+        "file": "screenshots/desktop-dark-get-started.png",
+        "sha256": "9da78ac67648f78ddc8619ff4a2fd06881a0c584094459ba731f93878af08524",
+        "actualSha256": "9da78ac67648f78ddc8619ff4a2fd06881a0c584094459ba731f93878af08524"
+      },
+      {
+        "file": "screenshots/desktop-dark-messages-compose.png",
+        "sha256": "53ca3f08c92e1645a992cd5d0b79138fd81e2406fb4e9b5b028e5eda6619299f",
+        "actualSha256": "53ca3f08c92e1645a992cd5d0b79138fd81e2406fb4e9b5b028e5eda6619299f"
+      },
+      {
+        "file": "screenshots/desktop-dark-messages.png",
+        "sha256": "5a4df7abc22d0e132efdabf70d1463ea08888d04272ce1424f22412cc35da60a",
+        "actualSha256": "5a4df7abc22d0e132efdabf70d1463ea08888d04272ce1424f22412cc35da60a"
+      },
+      {
+        "file": "screenshots/desktop-dark-work-appointments.png",
+        "sha256": "8ef85e9356e53b7cb1e81572c54ac82533ec1541abe56e023476fee31827b909",
+        "actualSha256": "8ef85e9356e53b7cb1e81572c54ac82533ec1541abe56e023476fee31827b909"
+      },
+      {
+        "file": "screenshots/desktop-dark-work-history.png",
+        "sha256": "f07603c5494c41ccc3ce4483b85283dee042ef7fd968aa40bd21b2ecd0a59964",
+        "actualSha256": "f07603c5494c41ccc3ce4483b85283dee042ef7fd968aa40bd21b2ecd0a59964"
+      },
+      {
+        "file": "screenshots/desktop-dark-work-preferred-requests.png",
+        "sha256": "9e5825730cdc08496552d9ba234f5949816633f5d0b53acab6985af46678d347",
+        "actualSha256": "9e5825730cdc08496552d9ba234f5949816633f5d0b53acab6985af46678d347"
+      },
+      {
+        "file": "screenshots/desktop-dark-work-queue.png",
+        "sha256": "da255ef5eef0df2af90e79e0a5841e3880002495d4ec3159d7880671f039a735",
+        "actualSha256": "da255ef5eef0df2af90e79e0a5841e3880002495d4ec3159d7880671f039a735"
+      },
+      {
+        "file": "screenshots/desktop-dark-work-sessions.png",
+        "sha256": "f7495620175e120ef515f57da4f0cff3523c8ce1aaa9ae0f41a9141d6ea859ab",
+        "actualSha256": "f7495620175e120ef515f57da4f0cff3523c8ce1aaa9ae0f41a9141d6ea859ab"
+      },
+      {
+        "file": "screenshots/desktop-light-account.png",
+        "sha256": "94a146c3a775048cc5ee97a2c8f10d347b462f8fe6c72f899eaecc63253d49ab",
+        "actualSha256": "94a146c3a775048cc5ee97a2c8f10d347b462f8fe6c72f899eaecc63253d49ab"
+      },
+      {
+        "file": "screenshots/desktop-light-availability.png",
+        "sha256": "b9f56bb322749ddd76895a53a3cb09dbd783cb1c76eb75ce2722de25c6f0ddc6",
+        "actualSha256": "b9f56bb322749ddd76895a53a3cb09dbd783cb1c76eb75ce2722de25c6f0ddc6"
+      },
+      {
+        "file": "screenshots/desktop-light-clients.png",
+        "sha256": "b808ea96ed3cb9f65bb72b3394c481d4793806bf0301adc1e2512558abb345d3",
+        "actualSha256": "b808ea96ed3cb9f65bb72b3394c481d4793806bf0301adc1e2512558abb345d3"
+      },
+      {
+        "file": "screenshots/desktop-light-dashboard.png",
+        "sha256": "2d2371be337e91076bce63b7e6f3cf0c58a09b575f21ce3690ef8655ed8acd7f",
+        "actualSha256": "2d2371be337e91076bce63b7e6f3cf0c58a09b575f21ce3690ef8655ed8acd7f"
+      },
+      {
+        "file": "screenshots/desktop-light-earnings-commission.png",
+        "sha256": "c2bcfa6ad39af9fa706aad9b68395f29428bc184359da3dbf8c36b532c50a701",
+        "actualSha256": "c2bcfa6ad39af9fa706aad9b68395f29428bc184359da3dbf8c36b532c50a701"
+      },
+      {
+        "file": "screenshots/desktop-light-earnings-payouts.png",
+        "sha256": "39c0b04020fe8589d34d6c01aa73d34b5c05d5ea9879414c622c5bc0eb872420",
+        "actualSha256": "39c0b04020fe8589d34d6c01aa73d34b5c05d5ea9879414c622c5bc0eb872420"
+      },
+      {
+        "file": "screenshots/desktop-light-earnings-queries.png",
+        "sha256": "7d5771226b680532a681ace9281ec29e48f77f4d3d1c74858546a32ad75f4097",
+        "actualSha256": "7d5771226b680532a681ace9281ec29e48f77f4d3d1c74858546a32ad75f4097"
+      },
+      {
+        "file": "screenshots/desktop-light-earnings-salary.png",
+        "sha256": "de09ff577072a5cacd012e09bb1a2731ffbf179d3254077e1dd82d8a28d651db",
+        "actualSha256": "de09ff577072a5cacd012e09bb1a2731ffbf179d3254077e1dd82d8a28d651db"
+      },
+      {
+        "file": "screenshots/desktop-light-earnings-statements.png",
+        "sha256": "3b98040913b39df1a506e3058053775bff60c3a5c06ed734606dc927b2e641c8",
+        "actualSha256": "3b98040913b39df1a506e3058053775bff60c3a5c06ed734606dc927b2e641c8"
+      },
+      {
+        "file": "screenshots/desktop-light-earnings-terms.png",
+        "sha256": "90a81147489d60e8b34c9a697168f0a02899c692ef4eb16a65b728cc732a6374",
+        "actualSha256": "90a81147489d60e8b34c9a697168f0a02899c692ef4eb16a65b728cc732a6374"
+      },
+      {
+        "file": "screenshots/desktop-light-earnings.png",
+        "sha256": "5fcc42b85445aef88ae3b7013d3585939066279cdea123351b344c2100ad891a",
+        "actualSha256": "5fcc42b85445aef88ae3b7013d3585939066279cdea123351b344c2100ad891a"
+      },
+      {
+        "file": "screenshots/desktop-light-get-started.png",
+        "sha256": "0c7c3c165de4d6163a197ad29495b14a4d830c9560a745dc1de15ee9e8fbabb0",
+        "actualSha256": "0c7c3c165de4d6163a197ad29495b14a4d830c9560a745dc1de15ee9e8fbabb0"
+      },
+      {
+        "file": "screenshots/desktop-light-messages-compose.png",
+        "sha256": "1d0f5d5f75d5fd62c1bcfa1df24b996053101c2781c8ce0ee3d61e22ad880023",
+        "actualSha256": "1d0f5d5f75d5fd62c1bcfa1df24b996053101c2781c8ce0ee3d61e22ad880023"
+      },
+      {
+        "file": "screenshots/desktop-light-messages.png",
+        "sha256": "bf9344839bb953eeb01933fc4ba6a7220c9a19507b8635e866b1570804a9a362",
+        "actualSha256": "bf9344839bb953eeb01933fc4ba6a7220c9a19507b8635e866b1570804a9a362"
+      },
+      {
+        "file": "screenshots/desktop-light-work-appointments.png",
+        "sha256": "dd490a9b02ddf524deddf1534d23a2b3dba660a574046a2f50fd106ec838aadc",
+        "actualSha256": "dd490a9b02ddf524deddf1534d23a2b3dba660a574046a2f50fd106ec838aadc"
+      },
+      {
+        "file": "screenshots/desktop-light-work-history.png",
+        "sha256": "500f582fca1f406b9f3ad7927efb46132a84ad9352e8663c57a50737fda79f31",
+        "actualSha256": "500f582fca1f406b9f3ad7927efb46132a84ad9352e8663c57a50737fda79f31"
+      },
+      {
+        "file": "screenshots/desktop-light-work-preferred-requests.png",
+        "sha256": "7d03f61686a8b893af4884b8a822f0ce24cf604650a40dbf110517228428ce8b",
+        "actualSha256": "7d03f61686a8b893af4884b8a822f0ce24cf604650a40dbf110517228428ce8b"
+      },
+      {
+        "file": "screenshots/desktop-light-work-queue.png",
+        "sha256": "ccac100cf41b488e0d31f6adb7c9c1789f0648dcb2d8008ff67690cc09c13794",
+        "actualSha256": "ccac100cf41b488e0d31f6adb7c9c1789f0648dcb2d8008ff67690cc09c13794"
+      },
+      {
+        "file": "screenshots/desktop-light-work-sessions.png",
+        "sha256": "6a47ddb2f6a9e8d8b901de07bdd207491613ff8d1c948930b029e8873e2ab3fc",
+        "actualSha256": "6a47ddb2f6a9e8d8b901de07bdd207491613ff8d1c948930b029e8873e2ab3fc"
+      },
+      {
+        "file": "screenshots/earnings-model-commission_only.png",
+        "sha256": "2ad12acf667ea63336f470e51d3f6d05545878da9aa39efe566941a6068afc93",
+        "actualSha256": "2ad12acf667ea63336f470e51d3f6d05545878da9aa39efe566941a6068afc93"
+      },
+      {
+        "file": "screenshots/earnings-model-salary_only.png",
+        "sha256": "59d4a66e9832ec6d8756c99e0cb56d2bcefd03878a76ef43ea8db50ed83c3806",
+        "actualSha256": "59d4a66e9832ec6d8756c99e0cb56d2bcefd03878a76ef43ea8db50ed83c3806"
+      },
+      {
+        "file": "screenshots/earnings-model-salary_plus_commission.png",
+        "sha256": "3d8186fd4d2cb2648b997238a71ffb148e9ea609696c44956354b24d6660b5d5",
+        "actualSha256": "3d8186fd4d2cb2648b997238a71ffb148e9ea609696c44956354b24d6660b5d5"
+      },
+      {
+        "file": "screenshots/gated-notifications.png",
+        "sha256": "b023eea1d28e6b60d761cba49e29b18fff4a721f29f79286ad12754f44f1efac",
+        "actualSha256": "b023eea1d28e6b60d761cba49e29b18fff4a721f29f79286ad12754f44f1efac"
+      },
+      {
+        "file": "screenshots/mobile-account.png",
+        "sha256": "023d20d98e504882244e84c92f595b352279b2e7f01779a8a79434924c8208ab",
+        "actualSha256": "023d20d98e504882244e84c92f595b352279b2e7f01779a8a79434924c8208ab"
+      },
+      {
+        "file": "screenshots/mobile-clients.png",
+        "sha256": "ed0b5290a9482479b4d02d978eb9f3d6674228ae10368148bbd9491b23bafb6b",
+        "actualSha256": "ed0b5290a9482479b4d02d978eb9f3d6674228ae10368148bbd9491b23bafb6b"
+      },
+      {
+        "file": "screenshots/mobile-dashboard.png",
+        "sha256": "e88be3e3d7b3b6a8bc05c3328ddf25287a0f515af0ae6ba6c4bb6664d6a341b6",
+        "actualSha256": "e88be3e3d7b3b6a8bc05c3328ddf25287a0f515af0ae6ba6c4bb6664d6a341b6"
+      },
+      {
+        "file": "screenshots/mobile-earnings-commission.png",
+        "sha256": "e14c68273c6e79fa0d9bd24bd76ad9c710ab0f409e6ffe2ade545a615a2d6f25",
+        "actualSha256": "e14c68273c6e79fa0d9bd24bd76ad9c710ab0f409e6ffe2ade545a615a2d6f25"
+      },
+      {
+        "file": "screenshots/mobile-earnings-salary.png",
+        "sha256": "068ad6d8f35d2fc2edc71c09f598ba81fdb111a11c68e81ada3989e243e3caad",
+        "actualSha256": "068ad6d8f35d2fc2edc71c09f598ba81fdb111a11c68e81ada3989e243e3caad"
+      },
+      {
+        "file": "screenshots/mobile-earnings.png",
+        "sha256": "c8e9db83323827eeb54237f9438291f5099f70c3dd0f2a9bb5c6899cdd084ad9",
+        "actualSha256": "c8e9db83323827eeb54237f9438291f5099f70c3dd0f2a9bb5c6899cdd084ad9"
+      },
+      {
+        "file": "screenshots/mobile-messages-compose.png",
+        "sha256": "690130f314d8bbef151daacd17ddd318de0f2d0b7af9637b20d4cb2931984e51",
+        "actualSha256": "690130f314d8bbef151daacd17ddd318de0f2d0b7af9637b20d4cb2931984e51"
+      },
+      {
+        "file": "screenshots/mobile-navigation.png",
+        "sha256": "15b8b30e307b8d6583932a30fbca9c980e42ffd3236d987a0872a230601bef5d",
+        "actualSha256": "15b8b30e307b8d6583932a30fbca9c980e42ffd3236d987a0872a230601bef5d"
+      },
+      {
+        "file": "screenshots/mobile-work-queue.png",
+        "sha256": "c3958df10ac77bab547d9b36f3bec141375ddf6ce81780225ab7b2dba22e1bad",
+        "actualSha256": "c3958df10ac77bab547d9b36f3bec141375ddf6ce81780225ab7b2dba22e1bad"
+      },
+      {
+        "file": "screenshots/responsive-dashboard-1024.png",
+        "sha256": "13a13107f932faebc5e398e4d8a1935edc0fd2a929a2d72bf117b17603fc7bf6",
+        "actualSha256": "13a13107f932faebc5e398e4d8a1935edc0fd2a929a2d72bf117b17603fc7bf6"
+      },
+      {
+        "file": "screenshots/responsive-dashboard-1025.png",
+        "sha256": "c9bfbfe970ce08e80d3c7305a41e1cc3f08330b01d1a0eeaad227b35f1df4e5f",
+        "actualSha256": "c9bfbfe970ce08e80d3c7305a41e1cc3f08330b01d1a0eeaad227b35f1df4e5f"
+      },
+      {
+        "file": "screenshots/responsive-dashboard-1280.png",
+        "sha256": "a1e7b98c05454ac4b5b13bb2de3a536be46a2c918625b050193d730bd8233abd",
+        "actualSha256": "a1e7b98c05454ac4b5b13bb2de3a536be46a2c918625b050193d730bd8233abd"
+      },
+      {
+        "file": "screenshots/responsive-dashboard-1440.png",
+        "sha256": "2d2371be337e91076bce63b7e6f3cf0c58a09b575f21ce3690ef8655ed8acd7f",
+        "actualSha256": "2d2371be337e91076bce63b7e6f3cf0c58a09b575f21ce3690ef8655ed8acd7f"
+      },
+      {
+        "file": "screenshots/responsive-dashboard-360.png",
+        "sha256": "24ddbdb505340aced1bfee92f5f35ff900273ff16f0e5a225c271f89e02165a4",
+        "actualSha256": "24ddbdb505340aced1bfee92f5f35ff900273ff16f0e5a225c271f89e02165a4"
+      },
+      {
+        "file": "screenshots/responsive-dashboard-767.png",
+        "sha256": "0c5bb73114ed2a46403d468f027af6066bae2114380237d051cc99598e4c2844",
+        "actualSha256": "0c5bb73114ed2a46403d468f027af6066bae2114380237d051cc99598e4c2844"
+      },
+      {
+        "file": "screenshots/responsive-dashboard-768.png",
+        "sha256": "e048fccdea64196532c443ad3063fd8b6f14491141b5b495a9e24bcae29ed09e",
+        "actualSha256": "e048fccdea64196532c443ad3063fd8b6f14491141b5b495a9e24bcae29ed09e"
+      },
+      {
+        "file": "screenshots/sms-confirmation.png",
+        "sha256": "ce2bf2568262563f5d8dce225f23b57f31972b08eee71e44bd62f80e282467a2",
+        "actualSha256": "ce2bf2568262563f5d8dce225f23b57f31972b08eee71e44bd62f80e282467a2"
+      },
+      {
+        "file": "screenshots/tablet-account.png",
+        "sha256": "c1b8a95d02aafe399e172a2a218d419dad70f1f22370d636290e52cdcc90f7fb",
+        "actualSha256": "c1b8a95d02aafe399e172a2a218d419dad70f1f22370d636290e52cdcc90f7fb"
+      },
+      {
+        "file": "screenshots/tablet-dashboard.png",
+        "sha256": "e97a7d89466ba0b38779089db65e4539db8b6eba3629a51018c8690e4c23105f",
+        "actualSha256": "e97a7d89466ba0b38779089db65e4539db8b6eba3629a51018c8690e4c23105f"
+      },
+      {
+        "file": "screenshots/tablet-earnings.png",
+        "sha256": "8ac186c1e1e649d4ec1b698c0f477919d3c9e130a544a33cce64f5a5be4ab593",
+        "actualSha256": "8ac186c1e1e649d4ec1b698c0f477919d3c9e130a544a33cce64f5a5be4ab593"
+      },
+      {
+        "file": "screenshots/tablet-messages-compose.png",
+        "sha256": "8527f9db899002f2243b7dcea064b72e166d14db8ca4c6962938019c8d64786f",
+        "actualSha256": "8527f9db899002f2243b7dcea064b72e166d14db8ca4c6962938019c8d64786f"
+      },
+      {
+        "file": "screenshots/zoom-200-account.png",
+        "sha256": "8d17359711433ccdc437cdcd633b8d6451cf688211646ef263153d8786a3c0ba",
+        "actualSha256": "8d17359711433ccdc437cdcd633b8d6451cf688211646ef263153d8786a3c0ba"
+      },
+      {
+        "file": "screenshots/zoom-200-dashboard.png",
+        "sha256": "620034625ee6a4a58080e9e66a9a96e783f1f7d8e253eefc4f9ca2d666c7bc6e",
+        "actualSha256": "620034625ee6a4a58080e9e66a9a96e783f1f7d8e253eefc4f9ca2d666c7bc6e"
+      },
+      {
+        "file": "screenshots/zoom-200-earnings-commission.png",
+        "sha256": "a1aa23b1fd1c71e3af0eb920777cfc0ac7e07de379e71501d92b5229644c4980",
+        "actualSha256": "a1aa23b1fd1c71e3af0eb920777cfc0ac7e07de379e71501d92b5229644c4980"
+      },
+      {
+        "file": "screenshots/zoom-200-earnings.png",
+        "sha256": "e28a122a313c1ce7c7a600235483b22ed491d98b9fdf9c1a2444f5b0c65002e6",
+        "actualSha256": "e28a122a313c1ce7c7a600235483b22ed491d98b9fdf9c1a2444f5b0c65002e6"
+      },
+      {
+        "file": "screenshots/zoom-200-messages-compose.png",
+        "sha256": "d06005a212fd055cbd4e1098963d557e10502c95c37d0fe9bf7b348bc310404a",
+        "actualSha256": "d06005a212fd055cbd4e1098963d557e10502c95c37d0fe9bf7b348bc310404a"
+      },
+      {
+        "file": "screenshots/zoom-200-work-queue.png",
+        "sha256": "0a64d08dc218ebceae65cd0116c134e5d2237f2cec7cea3a3f596c9697b58d8a",
+        "actualSha256": "0a64d08dc218ebceae65cd0116c134e5d2237f2cec7cea3a3f596c9697b58d8a"
+      }
+    ]
+  }
+}

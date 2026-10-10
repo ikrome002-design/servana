@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "25365cfa749fe9e162d47e20280a473949ad2283f41e32df0fc645b340850240",
+  "canonical_authority_sha256": "4c176b456395fb4a61b3c98e0f002098c48b3d09fec75622486689a4ec3a1a86",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "13a0bd3e23603ebef3945db82f831eb4a2e4d28e2e8fe0e8742193988955df20",
+  "screen_inventory_sha256": "65d2128d3572ed0296cc1e0c84cecba22514813b008dbb460cb91e1dcbd823cf",
   "purpose": "Every contract page, per account, in navigation order.",
   "accounts": [
     {
@@ -2252,9 +2252,14 @@
           "navigation_group": "Home",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.dashboard",
+          "permission_all": [
+            "personnel.my_appointments.view",
+            "personnel.my_queue.view",
+            "personnel.my_sessions.view",
+            "personnel.my_earnings.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.1"
@@ -2285,7 +2290,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "personnel.queue",
+          "runtime_route_name": "personnel.work-queue",
           "permission_all": [
             "personnel.my_queue.view"
           ],
@@ -2303,7 +2308,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "personnel.appointments",
+          "runtime_route_name": "personnel.work-appointments",
           "permission_all": [
             "personnel.my_appointments.view"
           ],
@@ -2321,7 +2326,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "personnel.sessions",
+          "runtime_route_name": "personnel.work-sessions",
           "permission_all": [
             "personnel.my_sessions.view"
           ],
@@ -2338,9 +2343,11 @@
           "navigation_group": "My Work",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.work-history",
+          "permission_all": [
+            "personnel.my_sessions.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.6"
@@ -2354,9 +2361,12 @@
           "navigation_group": "My Work",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.work-preferred-requests",
+          "permission_all": [
+            "personnel.my_queue.view",
+            "personnel.my_appointments.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.7"
@@ -2370,8 +2380,8 @@
           "navigation_group": "My Clients",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.clients",
           "permission_all": [
             "personnel.my_served_clients.view"
           ],
@@ -2389,7 +2399,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "personnel.sms",
+          "runtime_route_name": "personnel.messages-compose",
           "permission_all": [
             "personnel.my_sms.send"
           ],
@@ -2406,9 +2416,11 @@
           "navigation_group": "My Clients",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.messages",
+          "permission_all": [
+            "personnel.my_sms.send"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.10"
@@ -2440,9 +2452,11 @@
           "navigation_group": "My Earnings",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.earnings-commission",
+          "permission_all": [
+            "personnel.my_earnings.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.12"
@@ -2456,9 +2470,11 @@
           "navigation_group": "My Earnings",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.earnings-salary",
+          "permission_all": [
+            "personnel.my_earnings.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.13"
@@ -2472,9 +2488,11 @@
           "navigation_group": "My Earnings",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.earnings-payouts",
+          "permission_all": [
+            "personnel.my_payouts.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.14"
@@ -2488,9 +2506,11 @@
           "navigation_group": "My Earnings",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.earnings-terms",
+          "permission_all": [
+            "personnel.my_compensation.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.15"
@@ -2504,9 +2524,11 @@
           "navigation_group": "My Earnings",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.earnings-statements",
+          "permission_all": [
+            "personnel.my_statements.download"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.16"
@@ -2520,9 +2542,11 @@
           "navigation_group": "My Earnings",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.earnings-queries",
+          "permission_all": [
+            "personnel.my_earnings_query.create"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.17"
@@ -2536,9 +2560,11 @@
           "navigation_group": "My Work",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.availability",
+          "permission_all": [
+            "personnel.my_appointments.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "11.4.18"
@@ -2556,7 +2582,7 @@
           "runtime_route_name": null,
           "permission_all": [],
           "permission_any": [],
-          "gate": "external_gate_w",
+          "gate": "phase_21n_blocked_by_external_gate_w",
           "map_section": "11.4.19"
         },
         {
@@ -2568,8 +2594,8 @@
           "navigation_group": "Utility",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
+          "implementation_status": "implemented",
+          "runtime_route_name": "personnel.account",
           "permission_all": [],
           "permission_any": [],
           "gate": null,

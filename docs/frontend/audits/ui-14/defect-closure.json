@@ -1,0 +1,659 @@
+{
+  "schema": "servana.ui14.defect-closure.v1",
+  "phase": "UI-14",
+  "lifecycle_vocabulary": [
+    "open",
+    "blocked",
+    "local_complete",
+    "verified_complete"
+  ],
+  "closures": [
+    {
+      "id": "UI14-VIS-001",
+      "classification": "visual-quality defect",
+      "observed": "Inherited Personnel dashboard used four identical hero KPI boxes and flat link cards; below the reference/UI-13 bar.",
+      "proof": "first-review screenshot desktop-light-dashboard (2026-08-20 capture) vs rubric",
+      "root_cause": "Page composed from generic card stacks instead of a now/next/recent hierarchy.",
+      "fix": "Connected 01–04 workday flow rail, dominant next-service surface, attention cards and statement-style earnings snapshot.",
+      "evidence": "page-visual-acceptance.json dashboard 30/30; tests/e2e/ui-14 dashboard cases",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-VIS-002",
+      "classification": "visual-quality defect",
+      "observed": "Queue, Appointments, Sessions, History and Preferred Requests were stacked single-number boxes and undifferentiated card lists.",
+      "proof": "first-review screenshots",
+      "root_cause": "No shared record primitive led by the deciding fact; header pattern was the flat SvPageHeader.",
+      "fix": "New shared SvTonalPageHeader, SvStatTile, SvLeadRecord and SvMaskedIdentity; queue your-turn surface; day-grouped agenda; live/recent session split; filter rail; segmented source filter.",
+      "evidence": "page-visual-acceptance.json 27–28/30 for these five pages",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-VIS-003",
+      "classification": "visual-quality defect",
+      "observed": "Served Clients was one half-width card; the SMS composer and history were plain forms and a secondary panel.",
+      "proof": "first-review screenshots",
+      "root_cause": "Pages inherited the Phase 21S consolidated layout.",
+      "fix": "Relationship cards with deliberate masking, eligibility chips, recipient panel, preview tiles, prominent cost notice, structured confirmation and history rows with outcome disclosure.",
+      "evidence": "page-visual-acceptance.json; sms-confirmation.png",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-VIS-004",
+      "classification": "visual-quality defect",
+      "observed": "My Earnings pages showed a half-width card in empty space, raw ISO dates, raw enum strings and raw ULIDs; Earnings Queries required typing a 26-character ULID.",
+      "proof": "first-review screenshots desktop-dark-earnings etc.",
+      "root_cause": "Pages split from the legacy screen without a statement-style composition.",
+      "fix": "Statement composition, lead records, Nairobi-formatted dates, humanized statuses, plain-language terms summary, no raw ULIDs, query prefill from record links.",
+      "evidence": "page-visual-acceptance.json; Ui14PersonnelPages.spec.ts prefill cases",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-VIS-005",
+      "classification": "visual-quality defect",
+      "observed": "Availability was plain lists.",
+      "proof": "first-review screenshot",
+      "root_cause": "No schedule composition.",
+      "fix": "Right-now state surface, seven-day grid with today highlighted, dated exceptions, services chips; still read-only.",
+      "evidence": "page-visual-acceptance.json availability 28/30; Ui14PersonnelPages.spec.ts read-only case",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-VIS-006",
+      "classification": "visual-quality defect",
+      "observed": "Account used only the generic shared header.",
+      "proof": "first-review screenshot",
+      "root_cause": "No Personnel profile treatment.",
+      "fix": "Profile-style identity header with owner-labelled locked facts; the shared header is suppressed for experience=personnel only so the page keeps one h1.",
+      "evidence": "desktop-light-account.png; axe account case",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-DS-001",
+      "classification": "frontend contract drift (shared design system)",
+      "observed": "rounded-pill, used by 15 shared Sv components since UI-04 (including SvStatusBadge), compiled to nothing, so status badges rendered square.",
+      "proof": "tailwind.config.ts borderRadius mapped control/card/overlay only while tokens.css defines --sv-radius-pill",
+      "root_cause": "Token consumer omitted the pill radius.",
+      "fix": "Map pill: var(--sv-radius-pill) in tailwind.config.ts (one line, token-backed).",
+      "evidence": "rendered badges in UI-14 screenshots; cross-account effect is the intended pill shape, recorded for UI-16 convergence review",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-CSS-001",
+      "classification": "responsive defect",
+      "observed": "Commission used sm:grid-cols-4 and Served Clients xl:grid-cols-3; neither prefix exists in this Tailwind config (md/lg only), so the layouts never applied.",
+      "proof": "tailwind.config.ts screens override",
+      "root_cause": "Default Tailwind breakpoints assumed.",
+      "fix": "Rewritten with md/lg only; new UI-14 code uses no sm:/xl:.",
+      "evidence": "responsive-matrix.json",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-CSS-002",
+      "classification": "visual-quality defect",
+      "observed": "bg-sv-surface-raised/70 on the queue facts produced no background.",
+      "proof": "desktop-light-work-queue first redesign capture",
+      "root_cause": "Opacity modifiers do not apply to CSS-variable colours in this config.",
+      "fix": "Solid token surface with a border.",
+      "evidence": "final queue capture",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-FIN-001",
+      "classification": "product defect (financial presentation)",
+      "observed": "The inherited Earnings Overview added salary, commission and adjustment paid + unpaid minor units in Vue.",
+      "proof": "inherited EarningsOverview.vue template expressions row.salary_unpaid_minor + row.salary_paid_minor",
+      "root_cause": "Component totals were derived client-side instead of shown as server figures.",
+      "fix": "Component table shows the server outstanding and paid figures side by side; totals are the server's unpaid_minor, paid_minor and net_minor.",
+      "evidence": "Ui14PersonnelPages.spec.ts asserts the browser sum 56,500.00 is absent",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-SMS-001",
+      "classification": "product defect",
+      "observed": "After the composer/history split, a confirmed send on /messages/compose showed no delivery status; tests/e2e/phase-21s.spec.ts expects sms-campaign-status after sending.",
+      "proof": "ClientSms showHistory=false in compose mode",
+      "root_cause": "The only status display lived in the history panel.",
+      "fix": "Post-send confirmation in compose mode renders the server status_label of the confirmed campaign.",
+      "evidence": "Ui14PersonnelPages.spec.ts status handoff case; whole-product Playwright phase-21s",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-COPY-001",
+      "classification": "visual-quality defect",
+      "observed": "Compensation Terms read 'per monthly , plus commission .'.",
+      "proof": "desktop-light-earnings-terms first redesign capture",
+      "root_cause": "Sentence assembled from template fragments with whitespace and the raw salary_period enum.",
+      "fix": "Sentence built in script from server terms with a period vocabulary.",
+      "evidence": "final terms capture",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-A11Y-001",
+      "classification": "a11y defect",
+      "observed": "A composer heading 'Write your message' made getByLabel('Message') match two elements (region and textarea).",
+      "proof": "focused Playwright strict-mode failure",
+      "root_cause": "Region accessible name contained the field label.",
+      "fix": "Heading renamed 'Compose'.",
+      "evidence": "focused UI-14 Playwright green",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-FIX-001",
+      "classification": "stale predecessor test fixture",
+      "observed": "Dashboard greeted 'Amina Wanjiku' while the signed-in profile was 'Ada Mwangi' (also a client name in other fixtures).",
+      "proof": "desktop-light-dashboard first capture",
+      "root_cause": "UI-14 workspace/availability fixtures named the staff member differently from the shared /me bootstrap.",
+      "fix": "Both UI-14 staff fixtures use the signed-in user's name.",
+      "evidence": "tests/e2e/support/releaseAudit.ts",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-SEC-001",
+      "classification": "security/authorization test gap",
+      "observed": "UI-14 seam tests did not prove foreign-tenant exclusion, other-Personnel served-client/preferred-request exclusion, unauthenticated denial or suspended-membership denial.",
+      "proof": "Ui14PersonnelExperienceApiTest inventory",
+      "root_cause": "Coverage stopped at same-branch ledgers and role denial.",
+      "fix": "Added four tests (11 cases with datasets).",
+      "evidence": "Ui14PersonnelExperienceApiTest 24 passed / 118 assertions",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-REG-002",
+      "classification": "stale predecessor test",
+      "observed": "Whole-product Playwright: phase-20h Personnel earnings (2 cases) looked for the consolidated screen hooks earnings-currency-card/open-query/statement-*; phase-21s expected an in-page sms-forbidden panel for a member without SMS permissions.",
+      "proof": "whole-product run 2026-10-08 cases 275, 276, 312 (error-context: hooks absent; guard redirected home)",
+      "root_cause": "UI-14 split the Phase 20H consolidated earnings screen into the canonical My Earnings pages and put the SMS composer behind a permission-guarded canonical route; the predecessor specs still addressed the legacy layout.",
+      "fix": "Retargeted the three cases to the canonical pages while keeping their intent: per-currency card, both model tabs, no staff selector, private statement generation (request + popup + status), own-scope query submission; the 21S case now asserts the guard keeps the composer unmounted and issues no served-client read. Added data-testid earnings-currency-card to the overview statement.",
+      "evidence": "targeted rerun and final whole-product proof (browser-proof.json)",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-NAV-001",
+      "classification": "product defect (navigation truthfulness)",
+      "observed": "Whole-product Playwright ui-07 contract: Personnel navigation omitted Commission (and Salary) when the earnings overview had not loaded or had failed.",
+      "proof": "whole-product run case 1190 error-context: merchant_personnel must render \"Commission\"",
+      "root_cause": "The inherited shell hid model-specific items whenever tab_visibility was false, and the default/failed state is all-false, so an unknown state was treated as not-applicable.",
+      "fix": "AppShell and PersonnelEarningsNav hide a model-specific page only when the server positively reports a current, non-conflicting plan that excludes it; Commission/Salary direct routes now distinguish no current plan from not-in-model.",
+      "evidence": "ui-07 contract case and ui-14 model cases in the final whole-product proof",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-ROB-001",
+      "classification": "product defect (robustness)",
+      "observed": "The UI-07 browser contract recorded 2 console errors for Personnel only (every other account 0) after the first final whole-product run.",
+      "proof": "docs/frontend/audits/ui-07/browser-proof.json merchant_personnel console_errors 2; the UI-07 harness answers unstubbed APIs with { data: [] }",
+      "root_cause": "personnelEarningsStore applied any payload as the overview, so the shell's model-visibility computation read tab_visibility of an array and threw; personnelExperienceStore applied an array as the workspace and the dashboard dereferenced workspace.staff.",
+      "fix": "Both stores reject a payload lacking the contract's required fields as a failed read (retryable error state) instead of applying it.",
+      "evidence": "personnelExperienceStore.spec.ts and Ui14PersonnelPages.spec.ts malformed-payload cases; UI-07 browser contract 42/42 with Personnel console_errors 0",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-ENV-001",
+      "classification": "environment/resource failure",
+      "observed": "Playwright 'Unable to capture screenshot' (Page.captureScreenshot protocol error) on one case at --workers=4.",
+      "proof": "focused run output",
+      "root_cause": "Chromium capture contention under four parallel workers on this host.",
+      "fix": "No source change; serial rerun passed; final runs use the repository's worker settings.",
+      "evidence": "browser-proof.json failed_runs",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-ENV-002",
+      "classification": "environment/resource failure",
+      "observed": "npm ci failed with EPERM while restoring node_modules.",
+      "proof": "npm error log",
+      "root_cause": "A running vite preview held native binaries open on Windows.",
+      "fix": "Stopped the preview process; npm ci then succeeded from the unchanged lockfile.",
+      "evidence": "docs/proof/ui-14.md failed-run classifications",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-API-001",
+      "classification": "generated projection drift",
+      "observed": "Full PostgreSQL run: OpenApiContractTest reported docs/api/openapi.json not byte-current with the generator.",
+      "proof": "php artisan test --parallel 2026-10-08: 1 of 3 failures",
+      "root_cause": "The committed document had been generated before the final UI-14 resource/read-model shapes; Scramble now infers typed item schemas.",
+      "fix": "composer api:openapi (306 paths / 357 operations unchanged) and npm run api:types; no hand edit.",
+      "evidence": "invalidated consumer set 137 passed / 8,429 assertions; api:contract:check OK",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-REG-001",
+      "classification": "stale predecessor test",
+      "observed": "Ui01AuditContractTest flagged the retired personnel-landing identity and the expired personnel-dashboard temporary removal; Ui07NavigationContractTest did not name the Personnel notifications gate.",
+      "proof": "full run failures 2 and 3; individual reruns",
+      "root_cause": "Append-only registers that each UI phase extends were not updated for UI-14.",
+      "fix": "Registered personnel-landing retirement; removed the expired personnel-dashboard entry (UI-08/UI-13 precedent); added merchant_personnel.notifications => phase_21n_blocked_by_external_gate_w (HR/Front Office precedent).",
+      "evidence": "Ui01AuditContractTest + Ui07NavigationContractTest 54 passed / 6,783 assertions",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-ENV-003",
+      "classification": "test nondeterminism",
+      "observed": "The first full Vitest run after regenerating api.ts reported 2 failures in 1 file.",
+      "proof": "vitest run 2026-10-08 13:25 UTC+3 summary: 1 failed | 148 passed files",
+      "root_cause": "Not reproducible: the immediate rerun on unchanged source passed 1,424/1,424; same class as UI13-015 (cold dynamic-import waits while the Docker stack shares the host). The failing file name was not captured by the summary-only reporter.",
+      "fix": "No source change.",
+      "evidence": "rerun 1,424 / 1,424 across 149 files",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-ENV-004",
+      "classification": "test nondeterminism",
+      "observed": "First whole-product Playwright run: phase-23-release-audit 'axe: platform-landing' timed out waiting 5 s for the first h1/h2; the snapshot showed only the boot status region.",
+      "proof": "whole-product run 2026-10-08 case 704 error-context",
+      "root_cause": "Load timing on the image-heavy public Super Administrator landing during an hour-long serial run; the page and its spec are untouched by UI-14 and the case passes in isolation.",
+      "fix": "No source change. Isolation rerun --repeat-each=3: 3/3 passed (10.4-10.8 s each).",
+      "evidence": "docs/proof/ui-14.md failed-run classifications; final whole-product proof",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-DEP-001",
+      "classification": "external dependency failure",
+      "observed": "npm audit --audit-level=high reports 17 advisories (13 high, 4 moderate) against the unchanged UI-13 lockfile; CI's Frontend job runs this gate.",
+      "proof": "npm audit 2026-10-08; package.json/package-lock.json untouched by UI-14",
+      "root_cause": "Advisories published after the UI-13 CI run (2026-08-20). Non-breaking npm audit fix clears 9; the remaining 6 high require tailwindcss 3 -> 4 (a pinned-stack change) and an exact-pin sharp 0.35.3 -> 0.35.5 that also re-derives landing-image derivatives.",
+      "fix": "Supported npm security updates and proven conditional Tailwind 4 migration; exact sharp 0.35.5; no force, audit omission or waiver. Approved originals and current derivatives unchanged.",
+      "evidence": "REM-DEP-003 PR #64, exact-head five-job CI 37863919256, normal squash 43b623c0e484c0ead76cca8c9d02ad41694c700e; docs/proof/rem-dep-003.md; supplemental codex-reconciliation.json. Reconciled UI14 npm and Composer audits exit 0, zero all-severity findings.",
+      "owner": "Codex; merged REM-DEP-003 PR #64",
+      "entry_condition": "Satisfied: explicit product-owner authorization, real advisory analysis, normal merged PR and reconciled source audits exit 0.",
+      "lifecycle": "local_complete",
+      "pre_remediation_blocker": {
+        "id": "UI14-DEP-001",
+        "classification": "external dependency failure",
+        "observed": "npm audit --audit-level=high reports 17 advisories (13 high, 4 moderate) against the unchanged UI-13 lockfile; CI's Frontend job runs this gate.",
+        "proof": "npm audit 2026-10-08; package.json/package-lock.json untouched by UI-14",
+        "root_cause": "Advisories published after the UI-13 CI run (2026-08-20). Non-breaking npm audit fix clears 9; the remaining 6 high require tailwindcss 3 -> 4 (a pinned-stack change) and an exact-pin sharp 0.35.3 -> 0.35.5 that also re-derives landing-image derivatives.",
+        "fix": "Not fixed in UI-14 by design: a stack change requires product-owner authorization (CLAUDE.md §9). Trial fix reverted; lockfile restored byte-identical.",
+        "evidence": "docs/proof/ui-14.md §Failed-run classifications",
+        "owner": "Proposed REM-DEP-003 dedicated remediation branch (REM-DEP-002 precedent), product-owner authorized",
+        "entry_condition": "Product owner decides Tailwind 4 migration (or an approved alternative) and the sharp bump; remediation merges to main; UI-14 then takes main through the normal sync before CI.",
+        "lifecycle": "blocked"
+      }
+    },
+    {
+      "id": "UI14-DEP-002",
+      "classification": "external dependency failure",
+      "observed": "composer audit reports advisories in laravel/framework (<12.69, low), league/commonmark (<=2.10.1, several high) and league/flysystem (<=3.35.2, low); CI's Backend job runs composer audit.",
+      "proof": "composer audit 2026-10-08; composer.json/composer.lock untouched by UI-14",
+      "root_cause": "Advisories published after the UI-13 CI run; fixes are minor/patch upgrades of the pinned Laravel 12 line.",
+      "fix": "Three compatible targeted Composer updates: Laravel 12.69.3, CommonMark 2.10.3 and Flysystem 3.36.0; PHP 8.3 retained.",
+      "evidence": "REM-DEP-003 PR #64, exact-head five-job CI 37863919256, normal squash 43b623c0e484c0ead76cca8c9d02ad41694c700e; docs/proof/rem-dep-003.md; supplemental codex-reconciliation.json. Reconciled UI14 npm and Composer audits exit 0, zero all-severity findings.",
+      "owner": "Codex; merged REM-DEP-003 PR #64",
+      "entry_condition": "Satisfied: explicit product-owner authorization, real advisory analysis, normal merged PR and reconciled source audits exit 0.",
+      "lifecycle": "local_complete",
+      "pre_remediation_blocker": {
+        "id": "UI14-DEP-002",
+        "classification": "external dependency failure",
+        "observed": "composer audit reports advisories in laravel/framework (<12.69, low), league/commonmark (<=2.10.1, several high) and league/flysystem (<=3.35.2, low); CI's Backend job runs composer audit.",
+        "proof": "composer audit 2026-10-08; composer.json/composer.lock untouched by UI-14",
+        "root_cause": "Advisories published after the UI-13 CI run; fixes are minor/patch upgrades of the pinned Laravel 12 line.",
+        "fix": "Not applied in UI-14: dependency upgrades are outside the Personnel scope and belong with UI14-DEP-001 in one reviewed remediation.",
+        "evidence": "docs/proof/ui-14.md §Failed-run classifications",
+        "owner": "Proposed REM-DEP-003 (same branch as UI14-DEP-001)",
+        "entry_condition": "Same as UI14-DEP-001.",
+        "lifecycle": "blocked"
+      }
+    },
+    {
+      "id": "UI14-CODEX-VIS-001",
+      "status": "corrected; current focused and authoritative whole browser acceptance green; PostgreSQL/production/release gates still required",
+      "observed_problem": "At 360px, queue tile labels are clipped beside their icons; commission and salary amounts crowd or overlap their record headings. Whole-page overflow and axe checks passed but did not detect this internal clipping.",
+      "evidence": [
+        "before-mobile-work-queue.png",
+        "before-mobile-earnings-commission.png",
+        "before-mobile-earnings-salary.png",
+        "Original authenticated handoff captures and unchanged pre-correction UI14 component source show the inherited layout constraints"
+      ],
+      "affected_files": [
+        "resources/spa/src/components/ui/SvLeadRecord.vue",
+        "resources/spa/src/pages/personnel/MyQueue.vue",
+        "resources/spa/src/pages/personnel/Commission.vue"
+      ],
+      "root_cause": "The queue keeps three icon-bearing fact tiles in one row even on a 360px screen. SvLeadRecord keeps a shrinkable heading beside a non-shrinking monetary status block, leaving too little room for the heading. Commission metadata retains two columns within that already narrow record body.",
+      "why_this_is_root_cause": "The symptoms occur inside their containers, so the document has no horizontal overflow. Original captures show the same layout failure; it is not attributed to Tailwind migration. Fresh visual inspection exposed a release-quality issue, especially the salary page whose prior score was only 27/30.",
+      "correct_fix": "Stack queue facts below 768px; stack the lead record heading and status below 768px; use one metadata column below 768px. Keep desktop columns, semantic tokens, existing data, authority and financial calculations unchanged.",
+      "files_changed": [
+        "resources/spa/src/components/ui/SvLeadRecord.vue",
+        "resources/spa/src/pages/personnel/MyQueue.vue",
+        "resources/spa/src/pages/personnel/Commission.vue",
+        "tests/e2e/ui-14-personnel-experience.spec.ts"
+      ],
+      "tests_added_updated": "One real-browser regression checks text scrollWidth/clientWidth and heading/amount geometry for three affected pages, both themes and six widths (360/640/767/768/1024/1025). Existing page, viewport, theme, axe, financial-truth and privacy assertions remain unchanged.",
+      "test_command": "playwright test tests/e2e/ui-14-personnel-experience.spec.ts --reporter=list",
+      "test_result": "73/73 Personnel cases; 36 geometry permutations within the new case; 37/37 related unit cases after retained unchanged-source timeout rerun",
+      "proof_of_resolution": "Three corrected mobile and two zoom captures inspected; all 38 desktop captures byte-identical; all 69 reviewed hashes unchanged by authoritative full run",
+      "remaining_risk": "Fresh PostgreSQL full acceptance, production images/host proof and exact-head five-job PR CI remain mandatory before staging/release.",
+      "invalidation": "Initial 89-case browser run and first source freeze are retained as pre-correction evidence. No authoritative whole-product browser run had started. One predecessor evidence baseline is retained because the four corrected source paths are outside its protected scopes.",
+      "quality_check_failure": {
+        "command": "37 related Vitest cases",
+        "first_result": "36 passed / 1 Branch cash-up import/render timeout at the unchanged 5000ms limit",
+        "repeat_result": "37 passed / 6 files, unchanged test sources/settings, 19.85 seconds",
+        "failed_log": "ui14-mobile-layout-related-vitest.log",
+        "passing_log": "ui14-mobile-layout-retry-related-vitest.log",
+        "waiver_or_timeout_increase": false
+      },
+      "lifecycle": "local_complete",
+      "classification": "inherited responsive visual defect"
+    },
+    {
+      "id": "UI14-CODEX-GEN-001",
+      "lifecycle": "local_complete",
+      "classification": "current generated projection drift",
+      "observed_problem": "UI06 public-route matrix still named legacy Personnel routes although the actual router implements UI14 canonical pages.",
+      "evidence": "Retained failed generator --check capture; only current public-route-matrix.json changed, other eight outputs byte-identical.",
+      "affected_files": [
+        "docs/frontend/audits/ui-06/public-route-matrix.json"
+      ],
+      "root_cause": "Current public route projection had not been regenerated from the delivered router.",
+      "why_this_is_root_cause": "Generator reports exactly one stale projection; generated added/removed/changed Personnel names agree with the actual router.",
+      "correct_fix": "Run the canonical UI06 generator and retain the legitimate current projection during predecessor restoration.",
+      "files_changed": [
+        "docs/frontend/audits/ui-06/public-route-matrix.json"
+      ],
+      "tests_added_updated": "Existing deterministic generator check, account-host check and 17 UI05 negative controls; no duplicate test.",
+      "test_command": "ui06:check; hosts:check; ui05 negative controls",
+      "test_result": "All exit 0; negative controls 17/17",
+      "proof_of_resolution": {
+        "recordedAt": "2026-10-09T01:30:23.213Z",
+        "changedPaths": [
+          "docs/frontend/audits/ui-06/public-route-matrix.json"
+        ],
+        "protectedOtherEightUnchanged": true,
+        "beforeSha256": "2ba611169b09977ae88266f0d9640bd913ec15e03c0e28001de1d06838a77cd1",
+        "afterSha256": "7a21c8e788f0b7b25bf8afedb9b59406de533a0854d84ad39fcbdc121222088b",
+        "routeDifference": {
+          "added": [
+            "personnel.account",
+            "personnel.availability",
+            "personnel.clients",
+            "personnel.dashboard",
+            "personnel.earnings-commission",
+            "personnel.earnings-payouts",
+            "personnel.earnings-queries",
+            "personnel.earnings-salary",
+            "personnel.earnings-statements",
+            "personnel.earnings-terms",
+            "personnel.messages",
+            "personnel.messages-compose",
+            "personnel.work-appointments",
+            "personnel.work-history",
+            "personnel.work-preferred-requests",
+            "personnel.work-queue",
+            "personnel.work-sessions"
+          ],
+          "removed": [
+            "personnel.appointments",
+            "personnel.landing",
+            "personnel.queue",
+            "personnel.sessions",
+            "personnel.sms"
+          ],
+          "changed": [
+            "personnel.earnings",
+            "personnel.get-started"
+          ],
+          "orderChanged": true
+        },
+        "priorCheckFailed": true
+      },
+      "remaining_risk": "Original failed raw log filename was inadvertently reused. Exact previously observed tool text and provenance are retained in the captured JSON; it is not represented as the original raw log."
+    },
+    {
+      "id": "UI14-CODEX-EVIDENCE-001",
+      "classification": "evidence tooling",
+      "observed_problem": "The disconnected-session continuation stopped at its evidence collector, exit 1; later corrected acceptance already existed at recovery.",
+      "evidence": [
+        {
+          "name": "independent-complete-junit",
+          "args": [
+            "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-validate-full-junit.php"
+          ],
+          "started": "2026-10-10T06:22:40.877Z",
+          "finished": "2026-10-10T06:23:14.507Z",
+          "exitCode": 0
+        },
+        {
+          "name": "record-real-search-resolution",
+          "args": [
+            "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-record-search-env-defect.mjs"
+          ],
+          "started": "2026-10-10T06:23:14.635Z",
+          "finished": "2026-10-10T06:23:17.860Z",
+          "exitCode": 0
+        },
+        {
+          "name": "collect-actual-complete-backend",
+          "args": [
+            "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-collect-backend-acceptance.mjs"
+          ],
+          "started": "2026-10-10T06:23:17.861Z",
+          "finished": "2026-10-10T06:23:21.622Z",
+          "exitCode": 1
+        }
+      ],
+      "affected_files": [
+        "external ui14-collect-backend-acceptance.mjs",
+        "external ui14-validate-full-junit.php"
+      ],
+      "root_cause": "Proven surviving collector defect: it accepted skipped tests by class substring rather than exact class and test identity. The recovered DOM validator correctly reads the canonical class attribute, falling back to classname. The original rejecting collector source has not been recovered, so its exact rejection predicate remains unproven.",
+      "why_this_is_root_cause": "The actual complete JUnit and unchanged test source establish the exact five permitted pairs. A substituted test name in an allowed class is rejected by the corrected validator. This proves the precision correction; it does not retrospectively prove the unavailable original rejection predicate.",
+      "correct_fix": "Decode with DOM, compare the exact sorted class+test pairs, verify each suite against its descendant cases without double counting, require 52419 assertions, and write acceptance only after successful validation.",
+      "files_changed": [],
+      "tests_added_updated": "Existing complete XML validator plus exact six rejecting controls; no backend product assertion changed.",
+      "test_command": "C:/xampp/php/php.exe ui14-junit-negative-controls.php; C:/xampp/php/php.exe ui14-validate-full-junit.php; Node 20 ui14-collect-backend-acceptance.mjs",
+      "test_result": "Actual XML passes; sixth skip, substituted identity, failure, error, truncated XML and wrong suite aggregate each reject with exit 1. Collector on existing run exits 0.",
+      "proof_of_resolution": {
+        "xml_sha256": "cfd3500d3f21093b4b7fc3483489e5cb916105d7b0816e8bdc72f865d27621a3",
+        "passed": 3578,
+        "skipped": 5,
+        "failed": 0,
+        "assertions": 52419,
+        "controls": {
+          "sourceSha256": "cfd3500d3f21093b4b7fc3483489e5cb916105d7b0816e8bdc72f865d27621a3",
+          "controls": [
+            {
+              "name": "actual complete Pest XML exact five skips",
+              "exitCode": 0,
+              "expectedPass": true,
+              "matched": true,
+              "diagnostic": ""
+            },
+            {
+              "name": "sixth-skip",
+              "exitCode": 1,
+              "expectedPass": false,
+              "matched": true,
+              "diagnostic": "JUnit suite aggregate mismatch: skipped"
+            },
+            {
+              "name": "substituted-skip-identity",
+              "exitCode": 1,
+              "expectedPass": false,
+              "matched": true,
+              "diagnostic": "JUnit counts, assertions or exact skipped identities rejected"
+            },
+            {
+              "name": "failure",
+              "exitCode": 1,
+              "expectedPass": false,
+              "matched": true,
+              "diagnostic": "JUnit suite aggregate mismatch: failures"
+            },
+            {
+              "name": "error",
+              "exitCode": 1,
+              "expectedPass": false,
+              "matched": true,
+              "diagnostic": "JUnit suite aggregate mismatch: errors"
+            },
+            {
+              "name": "truncated",
+              "exitCode": 1,
+              "expectedPass": false,
+              "matched": true,
+              "diagnostic": "Missing or incomplete real JUnit XML"
+            },
+            {
+              "name": "wrong-aggregate",
+              "exitCode": 1,
+              "expectedPass": false,
+              "matched": true,
+              "diagnostic": "JUnit suite aggregate mismatch: tests"
+            }
+          ],
+          "passed": true
+        }
+      },
+      "remaining_risk": "External evidence correction does not invalidate backend product source; final documentation consumers and production gates remain.",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-CODEX-CONFIG-001",
+      "classification": "equivalent configuration cleanup",
+      "observed_problem": "Focused duplicate-key lint fails: tailwind.config.ts line 142 duplicate pill mapping",
+      "evidence": {
+        "exitCode": 1,
+        "command": "Node 20 eslint tailwind.config.ts --rule no-dupe-keys:error",
+        "finishedAt": "2026-10-10T12:00:49.8412767Z"
+      },
+      "affected_files": [
+        "tailwind.config.ts"
+      ],
+      "root_cause": "The explicit three-way REM/UI14 overlap preserved two independently introduced identical radius mappings. General TS lint delegates duplicate-key detection to TypeScript; the SPA tsconfig does not include root tailwind.config.ts.",
+      "why_this_is_root_cause": "Actual source has two pill: sv(radius-pill) entries; forced existing no-dupe-keys rule rejects exactly this key. No token value is disputed.",
+      "correct_fix": "Delete only the final identical pill entry, preserving all original evaluated values AND property order. The UI14 historical annotation remains.",
+      "files_changed": [
+        "tailwind.config.ts"
+      ],
+      "tests_added_updated": "Existing focused duplicate-key lint and ordered configuration comparison; changed-value negative control; final local production bundle and full Nginx image extraction.",
+      "test_command": "Node 20 Vite production build; ui14-radius-dedup-verify.mjs after <extracted current image bundle>",
+      "test_result": "Configuration identical; altered value rejected; all 652 emitted files byte-identical; both final builds and PostgreSQL host accepted.",
+      "proof_of_resolution": {
+        "started": "2026-10-10T20:53:18.680Z",
+        "image": {
+          "tag": "servana-ui14-nginx:codex-release-recovery",
+          "id": "sha256:e8bd8b75a0029ba8104ace0777afc743e11515df297d73ec7d13275a6a492693",
+          "sizeBytes": 317862313,
+          "created": "2026-10-10T20:53:06.975124626Z"
+        },
+        "bundle": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-image-spa",
+        "startedContainer": false,
+        "projectMounts": false,
+        "portsPublished": false,
+        "acceptance": true,
+        "containerId": "ad0116fef9c1cfcfbb23575f4785d5cee1a80a3eba8f5ca6dcdbbfb30d22078d",
+        "parityExitCode": 0,
+        "paritySignal": null,
+        "bundleFiles": 652,
+        "sourceFreezeSha256": "b384361e478aab7108b5a3e1549f251951ced623c2d914d29fc4bb8602829605",
+        "removed": true,
+        "finished": "2026-10-10T20:54:19.701Z"
+      },
+      "remaining_risk": "UI-16 owns deferred cross-account convergence; no current runtime behavior change.",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI14-CODEX-BUILD-001",
+      "classification": "production build recovery",
+      "observed_problem": "Original owned PHP build wrapper timed out without a final image; Docker info probe also timed out.",
+      "evidence": {
+        "original_receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-production-acceptance.json",
+        "original_log": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-production-build-php.log",
+        "prior_probe": {
+          "started": "2026-10-10T12:30:56.547Z",
+          "finished": "2026-10-10T12:31:32.951Z",
+          "runnerPid": 23724,
+          "command": [
+            "docker",
+            "info",
+            "--format",
+            "{{.ServerVersion}}"
+          ],
+          "timeoutMs": 30000,
+          "actualExitCode": null,
+          "signal": "SIGTERM",
+          "error": "spawnSync docker ETIMEDOUT",
+          "log": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-recovery-docker-bounded-probe.log",
+          "bytes": 0,
+          "productionBuildNotInterrupted": true,
+          "developmentContainersUntouched": true
+        }
+      },
+      "affected_files": [
+        "External production runner only"
+      ],
+      "root_cause": "Proven original wrapper timeout before export; underlying historical daemon/storage slowdown unconfirmed. Current CLI plugin discovery also omitted buildx while the installed plugin and existing builder responded directly.",
+      "why_this_is_root_cause": "Original receipt has null exit/SIGTERM and images []; final log advances beyond COPY but never exports. Recovered PID 852 belongs to winlogon, so no stale PID was killed. Bounded current API and direct plugin checks pass.",
+      "correct_fix": "Preserve failure history; use installed Buildx executable with existing desktop-linux builder and unchanged Dockerfiles/context; run one owned heavy operation at a time with durable exits. Recognize exact named network absence in the external host preflight.",
+      "files_changed": [],
+      "tests_added_updated": "Actual source input check, sequential PHP/Nginx builds, full emitted-image bundle parity, PostgreSQL 16 migrations/database proof, nginx -t and established host script.",
+      "test_command": "docker-buildx.exe build --builder desktop-linux --load --target prod; scripts/ui14-production-host-proof.mjs http://127.0.0.1:8114",
+      "test_result": "Both builds exit 0; 652 image bundle files identical; 132 migrations; PostgreSQL 16.14; nginx -t exit 0; 43 host passes, zero failures; exact disposable resources removed.",
+      "proof_of_resolution": {
+        "recorded_at": "2026-10-10T20:56:27.231Z",
+        "database": {
+          "driver": "pgsql",
+          "database": "ui14_release_proof",
+          "version": "PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+          "migrations": 132
+        },
+        "manifest_parity": true,
+        "manifests": [
+          {
+            "kind": "php",
+            "sha256": "49dd7d0ba73c88c43b581568472af8d97f675f6e3b0ad58f778a7020f65f0f2e"
+          },
+          {
+            "kind": "nginx",
+            "sha256": "49dd7d0ba73c88c43b581568472af8d97f675f6e3b0ad58f778a7020f65f0f2e"
+          }
+        ],
+        "bundle_files_byte_identical": 652,
+        "composer_audit": {
+          "advisories": 0,
+          "abandoned": 0,
+          "exitCode": 0
+        },
+        "receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-host-outcome.json",
+        "receipt_sha256": "c2f564887aa6273af0cc0783c658fbfa0371023cbffb5378747694e0c030ef70",
+        "php_build_receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-php-outcome.json",
+        "nginx_build_receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-nginx-outcome.json",
+        "extraction_receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-extraction.json",
+        "source_freeze_sha256": "b384361e478aab7108b5a3e1549f251951ced623c2d914d29fc4bb8602829605",
+        "cleanup": [
+          {
+            "key": "edge",
+            "id": "fb0b902ea8b4f0b34c16222317a42b79cb9203f79d006a8abc863672f279cb45",
+            "removed": true
+          },
+          {
+            "key": "app",
+            "id": "82c63983451ec72743b36f6bc7bd3c07525ba9d7fff8f1adbb4be7bfef6b15c3",
+            "removed": true
+          },
+          {
+            "key": "postgres",
+            "id": "f1fb93b7b56ae6ed4b3af5a300e16d522d8433bd134cfc0c1aa1ab4c262ac7ab",
+            "removed": true
+          }
+        ]
+      },
+      "remaining_risk": "Historical physical slowdown remains unconfirmed. No global engine restart, development service change, Dockerfile change or context exclusion was made.",
+      "lifecycle": "local_complete"
+    }
+  ],
+  "counts": {
+    "open": 0,
+    "blocked": 0,
+    "local_complete": 31,
+    "verified_complete": 0,
+    "total": 31
+  },
+  "codex_release_acceptance": {
+    "recorded_at": "2026-10-10T20:56:27.231Z",
+    "production_receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-host-outcome.json",
+    "lifecycle": "local_complete; exact-head UI14 PR CI and normal merge remain pending"
+  }
+}

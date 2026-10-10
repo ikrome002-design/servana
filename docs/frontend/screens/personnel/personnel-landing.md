@@ -1,17 +1,17 @@
-# Screen specification — Personnel landing
+# Screen specification — Personnel dashboard
 
-> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 11**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
+> Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase UI-14**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
-- **Screen key:** `personnel-landing`
-- **Route name and URL:** `personnel.landing`
+- **Screen key:** `personnel-dashboard`
+- **Route name and URL:** `personnel.dashboard`
 - **Layout:** `PersonnelLayout`
 - **Allowed roles:** `merchant_personnel`
-- **Required permissions:** — (frontend visibility only; backend EnsurePermission + policy is authoritative)
+- **Required permissions:** `personnel.my_appointments.view`, `personnel.my_queue.view`, `personnel.my_sessions.view`, `personnel.my_earnings.view` (frontend visibility only; backend EnsurePermission + policy is authoritative)
 - **Merchant / branch / own scope:** per role boundary (Plan §14–§16); branch-scoped roles resolve branch from the bootstrap.
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Live Personnel own-scope role home.
+- **Fields and displayed data:** Private mobile-first command centre for the authenticated staff profile's own queue, appointments, sessions, preferred requests, served clients, HR-managed availability and server-recorded earnings.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

@@ -881,51 +881,135 @@
       "declared_in": "resources/spa/src/router/routes/merchant.ts"
     },
     {
-      "name": "personnel.appointments",
-      "path": "appointments",
-      "absolute_path": "/personnel/appointments",
+      "name": "personnel.account",
+      "path": "/account",
+      "absolute_path": "/account",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.availability",
+      "path": "/availability",
+      "absolute_path": "/availability",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.clients",
+      "path": "/clients",
+      "absolute_path": "/clients",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.dashboard",
+      "path": "/dashboard",
+      "absolute_path": "/dashboard",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/personnel.ts"
     },
     {
       "name": "personnel.earnings",
-      "path": "earnings",
-      "absolute_path": "/personnel/earnings",
+      "path": "/earnings",
+      "absolute_path": "/earnings",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.earnings-commission",
+      "path": "/earnings/commission",
+      "absolute_path": "/earnings/commission",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.earnings-payouts",
+      "path": "/earnings/payouts",
+      "absolute_path": "/earnings/payouts",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.earnings-queries",
+      "path": "/earnings/queries",
+      "absolute_path": "/earnings/queries",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.earnings-salary",
+      "path": "/earnings/salary",
+      "absolute_path": "/earnings/salary",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.earnings-statements",
+      "path": "/earnings/statements",
+      "absolute_path": "/earnings/statements",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.earnings-terms",
+      "path": "/earnings/terms",
+      "absolute_path": "/earnings/terms",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/personnel.ts"
     },
     {
       "name": "personnel.get-started",
-      "path": "get-started",
-      "absolute_path": "/personnel/get-started",
+      "path": "/get-started",
+      "absolute_path": "/get-started",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/personnel.ts"
     },
     {
-      "name": "personnel.landing",
-      "path": "",
-      "absolute_path": "/personnel",
+      "name": "personnel.messages",
+      "path": "/messages",
+      "absolute_path": "/messages",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/personnel.ts"
     },
     {
-      "name": "personnel.queue",
-      "path": "queue",
-      "absolute_path": "/personnel/queue",
+      "name": "personnel.messages-compose",
+      "path": "/messages/compose",
+      "absolute_path": "/messages/compose",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/personnel.ts"
     },
     {
-      "name": "personnel.sessions",
-      "path": "sessions",
-      "absolute_path": "/personnel/sessions",
+      "name": "personnel.work-appointments",
+      "path": "/work/appointments",
+      "absolute_path": "/work/appointments",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/personnel.ts"
     },
     {
-      "name": "personnel.sms",
-      "path": "sms",
-      "absolute_path": "/personnel/sms",
+      "name": "personnel.work-history",
+      "path": "/work/history",
+      "absolute_path": "/work/history",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.work-preferred-requests",
+      "path": "/work/preferred-requests",
+      "absolute_path": "/work/preferred-requests",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.work-queue",
+      "path": "/work/queue",
+      "absolute_path": "/work/queue",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/personnel.ts"
+    },
+    {
+      "name": "personnel.work-sessions",
+      "path": "/work/sessions",
+      "absolute_path": "/work/sessions",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/personnel.ts"
     },

@@ -1,0 +1,216 @@
+{
+  "schema": "servana.ui14.route-activation.v1",
+  "phase": "UI-14",
+  "account_type": "merchant_personnel",
+  "host": "staff.servana.ke",
+  "lifecycle": "local_complete",
+  "authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml (canonical, handwritten) projected by npm run nav:generate; runtime tree resources/spa/src/router/routes/personnel.ts",
+  "guards": "Every route sits under requiresAuth + requiresActiveMerchant + requiresAccount('merchant_personnel'); every own-data route adds requiresPermission for its personnel.my_* key. Guards are UX only — the server re-authorizes every /api/v1/personnel/me/* request.",
+  "implemented_routes": [
+    {
+      "screen_key": "dashboard",
+      "route_name": "personnel.dashboard",
+      "route_path": "/dashboard",
+      "component": "pages/personnel/PersonnelDashboard.vue",
+      "api": [
+        "GET /api/v1/personnel/me/workspace"
+      ]
+    },
+    {
+      "screen_key": "get-started",
+      "route_name": "personnel.get-started",
+      "route_path": "/get-started",
+      "component": "pages/personnel/PersonnelGetStarted.vue -> pages/get-started/RoleGetStarted.vue",
+      "api": [
+        "GET /api/v1/personnel/me/workspace"
+      ]
+    },
+    {
+      "screen_key": "work-queue",
+      "route_name": "personnel.work-queue",
+      "route_path": "/work/queue",
+      "component": "pages/personnel/MyQueue.vue",
+      "api": [
+        "GET /api/v1/personnel/me/queue"
+      ]
+    },
+    {
+      "screen_key": "work-appointments",
+      "route_name": "personnel.work-appointments",
+      "route_path": "/work/appointments",
+      "component": "pages/personnel/MyAppointments.vue",
+      "api": [
+        "GET /api/v1/personnel/me/appointments"
+      ]
+    },
+    {
+      "screen_key": "work-sessions",
+      "route_name": "personnel.work-sessions",
+      "route_path": "/work/sessions",
+      "component": "pages/personnel/MyServiceSessions.vue",
+      "api": [
+        "GET /api/v1/personnel/me/sessions"
+      ]
+    },
+    {
+      "screen_key": "work-history",
+      "route_name": "personnel.work-history",
+      "route_path": "/work/history",
+      "component": "pages/personnel/ServiceHistory.vue",
+      "api": [
+        "GET /api/v1/personnel/me/service-history"
+      ]
+    },
+    {
+      "screen_key": "work-preferred-requests",
+      "route_name": "personnel.work-preferred-requests",
+      "route_path": "/work/preferred-requests",
+      "component": "pages/personnel/PreferredRequests.vue",
+      "api": [
+        "GET /api/v1/personnel/me/preferred-requests"
+      ]
+    },
+    {
+      "screen_key": "clients",
+      "route_name": "personnel.clients",
+      "route_path": "/clients",
+      "component": "pages/personnel/ServedClients.vue",
+      "api": [
+        "GET /api/v1/personnel/me/served-clients"
+      ]
+    },
+    {
+      "screen_key": "messages-compose",
+      "route_name": "personnel.messages-compose",
+      "route_path": "/messages/compose",
+      "component": "pages/personnel/SmsComposer.vue -> ClientSms.vue (mode compose)",
+      "api": [
+        "GET /api/v1/personnel/me/served-clients/sms",
+        "POST /api/v1/personnel/me/sms-campaigns/preview",
+        "POST /api/v1/personnel/me/sms-campaigns",
+        "POST /api/v1/personnel/me/sms-campaigns/{campaign}/confirm"
+      ]
+    },
+    {
+      "screen_key": "messages",
+      "route_name": "personnel.messages",
+      "route_path": "/messages",
+      "component": "pages/personnel/MessageHistory.vue -> ClientSms.vue (mode history)",
+      "api": [
+        "GET /api/v1/personnel/me/sms-campaigns",
+        "GET /api/v1/personnel/me/sms-campaigns/{campaign}/recipients"
+      ]
+    },
+    {
+      "screen_key": "earnings",
+      "route_name": "personnel.earnings",
+      "route_path": "/earnings",
+      "component": "pages/personnel/EarningsOverview.vue",
+      "api": [
+        "GET /api/v1/personnel/me/earnings",
+        "GET /api/v1/personnel/me/workspace"
+      ]
+    },
+    {
+      "screen_key": "earnings-commission",
+      "route_name": "personnel.earnings-commission",
+      "route_path": "/earnings/commission",
+      "component": "pages/personnel/Commission.vue",
+      "api": [
+        "GET /api/v1/personnel/me/earnings",
+        "GET /api/v1/personnel/me/commissions"
+      ]
+    },
+    {
+      "screen_key": "earnings-salary",
+      "route_name": "personnel.earnings-salary",
+      "route_path": "/earnings/salary",
+      "component": "pages/personnel/Salary.vue",
+      "api": [
+        "GET /api/v1/personnel/me/earnings",
+        "GET /api/v1/personnel/me/salary"
+      ]
+    },
+    {
+      "screen_key": "earnings-payouts",
+      "route_name": "personnel.earnings-payouts",
+      "route_path": "/earnings/payouts",
+      "component": "pages/personnel/Payouts.vue",
+      "api": [
+        "GET /api/v1/personnel/me/payouts"
+      ]
+    },
+    {
+      "screen_key": "earnings-terms",
+      "route_name": "personnel.earnings-terms",
+      "route_path": "/earnings/terms",
+      "component": "pages/personnel/CompensationTerms.vue",
+      "api": [
+        "GET /api/v1/personnel/me/compensation"
+      ]
+    },
+    {
+      "screen_key": "earnings-statements",
+      "route_name": "personnel.earnings-statements",
+      "route_path": "/earnings/statements",
+      "component": "pages/personnel/EarningsStatements.vue",
+      "api": [
+        "GET /api/v1/personnel/me/payouts",
+        "POST /api/v1/personnel/me/payout-items/{personnelPayoutItem}/statement"
+      ]
+    },
+    {
+      "screen_key": "earnings-queries",
+      "route_name": "personnel.earnings-queries",
+      "route_path": "/earnings/queries",
+      "component": "pages/personnel/EarningsQueries.vue",
+      "api": [
+        "GET /api/v1/personnel/me/earnings-queries",
+        "POST /api/v1/personnel/me/earnings-queries"
+      ]
+    },
+    {
+      "screen_key": "availability",
+      "route_name": "personnel.availability",
+      "route_path": "/availability",
+      "component": "pages/personnel/AvailabilityStatus.vue",
+      "api": [
+        "GET /api/v1/personnel/me/availability"
+      ]
+    },
+    {
+      "screen_key": "account",
+      "route_name": "personnel.account",
+      "route_path": "/account",
+      "component": "pages/personnel/PersonnelAccount.vue -> pages/platform/AccountAndSecurity.vue (experience personnel)",
+      "api": [
+        "GET /api/v1/me",
+        "GET /api/v1/auth/sessions"
+      ]
+    }
+  ],
+  "gated_no_route": [
+    "notifications"
+  ],
+  "compatibility_redirects": [
+    "/personnel -> /dashboard",
+    "/personnel/get-started -> /get-started",
+    "/personnel/queue -> /work/queue",
+    "/personnel/appointments -> /work/appointments",
+    "/personnel/sessions -> /work/sessions",
+    "/personnel/earnings -> /earnings",
+    "/personnel/sms -> /messages/compose"
+  ],
+  "compatibility_note": "The pre-UI-14 /personnel-prefixed runtime paths are kept as same-account client-side redirects (query and hash preserved) so existing bookmarks and the Phase 21S/16x browser suites land on the canonical host-relative page. They are not navigation entries and add no new capability.",
+  "retired": [
+    "Inventory identity personnel-landing (the pre-UI-14 /personnel landing) is retired in favour of personnel-dashboard; /personnel redirects to /dashboard on the same host. Registered in tests/Feature/Docs/Ui01AuditContractTest.php.",
+    "The consolidated legacy earnings screen (pages/personnel/Earnings.vue) is no longer routed; the seven canonical My Earnings pages replace it. The file is retained only because the historical UI-01 render regression (Ui01Render001.spec.ts) still imports it — see residual UI14-RES-001."
+  ],
+  "counts": {
+    "implemented": 19,
+    "disabled_by_gate": 1,
+    "planned": 0,
+    "removed_by_authority": 0,
+    "total": 20
+  }
+}

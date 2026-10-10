@@ -1,0 +1,50 @@
+{
+  "schema": "servana.ui14.own-scope-matrix.v1",
+  "phase": "UI-14",
+  "lifecycle": "local_complete",
+  "boundary": "The authenticated merchant membership resolves the acting StaffProfile server-side. No Personnel route or request accepts a staff-profile selector; an injected staff_profile_ulid / personnel_id is ignored. Responses are tenant-scoped by BelongsToMerchant and own-scoped by staff_profile_id. The browser is never the scope filter.",
+  "non_enumeration": "Own-scope collection endpoints filter rather than 404: another person's or tenant's rows are simply absent, so their existence is never disclosed. Non-Personnel roles receive 403; unauthenticated callers 401; a suspended membership loses access.",
+  "fixtures": "smsScenario() Personnel A; branchStaff(...Personnel) Personnel B in the same tenant and branch; a second smsScenario() tenant (foreign tenant, foreign branch) with its own Personnel, client, commission, salary and preferred request; branchStaff(...FrontOffice) for role denial.",
+  "domains": [
+    { "domain": "queue", "endpoint": "GET /api/v1/personnel/me/queue", "permission": "personnel.my_queue.view", "proof": ["tests/Feature/Scheduling/QueueApiTest.php (Phase 16B own-scope cases)", "tests/e2e/ui-14-personnel-experience.spec.ts staff-selector query input is ignored"] },
+    { "domain": "appointments", "endpoint": "GET /api/v1/personnel/me/appointments", "permission": "personnel.my_appointments.view", "proof": ["tests/Feature/Scheduling/AppointmentApiTest.php (Phase 16A own-scope cases)"] },
+    { "domain": "sessions", "endpoint": "GET /api/v1/personnel/me/sessions", "permission": "personnel.my_sessions.view", "proof": ["tests/Feature/ServiceSession/ServiceSessionApiTest.php (Phase 16C own-scope cases)"] },
+    { "domain": "service history", "endpoint": "GET /api/v1/personnel/me/service-history", "permission": "personnel.my_sessions.view", "proof": ["Ui14PersonnelExperienceApiTest: own service history excludes Personnel B's client and phone", "foreign-tenant exclusion", "role denial", "unauthenticated 401", "unbounded per_page rejected"] },
+    { "domain": "preferred requests", "endpoint": "GET /api/v1/personnel/me/preferred-requests", "permission": "personnel.my_queue.view", "proof": ["Ui14PersonnelExperienceApiTest: no other assignee identity leaks", "requests naming Personnel B are excluded", "foreign-tenant exclusion"] },
+    { "domain": "served clients", "endpoint": "GET /api/v1/personnel/me/served-clients", "permission": "personnel.my_served_clients.view", "proof": ["Ui14PersonnelExperienceApiTest: masked shape + audit event personnel.served_clients.viewed (scope own, export false)", "Personnel B's served client excluded", "foreign-tenant exclusion", "suspended membership denied", "contact-shaped sort rejected"] },
+    { "domain": "SMS recipients", "endpoint": "GET /api/v1/personnel/me/served-clients/sms; POST preview/create/confirm", "permission": "personnel.my_served_clients.view + personnel.my_sms.send", "proof": ["tests/Feature/Messaging/ServedClientSelectorTest.php", "tests/Feature/Messaging/SmsIsolationAndStateMachineTest.php", "tests/Feature/Messaging/SmsPreviewAndConfirmTest.php (not-served and foreign clients excluded at preview and confirm)"] },
+    { "domain": "message history", "endpoint": "GET /api/v1/personnel/me/sms-campaigns[/{campaign}[/recipients]]", "permission": "personnel.my_sms.send", "proof": ["tests/Feature/Messaging/SmsIsolationAndStateMachineTest.php (another Personnel's campaign is not visible)", "tests/e2e/ui-14 message history loads only the acting Personnel campaigns"] },
+    { "domain": "earnings overview", "endpoint": "GET /api/v1/personnel/me/earnings", "permission": "personnel.my_earnings.view", "proof": ["tests/Feature/Compensation/Phase20HEarningsApiTest.php"] },
+    { "domain": "commission", "endpoint": "GET /api/v1/personnel/me/commissions", "permission": "personnel.my_earnings.view", "proof": ["Ui14PersonnelExperienceApiTest: only own ledger rows; Personnel B amount absent; foreign tenant absent; amount sort rejected"] },
+    { "domain": "salary", "endpoint": "GET /api/v1/personnel/me/salary", "permission": "personnel.my_earnings.view", "proof": ["Ui14PersonnelExperienceApiTest: only own ledger rows; Personnel B amount absent; foreign tenant absent"] },
+    { "domain": "payouts", "endpoint": "GET /api/v1/personnel/me/payouts", "permission": "personnel.my_payouts.view", "proof": ["tests/Feature/Compensation/Phase20HEarningsApiTest.php"] },
+    { "domain": "compensation terms", "endpoint": "GET /api/v1/personnel/me/compensation", "permission": "personnel.my_compensation.view", "proof": ["tests/Feature/Compensation/Phase20HEarningsApiTest.php"] },
+    { "domain": "statements", "endpoint": "POST /api/v1/personnel/me/payout-items/{personnelPayoutItem}/statement", "permission": "personnel.my_statements.download", "proof": ["tests/Feature/Compensation/Phase20HEarningsApiTest.php (foreign payout item 404, signed private download)"] },
+    { "domain": "earnings queries", "endpoint": "GET/POST /api/v1/personnel/me/earnings-queries", "permission": "personnel.my_earnings_query.create", "proof": ["tests/Feature/Compensation/Phase20HEarningsApiTest.php (own subject only)", "Ui14PersonnelPages.spec.ts drops malformed prefilled references"] },
+    { "domain": "availability", "endpoint": "GET /api/v1/personnel/me/availability", "permission": "personnel.my_appointments.view", "proof": ["Ui14PersonnelExperienceApiTest: subject derived from membership; PUT is 405", "tests/Feature/Scheduling/PersonnelAvailabilityApiTest.php (HR mutation / Branch read unchanged)"] }
+  ],
+  "ui14_read_seams": [
+    { "purpose": "dashboard workspace", "rule": "server aggregates existing own facts; no browser-authoritative money or cross-personnel counts" },
+    { "purpose": "service history", "rule": "completed/cancelled own sessions only; masked clients; no merchant-wide revenue" },
+    { "purpose": "preferred requests", "rule": "requests naming the acting profile only; other assignee identity omitted" },
+    { "purpose": "served-client context", "rule": "personally served relationship only; masked phone; audited view; no export-shaped endpoint or full contact field" },
+    { "purpose": "commission ledger", "rule": "own append-only entries only; Finance validation is the earned boundary" },
+    { "purpose": "salary ledger", "rule": "own append-only entries only; no client-side accrual calculation" },
+    { "purpose": "availability", "rule": "own HR-controlled schedule only; read-only; no Personnel self-mutation" }
+  ],
+  "results": {
+    "ui14_api_test": "tests/Feature/Personnel/Ui14PersonnelExperienceApiTest.php — 24 passed / 118 assertions",
+    "owning_suites": "see docs/proof/ui-14.md §Focused backend results"
+  },
+  "forbidden": [
+    "staff selector",
+    "other personnel records",
+    "merchant-wide client, revenue, earnings, queue, appointment, session, or payout data",
+    "full phone or email",
+    "contact export in CSV, Excel, PDF, JSON, clipboard, API, print, or bulk-number form",
+    "availability shift mutation",
+    "compensation configuration",
+    "payment validation or receipt issuance",
+    "subscription payment"
+  ]
+}

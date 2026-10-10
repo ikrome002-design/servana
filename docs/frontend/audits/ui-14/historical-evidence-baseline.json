@@ -1,0 +1,260 @@
+{
+  "schema": "servana.ui14.historical-evidence-baseline.v1",
+  "phase": "UI-14",
+  "captured_before_final_full_playwright": true,
+  "verified_base_commit": "14cfadcb512d867d2aebefe0fa628fdee3563e02",
+  "algorithm": "SHA-256 over sorted UTF-8 repository-relative path, NUL, file SHA-256 lines joined by LF",
+  "frozen_predecessor_proof": [
+    {
+      "path": "docs/frontend/audits/ui-01",
+      "files": 8,
+      "aggregate_sha256": "8c3ffaf289d3d61d0ac16e17273007d317b7b5e796755c965be2d4452548d236"
+    },
+    {
+      "path": "docs/frontend/audits/ui-04",
+      "files": 15,
+      "aggregate_sha256": "46a47780af6b0f855ed738d076d16a772b10c7c4f2c6e945dac9473238aba553"
+    },
+    {
+      "path": "docs/frontend/audits/ui-05",
+      "files": 10,
+      "aggregate_sha256": "c40443d0f0c7f413beea174d6e7c527ccb2dac3592e1d33ca3f9851b7ca20e04"
+    },
+    {
+      "path": "docs/frontend/audits/ui-08",
+      "files": 50,
+      "aggregate_sha256": "d7b55df4ce90d6dc12325bad6958e02b291b89f34527a1a21c40725d5794a9fc"
+    },
+    {
+      "path": "docs/frontend/audits/ui-09",
+      "files": 45,
+      "aggregate_sha256": "401f60c2e10974983fbd1ee6fa50771521c004b0879c7642400489cb1e71f5f4"
+    },
+    {
+      "path": "docs/frontend/audits/ui-10",
+      "files": 36,
+      "aggregate_sha256": "0204a6021b0e0dda916336211ceab727642c469547e116f58de611063d74a1f2"
+    },
+    {
+      "path": "docs/frontend/audits/ui-11",
+      "files": 36,
+      "aggregate_sha256": "db806089f301e0d09a7ad40855139de908be7cc24aca17fd3880f884cda312c1"
+    },
+    {
+      "path": "docs/frontend/audits/ui-12",
+      "files": 43,
+      "aggregate_sha256": "9617558abf24c449ffa5d3fa4d58cd5823fdd46dd034bfb83a9a4b83f933eda9"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13",
+      "files": 66,
+      "aggregate_sha256": "ca0579382c9b02bc20ab950ffc841a6623ab95f3893945ba3e2425bcc824dbd4"
+    },
+    {
+      "path": "docs/proof/ui-01",
+      "files": 143,
+      "aggregate_sha256": "0ecdc3f50bc1c27b9d18cd08de394360bbad80a18a25aede16fd6d434800b2e5"
+    },
+    {
+      "path": "docs/proof/ui-06",
+      "files": 33,
+      "aggregate_sha256": "ed84e91853ca90e3aa7884c6f4283d99f1cc786866498c2497068699bdfd9422"
+    }
+  ],
+  "mixed_historical_and_current_projection": {
+    "path": "docs/frontend/audits/ui-06",
+    "files_including_current_projection": 51,
+    "aggregate_sha256": "5de9ccb963d477c19a20e83410885ede66e4779c83d20aed7dba3977e2ffdb1c",
+    "current_projection_exclusion": "docs/frontend/audits/ui-06/public-route-matrix.json",
+    "policy": "Restore browser-written predecessor bytes only; retain or regenerate the public-route current projection from finalized routing authority."
+  },
+  "current_generated_projection": {
+    "path": "docs/frontend/audits/ui-07",
+    "files": 16,
+    "aggregate_sha256": "02d2c666c98a87d9d21652085e55c5083958a8e1340a5b4bd42723374f0b29dd",
+    "policy": "Retain the finalized 160-page navigation and runtime-screen projections generated for UI-14; never restore predecessor bytes."
+  },
+  "declared_browser_write_scopes": [
+    "docs/frontend/audits/ui-04",
+    "docs/frontend/audits/ui-05",
+    "docs/frontend/audits/ui-06",
+    "docs/frontend/audits/ui-07",
+    "docs/frontend/audits/ui-08",
+    "docs/frontend/audits/ui-09",
+    "docs/frontend/audits/ui-10",
+    "docs/frontend/audits/ui-11",
+    "docs/frontend/audits/ui-12",
+    "docs/frontend/audits/ui-13",
+    "docs/frontend/audits/ui-14",
+    "docs/proof/ui-01",
+    "docs/proof/ui-06"
+  ],
+  "restoration_policy": "Compare exact paths and aggregates after the whole-product run; restore only individually proven browser-written frozen predecessor files, remove only declared run additions, retain UI-14 evidence and generated current projections, and never use a broad clean/reset/restore.",
+  "pre_remediation_historical_baseline": {
+    "schema": "servana.ui14.historical-evidence-baseline.v1",
+    "phase": "UI-14",
+    "captured_before_final_full_playwright": true,
+    "verified_base_commit": "14cfadcb512d867d2aebefe0fa628fdee3563e02",
+    "algorithm": "SHA-256 over sorted UTF-8 repository-relative path, NUL, file SHA-256 lines joined by LF",
+    "frozen_predecessor_proof": [
+      {
+        "path": "docs/frontend/audits/ui-01",
+        "files": 8,
+        "aggregate_sha256": "8c3ffaf289d3d61d0ac16e17273007d317b7b5e796755c965be2d4452548d236"
+      },
+      {
+        "path": "docs/frontend/audits/ui-04",
+        "files": 15,
+        "aggregate_sha256": "46a47780af6b0f855ed738d076d16a772b10c7c4f2c6e945dac9473238aba553"
+      },
+      {
+        "path": "docs/frontend/audits/ui-05",
+        "files": 10,
+        "aggregate_sha256": "c40443d0f0c7f413beea174d6e7c527ccb2dac3592e1d33ca3f9851b7ca20e04"
+      },
+      {
+        "path": "docs/frontend/audits/ui-08",
+        "files": 50,
+        "aggregate_sha256": "d7b55df4ce90d6dc12325bad6958e02b291b89f34527a1a21c40725d5794a9fc"
+      },
+      {
+        "path": "docs/frontend/audits/ui-09",
+        "files": 45,
+        "aggregate_sha256": "401f60c2e10974983fbd1ee6fa50771521c004b0879c7642400489cb1e71f5f4"
+      },
+      {
+        "path": "docs/frontend/audits/ui-10",
+        "files": 36,
+        "aggregate_sha256": "0204a6021b0e0dda916336211ceab727642c469547e116f58de611063d74a1f2"
+      },
+      {
+        "path": "docs/frontend/audits/ui-11",
+        "files": 36,
+        "aggregate_sha256": "db806089f301e0d09a7ad40855139de908be7cc24aca17fd3880f884cda312c1"
+      },
+      {
+        "path": "docs/frontend/audits/ui-12",
+        "files": 43,
+        "aggregate_sha256": "9617558abf24c449ffa5d3fa4d58cd5823fdd46dd034bfb83a9a4b83f933eda9"
+      },
+      {
+        "path": "docs/frontend/audits/ui-13",
+        "files": 66,
+        "aggregate_sha256": "ca0579382c9b02bc20ab950ffc841a6623ab95f3893945ba3e2425bcc824dbd4"
+      },
+      {
+        "path": "docs/proof/ui-01",
+        "files": 143,
+        "aggregate_sha256": "0ecdc3f50bc1c27b9d18cd08de394360bbad80a18a25aede16fd6d434800b2e5"
+      },
+      {
+        "path": "docs/proof/ui-06",
+        "files": 33,
+        "aggregate_sha256": "ed84e91853ca90e3aa7884c6f4283d99f1cc786866498c2497068699bdfd9422"
+      }
+    ],
+    "mixed_historical_and_current_projection": {
+      "path": "docs/frontend/audits/ui-06",
+      "files_including_current_projection": 51,
+      "aggregate_sha256": "5de9ccb963d477c19a20e83410885ede66e4779c83d20aed7dba3977e2ffdb1c",
+      "current_projection_exclusion": "docs/frontend/audits/ui-06/public-route-matrix.json",
+      "policy": "Restore browser-written predecessor bytes only; retain or regenerate the public-route current projection from finalized routing authority."
+    },
+    "current_generated_projection": {
+      "path": "docs/frontend/audits/ui-07",
+      "files": 16,
+      "aggregate_sha256": "02d2c666c98a87d9d21652085e55c5083958a8e1340a5b4bd42723374f0b29dd",
+      "policy": "Retain the finalized 160-page navigation and runtime-screen projections generated for UI-14; never restore predecessor bytes."
+    },
+    "declared_browser_write_scopes": [
+      "docs/frontend/audits/ui-04",
+      "docs/frontend/audits/ui-05",
+      "docs/frontend/audits/ui-06",
+      "docs/frontend/audits/ui-07",
+      "docs/frontend/audits/ui-08",
+      "docs/frontend/audits/ui-09",
+      "docs/frontend/audits/ui-10",
+      "docs/frontend/audits/ui-11",
+      "docs/frontend/audits/ui-12",
+      "docs/frontend/audits/ui-13",
+      "docs/frontend/audits/ui-14",
+      "docs/proof/ui-01",
+      "docs/proof/ui-06"
+    ],
+    "restoration_policy": "Compare exact paths and aggregates after the whole-product run; restore only individually proven browser-written frozen predecessor files, remove only declared run additions, retain UI-14 evidence and generated current projections, and never use a broad clean/reset/restore."
+  },
+  "codex_post_remediation_freeze": {
+    "recorded_at": "2026-10-09T01:36:27.481Z",
+    "external_baseline": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-predecessor-frozen",
+    "scopes": [
+      {
+        "path": "docs/frontend/audits/ui-01",
+        "files": 8,
+        "aggregate_sha256": "8b576dc762da0fce9f8e6bc6307092e0668e4f6da9615ee89521526e7626f09a"
+      },
+      {
+        "path": "docs/frontend/audits/ui-04",
+        "files": 15,
+        "aggregate_sha256": "46a47780af6b0f855ed738d076d16a772b10c7c4f2c6e945dac9473238aba553"
+      },
+      {
+        "path": "docs/frontend/audits/ui-05",
+        "files": 10,
+        "aggregate_sha256": "c40443d0f0c7f413beea174d6e7c527ccb2dac3592e1d33ca3f9851b7ca20e04"
+      },
+      {
+        "path": "docs/frontend/audits/ui-06",
+        "files": 50,
+        "aggregate_sha256": "3fc9e6ccfa24b8335e87f7894f938bfbf2fcb246f785c43b32bedbd271e5d7ae"
+      },
+      {
+        "path": "docs/frontend/audits/ui-08",
+        "files": 50,
+        "aggregate_sha256": "d7b55df4ce90d6dc12325bad6958e02b291b89f34527a1a21c40725d5794a9fc"
+      },
+      {
+        "path": "docs/frontend/audits/ui-09",
+        "files": 45,
+        "aggregate_sha256": "401f60c2e10974983fbd1ee6fa50771521c004b0879c7642400489cb1e71f5f4"
+      },
+      {
+        "path": "docs/frontend/audits/ui-10",
+        "files": 36,
+        "aggregate_sha256": "0204a6021b0e0dda916336211ceab727642c469547e116f58de611063d74a1f2"
+      },
+      {
+        "path": "docs/frontend/audits/ui-11",
+        "files": 36,
+        "aggregate_sha256": "db806089f301e0d09a7ad40855139de908be7cc24aca17fd3880f884cda312c1"
+      },
+      {
+        "path": "docs/frontend/audits/ui-12",
+        "files": 43,
+        "aggregate_sha256": "9617558abf24c449ffa5d3fa4d58cd5823fdd46dd034bfb83a9a4b83f933eda9"
+      },
+      {
+        "path": "docs/frontend/audits/ui-13",
+        "files": 66,
+        "aggregate_sha256": "ca0579382c9b02bc20ab950ffc841a6623ab95f3893945ba3e2425bcc824dbd4"
+      },
+      {
+        "path": "docs/proof/ui-01",
+        "files": 143,
+        "aggregate_sha256": "0ecdc3f50bc1c27b9d18cd08de394360bbad80a18a25aede16fd6d434800b2e5"
+      },
+      {
+        "path": "docs/proof/ui-06",
+        "files": 33,
+        "aggregate_sha256": "ed84e91853ca90e3aa7884c6f4283d99f1cc786866498c2497068699bdfd9422"
+      }
+    ],
+    "current_projection_exclusions": [
+      "docs/frontend/audits/ui-06/public-route-matrix.json",
+      "docs/frontend/audits/ui-07/**"
+    ],
+    "vite_manifest_sha256": "ff0fd646c1d7a5f0f57e6563ef754dfd7101508f1125218666675a4ebc3af25e",
+    "policy": "One freeze of current predecessor bytes; exact actual test-written restoration only; retain all UI06/UI07 current projections and UI14 evidence",
+    "final_browser_vite_manifest_sha256": "49dd7d0ba73c88c43b581568472af8d97f675f6e3b0ad58f778a7020f65f0f2e",
+    "source_invalidation_note": "The one predecessor freeze preceded the narrow mobile correction. Exactly three templates and one browser spec changed; all four paths are outside the 12 protected predecessor scopes. The same 535-file frozen inventory remains valid; no second predecessor snapshot was created."
+  }
+}

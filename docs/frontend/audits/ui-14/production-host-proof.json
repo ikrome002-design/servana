@@ -1,0 +1,212 @@
+{
+  "schema": "servana.ui14.production-host-proof.v1",
+  "phase": "UI-14",
+  "lifecycle": "local_complete",
+  "source_state": "Current post-REM-DEP-003, post-identical-Tailwind-key-removal source; 3293 source inputs verified and 652 emitted files byte-identical to accepted browser bundle.",
+  "images": [
+    {
+      "tag": "servana-ui14-php:codex-release-recovery",
+      "id": "sha256:a8dd6b973d1e64948006dbccf0aa039e19f4e6a0602784cfc62eecd88a6339b4",
+      "size_bytes": 979772940,
+      "created_utc": "2026-10-10T20:50:18.136941009Z",
+      "dockerfile": "docker/php.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0
+    },
+    {
+      "tag": "servana-ui14-nginx:codex-release-recovery",
+      "id": "sha256:e8bd8b75a0029ba8104ace0777afc743e11515df297d73ec7d13275a6a492693",
+      "size_bytes": 317862313,
+      "created_utc": "2026-10-10T20:53:06.975124626Z",
+      "dockerfile": "docker/nginx.Dockerfile",
+      "target": "prod",
+      "build_exit_code": 0
+    }
+  ],
+  "failed_runs": [
+    {
+      "command": "docker run --rm --name ui14-proof-nginx-syntax servana-ui14-nginx:audit nginx -t",
+      "exit_code": 1,
+      "classification": "expected proof orchestration ordering (UI-08/UI-13 precedent)",
+      "root_cause": "the standalone container has no production network, so the intentional app:9000 upstream cannot resolve at config-test time",
+      "resolution": "no source change; the immutable image passes nginx -t inside ui14-proof-net where the FPM container carries the app alias"
+    },
+    {
+      "command": "Original PHP production runner; docker build -f docker/php.Dockerfile --target prod",
+      "exit_code": null,
+      "signal": "SIGTERM",
+      "classification": "Timed-out owned build; physical slowdown cause unconfirmed",
+      "log": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-production-build-php.log",
+      "receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-production-acceptance.json",
+      "root_cause": "Original wrapper timed out after 90 minutes before final image export. COPY later completed after 6076.3 seconds. This does not prove context bloat, OOM or a Dockerfile defect.",
+      "resolution": "Recovered receipt and process identity; no current images or active owned builder client; bounded current Docker probes passed. Retry used unchanged Dockerfiles/context and the installed Buildx plugin on existing desktop-linux builder. Both current builds exited 0."
+    },
+    {
+      "command": "External production host preflight",
+      "exit_code": 1,
+      "classification": "Evidence runner parser correction before resource creation",
+      "log": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-host-wrapper.log",
+      "root_cause": "Network inspect reports network NAME not found; the initial absence parser recognized container wording only.",
+      "resolution": "Recognize exact named network absence on exit 1; timeouts and other errors still reject. Successful new wrapper and owned cleanup retained."
+    }
+  ],
+  "topology": {
+    "network": "ui14-release-recovery-net",
+    "app": "ui14-release-recovery-app; network alias app; production environment; throwaway credentials; array session/cache; sync queue",
+    "edge": "ui14-release-recovery-edge; 127.0.0.1:8114 -> 8080",
+    "postgres": "ui14-release-recovery-postgres; network alias postgres; PostgreSQL 16.14; fresh ui14_release_proof; tmpfs data",
+    "project_volume_mounted": false,
+    "production_dns_or_tls_touched": false,
+    "removed_after_proof": true,
+    "remaining_named_containers": 0,
+    "remaining_named_networks": 0,
+    "dev_stack_untouched": true
+  },
+  "nginx_syntax": {
+    "command": "docker exec ui14-release-recovery-edge nginx -t",
+    "exit_code": 0,
+    "result": "Syntax and configuration test successful with app upstream resolvable",
+    "log": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-host-nginx-syntax.log"
+  },
+  "canonical_host": {
+    "command": "node scripts/ui14-production-host-proof.mjs http://127.0.0.1:8114",
+    "host": "staff.servana.ke",
+    "host_from_registry": "config/account-hosts.json (subdomain staff + domains.production)",
+    "implemented_routes_200_with_personnel_context": 19,
+    "gated_routes_ordinary_shell_only": 1,
+    "compatibility_paths_same_account": 7,
+    "wrong_account_collision_checks": 4,
+    "unauthenticated_api_status": 401,
+    "unknown_host_refused": true,
+    "fingerprinted_assets_and_mime": "all seven referenced assets returned 200 with expected MIME (favicon set, manifest, hashed CSS and JS)",
+    "javascript_source_map_status": 404,
+    "collected": 43,
+    "passed": 43,
+    "failed": 0,
+    "exit_code": 0,
+    "log": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-host-proof.log"
+  },
+  "production_route_count": 364,
+  "production_route_count_note": "php artisan route:list inside the production image (web + api); OpenAPI documents 306 paths / 357 operations",
+  "status": "Current post-remediation PostgreSQL-backed production pair accepted; exact owned resources removed.",
+  "historical_pre_rem_proof": {
+    "schema": "servana.ui14.production-host-proof.v1",
+    "phase": "UI-14",
+    "lifecycle": "local_complete",
+    "source_state": "final frozen UI-14 working tree after the definitive focused (72/72) and whole-product (1,634/1,634) browser runs; built sequentially with no test suite running",
+    "images": [
+      {
+        "tag": "servana-ui14-php:audit",
+        "id": "sha256:4dc7b5a99cf127e938ba3801767372dba139a51a1182709e9779e61eae7a556a",
+        "size_bytes": 955253236,
+        "created_utc": "2026-10-08T14:07:03.723151144Z",
+        "dockerfile": "docker/php.Dockerfile",
+        "target": "prod",
+        "build_exit_code": 0
+      },
+      {
+        "tag": "servana-ui14-nginx:audit",
+        "id": "sha256:cb4e474428aaaeae5e5ed158f9690efb2390a4692e6316bef7f2660d5711e6d7",
+        "size_bytes": 317839340,
+        "created_utc": "2026-10-08T14:10:29.707108994Z",
+        "dockerfile": "docker/nginx.Dockerfile",
+        "target": "prod",
+        "build_exit_code": 0
+      }
+    ],
+    "failed_runs": [
+      {
+        "command": "docker run --rm --name ui14-proof-nginx-syntax servana-ui14-nginx:audit nginx -t",
+        "exit_code": 1,
+        "classification": "expected proof orchestration ordering (UI-08/UI-13 precedent)",
+        "root_cause": "the standalone container has no production network, so the intentional app:9000 upstream cannot resolve at config-test time",
+        "resolution": "no source change; the immutable image passes nginx -t inside ui14-proof-net where the FPM container carries the app alias"
+      }
+    ],
+    "topology": {
+      "network": "ui14-proof-net",
+      "app": "ui14-proof-app (servana-ui14-php:audit) with network alias app; APP_ENV=production, APP_DEBUG=false, ephemeral random APP_KEY, SESSION_DRIVER=array, CACHE_STORE=array, QUEUE_CONNECTION=sync, ephemeral SQLite file inside the container",
+      "edge": "ui14-proof-nginx (servana-ui14-nginx:audit) on 127.0.0.1:8114 -> 8080",
+      "project_volume_mounted": false,
+      "production_dns_or_tls_touched": false,
+      "removed_after_proof": true,
+      "remaining_named_containers": 0,
+      "remaining_named_networks": 0,
+      "dev_stack_untouched": true
+    },
+    "nginx_syntax": {
+      "command": "docker exec ui14-proof-nginx nginx -t",
+      "exit_code": 0,
+      "result": "syntax is ok; test is successful with the production app upstream resolvable"
+    },
+    "canonical_host": {
+      "command": "node scripts/ui14-production-host-proof.mjs http://127.0.0.1:8114",
+      "host": "staff.servana.ke",
+      "host_from_registry": "config/account-hosts.json (subdomain staff + domains.production)",
+      "implemented_routes_200_with_personnel_context": 19,
+      "gated_routes_ordinary_shell_only": 1,
+      "compatibility_paths_same_account": 7,
+      "wrong_account_collision_checks": 4,
+      "unauthenticated_api_status": 401,
+      "unknown_host_refused": true,
+      "fingerprinted_assets_and_mime": "all seven referenced assets returned 200 with expected MIME (favicon set, manifest, hashed CSS and JS)",
+      "javascript_source_map_status": 404,
+      "collected": 43,
+      "passed": 43,
+      "failed": 0,
+      "exit_code": 0
+    },
+    "production_route_count": 364,
+    "production_route_count_note": "php artisan route:list inside the production image (web + api); OpenAPI documents 306 paths / 357 operations",
+    "status": "passed on the final production image pair; all named no-volume proof resources removed"
+  },
+  "final_post_rem_acceptance": {
+    "recorded_at": "2026-10-10T20:56:27.231Z",
+    "database": {
+      "driver": "pgsql",
+      "database": "ui14_release_proof",
+      "version": "PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+      "migrations": 132
+    },
+    "manifest_parity": true,
+    "manifests": [
+      {
+        "kind": "php",
+        "sha256": "49dd7d0ba73c88c43b581568472af8d97f675f6e3b0ad58f778a7020f65f0f2e"
+      },
+      {
+        "kind": "nginx",
+        "sha256": "49dd7d0ba73c88c43b581568472af8d97f675f6e3b0ad58f778a7020f65f0f2e"
+      }
+    ],
+    "bundle_files_byte_identical": 652,
+    "composer_audit": {
+      "advisories": 0,
+      "abandoned": 0,
+      "exitCode": 0
+    },
+    "receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-host-outcome.json",
+    "receipt_sha256": "c2f564887aa6273af0cc0783c658fbfa0371023cbffb5378747694e0c030ef70",
+    "php_build_receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-php-outcome.json",
+    "nginx_build_receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-nginx-outcome.json",
+    "extraction_receipt": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-release-recovery-extraction.json",
+    "source_freeze_sha256": "b384361e478aab7108b5a3e1549f251951ced623c2d914d29fc4bb8602829605",
+    "cleanup": [
+      {
+        "key": "edge",
+        "id": "fb0b902ea8b4f0b34c16222317a42b79cb9203f79d006a8abc863672f279cb45",
+        "removed": true
+      },
+      {
+        "key": "app",
+        "id": "82c63983451ec72743b36f6bc7bd3c07525ba9d7fff8f1adbb4be7bfef6b15c3",
+        "removed": true
+      },
+      {
+        "key": "postgres",
+        "id": "f1fb93b7b56ae6ed4b3af5a300e16d522d8433bd134cfc0c1aa1ab4c262ac7ab",
+        "removed": true
+      }
+    ]
+  }
+}

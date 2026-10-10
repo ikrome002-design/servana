@@ -3,7 +3,7 @@
 > Generated from `docs/frontend/screens/inventory.json` (Plan §27.1). Status: **implemented** · Owning phase: **Phase 16C**. Edit the inventory + regenerate (`node scripts/generate-screen-specs.mjs`); the owning phase writes the final detailed spec before implementing future behavior.
 
 - **Screen key:** `personnel-sessions`
-- **Route name and URL:** `personnel.sessions`
+- **Route name and URL:** `personnel.work-sessions`
 - **Layout:** `PersonnelLayout`
 - **Allowed roles:** `merchant_personnel`
 - **Required permissions:** `personnel.my_sessions.view` (frontend visibility only; backend EnsurePermission + policy is authoritative)

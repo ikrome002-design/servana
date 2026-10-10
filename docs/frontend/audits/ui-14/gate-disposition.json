@@ -1,0 +1,67 @@
+{
+  "schema": "servana.ui14.gate-disposition.v1",
+  "phase": "UI-14",
+  "lifecycle": "local_complete",
+  "checked_on": "2026-10-08",
+  "external_gate_w_closed": true,
+  "phase_20d_w_closed": true,
+  "phase_21n_closed": true,
+  "phase_21r_b_closed": true,
+  "evidence": {
+    "progress_rows": "docs/PROGRESS.md rows 20D-W (blocked, Gate W CLOSED), 21R-B (blocked), 21N (blocked by (17,18,20D-W) -> 21N)",
+    "gate_evidence_file": "docs/integrations/wallet/gate-w-evidence.md absent",
+    "remote_branches": "no 20D-W, 21N, 21R-B, UI-15, UI-16 or Phase 25 branch exists on origin (git ls-remote, 2026-10-08)",
+    "notification_runtime": "no notification table, endpoint, store or component exists for Personnel"
+  },
+  "entries": [
+    {
+      "screen_key": "notifications",
+      "route_path": "/notifications",
+      "implementation_status": "disabled_by_gate",
+      "blocking_phase": "Phase 21N (Queues / notifications / scheduled reports)",
+      "blocking_gate": "External Gate W -> Phase 20D-W -> Phase 21N",
+      "entry_condition": "External Gate W opens, 20D-W reaches verified_complete, and an authorized Phase 21N ships the Personnel notification runtime (records, read state, preferences) with its own API and tests.",
+      "navigation_treatment": "Visible in the Utility group, disabled, and labelled with Phase 21N and External Gate W (nav-stacked-gated-merchant_personnel.notifications).",
+      "route_exists": false,
+      "component_exists": false,
+      "network_runtime_exists": false,
+      "direct_route_behaviour": "No route is registered, so /notifications on staff.servana.ke resolves to the ordinary not-found page inside the Personnel shell; the browser makes no notifications request.",
+      "proof": "tests/e2e/ui-14-personnel-experience.spec.ts — 'Notifications remains visible, disabled and names Phase 21N and External Gate W' and 'Notifications has no route, component, placeholder data or network runtime'"
+    }
+  ],
+  "sub_capability_gates": [
+    {
+      "screen_key": "availability",
+      "capability": "Personnel self-service live-status toggle (available / on break / unavailable)",
+      "status": "absent_by_authority",
+      "reason": "Human Resource holds personnel.availability.manage; no Personnel-own availability mutation route, policy or permission exists. The page is implemented read-only from GET /api/v1/personnel/me/availability.",
+      "owner": "A future authorized backend phase that defines a Personnel self-status contract (none is planned in the v4 roadmap).",
+      "entry_condition": "Plan amendment + permission-matrix change approved by the product owner, then a dedicated backend phase."
+    },
+    {
+      "screen_key": "earnings-terms",
+      "capability": "Server-recorded compensation-terms acknowledgement",
+      "status": "absent_by_authority",
+      "reason": "No acknowledgement endpoint exists. The page offers a clearly labelled device-only 'reviewed on this device' marker that creates no financial or server fact.",
+      "owner": "Product owner decision; no current phase owns a server acknowledgement contract.",
+      "entry_condition": "Plan/Scope defines an acknowledgement record and its audit semantics."
+    },
+    {
+      "screen_key": "earnings-queries",
+      "capability": "Personnel reply / reopen / escalate on an existing earnings query",
+      "status": "absent_by_authority",
+      "reason": "Phase 20H exposes only index/show/create for Personnel; responses come from Finance/HR. UI-14 renders the response thread read-only and adds no mutation.",
+      "owner": "A future authorized compensation phase.",
+      "entry_condition": "Earnings-query state machine extended with Personnel transitions."
+    },
+    {
+      "screen_key": "account",
+      "capability": "Notification preferences",
+      "status": "disabled_by_gate",
+      "reason": "Depends on the Phase 21N notification runtime.",
+      "owner": "Phase 21N",
+      "entry_condition": "Same as notifications above."
+    }
+  ],
+  "decision": "UI-14 creates no notification table, endpoint, store, component, route, simulated data source, unread count, preference or provider integration, and grants Personnel no availability, compensation or query mutation it does not already hold."
+}

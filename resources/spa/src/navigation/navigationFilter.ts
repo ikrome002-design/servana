@@ -39,6 +39,8 @@ export interface NavigationContext {
   readonly permissions: ReadonlySet<string> | readonly string[];
   /** Feature flags currently enabled. An entry naming an absent flag stays hidden. */
   readonly featureFlags?: ReadonlySet<string> | readonly string[];
+  /** Contextual presentation exclusions such as compensation-model-inapplicable tabs. */
+  readonly hiddenKeys?: ReadonlySet<string> | readonly string[];
   /*
    * There is deliberately NO `openGates` input (UI08-NAV-002, Increment 9F).
    *
@@ -117,6 +119,7 @@ function eligible(
   context: NavigationContext,
 ): boolean {
   if (entry.accountType !== account) return false;
+  if (asSet(context.hiddenKeys).has(entry.key)) return false;
   if (entry.forbiddenFor.includes(account)) return false;
   if (entry.implementationStatus === 'removed_by_authority') return false;
   if (entry.implementationStatus === 'planned') return false;

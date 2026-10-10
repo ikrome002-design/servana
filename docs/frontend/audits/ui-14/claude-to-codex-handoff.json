@@ -1,0 +1,2049 @@
+{
+  "schema": "servana.ui14.claude-to-codex-handoff.v1",
+  "phase": "UI-14",
+  "producer": "Claude Code",
+  "consumer": "ChatGPT Codex (Prompt 2)",
+  "repository": "ikrome002-design/servana",
+  "branch": "phase-ui-14-personnel-experience",
+  "head": "14cfadcb512d867d2aebefe0fa628fdee3563e02",
+  "origin_main": "14cfadcb512d867d2aebefe0fa628fdee3563e02",
+  "divergence_origin_main_head": "0 0",
+  "commits_since_baseline": 0,
+  "staged_paths": 0,
+  "generated_at_utc": "2026-10-08T14:26:03.438Z",
+  "self_reference_exception": "docs/frontend/audits/ui-14/claude-to-codex-handoff.json is excluded from its own path list and digests because it cannot contain its own hash; it is the only file changed after the inventory was taken.",
+  "handoff_status": "blocked",
+  "release_authorized_for_codex_after_verification": false,
+  "blocked_reason": "Mandatory dependency-audit gates fail on advisories published after UI-13 CI: npm audit --audit-level=high (13 high, 4 moderate; 6 high need Tailwind 3->4 and an exact-pin sharp bump) and composer audit (laravel/framework <12.69, league/commonmark, league/flysystem). UI-14 did not change package.json dependencies, package-lock.json, composer.json or composer.lock.",
+  "blocker_ids": [
+    "UI14-DEP-001",
+    "UI14-DEP-002"
+  ],
+  "blocker_owner": "Proposed REM-DEP-003 dedicated remediation branch, product-owner authorized (REM-DEP-002 precedent)",
+  "blocker_next_action": "Product owner decides the Tailwind 4 migration (or an approved alternative) and the sharp/composer upgrades; REM-DEP-003 merges to main; this branch syncs with main and re-runs the invalidated gates before Codex commits.",
+  "baseline": {
+    "origin_main": "14cfadcb512d867d2aebefe0fa628fdee3563e02",
+    "ui13_pr": 63,
+    "ui13_head": "126756b3a91caa68c09412ff80889dfa9b9477b2",
+    "ui13_merge": "14cfadcb512d867d2aebefe0fa628fdee3563e02",
+    "ui13_tree": "9d91b415c7ee12007f840faa4d88b82d5ac12be5",
+    "ui13_ci_run": 32371896795,
+    "ui13_governance_comment": 5356633232,
+    "ui13_reviews": 0,
+    "ui13_approvals": 0
+  },
+  "pages": {
+    "implemented": 19,
+    "disabled_by_gate": 1,
+    "planned": 0,
+    "removed_by_authority": 0,
+    "total": 20,
+    "gate_owner": "Notifications — Phase 21N behind External Gate W"
+  },
+  "visual_acceptance": {
+    "pages": 19,
+    "min": 27,
+    "max": 30,
+    "evidence": "docs/frontend/audits/ui-14/page-visual-acceptance.json"
+  },
+  "openapi": {
+    "before": "299 paths / 350 operations",
+    "after": "306 paths / 357 operations"
+  },
+  "permissions": {
+    "before": "169 / 134 active / 35 planned",
+    "after": "169 / 134 active / 35 planned",
+    "delta": 0
+  },
+  "local_gates": {
+    "pint": "exit 0",
+    "larastan_l8": "No errors",
+    "composer_validate": "valid",
+    "composer_audit": "FAIL (UI14-DEP-002)",
+    "full_postgresql": "3,009 passed / 14 skipped / 3 failed (projection contracts) -> fixed; invalidated set 137 passed / 8,429 assertions; final doc-consumer set 144 / 8,889; screen-spec consumers 75 / 6,818",
+    "vue_tsc": "exit 0",
+    "eslint": "0 errors; 0 warnings in UI-14 files",
+    "vitest": "1,426 / 1,426 (149 files)",
+    "build": "exit 0",
+    "npm_audit_high": "FAIL (UI14-DEP-001)",
+    "focused_playwright": "72 / 72",
+    "whole_product_playwright": "1,634 / 1,634, 0 flaky/skipped, 58.0 min",
+    "historical_evidence": "12 protected scopes byte-exact after precise restoration",
+    "production_images": "php sha256:4dc7b5a99cf127e938ba3801767372dba139a51a1182709e9779e61eae7a556a; nginx sha256:cb4e474428aaaeae5e5ed158f9690efb2390a4692e6316bef7f2660d5711e6d7",
+    "staff_host_proof": "43 / 43; proof containers/network removed",
+    "contract_checks": "ui14:check, ui13:check, nav:check, nav:negative-controls 24/24, api:contract:check, tokens/content/assets/source-inventory checks all exit 0",
+    "git_diff_check": "exit 0",
+    "git_fsck_full": "exit 0"
+  },
+  "proof_paths": [
+    "docs/proof/ui-14.md",
+    "docs/frontend/audits/ui-14/claude-to-codex-handoff.md",
+    "docs/frontend/audits/ui-14/browser-proof.json",
+    "docs/frontend/audits/ui-14/production-host-proof.json",
+    "docs/frontend/audits/ui-14/defect-closure.json",
+    "docs/frontend/audits/ui-14/historical-evidence-restoration.json"
+  ],
+  "defects": {
+    "total": 26,
+    "local_complete": 24,
+    "blocked": 2,
+    "open": 0
+  },
+  "lifecycle": {
+    "local_implementation": "complete",
+    "dependency_audit_gates": "blocked",
+    "committed": false,
+    "pushed": false,
+    "pr_created": false,
+    "ci_run": false,
+    "governance_posted": false,
+    "merged": false,
+    "source_branch_deleted": false,
+    "ui15_started": false,
+    "ui16_started": false,
+    "ui17_started": false,
+    "phase25_started": false,
+    "external_gate_w": "closed"
+  },
+  "codex_pending_steps": [
+    "verify every path digest in this manifest against the working tree",
+    "wait for UI14-DEP-001/002 resolution and sync the branch with main; re-run invalidated gates",
+    "stage exactly the listed paths (plus this manifest), commit, push",
+    "open the UI-14 PR; exact-head five-job CI; governance comment",
+    "merge; delete the source branch; reconcile UI-14 to verified_complete on the UI-15 branch"
+  ],
+  "excluded_ignored_artifacts": "test-results/ (gitignored Playwright output), public/build and resources/spa dist output (gitignored), docker images servana-ui14-php:audit and servana-ui14-nginx:audit (local only)",
+  "changed_path_count": 241,
+  "changed_path_count_including_manifest": 242,
+  "unclassified_paths": [],
+  "paths": [
+    {
+      "path": "app/Domain/Audit/Enums/AuditEvent.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "2004570c9ea2c5de7a0e9d4acad989b86fca9619223b49df3515d599fa3493ad",
+      "bytes": 54780,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Domain/Compensation/Services/PersonnelEarningsReadModel.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "7e05578bac84ac447d14612a26bdce4d9acbded4ec17e90663e3fcd2cd222dba",
+      "bytes": 10149,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Domain/Personnel/Services/PersonnelExperienceReadModel.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "efbb9a972669a176ce7263ebd50b8b1e59433c1e951b71d472d6d0b1c57fefd2",
+      "bytes": 21067,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Domain/Scheduling/Services/PersonnelAvailabilityReadModel.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "92f7c869dc9dfb3841aff71162aa3d20dc1db982b496c61724ff37215d5ebf25",
+      "bytes": 3517,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Controllers/Api/V1/Personnel/PersonnelExperienceController.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "9e7af16b4622832d00c48cc0c9f60b3ed064376506f7704ceb5df6053f2422e3",
+      "bytes": 6428,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Controllers/Api/V1/Scheduling/StaffAvailabilityController.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "715dd62698a6b52e16d98f21f805ce20a7c47afd6264a7807ace8ffdea3151fa",
+      "bytes": 4201,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Requests/Personnel/PersonnelEarningsLedgerIndexRequest.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "218386a4eeeb2cca27f968fbe5c990aa979e57d4cb875833eaca5df9399dcfa0",
+      "bytes": 1275,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Requests/Personnel/PersonnelExperienceRequest.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "e0b0a7b4ab78c05ef595df3b28ffd9c8a4ef5d1485cd24431ca29862f12af5d1",
+      "bytes": 451,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Requests/Personnel/PersonnelPreferredRequestIndexRequest.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "f3b828e0e66fbae044fe9f638b099dc264332087be1755634fc8211f956f7457",
+      "bytes": 717,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Requests/Personnel/PersonnelServedClientIndexRequest.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "95b3d61a26059b24b9c2065a12a4e2a90af7e6e5f42e528edc4a95d927ffceec",
+      "bytes": 739,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Requests/Personnel/PersonnelServiceHistoryIndexRequest.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "fdbf3dbfba10b3a72113b3b69d873e08f9ba6456919850aa0f4f98466d8a90e6",
+      "bytes": 1170,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Resources/PersonnelCommissionLedgerResource.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "3ae94748fe7793285408a5a7bb1fa5a0379822fd03e2b51394cdabb809ffecce",
+      "bytes": 2179,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Resources/PersonnelPayoutItemResource.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "24ab07f95b517e71e269f8a90d4bf3e87efad9500fc2276c8a9d40d9a3c16376",
+      "bytes": 2860,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Resources/PersonnelSalaryLedgerResource.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "99d9cd4b9829d04e1bacf3ad1f8afbb8f89b5553e327d23027531d91a7fa3007",
+      "bytes": 1008,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Resources/PersonnelServedClientContextResource.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "956e1aa5890ec87e2c04cf2eef713de910c131c0609c25393db66c397c6f06f0",
+      "bytes": 1139,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Resources/PersonnelServiceHistoryResource.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "6f46e16d7ff0fbae8024bde47e11ca08477d2dc0cb206aa3f3d429846a34b05c",
+      "bytes": 2077,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "app/Http/Resources/SmsCampaignPreviewResource.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "904c890c4f6a85d0c26dd1149c7c611e4c656cb1c2fb9e324c104103bd56d676",
+      "bytes": 2181,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "docs/api/openapi.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "5e52fb8c1455fde1d32ff8309e18b656dfcb49964a22250568d6177f13f0a06c",
+      "bytes": 2610085,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/CHANGELOG.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "79a69e79b03ebc6f86ee380b886363cca4f9f8faa66005fa4f260dac617ea784",
+      "bytes": 384972,
+      "classification": "UI-14 proof/progress/changelog/traceability"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/account-page-matrix.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "dbe1b95d4612890ad35b97159545e60092c974526d81456561bf27528096f938",
+      "bytes": 101614,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/browser-proof.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "97ec6ef61e511335975881ed9d2c68f6e96d134abd4c570c2925f1eb2689d01c",
+      "bytes": 5240,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/code-splitting-matrix.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "b9e50a1df815e500783cfdb5420941c543716464088101bb49feb73a0b72cdf5",
+      "bytes": 38646,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/inventory-parity.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "acbeb7905cdeb9c5fe06daa9720772d5e4000faad0ad01a21868b6a11bad7aa0",
+      "bytes": 7188,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/navigation-parity.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "d6bd3d5202bbbe651a53b0d6090ec5d5585614231c842164eff70789d048c6e9",
+      "bytes": 4430,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/owner-phase-matrix.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "4933e7cab72048d945947d3cc757819fcebd887b0742d228ec0be5adc40a1f28",
+      "bytes": 61960,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/page-count-matrix.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "9be738ae897ad0c147592434f2cd5239234e734003abee27b280d7ba4454b8ca",
+      "bytes": 1627,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/permission-parity.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "e0eda0745706cd5e5806738989416b1a7f0c4a7189792af74367399af7cb654b",
+      "bytes": 11046,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/requires-account-coverage.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "8cb57936f308a8111d99a651c0a4bd334396e32d06c662e1e30c687c975a68d1",
+      "bytes": 10220,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/route-parity.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "fc50803fff262b4d2dbb6f3d14cd8e52f10b023365b6650db2dd896b5d4ca446",
+      "bytes": 70408,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/screen-spec-matrix.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "1e68a51f0e497d225978da76b14833a3beae4d3e663d81c55ace3de531125f30",
+      "bytes": 36791,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/source-authority.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "39ce1440a0f433b468fdb09d8ff96b780e24661f2e6ba2e8b993c183b3cd2d7a",
+      "bytes": 1940,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-07/status-matrix.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "330845cd9e7cc46914e8e09c43212c17eccc1d4ade1377700801a5d860d263fd",
+      "bytes": 7123,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/accessibility-matrix.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "b627ccb2b1d22f8521cc998a6b50d76892cf6e96454076f4fda3cd54742d0eeb",
+      "bytes": 1369,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/browser-proof.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "3b935a25530576753f81df64f96d6d28a4368ca768498b26b56bdc264347fa74",
+      "bytes": 4289,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/defect-closure.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "6fe7cb01591a3ad115889592c297bd7970dac18f35f651cf136b9fe80508bd85",
+      "bytes": 33306,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/gate-disposition.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "5c86aecbe43fd95973254cba8f81ae14f6f73be38c2411fcc61d0a68ce6cb571",
+      "bytes": 1460,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/historical-evidence-restoration.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "73fdf3bc5f68fde3e1cd00594edbf6a5f55cf5cbdac9e8b5eb0fd3ab7cc423ff",
+      "bytes": 1760,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/implementation-checklist.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "92381b33e8a5f93910fcf66c5344df2b49c83dd38800890cbefd07acedbce5b1",
+      "bytes": 2651,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/page-visual-acceptance.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "2720bb68f30fd963c603b388c417e1cd7bb2b0d0da836cfda733205e92938cc8",
+      "bytes": 12406,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/production-host-proof.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "7c4d4c3491e80863c528a1ccbf5c1bd0a0b4a3e3b147666200621f05fc78fdc3",
+      "bytes": 2699,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/responsive-matrix.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "68b7fc18fba3b7086fca3a8bc0eb5ef3ef427bb0d182d33cdb1c4eb334408038",
+      "bytes": 2197,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/route-activation.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "7451e13cd5bcf8e8440bb67e82a7517ec7a13b2f72cb33df1e1578912ade2660",
+      "bytes": 3349,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-13/theme-matrix.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "132f80b1e7cac8d597270e705408da736b682eb95cd29f75bd0f096b6ab6d54c",
+      "bytes": 996,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/accessibility-matrix.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "bef93ffb580e19cd9fcb00a19d565e310adbe1c0f48bd66a558a65d415ab053e",
+      "bytes": 2576,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/browser-proof.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "15b189ca468d3c926c674b4c1a54098f9cb3891c54adeef7bcb7aae6908f5898",
+      "bytes": 4042,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/claude-to-codex-handoff.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "cb84219125d3bd7eabf8e66de2d0ba4e1fb9ab187025aa12a628d6cdb8654036",
+      "bytes": 5081,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/contact-protection-matrix.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "a3695b20ba0bc4713e0c2109bf6be271ef86dbcfc64a8169a97c40e3729a97a0",
+      "bytes": 3364,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/defect-closure.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "722c529e019f7db29ff9f01be8322a75b81305daf84c4aaf9583c2d37ab4074c",
+      "bytes": 18883,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/design-inspiration-notes.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "622017e397146901adbe8fee8a24462e7d348c547102086605622811bce914d3",
+      "bytes": 5763,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/earnings-model-matrix.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "68f2767b17bec409e14483e9b0e5d4980653893de08663a3eced6f37d24f7bf7",
+      "bytes": 3997,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/gate-disposition.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "2e9747ffdbc9e800c21d1709b8c91f0be1603831d4b82b2ad775b88937e3f294",
+      "bytes": 4248,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/historical-evidence-baseline.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "13d4dcefc9da7f96ec8377d274b1c617e7da37ce0874179f727fe4678f514712",
+      "bytes": 3483,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/historical-evidence-restoration.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "296136e9b59af3e1360c563300bb2c9cd8b10d97dfa4a2d1275006cf6ff1c11e",
+      "bytes": 2019,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/implementation-checklist.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "389656f1cc311d826f811c48f3afa1d463e2d5f1728f9f0aa1e2599585ea1dd6",
+      "bytes": 3949,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/own-scope-matrix.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "093051727e4a2ade1156e387b6f4b340dacdc9ee61005a9a9ae8a1dd156d868e",
+      "bytes": 7205,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/page-readiness-matrix.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "a99950c3e4cc5393b54d056f095f6e8494c9d4d2b0d44df299ed8adf88f0f210",
+      "bytes": 13446,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/page-visual-acceptance.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "c41f601392cf5562b7a54373161225db176c1b81c80e2bb10d3e7bc3989ff28b",
+      "bytes": 26025,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/production-host-proof.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "33c79d6d485ccbe763ed9f159926ab589806150c74e2056ec01827c321dbd4b2",
+      "bytes": 3326,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/responsive-matrix.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "8ce78115520917fb3e122f5e4cdf6274423b763820b221319ceca50aa9beee0d",
+      "bytes": 3393,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/route-activation.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "66f2fef14cdbb57dfca34313889e1f426b7aa4094646ed7f6eb0407c01f63756",
+      "bytes": 7758,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshot-index.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "ebacf2dbec4ddb0af5f1edb9e5b8f4ba04c140586976de34b444416b8abb55e3",
+      "bytes": 42944,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-account.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "06f69b2b82d2026144ba70d3cb7a15032e03db66fcdfc4ebd7adbf69c4d08da3",
+      "bytes": 177046,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-availability.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "58b52c4c1be31e4889fe14a1e563fa92580b826e37b2c3756006be46e2a75a22",
+      "bytes": 245358,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-clients.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "dbae85307f6059090a4b8d2f7d57a62f6ad13e54022417261f1793b7c5f8c167",
+      "bytes": 263505,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-dashboard.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "1d1b93f84aecf6eeee0c042c8cdcde4e5393eec1a0b04eb7878b261da37e51e2",
+      "bytes": 487730,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-earnings-commission.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "4956197254d23f2a43fb146adecb063772886886d9759f55538488b239cdf8fb",
+      "bytes": 209020,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-earnings-payouts.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "d41200b8b09420479f540a5d726ac8c4806f82ce7a8eb5f32a01a50a3f942f62",
+      "bytes": 215575,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-earnings-queries.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "d19e671f49bf121546267f3ce8e15e1f024372330922449c1b167a7801f0ba4d",
+      "bytes": 256810,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-earnings-salary.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "518ab3eb1424f97bb60fff416fe236e539e270d34bd4d230e3390e918b6d4e83",
+      "bytes": 217513,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-earnings-statements.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "93a8847c5d02b70d8379dd4c9ad132b2fa2a74aa3b36fae1bb3d060b5e80783d",
+      "bytes": 214018,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-earnings-terms.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "10afba4eb7055d915eb5be5b0d34f954e047e1a81eaed3addb5ec1006c42106e",
+      "bytes": 335022,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-earnings.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "73d05f8ec8816e74a7c68d126856c580f6c98f2c193156cb23a29efdb5725754",
+      "bytes": 353895,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-get-started.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "a45fd7c7b351f6c2e2f93a1f2ac5cdc29bd399958601af4e0f72beca921389b7",
+      "bytes": 346465,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-messages-compose.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "53ca3f08c92e1645a992cd5d0b79138fd81e2406fb4e9b5b028e5eda6619299f",
+      "bytes": 238102,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-messages.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "5a4df7abc22d0e132efdabf70d1463ea08888d04272ce1424f22412cc35da60a",
+      "bytes": 183364,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-work-appointments.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "966740724c5ce964d60e3ef0b6c05737ae4084dadf1a8c327087e6c9f5a1b9e9",
+      "bytes": 262661,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-work-history.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "04a1c6017bb058ec865f02c224c122154d17ff8af64ea9e08de5d69315a5d7f8",
+      "bytes": 269050,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-work-preferred-requests.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "9d208b19b9a0121a551626f70350df6008c01ffaa0ea866cde7c9fa18f0a1274",
+      "bytes": 253942,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-work-queue.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "da255ef5eef0df2af90e79e0a5841e3880002495d4ec3159d7880671f039a735",
+      "bytes": 346675,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-dark-work-sessions.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "3b10e1e2b72639e6e120019571e822f674fe5f8a3365791d0f3166ca598f5e5a",
+      "bytes": 239570,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-account.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "94a146c3a775048cc5ee97a2c8f10d347b462f8fe6c72f899eaecc63253d49ab",
+      "bytes": 172916,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-availability.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "b9f56bb322749ddd76895a53a3cb09dbd783cb1c76eb75ce2722de25c6f0ddc6",
+      "bytes": 231326,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-clients.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "b808ea96ed3cb9f65bb72b3394c481d4793806bf0301adc1e2512558abb345d3",
+      "bytes": 249216,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-dashboard.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "d6ae549aa96d0649df0d37726b64b009e9a3968c2741c19cbc5d48de8b22e5e0",
+      "bytes": 480125,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-earnings-commission.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "f2605ec6011810ff508ffb236e7fd3d00f14a4ab9dbf0578df2afb4a3aef1ef5",
+      "bytes": 201145,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-earnings-payouts.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "1755a5c57796a468c171a2bd9b9a0cba97f93244eb19255aafc250711ade5f4e",
+      "bytes": 207520,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-earnings-queries.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "7d5771226b680532a681ace9281ec29e48f77f4d3d1c74858546a32ad75f4097",
+      "bytes": 252033,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-earnings-salary.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "cd2c0d003eaa011de3d01da8555705cb953d596041a1a4fce477133e3cdbefdc",
+      "bytes": 209835,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-earnings-statements.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "a73a455f524666998d59f8b7bc1978b393b7ba62e50974e244d6d1bb90bd0034",
+      "bytes": 207780,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-earnings-terms.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "90a81147489d60e8b34c9a697168f0a02899c692ef4eb16a65b728cc732a6374",
+      "bytes": 332731,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-earnings.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "5fcc42b85445aef88ae3b7013d3585939066279cdea123351b344c2100ad891a",
+      "bytes": 346220,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-get-started.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "89ac3da4c4099c6fc88b0cee057ca12df8e8b5339b9a2338ba726774042cc189",
+      "bytes": 344874,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-messages-compose.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "1d0f5d5f75d5fd62c1bcfa1df24b996053101c2781c8ce0ee3d61e22ad880023",
+      "bytes": 231432,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-messages.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "bf9344839bb953eeb01933fc4ba6a7220c9a19507b8635e866b1570804a9a362",
+      "bytes": 171208,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-work-appointments.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "bfe861345a8e66619da5997e97f106752d054464d02192fbc00b31371ba875c6",
+      "bytes": 249505,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-work-history.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "5e0d5882e6fc4eed01f2c9fb32688d761625a23cef9a0f51c73eec2835c37259",
+      "bytes": 262098,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-work-preferred-requests.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "f8a875dc365f282bfd05d5d31fc837107326371ce0163aaf13e86d59d5f9630f",
+      "bytes": 238789,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-work-queue.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "ccac100cf41b488e0d31f6adb7c9c1789f0648dcb2d8008ff67690cc09c13794",
+      "bytes": 324514,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/desktop-light-work-sessions.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "82756bc82e4806e441bd740501bae2f051941a8031cb0e9a7a8deec5acd93608",
+      "bytes": 227834,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/earnings-model-commission_only.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "2ad12acf667ea63336f470e51d3f6d05545878da9aa39efe566941a6068afc93",
+      "bytes": 313242,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/earnings-model-salary_only.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "59d4a66e9832ec6d8756c99e0cb56d2bcefd03878a76ef43ea8db50ed83c3806",
+      "bytes": 312210,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/earnings-model-salary_plus_commission.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "3d8186fd4d2cb2648b997238a71ffb148e9ea609696c44956354b24d6660b5d5",
+      "bytes": 321607,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/gated-notifications.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "b023eea1d28e6b60d761cba49e29b18fff4a721f29f79286ad12754f44f1efac",
+      "bytes": 41048,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/mobile-account.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "023d20d98e504882244e84c92f595b352279b2e7f01779a8a79434924c8208ab",
+      "bytes": 173242,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/mobile-clients.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "ed0b5290a9482479b4d02d978eb9f3d6674228ae10368148bbd9491b23bafb6b",
+      "bytes": 132720,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/mobile-dashboard.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "9f00e940d8d013608dad337f633cab32f1136fe514173b19e68c3f9a7d4ce227",
+      "bytes": 301775,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/mobile-earnings-commission.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "0d66e3e5157bda901e9682e58aebba9ac4d6537f97f51044b064de99cf139ff4",
+      "bytes": 92475,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/mobile-earnings-salary.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "9bacf4453217b272fb981a81ef91e50d279f7b843737f791de4e809c9e0f8d77",
+      "bytes": 103031,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/mobile-earnings.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "c8e9db83323827eeb54237f9438291f5099f70c3dd0f2a9bb5c6899cdd084ad9",
+      "bytes": 226611,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/mobile-messages-compose.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "690130f314d8bbef151daacd17ddd318de0f2d0b7af9637b20d4cb2931984e51",
+      "bytes": 101657,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/mobile-navigation.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "15f96450a8e9f58a4d422995dc7b7f40f77ea1b1b1ef5421924485e7c2a65a75",
+      "bytes": 51331,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/mobile-work-queue.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "2c41c37e2cb78f4e1bcfbfeac56ac8e34ec0caf254bd9601ba304d0962e6db31",
+      "bytes": 139835,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/responsive-dashboard-1024.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "e4c1b8ea2eb83bd3909dbf496d8e49c2358cdf8663e3fb6b99829a75e559afd3",
+      "bytes": 397840,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/responsive-dashboard-1025.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "011737dc4dcbb841077b8ec4442ae21ccfaf6c2edbdc72fa877d43e642780ad3",
+      "bytes": 361811,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/responsive-dashboard-1280.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "aed7ad458ffe1cad78a292ee348495a0a1b3dbe18c59024733f746711ac50cf5",
+      "bytes": 428596,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/responsive-dashboard-1440.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "d6ae549aa96d0649df0d37726b64b009e9a3968c2741c19cbc5d48de8b22e5e0",
+      "bytes": 480125,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/responsive-dashboard-360.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "2747b0b70700941434b1e36b1c4648ed95faf4ea47b4bd5a363a8427649692d5",
+      "bytes": 184604,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/responsive-dashboard-767.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "d351420e0c249632163a35d40ecf084809f53caa7be16b029053a2d1bf7141fb",
+      "bytes": 337454,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/responsive-dashboard-768.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "15659bd6bc32ebb14d19b7fd51b6a3490821d857c986dec3a6b25f4b4faba64b",
+      "bytes": 317417,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/sms-confirmation.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "ce2bf2568262563f5d8dce225f23b57f31972b08eee71e44bd62f80e282467a2",
+      "bytes": 213899,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/tablet-account.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "c1b8a95d02aafe399e172a2a218d419dad70f1f22370d636290e52cdcc90f7fb",
+      "bytes": 205698,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/tablet-dashboard.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "4b973703054e21bcbb6a88dc575b75c3b1529fd2fba9f8347c718c7d2d998d55",
+      "bytes": 460679,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/tablet-earnings.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "8ac186c1e1e649d4ec1b698c0f477919d3c9e130a544a33cce64f5a5be4ab593",
+      "bytes": 335120,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/tablet-messages-compose.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "8527f9db899002f2243b7dcea064b72e166d14db8ca4c6962938019c8d64786f",
+      "bytes": 176025,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/zoom-200-account.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "8d17359711433ccdc437cdcd633b8d6451cf688211646ef263153d8786a3c0ba",
+      "bytes": 180924,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/zoom-200-dashboard.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "e2e437b87854e77cda5e313a82ca95af622298159e637d4cce51cb5c0f697dde",
+      "bytes": 419446,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/zoom-200-earnings-commission.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "6f3f932a8f52e58ff8400ac61d7f9f424eb54650877bea4bcd250de0fb9fef37",
+      "bytes": 112429,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/zoom-200-earnings.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "e28a122a313c1ce7c7a600235483b22ed491d98b9fdf9c1a2444f5b0c65002e6",
+      "bytes": 301487,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/zoom-200-messages-compose.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "d06005a212fd055cbd4e1098963d557e10502c95c37d0fe9bf7b348bc310404a",
+      "bytes": 136345,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/screenshots/zoom-200-work-queue.png",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "41ea6819e77668138cc81bb6c3d8c1fe7b2c96db580928f035c8cb4d6746d740",
+      "bytes": 184713,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/sms-safety-matrix.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "6a1a2364a821d2d7ef4fae97cf51f4f8a6833d7f707321001de555ec1ec2519d",
+      "bytes": 3629,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/theme-matrix.json",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "a9515c3e2775c4c03ceb7907376c7c33000a5a578acf38fc44087709d8c0d73b",
+      "bytes": 1482,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/audits/ui-14/visual-language-continuity.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "e492c66521a486290b1ab100b1ec7128fe399d8e97bacdc92f5ae6fe42638c23",
+      "bytes": 5221,
+      "classification": "UI-14 visual/browser evidence"
+    },
+    {
+      "path": "docs/frontend/navigation/role-navigation.yaml",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "2d6897a511a7850dd3e844aa0d68a3487dced7cf47b9ed45694c5e2f10f44d5a",
+      "bytes": 24580,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "4c176b456395fb4a61b3c98e0f002098c48b3d09fec75622486689a4ec3a1a86",
+      "bytes": 205707,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/account.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "ec55ee7afdfc9eb9a86a0d4237004823f657c3e84088445a0e32bcf03614216e",
+      "bytes": 5146,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/availability.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "3c4492544837ba96f23d3a97459c967d35b5e4495fa4a36c9978b8dcb60029ac",
+      "bytes": 5283,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/clients.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "91f04b4415659bf124a25870e8e9a018a8ed4a01a6f16e150cac199b4eee9462",
+      "bytes": 5231,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/dashboard.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "5609ad9a13d830b50b9d1058493f973f8c3fb546386bc08d0e0bd5daf804f868",
+      "bytes": 5305,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/earnings-commission.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "e588973311bee725ecc6179543a556adea3262f1e8a7021dfa7c7fbea31ae051",
+      "bytes": 5276,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/earnings-payouts.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "3fc6672bcb79602d85181caa89e34148bd0f34a3e590f97ca887f13bb04d00de",
+      "bytes": 5142,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/earnings-queries.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "997c16077aeb849d21fc6d588cdb37ceb539f49289a6fae51a9d43c1853de2b4",
+      "bytes": 5262,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/earnings-salary.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "ffe1d9fed8a35e85d52b04cb6787289e856113e7438ed15f4c02fa52c669990f",
+      "bytes": 5242,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/earnings-statements.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "61890a93b142ee791e8832e058bf28c4dd29f18e0f77391ff8bda330d878ab14",
+      "bytes": 5200,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/earnings-terms.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "f9edfd74901bf79eae2d04ff22e1b429c4d58e334e49b32089af9b8db89b9925",
+      "bytes": 5265,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/earnings.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "c255afb61d4bbbd99510db5bbfdf763ea5b0554c0aa540a934936942d613c69c",
+      "bytes": 5911,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/get-started.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "bf1e214b2832d7375170f37db8d153ac9d70d3215da8c0c527df041fd1b4f025",
+      "bytes": 5086,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/messages-compose.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "26b96d60c67c9490571ab66ff3a2060e5dfc6f8481f2c17da9125aed84c0c14d",
+      "bytes": 6432,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/messages.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "3a07845fff5d809b052f9183482606321b39b61bfa79be3710704c7723eb55f2",
+      "bytes": 5104,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/notifications.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "1355cdf81ac98cf158dfb7f4302dfc5cb1173bb7355db2de1981fe869fe950fe",
+      "bytes": 5768,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/work-appointments.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "7cfa8f02a01ccd9fe08f163d9a2ab3193cceca0abf5befb3e51c24997aa13feb",
+      "bytes": 5366,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/work-history.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "288cef752578cb6244dc15490bc03ae9bee043f2f4b1558b89d5832f2e912118",
+      "bytes": 5166,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/work-preferred-requests.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "52d54462d2fa0d8cb97060546cf66369f7bc24039161429cc90ee38c86c3b310",
+      "bytes": 5288,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/work-queue.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "5966fdd456761f2b65f7a5d11841c0554c212354a4550259cca597640d0ff476",
+      "bytes": 5306,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/contract/merchant_personnel/work-sessions.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "fc66a3eecc7c724d45506e609f1553f8e8143d882450d7cb77a1d35b76c4bb2a",
+      "bytes": 5365,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "docs/frontend/screens/inventory.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "65d2128d3572ed0296cc1e0c84cecba22514813b008dbb460cb91e1dcbd823cf",
+      "bytes": 120251,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/inventory.yaml",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "15f7f52d74b84c0c1a2b093aff151ac4577eb65a604be25d506d8e1a311a8e84",
+      "bytes": 30009,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-account.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "cbe6416f057e5d6660413e4fc394522e645c9883e7516ca8ac4a79b505c4b735",
+      "bytes": 2739,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-appointments.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "d61bf230d22d8e62a25efec03f192a96d3f697b0feb9a58e70b32614d2baf2a2",
+      "bytes": 2951,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-commission.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "9c97ae6298894275b08564cc2d0b2d6af92a0cfc3e1d3381a1bedd34a093aff2",
+      "bytes": 2787,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-compensation-terms.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "13f17a1accf78ebe0ccbabb4e797fef366b2a551eaa49f8fccd70c912f2869d7",
+      "bytes": 2787,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-earnings-queries.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "3fcb9fd98d9f674a0c133c4b75f9e5f41aff094dc7c9ecf31fd6192b616e412f",
+      "bytes": 2791,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-earnings-statements.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "5b84de4e80b6db3dccec54573294d2685c0bb434bc5eb79ad2d7558c1e129dce",
+      "bytes": 2764,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-landing.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "6c5930e72e413f1a56cea8e8e46d724262e875acc3ce68b5539f738387d82392",
+      "bytes": 2917,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-message-history.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "fc38636690208c98cb5d4186fa0270e1c8b4fce8e1159e32de311f129ed59b7c",
+      "bytes": 2722,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-own-availability.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "f4c24aef796892f783159c1928b2c440f23269617eb7aeb834891836ef0c5f9c",
+      "bytes": 2784,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-payouts.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "86d19d1ff4bac2a520ab287d868a63eeaa79e2f875f43813230cb0a5d35208b0",
+      "bytes": 2746,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-preferred-requests.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "2a363e05754eda376127dc506fe2ef492cd2950a097b875fd0e9bb4eaf208cf8",
+      "bytes": 2813,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-queue.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "18ea21e7223bf91bcca45ff21c64788d3cb01a99d064be5eebd6d353a2b06f2b",
+      "bytes": 2948,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-salary.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "8b0e404406238d00e13786ff753b3ea4b7157be4a1c28a4cf29ff3f237b12ef2",
+      "bytes": 2737,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-served-clients.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "4c4d4086e96d28bd4b75fe4f370cfc7e8d51ed34951e28a9f495e01969d5ce7e",
+      "bytes": 2798,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-service-history.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "009e337e96effefdd2069515ae8ffb6e279780bfb31b969bbf7f87f5cdc1f63f",
+      "bytes": 2776,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-sessions.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "1eede4d779adb580efa9549ea65c48256eeec596257eb2f8ec533ed95e1945b3",
+      "bytes": 2980,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/frontend/screens/personnel/personnel-sms.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "1a98a7601cdcfb422e8515f5e0346fc56c3e08eb9ca26e6dfd3ceab712ff8615",
+      "bytes": 3996,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "290508919695384549377c97a523346feddc87497bc5d9a655d02756bb5b5484",
+      "bytes": 502877,
+      "classification": "UI-14 proof/progress/changelog/traceability"
+    },
+    {
+      "path": "docs/proof/ui-13.md",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "5deb688caefac34626a28fa3f0805b4aefc4e5af6eaa4b2e6202a68a5858f290",
+      "bytes": 12865,
+      "classification": "UI-13 lifecycle reconciliation"
+    },
+    {
+      "path": "docs/proof/ui-14.md",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "c7fc03850d3407cbc071bc6fcf8a53865ad4146c5d1983a32869e0078c4ee3d2",
+      "bytes": 20188,
+      "classification": "UI-14 proof/progress/changelog/traceability"
+    },
+    {
+      "path": "docs/traceability/servana-requirements.csv",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "05fe5e5ddc702fedb2921017ef84e7aa3ed33d036eb5d9e5d6c370c844212d1b",
+      "bytes": 319637,
+      "classification": "UI-14 proof/progress/changelog/traceability"
+    },
+    {
+      "path": "package.json",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "9533952f570070524bef1c48b00ee62843ab3eaeae1fe0d8be9a28f4ea7be4c1",
+      "bytes": 3002,
+      "classification": "UI-14 evidence tooling"
+    },
+    {
+      "path": "resources/spa/src/components/layout/AppShell.vue",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "e5280dd5e5373804869ba6563bd4e9de7193bf5f526b47261fad5d4fbeb1bb68",
+      "bytes": 16186,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "resources/spa/src/components/navigation/HeaderGroupNavigation.spec.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "0e577c473f12a8ceef2e9709853039d5ec5195608de4f68c875e7310c686b110",
+      "bytes": 17129,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "resources/spa/src/components/navigation/HeaderGroupNavigation.vue",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "975ca3c7aa4accfefa15dc8366673c3853ba321a5a0cd17e06bfd64e0b36d057",
+      "bytes": 19381,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "resources/spa/src/components/personnel/PersonnelEarningsNav.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "02a701365cd5a6074308787ce252d1fae2d328cf0db4583c68b750c2a23810bc",
+      "bytes": 2241,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvLeadRecord.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "303dad854edc6b4aaa5a808ed51fdb3a58c0299b292169c95bec0df6032fc1ad",
+      "bytes": 2900,
+      "classification": "UI-14 shared visual components/tokens"
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvMaskedIdentity.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "fe64dc2c6aa5de9e12f44656b68c9806e874136dccd76262b82b1ba7293a608c",
+      "bytes": 2253,
+      "classification": "UI-14 shared visual components/tokens"
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvStatTile.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "afa8f9056348c75ab72708793185e5198ca810c8d669d265e502236ecbd59d24",
+      "bytes": 2916,
+      "classification": "UI-14 shared visual components/tokens"
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvTonalPageHeader.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "308a2b16d375bb7199cc81b94e391d0b51453f601a77d9ad1b3941d61dc380c8",
+      "bytes": 4086,
+      "classification": "UI-14 shared visual components/tokens"
+    },
+    {
+      "path": "resources/spa/src/components/ui/SvUi14Primitives.spec.ts",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "21518f80e57ff72aa1b78541d7663a83fae1efb6225187f7ac858a9123d59be1",
+      "bytes": 2956,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "resources/spa/src/content/getStartedContent.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "802add0db7faedb401ca5815a3e51c8cc1ae8a5fd2ac136abd922849b898caaa",
+      "bytes": 9780,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "resources/spa/src/navigation/navigationFilter.spec.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "f5e6ff971d19edc926305df319996254e6ba2af60ae58fc2099ff644df7bcc64",
+      "bytes": 13631,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "resources/spa/src/navigation/navigationFilter.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "e972d004c95667a3f0a6877ab9737e4dd916984418b1c97e6fd4cc78189a1096",
+      "bytes": 9550,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "resources/spa/src/navigation/navigationRegistry.generated.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "f2a01105cb11834d5554c8c369d7793dc2f9f159aa0e6b6f8959858cc96e8311",
+      "bytes": 185050,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "resources/spa/src/pages/get-started/RoleGetStarted.vue",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "8f7c1d6e8ae13ecc7deda97f3e3cca0693060ad89652f04fe664540f0fa3000b",
+      "bytes": 8566,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/AvailabilityStatus.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "03169a06a944f11d2c5e2bb9c7a0d6e78f336543d20aa3297ba16f1fd54a97af",
+      "bytes": 9177,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/ClientSms.vue",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "ef2f7fb0e7768ed0c71d6d533923f4a99ec5f71167f25bfd644fc5a1c8a6a3a0",
+      "bytes": 25682,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/Commission.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "dd957499dbfc647918eb506802db29802af6f5c41555d8ac6aea065f68f88aae",
+      "bytes": 7205,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/CompensationTerms.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "02e6727e7b2b30a8ac80e7d9a5cc7584df3d425a4cd246fc51e2edf82adec147",
+      "bytes": 12404,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/EarningsOverview.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "754cb3bbccb880ff7556d9bab37fa8b7ae22e06ed71f3ef4725468dd48fb2a8e",
+      "bytes": 13822,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/EarningsQueries.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "69d09bd889629de4c7ffecfdbe34dbb5e36af1aebff316a4cd1ae362b86d8bdb",
+      "bytes": 8518,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/EarningsStatements.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "d78b251d3b1e3279a9d8e29cd1a3b192dc185de96e2c67ab1aa370a3ad6e7884",
+      "bytes": 6054,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/MessageHistory.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "a48d4d52353a2481c878d9edd034d6817dab1ced5e84058466ecf61365b129ed",
+      "bytes": 131,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/MyAppointments.vue",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "5784f0b1e545c689a6af131cc8c0fa6995be02361f8e73b74b0295317e76577c",
+      "bytes": 11306,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/MyQueue.spec.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "004b203dd04eec168827941057f7dcad36b866c7c41c82c045d5c8a7fbae6f9a",
+      "bytes": 1795,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/MyQueue.vue",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "abf7838cac8a1fcb3d99791c932aeb388725f2c9c1569335c6bf76c97c335616",
+      "bytes": 8246,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/MyServiceSessions.spec.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "a0b7a4083d947a69c7571bc61b86345710685fd5d0dd64fa6f940fbb5a278c78",
+      "bytes": 2091,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/MyServiceSessions.vue",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "ea7e0035dd8af3f9c1ac147600cd46e17d6471695a95fdf50f947698fd9209e5",
+      "bytes": 7608,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/Payouts.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "4fb5b89ea68cb7363614de4685e7869d10005a33023686fa728c3f55d603c224",
+      "bytes": 5919,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/PersonnelAccount.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "2bc67ac9a55b40fc9bb73223d6880da8e2c4aee3d6855408c8b0cf9d18732be9",
+      "bytes": 4559,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/PersonnelDashboard.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "a7e24bcea8a2f431db00bb563f77a4971024e0777df97cf4aa6e2a1f6a80f691",
+      "bytes": 18423,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/PersonnelGetStarted.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "8024547766463e158429ce4d015cd347e9c6ad080f9355f2a1fba0f01f3373c5",
+      "bytes": 149,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/PreferredRequests.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "511436a89ff1caa8365ace5578d3e18bcd3e96dea5f5d4f5b3f1c99859e41ec7",
+      "bytes": 5220,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/Salary.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "3e94235bc39ed9bcb2bf737c56de88b96a4340db5b9a6b8541649976c8aebfde",
+      "bytes": 6297,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/ServedClients.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "92a7157a656634e731db30e43672e49036c39c055901fe284ba9d4b3355a64de",
+      "bytes": 9106,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/ServiceHistory.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "96acebf1fbc5661af273ca98f02e11df71df45d8fc13487cc883a9fdf25c9622",
+      "bytes": 7016,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/SmsComposer.vue",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "f15d2b016a103badd99fe35ff4ca68482a1f03ee87728d67df3ebd3987f58af5",
+      "bytes": 131,
+      "classification": "UI-14 Personnel pages"
+    },
+    {
+      "path": "resources/spa/src/pages/personnel/Ui14PersonnelPages.spec.ts",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "a21917a6fb17a56c1523e1af67b5634e2a3c26f1cd2851523dd9f916ccee5a98",
+      "bytes": 10025,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "resources/spa/src/pages/platform/AccountAndSecurity.vue",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "e2c057f3dbfc6a3f616d897221284ea1010abeea6c06fbfb1209f4c3b1b1629b",
+      "bytes": 20397,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "resources/spa/src/router/personnelRoutes.spec.ts",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "8408e406cc686b10ef3bb5c30abad924100befbc8f356ff9e1ae7756b2ecb036",
+      "bytes": 2509,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "resources/spa/src/router/routes/personnel.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "542852f33d847b567123072679faaf437e0dac567bda4881e07f74235388d092",
+      "bytes": 5691,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "resources/spa/src/stores/personnelEarningsStore.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "8af33d19d1f5672deec25db46816a05bc2ea2c3d81128b7a0c944a1ac8e7a5be",
+      "bytes": 7274,
+      "classification": "UI-14 stores/API presentation seams"
+    },
+    {
+      "path": "resources/spa/src/stores/personnelExperienceStore.spec.ts",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "d42b5c843d6fa4d4bd8faf2d0fa357a9fa49ca76a8c579a735050ac1145ec00e",
+      "bytes": 2659,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "resources/spa/src/stores/personnelExperienceStore.ts",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "3d8a8cbc834648ccdd559c7df73012944c35b9978721603d001df18859f52d87",
+      "bytes": 10548,
+      "classification": "UI-14 stores/API presentation seams"
+    },
+    {
+      "path": "resources/spa/src/stores/personnelSmsStore.spec.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "1f4582b0a7629616b37ed686ae617b27f15e85d5c1a28bb406348f415b0eb9fd",
+      "bytes": 9705,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "resources/spa/src/types/generated/api.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "51afbf0a93635dc25af41ad9488b09a1650ea1f2578b0d62052f8b5e6e85d4d1",
+      "bytes": 1032284,
+      "classification": "UI-14 generated contracts/projections"
+    },
+    {
+      "path": "resources/spa/src/types/roles.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "51a8e686855bb61dbb96e7370864e0d53f013e9ec31212bcb9c4dfd8f8358b99",
+      "bytes": 6088,
+      "classification": "UI-14 Personnel routes/navigation/shell"
+    },
+    {
+      "path": "resources/spa/src/utils/personnelStatus.ts",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "864949a7348a1502e3e63000486666ae69b9e802fe086c717ea1e4e7579f3d4a",
+      "bytes": 3282,
+      "classification": "UI-14 shared visual components/tokens"
+    },
+    {
+      "path": "routes/api.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "3f06d7e9e63c864d830a51abbe9cdd031545059b8a94a084d9ea7034e0716285",
+      "bytes": 152360,
+      "classification": "UI-14 focused backend read seam where justified"
+    },
+    {
+      "path": "scripts/check-ui14-audit-artifacts.mjs",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "3ad896f26a4872e5ef7e43cb43d92a3b973649e2f2e5335163bb1fdb5dfe88c7",
+      "bytes": 9161,
+      "classification": "UI-14 evidence tooling"
+    },
+    {
+      "path": "scripts/ui14-production-host-proof.mjs",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "d0f7bf7e4cb92ea5a93a6772e6ece3288dd53af625a5c3347568eea0958cefbe",
+      "bytes": 5530,
+      "classification": "UI-14 evidence tooling"
+    },
+    {
+      "path": "tailwind.config.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "eaae45097aabb7dad2073e55d46ae6422c33b769bd51ea8e30989b2f5539746e",
+      "bytes": 7267,
+      "classification": "UI-14 shared visual components/tokens"
+    },
+    {
+      "path": "tests/e2e/phase-20h.spec.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "b49cdc9e2987eebf069ddac69a5dd5a51d00ce20edf37ae7de9dc3f7276d08bc",
+      "bytes": 25833,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/e2e/phase-21s.spec.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "446b7539682e882382168891a1b14fb9a8000a4f3ec5ea190ee6b910ed01adeb",
+      "bytes": 19944,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/e2e/role-entry-surfaces.spec.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "2ea8d29f4e44ec397ff702b7dfe1cfbcf57b983e5b1c102e08ebff5f25fa5a3b",
+      "bytes": 4348,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/e2e/support/releaseAudit.ts",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "ba4391eb846f91a438f54e6974eb752528313fdb67603802284559499c42f0a7",
+      "bytes": 79925,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/e2e/ui-14-personnel-experience.spec.ts",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "901204a540afeef45192fffa815b38bf201121179fe7e02f5bf04db19e6c0e69",
+      "bytes": 26728,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/Feature/Docs/Ui01AuditContractTest.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "990722a1e045654c9b7d9c53d6a74112f74ad64289efd960a7be01b28c64628e",
+      "bytes": 28640,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/Feature/Docs/Ui07NavigationContractTest.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "23a97e5d2ed14fd2ac76642dfd4d372486f3151fd9b429f976672682f41fa905",
+      "bytes": 30244,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/Feature/Messaging/SmsPreviewAndConfirmTest.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "7dddadbe331dd067e9c79ec3fde86743e2ba45a7c5e8b832c5a4ed8939d7c548",
+      "bytes": 19674,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/Feature/Personnel/Ui14PersonnelExperienceApiTest.php",
+      "git_status": "??",
+      "action": "added_untracked",
+      "sha256": "5568bb47c71e6ab7b283ceea5618dff404d87c456cf2f7444c425383e081d22e",
+      "bytes": 10958,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/Feature/Scheduling/PersonnelAvailabilityApiTest.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "c3552382ad3ceb308067766e026dc3ec73667c4c6c8dada7c9ba5eebde8e6f3a",
+      "bytes": 13247,
+      "classification": "UI-14 tests"
+    },
+    {
+      "path": "tests/Feature/Traceability/Phase23TraceabilityTest.php",
+      "git_status": "M",
+      "action": "modified",
+      "sha256": "4c5a101e215b276413ed02c8fa0a2c9ac32cf75e68ae1e06fddced4b468f98e7",
+      "bytes": 26202,
+      "classification": "UI-14 tests"
+    }
+  ]
+}
