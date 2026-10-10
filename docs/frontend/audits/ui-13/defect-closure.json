@@ -1,12 +1,12 @@
 {
     "schema": "servana.ui13.defect-closure.v1",
     "phase": "UI-13",
-    "lifecycle": "local_complete",
+    "lifecycle": "verified_complete",
     "counts": {
         "total": 24,
         "open": 0,
-        "local_complete": 24,
-        "verified_complete": 0
+        "local_complete": 0,
+        "verified_complete": 24
     },
     "closures": [
         {
@@ -27,7 +27,7 @@
             "proof": "17 canonical deep links pass; gated direct links fail closed.",
             "remaining_risk": "Canonical no-volume host routing passed 51/51 production-image checks; only post-merge lifecycle verification remains.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-002",
@@ -49,7 +49,7 @@
             "proof": "Workspace count/state assertions and Dashboard browser request pass.",
             "remaining_risk": "Query cost is bounded to one branch but remains observable in production.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-003",
@@ -71,7 +71,7 @@
             "proof": "Focused test rejects checker terms/controls and proves pending-validation semantics.",
             "remaining_risk": "No manual issue control exists by design.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-004",
@@ -92,7 +92,7 @@
             "proof": "Branch isolation, masking and chronological UI assertions pass.",
             "remaining_risk": "Unknown future event types intentionally fall back to a safe generic label.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-005",
@@ -113,7 +113,7 @@
             "proof": "Direct deep link, eligible list, reason and disabled confirmation states pass.",
             "remaining_risk": "Mutation behavior remains owned by Phase 16B.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-006",
@@ -134,7 +134,7 @@
             "proof": "Account resolves and forbidden business/staff controls are absent.",
             "remaining_risk": "Notification preferences remain gated with Phase 21N.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-007",
@@ -157,7 +157,7 @@
             "proof": "The exact 11 failed scenarios reran 11/11 green, then the full focused suite passed.",
             "remaining_risk": "Other accounts retain the shared utility and are covered by router/component regression tests.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-008",
@@ -176,7 +176,7 @@
             "proof": "Eight group headings match the canonical order.",
             "remaining_risk": "Generated navigation remains checked for drift.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-009",
@@ -195,7 +195,7 @@
             "proof": "All 17 pages have zero horizontal overflow at seven required widths.",
             "remaining_risk": "Other phases own non-UI-13 inactive aliases outside touched surfaces.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-010",
@@ -218,7 +218,7 @@
             "proof": "All 17 pages score 27–30/30 with required criteria at 2 and hashed light/dark evidence.",
             "remaining_risk": "Cross-account release-wide visual comparison remains UI-16.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-011",
@@ -238,7 +238,7 @@
             "proof": "PostgreSQL focused suite passes 3 tests/36 assertions and forbidden terms are absent.",
             "remaining_risk": "Decision state remains read-only and server-owned.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-012",
@@ -254,7 +254,7 @@
             "proof": "All 17 dark pages pass axe 0 serious/0 critical and produce stable hashed captures.",
             "remaining_risk": "CI performance is covered by the explicit bounded timeout.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-013",
@@ -270,7 +270,7 @@
             "proof": "Focused frontend suite reran 61/61 green.",
             "remaining_risk": "The inventory bidirectional guard separately covers production routes.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-014",
@@ -291,7 +291,7 @@
             "proof": "The 14-test bidirectional inventory contract passes and the production build resolves all lazy routes.",
             "remaining_risk": "Generated current projections remain guarded in final deterministic checks.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-015",
@@ -307,7 +307,7 @@
             "proof": "Final full Vitest passes 145 files and 1,402/1,402 tests.",
             "remaining_risk": "A genuine load failure still times out and fails within five seconds.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-016",
@@ -321,7 +321,7 @@
             "proof": "Traceability passes 15 tests/20 assertions with UI-13 excluded from verified phases.",
             "remaining_risk": "No remaining local lifecycle risk; merge verification is intentionally owned by the next-phase reconciliation model.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-017",
@@ -344,7 +344,7 @@
             "proof": "The complete invalidated consumer set passes 54 tests / 6,746 assertions; runtime source was unchanged, so the phase invalidation rule does not require another full backend run.",
             "remaining_risk": "None within UI-13; current projections remain deterministic CI gates.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-018",
@@ -365,7 +365,7 @@
             "proof": "All affected cases and final 1,526/1,526 whole-product run pass.",
             "remaining_risk": "Compatibility paths are enumerated and cannot cross account hosts.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-019",
@@ -382,7 +382,7 @@
             "proof": "Search coverage and final 1,526/1,526 run pass.",
             "remaining_risk": "Zero permission delta is preserved.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-020",
@@ -403,7 +403,7 @@
             "proof": "Release audit passed through all account surfaces in the final 1,526-test run.",
             "remaining_risk": "The assertion still rejects absent or transparent backdrops.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-021",
@@ -420,7 +420,7 @@
             "proof": "All role-entry cases pass in the final 1,526/1,526 run.",
             "remaining_risk": "No other account behavior changed.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-022",
@@ -450,7 +450,7 @@
             "proof": "Stress proof passes 27/27; authoritative whole-product Playwright passes 1,526/1,526 with no retry, flake or skip.",
             "remaining_risk": "Non-contention errors still fail immediately; retry is bounded to 1.5 seconds total backoff.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-023",
@@ -464,7 +464,7 @@
             "proof": "Nginx syntax is ok/test successful; host proof passes 51/51; both containers and the network were removed.",
             "remaining_risk": "Orchestration must continue to provide the configured app network alias, as docker-compose.prod.yml already does.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         },
         {
             "id": "UI13-024",
@@ -478,7 +478,7 @@
             "proof": "The exact stale lock is absent; repository reads remain healthy and staging is retried from an unchanged worktree.",
             "remaining_risk": "None observed; no index content was written by the failed command.",
             "resolution_status": "fixed",
-            "lifecycle": "local_complete"
+            "lifecycle": "verified_complete"
         }
     ]
 }

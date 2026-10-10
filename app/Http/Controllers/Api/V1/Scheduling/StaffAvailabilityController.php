@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1\Scheduling;
 
-use App\Domain\Catalogue\Enums\ServiceStatus;
-use App\Domain\Catalogue\Models\ServicePersonnelEligibility;
 use App\Domain\Hr\Models\StaffProfile;
 use App\Domain\Scheduling\Actions\EmergencyUnavailable;
 use App\Domain\Scheduling\Actions\ReplaceAvailability;
-use App\Domain\Scheduling\Enums\AvailabilityType;
-use App\Domain\Scheduling\Models\PersonnelAvailability;
-use App\Domain\Scheduling\Services\AvailabilityResolver;
-use App\Domain\Scheduling\Services\PersonnelStateProjector;
+use App\Domain\Scheduling\Services\PersonnelAvailabilityReadModel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Scheduling\EmergencyUnavailableRequest;
 use App\Http\Requests\Scheduling\UpdateAvailabilityRequest;
@@ -20,7 +15,6 @@ use App\Http\Resources\PersonnelAvailabilityScheduleResource;
 use App\Models\User;
 use App\Policies\PersonnelAvailabilityPolicy;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Collection;
 
 /**
  * Personnel availability, nested under a staff profile (Plan §80 Phase 15B).
@@ -35,15 +29,14 @@ use Illuminate\Support\Collection;
 final class StaffAvailabilityController extends Controller
 {
     public function __construct(
-        private readonly AvailabilityResolver $resolver,
-        private readonly PersonnelStateProjector $stateProjector,
+        private readonly PersonnelAvailabilityReadModel $readModel,
     ) {}
 
     public function show(StaffProfile $staff): PersonnelAvailabilityScheduleResource
     {
         $this->authorizeView($staff);
 
-        return PersonnelAvailabilityScheduleResource::make($this->assemble($staff));
+        return PersonnelAvailabilityScheduleResource::make($this->schedule($staff));
     }
 
     public function update(UpdateAvailabilityRequest $request, StaffProfile $staff, ReplaceAvailability $action): PersonnelAvailabilityScheduleResource
@@ -63,7 +56,7 @@ final class StaffAvailabilityController extends Controller
             $actor,
         );
 
-        return PersonnelAvailabilityScheduleResource::make($this->assemble($staff->refresh()));
+        return PersonnelAvailabilityScheduleResource::make($this->schedule($staff->refresh()));
     }
 
     public function emergencyUnavailable(EmergencyUnavailableRequest $request, StaffProfile $staff, EmergencyUnavailable $action): PersonnelAvailabilityScheduleResource
@@ -84,7 +77,7 @@ final class StaffAvailabilityController extends Controller
             $actor,
         );
 
-        return PersonnelAvailabilityScheduleResource::make($this->assemble($staff->refresh()));
+        return PersonnelAvailabilityScheduleResource::make($this->schedule($staff->refresh()));
     }
 
     /**
@@ -99,77 +92,13 @@ final class StaffAvailabilityController extends Controller
         return $value;
     }
 
-    /**
-     * Assemble the safe composite schedule payload (one rows query → no N+1).
-     *
-     * @return array<string, mixed>
-     */
-    private function assemble(StaffProfile $staff): array
+    /** @return array<string, mixed> */
+    private function schedule(StaffProfile $staff): array
     {
-        $rows = $this->resolver->rowsFor($staff);
-
-        return [
-            'staff' => [
-                'id' => $staff->ulid,
-                'display_name' => $staff->display_name,
-                'employment_status' => $staff->employment_status->value,
-                'is_active' => $staff->is_active,
-            ],
-            'timezone' => (string) config('servana.scheduling.business_timezone', 'Africa/Nairobi'),
-            // Live state overlays `busy` (an in-progress service session) onto the
-            // schedule-derived state (Phase 16C; derived, never stored).
-            'current_state' => $this->stateProjector->currentState($staff, null, $rows)->value,
-            'recurring' => $this->rowsToArray($rows->filter(fn (PersonnelAvailability $r) => $r->type === AvailabilityType::Recurring), 'recurring'),
-            'exceptions' => $this->rowsToArray($rows->filter(fn (PersonnelAvailability $r) => $r->type === AvailabilityType::Exception), 'exception'),
-            'eligible_services' => $this->eligibleServices($staff),
-            'can' => [
-                'update' => app(PersonnelAvailabilityPolicy::class)->manage($this->actor(), $staff),
-            ],
-        ];
-    }
-
-    /**
-     * @param  Collection<int, PersonnelAvailability>  $rows
-     * @return array<int, array<string, mixed>>
-     */
-    private function rowsToArray(Collection $rows, string $kind): array
-    {
-        return $rows
-            ->sortBy([['weekday', 'asc'], ['date', 'asc'], ['start_time', 'asc']])
-            ->map(function (PersonnelAvailability $row) use ($kind): array {
-                $base = [
-                    'start_time' => substr((string) $row->start_time, 0, 5),
-                    'end_time' => substr((string) $row->end_time, 0, 5),
-                    'available' => $row->available,
-                ];
-
-                return $kind === 'recurring'
-                    ? ['weekday' => (int) $row->weekday] + $base
-                    : ['date' => $row->date?->format('Y-m-d')] + $base;
-            })
-            ->values()
-            ->all();
-    }
-
-    /**
-     * Active eligible services (ulid + name) — read-only summary; no contact data.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function eligibleServices(StaffProfile $staff): array
-    {
-        return ServicePersonnelEligibility::query()
-            ->where('staff_profile_id', $staff->id)
-            ->where('active', true)
-            ->with('service:id,ulid,name,status')
-            ->get()
-            ->filter(fn (ServicePersonnelEligibility $e) => $e->service !== null && $e->service->status === ServiceStatus::Active)
-            ->map(fn (ServicePersonnelEligibility $e) => [
-                'id' => $e->service?->ulid,
-                'name' => $e->service?->name,
-            ])
-            ->values()
-            ->all();
+        return $this->readModel->forStaff(
+            $staff,
+            app(PersonnelAvailabilityPolicy::class)->manage($this->actor(), $staff),
+        );
     }
 
     private function authorizeView(StaffProfile $staff): void

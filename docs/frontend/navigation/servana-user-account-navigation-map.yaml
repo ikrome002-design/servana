@@ -4717,12 +4717,16 @@ pages:
     route_path: "/dashboard"
     screen_key_path: "contract/merchant_personnel/dashboard.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-14"
+    implementation_status: implemented
+    runtime_route_name: "personnel.dashboard"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_appointments.view"
+      - "personnel.my_queue.view"
+      - "personnel.my_sessions.view"
+      - "personnel.my_earnings.view"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -4791,7 +4795,7 @@ pages:
     owner_phase: UI-14
     backend_owner_phase: "Phase 16B"
     implementation_status: implemented
-    runtime_route_name: "personnel.queue"
+    runtime_route_name: "personnel.work-queue"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -4828,7 +4832,7 @@ pages:
     owner_phase: UI-14
     backend_owner_phase: "Phase 16A"
     implementation_status: implemented
-    runtime_route_name: "personnel.appointments"
+    runtime_route_name: "personnel.work-appointments"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -4865,7 +4869,7 @@ pages:
     owner_phase: UI-14
     backend_owner_phase: "Phase 16C"
     implementation_status: implemented
-    runtime_route_name: "personnel.sessions"
+    runtime_route_name: "personnel.work-sessions"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -4900,12 +4904,13 @@ pages:
     route_path: "/work/history"
     screen_key_path: "contract/merchant_personnel/work-history.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-14"
+    implementation_status: implemented
+    runtime_route_name: "personnel.work-history"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_sessions.view"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -4936,12 +4941,14 @@ pages:
     route_path: "/work/preferred-requests"
     screen_key_path: "contract/merchant_personnel/work-preferred-requests.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-14"
+    implementation_status: implemented
+    runtime_route_name: "personnel.work-preferred-requests"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_queue.view"
+      - "personnel.my_appointments.view"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -4972,10 +4979,10 @@ pages:
     route_path: "/clients"
     screen_key_path: "contract/merchant_personnel/clients.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-14"
+    implementation_status: implemented
+    runtime_route_name: "personnel.clients"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all:
       - "personnel.my_served_clients.view"
@@ -5011,7 +5018,7 @@ pages:
     owner_phase: UI-14
     backend_owner_phase: "Phase 21S"
     implementation_status: implemented
-    runtime_route_name: "personnel.sms"
+    runtime_route_name: "personnel.messages-compose"
     route_delivery: "dedicated"
     permission_any: []
     permission_all:
@@ -5046,12 +5053,13 @@ pages:
     route_path: "/messages"
     screen_key_path: "contract/merchant_personnel/messages.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 21S"
+    implementation_status: implemented
+    runtime_route_name: "personnel.messages"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_sms.send"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -5119,12 +5127,13 @@ pages:
     route_path: "/earnings/commission"
     screen_key_path: "contract/merchant_personnel/earnings-commission.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-14"
+    implementation_status: implemented
+    runtime_route_name: "personnel.earnings-commission"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_earnings.view"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -5155,12 +5164,13 @@ pages:
     route_path: "/earnings/salary"
     screen_key_path: "contract/merchant_personnel/earnings-salary.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-14"
+    implementation_status: implemented
+    runtime_route_name: "personnel.earnings-salary"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_earnings.view"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -5191,12 +5201,13 @@ pages:
     route_path: "/earnings/payouts"
     screen_key_path: "contract/merchant_personnel/earnings-payouts.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 20H"
+    implementation_status: implemented
+    runtime_route_name: "personnel.earnings-payouts"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_payouts.view"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -5227,12 +5238,13 @@ pages:
     route_path: "/earnings/terms"
     screen_key_path: "contract/merchant_personnel/earnings-terms.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 20H"
+    implementation_status: implemented
+    runtime_route_name: "personnel.earnings-terms"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_compensation.view"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -5263,12 +5275,13 @@ pages:
     route_path: "/earnings/statements"
     screen_key_path: "contract/merchant_personnel/earnings-statements.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 20H"
+    implementation_status: implemented
+    runtime_route_name: "personnel.earnings-statements"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_statements.download"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -5299,12 +5312,13 @@ pages:
     route_path: "/earnings/queries"
     screen_key_path: "contract/merchant_personnel/earnings-queries.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase 20H"
+    implementation_status: implemented
+    runtime_route_name: "personnel.earnings-queries"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_earnings_query.create"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -5335,12 +5349,13 @@ pages:
     route_path: "/availability"
     screen_key_path: "contract/merchant_personnel/availability.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-14 (read projection only; Phase 15B HR owns mutation)"
+    implementation_status: implemented
+    runtime_route_name: "personnel.availability"
+    route_delivery: "dedicated"
     permission_any: []
-    permission_all: []
+    permission_all:
+      - "personnel.my_appointments.view"
     scope: own
     requires_mfa: false
     requires_step_up: false
@@ -5382,7 +5397,7 @@ pages:
     requires_step_up: false
     feature_flag: null
     billing_state_behavior: per_account_billing_state_allowlist
-    gate: "external_gate_w"
+    gate: "phase_21n_blocked_by_external_gate_w"
     navigation_visibility: primary
     non_navigation_reason: null
     forbidden_for:
@@ -5407,10 +5422,10 @@ pages:
     route_path: "/account"
     screen_key_path: "contract/merchant_personnel/account.md"
     owner_phase: UI-14
-    backend_owner_phase: null
-    implementation_status: planned
-    runtime_route_name: null
-    route_delivery: null
+    backend_owner_phase: "Phase UI-03"
+    implementation_status: implemented
+    runtime_route_name: "personnel.account"
+    route_delivery: "dedicated"
     permission_any: []
     permission_all: []
     scope: own

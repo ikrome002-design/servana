@@ -43,7 +43,7 @@ final class SmsCampaignPreviewResource extends JsonResource
             'max_message_characters' => $preview->maxMessageCharacters,
             // The §64 "billing notice": a plain statement that confirming owes money. It is a
             // notice, not a charge — nothing is billed until confirmation.
-            'billing_notice' => 'Sending this campaign adds an SMS charge to your Servana billing.',
+            'billing_notice' => 'SMS charges for this message will be billed to your branch together with the Servana subscription invoice. Continue?',
         ];
     }
 }

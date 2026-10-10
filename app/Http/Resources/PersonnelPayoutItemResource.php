@@ -35,6 +35,10 @@ final class PersonnelPayoutItemResource extends JsonResource
             'adjustment_amount_minor' => (int) $this->adjustment_amount_minor,
             'gross_amount_minor' => (int) $this->gross_amount_minor,
             'status' => $this->status->value,
+            'period_start' => $this->payoutRun?->period_start?->toDateString(),
+            'period_end' => $this->payoutRun?->period_end?->toDateString(),
+            'paid_at' => $this->payoutRun?->paid_at?->toIso8601String(),
+            'external_reference_masked' => $this->maskedExternalReference(),
             // Counts only — never the internal ledger row ids.
             'source_counts' => [
                 'salary' => count($refs['salary'] ?? []),
@@ -45,5 +49,16 @@ final class PersonnelPayoutItemResource extends JsonResource
             'statement_file_id' => $this->earningsStatementFile === null ? null : $this->earningsStatementFile->ulid,
             'created_at' => $this->created_at?->toIso8601String(),
         ];
+    }
+
+    private function maskedExternalReference(): ?string
+    {
+        $reference = $this->payoutRun?->external_payment_reference_encrypted;
+
+        if (! is_string($reference) || $reference === '') {
+            return null;
+        }
+
+        return '•••• '.mb_substr($reference, -4);
     }
 }

@@ -1,0 +1,96 @@
+{
+  "schema": "servana.ui14.earnings-model-matrix.v1",
+  "phase": "UI-14",
+  "lifecycle": "local_complete",
+  "authority": "Server tab_visibility from GET /api/v1/personnel/me/earnings (PersonnelEarningsReadModel, Phase 20H); amounts are integer minor units grouped by currency and never combined.",
+  "matrix": [
+    {
+      "model": "commission_only",
+      "overview": "shown",
+      "commission": "shown",
+      "salary": "non_applicable",
+      "payouts": "shown",
+      "terms": "shown",
+      "statements": "shown",
+      "queries": "shown"
+    },
+    {
+      "model": "salary_only",
+      "overview": "shown",
+      "commission": "non_applicable",
+      "salary": "shown",
+      "payouts": "shown",
+      "terms": "shown",
+      "statements": "shown",
+      "queries": "shown"
+    },
+    {
+      "model": "salary_plus_commission",
+      "overview": "shown",
+      "commission": "shown",
+      "salary": "shown",
+      "payouts": "shown",
+      "terms": "shown",
+      "statements": "shown",
+      "queries": "shown"
+    }
+  ],
+  "proofs": [
+    {
+      "claim": "Navigation offers only the applicable tabs",
+      "evidence": "e2e '<model> shows only the applicable earnings navigation' x3 (screenshots earnings-model-*.png)",
+      "result": "pass"
+    },
+    {
+      "claim": "A non-applicable direct route exposes no data",
+      "evidence": "e2e 'direct non-applicable detail links remain truthful and do not fabricate a ledger': /earnings/salary under commission_only and /earnings/commission under salary_only render the non-applicable state and never request the ledger",
+      "result": "pass"
+    },
+    {
+      "claim": "Amounts are server-owned",
+      "evidence": "Ui14PersonnelPages.spec.ts renders net/outstanding/paid from the server and asserts the browser-summed salary figure (56,500.00) is absent; the pre-UI-14 page added salary/commission/adjustment paid+unpaid in Vue (UI14-FIN-001)",
+      "result": "pass"
+    },
+    {
+      "claim": "Pending is not presented as earned",
+      "evidence": "'unpaid' is labelled 'Outstanding — recorded, not yet paid'; commission rows only exist after Finance validation, and every page repeats that completion alone earns nothing",
+      "result": "pass"
+    },
+    {
+      "claim": "Paid is never inferred locally",
+      "evidence": "'Recorded paid' uses paid_minor; payout rows show paid only from status/paid_at recorded by Finance",
+      "result": "pass"
+    },
+    {
+      "claim": "Reversed commission is explicit",
+      "evidence": "Commission rows show the reversed status badge, clay tone and the server reversal_reason",
+      "result": "pass"
+    },
+    {
+      "claim": "Statement and query links stay own-scope",
+      "evidence": "statements generate only for own paid payout items (Phase20HEarningsApiTest); query prefill carries an own ULID that the server re-validates; malformed references are dropped (Ui14PersonnelPages.spec.ts)",
+      "result": "pass"
+    },
+    {
+      "claim": "Zero / missing-plan states are truthful",
+      "evidence": "no current plan -> 'No current plan' model label and the Compensation Terms empty state; no earnings -> 'No earnings have been recorded yet.'",
+      "result": "pass"
+    },
+    {
+      "claim": "No compensation mutation",
+      "evidence": "e2e 'own statements and queries expose supported actions without compensation mutation' — only earnings-query POST and statement generation occur",
+      "result": "pass"
+    },
+    {
+      "claim": "Unknown model never removes contract navigation",
+      "evidence": "AppShell and PersonnelEarningsNav hide Commission/Salary only when the server positively reports a current, non-conflicting plan that excludes them (UI14-NAV-001); the ui-07 contract case renders every Personnel entry without earnings data; with no plan the direct routes state that no current compensation plan is on file",
+      "result": "pass"
+    }
+  ],
+  "summary": {
+    "models": 3,
+    "proofs": 10,
+    "passed": 10,
+    "failed": 0
+  }
+}

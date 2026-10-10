@@ -1,0 +1,405 @@
+{
+  "base": "14cfadcb512d867d2aebefe0fa628fdee3563e02",
+  "changedVersions": [
+    {
+      "path": "node_modules/@babel/parser",
+      "from": "7.29.7",
+      "to": "7.29.9"
+    },
+    {
+      "path": "node_modules/@babel/types",
+      "from": "7.29.7",
+      "to": "7.29.8"
+    },
+    {
+      "path": "node_modules/@img/sharp-darwin-arm64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-darwin-x64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-freebsd-wasm32",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-darwin-arm64",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-darwin-x64",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-linux-arm",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-linux-arm64",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-linux-ppc64",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-linux-riscv64",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-linux-s390x",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-linux-x64",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-linuxmusl-arm64",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-libvips-linuxmusl-x64",
+      "from": "1.3.2",
+      "to": "1.3.4"
+    },
+    {
+      "path": "node_modules/@img/sharp-linux-arm",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-linux-arm64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-linux-ppc64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-linux-riscv64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-linux-s390x",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-linux-x64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-linuxmusl-arm64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-linuxmusl-x64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-wasm32",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-webcontainers-wasm32",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-win32-arm64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-win32-ia32",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@img/sharp-win32-x64",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/@redocly/openapi-core",
+      "from": "1.34.17",
+      "to": "1.34.20"
+    },
+    {
+      "path": "node_modules/@vitest/expect",
+      "from": "4.1.10",
+      "to": "4.1.11"
+    },
+    {
+      "path": "node_modules/@vitest/mocker",
+      "from": "4.1.10",
+      "to": "4.1.11"
+    },
+    {
+      "path": "node_modules/@vitest/pretty-format",
+      "from": "4.1.10",
+      "to": "4.1.11"
+    },
+    {
+      "path": "node_modules/@vitest/runner",
+      "from": "4.1.10",
+      "to": "4.1.11"
+    },
+    {
+      "path": "node_modules/@vitest/snapshot",
+      "from": "4.1.10",
+      "to": "4.1.11"
+    },
+    {
+      "path": "node_modules/@vitest/spy",
+      "from": "4.1.10",
+      "to": "4.1.11"
+    },
+    {
+      "path": "node_modules/@vitest/utils",
+      "from": "4.1.10",
+      "to": "4.1.11"
+    },
+    {
+      "path": "node_modules/@vue/compiler-core",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    },
+    {
+      "path": "node_modules/@vue/compiler-dom",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    },
+    {
+      "path": "node_modules/@vue/compiler-sfc",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    },
+    {
+      "path": "node_modules/@vue/compiler-ssr",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    },
+    {
+      "path": "node_modules/@vue/reactivity",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    },
+    {
+      "path": "node_modules/@vue/runtime-core",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    },
+    {
+      "path": "node_modules/@vue/runtime-dom",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    },
+    {
+      "path": "node_modules/@vue/server-renderer",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    },
+    {
+      "path": "node_modules/@vue/shared",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    },
+    {
+      "path": "node_modules/axios",
+      "from": "1.18.1",
+      "to": "1.20.0"
+    },
+    {
+      "path": "node_modules/brace-expansion",
+      "from": "5.0.9",
+      "to": "5.0.12"
+    },
+    {
+      "path": "node_modules/chai",
+      "from": "6.2.2",
+      "to": "6.3.0"
+    },
+    {
+      "path": "node_modules/jiti",
+      "from": "1.21.7",
+      "to": "2.7.0"
+    },
+    {
+      "path": "node_modules/js-yaml",
+      "from": "4.3.1",
+      "to": "4.3.2"
+    },
+    {
+      "path": "node_modules/nanoid",
+      "from": "3.3.18",
+      "to": "3.3.20"
+    },
+    {
+      "path": "node_modules/postcss",
+      "from": "8.5.23",
+      "to": "8.5.29"
+    },
+    {
+      "path": "node_modules/postcss-selector-parser",
+      "from": "7.1.4",
+      "to": "7.1.6"
+    },
+    {
+      "path": "node_modules/sharp",
+      "from": "0.35.3",
+      "to": "0.35.5"
+    },
+    {
+      "path": "node_modules/source-map-js",
+      "from": "1.2.1",
+      "to": "1.2.2"
+    },
+    {
+      "path": "node_modules/tailwindcss",
+      "from": "3.4.19",
+      "to": "4.3.3"
+    },
+    {
+      "path": "node_modules/tinyrainbow",
+      "from": "3.1.0",
+      "to": "3.2.0"
+    },
+    {
+      "path": "node_modules/vitest",
+      "from": "4.1.10",
+      "to": "4.1.11"
+    },
+    {
+      "path": "node_modules/vue",
+      "from": "3.5.40",
+      "to": "3.5.43"
+    }
+  ],
+  "removedPaths": [
+    "node_modules/@nodelib/fs.scandir",
+    "node_modules/@nodelib/fs.stat",
+    "node_modules/@nodelib/fs.walk",
+    "node_modules/any-promise",
+    "node_modules/anymatch",
+    "node_modules/anymatch/node_modules/picomatch",
+    "node_modules/arg",
+    "node_modules/autoprefixer",
+    "node_modules/baseline-browser-mapping",
+    "node_modules/binary-extensions",
+    "node_modules/braces",
+    "node_modules/browserslist",
+    "node_modules/camelcase-css",
+    "node_modules/caniuse-lite",
+    "node_modules/chokidar",
+    "node_modules/chokidar/node_modules/glob-parent",
+    "node_modules/didyoumean",
+    "node_modules/dlv",
+    "node_modules/electron-to-chromium",
+    "node_modules/escalade",
+    "node_modules/fast-glob",
+    "node_modules/fast-glob/node_modules/glob-parent",
+    "node_modules/fastq",
+    "node_modules/fill-range",
+    "node_modules/fraction.js",
+    "node_modules/is-binary-path",
+    "node_modules/is-core-module",
+    "node_modules/is-number",
+    "node_modules/lilconfig",
+    "node_modules/lines-and-columns",
+    "node_modules/merge2",
+    "node_modules/micromatch",
+    "node_modules/micromatch/node_modules/picomatch",
+    "node_modules/mz",
+    "node_modules/node-releases",
+    "node_modules/normalize-path",
+    "node_modules/object-assign",
+    "node_modules/object-hash",
+    "node_modules/path-parse",
+    "node_modules/pify",
+    "node_modules/pirates",
+    "node_modules/postcss-import",
+    "node_modules/postcss-js",
+    "node_modules/postcss-load-config",
+    "node_modules/postcss-nested",
+    "node_modules/postcss-nested/node_modules/postcss-selector-parser",
+    "node_modules/postcss-value-parser",
+    "node_modules/queue-microtask",
+    "node_modules/read-cache",
+    "node_modules/readdirp",
+    "node_modules/readdirp/node_modules/picomatch",
+    "node_modules/resolve",
+    "node_modules/reusify",
+    "node_modules/run-parallel",
+    "node_modules/sucrase",
+    "node_modules/sucrase/node_modules/commander",
+    "node_modules/supports-preserve-symlinks-flag",
+    "node_modules/tailwindcss/node_modules/postcss-selector-parser",
+    "node_modules/thenify",
+    "node_modules/thenify-all",
+    "node_modules/to-regex-range",
+    "node_modules/ts-interface-checker",
+    "node_modules/update-browserslist-db"
+  ],
+  "addedPaths": [
+    "node_modules/@img/sharp-wasm32/node_modules/@emnapi/runtime",
+    "node_modules/@jridgewell/remapping",
+    "node_modules/@tailwindcss/node",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-android-arm64",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-darwin-arm64",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-darwin-x64",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-freebsd-x64",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-linux-arm-gnueabihf",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-linux-arm64-gnu",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-linux-arm64-musl",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-linux-x64-gnu",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-linux-x64-musl",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-win32-arm64-msvc",
+    "node_modules/@tailwindcss/node/node_modules/lightningcss-win32-x64-msvc",
+    "node_modules/@tailwindcss/oxide",
+    "node_modules/@tailwindcss/oxide-android-arm64",
+    "node_modules/@tailwindcss/oxide-darwin-arm64",
+    "node_modules/@tailwindcss/oxide-darwin-x64",
+    "node_modules/@tailwindcss/oxide-freebsd-x64",
+    "node_modules/@tailwindcss/oxide-linux-arm-gnueabihf",
+    "node_modules/@tailwindcss/oxide-linux-arm64-gnu",
+    "node_modules/@tailwindcss/oxide-linux-arm64-musl",
+    "node_modules/@tailwindcss/oxide-linux-x64-gnu",
+    "node_modules/@tailwindcss/oxide-linux-x64-musl",
+    "node_modules/@tailwindcss/oxide-wasm32-wasi",
+    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/core",
+    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/runtime",
+    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/wasi-threads",
+    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@napi-rs/wasm-runtime",
+    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@tybys/wasm-util",
+    "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/tslib",
+    "node_modules/@tailwindcss/oxide-win32-arm64-msvc",
+    "node_modules/@tailwindcss/oxide-win32-x64-msvc",
+    "node_modules/@tailwindcss/postcss",
+    "node_modules/enhanced-resolve",
+    "node_modules/graceful-fs",
+    "node_modules/tapable"
+  ]
+}

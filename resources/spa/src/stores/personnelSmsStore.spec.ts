@@ -27,7 +27,7 @@ const preview: SmsCampaignPreview = {
   unit_cost_minor: 100,
   max_recipients: 200,
   max_message_characters: 480,
-  billing_notice: 'Sending this campaign adds an SMS charge to your Servana billing.',
+  billing_notice: 'SMS charges for this message will be billed to your branch together with the Servana subscription invoice. Continue?',
 };
 
 const campaign = {

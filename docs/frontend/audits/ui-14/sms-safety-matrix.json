@@ -1,0 +1,25 @@
+{
+  "schema": "servana.ui14.sms-safety-matrix.v1",
+  "phase": "UI-14",
+  "lifecycle": "local_complete",
+  "runtime_owner": "Phase 21S (verified_complete). UI-14 splits the composer and history onto canonical routes and adds presentation only; no SMS rule, price, provider or state machine changed.",
+  "checks": [
+    { "claim": "Recipients limited to own served clients", "evidence": "ServedClientSelectorTest, SmsPreviewAndConfirmTest (not_served exclusion at preview and confirm)", "result": "pass" },
+    { "claim": "Consent eligibility enforced", "evidence": "SmsPreviewAndConfirmTest consent_opted_out / consent_missing exclusions; exclusion reasons rendered from server codes", "result": "pass" },
+    { "claim": "Entitlement gate", "evidence": "SmsEntitlementAndBillingGateTest; phase-21s e2e entitlement and billing-read-only blocks render sms-blocked", "result": "pass" },
+    { "claim": "Masked recipient presentation", "evidence": "selector, chips, confirmation and outcomes show names and phone_masked only (SvMaskedIdentity)", "result": "pass" },
+    { "claim": "Character count", "evidence": "live typed-character aid plus the server message_character_count after preview", "result": "pass" },
+    { "claim": "Segment / billable-unit estimate from the contract", "evidence": "segment_count and estimated_cost come only from POST /sms-campaigns/preview", "result": "pass" },
+    { "claim": "Mandatory cost notice (exact wording)", "evidence": "SmsCampaignPreviewResource billing_notice = 'SMS charges for this message will be billed to your branch together with the Servana subscription invoice. Continue?'; e2e toHaveText on the composer; confirmation dialog repeats it", "result": "pass" },
+    { "claim": "Explicit confirmation", "evidence": "Send appears only after a successful preview; the dialog shows eligible, excluded, segments and estimated charge before 'Yes, send now' (sms-confirmation.png)", "result": "pass" },
+    { "claim": "Successful queueing through the test-safe path", "evidence": "Fake SMS provider default (Phase 21S); e2e 'previews server cost, requires the exact billing notice and sends through Servana'; Ui14PersonnelPages.spec.ts confirms the post-send status handoff", "result": "pass" },
+    { "claim": "Failed send state", "evidence": "store error rendered as role=alert; per-recipient failed outcomes shown with the error tone in history", "result": "pass" },
+    { "claim": "Retry policy", "evidence": "Retry of failed recipients is not a Personnel endpoint (Phase 21S exposes cancel/confirm only); none is offered — composing a new message re-runs consent and own-scope checks", "result": "pass" },
+    { "claim": "No raw contact export", "evidence": "phase-21s expectNoContactLeak (DOM, HTML, URL, storage); contact-protection-matrix.json", "result": "pass" },
+    { "claim": "No cross-Personnel recipients", "evidence": "SmsIsolationAndStateMachineTest; ?client preselection ignored when the ULID is not in the caller's served list (Ui14PersonnelPages.spec.ts)", "result": "pass" },
+    { "claim": "Audit and cost attribution", "evidence": "Phase 21S campaign audit events and branch billing attribution unchanged", "result": "pass" },
+    { "claim": "No direct provider / Daraja / Wallet leakage", "evidence": "NoDirectProviderIntegrationTest unchanged; UI-14 adds no provider field or call", "result": "pass" },
+    { "claim": "REM-SMS-002 untouched", "evidence": "No live provider or callback verification performed; REM-SMS-002 remains open, owned by pre-Phase-25 external verification", "result": "pass" }
+  ],
+  "summary": { "checks": 16, "passed": 16, "failed": 0 }
+}

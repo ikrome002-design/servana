@@ -1,0 +1,200 @@
+{
+  "base": "14cfadcb512d867d2aebefe0fa628fdee3563e02",
+  "recordedAt": "2026-10-08T19:24:15.776Z",
+  "runtime": {
+    "node": "20.20.2",
+    "npm": "10.8.2",
+    "php": "8.3.32",
+    "postgres": 16,
+    "redis": 7
+  },
+  "gates": [
+    {
+      "command": "npm ci --no-fund",
+      "exit": 0
+    },
+    {
+      "command": "npm audit --audit-level=high --json",
+      "exit": 0,
+      "findingsAllSeverities": 0
+    },
+    {
+      "command": "composer install --no-interaction --prefer-dist",
+      "exit": 0
+    },
+    {
+      "command": "composer validate --strict",
+      "exit": 0
+    },
+    {
+      "command": "composer audit --locked --format=json",
+      "exit": 0,
+      "advisories": 0
+    },
+    {
+      "command": "npm run lint",
+      "exit": 0,
+      "errors": 0,
+      "warnings": 487
+    },
+    {
+      "command": "npx eslint tests/e2e/rem-dep-003-compatibility.spec.ts (final)",
+      "exit": 0
+    },
+    {
+      "command": "npm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "npm run build (final CSS)",
+      "exit": 0,
+      "modules": 1319
+    },
+    {
+      "command": "npm run test -- --pool=threads --maxWorkers=1",
+      "exit": 0,
+      "passed": 1402,
+      "files": 145,
+      "failed": 0,
+      "skipped": 0,
+      "workerErrors": 0
+    },
+    {
+      "command": "composer pint -- --test",
+      "exit": 0,
+      "files": 1916
+    },
+    {
+      "command": "vendor/bin/phpstan analyse --debug --memory-limit=1G",
+      "exit": 0,
+      "level": 8,
+      "files": 1469,
+      "errors": 0
+    },
+    {
+      "command": "php artisan test tests/Feature/Auth tests/Feature/Isolation tests/Feature/DesignSystem tests/Feature/Api --fail-on-skipped",
+      "exit": 0,
+      "passed": 413,
+      "skippedExistingPlaceholders": 4,
+      "failed": 0,
+      "warnings": 0,
+      "assertions": 3053
+    },
+    {
+      "command": "php artisan test tests/Feature/DesignSystem/DesignTokenSourceGuardTest.php (final CSS)",
+      "exit": 0,
+      "passed": 12,
+      "assertions": 20
+    },
+    {
+      "command": "assets:check -> assets:generate -> assets:check",
+      "exit": 0,
+      "selected": 32,
+      "derivatives": 192,
+      "written": 0,
+      "originalImages": 61
+    },
+    {
+      "command": "tokens:check / content:check / nav:check / generate-ui-source-inventory --check / api:contract:check",
+      "exit": 0,
+      "pages": 160,
+      "accounts": 8,
+      "apiPaths": 299,
+      "apiOperations": 350
+    },
+    {
+      "command": "Playwright REM compatibility",
+      "exit": 0,
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "correctedPlatformRerun": 2,
+      "axeChecks": 96,
+      "captures": 96,
+      "assetRequests": 224
+    },
+    {
+      "command": "Playwright existing UI04 shared controls",
+      "exit": 0,
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "restoredHistoricalPaths": 9
+    },
+    {
+      "command": "gitleaks git --pre-commit + directory scans of all new proof/spec/fixture",
+      "exit": 0,
+      "findings": 0
+    }
+  ],
+  "logs": [
+    {
+      "file": "final-ci.log",
+      "sha256": "edc002fca79109e24fcf18f76ff50dff5e4649437135d7cfac3c119d9309cc70",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "final-audit.log",
+      "sha256": "0d83b31cc9ccdbd5f6cf230e83fe9a76f4ecde2a7261c9ca89dd5d925a0bf019",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "final-lint.log",
+      "sha256": "f04ffc1add9d5b40d487f707c8b26c3f8258fec5196d8d91c2f95d72fcdf8262",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "final-typecheck.log",
+      "sha256": "c77af0202b30ddf01c8dd5341817be274c4bc45f62a03c9afbf3aa6a581ea1c1",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "vitest-full-threads.log",
+      "sha256": "e9c20cfe8e25384ce2a929303dae3ef4c693643dd6cddef43f5b1186159eb201",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "build-focus-compat.log",
+      "sha256": "c849713107c7881e472bac22a7996903ecfd23d5a9d7d842bcc562df7f009536",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "php-focused-complete-env.log",
+      "sha256": "daaf491aa90b493f66d3ae15bc79bf275544cd2acf86f53a277b0e4cdbf6348e",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "php-css-final.log",
+      "sha256": "b9b35a87d0abaacf85c2bb647bff87e00067b2f8c79198b87a29fe3ac9e12d69",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "phpstan-serial.log",
+      "sha256": "660aba5f8a41020fd4e5c286da99981b1cbbcffc32358bdb4f2e9ab49387058c",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "browser-authenticated-settled.log",
+      "sha256": "b433b97ef7a35b65e5297d87eccb1016c02619e1d4b0de644ca03a45c238b950",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "browser-final-fixtures.log",
+      "sha256": "12395402e87cc4639542629a109547ea9b4e2dcce4e1f0d6d7655bf5d89cd7cd",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    },
+    {
+      "file": "browser-platform-final.log",
+      "sha256": "09836c50f8e54a92a0f8ac8df4668191b616436db559afe5b9caa7d89b7e5ca1",
+      "location": "External remediation diagnostics; no secrets copied to repository"
+    }
+  ],
+  "release": {
+    "status": "local_complete",
+    "pr": null,
+    "ci": null,
+    "merge": null,
+    "ui14Integration": "pending normal REM merge"
+  },
+  "failedAttempts": "Documented in rem-dep-003.md; diagnostics retained externally, never represented as passes"
+}

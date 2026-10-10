@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "25365cfa749fe9e162d47e20280a473949ad2283f41e32df0fc645b340850240",
+  "canonical_authority_sha256": "4c176b456395fb4a61b3c98e0f002098c48b3d09fec75622486689a4ec3a1a86",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "13a0bd3e23603ebef3945db82f831eb4a2e4d28e2e8fe0e8742193988955df20",
+  "screen_inventory_sha256": "65d2128d3572ed0296cc1e0c84cecba22514813b008dbb460cb91e1dcbd823cf",
   "purpose": "Every account route group and page component is lazily loaded. No eager barrel imports 160 pages.",
   "rule": "UI/UX plan §6.5 — do not import 160 pages into the initial bundle.",
   "route_groups": [
@@ -962,8 +962,8 @@
       "in_initial_bundle": false
     },
     {
-      "route_name": "personnel.landing",
-      "route_path": "/personnel",
+      "route_name": "personnel.dashboard",
+      "route_path": "/dashboard",
       "declared_in": "routes/personnel.ts",
       "account_key": "merchant_personnel",
       "lazy": true,
@@ -971,31 +971,71 @@
     },
     {
       "route_name": "personnel.get-started",
-      "route_path": "/personnel/get-started",
+      "route_path": "/get-started",
       "declared_in": "routes/personnel.ts",
       "account_key": "merchant_personnel",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "personnel.appointments",
-      "route_path": "/personnel/appointments",
+      "route_name": "personnel.work-queue",
+      "route_path": "/work/queue",
       "declared_in": "routes/personnel.ts",
       "account_key": "merchant_personnel",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "personnel.queue",
-      "route_path": "/personnel/queue",
+      "route_name": "personnel.work-appointments",
+      "route_path": "/work/appointments",
       "declared_in": "routes/personnel.ts",
       "account_key": "merchant_personnel",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "personnel.sessions",
-      "route_path": "/personnel/sessions",
+      "route_name": "personnel.work-sessions",
+      "route_path": "/work/sessions",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.work-history",
+      "route_path": "/work/history",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.work-preferred-requests",
+      "route_path": "/work/preferred-requests",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.clients",
+      "route_path": "/clients",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.messages-compose",
+      "route_path": "/messages/compose",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.messages",
+      "route_path": "/messages",
       "declared_in": "routes/personnel.ts",
       "account_key": "merchant_personnel",
       "lazy": true,
@@ -1003,15 +1043,71 @@
     },
     {
       "route_name": "personnel.earnings",
-      "route_path": "/personnel/earnings",
+      "route_path": "/earnings",
       "declared_in": "routes/personnel.ts",
       "account_key": "merchant_personnel",
       "lazy": true,
       "in_initial_bundle": false
     },
     {
-      "route_name": "personnel.sms",
-      "route_path": "/personnel/sms",
+      "route_name": "personnel.earnings-commission",
+      "route_path": "/earnings/commission",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.earnings-salary",
+      "route_path": "/earnings/salary",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.earnings-payouts",
+      "route_path": "/earnings/payouts",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.earnings-terms",
+      "route_path": "/earnings/terms",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.earnings-statements",
+      "route_path": "/earnings/statements",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.earnings-queries",
+      "route_path": "/earnings/queries",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.availability",
+      "route_path": "/availability",
+      "declared_in": "routes/personnel.ts",
+      "account_key": "merchant_personnel",
+      "lazy": true,
+      "in_initial_bundle": false
+    },
+    {
+      "route_name": "personnel.account",
+      "route_path": "/account",
       "declared_in": "routes/personnel.ts",
       "account_key": "merchant_personnel",
       "lazy": true,

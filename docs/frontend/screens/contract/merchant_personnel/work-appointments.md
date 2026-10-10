@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `personnel.appointments` at `/personnel/appointments` (routes/personnel.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/work/appointments`; owner phase **UI-14** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `personnel.work-appointments` at `/work/appointments` (routes/personnel.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-14**
 - **Backend owner phase:** **Phase 16A**
 - **Implementation status:** `implemented`
-- **Runtime route:** `personnel.appointments`
+- **Runtime route:** `personnel.work-appointments`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `personnel.appointments` (recorded in `docs/frontend/screens/personnel/personnel-appointments.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `personnel.work-appointments` (recorded in `docs/frontend/screens/personnel/personnel-appointments.md`).
 - **Data fields:** Personnel own-scope, mobile-first list of appointments assigned to the authenticated personnel member only: date, service, status, start/end time, and the minimum masked client info needed to perform the appointment. No other personnel's schedule, no branch-wide search, no mutation actions, and no contact export.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

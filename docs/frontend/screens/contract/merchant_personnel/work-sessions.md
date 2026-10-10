@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `personnel.sessions` at `/personnel/sessions` (routes/personnel.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/work/sessions`; owner phase **UI-14** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `personnel.work-sessions` at `/work/sessions` (routes/personnel.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-14**
 - **Backend owner phase:** **Phase 16C**
 - **Implementation status:** `implemented`
-- **Runtime route:** `personnel.sessions`
+- **Runtime route:** `personnel.work-sessions`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `personnel.sessions` (recorded in `docs/frontend/screens/personnel/personnel-sessions.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `personnel.work-sessions` (recorded in `docs/frontend/screens/personnel/personnel-sessions.md`).
 - **Data fields:** Personnel own-scope, mobile-first list of service sessions assigned to the authenticated personnel member only: status, service, start/completion time, and the minimum masked client info. No other personnel's sessions, no branch-wide list, no mutation actions, no contact export, and NO commission preview (earned/payable claims are never shown to Personnel).
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

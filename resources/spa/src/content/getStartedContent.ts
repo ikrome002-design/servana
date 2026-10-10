@@ -99,11 +99,12 @@ const frontOffice: GetStartedItem[] = [
 ];
 
 const personnel: GetStartedItem[] = [
-  { id: 'review-my-earnings', label: 'Review My Earnings', phase: 'Phase 20H', kind: 'action' },
-  { id: 'review-compensation-terms', label: 'Review compensation terms', phase: 'Phase 20H', kind: 'action' },
-  { id: 'acknowledge-terms', label: 'Acknowledge terms', kind: 'acknowledge' },
-  { id: 'view-served-clients', label: 'View served clients', phase: 'Phase 15A', kind: 'action' },
-  { id: 'send-a-permitted-sms', label: 'Send a permitted SMS', phase: 'Phase 21S', kind: 'action' },
+  { id: 'review-my-earnings', label: 'Review My Earnings.', routeName: 'personnel.earnings', kind: 'action' },
+  { id: 'review-compensation-terms', label: 'Review and acknowledge compensation terms.', routeName: 'personnel.earnings-terms', kind: 'action' },
+  { id: 'review-own-work', label: 'Review own queue, appointments, and sessions.', routeName: 'personnel.work-queue', kind: 'action' },
+  { id: 'review-served-client-privacy', label: 'Review served-client access and privacy.', routeName: 'personnel.clients', kind: 'action' },
+  { id: 'send-approved-sms', label: 'Send an approved SMS.', routeName: 'personnel.messages-compose', kind: 'action', completion: 'server', responsibleRole: 'Personnel' },
+  { id: 'learn-earnings-query', label: 'Learn to raise an earnings query.', routeName: 'personnel.earnings-queries', kind: 'action' },
 ];
 
 const audit: GetStartedItem[] = [

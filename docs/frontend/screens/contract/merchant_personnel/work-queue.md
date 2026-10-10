@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `personnel.queue` at `/personnel/queue` (routes/personnel.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/work/queue`; owner phase **UI-14** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `personnel.work-queue` at `/work/queue` (routes/personnel.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,13 +28,13 @@
 - **UI owner phase:** **UI-14**
 - **Backend owner phase:** **Phase 16B**
 - **Implementation status:** `implemented`
-- **Runtime route:** `personnel.queue`
+- **Runtime route:** `personnel.work-queue`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `personnel.queue` (recorded in `docs/frontend/screens/personnel/personnel-queue.md`).
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `personnel.work-queue` (recorded in `docs/frontend/screens/personnel/personnel-queue.md`).
 - **Data fields:** Personnel own-scope, mobile-first list of queue entries assigned to the authenticated personnel member only: position, status, service, labelled wait estimate, a preferred-request indicator, and the minimum masked client info needed to perform the work. No branch-wide queue, no staff selector, no mutation controls, and no contact export.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.

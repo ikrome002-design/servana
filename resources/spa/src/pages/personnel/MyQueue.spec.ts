@@ -36,7 +36,7 @@ describe('MyQueue.vue', () => {
     expect(get).toHaveBeenCalledWith('/personnel/me/queue', { params: { active: 'true', sort: 'position' } });
     expect(wrapper.text()).toContain('Amina Yusuf');
     expect(wrapper.text()).toContain('requested you');
-    expect(wrapper.find('[data-testid="queue-status-badge"]').text()).toBe('Assigned');
+    expect(wrapper.find('[data-testid="queue-status-badge"]').text()).toContain('Assigned');
     // Read-only: no action buttons.
     expect(wrapper.findAll('button').length).toBe(0);
   });

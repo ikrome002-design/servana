@@ -53,7 +53,9 @@ it('previews counts, segments and cost without creating, sending or billing anyt
         ->assertJsonPath('data.estimated_cost.amount', 100)
         ->assertJsonPath('data.estimated_cost.currency', 'KES');
 
-    expect($response->json('data.billing_notice'))->toBeString()->not->toBeEmpty();
+    expect($response->json('data.billing_notice'))->toBe(
+        'SMS charges for this message will be billed to your branch together with the Servana subscription invoice. Continue?',
+    );
 
     // Advisory means advisory.
     expect(PersonnelSmsCampaign::query()->count())->toBe(0)

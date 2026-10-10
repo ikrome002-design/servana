@@ -13,6 +13,7 @@ import { useFinanceWorkspaceStore } from '@/stores/financeWorkspaceStore';
 import { useFrontOfficeWorkspaceStore } from '@/stores/frontOfficeWorkspaceStore';
 import { useHrWorkspaceStore } from '@/stores/hrWorkspaceStore';
 import { useMerchantStore } from '@/stores/merchantStore';
+import { usePersonnelEarningsStore } from '@/stores/personnelEarningsStore';
 import { ROLE_ENTRY, type RoleIdentity } from '@/types/roles';
 
 /**
@@ -51,6 +52,7 @@ const branchExperience = useBranchExperienceStore();
 const financeWorkspace = useFinanceWorkspaceStore();
 const frontOfficeWorkspace = useFrontOfficeWorkspaceStore();
 const hrWorkspace = useHrWorkspaceStore();
+const personnelEarnings = usePersonnelEarningsStore();
 
 const entry = computed(() => ROLE_ENTRY[props.identity]);
 const placement = computed(() => entry.value.navPlacement);
@@ -75,6 +77,9 @@ onMounted(() => {
   if (props.identity === 'merchant_front_office' && frontOfficeWorkspace.overview === null) {
     void frontOfficeWorkspace.fetchOverview();
   }
+  if (props.identity === 'merchant_personnel') {
+    void personnelEarnings.fetchOverview();
+  }
 });
 
 /**
@@ -83,8 +88,20 @@ onMounted(() => {
  * disagree about what a user may see. UI-09 moves sidebar accounts onto the same grouped tree;
  * placement still differs, and this remains discoverability rather than authorization.
  */
+const contextualHiddenKeys = computed(() => {
+  if (props.identity !== 'merchant_personnel') return [];
+  const visibility = personnelEarnings.overview.tab_visibility;
+  // Hide a model-specific page only once the server has POSITIVELY reported a current plan that
+  // excludes it. Unknown (not yet loaded, failed, or no plan) keeps the contract entry; the page
+  // itself then renders its truthful non-applicable state.
+  if (!visibility.has_current_plan || visibility.conflicting) return [];
+  const hidden: string[] = [];
+  if (!visibility.commission_tab) hidden.push('merchant_personnel.earnings-commission');
+  if (!visibility.salary_tab) hidden.push('merchant_personnel.earnings-salary');
+  return hidden;
+});
 const navigationNodes = computed(() =>
-  navigationTree(props.identity, { permissions: auth.permissions }),
+  navigationTree(props.identity, { permissions: auth.permissions, hiddenKeys: contextualHiddenKeys.value }),
 );
 
 // Current page title from the active live nav entry, falling back to the role.

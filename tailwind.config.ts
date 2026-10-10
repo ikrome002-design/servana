@@ -134,9 +134,11 @@ export default {
         cream: 'var(--color-cream)',
       },
       borderRadius: {
+        pill: sv('radius-pill'),
         control: sv('radius-control'),
         card: sv('radius-card'),
         overlay: sv('radius-overlay'),
+        // UI14-DS-001: `rounded-pill` was used by the shared library since UI-04 but never mapped.
       },
       boxShadow: {
         card: sv('shadow-card'),

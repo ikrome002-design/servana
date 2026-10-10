@@ -226,11 +226,11 @@ screens:
     status: implemented
     phase: Phase 11
     spec: front-office/front-office-get-started.md
-  - key: personnel-landing
+  - key: personnel-dashboard
     domain: personnel
-    route: personnel.landing
+    route: personnel.dashboard
     status: implemented
-    phase: Phase 11
+    phase: Phase UI-14
     spec: personnel/personnel-landing.md
   - key: personnel-get-started
     domain: personnel
@@ -818,19 +818,19 @@ screens:
     spec: finance/finance-settings.md
   - key: personnel-appointments
     domain: personnel
-    route: personnel.appointments
+    route: personnel.work-appointments
     status: implemented
     phase: Phase 16A
     spec: personnel/personnel-appointments.md
   - key: personnel-queue
     domain: personnel
-    route: personnel.queue
+    route: personnel.work-queue
     status: implemented
     phase: Phase 16B
     spec: personnel/personnel-queue.md
   - key: personnel-sessions
     domain: personnel
-    route: personnel.sessions
+    route: personnel.work-sessions
     status: implemented
     phase: Phase 16C
     spec: personnel/personnel-sessions.md
@@ -842,10 +842,82 @@ screens:
     spec: personnel/personnel-my-earnings.md
   - key: personnel-sms
     domain: personnel
-    route: personnel.sms
+    route: personnel.messages-compose
     status: implemented
     phase: Phase 21S
     spec: personnel/personnel-sms.md
+  - key: personnel-service-history
+    domain: personnel
+    route: personnel.work-history
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-service-history.md
+  - key: personnel-preferred-requests
+    domain: personnel
+    route: personnel.work-preferred-requests
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-preferred-requests.md
+  - key: personnel-served-clients
+    domain: personnel
+    route: personnel.clients
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-served-clients.md
+  - key: personnel-message-history
+    domain: personnel
+    route: personnel.messages
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-message-history.md
+  - key: personnel-commission
+    domain: personnel
+    route: personnel.earnings-commission
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-commission.md
+  - key: personnel-salary
+    domain: personnel
+    route: personnel.earnings-salary
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-salary.md
+  - key: personnel-payouts
+    domain: personnel
+    route: personnel.earnings-payouts
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-payouts.md
+  - key: personnel-compensation-terms
+    domain: personnel
+    route: personnel.earnings-terms
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-compensation-terms.md
+  - key: personnel-earnings-statements
+    domain: personnel
+    route: personnel.earnings-statements
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-earnings-statements.md
+  - key: personnel-earnings-queries
+    domain: personnel
+    route: personnel.earnings-queries
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-earnings-queries.md
+  - key: personnel-own-availability
+    domain: personnel
+    route: personnel.availability
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-own-availability.md
+  - key: personnel-account
+    domain: personnel
+    route: personnel.account
+    status: implemented
+    phase: Phase UI-14
+    spec: personnel/personnel-account.md
   - key: platform-billing-settings
     domain: platform
     route: platform.billing-settings

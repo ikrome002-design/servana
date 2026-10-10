@@ -1,0 +1,102 @@
+{
+  "data": {
+    "as_of": "2026-08-08T00:00:00Z",
+    "merchant_lifecycle": {
+      "availability": "available",
+      "gate": null,
+      "as_of": "2026-08-08T00:00:00Z",
+      "total_merchants": 42,
+      "by_operational_status": {
+        "pending_setup": 2,
+        "active": 38,
+        "suspended": 1,
+        "deactivated": 1
+      },
+      "by_billing_status": {
+        "active": 30,
+        "overdue": 5,
+        "suspended_billing": 7
+      },
+      "billing_suspended": 7,
+      "active_branches": 57,
+      "definitions": {
+        "total_merchants": "Every self-registered merchant record, in any lifecycle state.",
+        "active_branches": "Branch records across every merchant."
+      },
+      "time_range": "Point-in-time counts as of the instant shown.",
+      "drill_through": "platform.merchants"
+    },
+    "commercial": {
+      "availability": "available",
+      "gate": null,
+      "as_of": "2026-08-08T00:00:00Z",
+      "invoices_by_status": {
+        "issued": 10,
+        "paid": 20
+      },
+      "issued_invoices": 30,
+      "open_invoice_balance_minor": 1234500,
+      "definitions": {
+        "open_invoice_balance_minor": "Sum of balance_minor on open invoices, in integer minor units."
+      },
+      "time_range": "Point-in-time totals as of the instant shown.",
+      "drill_through": "platform.billing-subscriptions"
+    },
+    "registration_monitoring": {
+      "availability": "available",
+      "gate": null,
+      "as_of": "2026-08-08T00:00:00Z",
+      "registered_last_7_days": 4,
+      "registered_last_30_days": 11,
+      "awaiting_setup_completion": 3,
+      "definitions": {
+        "awaiting_setup_completion": "Merchants still in pending_setup. Self-registration is the only creation path."
+      },
+      "time_range": "Rolling 7-day and 30-day windows.",
+      "drill_through": "platform.merchant-registrations"
+    },
+    "governance_tasks": {
+      "availability": "available",
+      "gate": null,
+      "merchants_suspended_for_billing": 7,
+      "merchants_suspended_by_policy": 1,
+      "overdue_invoices": 5,
+      "definitions": {
+        "merchants_suspended_by_policy": "A billing payment never clears this."
+      },
+      "time_range": "Current state.",
+      "drill_through": "platform.merchants"
+    },
+    "audit_alerts": {
+      "availability": "available",
+      "gate": null,
+      "as_of": "2026-08-08T00:00:00Z",
+      "events_last_7_days": 128,
+      "by_severity": {
+        "info": 100,
+        "high": 28
+      },
+      "definitions": {
+        "events_last_7_days": "Append-only audit events in the last 7 days."
+      },
+      "time_range": "Rolling 7-day window.",
+      "drill_through": "platform.audit"
+    },
+    "integrations": {
+      "availability": "disabled_by_gate",
+      "gate": "external_gate_w",
+      "gate_statement": "External Gate W (Wallet by Citrus collections readiness) is closed.",
+      "wallet": null,
+      "reconciliation_exceptions": null,
+      "refer_and_earn": null,
+      "definitions": {},
+      "time_range": null,
+      "drill_through": null
+    }
+  },
+  "meta": {
+    "authorization_authority": "platform.merchant.view via MerchantPolicy::viewGovernance",
+    "read_only": true,
+    "gate_policy": "A gated section reports null values, never zero."
+  }
+}

@@ -2156,6 +2156,7 @@
                                 "client.updated",
                                 "client_consent.opted_in",
                                 "client_consent.opted_out",
+                                "personnel.served_clients.viewed",
                                 "appointment.created",
                                 "appointment.assigned",
                                 "appointment.transferred",
@@ -2722,6 +2723,7 @@
                                 "client.updated",
                                 "client_consent.opted_in",
                                 "client_consent.opted_out",
+                                "personnel.served_clients.viewed",
                                 "appointment.created",
                                 "appointment.assigned",
                                 "appointment.transferred",
@@ -3288,6 +3290,7 @@
                                 "client.updated",
                                 "client_consent.opted_in",
                                 "client_consent.opted_out",
+                                "personnel.served_clients.viewed",
                                 "appointment.created",
                                 "appointment.assigned",
                                 "appointment.transferred",
@@ -22193,6 +22196,368 @@
                 ]
             }
         },
+        "/api/v1/personnel/me/availability": {
+            "get": {
+                "operationId": "personnel.availability.show",
+                "tags": [
+                    "PersonnelExperience"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "staff": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "display_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "employment_status": {
+                                                            "type": "string"
+                                                        },
+                                                        "is_active": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "display_name",
+                                                        "employment_status",
+                                                        "is_active"
+                                                    ]
+                                                },
+                                                "timezone": {
+                                                    "type": "string"
+                                                },
+                                                "current_state": {
+                                                    "type": "string"
+                                                },
+                                                "recurring": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "exceptions": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "eligible_services": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "can": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "update": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "update"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "staff",
+                                                "timezone",
+                                                "current_state",
+                                                "recurring",
+                                                "exceptions",
+                                                "eligible_services",
+                                                "can"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/commissions": {
+            "get": {
+                "operationId": "personnel.commissions.index",
+                "tags": [
+                    "PersonnelExperience"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at",
+                                "earned_at",
+                                "-earned_at",
+                                "pay_period_start",
+                                "-pay_period_start",
+                                "pay_period_end",
+                                "-pay_period_end"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "earned",
+                                "included_in_payout",
+                                "paid",
+                                "reversed",
+                                "adjusted",
+                                "cancelled"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PersonnelCommissionLedgerResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PersonnelCommissionLedgerResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/personnel/me/compensation": {
             "get": {
                 "operationId": "personnel.compensation.show",
@@ -22266,7 +22631,13 @@
                                                         "conflicting": {
                                                             "type": "boolean"
                                                         },
+                                                        "plan_id": {
+                                                            "type": "string"
+                                                        },
                                                         "compensation_model": {
+                                                            "type": "string"
+                                                        },
+                                                        "status": {
                                                             "type": "string"
                                                         },
                                                         "salary_amount_minor": {
@@ -22284,22 +22655,129 @@
                                                         "salary_period": {
                                                             "type": "string"
                                                         },
+                                                        "salary_payout_day": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
                                                         "suspension_salary_policy": {
                                                             "type": "string"
                                                         },
                                                         "effective_from": {
                                                             "type": "string"
+                                                        },
+                                                        "effective_to": {
+                                                            "type": "string"
+                                                        },
+                                                        "commission_rule": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "calculation_type": {
+                                                                    "type": "string"
+                                                                },
+                                                                "percentage_basis_points": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "fixed_amount_minor": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "currency": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "calculation_basis": {
+                                                                    "type": "string"
+                                                                },
+                                                                "applies_to": {
+                                                                    "type": "string"
+                                                                },
+                                                                "service_category": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "name": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "name"
+                                                                    ]
+                                                                },
+                                                                "selected_services": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "id",
+                                                                            "name"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "applies_to_preferred_personnel_fee": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "effective_from": {
+                                                                    "type": "string"
+                                                                },
+                                                                "effective_to": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "calculation_type",
+                                                                "percentage_basis_points",
+                                                                "fixed_amount_minor",
+                                                                "currency",
+                                                                "calculation_basis",
+                                                                "applies_to",
+                                                                "service_category",
+                                                                "selected_services",
+                                                                "applies_to_preferred_personnel_fee",
+                                                                "effective_from",
+                                                                "effective_to"
+                                                            ]
                                                         }
                                                     },
                                                     "required": [
                                                         "has_current_plan",
                                                         "conflicting",
+                                                        "plan_id",
                                                         "compensation_model",
+                                                        "status",
                                                         "salary_amount_minor",
                                                         "salary_currency",
                                                         "salary_period",
+                                                        "salary_payout_day",
                                                         "suspension_salary_policy",
-                                                        "effective_from"
+                                                        "effective_from",
+                                                        "effective_to",
+                                                        "commission_rule"
                                                     ]
                                                 },
                                                 {
@@ -23329,6 +23807,122 @@
                 ]
             }
         },
+        "/api/v1/personnel/me/preferred-requests": {
+            "get": {
+                "operationId": "personnel.preferred-requests.index",
+                "tags": [
+                    "PersonnelExperience"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "source",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "queue",
+                                "appointment"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 40
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "last_page",
+                                                "per_page",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/personnel/me/queue": {
             "get": {
                 "operationId": "personnel.queue.index",
@@ -23567,6 +24161,458 @@
                 ]
             }
         },
+        "/api/v1/personnel/me/salary": {
+            "get": {
+                "operationId": "personnel.salary.index",
+                "tags": [
+                    "PersonnelExperience"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "created_at",
+                                "-created_at",
+                                "earned_at",
+                                "-earned_at",
+                                "pay_period_start",
+                                "-pay_period_start",
+                                "pay_period_end",
+                                "-pay_period_end"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "earned",
+                                "included_in_payout",
+                                "paid",
+                                "reversed",
+                                "adjusted",
+                                "cancelled"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PersonnelSalaryLedgerResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PersonnelSalaryLedgerResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/served-clients": {
+            "get": {
+                "operationId": "personnel.served-clients.index",
+                "tags": [
+                    "PersonnelExperience"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "full_name",
+                                "-full_name",
+                                "last_served_at",
+                                "-last_served_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PersonnelServedClientContextResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PersonnelServedClientContextResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/personnel/me/served-clients/sms": {
             "get": {
                 "operationId": "personnel.served-clients.sms.index",
@@ -23764,6 +24810,274 @@
                                     "required": [
                                         "message"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/personnel/me/service-history": {
+            "get": {
+                "operationId": "personnel.service-history.index",
+                "tags": [
+                    "PersonnelExperience"
+                ],
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "completed_at",
+                                "-completed_at",
+                                "started_at",
+                                "-started_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "service",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 26,
+                            "maxLength": 26
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "completed",
+                                "cancelled"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `PersonnelServiceHistoryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PersonnelServiceHistoryResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        },
+                                        "summary": {
+                                            "type": "object",
+                                            "properties": {
+                                                "records": {
+                                                    "type": "string"
+                                                },
+                                                "completed": {
+                                                    "type": "string"
+                                                },
+                                                "cancelled": {
+                                                    "type": "string"
+                                                },
+                                                "clients_served": {
+                                                    "type": "string"
+                                                },
+                                                "preferred_requests_honored": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "records",
+                                                "completed",
+                                                "cancelled",
+                                                "clients_served",
+                                                "preferred_requests_honored"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta",
+                                        "summary"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
                                 }
                             }
                         }
@@ -24865,6 +26179,759 @@
                 ]
             }
         },
+        "/api/v1/personnel/me/workspace": {
+            "get": {
+                "operationId": "personnel.workspace.show",
+                "tags": [
+                    "PersonnelExperience"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "observed_at": {
+                                                    "type": "string"
+                                                },
+                                                "business_date": {
+                                                    "type": "string"
+                                                },
+                                                "staff": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "display_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "role_title": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "branch": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "code": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "code"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "display_name",
+                                                        "role_title",
+                                                        "branch"
+                                                    ]
+                                                },
+                                                "next_assignment": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "null"
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "const": "appointment"
+                                                                },
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "title": {
+                                                                    "type": "string"
+                                                                },
+                                                                "client_name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "phone_masked": {
+                                                                    "type": "string"
+                                                                },
+                                                                "at": {
+                                                                    "type": "string"
+                                                                },
+                                                                "route_name": {
+                                                                    "type": "string",
+                                                                    "const": "personnel.work-appointments"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "kind",
+                                                                "id",
+                                                                "status",
+                                                                "title",
+                                                                "client_name",
+                                                                "phone_masked",
+                                                                "at",
+                                                                "route_name"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "const": "queue"
+                                                                },
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "title": {
+                                                                    "type": "string"
+                                                                },
+                                                                "client_name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "phone_masked": {
+                                                                    "type": "string"
+                                                                },
+                                                                "at": {
+                                                                    "type": "string"
+                                                                },
+                                                                "position": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "estimated_wait_minutes": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "route_name": {
+                                                                    "type": "string",
+                                                                    "const": "personnel.work-queue"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "kind",
+                                                                "id",
+                                                                "status",
+                                                                "title",
+                                                                "client_name",
+                                                                "phone_masked",
+                                                                "at",
+                                                                "position",
+                                                                "estimated_wait_minutes",
+                                                                "route_name"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "const": "session"
+                                                                },
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "title": {
+                                                                    "type": "string"
+                                                                },
+                                                                "client_name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "phone_masked": {
+                                                                    "type": "string"
+                                                                },
+                                                                "at": {
+                                                                    "type": "string"
+                                                                },
+                                                                "route_name": {
+                                                                    "type": "string",
+                                                                    "const": "personnel.work-sessions"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "kind",
+                                                                "id",
+                                                                "status",
+                                                                "title",
+                                                                "client_name",
+                                                                "phone_masked",
+                                                                "at",
+                                                                "route_name"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                "queue": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "active": {
+                                                            "type": "string"
+                                                        },
+                                                        "next_position": {
+                                                            "type": "string"
+                                                        },
+                                                        "estimated_wait_minutes": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "active",
+                                                        "next_position",
+                                                        "estimated_wait_minutes"
+                                                    ]
+                                                },
+                                                "appointments": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "today": {
+                                                            "type": "string"
+                                                        },
+                                                        "upcoming": {
+                                                            "type": "integer",
+                                                            "minimum": 0
+                                                        },
+                                                        "next_at": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "today",
+                                                        "upcoming",
+                                                        "next_at"
+                                                    ]
+                                                },
+                                                "sessions": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "active": {
+                                                            "type": "integer",
+                                                            "minimum": 0
+                                                        },
+                                                        "completed_today": {
+                                                            "type": "integer",
+                                                            "minimum": 0
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "active",
+                                                        "completed_today"
+                                                    ]
+                                                },
+                                                "preferred_requests": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "active": {
+                                                            "type": "integer",
+                                                            "minimum": 0
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "active"
+                                                    ]
+                                                },
+                                                "clients": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "served": {
+                                                            "type": "integer",
+                                                            "minimum": 0
+                                                        },
+                                                        "can_compose_sms": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "recent_messages": {
+                                                            "type": "integer",
+                                                            "minimum": 0
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "served",
+                                                        "can_compose_sms",
+                                                        "recent_messages"
+                                                    ]
+                                                },
+                                                "availability": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "staff": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "display_name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "employment_status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "is_active": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "display_name",
+                                                                "employment_status",
+                                                                "is_active"
+                                                            ]
+                                                        },
+                                                        "timezone": {
+                                                            "type": "string"
+                                                        },
+                                                        "current_state": {
+                                                            "type": "string"
+                                                        },
+                                                        "recurring": {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        },
+                                                        "exceptions": {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        },
+                                                        "eligible_services": {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        },
+                                                        "can": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "update": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "update"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "staff",
+                                                        "timezone",
+                                                        "current_state",
+                                                        "recurring",
+                                                        "exceptions",
+                                                        "eligible_services",
+                                                        "can"
+                                                    ]
+                                                },
+                                                "earnings": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "tab_visibility": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "model": {
+                                                                            "type": "null"
+                                                                        },
+                                                                        "has_current_plan": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "conflicting": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "salary_tab": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "commission_tab": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "model",
+                                                                        "has_current_plan",
+                                                                        "conflicting",
+                                                                        "salary_tab",
+                                                                        "commission_tab"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "model": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "has_current_plan": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "conflicting": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "salary_tab": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "commission_tab": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "model",
+                                                                        "has_current_plan",
+                                                                        "conflicting",
+                                                                        "salary_tab",
+                                                                        "commission_tab"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        "currencies": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "currency": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "salary_unpaid_minor": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "salary_paid_minor": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "commission_unpaid_minor": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "commission_paid_minor": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "adjustment_unpaid_minor": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "adjustment_paid_minor": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "unpaid_minor": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "paid_minor": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "net_minor": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "currency",
+                                                                    "salary_unpaid_minor",
+                                                                    "salary_paid_minor",
+                                                                    "commission_unpaid_minor",
+                                                                    "commission_paid_minor",
+                                                                    "adjustment_unpaid_minor",
+                                                                    "adjustment_paid_minor",
+                                                                    "unpaid_minor",
+                                                                    "paid_minor",
+                                                                    "net_minor"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "terms": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "has_current_plan": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "conflicting": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "plan_id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "compensation_model": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "salary_amount_minor": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "salary_currency": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "salary_period": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "salary_payout_day": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "suspension_salary_policy": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "effective_from": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "effective_to": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "commission_rule": {
+                                                                            "type": [
+                                                                                "object",
+                                                                                "null"
+                                                                            ],
+                                                                            "properties": {
+                                                                                "calculation_type": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "percentage_basis_points": {
+                                                                                    "type": [
+                                                                                        "integer",
+                                                                                        "null"
+                                                                                    ]
+                                                                                },
+                                                                                "fixed_amount_minor": {
+                                                                                    "type": [
+                                                                                        "integer",
+                                                                                        "null"
+                                                                                    ]
+                                                                                },
+                                                                                "currency": {
+                                                                                    "type": [
+                                                                                        "string",
+                                                                                        "null"
+                                                                                    ]
+                                                                                },
+                                                                                "calculation_basis": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "applies_to": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "service_category": {
+                                                                                    "type": [
+                                                                                        "object",
+                                                                                        "null"
+                                                                                    ],
+                                                                                    "properties": {
+                                                                                        "id": {
+                                                                                            "type": "string"
+                                                                                        },
+                                                                                        "name": {
+                                                                                            "type": "string"
+                                                                                        }
+                                                                                    },
+                                                                                    "required": [
+                                                                                        "id",
+                                                                                        "name"
+                                                                                    ]
+                                                                                },
+                                                                                "selected_services": {
+                                                                                    "type": "array",
+                                                                                    "items": {
+                                                                                        "type": "object",
+                                                                                        "properties": {
+                                                                                            "id": {
+                                                                                                "type": "string"
+                                                                                            },
+                                                                                            "name": {
+                                                                                                "type": "string"
+                                                                                            }
+                                                                                        },
+                                                                                        "required": [
+                                                                                            "id",
+                                                                                            "name"
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                "applies_to_preferred_personnel_fee": {
+                                                                                    "type": "boolean"
+                                                                                },
+                                                                                "effective_from": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "effective_to": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "calculation_type",
+                                                                                "percentage_basis_points",
+                                                                                "fixed_amount_minor",
+                                                                                "currency",
+                                                                                "calculation_basis",
+                                                                                "applies_to",
+                                                                                "service_category",
+                                                                                "selected_services",
+                                                                                "applies_to_preferred_personnel_fee",
+                                                                                "effective_from",
+                                                                                "effective_to"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "has_current_plan",
+                                                                        "conflicting",
+                                                                        "plan_id",
+                                                                        "compensation_model",
+                                                                        "status",
+                                                                        "salary_amount_minor",
+                                                                        "salary_currency",
+                                                                        "salary_period",
+                                                                        "salary_payout_day",
+                                                                        "suspension_salary_policy",
+                                                                        "effective_from",
+                                                                        "effective_to",
+                                                                        "commission_rule"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "has_current_plan": {
+                                                                            "type": "boolean"
+                                                                        },
+                                                                        "conflicting": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "has_current_plan",
+                                                                        "conflicting"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        "latest_payout": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "currency": {
+                                                                    "type": "string"
+                                                                },
+                                                                "gross_amount_minor": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "period_start": {
+                                                                    "type": "string"
+                                                                },
+                                                                "period_end": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "currency",
+                                                                "gross_amount_minor",
+                                                                "status",
+                                                                "period_start",
+                                                                "period_end"
+                                                            ]
+                                                        },
+                                                        "unresolved_queries": {
+                                                            "type": "integer",
+                                                            "minimum": 0
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "tab_visibility",
+                                                        "currencies",
+                                                        "terms",
+                                                        "latest_payout",
+                                                        "unresolved_queries"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "observed_at",
+                                                "business_date",
+                                                "staff",
+                                                "next_assignment",
+                                                "queue",
+                                                "appointments",
+                                                "sessions",
+                                                "preferred_requests",
+                                                "clients",
+                                                "availability",
+                                                "earnings"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "description": "Permission denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/platform-fee-disputes": {
             "get": {
                 "operationId": "platform-fee-disputes.index",
@@ -25819,6 +27886,7 @@
                                 "client.updated",
                                 "client_consent.opted_in",
                                 "client_consent.opted_out",
+                                "personnel.served_clients.viewed",
                                 "appointment.created",
                                 "appointment.assigned",
                                 "appointment.transferred",
@@ -46658,6 +48726,123 @@
                 ],
                 "title": "PersonnelAvailabilityScheduleResource"
             },
+            "PersonnelCommissionLedgerResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "entry_type": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "amount_minor": {
+                        "type": "string"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "calculation_basis_minor": {
+                        "type": "string"
+                    },
+                    "rate_basis_points": {
+                        "type": "string"
+                    },
+                    "fixed_rate_minor": {
+                        "type": "string"
+                    },
+                    "reversal_reason": {
+                        "type": "string"
+                    },
+                    "earned_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "invoice": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "number": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "number"
+                        ]
+                    },
+                    "service": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name"
+                        ]
+                    },
+                    "session_id": {
+                        "type": "string"
+                    },
+                    "client": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "full_name": {
+                                "type": "string"
+                            },
+                            "phone_masked": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "full_name",
+                            "phone_masked"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "entry_type",
+                    "status",
+                    "amount_minor",
+                    "currency",
+                    "calculation_basis_minor",
+                    "rate_basis_points",
+                    "fixed_rate_minor",
+                    "reversal_reason",
+                    "earned_at",
+                    "created_at",
+                    "invoice",
+                    "service",
+                    "session_id",
+                    "client"
+                ],
+                "title": "PersonnelCommissionLedgerResource"
+            },
             "PersonnelEarningsStatementRequest": {
                 "type": "object",
                 "description": "Generate (or return the existing) own earnings-statement PDF for a PAID payout item (Plan §63, §65;\nPhase 20H, §H11; D-H11). Bodiless — the payout item is the ULID route binding, own-scope is derived\nfrom the authenticated membership, and generation is idempotent (a second call returns the same\nfile). Server-owned / statement fields are rejected. Authorization (`personnel.my_statements\n.download`) + billing-mutability are enforced at the route.",
@@ -46719,6 +48904,21 @@
                     "status": {
                         "type": "string"
                     },
+                    "period_start": {
+                        "type": "string"
+                    },
+                    "period_end": {
+                        "type": "string"
+                    },
+                    "paid_at": {
+                        "type": "string"
+                    },
+                    "external_reference_masked": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "source_counts": {
                         "type": "object",
                         "description": "Counts only — never the internal ledger row ids.",
@@ -46763,6 +48963,10 @@
                     "adjustment_amount_minor",
                     "gross_amount_minor",
                     "status",
+                    "period_start",
+                    "period_end",
+                    "paid_at",
+                    "external_reference_masked",
                     "source_counts",
                     "has_statement",
                     "statement_file_id",
@@ -46939,6 +49143,211 @@
                     "is_preferred_request"
                 ],
                 "title": "PersonnelQueueResource"
+            },
+            "PersonnelSalaryLedgerResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "entry_type": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "pay_period_start": {
+                        "type": "string"
+                    },
+                    "pay_period_end": {
+                        "type": "string"
+                    },
+                    "amount_minor": {
+                        "type": "string"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "entry_type",
+                    "status",
+                    "pay_period_start",
+                    "pay_period_end",
+                    "amount_minor",
+                    "currency",
+                    "created_at"
+                ],
+                "title": "PersonnelSalaryLedgerResource"
+            },
+            "PersonnelServedClientContextResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "phone_masked": {
+                        "type": "string"
+                    },
+                    "last_served_at": {
+                        "type": "string"
+                    },
+                    "visit_count": {
+                        "type": "integer"
+                    },
+                    "services": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "minItems": 0,
+                                "maxItems": 0,
+                                "additionalItems": false
+                            }
+                        ]
+                    },
+                    "sms_consent": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string",
+                                "enum": [
+                                    "missing"
+                                ]
+                            }
+                        ]
+                    },
+                    "sms_eligible": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "full_name",
+                    "phone_masked",
+                    "last_served_at",
+                    "visit_count",
+                    "services",
+                    "sms_consent",
+                    "sms_eligible"
+                ],
+                "title": "PersonnelServedClientContextResource"
+            },
+            "PersonnelServiceHistoryResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "started_at": {
+                        "type": "string"
+                    },
+                    "completed_at": {
+                        "type": "string"
+                    },
+                    "cancelled_at": {
+                        "type": "string"
+                    },
+                    "duration_minutes": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "preferred_personnel_honored": {
+                        "type": "string"
+                    },
+                    "commission": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "status": {
+                                "type": "string"
+                            },
+                            "explanation": {
+                                "type": "string",
+                                "const": "Completion alone does not earn commission. Commission becomes earned only after Finance validates payment."
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "status",
+                            "explanation"
+                        ]
+                    },
+                    "service": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name"
+                        ]
+                    },
+                    "client": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "full_name": {
+                                "type": "string"
+                            },
+                            "phone_masked": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "full_name",
+                            "phone_masked"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "started_at",
+                    "completed_at",
+                    "cancelled_at",
+                    "duration_minutes",
+                    "preferred_personnel_honored",
+                    "commission",
+                    "service",
+                    "client"
+                ],
+                "title": "PersonnelServiceHistoryResource"
             },
             "PersonnelServiceSessionResource": {
                 "type": "object",
@@ -50718,7 +53127,7 @@
                     "billing_notice": {
                         "type": "string",
                         "description": "The §64 \"billing notice\": a plain statement that confirming owes money. It is a\nnotice, not a charge — nothing is billed until confirmation.",
-                        "const": "Sending this campaign adds an SMS charge to your Servana billing."
+                        "const": "SMS charges for this message will be billed to your branch together with the Servana subscription invoice. Continue?"
                     }
                 },
                 "required": [

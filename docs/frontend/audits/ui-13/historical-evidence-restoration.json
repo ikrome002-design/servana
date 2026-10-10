@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui13.historical-evidence-restoration.v1",
   "phase": "UI-13",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "baseline": "historical-evidence-baseline.json",
   "whole_product_run_complete": true,
   "frozen_predecessor_aggregates_match": true,

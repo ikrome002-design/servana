@@ -68,6 +68,7 @@ use App\Http\Controllers\Api\V1\Payments\PaymentRecordController;
 use App\Http\Controllers\Api\V1\Payments\PaymentRecordingGroupController;
 use App\Http\Controllers\Api\V1\Payments\PaymentReferenceCheckController;
 use App\Http\Controllers\Api\V1\PeriodLocks\FinancialPeriodLockController;
+use App\Http\Controllers\Api\V1\Personnel\PersonnelExperienceController;
 use App\Http\Controllers\Api\V1\Platform\FreePeriodOfferController;
 use App\Http\Controllers\Api\V1\Platform\InternalPlatformAccessController;
 use App\Http\Controllers\Api\V1\Platform\PlanEntitlementController;
@@ -1037,6 +1038,25 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             // the controller.
             Route::get('personnel/me/sessions', [PersonnelServiceSessionController::class, 'index'])
                 ->name('personnel.sessions.index');
+
+            // Phase UI-14 — narrow own-scope Personnel read projections over existing facts. The
+            // controller derives the acting StaffProfile from the authenticated membership, checks
+            // the Personnel role + existing domain permissions, and accepts no staff identifier.
+            // There is no mutation, no contact export and no client-authoritative money.
+            Route::get('personnel/me/workspace', [PersonnelExperienceController::class, 'dashboard'])
+                ->name('personnel.workspace.show');
+            Route::get('personnel/me/service-history', [PersonnelExperienceController::class, 'history'])
+                ->name('personnel.service-history.index');
+            Route::get('personnel/me/preferred-requests', [PersonnelExperienceController::class, 'preferredRequests'])
+                ->name('personnel.preferred-requests.index');
+            Route::get('personnel/me/served-clients', [PersonnelExperienceController::class, 'servedClients'])
+                ->name('personnel.served-clients.index');
+            Route::get('personnel/me/commissions', [PersonnelExperienceController::class, 'commissions'])
+                ->name('personnel.commissions.index');
+            Route::get('personnel/me/salary', [PersonnelExperienceController::class, 'salary'])
+                ->name('personnel.salary.index');
+            Route::get('personnel/me/availability', [PersonnelExperienceController::class, 'availability'])
+                ->name('personnel.availability.show');
 
             // ----------------------------------------------------------------
             // Personnel bulk SMS to PERSONALLY SERVED clients (Plan §64, §20, §22, §68;

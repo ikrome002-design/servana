@@ -1,0 +1,405 @@
+{
+  "origin": "http://localhost:4175",
+  "accounts": 8,
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "widths": [
+    360,
+    767,
+    768,
+    1024,
+    1025,
+    1440
+  ],
+  "viteManifestSha256": "ba2c72121bd6afa05474bb439a2515903894d94291a29d3fde49580c5db543b8",
+  "screenshots": [
+    {
+      "file": "shells/merchant_administrator-dark-1024.png",
+      "sha256": "efd75cef2b2331d7fb00011ac0f9aaaed42e238a76e6e231d516d68921750a13"
+    },
+    {
+      "file": "shells/merchant_administrator-dark-1025.png",
+      "sha256": "b582bc46485afc785c814418133b5a0f011894117b20072e7cffe26626340201"
+    },
+    {
+      "file": "shells/merchant_administrator-dark-1440.png",
+      "sha256": "e06da60ed9509b1939e9d7bc47e5f016e2af81f2f9383cf2a7b144dd1b9c92df"
+    },
+    {
+      "file": "shells/merchant_administrator-dark-360.png",
+      "sha256": "0c8346069a49af27cdd97402a00ba5eb057cd9c006c00f1e6c54897c4023a192"
+    },
+    {
+      "file": "shells/merchant_administrator-dark-767.png",
+      "sha256": "f4a0301f72d397b490f0858280a7ac3afac963644ebd768633d5ec89ad6be588"
+    },
+    {
+      "file": "shells/merchant_administrator-dark-768.png",
+      "sha256": "fb793e6c88ea28044e6314030c04276f3ff6159585dd5a15e2a928fa46b3aad8"
+    },
+    {
+      "file": "shells/merchant_administrator-light-1024.png",
+      "sha256": "4f8cbc15bc174e9e17ef52f9331651e23d06c80b2341119c66baaa2e4f709b5e"
+    },
+    {
+      "file": "shells/merchant_administrator-light-1025.png",
+      "sha256": "124a9b6d80518bf2a75eeb6b34c59cb39df4656c6a7c1e6db2cd26f5a136cbb4"
+    },
+    {
+      "file": "shells/merchant_administrator-light-1440.png",
+      "sha256": "de79d5010b05b12bbc76854f41e0960b44993d24dc940788219ad285c1826587"
+    },
+    {
+      "file": "shells/merchant_administrator-light-360.png",
+      "sha256": "a4272c9e640dbe24b9d1df3223dbbab509bbea81a73f31744412fb7fd91c1d5e"
+    },
+    {
+      "file": "shells/merchant_administrator-light-767.png",
+      "sha256": "f899ccb258363db7ea750c258fc540d7a7b77d7925f5292033a6111b83dad63e"
+    },
+    {
+      "file": "shells/merchant_administrator-light-768.png",
+      "sha256": "3c3b4bb5b3f2dce2e08134cfb5d8664eaf424d44fede3bf5b9d77de40a702c76"
+    },
+    {
+      "file": "shells/merchant_audit-dark-1024.png",
+      "sha256": "636b94fe07132b6ccdac831ead07bfb62663f96140a99f9b1404b01a2b0d2538"
+    },
+    {
+      "file": "shells/merchant_audit-dark-1025.png",
+      "sha256": "145a606d64646bc435bbcd44e8e85e2035a28b48f4954952e360055f32b728fe"
+    },
+    {
+      "file": "shells/merchant_audit-dark-1440.png",
+      "sha256": "0cebb5ee01815b7138e31cee0d21f3d844404d843b0079c565641e6896389b2c"
+    },
+    {
+      "file": "shells/merchant_audit-dark-360.png",
+      "sha256": "4d19706ad2983209a40acaac35e06d7e17c1ab7caf39e573123db8c745bc775b"
+    },
+    {
+      "file": "shells/merchant_audit-dark-767.png",
+      "sha256": "16ef2e8c5a61485ccf31494fa0cd2fedc1a108438e79d86aeaaf3c6c8f81fa6b"
+    },
+    {
+      "file": "shells/merchant_audit-dark-768.png",
+      "sha256": "9a23e3f8c0ea8ad7eaafdd112a6f1cc08f36b13c5f9c37bbabbd6012d147de2f"
+    },
+    {
+      "file": "shells/merchant_audit-light-1024.png",
+      "sha256": "9e498e7fb902cd6b90fed39a334178d7778c3bc519e601f7c8f5c1027ae149c1"
+    },
+    {
+      "file": "shells/merchant_audit-light-1025.png",
+      "sha256": "7fb745971e92208321fe773553ed9b50ac61bd5f40e316189253d188c453f0b4"
+    },
+    {
+      "file": "shells/merchant_audit-light-1440.png",
+      "sha256": "6f69f1b2b1b24b8b469c8f1938f92d2066f895f791dcdf021461a93359f78fae"
+    },
+    {
+      "file": "shells/merchant_audit-light-360.png",
+      "sha256": "b398ab7db2c3bb8a383c4352f71a4801ca0fd69509c46860449d554e43cf1ca2"
+    },
+    {
+      "file": "shells/merchant_audit-light-767.png",
+      "sha256": "23adb8624e3b03958d33aa02de351a73b29facb3fe0174987828407a1fd0ba5b"
+    },
+    {
+      "file": "shells/merchant_audit-light-768.png",
+      "sha256": "68c8c072a90cf3864f1e33bb06dddff46f361a84e1bf23f8487e0b62d725593f"
+    },
+    {
+      "file": "shells/merchant_branch-dark-1024.png",
+      "sha256": "54b133f1e8965c735fb458e52108a30fc5ef921d8acaf9b7bf6d4faf2891dc88"
+    },
+    {
+      "file": "shells/merchant_branch-dark-1025.png",
+      "sha256": "a2ff8f0176b395a585a4bd498012a889fe624c48eb4346b1ddff594eee808eb9"
+    },
+    {
+      "file": "shells/merchant_branch-dark-1440.png",
+      "sha256": "ab6bfe50562c8705a299bcd230d61aeb074dda978ba523d7c0f51d5de8f0cd8f"
+    },
+    {
+      "file": "shells/merchant_branch-dark-360.png",
+      "sha256": "8f1950946747108cd3647cedf3258fe3b7a37f564b63ebd2bc66072c98ab94d4"
+    },
+    {
+      "file": "shells/merchant_branch-dark-767.png",
+      "sha256": "b522f3bc397d619fd0d9ffe4c536c76987b9ee6ee1369864c5f3e09407496a92"
+    },
+    {
+      "file": "shells/merchant_branch-dark-768.png",
+      "sha256": "761178d87cdb578c33b8e69341e01c45938bb53606734dedb0ddd0bc46de3fda"
+    },
+    {
+      "file": "shells/merchant_branch-light-1024.png",
+      "sha256": "4705362a35305066d484f9ab20fa4428fa14b04bbcb547d76307d2328fc9e1b1"
+    },
+    {
+      "file": "shells/merchant_branch-light-1025.png",
+      "sha256": "311c376166d0a6711fd59340b379f5a3993326d044ee2ebab34cf96fe2dd8508"
+    },
+    {
+      "file": "shells/merchant_branch-light-1440.png",
+      "sha256": "0d765f486a0ec3913c33fda2a2171d4b2ffb3d9eff2bc095e091a3c17075225a"
+    },
+    {
+      "file": "shells/merchant_branch-light-360.png",
+      "sha256": "dd2f13509981a4fb7cae8954229a1fc067f5fe441b9e301c95608a6e20188b9b"
+    },
+    {
+      "file": "shells/merchant_branch-light-767.png",
+      "sha256": "2a150102623c77909c8fd866618244bec5ca043f5ee5e54444fcc270a51ef057"
+    },
+    {
+      "file": "shells/merchant_branch-light-768.png",
+      "sha256": "97708f61def382ae1be16222cea7bfa9b6334ac8d400d58182f3af1cdf13c5f4"
+    },
+    {
+      "file": "shells/merchant_finance-dark-1024.png",
+      "sha256": "6995932c9cec052f62a2f20afa527573b6e1f965bb6ae783009a95574f172b21"
+    },
+    {
+      "file": "shells/merchant_finance-dark-1025.png",
+      "sha256": "a3e00c101011ba316b12c604307a6ae5495822f67c539acd46cd13c5da0261f1"
+    },
+    {
+      "file": "shells/merchant_finance-dark-1440.png",
+      "sha256": "b4e677def52fec720ae6e5a2f74624d0e11fe6465f6baa38dd58065e53584020"
+    },
+    {
+      "file": "shells/merchant_finance-dark-360.png",
+      "sha256": "1f74d3c97a70275cfd87d47178746a0c1e7b5ad706a2a397a0d77b954d96c0ad"
+    },
+    {
+      "file": "shells/merchant_finance-dark-767.png",
+      "sha256": "a85ba75f0d686e8fd6538ef748f2d1273ba99508801a1220288910ad10a87831"
+    },
+    {
+      "file": "shells/merchant_finance-dark-768.png",
+      "sha256": "5bbe8eb1df77f7eb1d45e7b4581cb93429082621070afa11fdbf0e8b04bf3b01"
+    },
+    {
+      "file": "shells/merchant_finance-light-1024.png",
+      "sha256": "c352e310d0dd2614658bf764f8a062819150d53cd66aef392ce39bc6e369104b"
+    },
+    {
+      "file": "shells/merchant_finance-light-1025.png",
+      "sha256": "4fa0c3f58ccb2eb218d9ce568d882c6518be823bae55815fff06cef4298d8ae8"
+    },
+    {
+      "file": "shells/merchant_finance-light-1440.png",
+      "sha256": "1130bd9fd7dacf5e79ed1b7aa527721641dde30033046c1beeca2519f90ce4e2"
+    },
+    {
+      "file": "shells/merchant_finance-light-360.png",
+      "sha256": "47fa23db3ba0c17d46ea0db8bcb8ec57eeba18985c01e169e5d22bd256e08806"
+    },
+    {
+      "file": "shells/merchant_finance-light-767.png",
+      "sha256": "176145311522331244fbad4db09fda80f5ce28022043086e30ca3fee51ff3349"
+    },
+    {
+      "file": "shells/merchant_finance-light-768.png",
+      "sha256": "23dd59d5f5186fa2c0f6f07a3a7982d71d9457b4805a000f88b2ec07d3102d11"
+    },
+    {
+      "file": "shells/merchant_front_office-dark-1024.png",
+      "sha256": "73497926074a8b5a963df3ddf53ccdd4b737037033bf4ac31a58ad0044577ae1"
+    },
+    {
+      "file": "shells/merchant_front_office-dark-1025.png",
+      "sha256": "365aabad7bcf5f970a97cd810d168b5c7c75f168e8e4e2780f5d6ee4daf62eb0"
+    },
+    {
+      "file": "shells/merchant_front_office-dark-1440.png",
+      "sha256": "7ac32948b7d22898bbbd69928dd2ad323d2a76314f676b2366ac11f94e6af45a"
+    },
+    {
+      "file": "shells/merchant_front_office-dark-360.png",
+      "sha256": "134f6b62d0d132decc7f40934cbdd2c2cb237380edfa14a4c3512013a06c0fe7"
+    },
+    {
+      "file": "shells/merchant_front_office-dark-767.png",
+      "sha256": "882f5ccb002c32b06b1efa52c998393a540c4ffa307b747af2d43204efbd956b"
+    },
+    {
+      "file": "shells/merchant_front_office-dark-768.png",
+      "sha256": "e81b40c6689c5c4ed2b2649fd39e3e9067d40a5e0429e92d3c868062d51059c3"
+    },
+    {
+      "file": "shells/merchant_front_office-light-1024.png",
+      "sha256": "06d53303a977998322f84e1d3975e91ae4c00c1cf3f39a4fade3054c862744cf"
+    },
+    {
+      "file": "shells/merchant_front_office-light-1025.png",
+      "sha256": "203af95d4e7b8bfeb535ac7b0e28daec6b7e3494e237ec9efd64fb63ae1b1007"
+    },
+    {
+      "file": "shells/merchant_front_office-light-1440.png",
+      "sha256": "7e2080f183fa2902664655e56ef8119ff92cb3e66f7c88056a855055da733b1d"
+    },
+    {
+      "file": "shells/merchant_front_office-light-360.png",
+      "sha256": "76b536e82a7ef2c12bc1e59ce34c3dcba2e88598b5f0dc12b1c25a390b976ef7"
+    },
+    {
+      "file": "shells/merchant_front_office-light-767.png",
+      "sha256": "a2b83a9b6eb05112802d206499b345d1176f32c1b7fa0b28a80a0a22a82262c5"
+    },
+    {
+      "file": "shells/merchant_front_office-light-768.png",
+      "sha256": "9d2c5d30843c972480fa1ef23ea36d7f7cc8b1de3f90b8af15701c858a4625f6"
+    },
+    {
+      "file": "shells/merchant_human_resource-dark-1024.png",
+      "sha256": "d120c669eb398706ab5b9c54c60d1531c65a7b9106ea983bf95207b4c79fa5ad"
+    },
+    {
+      "file": "shells/merchant_human_resource-dark-1025.png",
+      "sha256": "a8df709b8c80479ed5f4b8290cc39d2525d20f0eb582f2e4b5b33f031511e51a"
+    },
+    {
+      "file": "shells/merchant_human_resource-dark-1440.png",
+      "sha256": "f537d73d9ca10f9bff1159403a19ee64b3254373171cb0afbe34c26ee7a722a1"
+    },
+    {
+      "file": "shells/merchant_human_resource-dark-360.png",
+      "sha256": "41b5b23ae1bac860a91bcb35cb2ea218cd5689fac252ad8d08ec215799d2f9ae"
+    },
+    {
+      "file": "shells/merchant_human_resource-dark-767.png",
+      "sha256": "0f7eaf1bfec231a9bf3010df83780c60bc715cd6d91f27b5b00847b03d8ce6ef"
+    },
+    {
+      "file": "shells/merchant_human_resource-dark-768.png",
+      "sha256": "7dda2ac98e3792b3fb2e530c0db91c8aa3d9db81bc4d5b676f1215ae4198c8c2"
+    },
+    {
+      "file": "shells/merchant_human_resource-light-1024.png",
+      "sha256": "f8c1c7dfe3350de509652be8f5e0476f0357f022b16b97a5e16ba856ef917332"
+    },
+    {
+      "file": "shells/merchant_human_resource-light-1025.png",
+      "sha256": "f24fcc0019564721d780e1121127af15d2f383166bb186a143082b24912cd6af"
+    },
+    {
+      "file": "shells/merchant_human_resource-light-1440.png",
+      "sha256": "b7ab4f10234506504eeac88096c8e0b8c6cba4c216d0a481f21a3ce293628f2c"
+    },
+    {
+      "file": "shells/merchant_human_resource-light-360.png",
+      "sha256": "24660375c046c8a3d915555aa6af6ac87ab71ba2426b1d0d429b44b433e2c4b6"
+    },
+    {
+      "file": "shells/merchant_human_resource-light-767.png",
+      "sha256": "dea7c4a49016255f99c274dfc6792c86243ae7f1d3baa1470ec0bc4db14c6da8"
+    },
+    {
+      "file": "shells/merchant_human_resource-light-768.png",
+      "sha256": "0c534ee4785e5ea61b55a56cda6d3e9d71f48e27976c37e9f7b49d78bba250b7"
+    },
+    {
+      "file": "shells/merchant_personnel-dark-1024.png",
+      "sha256": "e7ca76115da46b573316ef80b7730c590d2469065c9842c598a6702f1e0e7a07"
+    },
+    {
+      "file": "shells/merchant_personnel-dark-1025.png",
+      "sha256": "b9d7003c626339f3289c36865f7a82dafd122694eb4ca5a0518a219fa5eec134"
+    },
+    {
+      "file": "shells/merchant_personnel-dark-1440.png",
+      "sha256": "cff0bb978766be2755bf60121915cfeddd8e555d08c6b094398bda36c96616f5"
+    },
+    {
+      "file": "shells/merchant_personnel-dark-360.png",
+      "sha256": "b4390ef7df7648df721fb86ec5205568fa3149e531b16ca15c29d2221a57aa30"
+    },
+    {
+      "file": "shells/merchant_personnel-dark-767.png",
+      "sha256": "ce5510e82a02b9051aecd3480c0b95abe05ededd74b26a51501c09b6d3044eb7"
+    },
+    {
+      "file": "shells/merchant_personnel-dark-768.png",
+      "sha256": "7441aabdd1ed0443a30c9d1dc1b5108161a4cde27fbbd7c66b548a7242f1da29"
+    },
+    {
+      "file": "shells/merchant_personnel-light-1024.png",
+      "sha256": "dddb15e75421317becba167d434ba44d71e3e6e01ba3147e49939c7fcc9aab19"
+    },
+    {
+      "file": "shells/merchant_personnel-light-1025.png",
+      "sha256": "06d6d1cbdf3e9ff54cec28d965b8d7813afac413fb795e7d0545e50119bf4ac3"
+    },
+    {
+      "file": "shells/merchant_personnel-light-1440.png",
+      "sha256": "0eac1f1b4d4ebe41706f2430f269df30b7a7faaf1a274ac9d1cdd51f925d306b"
+    },
+    {
+      "file": "shells/merchant_personnel-light-360.png",
+      "sha256": "162af926115fc8dc40bde22eddb502686c6bb61f4c0e1f31ab53479f4590b46d"
+    },
+    {
+      "file": "shells/merchant_personnel-light-767.png",
+      "sha256": "00c8f650fb99cf5da17e9efed50db3bade7ac7327af97738b1f7c9c6be5f9139"
+    },
+    {
+      "file": "shells/merchant_personnel-light-768.png",
+      "sha256": "598797947e510cfdcf1b8bb4ef83e8f0006c5cff7230f556d967bd89915544b8"
+    },
+    {
+      "file": "shells/super_administrator-dark-1024.png",
+      "sha256": "60c1f3f024f865236998ff24496f7514feed599dc73862d0d29c925469583f50"
+    },
+    {
+      "file": "shells/super_administrator-dark-1025.png",
+      "sha256": "c38e6a3325a3c5a8d6402545589da6eeaa738edf2f770cb6217e227bfe24fd41"
+    },
+    {
+      "file": "shells/super_administrator-dark-1440.png",
+      "sha256": "562885241d39879e17a20f946e94e1331c087673b39bc9fd5a5c7dc5b20a4940"
+    },
+    {
+      "file": "shells/super_administrator-dark-360.png",
+      "sha256": "8f54c43e5ef5b25ecc587555045b5bc8aa4f3a595e2b363fae400842adce21f2"
+    },
+    {
+      "file": "shells/super_administrator-dark-767.png",
+      "sha256": "91c330b12e5d6d620f58d85d0b505d292fdcbeb89c2389e165419a436585c2ad"
+    },
+    {
+      "file": "shells/super_administrator-dark-768.png",
+      "sha256": "4d88de9a174ffa2c2b65894036f094e12ba451ccfbfacfaa8fc3f171c4bbce8e"
+    },
+    {
+      "file": "shells/super_administrator-light-1024.png",
+      "sha256": "4e4aee954639af03b88bb156af8d84fb7868d041a6274da415de20191c84c242"
+    },
+    {
+      "file": "shells/super_administrator-light-1025.png",
+      "sha256": "715a3f2ccada51c403fc5f970c77e0fb66ef9b1b4d00315cee3dc8f01eceea12"
+    },
+    {
+      "file": "shells/super_administrator-light-1440.png",
+      "sha256": "5584539e96fe5a84030f12968b979c684d62d47bcca79bbb46819f55b0b1af95"
+    },
+    {
+      "file": "shells/super_administrator-light-360.png",
+      "sha256": "982929ed4a87c2a7744fad95934ea6e29ded00ffb3f02136b2334deb74dbde4f"
+    },
+    {
+      "file": "shells/super_administrator-light-767.png",
+      "sha256": "b60658067e268cd0aefbbee3764875b52d2aa87bde6f20895519a1d72eacac8f"
+    },
+    {
+      "file": "shells/super_administrator-light-768.png",
+      "sha256": "0c3db73a2ea6ccd369b995f5a841fb3a460c85139327a6a8badf65a74830dbb4"
+    }
+  ],
+  "platformFixtureCorrection": "2/2 focused rerun passed with the current tested aggregate response; replaces 12 platform captures",
+  "acceptance": "17/17 compatibility cases covered; two platform cases repeated after fixture correction; all 96 accepted captures have current hashes"
+}

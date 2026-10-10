@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui13.browser-proof.v1",
   "phase": "UI-13",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "account": "merchant_front_office",
   "host": "office.servana.ke",
   "focused_playwright": {

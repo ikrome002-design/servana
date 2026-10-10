@@ -1,22 +1,32 @@
-/* Self-hosted fonts (Plan §12.2: no third-party font CDN, for privacy + CSP).
-   Inter for product UI (400/500/600), Manrope for page titles (700/800). */
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/manrope/700.css';
-@import '@fontsource/manrope/800.css';
-
 /* Servana design tokens — GENERATED from resources/spa/src/design-system/tokens.json by
    `node scripts/generate-design-tokens.mjs` (ADR-021). This file declares no colour of its own:
    raw brand values exist ONLY in the token source, and `DesignTokenSourceGuardTest` fails the
    build if one reappears here. */
 @import './styles/generated/tokens.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* REM-DEP-003: v4's supported PostCSS integration loads the existing token consumer.
+   Source detection is explicit so another worktree cannot contribute utility candidates. */
+@import 'tailwindcss' source('./');
+@config '../../../tailwind.config.ts';
+@source '../index.html';
+
+/* Only the token-driven md/lg screen definitions may select the layout. */
+@theme {
+  --breakpoint-sm: initial;
+  --breakpoint-xl: initial;
+  --breakpoint-2xl: initial;
+}
+
+/* Keep the existing class-based dark preference and v3 control semantics. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  /* Tailwind v4 leaves enabled button cursor choice to the application. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
   body {
     font-family: var(--sv-font-family-ui);
     background-color: var(--sv-color-surface-page);
@@ -107,6 +117,14 @@
 }
 
 @layer utilities {
+  /* v4's built-in outline-none cannot be replaced by a same-named @utility.
+     Preserve v3's transparent outline on the two focus variants used in the app. */
+  .focus\:outline-none:focus,
+  .focus-visible\:outline-none:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
   /* Reduced motion is honoured globally: no shared component may animate through it. */
   @media (prefers-reduced-motion: reduce) {
     *,

@@ -1,0 +1,347 @@
+{
+  "phase": "UI-14",
+  "account_type": "merchant_personnel",
+  "host": "staff.servana.ke",
+  "lifecycle": "local_complete",
+  "source_of_truth": {
+    "ui_plan": "Servana_Role_Specific_UI_UX_Subdomain_Software_Development_Plan.md §11",
+    "canonical_navigation": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
+    "permission_matrix": "docs/auth/permission-matrix.yaml",
+    "runtime_routes": "resources/spa/src/router/routes/personnel.ts"
+  },
+  "baseline": {
+    "required_pages": 20,
+    "implemented_contract_rows": 6,
+    "planned_contract_rows": 13,
+    "disabled_by_gate_contract_rows": 1,
+    "legacy_runtime_pages": 7,
+    "note": "The legacy Personnel landing route is real but is not one of the 20 authenticated contract pages. Existing canonical runtime mappings use /personnel-prefixed paths and are reconciled to host-relative paths in UI-14."
+  },
+  "target": {
+    "implemented": 19,
+    "disabled_by_gate": 1,
+    "planned": 0,
+    "removed_by_authority": 0
+  },
+  "pages": [
+    {
+      "order": 1,
+      "key": "merchant_personnel.dashboard",
+      "route_path": "/dashboard",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "own appointments",
+        "own queue",
+        "own sessions",
+        "own earnings",
+        "own payouts",
+        "own queries",
+        "own served clients",
+        "own SMS campaigns",
+        "HR-controlled availability"
+      ],
+      "gap": "No server-authoritative own-workspace summary or runtime page.",
+      "ui14_disposition": "implement_with_narrow_own_scope_read_seam",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.dashboard"
+    },
+    {
+      "order": 2,
+      "key": "merchant_personnel.get-started",
+      "route_path": "/get-started",
+      "baseline_status": "implemented",
+      "baseline_runtime_route": "personnel.get-started",
+      "authoritative_facts": [
+        "device-scoped checklist persistence",
+        "canonical personnel page routes"
+      ],
+      "gap": "Personnel items name backend phases instead of deep-linking to the now-live canonical pages; compensation acknowledgement is not distinguished from legal acknowledgement.",
+      "ui14_disposition": "recompose_existing_page_without_backend_mutation",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.get-started"
+    },
+    {
+      "order": 3,
+      "key": "merchant_personnel.work-queue",
+      "route_path": "/work/queue",
+      "baseline_status": "implemented",
+      "baseline_runtime_route": "personnel.queue",
+      "authoritative_facts": [
+        "GET /api/v1/personnel/me/queue"
+      ],
+      "gap": "Legacy path and sparse visual hierarchy.",
+      "ui14_disposition": "recompose_existing_page",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.work-queue"
+    },
+    {
+      "order": 4,
+      "key": "merchant_personnel.work-appointments",
+      "route_path": "/work/appointments",
+      "baseline_status": "implemented",
+      "baseline_runtime_route": "personnel.appointments",
+      "authoritative_facts": [
+        "GET /api/v1/personnel/me/appointments"
+      ],
+      "gap": "Legacy path and no today/upcoming/past composition.",
+      "ui14_disposition": "recompose_existing_page",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.work-appointments"
+    },
+    {
+      "order": 5,
+      "key": "merchant_personnel.work-sessions",
+      "route_path": "/work/sessions",
+      "baseline_status": "implemented",
+      "baseline_runtime_route": "personnel.sessions",
+      "authoritative_facts": [
+        "GET /api/v1/personnel/me/sessions"
+      ],
+      "gap": "Legacy path and no explicit payment-validation/commission explanation.",
+      "ui14_disposition": "recompose_existing_page",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.work-sessions"
+    },
+    {
+      "order": 6,
+      "key": "merchant_personnel.work-history",
+      "route_path": "/work/history",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "completed own service sessions",
+        "masked clients",
+        "service catalogue snapshots"
+      ],
+      "gap": "No bounded own-performance aggregate/read projection.",
+      "ui14_disposition": "implement_with_narrow_own_scope_read_seam",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.work-history"
+    },
+    {
+      "order": 7,
+      "key": "merchant_personnel.work-preferred-requests",
+      "route_path": "/work/preferred-requests",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "preferred personnel on appointments and queue entries",
+        "own assignment state"
+      ],
+      "gap": "Existing queue read exposes only preferred active entries currently assigned to the caller and cannot truthfully show reassigned/cancelled/completed requests.",
+      "ui14_disposition": "implement_with_narrow_own_scope_read_seam",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.work-preferred-requests"
+    },
+    {
+      "order": 8,
+      "key": "merchant_personnel.clients",
+      "route_path": "/clients",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "completed own service sessions",
+        "client consent",
+        "masked phone"
+      ],
+      "gap": "SMS recipient selector is deliberately minimal and cannot serve the canonical relationship-history page.",
+      "ui14_disposition": "implement_with_narrow_masked_own_scope_read_seam",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.clients"
+    },
+    {
+      "order": 9,
+      "key": "merchant_personnel.messages-compose",
+      "route_path": "/messages/compose",
+      "baseline_status": "implemented",
+      "baseline_runtime_route": "personnel.sms",
+      "authoritative_facts": [
+        "Phase 21S preview",
+        "server-computed segments and cost",
+        "own served-client selection",
+        "confirm-time consent and billing validation"
+      ],
+      "gap": "Composer is consolidated with served clients and history, uses a legacy path, and does not render the product-owner-mandated exact cost notice.",
+      "ui14_disposition": "split_and_recompose_existing_page",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.messages-compose"
+    },
+    {
+      "order": 10,
+      "key": "merchant_personnel.messages",
+      "route_path": "/messages",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "GET /api/v1/personnel/me/sms-campaigns",
+        "masked recipient outcomes"
+      ],
+      "gap": "History exists only as a secondary panel on the legacy composer.",
+      "ui14_disposition": "implement_from_existing_api",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.messages"
+    },
+    {
+      "order": 11,
+      "key": "merchant_personnel.earnings",
+      "route_path": "/earnings",
+      "baseline_status": "implemented",
+      "baseline_runtime_route": "personnel.earnings",
+      "authoritative_facts": [
+        "server-authoritative per-currency earnings overview",
+        "compensation model visibility",
+        "own payouts",
+        "own queries"
+      ],
+      "gap": "Seven canonical earnings pages are consolidated into one legacy screen.",
+      "ui14_disposition": "split_and_recompose_existing_page",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.earnings"
+    },
+    {
+      "order": 12,
+      "key": "merchant_personnel.earnings-commission",
+      "route_path": "/earnings/commission",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "append-only own commission ledger",
+        "Finance validation event",
+        "invoice and service snapshots"
+      ],
+      "gap": "Overview exposes totals only; no bounded masked own-ledger list endpoint.",
+      "ui14_disposition": "implement_with_narrow_own_scope_read_seam",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.earnings-commission"
+    },
+    {
+      "order": 13,
+      "key": "merchant_personnel.earnings-salary",
+      "route_path": "/earnings/salary",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "append-only own salary ledger",
+        "active compensation plan"
+      ],
+      "gap": "Overview exposes totals only; no bounded own-ledger list endpoint.",
+      "ui14_disposition": "implement_with_narrow_own_scope_read_seam",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.earnings-salary"
+    },
+    {
+      "order": 14,
+      "key": "merchant_personnel.earnings-payouts",
+      "route_path": "/earnings/payouts",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "GET /api/v1/personnel/me/payouts"
+      ],
+      "gap": "Payout history is consolidated into the legacy earnings page.",
+      "ui14_disposition": "implement_from_existing_api",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.earnings-payouts"
+    },
+    {
+      "order": 15,
+      "key": "merchant_personnel.earnings-terms",
+      "route_path": "/earnings/terms",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "GET /api/v1/personnel/me/compensation",
+        "active plan and commission rule"
+      ],
+      "gap": "Existing payload omits safe commission-rule explanation fields and there is no server acknowledgement mutation contract.",
+      "ui14_disposition": "extend_read_seam_and_use_device_scoped_view_acknowledgement",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.earnings-terms"
+    },
+    {
+      "order": 16,
+      "key": "merchant_personnel.earnings-statements",
+      "route_path": "/earnings/statements",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "paid own payout items",
+        "idempotent private statement generation",
+        "short-lived signed download"
+      ],
+      "gap": "Statement controls are consolidated into the legacy earnings page.",
+      "ui14_disposition": "implement_from_existing_api",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.earnings-statements"
+    },
+    {
+      "order": 17,
+      "key": "merchant_personnel.earnings-queries",
+      "route_path": "/earnings/queries",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "own earnings query index/show/create"
+      ],
+      "gap": "Query workflow is consolidated into the legacy earnings page; no reply/reopen mutation contract exists for Personnel.",
+      "ui14_disposition": "implement_existing_supported_workflow_without_fabricated_mutations",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.earnings-queries"
+    },
+    {
+      "order": 18,
+      "key": "merchant_personnel.availability",
+      "route_path": "/availability",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "HR-controlled recurring availability",
+        "exceptions",
+        "derived live state",
+        "eligible services"
+      ],
+      "gap": "The existing staff endpoint authorizes HR mutation and Branch read only; Personnel has no own-schedule read. No self-status mutation contract exists.",
+      "ui14_disposition": "implement_read_only_with_narrow_own_scope_read_seam_no_self_mutation",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.availability"
+    },
+    {
+      "order": 19,
+      "key": "merchant_personnel.notifications",
+      "route_path": "/notifications",
+      "baseline_status": "disabled_by_gate",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [],
+      "gap": "Phase 21N is not started because 20D-W remains blocked by closed External Gate W.",
+      "ui14_disposition": "remain_disabled_by_gate_without_route_component_or_network_runtime",
+      "final_status": "disabled_by_gate",
+      "final_runtime_route": null
+    },
+    {
+      "order": 20,
+      "key": "merchant_personnel.account",
+      "route_path": "/account",
+      "baseline_status": "planned",
+      "baseline_runtime_route": null,
+      "authoritative_facts": [
+        "own /me bootstrap",
+        "own sessions",
+        "own MFA",
+        "own theme preference"
+      ],
+      "gap": "No Personnel account wrapper/runtime route.",
+      "ui14_disposition": "implement_from_existing_own_scope_account_runtime",
+      "final_status": "implemented",
+      "final_runtime_route": "personnel.account"
+    }
+  ],
+  "final": {
+    "implemented": 19,
+    "disabled_by_gate": 1,
+    "planned": 0,
+    "removed_by_authority": 0,
+    "total": 20
+  },
+  "final_note": "Every row is backed by a live canonical route, real own-scope API data, focused tests, browser proof and a visual score, except notifications which stays disabled_by_gate (Phase 21N / External Gate W) with no route, component or network runtime."
+}

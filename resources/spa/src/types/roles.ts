@@ -126,7 +126,7 @@ export const ROLE_ENTRY: Record<RoleIdentity, RoleEntry> = {
     label: 'Personnel',
     layout: 'PersonnelLayout',
     navPlacement: 'sidebar',
-    landingRouteName: 'personnel.landing',
+    landingRouteName: 'personnel.dashboard',
     getStartedRouteName: 'personnel.get-started',
   },
   merchant_audit: {

@@ -278,5 +278,10 @@ it('surfaces active eligible services in the read payload without contact data',
 it('exposes no platform/super-admin availability route', function (): void {
     $names = collect(app('router')->getRoutes())->map(fn ($r) => $r->getName())->filter();
     expect($names->filter(fn ($n) => str_contains((string) $n, 'availability'))->values()->all())
-        ->toBe(['staff.availability.show', 'staff.availability.update', 'staff.availability.emergency-unavailable']);
+        ->toBe([
+            'staff.availability.show',
+            'staff.availability.update',
+            'staff.availability.emergency-unavailable',
+            'personnel.availability.show',
+        ]);
 });

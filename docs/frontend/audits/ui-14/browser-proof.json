@@ -1,0 +1,205 @@
+{
+  "schema": "servana.ui14.browser-proof.v1",
+  "phase": "UI-14",
+  "lifecycle": "local_complete",
+  "browser": "Playwright Chromium (project chromium), workers 1, retries 0 locally",
+  "server": "Vite production preview of the final frozen source on http://localhost:4173",
+  "source": "Reconciled UI14 source after merged REM-DEP-003, current UI06 projection and proven mobile clipping fix; 3293 runtime/test/canonical paths frozen before the first authoritative full run. Historic Claude manifest is unchanged.",
+  "focused_playwright": {
+    "command": "playwright test tests/e2e/ui-14-personnel-experience.spec.ts --reporter=list",
+    "collected": 73,
+    "passed": 73,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "wall_time": "4.6m",
+    "started_utc": "2026-10-09T01:59:32.749Z",
+    "covers": [
+      "19 implemented pages resolve on canonical staff routes with their own-scope API and no browser error or failed request",
+      "Notifications visible, disabled, names Phase 21N and External Gate W; no route, component or network runtime",
+      "wrong account role and mismatched host fail closed; inactive session redirected to Magic Link sign-in; deep link preserved",
+      "staff-selector query ignored; own-work failures are non-enumerating",
+      "served clients masked with no export/copy/print/download control; availability exposes no mutation; no financial/admin mutation controls",
+      "SMS: server cost preview, exact billing notice, confirmation dialog, send through Servana; message history own-only",
+      "three compensation models; non-applicable direct routes truthful; statements and queries without compensation mutation",
+      "seven widths without horizontal overflow; mobile/tablet transformations; 200% equivalent with footer reserve",
+      "dark render + axe for all 19 pages; light axe for all 19; fresh light default; dark persists; reduced motion; drawer focus trap; 44px targets",
+      "deterministic screenshot index"
+    ],
+    "ended_utc": "2026-10-09T02:04:09.195Z"
+  },
+  "related_targeted_runs": [
+    {
+      "spec": "tests/e2e/ui-07-navigation-screen-contracts.spec.ts",
+      "collected": 42,
+      "passed": 42,
+      "note": "after UI14-ROB-001; Personnel 20/20 entries, 0 console errors"
+    },
+    {
+      "spec": "phase-20h / phase-21s / role-entry-surfaces / ui-07 Personnel cases",
+      "collected": 9,
+      "passed": 9,
+      "note": "after UI14-REG-002 and UI14-NAV-001"
+    },
+    {
+      "spec": "phase-23-release-audit 'axe: platform-landing' --repeat-each=3",
+      "collected": 3,
+      "passed": 3,
+      "note": "UI14-ENV-004 isolation"
+    }
+  ],
+  "whole_product_playwright": {
+    "command": "playwright test --reporter=list",
+    "collected": 1653,
+    "passed": 1653,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "wall_time": "1.0h",
+    "started_utc": "2026-10-09T02:11:02.846Z",
+    "ended_utc": "2026-10-09T03:14:04.412Z",
+    "test_files": 47
+  },
+  "failed_runs": [
+    {
+      "run": "focused page subset --grep 'resolves its canonical staff route' --workers=4 (exploratory)",
+      "result": "18/19; one Page.captureScreenshot protocol error",
+      "classification": "environment (UI14-ENV-001)",
+      "resolution": "serial rerun passed"
+    },
+    {
+      "run": "focused, first full pass of the redesigned pages",
+      "result": "71/72; composer region name matched getByLabel('Message')",
+      "classification": "a11y defect (UI14-A11Y-001)",
+      "resolution": "heading renamed; rerun green"
+    },
+    {
+      "run": "whole-product #1 (2026-10-08T10:38Z–11:35Z)",
+      "result": "1,628 passed / 6 failed (57.2m)",
+      "classification": "5 x stale predecessor tests or navigation defect (UI14-REG-002, UI14-NAV-001) + 1 x load-timing nondeterminism (UI14-ENV-004)",
+      "resolution": "precise fixes; targeted reruns 9/9 and 3/3"
+    },
+    {
+      "run": "whole-product #2 (2026-10-08T11:47Z–12:40Z)",
+      "result": "1,634 / 1,634 passed (52.9m)",
+      "classification": "superseded — UI-07 projection then showed 2 Personnel console errors (UI14-ROB-001), fixed in source, so this run no longer described the final source",
+      "resolution": "final focused + whole-product #3 on the frozen source"
+    }
+  ],
+  "status": "focused and authoritative whole-product browser proof green on the post-remediation frozen source; exact-head PR CI pending",
+  "pre_remediation_browser_proof": {
+    "schema": "servana.ui14.browser-proof.v1",
+    "phase": "UI-14",
+    "lifecycle": "local_complete",
+    "browser": "Playwright Chromium (project chromium), workers 1, retries 0 locally",
+    "server": "Vite production preview of the final frozen source on http://localhost:4173",
+    "source": "uncommitted UI-14 working tree on phase-ui-14-personnel-experience at HEAD 14cfadcb512d867d2aebefe0fa628fdee3563e02; final source frozen after UI14-ROB-001",
+    "focused_playwright": {
+      "command": "npx playwright test tests/e2e/ui-14-personnel-experience.spec.ts",
+      "collected": 72,
+      "passed": 72,
+      "failed": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "exit_code": 0,
+      "wall_time": "3.4m",
+      "started_utc": "2026-10-08T12:48:49Z",
+      "covers": [
+        "19 implemented pages resolve on canonical staff routes with their own-scope API and no browser error or failed request",
+        "Notifications visible, disabled, names Phase 21N and External Gate W; no route, component or network runtime",
+        "wrong account role and mismatched host fail closed; inactive session redirected to Magic Link sign-in; deep link preserved",
+        "staff-selector query ignored; own-work failures are non-enumerating",
+        "served clients masked with no export/copy/print/download control; availability exposes no mutation; no financial/admin mutation controls",
+        "SMS: server cost preview, exact billing notice, confirmation dialog, send through Servana; message history own-only",
+        "three compensation models; non-applicable direct routes truthful; statements and queries without compensation mutation",
+        "seven widths without horizontal overflow; mobile/tablet transformations; 200% equivalent with footer reserve",
+        "dark render + axe for all 19 pages; light axe for all 19; fresh light default; dark persists; reduced motion; drawer focus trap; 44px targets",
+        "deterministic screenshot index"
+      ]
+    },
+    "related_targeted_runs": [
+      {
+        "spec": "tests/e2e/ui-07-navigation-screen-contracts.spec.ts",
+        "collected": 42,
+        "passed": 42,
+        "note": "after UI14-ROB-001; Personnel 20/20 entries, 0 console errors"
+      },
+      {
+        "spec": "phase-20h / phase-21s / role-entry-surfaces / ui-07 Personnel cases",
+        "collected": 9,
+        "passed": 9,
+        "note": "after UI14-REG-002 and UI14-NAV-001"
+      },
+      {
+        "spec": "phase-23-release-audit 'axe: platform-landing' --repeat-each=3",
+        "collected": 3,
+        "passed": 3,
+        "note": "UI14-ENV-004 isolation"
+      }
+    ],
+    "whole_product_playwright": {
+      "command": "npx playwright test --reporter=list",
+      "collected": 1634,
+      "passed": 1634,
+      "failed": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "exit_code": 0,
+      "wall_time": "58.0m",
+      "started_utc": "2026-10-08T12:52:17Z",
+      "ended_utc": "2026-10-08T13:50:18Z",
+      "test_files": 46
+    },
+    "failed_runs": [
+      {
+        "run": "focused page subset --grep 'resolves its canonical staff route' --workers=4 (exploratory)",
+        "result": "18/19; one Page.captureScreenshot protocol error",
+        "classification": "environment (UI14-ENV-001)",
+        "resolution": "serial rerun passed"
+      },
+      {
+        "run": "focused, first full pass of the redesigned pages",
+        "result": "71/72; composer region name matched getByLabel('Message')",
+        "classification": "a11y defect (UI14-A11Y-001)",
+        "resolution": "heading renamed; rerun green"
+      },
+      {
+        "run": "whole-product #1 (2026-10-08T10:38Z–11:35Z)",
+        "result": "1,628 passed / 6 failed (57.2m)",
+        "classification": "5 x stale predecessor tests or navigation defect (UI14-REG-002, UI14-NAV-001) + 1 x load-timing nondeterminism (UI14-ENV-004)",
+        "resolution": "precise fixes; targeted reruns 9/9 and 3/3"
+      },
+      {
+        "run": "whole-product #2 (2026-10-08T11:47Z–12:40Z)",
+        "result": "1,634 / 1,634 passed (52.9m)",
+        "classification": "superseded — UI-07 projection then showed 2 Personnel console errors (UI14-ROB-001), fixed in source, so this run no longer described the final source",
+        "resolution": "final focused + whole-product #3 on the frozen source"
+      }
+    ],
+    "status": "focused and whole-product browser proof green on the final frozen source"
+  },
+  "codex_post_remediation": {
+    "recorded_at": "2026-10-09T03:14:25.621Z",
+    "source_freeze": {
+      "recorded_at": "2026-10-09T01:57:48.557Z",
+      "paths": 3293,
+      "vite_manifest_sha256": "49dd7d0ba73c88c43b581568472af8d97f675f6e3b0ad58f778a7020f65f0f2e",
+      "inventory_sha256": "8859a3c4b6dcf9b278a849494d75281863797dad8785021601190d9ecf643ac1"
+    },
+    "logs": {
+      "whole": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-browser-whole.log",
+      "focused": "C:/Users/nderu/.codex/tmp/servana-rem-dep-003-20261008/ui14-browser-focused-mobile-layout-correction.log"
+    },
+    "source_checks_before_and_after_exit_zero": true,
+    "focused_before_mobile_correction": {
+      "passed": 89,
+      "ui14": 72,
+      "migration_cross_account": 17,
+      "invalidation": "Preserved initial regression evidence; narrow mobile layout correction superseded Personnel acceptance. Global CSS byte-identical; all accounts also covered by final whole run."
+    },
+    "current_reviewed_screenshot_hashes_unchanged_by_whole_run": true,
+    "original_manifest_sha256": "a059e89cd1c2d0f6aa49ddb0677db2250366c40a05413bd2fd894a6ea1432b4f"
+  }
+}
