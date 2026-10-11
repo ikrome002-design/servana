@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui15.codex-security-closeout.v1",
   "phase": "UI-15",
-  "status": "ci_validation_pending",
+  "status": "security_closeout_verified_release_ci_merge_pending",
   "authorization": "Product-owner same-session continuation explicitly authorizes UI15-SEC-OBS-001 repair and ordinary release after all gates pass. Latest resume explicitly authorizes a test/merge-gated non-draft PR when bounded safe runtime recovery fails.",
   "baseline": {
     "manifest": "docs/frontend/audits/ui-15/claude-to-codex-handoff.json",
@@ -15,7 +15,8 @@
   "reproduction": {
     "initial_fixture_run": "2 errors / 0 assertions: missing PermissionSeeder; fixture corrected without assertion changes",
     "corrected_pre_fix": "2 failed / 2 assertions; both expected 403, received 201; PostgreSQL 132 migrations",
-    "post_fix": "Audit + file authorization + export hardening run remains unfinished due Docker/WSL unresponsiveness; no pass or count claimed"
+    "post_fix": "CI 38159296673 on dbda7e1d3c9ff5feb9612ee559c8df92b5a39fa5: named PostgreSQL suite 233 passed / 6562 assertions / 0 errors, failures or skips; all 30 new cases passed / 125 assertions.",
+    "local_post_fix": "NOT RUN LOCALLY — INFRASTRUCTURE BLOCKED; original unfinished local run preserved, never counted green."
   },
   "mapping": {
     "general": "audit.branch_events.view",
@@ -44,21 +45,42 @@
       "40 content documents current",
       "design tokens current"
     ],
-    "larastan_and_full_pint": "Full host PHP 8.5 Pint and Larastan passed. CI PHP 8.3 Pint and Larastan passed on f529344; fresh exact-head CI remains required after remediation.",
-    "post_fix_postgresql": "NOT RUN LOCALLY — INFRASTRUCTURE BLOCKED; named CI Audit/private-file security step and full PostgreSQL suite required.",
+    "larastan_and_full_pint": "Host PHP 8.5 full Pint and Larastan passed; CI PHP 8.3 full Pint and Larastan passed on dbda7e1; final proof commit requires fresh exact-head CI.",
+    "post_fix_postgresql": "Verified in CI: full PostgreSQL 3621 passed / 5 existing skips / 52477 assertions; named security 233 passed / 0 skips / 6562 assertions.",
     "production_php": "Claude PHP image is historical and does not prove new authorization. The 48 host checks only cover unchanged shell routes/account context/assets/unauthenticated refusal and remain valid for that scope. Current production PHP builds and changed backend authorization are required independently in exact-head Docker/Backend CI; no authenticated repair inference from old image.",
     "baseline_browser_visual": "unchanged frontend bytes; retain Claude 50 focused/1721 whole-product/64 captures/14 pages scored 28–30; no new browser claim",
     "gitleaks_current_candidate_snapshot": "Previous 236-file clean scan historical; final current/staged scans pending.",
-    "current_ui15_artifact_gate": "correctly FAILS: UI-15 has open defects; export repair pending verification is a release blocker",
-    "current_file_secret_scan": "237 authorized files / 7.40 MB / zero leaks / exit 0; final scan repeated after final metadata and staging",
-    "staged_diff_initial": "Failed on extra EOF blank line in historical-evidence-baseline.json; precise whitespace repair recorded."
+    "current_ui15_artifact_gate": "PASS after verified closure: 15 pages,14 implemented,1 gated,0 planned,visual14/14; earlier pending open-defect failures preserved.",
+    "current_file_secret_scan": "237 explicitly authorized full-file candidates: zero leaks, exit 0; staged contents and feature history scanned before every commit. Latest proof candidate is approximately 7.48 MB.",
+    "staged_diff_initial": "Failed on extra EOF blank line in historical-evidence-baseline.json; precise whitespace repair recorded.",
+    "frontend": "CI 38159296673: ESLint/vue-tsc/contracts/build pass; Vitest 1449 / 152 files pass; npm audit zero.",
+    "backend_services": "CI PHP 8.3/PostgreSQL 16, Redis 7, real reachable Meilisearch, real ClamAV EICAR 3 passed / 7 assertions / no skips; Composer audit zero.",
+    "historical_evidence": "13/13 frozen scope counts and aggregate hashes independently rechecked after Codex corrections; no host browser rewrite.",
+    "skipped_existing": [
+      {
+        "file": "tests/Feature/Performance/ApiLatencyBenchmarkTest.php",
+        "reason": "Wall-clock benchmark opts in with SERVANA_RUN_BENCHMARK=1; excluded from CI by existing Phase24 policy."
+      },
+      {
+        "file": "tests/Feature/Isolation/FutureResourceIsolationTest.php",
+        "identifiers": [
+          "GET /invoices/{ulid-of-other-merchant} → 404 + audit unauthorized_access",
+          "Finance of Branch X lists payments of Branch Y (same merchant) → empty/404 + audit",
+          "Export job given an unscoped query → export service refuses",
+          "Personnel requests another personnel queue → 404"
+        ],
+        "reason": "Four unchanged legacy placeholders; existing permitted skips preserved. Real domain isolation suites and the new real worker/both-stream export negatives execute; no security regression skipped."
+      }
+    ]
   },
   "blocker": {
     "kind": "environment",
     "evidence": "wsl -d docker-desktop -- free -m and ps failed: Wsl/Service/0x8007274c; Docker exec process inspection and active checks stopped responding",
-    "safe_next_step": "Commit/push authorized feature scope; non-draft PR; inspect exact-head PostgreSQL JUnit and all five jobs; repair failures; never merge pending proof.",
+    "safe_next_step": "Final proof commit, fresh five-job exact-head CI, truthful PR66 governance, ordinary squash merge, equal-tree verification, source deletion and clean synchronized main. No direct main documentation commit.",
     "owned_database": "servana_ui15_codex_test (created only for this session; not deleted)",
-    "runtime_process_state": "Docker unavailable; running test/static process completion cannot be established; do not launch duplicate work until inspected"
+    "runtime_process_state": "Docker unavailable; running test/static process completion cannot be established; do not launch duplicate work until inspected",
+    "local_runtime_unavailable": true,
+    "release_security_blocker": false
   },
   "amendments": [
     {
@@ -92,15 +114,15 @@
     {
       "path": "docs/CHANGELOG.md",
       "before_sha256": "1ed7b4b2a4481477a443487a878a350fa89592d0951d47c91f27ea1005f089e8",
-      "after_sha256": "4d2dac2b5c9f99376f04e4c15277a09f6934550a22cda9c6f7e8919c12253ae8",
-      "bytes": 394861,
+      "after_sha256": "ddba162927fe5e6f05385efbd1a4bedcd0ea831893f6c31792a2d172bc6c8c9c",
+      "bytes": 397429,
       "classification": "codex_amended"
     },
     {
       "path": "docs/PROGRESS.md",
       "before_sha256": "4f670d12016ef3388b526dd8181259f73a7d1eadb3f38b1457a557f69d470eb9",
-      "after_sha256": "b6f6229ef17d1718dc47dee101707cb2f0bddaceb3f23e8813a18e71a0499e35",
-      "bytes": 515914,
+      "after_sha256": "644a15f90ac6aefa449e5997aa3d3b24d48fc8457d5e0e86277aca5cf8bc2a0f",
+      "bytes": 518663,
       "classification": "codex_amended"
     },
     {
@@ -120,36 +142,36 @@
     {
       "path": "docs/frontend/audits/ui-15/audit-security-matrix.json",
       "before_sha256": "3e17a0df77bffa6731c90fb94f69d1dde781e3559063c7ffbf223075177fe49a",
-      "after_sha256": "98519bc94b277134e8516a6a6dd4fb22ef01b026138335ef53badecb34ccfbd4",
-      "bytes": 6410,
+      "after_sha256": "be5dcb6e7aba2503bdbea660b6e78ac10e3dcd3cee7cb74cbc487d712342354c",
+      "bytes": 6567,
       "classification": "codex_amended"
     },
     {
       "path": "docs/frontend/audits/ui-15/defect-closure.json",
       "before_sha256": "094d3a9fa2608e09339f128e4ea565c4507cc8e8f97f04162bdcd2d034fef98e",
-      "after_sha256": "3940e46f9ebc5343314f67a705c41b206429949613330804c849e8d767b674b7",
-      "bytes": 15483,
+      "after_sha256": "acff87aabef2ed60abfbb41d5fedf44d8e6c4e080c012ab39dcadce71aea3e7c",
+      "bytes": 17118,
       "classification": "codex_amended"
     },
     {
       "path": "docs/frontend/audits/ui-15/export-security-matrix.json",
       "before_sha256": "a84dc4b3f968d7b5c7020aa3468d4bf3956a782272a1409eb61379d2a07cf688",
-      "after_sha256": "3c3aafcb6a0770044cb48e6fd483c23d10be90ce44ae06ad3b7358aa73878b3f",
-      "bytes": 3025,
+      "after_sha256": "639cdd98b63f23cd318cfe2e29044faa3e54d60a07cc51975da0533b39a3430c",
+      "bytes": 3321,
       "classification": "codex_amended"
     },
     {
       "path": "docs/frontend/audits/ui-15/implementation-checklist.md",
       "before_sha256": "5fe44f4882d12e37c7764b06ddaf038b583a2119859e33a4928216b8ab84789b",
-      "after_sha256": "171a509abe6d3e31574e094fb26adc628b62df68b5825f067649d305f3e91e95",
-      "bytes": 8475,
+      "after_sha256": "22b0feec01bc1fcd705986da92866008de7cbeca8cec8ef5f0051a6a312fe166",
+      "bytes": 11023,
       "classification": "codex_amended"
     },
     {
       "path": "docs/proof/ui-15.md",
       "before_sha256": "be7a1d6af527d719c3576a38d8bffa83edb961be2def4218468881dcf3a775c8",
-      "after_sha256": "565c085b2b500fb31e6c93e93f5ba991dcb6be4dbe028f61ae924f9ccbace04c",
-      "bytes": 14235,
+      "after_sha256": "6f281da64a61aadb02a4c5dda032d9b5f44dfb13da11699fb7b020575032388c",
+      "bytes": 16763,
       "classification": "codex_amended"
     },
     {
@@ -418,15 +440,23 @@
     "tests/e2e/ui-15-audit-experience.spec.ts"
   ],
   "lifecycle": {
-    "staged": 0,
-    "commits": 0,
-    "push": false,
-    "pr": null,
-    "ci": null,
-    "merge": null
+    "pr": 66,
+    "pr_url": "https://github.com/ikrome002-design/servana/pull/66",
+    "source_head_verified": "dbda7e1d3c9ff5feb9612ee559c8df92b5a39fa5",
+    "implementation_commit": "f52934412e2cee06c7b2e83928f3e53bc791ef59",
+    "correction_commits": [
+      "3311c3b221e3699c79e0bc475d7f0c0a9c17af98",
+      "dbda7e1d3c9ff5feb9612ee559c8df92b5a39fa5"
+    ],
+    "proof_commit": "This document belongs to the next proof commit; own SHA and later CI/merge are recorded externally in the final PR governance/report.",
+    "merge": "pending, never pre-claimed",
+    "reviews_at_checkpoint": 0,
+    "approvals_at_checkpoint": 0,
+    "review_decision_at_checkpoint": "blank",
+    "governance_basis": "Owner explicitly authorizes PR66 ordinary release after gates; active Protect main ruleset 17624771 requires zero approvals, strict named checks, no bypass actors/current-user bypass."
   },
   "residuals": {
-    "specific_export_gap": "release blocker pending Codex verification, not deferred to REM-PERM-002",
+    "specific_export_gap": "resolved in UI-15 Codex closeout by actual PostgreSQL worker/link/both-stream proof; not deferred to broader REM-PERM-002",
     "broader_REM_PERM_002": "separately authorized remediation before Phase25",
     "UI15_INT_RES_001": "Phase25/product owner persistence contract",
     "UI16": "not started; owns UI08–UI12 visual revision and cross-account convergence after UI15 merge",
@@ -465,7 +495,7 @@
       "Security — gitleaks",
       "E2E — Playwright"
     ],
-    "status": "pending",
+    "status": "Security proof verified; all five jobs required again for final proof commit.",
     "named_step_order": "Before full parallel suite, with explicit Audit/private-file/session/permission/navigation cases and JUnit."
   },
   "security_proof_matrix": [
@@ -474,105 +504,135 @@
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "denies a domain export when its read key is revoked before creation / finance",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-02",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "denies a domain export when its read key is revoked before creation / compensation",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-03",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "does not widen a finance-only actor to compensation or implicit general scope; rejects the entire mixed domain request",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-04",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "generates and streams masked selected domains for the legitimate default Audit role",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-05",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "denies a domain export; rechecks live requester rights; denies previously issued signed streams / audit.export",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-06",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "rechecks live requester rights before a queued worker generates any file",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-07",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "denies previously issued signed streams and new links after revocation on both file routes",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-08",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "denies previously issued signed streams and new links after revocation on both file routes",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-09",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php; tests/Feature/Security/Phase23ExportHardeningTest.php",
       "identifiers": "both real streams; generic REVOKED/EXPIRED audit export tests",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-10",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php; tests/Feature/Audit/AuditExportIsolationTest.php; tests/Feature/Auth/SessionRevocationTest.php; tests/Feature/Auth/SessionLifecycleTest.php",
       "identifiers": "both real signed streams outside authorized merchant/branch; requester identity/membership/assignment revoked; real session revocation/lifecycle",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-11",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "validates malformed and unknown domain selections; fails closed on unsupported persisted scope; implicit general read required",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-12",
       "files": "tests/Feature/Audit/AuditExportExpiryDownloadCountTest.php; tests/Feature/Audit/AuditExportMaskingTest.php; tests/Feature/Security/Phase23ExportHardeningTest.php",
       "identifiers": "expiry/revoke/count/failed-file behavior",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-13",
       "files": "tests/Feature/Audit/AuditExportMaskingTest.php; tests/Feature/Audit/AuditSourceMutationDenialTest.php; tests/Feature/Audit/AuditMutationCoverageTest.php",
       "identifiers": "masked CSV, source mutation denial and audit event coverage",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-14",
       "files": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "identifiers": "generates and streams masked selected domains for the legitimate default Audit role / real finance and compensation events",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     },
     {
       "id": "SEC-15",
       "files": "tests/Feature/Auth/PermissionMatrixTest.php; tests/Feature/Auth/PermissionMatrixCatalogueCompletenessTest.php; tests/Feature/Docs/Ui07NavigationContractTest.php",
       "identifiers": "unchanged permissions/migrations/routes/gates; API 307/358 and UI 160 local deterministic checks",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
-      "result": "pending actual CI execution; no pass claimed"
+      "result": "passed; actual named PostgreSQL/JUnit cases and unchanged source contracts verified",
+      "run": 38159296673,
+      "artifact": 11708724358
     }
   ],
   "ci_history": [
@@ -603,6 +663,1431 @@
         "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php"
       ],
       "remaining_risk": "Fresh exact-head CI required; no release closure claimed."
+    },
+    {
+      "run": 38159296673,
+      "head": "dbda7e1d3c9ff5feb9612ee559c8df92b5a39fa5",
+      "backend": "success",
+      "job": 114528724579,
+      "full_postgresql": "3621 passed / 5 existing skips / 52477 assertions",
+      "named_security": "233 passed / 0 skips / 6562 assertions; all 30 new cases passed",
+      "frontend": "success",
+      "docker": "success",
+      "security": "success",
+      "e2e": "in progress at proof checkpoint; superseded by final proof commit; no completed browser result claimed here."
     }
-  ]
+  ],
+  "verified_security_junit": {
+    "run": 38159296673,
+    "head": "dbda7e1d3c9ff5feb9612ee559c8df92b5a39fa5",
+    "artifact": 11708724358,
+    "tests": 233,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "assertions": 6562,
+    "new_regressions": 30,
+    "new_assertions": 125,
+    "sha256": "108d40cbe15065079666405638cd813f5ef837680d7e7812c26206d8971437f0",
+    "cases": [
+      {
+        "class": "Tests.Feature.Audit.AuditBranchScopeTest",
+        "name": "it lists only the assigned branch rows for a branch-scoped Audit user",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditBranchScopeTest",
+        "name": "it denies an Audit user reading another branch row",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditBranchScopeTest",
+        "name": "it excludes merchant-level (branch_id null) rows from a branch-scoped Audit user",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditBranchScopeTest",
+        "name": "it denies a Merchant Admin any direct raw audit-log access (audit.view_full retired)",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainFailureSignalTest",
+        "name": "it emits no signal when every chain is valid",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainFailureSignalTest",
+        "name": "it emits exactly one bounded signal on a tampered (hash mismatch) chain",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainFailureSignalTest",
+        "name": "it categorises a forged inserted row as a broken link",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainFailureSignalTest",
+        "name": "it keeps the signal fully redacted — only safe bounded metadata, no payload/hash/PII",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainFailureSignalTest",
+        "name": "it never lets the verify command mutate an audit row",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainScheduleTest",
+        "name": "it registers audit:verify-chain on the scheduler",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainScheduleTest",
+        "name": "it runs it daily, without overlapping, on one server",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainVerificationTest",
+        "name": "it passes for valid platform and merchant chains",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainVerificationTest",
+        "name": "it keeps merchant chains independent — corrupting one does not fail another",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainVerificationTest",
+        "name": "it detects a forged inserted row (broken link)",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditChainVerificationTest",
+        "name": "it does not modify any audit row while verifying",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditEventCoverageTest",
+        "name": "it audits the full branch lifecycle with merchant + branch attribution",
+        "assertions": 12,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditEventCoverageTest",
+        "name": "it audits invitation create / resend / revoke / accept with masked email",
+        "assertions": 7,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditEventCoverageTest",
+        "name": "it audits membership lifecycle and branch assignment via the lifecycle service",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditEventCoverageTest",
+        "name": "it audits the founding membership on merchant self-registration",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditEventCoverageTest",
+        "name": "it audits permission overrides and unauthorized access via the HTTP boundary",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportAuditTest",
+        "name": "it emits the typed lifecycle chain requested → generated → downloaded → revoked",
+        "assertions": 7,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportAuditTest",
+        "name": "it emits audit_export.expired when a ready export expires",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportAuditTest",
+        "name": "it records the export audit rows with merchant + branch attribution and no leak",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportAuthorizationTest",
+        "name": "it denies every non-Audit role the audit-export endpoints",
+        "assertions": 10,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportAuthorizationTest",
+        "name": "it requires a non-empty reason",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportAuthorizationTest",
+        "name": "it denies requesting an export for a branch the Audit user is not assigned to",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies a domain export when its read key is revoked before creation with data set \"('general', 'audit.branch_events.view')\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies a domain export when its read key is revoked before creation with data set \"('finance', 'audit.finance.view')\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies a domain export when its read key is revoked before creation with data set \"('compensation', 'audit.compensation.view')\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies a domain export when its read key is revoked before creation with data set \"('finance', 'audit.export')\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it rejects the entire mixed domain request when any read key is missing with data set \"('audit.finance.view')\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it rejects the entire mixed domain request when any read key is missing with data set \"('audit.compensation.view')\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it requires general read for an omitted or empty domain selection with data set \"dataset \"omitted\"\"",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it requires general read for an omitted or empty domain selection with data set \"dataset \"empty\"\"",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it validates malformed and unknown domain selections with data set \"dataset \"unknown\"\"",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it validates malformed and unknown domain selections with data set \"dataset \"scalar\"\"",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it validates malformed and unknown domain selections with data set \"dataset \"nested\"\"",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it validates malformed and unknown domain selections with data set \"dataset \"null\"\"",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it does not widen a finance-only actor to compensation or implicit general scope with data set \"([['compensation']])\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it does not widen a finance-only actor to compensation or implicit general scope with data set \"([['finance', 'compensation']])\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it does not widen a finance-only actor to compensation or implicit general scope with data set \"([])\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it does not widen a finance-only actor to compensation or implicit general scope with data set \"([[]])\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it fails closed on unsupported persisted scope instead of falling back to export rights",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it generates and streams masked selected domains for the legitimate default Audit role",
+        "assertions": 11,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it rechecks live requester rights before a queued worker generates any file with data set \"('finance', 'audit.finance.view')\"",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it rechecks live requester rights before a queued worker generates any file with data set \"('compensation', 'audit.compensation.view')\"",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it rechecks live requester rights before a queued worker generates any file with data set \"('general', 'audit.export')\"",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies previously issued signed streams and new links after revocation on both file routes with data set \"('general', 'audit.branch_events.view')\"",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies previously issued signed streams and new links after revocation on both file routes with data set \"('finance', 'audit.finance.view')\"",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies previously issued signed streams and new links after revocation on both file routes with data set \"('compensation', 'audit.compensation.view')\"",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies previously issued signed streams and new links after revocation on both file routes with data set \"('general', 'audit.export')\"",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies queued generation when requester identity membership or branch assignment is revoked with data set \"('identity')\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies queued generation when requester identity membership or branch assignment is revoked with data set \"('membership')\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it denies queued generation when requester identity membership or branch assignment is revoked with data set \"('assignment')\"",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it refuses both real signed streams outside the authorized merchant or branch with data set \"('merchant', 404)\"",
+        "assertions": 6,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportDomainAuthorizationTest",
+        "name": "it refuses both real signed streams outside the authorized merchant or branch with data set \"('branch', 403)\"",
+        "assertions": 6,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportExpiryDownloadCountTest",
+        "name": "it counts each authorized stream exactly once and keeps first_downloaded_at immutable",
+        "assertions": 11,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportExpiryDownloadCountTest",
+        "name": "it refuses to stream an expired export",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportExpiryDownloadCountTest",
+        "name": "it refuses to stream a revoked export",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportIsolationTest",
+        "name": "it 404s a foreign-tenant export ULID without leaking it",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportIsolationTest",
+        "name": "it denies a same-tenant Audit user reading an export for a branch they are not assigned to",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportIsolationTest",
+        "name": "it never includes merchant-level (branch_id null) audit rows in a branch export",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportJobIdempotencyTest",
+        "name": "it is idempotent — re-running the generation job does not double-generate",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportJobIdempotencyTest",
+        "name": "it skips generation for an export already in a terminal state",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportMaskingTest",
+        "name": "it permission-masks sensitive values in the generated CSV",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportMaskingTest",
+        "name": "it never exposes the file id, storage path, signature, or an internal id in the resource",
+        "assertions": 10,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportMaskingTest",
+        "name": "it stores only a redacted failure code/message when generation throws",
+        "assertions": 6,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportSchemaTest",
+        "name": "it is branch-owned with a ULID route key and no soft-delete column",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportSchemaTest",
+        "name": "it rejects a status outside the lifecycle CHECK",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportSchemaTest",
+        "name": "it rejects an empty reason",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportSchemaTest",
+        "name": "it rejects a non-object scope_json",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportSchemaTest",
+        "name": "it enforces download-count / timestamp coherence",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportSchemaTest",
+        "name": "it requires file_id + generated_at + expires_at + row_count for a ready export",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportSchemaTest",
+        "name": "it refuses to drop a referenced uploaded_files row (RESTRICT)",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportSchemaTest",
+        "name": "it generates a unique ULID public identifier",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportStepUpTest",
+        "name": "it denies an export request without a fresh step-up",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportStepUpTest",
+        "name": "it allows an export request with a fresh step-up",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportWorkflowTest",
+        "name": "it runs request → queued → generated (ready) → stream download with accounting",
+        "assertions": 18,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportWorkflowTest",
+        "name": "it revokes a ready export so it can no longer stream (409)",
+        "assertions": 6,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportWorkflowTest",
+        "name": "it expires a ready export so it can no longer stream (409)",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditExportWorkflowTest",
+        "name": "it rejects an invalid lifecycle transition with 422 invalid_state_transition",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventIsolationTest",
+        "name": "it 404s a foreign-tenant flagged event without enumeration",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventIsolationTest",
+        "name": "it does not surface a same-merchant flagged event from an unassigned branch",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventIsolationTest",
+        "name": "it denies a non-Audit role the flagged-event endpoints",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventIsolationTest",
+        "name": "it denies flagging an audit row from an unassigned branch",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventIsolationTest",
+        "name": "it 404s flagging a foreign-tenant audit row",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventSchemaTest",
+        "name": "it has the Plan §13.2 columns and no soft-delete column",
+        "assertions": 13,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventSchemaTest",
+        "name": "it rejects a status outside the flagged-event lifecycle",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventSchemaTest",
+        "name": "it rejects a terminal review outcome without a resolver + notes",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventSchemaTest",
+        "name": "it accepts a terminal review outcome with a resolver + notes",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventSchemaTest",
+        "name": "it requires an assignee while under review",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventSchemaTest",
+        "name": "it refuses to drop the audited source row it references (RESTRICT)",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventSchemaTest",
+        "name": "it enforces same-merchant branch linkage via the composite FK",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventSchemaTest",
+        "name": "it generates a unique ULID public identifier and uses it as the route key",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventWorkflowTest",
+        "name": "it runs the full flag → review → resolve → reopen → dismiss → reopen lifecycle",
+        "assertions": 15,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventWorkflowTest",
+        "name": "it rejects an invalid transition with 422 invalid_state_transition",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventWorkflowTest",
+        "name": "it guards concurrent/duplicate transitions via the locked state check",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventWorkflowTest",
+        "name": "it requires a review note to resolve or dismiss",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventWorkflowTest",
+        "name": "it keeps the source audit_logs row immutable across the whole workflow",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventWorkflowTest",
+        "name": "it masks the linked audit row and never exposes internal ids or hashes",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventWorkflowTest",
+        "name": "it records a typed, masked audit event for each transition",
+        "assertions": 7,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditFlaggedEventWorkflowTest",
+        "name": "it lists only the acting Audit user assigned-branch flagged events",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditImmutabilityTest",
+        "name": "it blocks an UPDATE at the database",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditImmutabilityTest",
+        "name": "it blocks a DELETE at the database",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditImmutabilityTest",
+        "name": "it leaves the row intact after blocked mutations",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMaskedReadTest",
+        "name": "it paginates and server-masks branch-events reads for the Audit role",
+        "assertions": 12,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMaskedReadTest",
+        "name": "it masks the actor email in the read payload",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMaskedReadTest",
+        "name": "it allowlists filters — a valid action filter narrows, an invalid one 422s",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMaskedReadTest",
+        "name": "it denies a role without any audit-read permission",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMaskedReadTest",
+        "name": "it 404s a foreign-merchant audit row without leaking it",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMutationCoverageTest",
+        "name": "it classifies every implemented mutating route as AUDITED or EXEMPT (no unmapped mutation)",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMutationCoverageTest",
+        "name": "it keeps the coverage registry free of stale entries (every classified route still exists)",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMutationCoverageTest",
+        "name": "it never classifies a route as both AUDITED and EXEMPT",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMutationCoverageTest",
+        "name": "it references only real AuditEvent cases in the AUDITED map",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditMutationCoverageTest",
+        "name": "it requires a non-empty reason for every EXEMPT mutation",
+        "assertions": 10,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditReadSegmentationTest",
+        "name": "it segments branch events from the finance domain for the Audit role",
+        "assertions": 6,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditReadSegmentationTest",
+        "name": "it returns an empty compensation surface until its owning phases (authorized, not denied)",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditReadSegmentationTest",
+        "name": "it lets Finance read the finance audit surface but not the branch-events or compensation surfaces",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditReadSegmentationTest",
+        "name": "it denies Merchant Admin, Branch Manager, and HR every audit read surface (audit.view_full retired)",
+        "assertions": 12,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditReadSegmentationTest",
+        "name": "it confines the finance surface to the caller assigned branch and hides other-branch finance rows",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditRedactionTest",
+        "name": "it redacts and masks sensitive context values in a branch-events read",
+        "assertions": 14,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditRedactionTest",
+        "name": "it never exposes internal ids or hash-chain columns in a read payload",
+        "assertions": 10,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSeverityCoverageTest",
+        "name": "it maps every AuditEvent case to a valid severity without throwing",
+        "assertions": 292,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSeverityCoverageTest",
+        "name": "it maps every AuditEvent case to a read-segment domain",
+        "assertions": 292,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSeverityCoverageTest",
+        "name": "it represents every severity tier across the current catalogue",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSeverityCoverageTest",
+        "name": "it gives every route-referenced audit event a resolvable severity (registry ↔ enum)",
+        "assertions": 424,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSeverityCoverageTest",
+        "name": "it classifies each finance-domain audit event into the Finance read segment",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSourceMutationDenialTest",
+        "name": "it denies the Audit role representative source mutations across domains with data set \"dataset \"create a branch\"\"",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSourceMutationDenialTest",
+        "name": "it denies the Audit role representative source mutations across domains with data set \"dataset \"create a service\"\"",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSourceMutationDenialTest",
+        "name": "it denies the Audit role representative source mutations across domains with data set \"dataset \"create an invoice\"\"",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSourceMutationDenialTest",
+        "name": "it denies the Audit role representative source mutations across domains with data set \"dataset \"record a payment\"\"",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSourceMutationDenialTest",
+        "name": "it denies the Audit role representative source mutations across domains with data set \"dataset \"create a period lock\"\"",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSourceMutationDenialTest",
+        "name": "it denies the Audit role representative source mutations across domains with data set \"dataset \"request a finance export\"\"",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSourceMutationDenialTest",
+        "name": "it denies the Audit role representative source mutations across domains with data set \"dataset \"grant a permission override\"\"",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuditSourceMutationDenialTest",
+        "name": "it cannot mutate the audit_logs source row through any audit route",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuthAuditIntegrationTest",
+        "name": "it audits a magic link request with a masked email and no actor/merchant",
+        "assertions": 7,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuthAuditIntegrationTest",
+        "name": "it audits a denied request for an unknown email without leaking it",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuthAuditIntegrationTest",
+        "name": "it audits a failed verify for an invalid token and stores no token value",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuthAuditIntegrationTest",
+        "name": "it audits a successful login on token consume",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.AuthAuditIntegrationTest",
+        "name": "it audits a logout",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.PlatformAuditPolicyTest",
+        "name": "it lets platform staff read platform-chain audit rows",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.PlatformAuditPolicyTest",
+        "name": "it keeps merchant operational rows off the platform endpoint",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.PlatformAuditPolicyTest",
+        "name": "it denies a merchant admin the platform audit endpoint",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.PlatformAuditPolicyTest",
+        "name": "it denies platform staff the merchant audit endpoint (no active merchant)",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it classifies every review view inside the general segment only",
+        "assertions": 113,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it narrows the branch log to a review view server-side",
+        "assertions": 17,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it keeps a review view inside the caller assigned branch",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it filters by flagged review state and by correlation id, and reports review status apart from severity",
+        "assertions": 19,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it never exposes hash-chain columns on the audit-log read",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it reports a fully covered consistent chain as verified, counting only the caller branch",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it reports a consistent segment that does not reach genesis as partial, never verified",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it detects tampering inside the segment and names the event only when it is in the caller branch",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it withholds the identity of a break that sits in another branch",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it isolates merchant chains — another merchant broken chain never reaches this status",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it verifies without writing a single audit row",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it denies integrity status to the unauthenticated, to roles without the audit read key, and to an unassigned reader",
+        "assertions": 7,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Audit.Ui15AuditExperienceApiTest",
+        "name": "it offers no write verb on the integrity or audit-log surfaces",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Files.FileDownloadAuthorizationTest",
+        "name": "it lets an authorized user issue a link and download an available file",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Files.FileDownloadAuthorizationTest",
+        "name": "it 404s a file belonging to another merchant (no existence leak)",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Files.FileDownloadAuthorizationTest",
+        "name": "it denies a user who lacks the purpose permission",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Files.FileDownloadAuthorizationTest",
+        "name": "it enforces personnel own-scope on earnings statements",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Files.FileDownloadAuthorizationTest",
+        "name": "it rejects an expired signed download URL",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Files.FileDownloadAuthorizationTest",
+        "name": "it never makes a non-available file downloadable",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Files.FileSignedUrlExpiryTest",
+        "name": "it requires a valid signature in addition to authentication",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Files.FileSignedUrlExpiryTest",
+        "name": "it accepts a current signature and rejects an expired one",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it classifies every export/document-shaped route — nothing escapes the matrix",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it keeps the matrix honest — every classified route is still live",
+        "assertions": 17,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it enforces the declared control set on every export surface",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it never lets a raw byte stream be reachable without a signature and a re-check",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it requires every generated file purpose to declare a real download authority",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it keeps every export purpose generated-only and retention-bounded",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it offers no export type that yields personnel or client contact data",
+        "assertions": 13,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it stops serving a REVOKED finance export through the generic file endpoints",
+        "assertions": 6,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it stops serving an EXPIRED finance export through the generic file endpoints",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it stops serving a REVOKED audit export through the generic file endpoints",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it gates the billing invoice PDF on its resource permission, not tenant membership alone",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Security.Phase23ExportHardeningTest",
+        "name": "it stops serving an EXPIRED audit export through the generic file endpoints",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionRevocationTest",
+        "name": "it revokes every database session across multiple devices for a user",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionRevocationTest",
+        "name": "it revokes Sanctum personal-access tokens where present",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionRevocationTest",
+        "name": "it is idempotent — a second revocation revokes nothing and never restores access",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionRevocationTest",
+        "name": "it revokes only the affected member when revoking a membership",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionRevocationTest",
+        "name": "it revokes every member of a merchant when revoking the merchant",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionLifecycleTest",
+        "name": "it rejects /me for a guest with a 401 envelope",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionLifecycleTest",
+        "name": "it returns the bootstrap payload for an authenticated user (no merchant)",
+        "assertions": 7,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionLifecycleTest",
+        "name": "it logs out an authenticated user with 204",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionLifecycleTest",
+        "name": "it rejects logout for a guest",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionLifecycleTest",
+        "name": "it rejects a session idle beyond the timeout (middleware)",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.SessionLifecycleTest",
+        "name": "it allows and refreshes an active (non-idle) session (middleware)",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.PermissionMatrixTest",
+        "name": "it seeds the §10.3 matrix with zero mismatches",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.PermissionMatrixTest",
+        "name": "it matches the canonical PermissionRegistry (DB == registry)",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.PermissionMatrixTest",
+        "name": "it writes the matrix proof artifact",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.PermissionMatrixCatalogueCompletenessTest",
+        "name": "it covers every canonical §19.2 key with a populated YAML row",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.PermissionMatrixCatalogueCompletenessTest",
+        "name": "it marks every canonical key active or planned and never invents a non-canonical planned key",
+        "assertions": 35,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Auth.PermissionMatrixCatalogueCompletenessTest",
+        "name": "it excludes the retired audit.view_full and legacy audit.flag everywhere in the contract",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it keeps exactly one handwritten canonical authority for the authenticated page contract",
+        "assertions": 5,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it registers exactly 160 authenticated pages",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it registers the exact page count for each of the eight accounts",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it sums the account counts to the total instead of trusting a hard-coded number",
+        "assertions": 12,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it parses exactly 160 pages out of the binding human navigation map",
+        "assertions": 481,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it encodes every page of the human map verbatim — account, label, route and purpose",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it never invents a page the human map does not contain",
+        "assertions": 160,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it gives every page a globally unique key, route name and account-scoped path and screen key",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it normalises every contract path and never embeds a host or query string",
+        "assertions": 640,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it keeps every parent relationship inside the same account, resolvable and acyclic",
+        "assertions": 36,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it orders siblings deterministically with no duplicate order among them",
+        "assertions": 16,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it uses only the four allowed implementation statuses",
+        "assertions": 160,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it retires the legacy status vocabulary everywhere",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it gives every page exactly one UI owner phase, matching its account",
+        "assertions": 160,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it never infers backend ownership from the UI phase numbering",
+        "assertions": 292,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it never leaves an owner unnamed",
+        "assertions": 160,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it names a runtime route only for an implemented page",
+        "assertions": 320,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it never exposes a planned or removed page as a live route",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it gives every implemented page a lazily loaded runtime component",
+        "assertions": 267,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it imports no page eagerly — 160 pages never reach the initial bundle",
+        "assertions": 332,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it names the exact gate on every gate-blocked page and gives it no destination",
+        "assertions": 85,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it keeps External Gate W closed and creates no partner runtime behind a gated page",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it references only permission keys that already exist in the canonical matrix",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it adds no permission key to the matrix",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it forbids every account other than the owning one, and never the owner itself",
+        "assertions": 1280,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it gives the Super Administrator no merchant-creation or impersonation page",
+        "assertions": 4,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it gives Personnel no contact-export page in any form",
+        "assertions": 40,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it keeps the Audit account read-only — no mutating page",
+        "assertions": 15,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it keeps navigation placement header for the Super Administrator and sidebar for the rest",
+        "assertions": 8,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it uses the account-host registry keys and never a second account vocabulary",
+        "assertions": 24,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it writes exactly one screen specification per contract page, with no orphan",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it gives every screen specification the sections UI/UX plan §7.3 requires",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it never describes a page that is not implemented as though it were",
+        "assertions": 84,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it keeps the public and excluded surfaces out of the authenticated count",
+        "assertions": 9,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it backs every implemented contract page with a runtime screen-register row",
+        "assertions": 1,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it guards all eight authenticated account route trees",
+        "assertions": 25,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it explains every authenticated route that sits outside an account tree",
+        "assertions": 2,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it states that the route guard is defence in depth and not the security boundary",
+        "assertions": 3,
+        "result": "passed"
+      },
+      {
+        "class": "Tests.Feature.Docs.Ui07NavigationContractTest",
+        "name": "it records the exact source hashes every generated matrix was derived from",
+        "assertions": 15,
+        "result": "passed"
+      }
+    ]
+  }
 }

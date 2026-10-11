@@ -2,7 +2,7 @@
   "schema": "servana.ui15.export-security-matrix.v1",
   "phase": "UI-15",
   "lifecycle": "local_complete",
-  "backend_truth": "Phase 19 lifecycle unchanged: audit.export + RequireFreshMfa(audit_export_create) on request; async generation; masked CSV; private file; expiry; download counted on the authorized stream; revoke. No cancel or retry endpoint.",
+  "backend_truth": "Phase 19 lifecycle unchanged: audit.export + RequireFreshMfa(audit_export_create) on request; async generation; masked CSV; private file; expiry; download counted on the authorized stream; revoke. No cancel or retry endpoint. UI-15 Codex adds fresh audit.export AND selected-domain read permissions at all export/private-file access boundaries.",
   "rows": [
     {
       "case": "reason required (browser) — no request sent without it",
@@ -61,7 +61,7 @@
     }
   ],
   "codex_closeout": {
-    "status": "ci_validation_pending",
+    "status": "security_closeout_verified",
     "policy": "audit.export AND all selected domain read keys; omitted/empty means general; unknown scopes denied",
     "boundaries": [
       "request action",
@@ -69,6 +69,9 @@
       "Audit policy at link/stream",
       "FileAccessService at generic link/stream"
     ],
-    "evidence": "codex-security-closeout.json; named PostgreSQL CI/JUnit required before closure"
+    "evidence": "codex-security-closeout.json; ui15-export-security JUnit artifact 11708724358",
+    "run": 38159296673,
+    "head": "dbda7e1d3c9ff5feb9612ee559c8df92b5a39fa5",
+    "tests": "233 passed / 6562 assertions / 0 failures, errors, skips; 30 new cases passed"
   }
 }

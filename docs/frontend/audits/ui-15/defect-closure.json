@@ -281,21 +281,42 @@
         "FileSignedUrlExpiryTest",
         "Phase23ExportHardeningTest"
       ],
-      "test_command": "DB_DATABASE=servana_ui15_codex_test php vendor/bin/pest tests/Feature/Audit tests/Feature/Files/FileDownloadAuthorizationTest.php tests/Feature/Files/FileSignedUrlExpiryTest.php tests/Feature/Security/Phase23ExportHardeningTest.php --compact",
-      "test_result": "Post-fix run unfinished: Docker/WSL unresponsive; no pass claimed. Pre-fix two failures received 201 instead of 403.",
-      "proof": "Pint passed on seven Codex files; Composer validation/audit and npm audit clean; post-fix verification blocked.",
-      "remaining_risk": "Repair and post-revocation signed-stream behavior are unverified; RELEASE BLOCKED.",
-      "lifecycle": "open",
+      "test_command": "CI named Audit/private-file/session/permission/navigation Pest step with JUnit; full php artisan test --parallel on PHP8.3/PostgreSQL16",
+      "test_result": "CI 38159296673 on dbda7e1d3c9ff5feb9612ee559c8df92b5a39fa5: named PostgreSQL suite 233 passed / 6562 assertions / 0 errors, failures or skips; all 30 new cases passed / 125 assertions.",
+      "proof": "Run38159296673 Backend success; JUnit11708724358 SHA256 108d40cbe15065079666405638cd813f5ef837680d7e7812c26206d8971437f0; all 30 new cases including worker and both signed streams passed. Full suite3621/5/52477.",
+      "remaining_risk": "Local Docker integration unavailable, replaced by real hosted PostgreSQL proof. Final exact-head five-job CI and ordinary GitHub lifecycle still pending.",
+      "lifecycle": "verified_complete",
       "owner": "Codex UI-15 closeout",
-      "entry_condition": "Docker/WSL restored; complete affected tests/static checks and current production PHP image proof before staging"
+      "entry_condition": "Security closure verified; release waits for final five-job CI and ordinary merge."
+    },
+    {
+      "id": "UI15-CI-CODEX-001",
+      "observed_problem": "Codex new regression fixtures failed in first two CI runs before complete proof.",
+      "evidence": "38158213788 unknown named parameter; 38158852444 16 queue assertions included fixture Scout jobs (217 cases passed).",
+      "affected_files": [
+        "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
+        ".github/workflows/ci.yml"
+      ],
+      "root_cause": "Dataset argument binding and pre-operation queue capture included StaffProfile indexing from branchStaff setup.",
+      "why_root_cause": "The first test body did not execute; in the second run expected HTTP denials passed and only MakeSearchable fixture jobs violated emptiness.",
+      "correct_fix": "Positional dataset arguments; reset queue fake after scenario setup; keep all HTTP/no-export/no-job assertions. Named JUnit security step before full suite.",
+      "files_changed": "Two scoped correction commits, recorded in codex-security-closeout.json.",
+      "tests": [
+        "AuditExportDomainAuthorizationTest: all30cases"
+      ],
+      "test_command": "Named PostgreSQL CI Pest security step plus full parallel suite",
+      "test_result": "233 named passed / 6562 assertions / zero skips; all30new passed /125assertions; full3621passed/5existing skips.",
+      "proof": "Actual JUnit11708724358 and Backend114528724579 on dbda7e1.",
+      "remaining_risk": "Fresh final-head CI required after proof commit.",
+      "lifecycle": "verified_complete"
     }
   ],
   "counts": {
-    "open": 1,
+    "open": 0,
     "blocked": 0,
     "local_complete": 14,
-    "verified_complete": 0,
-    "total": 15
+    "verified_complete": 2,
+    "total": 16
   },
   "observations_not_defects": [
     "UI15-INT-RES-001 — daily full-chain verification results are not persisted (integrity-truth-matrix.json; owner Phase 25 §71 / product owner)"

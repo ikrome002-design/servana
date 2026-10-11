@@ -37,7 +37,7 @@ decodes CSS Color 4 instead of silently treating it as black. Thirty focused
 browser checks pass with transparent/matching-text negative controls; replacement
 exact-head five-job CI remains mandatory.
 
-### Phase UI-15 — Audit experience (`phase-ui-15-audit-experience`) — local_complete pending Codex release
+### Phase UI-15 — Audit experience (`phase-ui-15-audit-experience`) — local_complete; security closeout verified; PR #66 final CI/merge pending
 
 Implements the 15-page Audit account on `audit.servana.ke` (UI/UX plan Phase UI-15, Appendix A §12):
 **14 implemented / 1 disabled_by_gate (Notifications, Phase 21N behind External Gate W) / 0 planned /
@@ -5297,3 +5297,13 @@ remain running, then rerun the affected security and quality gates against the d
 because PHP authorization source changed; unchanged frontend visual evidence is retained.
 
 **Codex resume checkpoint (2026-10-11):** The preceding stop is historical. Bounded Docker server probes and normal Desktop restart/start timed out. Owner-authorized CI-first validation now permits a feature commit and non-draft PR; local post-fix PostgreSQL/full static checks remain unverified. A named PostgreSQL Audit/private-file CI step retains JUnit evidence alongside the full suite. Merge remains blocked until security proof and all five exact-head jobs pass. The prior 48 host checks remain valid only for unchanged shell/routing/assets; current authorization requires independent backend CI. No UI-16 work started.
+
+## Codex verified security checkpoint — PR #66 (2026-10-11)
+
+UI15-SEC-OBS-001 is resolved in this phase, independently of broader REM-PERM-002. CI run [38159296673](https://github.com/ikrome002-design/servana/actions/runs/38159296673), head `dbda7e1d3c9ff5feb9612ee559c8df92b5a39fa5`, passed Backend, Frontend, Docker and Security. PostgreSQL: **3,621 passed / five unchanged existing skips / 52,477 assertions**; named Audit/private-file/session/permission/navigation suite: **233 passed / 6,562 assertions / zero failures, errors or skips**, including **30 new export authorization cases / 125 assertions**. JUnit artifact `11708724358`, SHA-256 `108d40cbe15065079666405638cd813f5ef837680d7e7812c26206d8971437f0`. Worker revocation prevents files; prior signed links and both stream paths deny revoked grants; counters remain unchanged; legitimate default Audit Finance/Compensation exports stay masked and usable.
+
+The earlier local stop and two CI fixture failures remain historical evidence. Local post-fix PostgreSQL was **not completed** after `Wsl/Service/0x8007274c` and bounded Docker recovery timeouts; hosted PHP 8.3/PostgreSQL 16 supplies actual integration proof. Full host PHP 8.5 Pint/Larastan and pinned CI checks passed; Vitest 1,449 / 152 files and audits pass. Real ClamAV EICAR: 3 passed / 7 assertions ran without skip. Five full-suite skips are the unchanged opt-in wall-clock benchmark and four legacy FutureResourceIsolation placeholders; no new export-security test skipped. All 13 historical aggregates match. Original 228-path Claude handoff and its JSON manifest remain preserved; combined authorized scope is 237 paths.
+
+The accepted 48 host checks remain historical proof of unchanged routing/account-context/assets/unauthenticated refusal only; they do not establish new authorization. Current production PHP/nginx CI builds and configured host smoke passed independently. Existing 64 captures / 14 pages scored 28–30 and the six-reference design are unchanged.
+
+**Release lifecycle:** security closeout verified; final proof-commit five-job exact-head CI, governance, normal squash merge and cleanup still pending at this committed checkpoint. No completed E2E result on this head or GitHub merge is invented. Final actual CI/merge/tree/branch evidence belongs to the PR governance and final report; the next authorized UI-16 branch reconciles UI-15 to verified_complete. UI-16 (including mandatory UI-08–UI-12 visual revision), UI-17, Phase 25 and Gate-W-dependent phases remain unstarted.
