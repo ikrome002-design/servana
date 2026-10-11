@@ -155,13 +155,13 @@
     {
       "path": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "before_sha256": null,
-      "after_sha256": "7cd14f402cf527a59c5acb441abc7a6c151ad6c228f402c6ab3dac3acc610902",
-      "bytes": 11113,
+      "after_sha256": "ded2de7ce204af60ac6724e69eba4638e7a9bb077c2e3da6bd2ebabde03e6dd3",
+      "bytes": 11471,
       "classification": "codex_added"
     },
     {
       "path": ".github/workflows/ci.yml",
-      "before_sha256": "8358b2381faab74733646adb5e4976bd8939b86cf0e75216c11f740c070d267d",
+      "before_sha256": "8730a1cb3767bc37f43e169b8360d36a8561e4e8a3755417a6d6c43777f36ade",
       "after_sha256": "8730a1cb3767bc37f43e169b8360d36a8561e4e8a3755417a6d6c43777f36ade",
       "classification": "codex_amended_ci_evidence",
       "note": "Existing workflow preserved; added named real PostgreSQL tests and JUnit artifact. Baseline before hash is captured from Git HEAD below.",
@@ -586,6 +586,23 @@
       "root_cause": "A named dataset argument was called omitted rather than the declared selection parameter; the test body never executed for that case.",
       "correct_fix": "Named dataset labels now wrap numeric positional argument arrays; all assertions retained. Move named security/JUnit step before the full suite to expose these cases directly; include session and permission/navigation contracts for explicit SEC-10/SEC-15 evidence.",
       "other_completed_jobs": "Frontend, Docker, Security success; E2E still in progress at remediation; no overall/whole-browser success claimed."
+    },
+    {
+      "run": 38158852444,
+      "head": "3311c3b221e3699c79e0bc475d7f0c0a9c17af98",
+      "backend": "failed",
+      "job": 114527413376,
+      "step": "Security regression — Audit exports and private file access (UI-15)",
+      "junit_artifact": 11709093115,
+      "junit_sha256": "43de6fab1a5d57585576a24f6ab2addeb988e7df636e279ce1274783d4bd68dd",
+      "result": "233 cases: 217 passed, 16 failed, 6562 assertions. All 30 added cases discovered; 14 passed; 16 HTTP denial cases reached the expected denial then failed the whole-queue emptiness assertion.",
+      "error": "Laravel Scout MakeSearchable fixture jobs were captured before the denied export operation.",
+      "root_cause": "branchStaff fixture creates a searchable StaffProfile; Queue::fake started before scenario setup. Its indexing jobs were incorrectly attributed to export request.",
+      "correct_fix": "A file-local scenario wrapper resets Queue::fake after fixture setup, before overrides/request. All original HTTP/no-export/no-jobs assertions remain unchanged; worker/stream tests use real services.",
+      "affected_files": [
+        "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php"
+      ],
+      "remaining_risk": "Fresh exact-head CI required; no release closure claimed."
     }
   ]
 }

@@ -22,6 +22,16 @@ use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class)->group('audit', 'audit-exports', 'security');
 
+function auditExportDomainScenario(): array
+{
+    $scenario = auditExportScenario();
+    // Fixture creation queues Scout indexing. Measure only the export operation
+    // while preserving the stronger assertion that no jobs at all are enqueued.
+    Queue::fake();
+
+    return $scenario;
+}
+
 function denyAuditExportKey(array $scenario, string $key): void
 {
     $membership = MerchantUser::query()->where('user_id', $scenario['audit']->id)->firstOrFail();
@@ -42,7 +52,7 @@ beforeEach(function (): void {
 });
 
 it('denies a domain export when its read key is revoked before creation', function (string $domain, string $key): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     denyAuditExportKey($scenario, $key);
     requestAuditExport($scenario['audit'], [
         'branch' => $scenario['branch']->ulid,
@@ -59,7 +69,7 @@ it('denies a domain export when its read key is revoked before creation', functi
 ]);
 
 it('rejects the entire mixed domain request when any read key is missing', function (string $key): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     denyAuditExportKey($scenario, $key);
     requestAuditExport($scenario['audit'], [
         'branch' => $scenario['branch']->ulid, 'reason' => 'Mixed review',
@@ -70,7 +80,7 @@ it('rejects the entire mixed domain request when any read key is missing', funct
 })->with(['audit.finance.view', 'audit.compensation.view']);
 
 it('requires general read for an omitted or empty domain selection', function (array $selection): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     denyAuditExportKey($scenario, 'audit.branch_events.view');
     requestAuditExport($scenario['audit'], array_merge([
         'branch' => $scenario['branch']->ulid, 'reason' => 'Implicit scope review',
@@ -79,7 +89,7 @@ it('requires general read for an omitted or empty domain selection', function (a
 })->with(['omitted' => [[]], 'empty' => [['domains' => []]]]);
 
 it('validates malformed and unknown domain selections', function (mixed $domains): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     requestAuditExport($scenario['audit'], [
         'branch' => $scenario['branch']->ulid, 'reason' => 'Invalid scope review', 'domains' => $domains,
     ])->assertUnprocessable();
@@ -87,7 +97,7 @@ it('validates malformed and unknown domain selections', function (mixed $domains
 })->with(['unknown' => [['all']], 'scalar' => ['finance'], 'nested' => [[['finance']]], 'null' => [null]]);
 
 it('does not widen a finance-only actor to compensation or implicit general scope', function (array $selection): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     denyAuditExportKey($scenario, 'audit.compensation.view');
     denyAuditExportKey($scenario, 'audit.branch_events.view');
     requestAuditExport($scenario['audit'], array_merge([
@@ -103,7 +113,7 @@ it('does not widen a finance-only actor to compensation or implicit general scop
 ]);
 
 it('fails closed on unsupported persisted scope instead of falling back to export rights', function (): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     foreach ([['domains' => ['all']], ['domains' => 'finance'], ['domains' => null], ['all' => true]] as $scope) {
         expect(app(AuditExportAuthorization::class)->allows(
             $scenario['audit'], $scenario['merchant']->id, $scenario['branch']->id, $scope,
@@ -112,7 +122,7 @@ it('fails closed on unsupported persisted scope instead of falling back to expor
 });
 
 it('generates and streams masked selected domains for the legitimate default Audit role', function (): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     $recorder = app(AuditRecorder::class);
     foreach ([AuditDomain::Finance, AuditDomain::Compensation] as $domain) {
         $recorder->record(AuditEvent::from(AuditEvent::actionsIn($domain)[0]), $scenario['admin'],
@@ -139,7 +149,7 @@ it('generates and streams masked selected domains for the legitimate default Aud
 });
 
 it('rechecks live requester rights before a queued worker generates any file', function (string $domain, string $key): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     $id = requestAuditExport($scenario['audit'], [
         'branch' => $scenario['branch']->ulid, 'reason' => 'Queued revocation review', 'domains' => [$domain],
     ])->assertCreated()->json('data.id');
@@ -154,7 +164,7 @@ it('rechecks live requester rights before a queued worker generates any file', f
 ]);
 
 it('denies previously issued signed streams and new links after revocation on both file routes', function (string $domain, string $key): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     $id = requestAuditExport($scenario['audit'], [
         'branch' => $scenario['branch']->ulid, 'reason' => 'Stream revocation review', 'domains' => [$domain],
     ])->assertCreated()->json('data.id');
@@ -176,7 +186,7 @@ it('denies previously issued signed streams and new links after revocation on bo
 ]);
 
 it('denies queued generation when requester identity membership or branch assignment is revoked', function (string $revocation): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     $id = requestAuditExport($scenario['audit'], [
         'branch' => $scenario['branch']->ulid, 'reason' => 'Eligibility revocation review',
     ])->assertCreated()->json('data.id');
@@ -192,7 +202,7 @@ it('denies queued generation when requester identity membership or branch assign
 })->with(['identity', 'membership', 'assignment']);
 
 it('refuses both real signed streams outside the authorized merchant or branch', function (string $scope, int $status): void {
-    $scenario = auditExportScenario();
+    $scenario = auditExportDomainScenario();
     $id = requestAuditExport($scenario['audit'], [
         'branch' => $scenario['branch']->ulid, 'reason' => 'Signed scope review',
     ])->assertCreated()->json('data.id');
