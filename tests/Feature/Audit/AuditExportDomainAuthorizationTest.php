@@ -76,7 +76,7 @@ it('requires general read for an omitted or empty domain selection', function (a
         'branch' => $scenario['branch']->ulid, 'reason' => 'Implicit scope review',
     ], $selection))->assertForbidden();
     Queue::assertNothingPushed();
-})->with([['omitted' => []], ['empty' => ['domains' => []]]]);
+})->with(['omitted' => [[]], 'empty' => [['domains' => []]]]);
 
 it('validates malformed and unknown domain selections', function (mixed $domains): void {
     $scenario = auditExportScenario();

@@ -44,7 +44,7 @@
       "40 content documents current",
       "design tokens current"
     ],
-    "larastan_and_full_pint": "unfinished due Docker/WSL; no pass claimed",
+    "larastan_and_full_pint": "Full host PHP 8.5 Pint and Larastan passed. CI PHP 8.3 Pint and Larastan passed on f529344; fresh exact-head CI remains required after remediation.",
     "post_fix_postgresql": "NOT RUN LOCALLY — INFRASTRUCTURE BLOCKED; named CI Audit/private-file security step and full PostgreSQL suite required.",
     "production_php": "Claude PHP image is historical and does not prove new authorization. The 48 host checks only cover unchanged shell routes/account context/assets/unauthenticated refusal and remain valid for that scope. Current production PHP builds and changed backend authorization are required independently in exact-head Docker/Backend CI; no authenticated repair inference from old image.",
     "baseline_browser_visual": "unchanged frontend bytes; retain Claude 50 focused/1721 whole-product/64 captures/14 pages scored 28–30; no new browser claim",
@@ -155,17 +155,17 @@
     {
       "path": "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
       "before_sha256": null,
-      "after_sha256": "3a0b2fb37f0676c359b2a80fbdda0bd3d23f739504d92880c599125e8a37066a",
+      "after_sha256": "7cd14f402cf527a59c5acb441abc7a6c151ad6c228f402c6ab3dac3acc610902",
       "bytes": 11113,
       "classification": "codex_added"
     },
     {
       "path": ".github/workflows/ci.yml",
-      "before_sha256": "b8b6da8962fc360c75e4bde096a7fe9bfaff0b1e03045f6ccfe445e80ce04009",
-      "after_sha256": "8358b2381faab74733646adb5e4976bd8939b86cf0e75216c11f740c070d267d",
+      "before_sha256": "8358b2381faab74733646adb5e4976bd8939b86cf0e75216c11f740c070d267d",
+      "after_sha256": "8730a1cb3767bc37f43e169b8360d36a8561e4e8a3755417a6d6c43777f36ade",
       "classification": "codex_amended_ci_evidence",
       "note": "Existing workflow preserved; added named real PostgreSQL tests and JUnit artifact. Baseline before hash is captured from Git HEAD below.",
-      "bytes": 21540,
+      "bytes": 21838,
       "before_hash_basis": "Git HEAD blob (LF)"
     },
     {
@@ -465,7 +465,8 @@
       "Security — gitleaks",
       "E2E — Playwright"
     ],
-    "status": "pending"
+    "status": "pending",
+    "named_step_order": "Before full parallel suite, with explicit Audit/private-file/session/permission/navigation cases and JUnit."
   },
   "security_proof_matrix": [
     {
@@ -572,6 +573,19 @@
       "identifiers": "unchanged permissions/migrations/routes/gates; API 307/358 and UI 160 local deterministic checks",
       "environment": "Exact-head CI PHP 8.3 / PostgreSQL 16",
       "result": "pending actual CI execution; no pass claimed"
+    }
+  ],
+  "ci_history": [
+    {
+      "run": 38158213788,
+      "head": "f52934412e2cee06c7b2e83928f3e53bc791ef59",
+      "backend": "failed",
+      "job": 114525465564,
+      "step": "Tests — Pest on PostgreSQL (parallel)",
+      "error": "Unknown named parameter $omitted in AuditExportDomainAuthorizationTest; Collision then failed formatting its internal missing-file stack frame.",
+      "root_cause": "A named dataset argument was called omitted rather than the declared selection parameter; the test body never executed for that case.",
+      "correct_fix": "Named dataset labels now wrap numeric positional argument arrays; all assertions retained. Move named security/JUnit step before the full suite to expose these cases directly; include session and permission/navigation contracts for explicit SEC-10/SEC-15 evidence.",
+      "other_completed_jobs": "Frontend, Docker, Security success; E2E still in progress at remediation; no overall/whole-browser success claimed."
     }
   ]
 }
