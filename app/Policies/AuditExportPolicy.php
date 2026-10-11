@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Domain\Audit\Models\AuditExport;
+use App\Domain\Audit\Services\AuditExportAuthorization;
 use App\Domain\Tenancy\TenantContext;
 use App\Models\User;
 
@@ -38,7 +39,10 @@ final class AuditExportPolicy
 
     public function download(User $user, AuditExport $export): bool
     {
-        return $this->context->can('audit.export') && $this->scoped($export);
+        return $this->context->can('audit.export') && $this->scoped($export)
+            && app(AuditExportAuthorization::class)->allows(
+                $user, $export->merchant_id, $export->branch_id, $export->scope_json,
+            );
     }
 
     public function revoke(User $user, AuditExport $export): bool

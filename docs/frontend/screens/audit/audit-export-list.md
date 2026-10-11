@@ -11,7 +11,7 @@
 - **Required entitlement:** none for the Phase 11 foundation; entitlement gating applies in the owning feature phase.
 - **Billing-state behavior:** read-only-grace and suspended-billing follow the §19.2 allowlist; foundation surfaces are read-only.
 - **API dependencies:** `GET /api/v1/me` bootstrap; plus this screen’s existing endpoints.
-- **Fields and displayed data:** Audit export list + branch-scoped reason-gated request form (fresh step-up server-enforced; no unassigned/merchant-level export); never exposes file_id/paths/signatures/internal ids/raw failure messages.
+- **Fields and displayed data:** Audit Exports (§12.4.11): inline reason-required, branch-scoped, masked export request with live masking/omission preview, server-count estimate and step-up guidance; recent requests; no file id, path or signed URL.
 - **Primary / secondary / destructive actions:** navigation and (where live) the screen’s existing actions; destructive actions require typed confirmation (Plan §31). No future-phase actions are live.
 - **Confirmation behavior:** destructive/financial confirmations show readable amounts; legal acknowledgement requires explicit, non-prefilled consent.
 - **Loading / empty / error / success states:** via `SvStateBoundary`; landing/get-started show useful empty states.

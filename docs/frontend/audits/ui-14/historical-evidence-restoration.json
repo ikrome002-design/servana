@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.historical-evidence-restoration.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "baseline": "historical-evidence-baseline.json",
   "pre_run_verification": "all 12 protected scopes matched the baseline aggregates exactly before the first whole-product run; a byte snapshot of those scopes was taken outside the repository",
   "whole_product_run_complete": true,

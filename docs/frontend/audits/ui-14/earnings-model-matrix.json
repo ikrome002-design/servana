@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.earnings-model-matrix.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "authority": "Server tab_visibility from GET /api/v1/personnel/me/earnings (PersonnelEarningsReadModel, Phase 20H); amounts are integer minor units grouped by currency and never combined.",
   "matrix": [
     {

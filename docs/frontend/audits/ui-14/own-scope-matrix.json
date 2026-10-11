@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.own-scope-matrix.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "boundary": "The authenticated merchant membership resolves the acting StaffProfile server-side. No Personnel route or request accepts a staff-profile selector; an injected staff_profile_ulid / personnel_id is ignored. Responses are tenant-scoped by BelongsToMerchant and own-scoped by staff_profile_id. The browser is never the scope filter.",
   "non_enumeration": "Own-scope collection endpoints filter rather than 404: another person's or tenant's rows are simply absent, so their existence is never disclosed. Non-Personnel roles receive 403; unauthenticated callers 401; a suspended membership loses access.",
   "fixtures": "smsScenario() Personnel A; branchStaff(...Personnel) Personnel B in the same tenant and branch; a second smsScenario() tenant (foreign tenant, foreign branch) with its own Personnel, client, commission, salary and preferred request; branchStaff(...FrontOffice) for role denial.",

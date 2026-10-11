@@ -328,6 +328,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/audit-integrity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["audit-integrity.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/audit-logs": {
         parameters: {
             query?: never;
@@ -5169,6 +5185,27 @@ export interface components {
                 [key: string]: boolean;
             };
         };
+        /** AuditIntegrityResource */
+        AuditIntegrityResource: {
+            /** @enum {string} */
+            status: "verified" | "partial" | "empty" | "broken";
+            checked_at: string;
+            /** @constant */
+            segment_limit: 1000;
+            complete_history: boolean;
+            /** @description Null when the chain is empty; otherwise the oldest and newest checked row times. */
+            coverage_from: string | null;
+            coverage_to: string | null;
+            branch_records_checked: number;
+            first_break: {
+                category: string | null;
+                within_branch_scope: boolean;
+                event: string | null;
+                occurred_at: string | null;
+            } | null;
+            /** @description The daily full-chain run persists no result, so there is nothing truthful to show. */
+            scheduled_verification_exposed: boolean;
+        };
         /** AuditLogResource */
         AuditLogResource: {
             id: string;
@@ -5182,6 +5219,13 @@ export interface components {
             context: string;
             correlation_id: string | null;
             created_at: string | null;
+            /** @description Phase UI-15 — the MUTABLE review status of the latest flag, kept apart from the
+             *     immutable `severity` above. Present only where the merchant read eager-loads flags. */
+            review?: {
+                flag: string;
+                status: string;
+                flag_count: number;
+            } | null;
             can: {
                 [key: string]: boolean;
             };
@@ -9969,6 +10013,39 @@ export interface operations {
             };
         };
     };
+    "audit-integrity.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `AuditIntegrityResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AuditIntegrityResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     "audit-logs.index": {
         parameters: {
             query?: {
@@ -9983,6 +10060,11 @@ export interface operations {
                 date_to?: string;
                 sort?: "created_at" | "-created_at" | "severity" | "-severity" | "action" | "-action";
                 per_page?: number;
+                /** @description Phase UI-15 — server-side review lenses and investigation filters. A view only narrows
+                 *     the rows the route's permission already returns; it never widens a segment. */
+                view?: "operational" | "access" | "privacy_preferred";
+                flagged?: "flagged" | "unflagged";
+                correlation_id?: string;
             };
             header?: never;
             path?: never;
@@ -10054,6 +10136,11 @@ export interface operations {
                 date_to?: string;
                 sort?: "created_at" | "-created_at" | "severity" | "-severity" | "action" | "-action";
                 per_page?: number;
+                /** @description Phase UI-15 — server-side review lenses and investigation filters. A view only narrows
+                 *     the rows the route's permission already returns; it never widens a segment. */
+                view?: "operational" | "access" | "privacy_preferred";
+                flagged?: "flagged" | "unflagged";
+                correlation_id?: string;
             };
             header?: never;
             path?: never;
@@ -10125,6 +10212,11 @@ export interface operations {
                 date_to?: string;
                 sort?: "created_at" | "-created_at" | "severity" | "-severity" | "action" | "-action";
                 per_page?: number;
+                /** @description Phase UI-15 — server-side review lenses and investigation filters. A view only narrows
+                 *     the rows the route's permission already returns; it never widens a segment. */
+                view?: "operational" | "access" | "privacy_preferred";
+                flagged?: "flagged" | "unflagged";
+                correlation_id?: string;
             };
             header?: never;
             path?: never;
@@ -20633,6 +20725,11 @@ export interface operations {
                 date_to?: string;
                 sort?: "created_at" | "-created_at" | "severity" | "-severity" | "action" | "-action";
                 per_page?: number;
+                /** @description Phase UI-15 — server-side review lenses and investigation filters. A view only narrows
+                 *     the rows the route's permission already returns; it never widens a segment. */
+                view?: "operational" | "access" | "privacy_preferred";
+                flagged?: "flagged" | "unflagged";
+                correlation_id?: string;
             };
             header?: never;
             path?: never;

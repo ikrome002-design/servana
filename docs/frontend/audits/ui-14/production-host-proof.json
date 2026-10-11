@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.production-host-proof.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "source_state": "Current post-REM-DEP-003, post-identical-Tailwind-key-removal source; 3293 source inputs verified and 652 emitted files byte-identical to accepted browser bundle.",
   "images": [
     {
@@ -92,7 +92,7 @@
   "historical_pre_rem_proof": {
     "schema": "servana.ui14.production-host-proof.v1",
     "phase": "UI-14",
-    "lifecycle": "local_complete",
+    "lifecycle": "verified_complete",
     "source_state": "final frozen UI-14 working tree after the definitive focused (72/72) and whole-product (1,634/1,634) browser runs; built sequentially with no test suite running",
     "images": [
       {

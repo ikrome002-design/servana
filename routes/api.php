@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Domain\Auth\Mfa\StepUpAction;
 use App\Http\Controllers\Api\V1\Audit\AuditExportController;
 use App\Http\Controllers\Api\V1\Audit\AuditFlaggedEventController;
+use App\Http\Controllers\Api\V1\Audit\AuditIntegrityController;
 use App\Http\Controllers\Api\V1\Audit\AuditLogController;
 use App\Http\Controllers\Api\V1\Auth\AccountContextController;
 use App\Http\Controllers\Api\V1\Auth\HostSessionController;
@@ -1444,6 +1445,13 @@ Route::middleware(['auth:sanctum', EnforceIdleTimeout::class, EnsureActivePrinci
             Route::get('audit-logs/{auditLog}', [AuditLogController::class, 'show'])
                 ->middleware(EnsurePermission::class.':audit.branch_events.view')
                 ->name('audit-logs.show');
+
+            // Phase UI-15 — Audit-account integrity status (Appendix A §12.4.13). Read-only,
+            // parameterless, bounded segment verification of the caller's own merchant chain with
+            // the canonical hasher; branch-safe summary only. No repair or full-run trigger exists.
+            Route::get('audit-integrity', [AuditIntegrityController::class, 'show'])
+                ->middleware(EnsurePermission::class.':audit.branch_events.view')
+                ->name('audit-integrity.show');
 
             // Audit flagged-event review workflow (Plan §13.2, §25, §80; Phase 19). The
             // Audit role flags a branch-scoped audit row and works it through the review

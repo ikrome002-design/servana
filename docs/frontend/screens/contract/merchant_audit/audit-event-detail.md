@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `audit.event-detail` at `/audit/events/:id` (routes/audit.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/audit/:eventUlid`; owner phase **UI-15** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `audit.audit-event-detail` at `/audit/:eventUlid([0-9A-Za-z]{26})` (routes/audit.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/audit/:eventUlid`; owner phase **UI-15** reconciles path shape (`UI01-ROUTE-003`).
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-15**
 - **Backend owner phase:** **Phase 19**
 - **Implementation status:** `implemented`
-- **Runtime route:** `audit.event-detail`
+- **Runtime route:** `audit.audit-event-detail`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `audit.event-detail` (recorded in `docs/frontend/screens/audit/audit-event-detail.md`).
-- **Data fields:** Immutable, read-only audit record with safe actor/subject summaries and masked context; no source-mutation controls, no ids/hashes/paths/signed URLs/tokens/unmasked PII.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `audit.audit-event-detail` (recorded in `docs/frontend/screens/audit/audit-event-detail.md`).
+- **Data fields:** Audit Event Detail (§12.4.4): direct deep link to one immutable event — structured before/after diff, masked context, identity, review state, copy-safe reference, correlation search; hashes never in the payload; foreign/unknown ids are unavailable without enumeration.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

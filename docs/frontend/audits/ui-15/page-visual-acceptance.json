@@ -1,0 +1,548 @@
+{
+  "schema": "servana.ui15.page-visual-acceptance.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "method": "Scores assigned after inspecting settled light and dark Playwright captures (plus mobile/tablet/200% captures for responsive criteria) against the six reference images; a transparent team proxy, not product-owner approval.",
+  "rubric": {
+    "criteria": [
+      "composition",
+      "hierarchy",
+      "surface",
+      "spacing",
+      "typography",
+      "brand",
+      "role_fit",
+      "state_truth",
+      "interaction",
+      "mobile",
+      "tablet_desktop",
+      "light",
+      "dark",
+      "accessibility",
+      "distinctiveness"
+    ],
+    "scale": "0-2",
+    "pass": "total >= 27 of 30, no zero, required criteria at 2",
+    "required_twos": [
+      "composition",
+      "surface",
+      "brand",
+      "role_fit",
+      "light",
+      "dark",
+      "distinctiveness"
+    ]
+  },
+  "entries": [
+    {
+      "screen_key": "dashboard",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 2,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 30,
+      "evidence": [
+        "screenshots/desktop-light-dashboard.png",
+        "screenshots/desktop-dark-dashboard.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-dashboard.png",
+          "sha256": "9452b4d54db55c5f62fe0243f70d15cc9c471cf70dab463b153fff5393495413"
+        },
+        {
+          "file": "screenshots/desktop-dark-dashboard.png",
+          "sha256": "345af30ff4ec0dfd4468ef8abb17eae710d9323482c28f276fb36a3d5f907471"
+        }
+      ],
+      "rationale": "Asymmetric Dashboard-reference command centre: dark operational hero with four server-count tiles, 1.35/0.65 escalated-evidence vs review-queue split, four toned slices, timeline. Unpermitted slices say so."
+    },
+    {
+      "screen_key": "get-started",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 1,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 1,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 28,
+      "evidence": [
+        "screenshots/desktop-light-get-started.png",
+        "screenshots/desktop-dark-get-started.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-get-started.png",
+          "sha256": "a5d7d7a63e4efa440478809ef8885cf67b3ab9ed945479dcd45793526036b1b1"
+        },
+        {
+          "file": "screenshots/desktop-dark-get-started.png",
+          "sha256": "0a086a3ed6c760260569e9a5ed068ccf1ffdc89992f678a6a810b700be2aa52c"
+        }
+      ],
+      "rationale": "Audit orientation hero with three role facts; the checklist body below is the shared pre-UI-15 GetStartedChecklist (UI-16 convergence), so spacing/interaction stay at the shared baseline."
+    },
+    {
+      "screen_key": "audit",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 2,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 30,
+      "evidence": [
+        "screenshots/desktop-light-audit.png",
+        "screenshots/desktop-dark-audit.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-audit.png",
+          "sha256": "d9f4e7c5cf6b726c84a4a9bebffa969dd8a3cce47e6a277a8981c26a3773f620"
+        },
+        {
+          "file": "screenshots/desktop-dark-audit.png",
+          "sha256": "4ceaccbe08ef5a6a0a6efe55a638a4ef23de32a7cd07baf85928a1b0f6dfb839"
+        }
+      ],
+      "rationale": "Tonal header with focused-view chips, severity segmented control, time-led evidence cards with separate severity tag and review pill; server total + coverage window."
+    },
+    {
+      "screen_key": "audit-event-detail",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 2,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 30,
+      "evidence": [
+        "screenshots/desktop-light-audit-event-detail.png",
+        "screenshots/desktop-dark-audit-event-detail.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-audit-event-detail.png",
+          "sha256": "635bf8c9031495b065da8b1b95e5af1e609310ad2fea0d796b7368fef4d2e913"
+        },
+        {
+          "file": "screenshots/desktop-dark-audit-event-detail.png",
+          "sha256": "3596221fda26b56ceccd1f5a340719be318feba3fd4dda765d34c412c3225a1c"
+        }
+      ],
+      "rationale": "Evidence hero (severity-tinted top rule, immutable chip), structured before/after diff with changed markers and masked locks, identity aside with safe-reference copy and correlation search."
+    },
+    {
+      "screen_key": "audit-flags",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 2,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 30,
+      "evidence": [
+        "screenshots/desktop-light-audit-flags.png",
+        "screenshots/desktop-dark-audit-flags.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-audit-flags.png",
+          "sha256": "b0d49a5f9f1d011ebefd006f888d7bcc8fb8c8e61fa0e4093cd40384fa61047b"
+        },
+        {
+          "file": "screenshots/desktop-dark-audit-flags.png",
+          "sha256": "07fa9bf0861c539414037edcc67d7ce28b6a8a46af2cc77284421ea4f3019731"
+        }
+      ],
+      "rationale": "Triage workspace: status pills with server counts, review-age lead blocks, pinned critical active flag, legend separating the two facts, lifecycle aside."
+    },
+    {
+      "screen_key": "audit-operations",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 1,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 29,
+      "evidence": [
+        "screenshots/desktop-light-audit-operations.png",
+        "screenshots/desktop-dark-audit-operations.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-audit-operations.png",
+          "sha256": "7582c56adcb3f79a7daf1ae5925dd834619d27269217d93f164ed8b6480374ca"
+        },
+        {
+          "file": "screenshots/desktop-dark-audit-operations.png",
+          "sha256": "2401cfdb95d2bd3d987e3b1f03a15d932679542b2117e8590c9372943a5a94cb"
+        }
+      ],
+      "rationale": "AuditViewPage lens composition with presets, filter rail, feed and selection/masking/boundary aside; interaction is the shared feed pattern."
+    },
+    {
+      "screen_key": "audit-finance",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 1,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 29,
+      "evidence": [
+        "screenshots/desktop-light-audit-finance.png",
+        "screenshots/desktop-dark-audit-finance.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-audit-finance.png",
+          "sha256": "a69b56e0b8f529a46aa4ba3b7107c3634e127f0d6a7c82c21778014a99289000"
+        },
+        {
+          "file": "screenshots/desktop-dark-audit-finance.png",
+          "sha256": "32143d93578e78a5c4b3f3b385a9db763fcaa0d4b8133b63d5ec1d76429eaf52"
+        }
+      ],
+      "rationale": "Warm-toned lens page; masked references; boundary aside lists Finance-only actions; Gate W exclusion stated."
+    },
+    {
+      "screen_key": "audit-compensation",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 1,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 29,
+      "evidence": [
+        "screenshots/desktop-light-audit-compensation.png",
+        "screenshots/desktop-dark-audit-compensation.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-audit-compensation.png",
+          "sha256": "0d7f9f8dca89946ad0155b0b748083f0b2d8bacff87a7ddfb75706ffa439964b"
+        },
+        {
+          "file": "screenshots/desktop-dark-audit-compensation.png",
+          "sha256": "74af78ca92b36cf188f2a0e310cac8d21f49e7b6ad5d0e59f64f54f1eb6ab136"
+        }
+      ],
+      "rationale": "Green-toned lens page with a critical preset for backdated/high-value/paid events; restricted salary values."
+    },
+    {
+      "screen_key": "audit-access",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 2,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 30,
+      "evidence": [
+        "screenshots/desktop-light-audit-access.png",
+        "screenshots/desktop-dark-audit-access.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-audit-access.png",
+          "sha256": "19e21f648c37e84fdd015e4e84cf81b7bee18aa0db31afd16bcc694b1c99d170"
+        },
+        {
+          "file": "screenshots/desktop-dark-audit-access.png",
+          "sha256": "72681b9f1dc54d7aa63d6e85d3465a7dc1da17f6d5daa18e6f20de03a95dbadc"
+        }
+      ],
+      "rationale": "Teal lens page with page-local repeated-attempt clusters that expand to every individual event."
+    },
+    {
+      "screen_key": "audit-privacy-preferred",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 1,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 29,
+      "evidence": [
+        "screenshots/desktop-light-audit-privacy-preferred.png",
+        "screenshots/desktop-dark-audit-privacy-preferred.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-audit-privacy-preferred.png",
+          "sha256": "253e89a3cd101986f48fd1853a77a47359d94016624f45a9697b3ad1deea6ab5"
+        },
+        {
+          "file": "screenshots/desktop-dark-audit-privacy-preferred.png",
+          "sha256": "1a96368731772193adc22beee151d100f6465c37318958d1787dc856d7f37cda"
+        }
+      ],
+      "rationale": "Warm lens page focused on consent, served-client access, SMS and blocked export attempts; no contact data anywhere."
+    },
+    {
+      "screen_key": "exports",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 2,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 30,
+      "evidence": [
+        "screenshots/desktop-light-exports.png",
+        "screenshots/desktop-dark-exports.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-exports.png",
+          "sha256": "133e58e4a8abd004ed25250fb7f8c4d4c7db51d8016eeed462c3d6add6979c61"
+        },
+        {
+          "file": "screenshots/desktop-dark-exports.png",
+          "sha256": "4753073406065592ece983c6caae98fbb271bb430f74022c8c345ae8bb2883c4"
+        }
+      ],
+      "rationale": "Billings-reference tiered form + preview panels (included columns, masked formats, never-included, lifecycle), estimate and step-up guidance, recent request cards."
+    },
+    {
+      "screen_key": "exports-history",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 1,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 29,
+      "evidence": [
+        "screenshots/desktop-light-exports-history.png",
+        "screenshots/desktop-dark-exports-history.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-exports-history.png",
+          "sha256": "918a7e72a22d34bb30938568114a9127f3dedb771fe39b281e14771a520ffee0"
+        },
+        {
+          "file": "screenshots/desktop-dark-exports-history.png",
+          "sha256": "6cc6a0d1eb70edfacfc9bc0ad1cc905f890fc2ecce2dcf109195df7034efa861"
+        }
+      ],
+      "rationale": "Status-filtered history: desktop table with status badges and expiry truth, mobile cards; downloads only from the record."
+    },
+    {
+      "screen_key": "audit-integrity",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 2,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 30,
+      "evidence": [
+        "screenshots/desktop-light-audit-integrity.png",
+        "screenshots/desktop-dark-audit-integrity.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-audit-integrity.png",
+          "sha256": "1980f5e8d6d05211504217b9be653e697e183099a84bdcbda6fb7d7b2c004cc3"
+        },
+        {
+          "file": "screenshots/desktop-dark-audit-integrity.png",
+          "sha256": "8c25f7c7f004c1346c875f11864268ca6a09ee0fe69f01203853fe111d948623"
+        }
+      ],
+      "rationale": "Landing-reference depth on the result card (ring, toned mark), four fact tiles, explicit coverage statement, chain explainer, daily-run truth and boundary aside."
+    },
+    {
+      "screen_key": "account",
+      "scores": {
+        "composition": 2,
+        "hierarchy": 2,
+        "surface": 2,
+        "spacing": 2,
+        "typography": 2,
+        "brand": 2,
+        "role_fit": 2,
+        "state_truth": 2,
+        "interaction": 1,
+        "mobile": 2,
+        "tablet_desktop": 2,
+        "light": 2,
+        "dark": 2,
+        "accessibility": 2,
+        "distinctiveness": 2
+      },
+      "total": 29,
+      "evidence": [
+        "screenshots/desktop-light-account.png",
+        "screenshots/desktop-dark-account.png"
+      ],
+      "evidence_sha256": [
+        {
+          "file": "screenshots/desktop-light-account.png",
+          "sha256": "93a7ae65634f1944d403c74289adbf8b7927051dad04e157846865f95b4f8967"
+        },
+        {
+          "file": "screenshots/desktop-dark-account.png",
+          "sha256": "8015f90f2afa44e284bfa29b74e0e9c3a53e12998208d96186c988a5908b64ce"
+        }
+      ],
+      "rationale": "Profile-reference band and avatar, four scope facts incl. export and masking level, permission pills, then the shared own-account runtime."
+    }
+  ],
+  "summary": {
+    "pages": 14,
+    "passing": 14,
+    "failing": 0,
+    "min_total": 28
+  }
+}

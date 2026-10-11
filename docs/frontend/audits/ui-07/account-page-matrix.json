@@ -3,12 +3,12 @@
   "phase": "UI-07",
   "generated_by": "scripts/generate-ui07-navigation-contract.mjs",
   "canonical_authority": "docs/frontend/navigation/servana-user-account-navigation-map.yaml",
-  "canonical_authority_sha256": "4c176b456395fb4a61b3c98e0f002098c48b3d09fec75622486689a4ec3a1a86",
+  "canonical_authority_sha256": "0c41d07895d820e90f68fff3c6523ef954605945438828659006ff8bfddece60",
   "human_map": "docs/frontend/navigation/servana-user-account-navigation-maps.md",
   "human_map_sha256": "1f69a7bb4b1d059ad0b2d51095637639d121a83a494365dbe48f2cd87e4c6d37",
   "account_host_registry_sha256": "e1ecd1cb0b34e5a47adc7b50d38e85a37d361c8ea5b69d836f8f575bab398d2c",
   "permission_matrix_sha256": "fe652d2208fb8993eb3310c8057ac98e0ddc9ec7cd467bd26385bff36c1fa235",
-  "screen_inventory_sha256": "65d2128d3572ed0296cc1e0c84cecba22514813b008dbb460cb91e1dcbd823cf",
+  "screen_inventory_sha256": "26cb3aec9b8a12732c52c6bc5a791c470ee5a673f881ac727ca8a87e103f68a3",
   "purpose": "Every contract page, per account, in navigation order.",
   "accounts": [
     {
@@ -2620,8 +2620,8 @@
           "navigation_group": "Home",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
+          "implementation_status": "implemented",
+          "runtime_route_name": "audit.dashboard",
           "permission_all": [],
           "permission_any": [],
           "gate": null,
@@ -2653,7 +2653,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "audit.branch-events",
+          "runtime_route_name": "audit.audit",
           "permission_all": [
             "audit.branch_events.view"
           ],
@@ -2671,7 +2671,7 @@
           "parent_key": "merchant_audit.audit",
           "navigation_visibility": "contextual_child",
           "implementation_status": "implemented",
-          "runtime_route_name": "audit.event-detail",
+          "runtime_route_name": "audit.audit-event-detail",
           "permission_all": [
             "audit.branch_events.view"
           ],
@@ -2689,7 +2689,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "audit.flagged-events",
+          "runtime_route_name": "audit.audit-flags",
           "permission_all": [
             "audit.branch_events.view"
           ],
@@ -2706,9 +2706,11 @@
           "navigation_group": "Audit Views",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "audit.audit-operations",
+          "permission_all": [
+            "audit.branch_events.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "12.4.6"
@@ -2723,7 +2725,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "audit.finance",
+          "runtime_route_name": "audit.audit-finance",
           "permission_all": [
             "audit.finance.view"
           ],
@@ -2741,7 +2743,7 @@
           "parent_key": null,
           "navigation_visibility": "primary",
           "implementation_status": "implemented",
-          "runtime_route_name": "audit.compensation",
+          "runtime_route_name": "audit.audit-compensation",
           "permission_all": [
             "audit.compensation.view"
           ],
@@ -2758,9 +2760,11 @@
           "navigation_group": "Audit Views",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "audit.audit-access",
+          "permission_all": [
+            "audit.branch_events.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "12.4.9"
@@ -2774,9 +2778,11 @@
           "navigation_group": "Audit Views",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "audit.audit-privacy-preferred",
+          "permission_all": [
+            "audit.branch_events.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "12.4.10"
@@ -2808,8 +2814,8 @@
           "navigation_group": "Export",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
+          "implementation_status": "implemented",
+          "runtime_route_name": "audit.exports-history",
           "permission_all": [
             "audit.export"
           ],
@@ -2826,9 +2832,11 @@
           "navigation_group": "Audit",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
-          "permission_all": [],
+          "implementation_status": "implemented",
+          "runtime_route_name": "audit.audit-integrity",
+          "permission_all": [
+            "audit.branch_events.view"
+          ],
           "permission_any": [],
           "gate": null,
           "map_section": "12.4.13"
@@ -2846,7 +2854,7 @@
           "runtime_route_name": null,
           "permission_all": [],
           "permission_any": [],
-          "gate": "external_gate_w",
+          "gate": "phase_21n_blocked_by_external_gate_w",
           "map_section": "12.4.14"
         },
         {
@@ -2858,8 +2866,8 @@
           "navigation_group": "Utility",
           "parent_key": null,
           "navigation_visibility": "primary",
-          "implementation_status": "planned",
-          "runtime_route_name": null,
+          "implementation_status": "implemented",
+          "runtime_route_name": "audit.account",
           "permission_all": [],
           "permission_any": [],
           "gate": null,

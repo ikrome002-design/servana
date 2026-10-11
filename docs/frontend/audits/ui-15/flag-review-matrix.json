@@ -1,0 +1,22 @@
+{
+  "schema": "servana.ui15.flag-review-matrix.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "backend_truth": {
+    "statuses": ["open", "under_review", "resolved", "dismissed", "reopened"],
+    "transitions": { "open": ["under_review"], "reopened": ["under_review"], "under_review": ["resolved", "dismissed"], "resolved": ["reopened"], "dismissed": ["reopened"] },
+    "endpoints": ["POST /audit-flagged-events", "POST /{flag}/start-review", "POST /{flag}/resolve", "POST /{flag}/dismiss", "POST /{flag}/reopen"],
+    "not_available": ["assign/reassign (start review assigns the actor)", "escalate", "category", "notes outside resolve/dismiss"]
+  },
+  "rows": [
+    { "case": "create flag sends audit_log (+ optional note) only", "test": "Ui15AuditPages.spec.ts › creates a flag with review metadata only; ui-15-audit-experience.spec.ts › flagging an event sends review metadata only", "result": "pass" },
+    { "case": "flag created via API appears as review summary on the event, separate from severity", "test": "Ui15AuditExperienceApiTest › filters by flagged review state…", "result": "pass" },
+    { "case": "no second flag offered while a review is active", "test": "Ui15AuditPages.spec.ts › shows the event severity and the review status as two different facts", "result": "pass" },
+    { "case": "flag control hidden without audit.flagged_event.create", "test": "Ui15AuditPages.spec.ts › offers a flag only when permitted…; ui-15 low-privilege reader", "result": "pass" },
+    { "case": "start review only when open/reopened + update_status", "test": "FlaggedEventDetail.spec.ts; audit.spec.ts", "result": "pass" },
+    { "case": "resolve/dismiss only under_review + resolve_metadata, note ≥3 chars", "test": "FlaggedEventDetail.spec.ts; audit.spec.ts › resolves an under-review event and enforces required notes", "result": "pass" },
+    { "case": "stale/invalid transition reported, state re-read", "test": "audit.spec.ts › displays an invalid-state-transition error", "result": "pass" },
+    { "case": "server lifecycle, branch scope and audit of every change", "test": "AuditFlaggedEventWorkflowTest, AuditFlaggedEventIsolationTest (Phase 19, unchanged)", "result": "pass (existing suite)" },
+    { "case": "flag dialog focus trap and Escape restore", "test": "ui-15-audit-experience.spec.ts › the flag dialog traps focus…", "result": "pass" }
+  ]
+}

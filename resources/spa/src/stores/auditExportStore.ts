@@ -68,9 +68,24 @@ export interface AuditExportRequestPayload {
   severities?: string[];
 }
 
+export interface AuditExportPageMeta {
+  current_page: number;
+  last_page: number;
+  total: number;
+}
+
+/** Stateless page read (dashboard slices); meta.total is the server's count for that status. */
+export async function fetchAuditExportPage(status: AuditExportStatus | '', perPage = 5): Promise<{ data: AuditExportView[]; meta: AuditExportPageMeta }> {
+  const params: Record<string, string | number> = { sort: '-created_at', per_page: perPage };
+  if (status !== '') params.status = status;
+  const { data } = await apiClient.get<{ data: AuditExportView[]; meta?: AuditExportPageMeta }>('/audit-exports', { params });
+  return { data: data.data, meta: data.meta ?? { current_page: 1, last_page: 1, total: data.data.length } };
+}
+
 export const useAuditExportStore = defineStore('auditExport', () => {
   const exports = ref<AuditExportView[]>([]);
   const current = ref<AuditExportView | null>(null);
+  const meta = ref<AuditExportPageMeta>({ current_page: 1, last_page: 1, total: 0 });
   const loading = ref(false);
   const error = ref<string | null>(null);
   const filterStatus = ref<string>('');
@@ -78,19 +93,22 @@ export const useAuditExportStore = defineStore('auditExport', () => {
   function $reset(): void {
     exports.value = [];
     current.value = null;
+    meta.value = { current_page: 1, last_page: 1, total: 0 };
     loading.value = false;
     error.value = null;
     filterStatus.value = '';
   }
 
-  async function fetchExports(): Promise<void> {
+  async function fetchExports(page?: number): Promise<void> {
     loading.value = true;
     error.value = null;
     try {
-      const params: Record<string, string> = { sort: '-created_at' };
+      const params: Record<string, string | number> = { sort: '-created_at' };
+      if (page !== undefined) params.page = page;
       if (filterStatus.value !== '') params.status = filterStatus.value;
-      const { data } = await apiClient.get<{ data: AuditExportView[] }>('/audit-exports', { params });
+      const { data } = await apiClient.get<{ data: AuditExportView[]; meta?: AuditExportPageMeta }>('/audit-exports', { params });
       exports.value = data.data;
+      if (data.meta) meta.value = { current_page: data.meta.current_page, last_page: data.meta.last_page, total: data.meta.total };
     } catch {
       error.value = 'Unable to load audit exports.';
     } finally {
@@ -137,6 +155,7 @@ export const useAuditExportStore = defineStore('auditExport', () => {
   return {
     exports,
     current,
+    meta,
     loading,
     error,
     filterStatus,

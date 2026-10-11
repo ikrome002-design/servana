@@ -69,6 +69,15 @@ export {
   UserCircleIcon as SvIconProfile,
   XMarkIcon as SvIconClose,
   Bars3Icon as SvIconMenu,
+  // Phase UI-15 — Audit evidence vocabulary: review flags, chain integrity, private downloads,
+  // review age, masked values and the critical-severity mark (distinct from the warning glyph).
+  FlagIcon as SvIconFlag,
+  LinkIcon as SvIconChainLink,
+  ArrowDownTrayIcon as SvIconDownload,
+  ClockIcon as SvIconClock,
+  EyeSlashIcon as SvIconMasked,
+  ShieldExclamationIcon as SvIconCritical,
+  FingerPrintIcon as SvIconFingerprint,
 } from '@heroicons/vue/24/outline';
 
 export {

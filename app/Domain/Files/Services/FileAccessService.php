@@ -6,6 +6,9 @@ namespace App\Domain\Files\Services;
 
 use App\Domain\Audit\Contracts\AuditRecorder;
 use App\Domain\Audit\Enums\AuditEvent;
+use App\Domain\Audit\Models\AuditExport;
+use App\Domain\Audit\Services\AuditExportAuthorization;
+use App\Domain\Files\Enums\FilePurpose;
 use App\Domain\Files\FilePurposeRegistry;
 use App\Domain\Files\Models\UploadedFile;
 use App\Domain\Tenancy\TenantContext;
@@ -61,6 +64,15 @@ final class FileAccessService
         // are authorised by ownership above and carry no extra permission).
         if ($definition->permission !== null && ! $this->context->can($definition->permission)) {
             $this->deny($file, $user, 'permission_denied', notFound: false);
+        }
+
+        if ($file->purpose === FilePurpose::AuditExport) {
+            $export = AuditExport::query()->where('file_id', $file->id)->first();
+            if ($export === null || ! app(AuditExportAuthorization::class)->allows(
+                $user, $export->merchant_id, $export->branch_id, $export->scope_json,
+            )) {
+                $this->deny($file, $user, 'permission_denied', notFound: false);
+            }
         }
     }
 

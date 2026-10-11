@@ -59,5 +59,11 @@ Current Codex release checkpoint (2026-10-10): REM-DEP-003 PR #64 is verified me
 - [x] Production image pair + isolated `staff.servana.ke` host proof; proof resources removed.
 - [x] `npm run ui14:check`, `nav:check`, `api:contract:check`, `git diff --check`, `git fsck --full`.
 - [x] **Dependency audits** — UI14-DEP-001/002 closed locally by verified merged REM-DEP-003 PR #64 and reconciled zero-advisory audits; original failing reports retained. Fresh current-image locked Composer audit/strict validation pass; final npm audit is recorded in the release supplement.
-- [ ] Commit / push / PR / exact-head CI / governance / merge — Codex Prompt 2 only.
-- [ ] `verified_complete` — reconciled on the UI-15 branch after a normal merge.
+- [x] Commit / push / PR / exact-head CI / governance / merge — Codex Prompt 2: PR #65, implementation
+      commit `04b68169…`, final head `92603fa6…`, exact-head run `38089104875` five jobs success,
+      governance comment `6102827769`, normal squash `20c27dca…`, equal tree `93ec8269…`, 0
+      reviews/approvals, source branch absent local + remote.
+- [x] `verified_complete` — reconciled live exactly once on the UI-15 branch (2026-10-11).
+
+Lifecycle: `verified_complete`. Every item above records the UI-14 session boundary; UI-15 began later
+from the verified merge.

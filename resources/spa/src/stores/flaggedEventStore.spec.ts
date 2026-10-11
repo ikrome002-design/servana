@@ -35,7 +35,7 @@ describe('flaggedEventStore', () => {
 
     await store.fetchAll();
 
-    expect(get).toHaveBeenCalledWith('/audit-flagged-events', { params: { sort: '-created_at', status: 'under_review' } });
+    expect(get).toHaveBeenCalledWith('/audit-flagged-events', { params: { sort: '-created_at', page: 1, status: 'under_review' } });
     expect(store.items).toEqual([flagged]);
   });
 

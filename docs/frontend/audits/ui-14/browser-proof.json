@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.browser-proof.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "browser": "Playwright Chromium (project chromium), workers 1, retries 0 locally",
   "server": "Vite production preview of the final frozen source on http://localhost:4173",
   "source": "Reconciled UI14 source after merged REM-DEP-003, current UI06 projection and proven mobile clipping fix; 3293 runtime/test/canonical paths frozen before the first authoritative full run. Historic Claude manifest is unchanged.",
@@ -92,7 +92,7 @@
   "pre_remediation_browser_proof": {
     "schema": "servana.ui14.browser-proof.v1",
     "phase": "UI-14",
-    "lifecycle": "local_complete",
+    "lifecycle": "verified_complete",
     "browser": "Playwright Chromium (project chromium), workers 1, retries 0 locally",
     "server": "Vite production preview of the final frozen source on http://localhost:4173",
     "source": "uncommitted UI-14 working tree on phase-ui-14-personnel-experience at HEAD 14cfadcb512d867d2aebefe0fa628fdee3563e02; final source frozen after UI14-ROB-001",

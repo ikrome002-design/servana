@@ -39,78 +39,120 @@
   ],
   "routes": [
     {
-      "name": "audit.branch-events",
-      "path": "events",
-      "absolute_path": "/audit/events",
+      "name": "audit.account",
+      "path": "/account",
+      "absolute_path": "/account",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/audit.ts"
     },
     {
-      "name": "audit.compensation",
-      "path": "compensation",
-      "absolute_path": "/audit/compensation",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/audit.ts"
-    },
-    {
-      "name": "audit.event-detail",
-      "path": "events/:id",
-      "absolute_path": "/audit/events/:id",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/audit.ts"
-    },
-    {
-      "name": "audit.export-detail",
-      "path": "exports/:id",
-      "absolute_path": "/audit/exports/:id",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/audit.ts"
-    },
-    {
-      "name": "audit.exports",
-      "path": "exports",
-      "absolute_path": "/audit/exports",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/audit.ts"
-    },
-    {
-      "name": "audit.finance",
-      "path": "finance",
-      "absolute_path": "/audit/finance",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/audit.ts"
-    },
-    {
-      "name": "audit.flagged-detail",
-      "path": "flagged/:id",
-      "absolute_path": "/audit/flagged/:id",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/audit.ts"
-    },
-    {
-      "name": "audit.flagged-events",
-      "path": "flagged",
-      "absolute_path": "/audit/flagged",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/audit.ts"
-    },
-    {
-      "name": "audit.get-started",
-      "path": "get-started",
-      "absolute_path": "/audit/get-started",
-      "aliases": [],
-      "declared_in": "resources/spa/src/router/routes/audit.ts"
-    },
-    {
-      "name": "audit.landing",
-      "path": "",
+      "name": "audit.audit",
+      "path": "/audit",
       "absolute_path": "/audit",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/audit.ts"
     },
     {
+      "name": "audit.audit-access",
+      "path": "/audit/access",
+      "absolute_path": "/audit/access",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.audit-compensation",
+      "path": "/audit/compensation",
+      "absolute_path": "/audit/compensation",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.audit-event-detail",
+      "path": "/audit/:eventUlid([0-9A-Za-z]{26})",
+      "absolute_path": "/audit/:eventUlid([0-9A-Za-z]{26})",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.audit-finance",
+      "path": "/audit/finance",
+      "absolute_path": "/audit/finance",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.audit-flags",
+      "path": "/audit/flags",
+      "absolute_path": "/audit/flags",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.audit-integrity",
+      "path": "/audit/integrity",
+      "absolute_path": "/audit/integrity",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.audit-operations",
+      "path": "/audit/operations",
+      "absolute_path": "/audit/operations",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.audit-privacy-preferred",
+      "path": "/audit/privacy-preferred",
+      "absolute_path": "/audit/privacy-preferred",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.dashboard",
+      "path": "/dashboard",
+      "absolute_path": "/dashboard",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.export-detail",
+      "path": "/exports/:exportUlid([0-9A-Za-z]{26})",
+      "absolute_path": "/exports/:exportUlid([0-9A-Za-z]{26})",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.exports",
+      "path": "/exports",
+      "absolute_path": "/exports",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.exports-history",
+      "path": "/exports/history",
+      "absolute_path": "/exports/history",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.flag-detail",
+      "path": "/audit/flags/:flagUlid([0-9A-Za-z]{26})",
+      "absolute_path": "/audit/flags/:flagUlid([0-9A-Za-z]{26})",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
+      "name": "audit.get-started",
+      "path": "/get-started",
+      "absolute_path": "/get-started",
+      "aliases": [],
+      "declared_in": "resources/spa/src/router/routes/audit.ts"
+    },
+    {
       "name": "audit.platform-fees",
-      "path": "platform-fees",
+      "path": "/audit/platform-fees",
       "absolute_path": "/audit/platform-fees",
       "aliases": [],
       "declared_in": "resources/spa/src/router/routes/audit.ts"

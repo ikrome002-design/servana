@@ -2078,6 +2078,55 @@
                 ]
             }
         },
+        "/api/v1/audit-integrity": {
+            "get": {
+                "operationId": "audit-integrity.show",
+                "tags": [
+                    "AuditIntegrity"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`AuditIntegrityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AuditIntegrityResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "429": {
+                        "description": "Rate limited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorEnvelope"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctumSession": []
+                    }
+                ]
+            }
+        },
         "/api/v1/audit-logs": {
             "get": {
                 "operationId": "audit-logs.index",
@@ -2475,6 +2524,38 @@
                             "type": "integer",
                             "minimum": 1,
                             "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "view",
+                        "in": "query",
+                        "description": "Phase UI-15 — server-side review lenses and investigation filters. A view only narrows\nthe rows the route's permission already returns; it never widens a segment.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "operational",
+                                "access",
+                                "privacy_preferred"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "flagged",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "flagged",
+                                "unflagged"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "correlation_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 64
                         }
                     }
                 ],
@@ -3043,6 +3124,38 @@
                             "minimum": 1,
                             "maximum": 100
                         }
+                    },
+                    {
+                        "name": "view",
+                        "in": "query",
+                        "description": "Phase UI-15 — server-side review lenses and investigation filters. A view only narrows\nthe rows the route's permission already returns; it never widens a segment.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "operational",
+                                "access",
+                                "privacy_preferred"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "flagged",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "flagged",
+                                "unflagged"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "correlation_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 64
+                        }
                     }
                 ],
                 "responses": {
@@ -3609,6 +3722,38 @@
                             "type": "integer",
                             "minimum": 1,
                             "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "view",
+                        "in": "query",
+                        "description": "Phase UI-15 — server-side review lenses and investigation filters. A view only narrows\nthe rows the route's permission already returns; it never widens a segment.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "operational",
+                                "access",
+                                "privacy_preferred"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "flagged",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "flagged",
+                                "unflagged"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "correlation_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 64
                         }
                     }
                 ],
@@ -28206,6 +28351,38 @@
                             "minimum": 1,
                             "maximum": 100
                         }
+                    },
+                    {
+                        "name": "view",
+                        "in": "query",
+                        "description": "Phase UI-15 — server-side review lenses and investigation filters. A view only narrows\nthe rows the route's permission already returns; it never widens a segment.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "operational",
+                                "access",
+                                "privacy_preferred"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "flagged",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "flagged",
+                                "unflagged"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "correlation_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 64
+                        }
                     }
                 ],
                 "responses": {
@@ -43987,6 +44164,98 @@
                 ],
                 "title": "AuditFlaggedEventResource"
             },
+            "AuditIntegrityResource": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "verified",
+                            "partial",
+                            "empty",
+                            "broken"
+                        ]
+                    },
+                    "checked_at": {
+                        "type": "string"
+                    },
+                    "segment_limit": {
+                        "type": "integer",
+                        "const": 1000
+                    },
+                    "complete_history": {
+                        "type": "boolean"
+                    },
+                    "coverage_from": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Null when the chain is empty; otherwise the oldest and newest checked row times."
+                    },
+                    "coverage_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "branch_records_checked": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "first_break": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "category": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "within_branch_scope": {
+                                "type": "boolean"
+                            },
+                            "event": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "occurred_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "category",
+                            "within_branch_scope",
+                            "event",
+                            "occurred_at"
+                        ]
+                    },
+                    "scheduled_verification_exposed": {
+                        "type": "boolean",
+                        "description": "The daily full-chain run persists no result, so there is nothing truthful to show."
+                    }
+                },
+                "required": [
+                    "status",
+                    "checked_at",
+                    "segment_limit",
+                    "complete_history",
+                    "coverage_from",
+                    "coverage_to",
+                    "branch_records_checked",
+                    "first_break",
+                    "scheduled_verification_exposed"
+                ],
+                "title": "AuditIntegrityResource"
+            },
             "AuditLogResource": {
                 "type": "object",
                 "properties": {
@@ -44031,6 +44300,30 @@
                         "type": [
                             "string",
                             "null"
+                        ]
+                    },
+                    "review": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "Phase UI-15 — the MUTABLE review status of the latest flag, kept apart from the\nimmutable `severity` above. Present only where the merchant read eager-loads flags.",
+                        "properties": {
+                            "flag": {
+                                "type": "string"
+                            },
+                            "status": {
+                                "type": "string"
+                            },
+                            "flag_count": {
+                                "type": "integer",
+                                "minimum": 0
+                            }
+                        },
+                        "required": [
+                            "flag",
+                            "status",
+                            "flag_count"
                         ]
                     },
                     "can": {

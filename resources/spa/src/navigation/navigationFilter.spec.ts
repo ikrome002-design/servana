@@ -157,10 +157,14 @@ describe('navigationTree filtering', () => {
   });
 
   it('never renders a planned entry', () => {
+    // Phase UI-15 delivered the last planned page, so the real contract may hold none. The fixture
+    // keeps this case from passing vacuously: a planned entry must still be dropped.
+    const plannedFixture = fixture({ implementationStatus: 'planned', runtimeRouteName: null });
+    expect(navigationTree('merchant_finance', allPermissions, plannedFixture)).toEqual([]);
+
     const planned = new Set(
       NAVIGATION_CONTRACT.filter((e) => e.implementationStatus === 'planned').map((e) => e.key),
     );
-    expect(planned.size).toBeGreaterThan(0);
     for (const identity of ROLE_IDENTITIES) {
       for (const node of flattenNavigation(navigationTree(identity, allPermissions))) {
         expect(planned.has(node.key), node.key).toBe(false);

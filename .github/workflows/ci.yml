@@ -216,6 +216,38 @@ jobs:
       - name: Build SPA for Backend shell contracts
         run: npm run build
 
+      # UI-15 CI fallback: retain named, PostgreSQL-backed evidence for the
+      # request/worker/two signed-stream boundaries alongside the full suite.
+      - name: Security regression — Audit exports and private file access (UI-15)
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: servana_test
+          DB_USERNAME: servana
+          DB_PASSWORD: servana
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
+        run: >-
+          php vendor/bin/pest tests/Feature/Audit
+          tests/Feature/Files/FileDownloadAuthorizationTest.php
+          tests/Feature/Files/FileSignedUrlExpiryTest.php
+          tests/Feature/Security/Phase23ExportHardeningTest.php
+          tests/Feature/Auth/SessionRevocationTest.php
+          tests/Feature/Auth/SessionLifecycleTest.php
+          tests/Feature/Auth/PermissionMatrixTest.php
+          tests/Feature/Auth/PermissionMatrixCatalogueCompletenessTest.php
+          tests/Feature/Docs/Ui07NavigationContractTest.php
+          --log-junit /tmp/ui15-export-security.xml
+
+      - name: Upload UI-15 export security results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui15-export-security
+          path: /tmp/ui15-export-security.xml
+          if-no-files-found: warn
+
       - name: Tests — Pest on PostgreSQL (parallel)
         env:
           DB_CONNECTION: pgsql
@@ -235,6 +267,7 @@ jobs:
           MEILISEARCH_HOST: http://127.0.0.1:7700
           MEILISEARCH_KEY: ciMasterKey
         run: php artisan test --parallel
+
       - name: Dependency audit (Composer)
         run: composer audit --no-interaction
 

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1\Audit;
 
+use App\Domain\Audit\Enums\AuditReviewView;
 use App\Domain\Audit\Models\AuditLog;
 use App\Http\Requests\Audit\AuditLogIndexRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Shared, allowlisted audit-log filtering + sorting for the merchant and platform
@@ -53,6 +56,28 @@ trait FiltersAuditLogs
 
         if (isset($filters['date_to'])) {
             $query->where('created_at', '<=', $filters['date_to']);
+        }
+
+        // Phase UI-15 — a review view is a server-decided action set (AuditReviewView); it can
+        // only narrow the segment the route's permission already returns.
+        if (isset($filters['view']) && is_string($filters['view'])) {
+            $query->whereIn('action', AuditReviewView::from($filters['view'])->actions());
+        }
+
+        if (isset($filters['correlation_id']) && is_string($filters['correlation_id'])) {
+            $query->where('correlation_id', $filters['correlation_id']);
+        }
+
+        // Flags inherit their audit row's merchant and branch, so an existence check against the
+        // row id cannot reach a flag outside the already-scoped outer query. A platform row is never
+        // flagged: `flagged` is then honestly empty and `unflagged` returns everything.
+        if (isset($filters['flagged'])) {
+            $flags = static function (QueryBuilder $flag): void {
+                $flag->select(DB::raw(1))
+                    ->from('audit_flagged_events')
+                    ->whereColumn('audit_flagged_events.audit_log_id', 'audit_logs.id');
+            };
+            $filters['flagged'] === 'flagged' ? $query->whereExists($flags) : $query->whereNotExists($flags);
         }
 
         $this->applySort($query, is_string($filters['sort'] ?? null) ? $filters['sort'] : '-created_at');

@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.responsive-matrix.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "account": "merchant_personnel",
   "host": "staff.servana.ke",
   "method": "Playwright Chromium against the Vite production preview with deterministic synthetic own-scope fixtures; widths reuse the UI-13 canonical seven-width set.",

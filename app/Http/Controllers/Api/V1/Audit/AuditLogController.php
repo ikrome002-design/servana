@@ -78,7 +78,7 @@ final class AuditLogController extends Controller
         abort_if($auditLog->merchant_id !== $this->context->merchantId(), 404);
         $this->authorize('view', $auditLog);
 
-        return AuditLogResource::make($auditLog->load('branch'));
+        return AuditLogResource::make($auditLog->load(['branch', 'flags']));
     }
 
     /**
@@ -90,8 +90,10 @@ final class AuditLogController extends Controller
      */
     private function scopedBranchQuery(): Builder
     {
+        // The `flags` relation feeds the review-status summary (Phase UI-15); the flag model's own tenant +
+        // branch scopes apply to the eager load.
         return AuditLog::query()
-            ->with('branch')
+            ->with(['branch', 'flags'])
             ->where('merchant_id', $this->context->merchantId())
             ->whereNotNull('branch_id')
             ->whereIn('branch_id', $this->context->branchIds());

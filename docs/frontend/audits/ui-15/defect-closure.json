@@ -1,0 +1,324 @@
+{
+  "schema": "servana.ui15.defect-closure.v1",
+  "phase": "UI-15",
+  "lifecycle_vocabulary": [
+    "open",
+    "blocked",
+    "local_complete",
+    "verified_complete"
+  ],
+  "closures": [
+    {
+      "id": "UI15-NAV-001",
+      "observed_problem": "After UI-15 implemented the last planned pages, nav:negative-controls crashed (TypeError) and two Vitest cases failed 'expected 0 to be greater than 0'.",
+      "evidence": "scripts/ui07-negative-controls.mjs:222; navigationFilter.spec.ts and roleNavigation.spec.ts vacuity guards",
+      "affected_files": [
+        "scripts/ui07-negative-controls.mjs",
+        "resources/spa/src/navigation/navigationFilter.spec.ts",
+        "resources/spa/src/navigation/roleNavigation.spec.ts"
+      ],
+      "root_cause": "The control and guards assumed the real 160-page contract always contains at least one planned page.",
+      "why_root_cause": "The global contract now holds zero planned pages (UI-15 was the last owner phase with planned pages).",
+      "correct_fix": "The negative control constructs its own planned page from an implemented one; the filter spec proves a synthetic planned entry is dropped; the real-contract loops remain.",
+      "tests": [
+        "npm run nav:negative-controls (24/24)",
+        "navigationFilter.spec.ts",
+        "roleNavigation.spec.ts"
+      ],
+      "proof": "24/24 controls behave; Vitest green",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-RESP-001",
+      "observed_problem": "Dashboard overflowed horizontally at 360px (scrollWidth 579 > 360).",
+      "evidence": "ui-15-audit-experience.spec.ts responsive cases; element scan showed the review-count dl at 349px min-content",
+      "affected_files": [
+        "resources/spa/src/pages/audit/AuditDashboard.vue",
+        "seven Audit pages/components with lg-only grid tracks"
+      ],
+      "root_cause": "A 3-column count grid with uppercase tracked labels had a min-content width wider than the mobile column, and the page grids had no minmax(0,1fr) base track to let items shrink.",
+      "why_root_cause": "Removing either cause alone left overflow in the scan; together the columns shrink to the viewport.",
+      "correct_fix": "grid-cols-[minmax(0,1fr)] base track on every Audit page grid; repeat(3,minmax(0,1fr)) counts with sentence-case labels.",
+      "tests": [
+        "ui-15-audit-experience.spec.ts — seven widths, mobile/tablet captures, 200%"
+      ],
+      "proof": "0 overflow at 360/767/768/1024/1025/1280/1440 on 16 pages",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-A11Y-001",
+      "observed_problem": "Breadcrumb links were 20px tall, below the 44px target floor.",
+      "evidence": "ui-15 44px target test on audit-event-detail",
+      "affected_files": [
+        "resources/spa/src/components/ui/SvBreadcrumbs.vue"
+      ],
+      "root_cause": "The shared UI-04 primitive rendered its RouterLink inline with no minimum height.",
+      "why_root_cause": "The only undersized control on the page was the breadcrumb link.",
+      "correct_fix": "inline-flex min-h-sv-touch items-center px-1 on the breadcrumb link (also benefits UI-08 MerchantDetail, its only other consumer).",
+      "tests": [
+        "SvPrimitives.spec.ts",
+        "pages/platform specs",
+        "ui-15 44px target test"
+      ],
+      "proof": "0 undersized controls on 16 Audit pages at 360px; 239 primitive/platform Vitest cases green",
+      "remaining_risk": "UI-16 to confirm UI-08 MerchantDetail visually",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-A11Y-002",
+      "observed_problem": "Dashboard recent-activity links were 24px tall.",
+      "evidence": "ui-15 44px target test on dashboard (26 controls)",
+      "affected_files": [
+        "resources/spa/src/pages/audit/AuditDashboard.vue"
+      ],
+      "root_cause": "Timeline links used block text without a minimum height.",
+      "why_root_cause": "All 26 reported controls were those links.",
+      "correct_fix": "flex min-h-sv-touch items-center with an inner truncating span.",
+      "tests": [
+        "ui-15 44px target test"
+      ],
+      "proof": "dashboard reports 0 undersized controls",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-A11Y-003",
+      "observed_problem": "Audit Get Started rendered no h1.",
+      "evidence": "ui-15 page test waiting for main h1 timed out",
+      "affected_files": [
+        "resources/spa/src/pages/get-started/RoleGetStarted.vue"
+      ],
+      "root_cause": "The shared Get Started page only renders a hero (h1) for Front Office and Personnel; other roles get an h2 checklist header.",
+      "why_root_cause": "The DOM contained only h2 'Get started'.",
+      "correct_fix": "An Audit orientation SvOperationalHero branch (UI-13/UI-14 precedent).",
+      "tests": [
+        "ui-15-audit-experience.spec.ts get-started"
+      ],
+      "proof": "h1 'Review the evidence without changing it' renders; axe 0/0",
+      "remaining_risk": "Other accounts' Get Started pages still lack an h1 — UI-16 convergence",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-VIS-001",
+      "observed_problem": "Severity tags in the dashboard activity timeline stretched to the row height at 360px.",
+      "evidence": "mobile-dashboard.png review",
+      "affected_files": [
+        "resources/spa/src/pages/audit/AuditDashboard.vue"
+      ],
+      "root_cause": "Flex default align-items: stretch on the timeline row.",
+      "why_root_cause": "The badge height matched the multi-line text column.",
+      "correct_fix": "items-start on the row.",
+      "tests": [
+        "final focused capture"
+      ],
+      "proof": "final mobile-dashboard.png",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-VIS-002",
+      "observed_problem": "'More filters' wrapped to two lines beside the view aside at 1025–1300px.",
+      "evidence": "access-repeated-attempts.png review (1280px)",
+      "affected_files": [
+        "resources/spa/src/components/audit/AuditFilterPanel.vue"
+      ],
+      "root_cause": "The toggle could shrink inside the flex row.",
+      "why_root_cause": "Only the toggle label wrapped.",
+      "correct_fix": "shrink-0 whitespace-nowrap on the toggle.",
+      "tests": [
+        "final focused captures"
+      ],
+      "proof": "final captures",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-COPY-001",
+      "observed_problem": "Finance Audit subtitle claimed maker and checker are recorded on each event.",
+      "evidence": "desktop-dark-audit-finance.png review against AuditEvent context shapes",
+      "affected_files": [
+        "resources/spa/src/pages/audit/FinanceAudit.vue"
+      ],
+      "root_cause": "Copy generalised from payment events to every finance event.",
+      "why_root_cause": "Only payment validation/override events carry maker/checker context.",
+      "correct_fix": "'…wherever the event recorded them'; readiness matrix records the card-level gap.",
+      "tests": [
+        "final focused captures"
+      ],
+      "proof": "page-readiness-matrix.json audit-finance subcapability_gaps",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-CSS-001",
+      "observed_problem": "New Audit files used text-sv-text-primary, which is not a generated utility (silently uncoloured).",
+      "evidence": "tailwind.config.ts 'sv-text' DEFAULT maps to text-sv-text",
+      "affected_files": [
+        "resources/spa/src/components/audit/*",
+        "resources/spa/src/pages/audit/*"
+      ],
+      "root_cause": "Token name (color-text-primary) assumed to be the utility name.",
+      "why_root_cause": "The Tailwind alias is sv-text.DEFAULT.",
+      "correct_fix": "text-sv-text everywhere; no other use exists in the codebase.",
+      "tests": [
+        "visual review",
+        "axe contrast"
+      ],
+      "proof": "git grep text-sv-text-primary → no matches",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-TEST-001",
+      "observed_problem": "Route tests failed for fixture ids such as 01JAUDITEVENT…; release-audit fixture ids contain U/I/L/O.",
+      "evidence": "auditRoutes.spec.ts; tests/e2e/support/releaseAudit.ts id() helper",
+      "affected_files": [
+        "resources/spa/src/router/routes/audit.ts",
+        "resources/spa/src/router/auditRoutes.spec.ts",
+        "resources/spa/src/pages/audit/Ui15AuditPages.spec.ts"
+      ],
+      "root_cause": "The first route constraint used the strict Crockford alphabet; synthetic fixture ids do not.",
+      "why_root_cause": "The constraint's only job is to keep fixed words from matching as ids; the server validates real ULIDs.",
+      "correct_fix": "Record-id segment = 26 alphanumerics; unit fixtures use valid ULID shapes.",
+      "tests": [
+        "auditRoutes.spec.ts",
+        "whole-product release audit"
+      ],
+      "proof": "/audit/flags, /exports/history resolve to pages; /audit/not-an-event → not-found",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-TOOL-001",
+      "observed_problem": "Pint reported a parse error in AuditLogController after an automated edit.",
+      "evidence": "pint --test output",
+      "affected_files": [
+        "app/Http/Controllers/Api/V1/Audit/AuditLogController.php"
+      ],
+      "root_cause": "A PowerShell double-quoted string turned a Markdown backtick plus 'f' into a form-feed byte inside a PHP comment.",
+      "why_root_cause": "Byte scan showed a 0x0C where the backtick stood.",
+      "correct_fix": "Comment rewritten; no control bytes remain (git grep for control characters is empty).",
+      "tests": [
+        "pint --test",
+        "phpstan"
+      ],
+      "proof": "Pint PASS 1,935 files; Larastan OK",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-ENV-001",
+      "observed_problem": "The first test of the first audit.spec run after a cold preview start timed out waiting for the first event row.",
+      "evidence": "1 failed / 34 passed; the same test then passed 3/3 with --repeat-each=3 and the full set passed 123/123",
+      "affected_files": [],
+      "root_cause": "Cold first navigation (lazy chunks) exceeded the 5s expect timeout; not reproducible.",
+      "why_root_cause": "No source change between the failing and passing runs.",
+      "correct_fix": "None in source; recorded. Whole-product and focused runs pre-warm via the preview readiness helper.",
+      "tests": [
+        "tests/e2e/audit.spec.ts"
+      ],
+      "proof": "123/123 on rerun",
+      "remaining_risk": "first-navigation latency on a cold preview",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-ENV-002",
+      "observed_problem": "The development container ran Laravel 12.62.0 while composer.lock pins 12.69.3 (REM-DEP-003).",
+      "evidence": "php artisan --version vs composer.lock",
+      "affected_files": [],
+      "root_cause": "The vendor directory is a named Docker volume that does not follow lockfile changes on the host.",
+      "why_root_cause": "composer show reported 12.62.0 inside the container.",
+      "correct_fix": "composer install inside the app container (documented named-volume procedure); no lockfile change.",
+      "tests": [
+        "php artisan --version → 12.69.3"
+      ],
+      "proof": "all backend gates ran on 12.69.3",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-SEC-002",
+      "observed_problem": "gitleaks reported 3 generic-api-key findings in new UI-15 evidence JSON.",
+      "evidence": "gitleaks dir over the 226 changed/untracked paths: audit-security-matrix.json line 17; page-visual-acceptance.json lines 302-303",
+      "affected_files": [
+        "docs/frontend/audits/ui-15/audit-security-matrix.json",
+        "docs/frontend/audits/ui-15/page-visual-acceptance.json"
+      ],
+      "root_cause": "Data shape: a field named 'api' beside a slash-joined token, and SHA-256 values keyed by screenshot filenames containing 'access', match the generic key heuristic on one line. No secret was present.",
+      "why_root_cause": "The redacted matches were a description string and two screenshot hashes.",
+      "correct_fix": "Renamed the matrix field to 'surface' and emitted evidence hashes as {file, sha256} objects on separate lines; no allowlist, rule, path or entropy change.",
+      "tests": [
+        "gitleaks dir (changed/untracked scope)",
+        "gitleaks git -1",
+        "npm run ui15:check"
+      ],
+      "proof": "no leaks found in both scans; ui15:check OK",
+      "remaining_risk": "none",
+      "lifecycle": "local_complete"
+    },
+    {
+      "id": "UI15-SEC-OBS-001",
+      "observed_problem": "Audit export accepts Finance/Compensation domains after their separate read rights are revoked.",
+      "evidence": "Pre-fix PostgreSQL: two assertions expected 403, received 201; original 228-path handoff authenticated.",
+      "affected_files": [
+        "app/Domain/Audit/Actions/RequestAuditExport.php",
+        "app/Domain/Audit/Services/AuditExportAuthorization.php",
+        "app/Domain/Audit/Services/AuditExportCsvBuilder.php",
+        "app/Policies/AuditExportPolicy.php",
+        "app/Domain/Files/Services/FileAccessService.php"
+      ],
+      "root_cause": "Export boundaries checked audit.export and branch scope but not the selected domain read keys; workers did not resolve live requester authority.",
+      "why_root_cause": "Validated domains directly selected AuditEvent action sets; masking does not deny a revoked event domain.",
+      "correct_fix": "Single fresh membership/permission authorizer with exhaustive existing-domain mapping shared at request, generation and file access boundaries.",
+      "files_changed": "codex-security-closeout.json amendment register",
+      "tests": [
+        "AuditExportDomainAuthorizationTest",
+        "AuditExportJobIdempotencyTest",
+        "Audit suite",
+        "FileDownloadAuthorizationTest",
+        "FileSignedUrlExpiryTest",
+        "Phase23ExportHardeningTest"
+      ],
+      "test_command": "CI named Audit/private-file/session/permission/navigation Pest step with JUnit; full php artisan test --parallel on PHP8.3/PostgreSQL16",
+      "test_result": "CI 38159296673 on dbda7e1d3c9ff5feb9612ee559c8df92b5a39fa5: named PostgreSQL suite 233 passed / 6562 assertions / 0 errors, failures or skips; all 30 new cases passed / 125 assertions.",
+      "proof": "Run38159296673 Backend success; JUnit11708724358 SHA256 108d40cbe15065079666405638cd813f5ef837680d7e7812c26206d8971437f0; all 30 new cases including worker and both signed streams passed. Full suite3621/5/52477.",
+      "remaining_risk": "Local Docker integration unavailable, replaced by real hosted PostgreSQL proof. Final exact-head five-job CI and ordinary GitHub lifecycle still pending.",
+      "lifecycle": "verified_complete",
+      "owner": "Codex UI-15 closeout",
+      "entry_condition": "Security closure verified; release waits for final five-job CI and ordinary merge."
+    },
+    {
+      "id": "UI15-CI-CODEX-001",
+      "observed_problem": "Codex new regression fixtures failed in first two CI runs before complete proof.",
+      "evidence": "38158213788 unknown named parameter; 38158852444 16 queue assertions included fixture Scout jobs (217 cases passed).",
+      "affected_files": [
+        "tests/Feature/Audit/AuditExportDomainAuthorizationTest.php",
+        ".github/workflows/ci.yml"
+      ],
+      "root_cause": "Dataset argument binding and pre-operation queue capture included StaffProfile indexing from branchStaff setup.",
+      "why_root_cause": "The first test body did not execute; in the second run expected HTTP denials passed and only MakeSearchable fixture jobs violated emptiness.",
+      "correct_fix": "Positional dataset arguments; reset queue fake after scenario setup; keep all HTTP/no-export/no-job assertions. Named JUnit security step before full suite.",
+      "files_changed": "Two scoped correction commits, recorded in codex-security-closeout.json.",
+      "tests": [
+        "AuditExportDomainAuthorizationTest: all30cases"
+      ],
+      "test_command": "Named PostgreSQL CI Pest security step plus full parallel suite",
+      "test_result": "233 named passed / 6562 assertions / zero skips; all30new passed /125assertions; full3621passed/5existing skips.",
+      "proof": "Actual JUnit11708724358 and Backend114528724579 on dbda7e1.",
+      "remaining_risk": "Fresh final-head CI required after proof commit.",
+      "lifecycle": "verified_complete"
+    }
+  ],
+  "counts": {
+    "open": 0,
+    "blocked": 0,
+    "local_complete": 14,
+    "verified_complete": 2,
+    "total": 16
+  },
+  "observations_not_defects": [
+    "UI15-INT-RES-001 — daily full-chain verification results are not persisted (integrity-truth-matrix.json; owner Phase 25 §71 / product owner)"
+  ]
+}

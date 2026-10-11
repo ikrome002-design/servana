@@ -218,7 +218,11 @@ const CONTROLS = [
     'a planned page naming a runtime route is rejected',
     () => {
       const c = clone();
-      const planned = c.pages.find((p) => p.implementation_status === 'planned');
+      // Phase UI-15 delivered the last planned page, so the authority may hold none. Make one:
+      // demote an implemented page to `planned` and leave its runtime route in place — exactly the
+      // contradiction this control must keep rejecting.
+      const planned = c.pages.find((p) => p.implementation_status === 'planned')
+        ?? Object.assign(c.pages.find((p) => p.implementation_status === 'implemented'), { implementation_status: 'planned' });
       planned.runtime_route_name = 'finance.invoices';
 
       return c;

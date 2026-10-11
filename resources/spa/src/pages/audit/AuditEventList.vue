@@ -1,167 +1,92 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
-import { RouterLink } from 'vue-router';
-import SvCard from '@/components/ui/SvCard.vue';
-import SvSelect from '@/components/ui/SvSelect.vue';
-import SvTextInput from '@/components/ui/SvTextInput.vue';
-import SvButton from '@/components/ui/SvButton.vue';
-import SvStateBoundary from '@/components/ui/SvStateBoundary.vue';
-import { useAuditEventStore } from '@/stores/auditEventStore';
-
 /**
- * Branch audit event list (Plan §70, §74; Phase 19). Read-only, branch-scoped,
- * field-masked. The server confines rows to the caller's assigned active branches
- * and excludes merchant-level (branch_id = null) rows — this screen never renders
- * raw before/after/context. Filters/sorts are the backend allowlist only.
+ * Branch Audit Log — Appendix A §12.4.3 (Phase 19 read; Phase UI-15 experience).
+ *
+ * The append-only, hash-chained branch record for every general-segment module, filtered and
+ * paginated by the server inside the caller's assigned branch (`audit.branch_events.view`).
+ * Finance and compensation events are separate permission segments with their own views, so this
+ * page links to them instead of mixing them in. Every value is masked server-side; this page has
+ * no edit, delete, reorder or raw-JSON control because none may exist.
  */
-const store = useAuditEventStore();
+import { computed } from 'vue';
+import { RouterLink } from 'vue-router';
+import AuditEventFeed from '@/components/audit/AuditEventFeed.vue';
+import AuditFilterPanel from '@/components/audit/AuditFilterPanel.vue';
+import SvTonalPageHeader from '@/components/ui/SvTonalPageHeader.vue';
+import { SvIconChainLink, SvIconChevronRight, SvIconDownload } from '@/design-system/icons';
+import { usePermissionStore } from '@/stores/permissionStore';
 
-const severityOptions = [
-  { value: '', label: 'All severities' },
-  { value: 'info', label: 'Info' },
-  { value: 'notice', label: 'Notice' },
-  { value: 'warning', label: 'Warning' },
-  { value: 'high', label: 'High' },
-  { value: 'critical', label: 'Critical' },
-];
+const permissions = usePermissionStore();
 
-const sortOptions = [
-  { value: '-created_at', label: 'Newest first' },
-  { value: 'created_at', label: 'Oldest first' },
-  { value: '-severity', label: 'Severity (high→low)' },
-  { value: 'action', label: 'Action (A→Z)' },
-];
-
-const boundaryState = computed<'loading' | 'empty' | 'error' | 'success'>(() => {
-  if (store.loading) return 'loading';
-  if (store.error) return 'error';
-  if (store.events.length === 0) return 'empty';
-  return 'success';
-});
-
-function applyFilters(): void {
-  void store.fetchEvents('general', 1);
-}
-
-function goToPage(page: number): void {
-  if (page >= 1 && page <= store.meta.last_page) void store.fetchEvents('general', page);
-}
-
-onMounted(() => {
-  void store.fetchEvents('general', 1);
-});
+const lenses = computed(() => [
+  { name: 'audit.audit-operations', label: 'Operational', permitted: permissions.can('audit.branch_events.view') },
+  { name: 'audit.audit-finance', label: 'Finance', permitted: permissions.can('audit.finance.view') },
+  { name: 'audit.audit-compensation', label: 'Compensation', permitted: permissions.can('audit.compensation.view') },
+  { name: 'audit.audit-access', label: 'Access and security', permitted: permissions.can('audit.branch_events.view') },
+  { name: 'audit.audit-privacy-preferred', label: 'Contact protection', permitted: permissions.can('audit.branch_events.view') },
+].filter((lens) => lens.permitted));
+const canExport = computed(() => permissions.can('audit.export'));
 </script>
 
 <template>
-  <section class="p-4 md:p-6">
-    <h1 class="font-display text-2xl font-bold text-heading">
-      Branch audit log
-    </h1>
-    <p class="mt-1 text-sm text-text-muted">
-      Read-only, branch-scoped events. Sensitive values are masked.
-    </p>
-
-    <form
-      class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
-      aria-label="Filter audit events"
-      @submit.prevent="applyFilters"
+  <section
+    class="mx-auto max-w-7xl"
+    data-testid="audit-log-page"
+  >
+    <SvTonalPageHeader
+      eyebrow="Audit"
+      title="Branch Audit Log"
+      description="Every recorded branch event, newest first. The record is append-only and hash-chained; filters and pages are applied by the server."
+      context="Assigned branch · append-only"
+      tone="teal"
     >
-      <SvSelect
-        id="audit-severity"
-        v-model="store.filters.severity"
-        label="Severity"
-        :options="severityOptions"
-        @update:model-value="applyFilters"
-      />
-      <SvTextInput
-        id="audit-action"
-        v-model="store.filters.action"
-        label="Action"
-        placeholder="e.g. invoice.created"
-        @keyup.enter="applyFilters"
-      />
-      <SvTextInput
-        id="audit-date-from"
-        v-model="store.filters.date_from"
-        label="From"
-        type="date"
-        @change="applyFilters"
-      />
-      <SvSelect
-        id="audit-sort"
-        v-model="store.filters.sort"
-        label="Sort"
-        :options="sortOptions"
-        @update:model-value="applyFilters"
-      />
-    </form>
-
-    <SvStateBoundary
-      class="mt-6"
-      :state="boundaryState"
-      error-message="We couldn’t load audit events."
-      empty-message="No audit events match these filters."
-      @retry="applyFilters"
-    >
-      <ul class="flex flex-col gap-2">
-        <li
-          v-for="event in store.events"
-          :key="event.id"
+      <template #actions>
+        <RouterLink
+          v-if="canExport"
+          :to="{ name: 'audit.exports' }"
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center gap-2 rounded-control bg-sv-brand px-4 text-sm font-bold text-sv-text-on-brand hover:bg-sv-brand-hover"
         >
-          <SvCard
-            as="article"
-            padding="md"
-            data-testid="audit-event-row"
-          >
-            <div class="flex flex-wrap items-start justify-between gap-2">
-              <div class="min-w-0">
-                <p class="font-display font-semibold text-heading">
-                  {{ event.action }}
-                </p>
-                <p class="text-sm text-text-muted">
-                  <span data-testid="audit-event-severity">{{ event.severity }}</span>
-                  <span v-if="event.actor"> · {{ event.actor }}</span>
-                  <span v-if="event.subject_type"> · {{ event.subject_type }}</span>
-                </p>
-                <p class="text-xs text-text-muted">
-                  {{ event.created_at }}
-                </p>
-              </div>
-              <RouterLink
-                :to="{ name: 'audit.event-detail', params: { id: event.id } }"
-                class="inline-flex min-h-[44px] items-center rounded-control px-3 text-sm font-medium text-heading underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                data-testid="audit-event-open"
-              >
-                View
-              </RouterLink>
-            </div>
-          </SvCard>
-        </li>
-      </ul>
-
+          <SvIconDownload
+            aria-hidden="true"
+            class="h-4 w-4"
+          />Request masked export
+        </RouterLink>
+        <RouterLink
+          :to="{ name: 'audit.audit-integrity' }"
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center gap-2 rounded-control border border-sv-border bg-sv-surface-raised px-4 text-sm font-semibold text-sv-text"
+        >
+          <SvIconChainLink
+            aria-hidden="true"
+            class="h-4 w-4"
+          />Integrity status
+        </RouterLink>
+      </template>
       <nav
-        v-if="store.meta.last_page > 1"
-        class="mt-4 flex items-center justify-between"
-        aria-label="Pagination"
+        aria-label="Audit views"
+        class="flex flex-wrap items-center gap-2"
       >
-        <SvButton
-          variant="secondary"
-          :disabled="store.meta.current_page <= 1"
-          @click="goToPage(store.meta.current_page - 1)"
+        <span class="text-xs font-semibold uppercase tracking-wide text-sv-text-muted">Focused views</span>
+        <RouterLink
+          v-for="lens in lenses"
+          :key="lens.name"
+          :to="{ name: lens.name }"
+          class="sv-focus-ring inline-flex min-h-sv-touch items-center gap-1 rounded-pill border border-sv-border bg-sv-surface-raised px-4 text-sm font-semibold text-sv-text transition-colors duration-sv-fast hover:bg-sv-surface-subtle motion-reduce:transition-none"
         >
-          Previous
-        </SvButton>
-        <span class="text-sm text-text-muted">
-          Page {{ store.meta.current_page }} of {{ store.meta.last_page }}
-        </span>
-        <SvButton
-          variant="secondary"
-          :disabled="store.meta.current_page >= store.meta.last_page"
-          @click="goToPage(store.meta.current_page + 1)"
-        >
-          Next
-        </SvButton>
+          {{ lens.label }}
+          <SvIconChevronRight
+            aria-hidden="true"
+            class="h-4 w-4"
+          />
+        </RouterLink>
       </nav>
-    </SvStateBoundary>
+    </SvTonalPageHeader>
+
+    <div class="flex flex-col gap-4">
+      <AuditFilterPanel id-prefix="audit-log" />
+      <AuditEventFeed
+        label="Branch audit events"
+        empty-message="No audit events match these filters in your branch. Clear a filter or widen the date range."
+      />
+    </div>
   </section>
 </template>

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -100,5 +101,16 @@ class AuditLog extends Model
     public function actor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'actor_id');
+    }
+
+    /**
+     * Review records raised over this row (Phase 19 metadata; read by Phase UI-15). The flag
+     * model's tenant and branch scopes apply, so only flags the caller may see are loaded.
+     *
+     * @return HasMany<AuditFlaggedEvent, $this>
+     */
+    public function flags(): HasMany
+    {
+        return $this->hasMany(AuditFlaggedEvent::class, 'audit_log_id');
     }
 }

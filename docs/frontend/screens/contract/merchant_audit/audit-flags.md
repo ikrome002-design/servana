@@ -3,7 +3,7 @@
 > GENERATED FILE — do not edit.
 > Source: `docs/frontend/navigation/servana-user-account-navigation-map.yaml` · Regenerate: `node scripts/generate-ui07-navigation-contract.mjs`
 >
-> A real runtime route renders this page today: `audit.flagged-events` at `/audit/flagged` (routes/audit.ts), delivery **dedicated**. The runtime path uses the account's path prefix rather than the host-relative contract path `/audit/flags`; owner phase **UI-15** reconciles path shape (`UI01-ROUTE-003`).
+> A real runtime route renders this page today: `audit.audit-flags` at `/audit/flags` (routes/audit.ts), delivery **dedicated**.
 
 ## Identity
 
@@ -28,14 +28,14 @@
 - **UI owner phase:** **UI-15**
 - **Backend owner phase:** **Phase 19**
 - **Implementation status:** `implemented`
-- **Runtime route:** `audit.flagged-events`
+- **Runtime route:** `audit.audit-flags`
 - **Route delivery:** `dedicated`
 - **External gate:** none
 
 ## Data and behaviour
 
-- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `audit.flagged-events` (recorded in `docs/frontend/screens/audit/audit-flagged-queue.md`).
-- **Data fields:** Branch-scoped flagged-event queue across open/under_review/resolved/dismissed/reopened with status filter, assignee and review-status summaries, and timestamps.
+- **API dependencies:** `GET /api/v1/me` bootstrap plus the endpoints already backing `audit.audit-flags` (recorded in `docs/frontend/screens/audit/audit-flagged-queue.md`).
+- **Data fields:** Flagged Events (§12.4.5): review queue with server counts per status, review age, source severity kept apart from review status, page-local pinning of critical active flags; only backend transitions exist.
 - **Filters:** As delivered by the runtime screen; preserved across list → detail → back.
 - **Sorts:** As delivered by the runtime screen; deterministic and server-authoritative.
 - **Pagination:** Every collection paginates (Plan §9 rule 10).

@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.contact-protection-matrix.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "authority": "Plan §19.4 / CLAUDE.md guardrail 8 — Merchant Personnel contact export does not exist anywhere: no schema field, no endpoint, no UI.",
   "checks": [
     { "claim": "Only personally served clients appear", "evidence": "PersonnelExperienceReadModel served-client query joins completed own service sessions; Ui14PersonnelExperienceApiTest excludes Personnel B's client and the foreign tenant's client", "result": "pass" },

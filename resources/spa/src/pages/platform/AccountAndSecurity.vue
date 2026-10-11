@@ -48,7 +48,7 @@ import type { SvColumn, SvDataState } from '@/components/ui/dataContract';
 import { useAuthStore } from '@/stores/authStore';
 import { useSessionFamilyStore, type HostSessionView } from '@/stores/sessionFamilyStore';
 
-const props = withDefaults(defineProps<{ experience?: 'platform' | 'merchant' | 'branch' | 'hr' | 'finance' | 'front-office' | 'personnel' }>(), {
+const props = withDefaults(defineProps<{ experience?: 'platform' | 'merchant' | 'branch' | 'hr' | 'finance' | 'front-office' | 'personnel' | 'audit' }>(), {
   experience: 'platform',
 });
 
@@ -74,6 +74,7 @@ const pageDescription = computed(() => {
   if (props.experience === 'finance') return 'Your own identity, mandatory Finance MFA, active branch context, sessions and display preference. Financial policy remains server-owned.';
   if (props.experience === 'front-office') return 'Your own Magic Link identity, active Front Office branch context, sessions and display preference. This page cannot change staff access or branch operations.';
   if (props.experience === 'personnel') return 'Your own Magic Link identity, active Personnel context, sessions, accessibility and theme. This page cannot change your branch assignment, availability or compensation.';
+  if (props.experience === 'audit') return 'Your own Magic Link identity, assigned-branch Audit context, sessions and display preference. This page cannot change your role, branch, export or masking permissions.';
   return 'Your own identity, sign-in security, active sessions and display preferences. Other platform users are managed under internal platform access.';
 });
 const mfaPolicyNote = computed(() => {
@@ -83,6 +84,7 @@ const mfaPolicyNote = computed(() => {
   if (props.experience === 'finance') return 'Two-factor authentication is mandatory for Finance access. This page cannot weaken step-up, maker/checker, period-lock or payment policy.';
   if (props.experience === 'front-office') return 'This page can strengthen your own sign-in with two-factor authentication. It cannot validate payments, change your branch assignment or manage another user’s access.';
   if (props.experience === 'personnel') return 'This page can strengthen your own sign-in with two-factor authentication. It cannot broaden your served-client scope, change HR-managed availability or alter compensation facts.';
+  if (props.experience === 'audit') return 'Audit exports need a recent authenticator check, so keeping two-factor authentication set up here is what lets you request one. This page cannot grant export or unmask access.';
   return 'Two-factor authentication is required for platform roles and cannot be turned off or weakened from this page. There is no control here that would lower it, and the server would refuse one.';
 });
 const scopeNote = computed(() => props.experience === 'platform'
@@ -179,9 +181,9 @@ async function revokePending(): Promise<void> {
       :description="pageDescription"
       context="Magic Link · assigned branch"
     />
-    <!-- Personnel renders its own Profile-style identity header (PersonnelAccount.vue) that owns the h1. -->
+    <!-- Personnel and Audit render their own Profile-style identity headers that own the h1. -->
     <SvPageHeader
-      v-else-if="experience !== 'personnel'"
+      v-else-if="experience !== 'personnel' && experience !== 'audit'"
       title="Account and security"
       eyebrow="Your account"
       :description="pageDescription"
@@ -190,7 +192,7 @@ async function revokePending(): Promise<void> {
     <!-- Identity ------------------------------------------------------------------------------ -->
     <SvCard
       as="section"
-      :class="experience === 'front-office' ? 'mt-5 border-l-4 border-l-sv-brand-secondary' : experience === 'personnel' ? 'mt-5' : ''"
+      :class="experience === 'front-office' ? 'mt-5 border-l-4 border-l-sv-brand-secondary' : experience === 'personnel' || experience === 'audit' ? 'mt-5' : ''"
       data-testid="account-identity"
     >
       <h2 class="font-display text-lg font-bold text-sv-text-heading">

@@ -400,16 +400,23 @@ export const SCREENS: AuditScreen[] = [
   { key: 'personnel-account', route: 'personnel.account', path: '/account', role: 'merchant_personnel', state: 'populated' },
 
   // --- Audit -----------------------------------------------------------------
-  { key: 'audit-landing', route: 'audit.landing', path: '/audit', role: 'merchant_audit', state: 'static' },
-  { key: 'audit-get-started', route: 'audit.get-started', path: '/audit/get-started', role: 'merchant_audit', state: 'static' },
-  { key: 'audit-event-list', route: 'audit.branch-events', path: '/audit/events', role: 'merchant_audit', state: 'populated' },
-  { key: 'audit-event-detail', route: 'audit.event-detail', path: `/audit/events/${IDS.auditEvent}`, role: 'merchant_audit', state: 'populated' },
-  { key: 'audit-flagged-queue', route: 'audit.flagged-events', path: '/audit/flagged', role: 'merchant_audit', state: 'populated' },
-  { key: 'audit-flagged-detail', route: 'audit.flagged-detail', path: `/audit/flagged/${IDS.flagged}`, role: 'merchant_audit', state: 'populated' },
-  { key: 'audit-finance', route: 'audit.finance', path: '/audit/finance', role: 'merchant_audit', state: 'populated' },
-  { key: 'audit-compensation', route: 'audit.compensation', path: '/audit/compensation', role: 'merchant_audit', state: 'populated' },
-  { key: 'audit-export-list', route: 'audit.exports', path: '/audit/exports', role: 'merchant_audit', state: 'populated' },
-  { key: 'audit-export-detail', route: 'audit.export-detail', path: `/audit/exports/${IDS.auditExport}`, role: 'merchant_audit', state: 'populated' },
+  // Phase UI-15 — the canonical host-relative Audit tree on audit.servana.ke.
+  { key: 'audit-dashboard', route: 'audit.dashboard', path: '/dashboard', role: 'merchant_audit', state: 'populated', ready: '[data-testid="audit-dashboard"]' },
+  { key: 'audit-get-started', route: 'audit.get-started', path: '/get-started', role: 'merchant_audit', state: 'static' },
+  { key: 'audit-event-list', route: 'audit.audit', path: '/audit', role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-event-detail', route: 'audit.audit-event-detail', path: `/audit/${IDS.auditEvent}`, role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-flagged-queue', route: 'audit.audit-flags', path: '/audit/flags', role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-flagged-detail', route: 'audit.flag-detail', path: `/audit/flags/${IDS.flagged}`, role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-operations', route: 'audit.audit-operations', path: '/audit/operations', role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-access', route: 'audit.audit-access', path: '/audit/access', role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-privacy-preferred', route: 'audit.audit-privacy-preferred', path: '/audit/privacy-preferred', role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-finance', route: 'audit.audit-finance', path: '/audit/finance', role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-compensation', route: 'audit.audit-compensation', path: '/audit/compensation', role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-export-list', route: 'audit.exports', path: '/exports', role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-export-history', route: 'audit.exports-history', path: '/exports/history', role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-export-detail', route: 'audit.export-detail', path: `/exports/${IDS.auditExport}`, role: 'merchant_audit', state: 'populated' },
+  { key: 'audit-integrity', route: 'audit.audit-integrity', path: '/audit/integrity', role: 'merchant_audit', state: 'populated', ready: '[data-testid="audit-integrity-result"]' },
+  { key: 'audit-account', route: 'audit.account', path: '/account', role: 'merchant_audit', state: 'populated' },
   { key: 'audit-platform-fees', route: 'audit.platform-fees', path: '/audit/platform-fees', role: 'merchant_audit', state: 'populated' },
 
   // --- cross-role -------------------------------------------------------------
@@ -467,7 +474,12 @@ const ROLE_BASELINE_PERMISSIONS: Record<RoleIdentity, string[]> = {
     'personnel.my_compensation.view', 'personnel.my_payouts.view',
     'personnel.my_statements.download', 'personnel.my_earnings_query.create',
   ],
-  merchant_audit: ['audit.branch_events.view'],
+  // Phase UI-15: the keys the Audit role actually holds (permission matrix default_roles: audit).
+  merchant_audit: [
+    'audit.branch_events.view', 'audit.finance.view', 'audit.compensation.view', 'audit.export',
+    'audit.flagged_event.create', 'audit.flagged_event.update_status', 'audit.flagged_event.resolve_metadata',
+    'platform_fee.view',
+  ],
 };
 
 // --- Bootstrap + API stubbing ------------------------------------------------
@@ -721,6 +733,29 @@ const AUDIT_EVENT = {
   correlation_id: id('CORREL'),
   created_at: '2026-07-15T06:00:00+00:00',
   can: { view: true },
+};
+
+// UI-15 Audit fixtures: masked, branch-scoped review metadata and a truthful partial integrity
+// result. They are shared by the focused UI-15 proof and the whole-product audit.
+const AUDIT_FLAG = {
+  id: IDS.flagged, status: 'under_review', review_notes: 'Calendar exception set outside the approved window.',
+  assigned_to: 'r***@glowstudio.co.ke', resolved_by: null,
+  created_at: '2026-07-14T06:00:00+00:00', updated_at: '2026-07-15T07:00:00+00:00',
+  audit_event: { id: IDS.auditEvent, action: 'branch.calendar_exception_set', severity: 'high', actor: 'a***@glowstudio.co.ke', subject_type: 'BranchCalendarException', context: { date: '2026-08-12' }, occurred_at: '2026-07-14T05:30:00+00:00' },
+  can: { update_status: true, resolve_metadata: true },
+};
+const AUDIT_EXPORT_RECORD = {
+  id: IDS.auditExport, branch: { id: IDS.branch, name: 'Westlands Branch' }, status: 'ready', reason: 'Quarterly branch review',
+  scope: { domains: ['general', 'finance'], severities: ['high', 'critical'], has_date_from: true, has_date_to: true },
+  row_count: 128, download_count: 1, requested_at: '2026-07-15T06:00:00+00:00', generated_at: '2026-07-15T06:02:00+00:00',
+  expires_at: '2026-07-22T06:02:00+00:00', first_downloaded_at: '2026-07-15T06:10:00+00:00', last_downloaded_at: '2026-07-15T06:10:00+00:00',
+  failure_code: null, failure_message: null, created_at: '2026-07-15T06:00:00+00:00',
+  can: { view: true, download: true, revoke: true },
+};
+const AUDIT_INTEGRITY = {
+  status: 'partial', checked_at: AUDIT_INSTANT_UTC, segment_limit: 1000, complete_history: false,
+  coverage_from: '2026-06-02T07:00:00+00:00', coverage_to: '2026-07-15T08:58:00+00:00', branch_records_checked: 412,
+  first_break: null, scheduled_verification_exposed: false,
 };
 
 const HR_STAFF = {
@@ -1059,6 +1094,13 @@ const SHARED_FIXTURES: Fixture[] = [
   // --- queue ---------------------------------------------------------------------
   { match: /^\/queue-entries\/[^/]+$/, body: { data: QUEUE_ENTRY } },
   { match: /^\/queue-entries$/, body: { data: [QUEUE_ENTRY], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+
+  // --- UI-15 Audit review, export and integrity reads ---------------------------------
+  { match: /^\/audit-integrity$/, body: { data: AUDIT_INTEGRITY } },
+  { match: /^\/audit-flagged-events\/[^/]+$/, body: { data: AUDIT_FLAG } },
+  { match: /^\/audit-flagged-events$/, body: { data: [AUDIT_FLAG], meta: { ...EMPTY_LIST.meta, total: 1 } } },
+  { match: /^\/audit-exports\/[^/]+$/, body: { data: AUDIT_EXPORT_RECORD } },
+  { match: /^\/audit-exports$/, body: { data: [AUDIT_EXPORT_RECORD], meta: { ...EMPTY_LIST.meta, total: 1 } } },
 
   // --- audit trail ------------------------------------------------------------------
   { match: /^\/audit-logs\/(finance|compensation)$/, body: { data: [AUDIT_EVENT], meta: { current_page: 1, last_page: 1, total: 1 } } },

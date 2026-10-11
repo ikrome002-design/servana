@@ -1,0 +1,47 @@
+{
+  "schema": "servana.ui15.route-activation.v1",
+  "phase": "UI-15",
+  "lifecycle": "local_complete",
+  "account": "merchant_audit",
+  "host": "audit.servana.ke",
+  "router_source": "resources/spa/src/router/routes/audit.ts",
+  "record_id_segment": "[0-9A-Za-z]{26} — keeps fixed words under /audit and /exports from matching as ids; the server validates the id",
+  "implemented_routes": [
+    { "screen_key": "dashboard", "route_name": "audit.dashboard", "route_path": "/dashboard", "permission_guard": null, "baseline": "planned (UI07-ROUTE-001 removed the Phase 4 stub)" },
+    { "screen_key": "get-started", "route_name": "audit.get-started", "route_path": "/get-started", "permission_guard": null, "baseline": "implemented at /audit/get-started" },
+    { "screen_key": "audit", "route_name": "audit.audit", "route_path": "/audit", "permission_guard": "audit.branch_events.view", "baseline": "implemented as audit.branch-events at /audit/events" },
+    { "screen_key": "audit-event-detail", "route_name": "audit.audit-event-detail", "route_path": "/audit/:eventUlid", "permission_guard": "audit.branch_events.view", "baseline": "implemented as audit.event-detail at /audit/events/:id" },
+    { "screen_key": "audit-flags", "route_name": "audit.audit-flags", "route_path": "/audit/flags", "permission_guard": "audit.branch_events.view", "baseline": "implemented as audit.flagged-events at /audit/flagged" },
+    { "screen_key": "audit-operations", "route_name": "audit.audit-operations", "route_path": "/audit/operations", "permission_guard": "audit.branch_events.view", "baseline": "planned" },
+    { "screen_key": "audit-finance", "route_name": "audit.audit-finance", "route_path": "/audit/finance", "permission_guard": "audit.finance.view", "baseline": "implemented as audit.finance" },
+    { "screen_key": "audit-compensation", "route_name": "audit.audit-compensation", "route_path": "/audit/compensation", "permission_guard": "audit.compensation.view", "baseline": "implemented as audit.compensation" },
+    { "screen_key": "audit-access", "route_name": "audit.audit-access", "route_path": "/audit/access", "permission_guard": "audit.branch_events.view", "baseline": "planned" },
+    { "screen_key": "audit-privacy-preferred", "route_name": "audit.audit-privacy-preferred", "route_path": "/audit/privacy-preferred", "permission_guard": "audit.branch_events.view", "baseline": "planned" },
+    { "screen_key": "exports", "route_name": "audit.exports", "route_path": "/exports", "permission_guard": "audit.export", "baseline": "implemented at /audit/exports (list + dialog)" },
+    { "screen_key": "exports-history", "route_name": "audit.exports-history", "route_path": "/exports/history", "permission_guard": "audit.export", "baseline": "planned" },
+    { "screen_key": "audit-integrity", "route_name": "audit.audit-integrity", "route_path": "/audit/integrity", "permission_guard": "audit.branch_events.view", "baseline": "planned" },
+    { "screen_key": "account", "route_name": "audit.account", "route_path": "/account", "permission_guard": null, "baseline": "planned" }
+  ],
+  "supporting_routes": [
+    { "route_name": "audit.flag-detail", "route_path": "/audit/flags/:flagUlid", "contract_parent": "audit-flags", "baseline": "audit.flagged-detail at /audit/flagged/:id" },
+    { "route_name": "audit.export-detail", "route_path": "/exports/:exportUlid", "contract_parent": "exports-history", "baseline": "audit.export-detail at /audit/exports/:id" },
+    { "route_name": "audit.platform-fees", "route_path": "/audit/platform-fees", "contract_parent": null, "baseline": "unchanged Phase 20E route; now guarded by platform_fee.view" }
+  ],
+  "gated_no_route": ["notifications"],
+  "compatibility_redirects": [
+    { "from": "/audit/dashboard", "to": "audit.dashboard" },
+    { "from": "/audit/get-started", "to": "audit.get-started" },
+    { "from": "/audit/events", "to": "audit.audit", "preserves": "query" },
+    { "from": "/audit/events/:id", "to": "audit.audit-event-detail", "preserves": "query, id" },
+    { "from": "/audit/flagged", "to": "audit.audit-flags", "preserves": "query" },
+    { "from": "/audit/flagged/:id", "to": "audit.flag-detail", "preserves": "query, id" },
+    { "from": "/audit/exports", "to": "audit.exports", "preserves": "query" },
+    { "from": "/audit/exports/:id", "to": "audit.export-detail", "preserves": "query, id" }
+  ],
+  "retired_identities": [
+    { "inventory_key": "audit-landing", "route_name": "audit.landing", "reason": "non-contract landing; /audit is now the canonical Branch Audit Log and the account home is audit-dashboard", "register": "tests/Feature/Docs/Ui01AuditContractTest.php registeredRemovals" }
+  ],
+  "role_entry": { "landing_route_name": "audit.dashboard", "source": "resources/spa/src/types/roles.ts" },
+  "arithmetic": { "implemented": 14, "disabled_by_gate": 1, "removed_by_authority": 0, "planned": 0, "total": 15 },
+  "proof": ["resources/spa/src/router/auditRoutes.spec.ts", "tests/e2e/ui-15-audit-experience.spec.ts", "npm run nav:check"]
+}

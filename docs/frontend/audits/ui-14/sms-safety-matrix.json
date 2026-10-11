@@ -1,7 +1,7 @@
 {
   "schema": "servana.ui14.sms-safety-matrix.v1",
   "phase": "UI-14",
-  "lifecycle": "local_complete",
+  "lifecycle": "verified_complete",
   "runtime_owner": "Phase 21S (verified_complete). UI-14 splits the composer and history onto canonical routes and adds presentation only; no SMS rule, price, provider or state machine changed.",
   "checks": [
     { "claim": "Recipients limited to own served clients", "evidence": "ServedClientSelectorTest, SmsPreviewAndConfirmTest (not_served exclusion at preview and confirm)", "result": "pass" },
